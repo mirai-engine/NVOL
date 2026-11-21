@@ -18,7 +18,7 @@ from .abi import ABI
 from .lower import CC, NEG, Lower, Unsupported, _bit_test, _const_value, _masked_addr, _same, _target
 from .mir import (CONDJUMPS, PHYS, SP, TERMINATORS, XZR, Imm, Ins, Lab, Mem, Phys, Reg, VReg,
                   regs_in)
-from .regalloc import _subst, jump_cleanup, reloads
+from .regalloc import _subst, copy_back, jump_cleanup, reloads
 
 X0 = PHYS["x0"]
 # the generic condition codes as A64 spells them
@@ -829,7 +829,7 @@ def peephole(code: list) -> list:
         fused.append(ins)
         k += 1
     res = jump_cleanup(fused)
-    return [ins for ins in reloads(res, "ldr", "str", _STORES) if not _identity(ins)]
+    return copy_back([ins for ins in reloads(res, "ldr", "str", _STORES) if not _identity(ins)])
 
 
 def _identity(ins: Ins) -> bool:

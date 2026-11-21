@@ -103,7 +103,8 @@ The detail is in "Done".
       item 31). Seen in `nvol_memchr` (16 against 12 instructions):
       - the save as `sub sp` + `stp` instead of a pre-indexed `stp x29, x30, [sp, #-32]!`;
       - a branch where Clang uses `cmp` + `csinv`;
-      - a copy not coalesced while its source is live (`mov x19, x1` … `mov x1, x19`);
+      - ~~a copy not coalesced while its source is live (`mov x19, x1` … `mov x1, x19`)~~:
+        `regalloc.copy_back` removes the copy back, on both targets (see Done);
       - `and w0, w0, #255` that the callee repeats.
 
       The byteset family (+25…+53 %), memmem (+34 %) and Teddy (+36 %) need their loops
@@ -169,6 +170,23 @@ The detail is in "Done".
     - pair AVX2, +20 %, with 13 % fewer instructions;
     - memmem SSE2, +22 %;
     - 14b: rapidjson, `pretty` of `citm_catalog` against SSE4.2, +0.6…+0.8 %.
+
+    - **Position of a call site** (found with `copy_back`, item 17). `nvol_memchr` at 16 B
+      (AVX2) costs 16.8-17.0 cycles when its 6-byte `call *ptr` starts at 0x69d-0x6a1, and
+      18.5-19.6 cycles at 0x69c or at 0x6a2-0x6a8, with identical instructions. The scan
+      (best of 11, single-byte NOPs after `push rbx`):
+
+      | call at | 69c | 69d | 69e | 69f | 6a0 | 6a1 | 6a2 | 6a3-6a5 | 6a6-6a8 |
+      |---|---|---|---|---|---|---|---|---|---|
+      | cycles | 18.5 | 17.0 | 16.8 | 16.9 | 17.0 | 17.0 | 19.0 | 18.9-19.1 | 19.5-19.6 |
+
+      `copy_back` drops one `mov` (3 bytes), which moves the call from 0x69f to 0x69c:
+      memchr at 16 B AVX2 goes from 16.8 to 18.5 cycles (3 rounds), and memrchr at 64 B from
+      19.9 to 21.6. A 3-byte NOP after `push rbx` puts the same code back at 0x69f, and it
+      gives 16.8 again. The cost is therefore the position, not the code. It was accepted,
+      with one instruction fewer per call. The mechanism is probably how the µop cache splits
+      the 32-byte windows. It needs `idq.dsb_uops` / `idq.mite_uops`, which WSL does not
+      give (2.12).
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
@@ -357,6 +375,17 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **The copy back in the asm (item 17).** After `mov a, b`, a later `mov b, a` in the same
+  block, with neither register written in between, is removed (`regalloc.copy_back`, on x86
+  and A64). The allocator leaves it when a value lives in a callee-saved register across a
+  call and is also an argument of that call: `mov rbx, rsi; lea rdx, [rbx + rdx]; mov rsi,
+  rbx; call`.
+  - 19 copies are removed on x86 System V and 7 on A64.
+  - Every memchr-family and `first_non_ascii` wrapper saves one instruction per call (16 B
+    and 64 B, both paths: 49 → 48, 56 → 55, …). memmem is unchanged.
+  - In cycles, two AVX2 rows get worse only because of where the call lands (item 25, with
+    the table and the NOP control). The change was accepted with that cause measured.
 
 - **aarch64 in NVOL's own assembly (item 16).** The IR is lowered to A64 and NEON, with the
   AAPCS64 calling convention, in GNU as syntax: `generated/gas/nvol_aarch64_aapcs64.s` and

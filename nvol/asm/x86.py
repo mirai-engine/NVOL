@@ -10,7 +10,7 @@ from .lower import (CC, NEG, Lower, Unsupported, _bit_test, _cmp_width, _const_v
                     _masked_addr, _same, _target)
 from .mir import (CONDJUMPS, PHYS, RSP, TERMINATORS, VECS, Imm, Ins, Lab, Mem, Phys, Reg, VReg,
                   regs_in)
-from .regalloc import _subst, jump_cleanup, reloads
+from .regalloc import _subst, copy_back, jump_cleanup, reloads
 
 # element-wise vector operations: one instruction each (legacy name; VEX adds "v")
 VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vsub8": "psubb",
@@ -916,7 +916,7 @@ def _peephole(code: list) -> list:
                 out[k] = Ins(op, [ins.args[0], Imm(v)], ins.defs, ins.uses, ins.clobbers)
     res = jump_cleanup(out)
     # (with the labels gone, more stores and reloads of a slot share a block)
-    return [ins for ins in reloads(res, "mov", "mov", _SPILL_MOVES) if not _identity(ins)]
+    return copy_back([ins for ins in reloads(res, "mov", "mov", _SPILL_MOVES) if not _identity(ins)])
 
 
 def _identity(ins: Ins) -> bool:

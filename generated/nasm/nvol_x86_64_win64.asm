@@ -799,7 +799,6 @@ nvol_memchr:
     movzx ecx, cl
     mov rsi, rdx
     lea r8, [rsi + r8]
-    mov rdx, rsi
     call qword [rel nvol_memchr_raw_ptr]
     test rax, rax
     jne strict short .L2
@@ -813,7 +812,7 @@ nvol_memchr:
     ret
 .unwind_end:
 
-    db 0x90
+    db 0xf, 0x1f, 0x40, 0x0
 global nvol_memrchr_scalar
 nvol_memrchr_scalar:
     movzx ecx, cl
@@ -1463,7 +1462,6 @@ nvol_memrchr:
     movzx ecx, cl
     mov rsi, rdx
     lea r8, [rsi + r8]
-    mov rdx, rsi
     call qword [rel nvol_memrchr_raw_ptr]
     test rax, rax
     jne strict short .L2
@@ -1477,7 +1475,7 @@ nvol_memrchr:
     ret
 .unwind_end:
 
-    db 0x90
+    db 0xf, 0x1f, 0x40, 0x0
 global nvol_memchr2_scalar
 nvol_memchr2_scalar:
     movzx ecx, cl
@@ -2113,7 +2111,6 @@ nvol_memchr2:
     movzx edx, dl
     mov rsi, r8
     lea r9, [rsi + r9]
-    mov r8, rsi
     call qword [rel nvol_memchr2_raw_ptr]
     test rax, rax
     jne strict short .L2
@@ -2127,8 +2124,7 @@ nvol_memchr2:
     ret
 .unwind_end:
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x90
 global nvol_memrchr2_scalar
 nvol_memrchr2_scalar:
     movzx ecx, cl
@@ -2753,7 +2749,6 @@ nvol_memrchr2:
     movzx edx, dl
     mov rsi, r8
     lea r9, [rsi + r9]
-    mov r8, rsi
     call qword [rel nvol_memrchr2_raw_ptr]
     test rax, rax
     jne strict short .L2
@@ -2767,8 +2762,7 @@ nvol_memrchr2:
     ret
 .unwind_end:
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x90
 global nvol_memchr3_scalar
 nvol_memchr3_scalar:
     movzx ecx, cl
@@ -3515,7 +3509,6 @@ nvol_memchr3:
     mov rsi, r9
     mov rax, qword [rsp + 96]
     lea rax, [rsi + rax]
-    mov r9, rsi
     mov qword [rsp + 32], rax
     call qword [rel nvol_memchr3_raw_ptr]
     test rax, rax
@@ -3530,6 +3523,7 @@ nvol_memchr3:
     ret
 .unwind_end:
 
+    db 0xf, 0x1f, 0x0
 global nvol_memrchr3_scalar
 nvol_memrchr3_scalar:
     movzx ecx, cl
@@ -4266,7 +4260,6 @@ nvol_memrchr3:
     mov rsi, r9
     mov rax, qword [rsp + 96]
     lea rax, [rsi + rax]
-    mov r9, rsi
     mov qword [rsp + 32], rax
     call qword [rel nvol_memrchr3_raw_ptr]
     test rax, rax
@@ -4281,6 +4274,7 @@ nvol_memrchr3:
     ret
 .unwind_end:
 
+    db 0xf, 0x1f, 0x0
 global nvol_count_scalar
 nvol_count_scalar:
     movzx eax, cl
@@ -6031,7 +6025,6 @@ nvol_first_non_ascii:
     sub rsp, 32
     mov rsi, rcx
     lea rdx, [rsi + rdx]
-    mov rcx, rsi
     call qword [rel nvol_first_non_ascii_raw_ptr]
     test rax, rax
     jne strict short .L2
@@ -6045,7 +6038,7 @@ nvol_first_non_ascii:
     ret
 .unwind_end:
 
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_is_equal
 nvol_is_equal:
     xor r9d, r9d
@@ -7123,7 +7116,6 @@ nvol_memmem_tw_sse2:
     lea rcx, [rcx + 16]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 192], r11
     mov r15d, 1
@@ -7137,8 +7129,7 @@ nvol_memmem_tw_sse2:
     mov r11, [rsp + 64]
     cmp rcx, r11
     ja strict near .L3
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L2:
     mov rsi, rbp
     cmp rsi, rax
@@ -7233,7 +7224,6 @@ nvol_memmem_tw_sse2:
     mov qword [rsp + 544], rax
     mov r11, rsi
     cmp r11, rdi
-    mov r11, rsi
     cmovb r11, rdi
     mov [rsp + 576], r11
     lea r10, [r11 + 16]
@@ -7249,6 +7239,7 @@ nvol_memmem_tw_sse2:
     mov rcx, qword [rsp + 320]
     cmp rcx, rax
     ja strict short .L23
+    db 0xf, 0x1f, 0x0
 .L22:
     mov r11, [rsp + 384]
     movdqu xmm2, [rcx + r11]
@@ -7462,8 +7453,7 @@ nvol_memmem_tw_sse2:
     jmp strict short .L1
 .unwind_end:
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memmem_pp_avx2
 nvol_memmem_pp_avx2:
     push rbx
@@ -7713,7 +7703,6 @@ nvol_memmem_tw_avx2:
     lea rcx, [rcx + 16]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 192], r11
     mov rcx, rsi
@@ -7722,7 +7711,6 @@ nvol_memmem_tw_avx2:
     lea rax, [rcx + 32]
     mov r11, r8
     cmp r11, rax
-    mov r11, r8
     cmovb r11, rax
     mov [rsp + 224], r11
     mov eax, 1
@@ -7736,7 +7724,7 @@ nvol_memmem_tw_avx2:
     mov r11, [rsp + 64]
     cmp rcx, r11
     ja strict near .L3
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L2:
     mov rsi, rbp
     cmp rsi, r14
@@ -7829,7 +7817,6 @@ nvol_memmem_tw_avx2:
     mov qword [rsp + 512], rcx
     mov r11, rdi
     cmp r11, r14
-    mov r11, rdi
     cmovb r11, r14
     mov [rsp + 544], r11
     lea r10, [r11 + 16]
@@ -7846,7 +7833,7 @@ nvol_memmem_tw_avx2:
     cmp rsi, rcx
     ja strict short .L25
     mov rbx, qword [rsp + 352]
-    db 0x66, 0x90
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L24:
     mov r11, [rsp + 416]
     vpcmpeqb xmm2, xmm0, [rsi + r11]
@@ -8122,7 +8109,6 @@ nvol_memmem_tw_avx2:
     jmp strict short .L1
 .unwind_end:
 
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_memmem_find_entry_avx2
 nvol_memmem_find_entry_avx2:
     push rbx
@@ -8700,7 +8686,6 @@ nvol_memmem_find_entry_avx2:
     lea rcx, [rcx + 16]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 192], r11
     mov rcx, rsi
@@ -8709,7 +8694,6 @@ nvol_memmem_find_entry_avx2:
     lea rcx, [rcx + 32]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 224], r11
     mov eax, 1
@@ -8723,7 +8707,7 @@ nvol_memmem_find_entry_avx2:
     mov r11, rbx
     cmp rcx, r11
     ja strict near .L151
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x0
 .L150:
     mov r12, rbp
     cmp r12, rsi
@@ -8816,7 +8800,6 @@ nvol_memmem_find_entry_avx2:
     mov qword [rsp + 512], rcx
     mov r11, r12
     cmp r11, r15
-    mov r11, r12
     cmovb r11, r15
     mov [rsp + 544], r11
     lea r10, [r11 + 16]
@@ -8832,7 +8815,7 @@ nvol_memmem_find_entry_avx2:
     mov rsi, rbx
     cmp rsi, rcx
     ja strict short .L173
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x90
 .L172:
     mov r11, [rsp + 416]
     vpcmpeqb xmm2, xmm0, [rsi + r11]
@@ -9601,7 +9584,6 @@ nvol_memmem_find_entry_sse2:
     lea rcx, [rcx + 16]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 192], r11
     mov r15d, 1
@@ -9615,7 +9597,7 @@ nvol_memmem_find_entry_sse2:
     mov r11, rbx
     cmp rcx, r11
     ja strict near .L105
-    db 0x66, 0x90
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L104:
     mov rsi, rbp
     cmp rsi, rax
@@ -9710,7 +9692,6 @@ nvol_memmem_find_entry_sse2:
     mov qword [rsp + 544], rax
     mov r11, rsi
     cmp r11, r12
-    mov r11, rsi
     cmovb r11, r12
     mov [rsp + 576], r11
     lea r10, [r11 + 16]
@@ -9726,7 +9707,7 @@ nvol_memmem_find_entry_sse2:
     mov rcx, qword [rsp + 320]
     cmp rcx, rax
     ja strict short .L125
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x90
 .L124:
     mov r11, [rsp + 384]
     movdqu xmm2, [rcx + r11]
@@ -9814,8 +9795,7 @@ nvol_memmem_find_entry_sse2:
     movzx r12d, byte [r9 + r12]
     cmp ecx, r12d
     jne strict short .L143
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    db 0x66, 0x90
 .L142:
     add rsi, 1
     cmp rsi, r8

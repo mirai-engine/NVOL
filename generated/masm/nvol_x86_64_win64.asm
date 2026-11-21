@@ -819,7 +819,6 @@ nvol_memchr PROC PUBLIC FRAME
     movzx ecx, cl
     mov rsi, rdx
     lea r8, [rsi + r8]
-    mov rdx, rsi
     call qword ptr [nvol_memchr_raw_ptr]
     test rax, rax
     jne SHORT L_L2
@@ -833,7 +832,7 @@ L_L1:
     ret
 nvol_memchr ENDP
 
-    DB 144
+    DB 15, 31, 64, 0
 nvol_memrchr_scalar PROC PUBLIC
     movzx ecx, cl
     cmp r8, rdx
@@ -1498,7 +1497,6 @@ nvol_memrchr PROC PUBLIC FRAME
     movzx ecx, cl
     mov rsi, rdx
     lea r8, [rsi + r8]
-    mov rdx, rsi
     call qword ptr [nvol_memrchr_raw_ptr]
     test rax, rax
     jne SHORT L_L2
@@ -1512,7 +1510,7 @@ L_L1:
     ret
 nvol_memrchr ENDP
 
-    DB 144
+    DB 15, 31, 64, 0
 nvol_memchr2_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -2155,7 +2153,6 @@ nvol_memchr2 PROC PUBLIC FRAME
     movzx edx, dl
     mov rsi, r8
     lea r9, [rsi + r9]
-    mov r8, rsi
     call qword ptr [nvol_memchr2_raw_ptr]
     test rax, rax
     jne SHORT L_L2
@@ -2169,8 +2166,7 @@ L_L1:
     ret
 nvol_memchr2 ENDP
 
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 144
 nvol_memrchr2_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -2802,7 +2798,6 @@ nvol_memrchr2 PROC PUBLIC FRAME
     movzx edx, dl
     mov rsi, r8
     lea r9, [rsi + r9]
-    mov r8, rsi
     call qword ptr [nvol_memrchr2_raw_ptr]
     test rax, rax
     jne SHORT L_L2
@@ -2816,8 +2811,7 @@ L_L1:
     ret
 nvol_memrchr2 ENDP
 
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 144
 nvol_memchr3_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -3579,7 +3573,6 @@ nvol_memchr3 PROC PUBLIC FRAME
     mov rsi, r9
     mov rax, qword ptr [rsp + 96]
     lea rax, [rsi + rax]
-    mov r9, rsi
     mov qword ptr [rsp + 32], rax
     call qword ptr [nvol_memchr3_raw_ptr]
     test rax, rax
@@ -3594,6 +3587,7 @@ L_L1:
     ret
 nvol_memchr3 ENDP
 
+    DB 15, 31, 0
 nvol_memrchr3_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -4345,7 +4339,6 @@ nvol_memrchr3 PROC PUBLIC FRAME
     mov rsi, r9
     mov rax, qword ptr [rsp + 96]
     lea rax, [rsi + rax]
-    mov r9, rsi
     mov qword ptr [rsp + 32], rax
     call qword ptr [nvol_memrchr3_raw_ptr]
     test rax, rax
@@ -4360,6 +4353,7 @@ L_L1:
     ret
 nvol_memrchr3 ENDP
 
+    DB 15, 31, 0
 nvol_count_scalar PROC PUBLIC
     movzx eax, cl
     sub r8, rdx
@@ -6129,7 +6123,6 @@ nvol_first_non_ascii PROC PUBLIC FRAME
     .ENDPROLOG
     mov rsi, rcx
     lea rdx, [rsi + rdx]
-    mov rcx, rsi
     call qword ptr [nvol_first_non_ascii_raw_ptr]
     test rax, rax
     jne SHORT L_L2
@@ -6143,7 +6136,7 @@ L_L1:
     ret
 nvol_first_non_ascii ENDP
 
-    DB 15, 31, 64, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_is_equal PROC PUBLIC
     xor r9d, r9d
     lea rax, [r9 + 4]
@@ -7249,7 +7242,6 @@ nvol_memmem_tw_sse2 PROC PUBLIC FRAME
     lea rcx, [rcx + 16]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 192], r11
     mov r15d, 1
@@ -7263,8 +7255,7 @@ nvol_memmem_tw_sse2 PROC PUBLIC FRAME
     mov r11, [rsp + 64]
     cmp rcx, r11
     ja NEAR PTR L_L3
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 15, 31, 68, 0, 0
 L_L2:
     mov rsi, rbp
     cmp rsi, rax
@@ -7359,7 +7350,6 @@ L_L12:
     mov qword ptr [rsp + 544], rax
     mov r11, rsi
     cmp r11, rdi
-    mov r11, rsi
     cmovb r11, rdi
     mov [rsp + 576], r11
     lea r10, [r11 + 16]
@@ -7375,6 +7365,7 @@ L_L12:
     mov rcx, qword ptr [rsp + 320]
     cmp rcx, rax
     ja SHORT L_L23
+    DB 15, 31, 0
 L_L22:
     mov r11, [rsp + 384]
     movdqu xmm2, xmmword ptr [rcx + r11]
@@ -7588,8 +7579,7 @@ L_L58:
     jmp SHORT L_L1
 nvol_memmem_tw_sse2 ENDP
 
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 15, 31, 68, 0, 0
 nvol_memmem_pp_avx2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -7853,7 +7843,6 @@ nvol_memmem_tw_avx2 PROC PUBLIC FRAME
     lea rcx, [rcx + 16]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 192], r11
     mov rcx, rsi
@@ -7862,7 +7851,6 @@ nvol_memmem_tw_avx2 PROC PUBLIC FRAME
     lea rax, [rcx + 32]
     mov r11, r8
     cmp r11, rax
-    mov r11, r8
     cmovb r11, rax
     mov [rsp + 224], r11
     mov eax, 1
@@ -7876,7 +7864,7 @@ nvol_memmem_tw_avx2 PROC PUBLIC FRAME
     mov r11, [rsp + 64]
     cmp rcx, r11
     ja NEAR PTR L_L3
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 L_L2:
     mov rsi, rbp
     cmp rsi, r14
@@ -7969,7 +7957,6 @@ L_L12:
     mov qword ptr [rsp + 512], rcx
     mov r11, rdi
     cmp r11, r14
-    mov r11, rdi
     cmovb r11, r14
     mov [rsp + 544], r11
     lea r10, [r11 + 16]
@@ -7986,7 +7973,7 @@ L_L12:
     cmp rsi, rcx
     ja SHORT L_L25
     mov rbx, qword ptr [rsp + 352]
-    DB 102, 144
+    DB 15, 31, 68, 0, 0
 L_L24:
     mov r11, [rsp + 416]
     vpcmpeqb xmm2, xmm0, xmmword ptr [rsi + r11]
@@ -8262,7 +8249,6 @@ L_L69:
     jmp SHORT L_L1
 nvol_memmem_tw_avx2 ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_memmem_find_entry_avx2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -8849,7 +8835,6 @@ L_L125:
     lea rcx, [rcx + 16]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 192], r11
     mov rcx, rsi
@@ -8858,7 +8843,6 @@ L_L125:
     lea rcx, [rcx + 32]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 224], r11
     mov eax, 1
@@ -8872,7 +8856,7 @@ L_L125:
     mov r11, rbx
     cmp rcx, r11
     ja NEAR PTR L_L151
-    DB 15, 31, 68, 0, 0
+    DB 15, 31, 0
 L_L150:
     mov r12, rbp
     cmp r12, rsi
@@ -8965,7 +8949,6 @@ L_L160:
     mov qword ptr [rsp + 512], rcx
     mov r11, r12
     cmp r11, r15
-    mov r11, r12
     cmovb r11, r15
     mov [rsp + 544], r11
     lea r10, [r11 + 16]
@@ -8981,7 +8964,7 @@ L_L160:
     mov rsi, rbx
     cmp rsi, rcx
     ja SHORT L_L173
-    DB 102, 15, 31, 68, 0, 0
+    DB 144
 L_L172:
     mov r11, [rsp + 416]
     vpcmpeqb xmm2, xmm0, xmmword ptr [rsi + r11]
@@ -9759,7 +9742,6 @@ L_L79:
     lea rcx, [rcx + 16]
     mov r11, r8
     cmp r11, rcx
-    mov r11, r8
     cmovb r11, rcx
     mov [rsp + 192], r11
     mov r15d, 1
@@ -9773,7 +9755,7 @@ L_L79:
     mov r11, rbx
     cmp rcx, r11
     ja NEAR PTR L_L105
-    DB 102, 144
+    DB 15, 31, 68, 0, 0
 L_L104:
     mov rsi, rbp
     cmp rsi, rax
@@ -9868,7 +9850,6 @@ L_L114:
     mov qword ptr [rsp + 544], rax
     mov r11, rsi
     cmp r11, r12
-    mov r11, rsi
     cmovb r11, r12
     mov [rsp + 576], r11
     lea r10, [r11 + 16]
@@ -9884,7 +9865,7 @@ L_L114:
     mov rcx, qword ptr [rsp + 320]
     cmp rcx, rax
     ja SHORT L_L125
-    DB 102, 15, 31, 68, 0, 0
+    DB 144
 L_L124:
     mov r11, [rsp + 384]
     movdqu xmm2, xmmword ptr [rcx + r11]
@@ -9972,8 +9953,7 @@ L_L140:
     movzx r12d, byte ptr [r9 + r12]
     cmp ecx, r12d
     jne SHORT L_L143
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 144
 L_L142:
     add rsi, 1
     cmp rsi, r8

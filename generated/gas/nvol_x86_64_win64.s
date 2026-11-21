@@ -840,7 +840,6 @@ nvol_memchr:
     movzbl %cl, %ecx
     mov %rdx, %rsi
     lea (%rsi,%r8), %r8
-    mov %rsi, %rdx
     call *nvol_memchr_raw_ptr(%rip)
     test %rax, %rax
     {disp8} jne .Lnvol_memchr.L2
@@ -854,7 +853,7 @@ nvol_memchr:
     ret
 .seh_endproc
 
-    .byte 144
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr_scalar
 .def nvol_memrchr_scalar; .scl 2; .type 32; .endef
 nvol_memrchr_scalar:
@@ -1539,7 +1538,6 @@ nvol_memrchr:
     movzbl %cl, %ecx
     mov %rdx, %rsi
     lea (%rsi,%r8), %r8
-    mov %rsi, %rdx
     call *nvol_memrchr_raw_ptr(%rip)
     test %rax, %rax
     {disp8} jne .Lnvol_memrchr.L2
@@ -1553,7 +1551,7 @@ nvol_memrchr:
     ret
 .seh_endproc
 
-    .byte 144
+    .byte 15, 31, 64, 0
 .globl nvol_memchr2_scalar
 .def nvol_memchr2_scalar; .scl 2; .type 32; .endef
 nvol_memchr2_scalar:
@@ -2208,7 +2206,6 @@ nvol_memchr2:
     movzbl %dl, %edx
     mov %r8, %rsi
     lea (%rsi,%r9), %r9
-    mov %rsi, %r8
     call *nvol_memchr2_raw_ptr(%rip)
     test %rax, %rax
     {disp8} jne .Lnvol_memchr2.L2
@@ -2222,8 +2219,7 @@ nvol_memchr2:
     ret
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_memrchr2_scalar
 .def nvol_memrchr2_scalar; .scl 2; .type 32; .endef
 nvol_memrchr2_scalar:
@@ -2867,7 +2863,6 @@ nvol_memrchr2:
     movzbl %dl, %edx
     mov %r8, %rsi
     lea (%rsi,%r9), %r9
-    mov %rsi, %r8
     call *nvol_memrchr2_raw_ptr(%rip)
     test %rax, %rax
     {disp8} jne .Lnvol_memrchr2.L2
@@ -2881,8 +2876,7 @@ nvol_memrchr2:
     ret
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_memchr3_scalar
 .def nvol_memchr3_scalar; .scl 2; .type 32; .endef
 nvol_memchr3_scalar:
@@ -3664,7 +3658,6 @@ nvol_memchr3:
     mov %r9, %rsi
     mov 96(%rsp), %rax
     lea (%rsi,%rax), %rax
-    mov %rsi, %r9
     mov %rax, 32(%rsp)
     call *nvol_memchr3_raw_ptr(%rip)
     test %rax, %rax
@@ -3679,6 +3672,7 @@ nvol_memchr3:
     ret
 .seh_endproc
 
+    .byte 15, 31, 0
 .globl nvol_memrchr3_scalar
 .def nvol_memrchr3_scalar; .scl 2; .type 32; .endef
 nvol_memrchr3_scalar:
@@ -4450,7 +4444,6 @@ nvol_memrchr3:
     mov %r9, %rsi
     mov 96(%rsp), %rax
     lea (%rsi,%rax), %rax
-    mov %rsi, %r9
     mov %rax, 32(%rsp)
     call *nvol_memrchr3_raw_ptr(%rip)
     test %rax, %rax
@@ -4465,6 +4458,7 @@ nvol_memrchr3:
     ret
 .seh_endproc
 
+    .byte 15, 31, 0
 .globl nvol_count_scalar
 .def nvol_count_scalar; .scl 2; .type 32; .endef
 nvol_count_scalar:
@@ -6269,7 +6263,6 @@ nvol_first_non_ascii:
 .seh_endprologue
     mov %rcx, %rsi
     lea (%rsi,%rdx), %rdx
-    mov %rsi, %rcx
     call *nvol_first_non_ascii_raw_ptr(%rip)
     test %rax, %rax
     {disp8} jne .Lnvol_first_non_ascii.L2
@@ -6283,7 +6276,7 @@ nvol_first_non_ascii:
     ret
 .seh_endproc
 
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_is_equal
 .def nvol_is_equal; .scl 2; .type 32; .endef
 nvol_is_equal:
@@ -7413,7 +7406,6 @@ nvol_memmem_tw_sse2:
     lea 16(%rcx), %rcx
     mov %r8, %r11
     cmp %rcx, %r11
-    mov %r8, %r11
     cmovb %rcx, %r11
     mov %r11, 192(%rsp)
     mov $1, %r15d
@@ -7427,8 +7419,7 @@ nvol_memmem_tw_sse2:
     mov 64(%rsp), %r11
     cmp %r11, %rcx
     {disp32} ja .Lnvol_memmem_tw_sse2.L3
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_tw_sse2.L2:
     mov %rbp, %rsi
     cmp %rax, %rsi
@@ -7523,7 +7514,6 @@ nvol_memmem_tw_sse2:
     mov %rax, 544(%rsp)
     mov %rsi, %r11
     cmp %rdi, %r11
-    mov %rsi, %r11
     cmovb %rdi, %r11
     mov %r11, 576(%rsp)
     lea 16(%r11), %r10
@@ -7539,6 +7529,7 @@ nvol_memmem_tw_sse2:
     mov 320(%rsp), %rcx
     cmp %rax, %rcx
     {disp8} ja .Lnvol_memmem_tw_sse2.L23
+    .byte 15, 31, 0
 .Lnvol_memmem_tw_sse2.L22:
     mov 384(%rsp), %r11
     movdqu (%rcx,%r11), %xmm2
@@ -7752,8 +7743,7 @@ nvol_memmem_tw_sse2:
     {disp8} jmp .Lnvol_memmem_tw_sse2.L1
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memmem_pp_avx2
 .def nvol_memmem_pp_avx2; .scl 2; .type 32; .endef
 nvol_memmem_pp_avx2:
@@ -8023,7 +8013,6 @@ nvol_memmem_tw_avx2:
     lea 16(%rcx), %rcx
     mov %r8, %r11
     cmp %rcx, %r11
-    mov %r8, %r11
     cmovb %rcx, %r11
     mov %r11, 192(%rsp)
     mov %rsi, %rcx
@@ -8032,7 +8021,6 @@ nvol_memmem_tw_avx2:
     lea 32(%rcx), %rax
     mov %r8, %r11
     cmp %rax, %r11
-    mov %r8, %r11
     cmovb %rax, %r11
     mov %r11, 224(%rsp)
     mov $1, %eax
@@ -8046,7 +8034,7 @@ nvol_memmem_tw_avx2:
     mov 64(%rsp), %r11
     cmp %r11, %rcx
     {disp32} ja .Lnvol_memmem_tw_avx2.L3
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_tw_avx2.L2:
     mov %rbp, %rsi
     cmp %r14, %rsi
@@ -8139,7 +8127,6 @@ nvol_memmem_tw_avx2:
     mov %rcx, 512(%rsp)
     mov %rdi, %r11
     cmp %r14, %r11
-    mov %rdi, %r11
     cmovb %r14, %r11
     mov %r11, 544(%rsp)
     lea 16(%r11), %r10
@@ -8156,7 +8143,7 @@ nvol_memmem_tw_avx2:
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_memmem_tw_avx2.L25
     mov 352(%rsp), %rbx
-    .byte 102, 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_tw_avx2.L24:
     mov 416(%rsp), %r11
     vpcmpeqb (%rsi,%r11), %xmm0, %xmm2
@@ -8432,7 +8419,6 @@ nvol_memmem_tw_avx2:
     {disp8} jmp .Lnvol_memmem_tw_avx2.L1
 .seh_endproc
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memmem_find_entry_avx2
 .def nvol_memmem_find_entry_avx2; .scl 2; .type 32; .endef
 nvol_memmem_find_entry_avx2:
@@ -9022,7 +9008,6 @@ nvol_memmem_find_entry_avx2:
     lea 16(%rcx), %rcx
     mov %r8, %r11
     cmp %rcx, %r11
-    mov %r8, %r11
     cmovb %rcx, %r11
     mov %r11, 192(%rsp)
     mov %rsi, %rcx
@@ -9031,7 +9016,6 @@ nvol_memmem_find_entry_avx2:
     lea 32(%rcx), %rcx
     mov %r8, %r11
     cmp %rcx, %r11
-    mov %r8, %r11
     cmovb %rcx, %r11
     mov %r11, 224(%rsp)
     mov $1, %eax
@@ -9045,7 +9029,7 @@ nvol_memmem_find_entry_avx2:
     mov %rbx, %r11
     cmp %r11, %rcx
     {disp32} ja .Lnvol_memmem_find_entry_avx2.L151
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 0
 .Lnvol_memmem_find_entry_avx2.L150:
     mov %rbp, %r12
     cmp %rsi, %r12
@@ -9138,7 +9122,6 @@ nvol_memmem_find_entry_avx2:
     mov %rcx, 512(%rsp)
     mov %r12, %r11
     cmp %r15, %r11
-    mov %r12, %r11
     cmovb %r15, %r11
     mov %r11, 544(%rsp)
     lea 16(%r11), %r10
@@ -9154,7 +9137,7 @@ nvol_memmem_find_entry_avx2:
     mov %rbx, %rsi
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_memmem_find_entry_avx2.L173
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 144
 .Lnvol_memmem_find_entry_avx2.L172:
     mov 416(%rsp), %r11
     vpcmpeqb (%rsi,%r11), %xmm0, %xmm2
@@ -9935,7 +9918,6 @@ nvol_memmem_find_entry_sse2:
     lea 16(%rcx), %rcx
     mov %r8, %r11
     cmp %rcx, %r11
-    mov %r8, %r11
     cmovb %rcx, %r11
     mov %r11, 192(%rsp)
     mov $1, %r15d
@@ -9949,7 +9931,7 @@ nvol_memmem_find_entry_sse2:
     mov %rbx, %r11
     cmp %r11, %rcx
     {disp32} ja .Lnvol_memmem_find_entry_sse2.L105
-    .byte 102, 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_find_entry_sse2.L104:
     mov %rbp, %rsi
     cmp %rax, %rsi
@@ -10044,7 +10026,6 @@ nvol_memmem_find_entry_sse2:
     mov %rax, 544(%rsp)
     mov %rsi, %r11
     cmp %r12, %r11
-    mov %rsi, %r11
     cmovb %r12, %r11
     mov %r11, 576(%rsp)
     lea 16(%r11), %r10
@@ -10060,7 +10041,7 @@ nvol_memmem_find_entry_sse2:
     mov 320(%rsp), %rcx
     cmp %rax, %rcx
     {disp8} ja .Lnvol_memmem_find_entry_sse2.L125
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 144
 .Lnvol_memmem_find_entry_sse2.L124:
     mov 384(%rsp), %r11
     movdqu (%rcx,%r11), %xmm2
@@ -10148,8 +10129,7 @@ nvol_memmem_find_entry_sse2:
     movzbl (%r9,%r12), %r12d
     cmp %r12d, %ecx
     {disp8} jne .Lnvol_memmem_find_entry_sse2.L143
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_memmem_find_entry_sse2.L142:
     add $1, %rsi
     cmp %r8, %rsi

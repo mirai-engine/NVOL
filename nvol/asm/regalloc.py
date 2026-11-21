@@ -505,6 +505,33 @@ def reloads(code, LD: str, ST: str, STORES: set):
     return res[::-1]
 
 
+def copy_back(code, MV: str = "mov") -> list:
+    """A 64-bit register copy whose two registers already hold the same value goes: after
+    `mov a, b`, a later `mov b, a` (or `mov a, b` again) in the same block, with neither register
+    written in between. The allocator leaves this when a value lives in a callee-saved register
+    across a call and is also an argument of it:
+
+        mov rbx, rsi ; lea rdx, [rbx + rdx] ; mov rsi, rbx ; call ...     (the last mov goes)
+
+    MV is the target's register move (`mov` on both). A label, a call or a terminator ends what
+    is known."""
+    out, same = [], set()                 # unordered pairs of registers holding one value
+    for ins in code:
+        if ins.op in ("label", "call", "callind") or ins.op in TERMINATORS:
+            same = set()
+        a = ins.args
+        copy = ins.op == MV and len(a) == 2 and isinstance(a[0], Reg) and isinstance(a[1], Reg) \
+            and a[0].w == a[1].w == 64 and a[0].r.cls == a[1].r.cls
+        if copy and (a[0].r == a[1].r or frozenset((a[0].r, a[1].r)) in same):
+            continue
+        for r in list(ins.defs) + list(ins.clobbers):
+            same = {p for p in same if r not in p}
+        if copy:
+            same.add(frozenset((a[0].r, a[1].r)))
+        out.append(ins)
+    return out
+
+
 def _alloc(code, abi, T, late=frozenset()):
     """assign, spilled; once anything spills, only the scratch registers its spill code needs
     are held back. A second scan may spill other registers, so its needs are checked and the
