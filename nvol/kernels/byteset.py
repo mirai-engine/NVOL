@@ -80,7 +80,7 @@ visitor search (`_visit`): every chunk with candidates goes to the caller's visi
 """
 from __future__ import annotations
 
-from ..ir import MPTR, NULLP, PTR, U64, U8, USIZE, VISIT, VOID, Builder, Call, Function, Module, Visit, land, lift, lor, max_, prim
+from ..ir import MPTR, NULLP, PTR, U64, U8, USIZE, VISIT, VOID, Builder, Call, Function, Module, Var, Visit, land, lift, lor, max_, prim
 from ..isa import ISA, ISAS, all_lanes_mask, mask_ty, movemask
 
 CLASS_BYTES = 112
@@ -235,6 +235,8 @@ def _tables(b, cls, isa: ISA):
 
 def _member(b, x, tabs, m8f, m80):
     ta, tb, bitpos = tabs
+    if not isinstance(x, Var):      # read by both lookups: one load, not one per statement
+        x = b.let("x", x)
     idx = b.let("idx", prim("vand", x, m8f))
     row = prim("vor", prim("vshuffle", ta, idx), prim("vshuffle", tb, prim("vsub8", idx, m80)))
     bit = b.let("bit", prim("vshuffle", bitpos, prim("vnib_hi", x)))

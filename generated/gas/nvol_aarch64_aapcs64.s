@@ -8975,27 +8975,25 @@ L.nvol_find_byteset_pair_neon:
     b.hi .Lnvol_find_byteset_pair_neon.L3
 .Lnvol_find_byteset_pair_neon.L2:
     ldr q16, [x1, x9]
-    and v16.16b, v16.16b, v6.16b
-    ldr q17, [x1, x9]
-    ushr v17.16b, v17.16b, #4
-    tbl v17.16b, {v2.16b}, v17.16b
-    tbl v18.16b, {v0.16b}, v16.16b
-    sub v16.16b, v16.16b, v7.16b
-    tbl v16.16b, {v1.16b}, v16.16b
-    orr v16.16b, v18.16b, v16.16b
-    and v16.16b, v16.16b, v17.16b
-    cmeq v16.16b, v16.16b, v17.16b
-    ldr q17, [x1, x10]
-    and v17.16b, v17.16b, v6.16b
-    ldr q18, [x1, x10]
-    ushr v18.16b, v18.16b, #4
-    tbl v18.16b, {v5.16b}, v18.16b
-    tbl v19.16b, {v3.16b}, v17.16b
+    and v17.16b, v16.16b, v6.16b
+    ushr v16.16b, v16.16b, #4
+    tbl v16.16b, {v2.16b}, v16.16b
+    tbl v18.16b, {v0.16b}, v17.16b
     sub v17.16b, v17.16b, v7.16b
-    tbl v17.16b, {v4.16b}, v17.16b
-    orr v17.16b, v19.16b, v17.16b
-    and v17.16b, v17.16b, v18.16b
-    cmeq v17.16b, v17.16b, v18.16b
+    tbl v17.16b, {v1.16b}, v17.16b
+    orr v17.16b, v18.16b, v17.16b
+    and v17.16b, v17.16b, v16.16b
+    cmeq v16.16b, v17.16b, v16.16b
+    ldr q17, [x1, x10]
+    and v18.16b, v17.16b, v6.16b
+    ushr v17.16b, v17.16b, #4
+    tbl v17.16b, {v5.16b}, v17.16b
+    tbl v19.16b, {v3.16b}, v18.16b
+    sub v18.16b, v18.16b, v7.16b
+    tbl v18.16b, {v4.16b}, v18.16b
+    orr v18.16b, v19.16b, v18.16b
+    and v18.16b, v18.16b, v17.16b
+    cmeq v17.16b, v18.16b, v17.16b
     and v16.16b, v16.16b, v17.16b
     shrn v16.8b, v16.8h, #4
     fmov x12, d16
@@ -9014,27 +9012,25 @@ L.nvol_find_byteset_pair_neon:
     movn x13, #0
     lsl x12, x13, x12
     ldr q16, [x11, x9]
-    and v16.16b, v16.16b, v6.16b
-    ldr q17, [x11, x9]
-    ushr v17.16b, v17.16b, #4
-    tbl v2.16b, {v2.16b}, v17.16b
-    tbl v0.16b, {v0.16b}, v16.16b
-    sub v16.16b, v16.16b, v7.16b
+    and v17.16b, v16.16b, v6.16b
+    ushr v16.16b, v16.16b, #4
+    tbl v2.16b, {v2.16b}, v16.16b
+    tbl v0.16b, {v0.16b}, v17.16b
+    sub v16.16b, v17.16b, v7.16b
     tbl v1.16b, {v1.16b}, v16.16b
     orr v0.16b, v0.16b, v1.16b
     and v0.16b, v0.16b, v2.16b
     cmeq v0.16b, v0.16b, v2.16b
     ldr q1, [x11, x10]
-    and v1.16b, v1.16b, v6.16b
-    ldr q2, [x11, x10]
-    ushr v2.16b, v2.16b, #4
-    tbl v2.16b, {v5.16b}, v2.16b
-    tbl v3.16b, {v3.16b}, v1.16b
-    sub v1.16b, v1.16b, v7.16b
-    tbl v1.16b, {v4.16b}, v1.16b
-    orr v1.16b, v3.16b, v1.16b
-    and v1.16b, v1.16b, v2.16b
-    cmeq v1.16b, v1.16b, v2.16b
+    and v2.16b, v1.16b, v6.16b
+    ushr v1.16b, v1.16b, #4
+    tbl v1.16b, {v5.16b}, v1.16b
+    tbl v3.16b, {v3.16b}, v2.16b
+    sub v2.16b, v2.16b, v7.16b
+    tbl v2.16b, {v4.16b}, v2.16b
+    orr v2.16b, v3.16b, v2.16b
+    and v2.16b, v2.16b, v1.16b
+    cmeq v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
@@ -12055,27 +12051,25 @@ L.nvol_find_byteset_pair_mask_neon:
     b.hi .Lnvol_find_byteset_pair_mask_neon.L3
 .Lnvol_find_byteset_pair_mask_neon.L2:
     ldr q16, [x1, x9]
-    and v16.16b, v16.16b, v6.16b
-    ldr q17, [x1, x9]
-    ushr v17.16b, v17.16b, #4
-    tbl v17.16b, {v2.16b}, v17.16b
-    tbl v18.16b, {v0.16b}, v16.16b
-    sub v16.16b, v16.16b, v7.16b
-    tbl v16.16b, {v1.16b}, v16.16b
-    orr v16.16b, v18.16b, v16.16b
-    and v16.16b, v16.16b, v17.16b
-    cmeq v16.16b, v16.16b, v17.16b
-    ldr q17, [x1, x10]
-    and v17.16b, v17.16b, v6.16b
-    ldr q18, [x1, x10]
-    ushr v18.16b, v18.16b, #4
-    tbl v18.16b, {v5.16b}, v18.16b
-    tbl v19.16b, {v3.16b}, v17.16b
+    and v17.16b, v16.16b, v6.16b
+    ushr v16.16b, v16.16b, #4
+    tbl v16.16b, {v2.16b}, v16.16b
+    tbl v18.16b, {v0.16b}, v17.16b
     sub v17.16b, v17.16b, v7.16b
-    tbl v17.16b, {v4.16b}, v17.16b
-    orr v17.16b, v19.16b, v17.16b
-    and v17.16b, v17.16b, v18.16b
-    cmeq v17.16b, v17.16b, v18.16b
+    tbl v17.16b, {v1.16b}, v17.16b
+    orr v17.16b, v18.16b, v17.16b
+    and v17.16b, v17.16b, v16.16b
+    cmeq v16.16b, v17.16b, v16.16b
+    ldr q17, [x1, x10]
+    and v18.16b, v17.16b, v6.16b
+    ushr v17.16b, v17.16b, #4
+    tbl v17.16b, {v5.16b}, v17.16b
+    tbl v19.16b, {v3.16b}, v18.16b
+    sub v18.16b, v18.16b, v7.16b
+    tbl v18.16b, {v4.16b}, v18.16b
+    orr v18.16b, v19.16b, v18.16b
+    and v18.16b, v18.16b, v17.16b
+    cmeq v17.16b, v18.16b, v17.16b
     and v16.16b, v16.16b, v17.16b
     shrn v16.8b, v16.8h, #4
     fmov x11, d16
@@ -12094,27 +12088,25 @@ L.nvol_find_byteset_pair_mask_neon:
     movn x12, #0
     lsl x11, x12, x11
     ldr q16, [x0, x9]
-    and v16.16b, v16.16b, v6.16b
-    ldr q17, [x0, x9]
-    ushr v17.16b, v17.16b, #4
-    tbl v2.16b, {v2.16b}, v17.16b
-    tbl v0.16b, {v0.16b}, v16.16b
-    sub v16.16b, v16.16b, v7.16b
+    and v17.16b, v16.16b, v6.16b
+    ushr v16.16b, v16.16b, #4
+    tbl v2.16b, {v2.16b}, v16.16b
+    tbl v0.16b, {v0.16b}, v17.16b
+    sub v16.16b, v17.16b, v7.16b
     tbl v1.16b, {v1.16b}, v16.16b
     orr v0.16b, v0.16b, v1.16b
     and v0.16b, v0.16b, v2.16b
     cmeq v0.16b, v0.16b, v2.16b
     ldr q1, [x0, x10]
-    and v1.16b, v1.16b, v6.16b
-    ldr q2, [x0, x10]
-    ushr v2.16b, v2.16b, #4
-    tbl v2.16b, {v5.16b}, v2.16b
-    tbl v3.16b, {v3.16b}, v1.16b
-    sub v1.16b, v1.16b, v7.16b
-    tbl v1.16b, {v4.16b}, v1.16b
-    orr v1.16b, v3.16b, v1.16b
-    and v1.16b, v1.16b, v2.16b
-    cmeq v1.16b, v1.16b, v2.16b
+    and v2.16b, v1.16b, v6.16b
+    ushr v1.16b, v1.16b, #4
+    tbl v1.16b, {v5.16b}, v1.16b
+    tbl v3.16b, {v3.16b}, v2.16b
+    sub v2.16b, v2.16b, v7.16b
+    tbl v2.16b, {v4.16b}, v2.16b
+    orr v2.16b, v3.16b, v2.16b
+    and v2.16b, v2.16b, v1.16b
+    cmeq v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
@@ -12776,36 +12768,34 @@ L.nvol_find_byteset_pair_visit_neon:
 .Lnvol_find_byteset_pair_visit_neon.L2:
     ldr q0, [x23, x20]
     ldr q31, [sp, #160]
-    and v0.16b, v0.16b, v31.16b
-    ldr q1, [x23, x20]
-    ushr v1.16b, v1.16b, #4
+    and v1.16b, v0.16b, v31.16b
+    ushr v0.16b, v0.16b, #4
     ldr q31, [sp, #96]
-    tbl v1.16b, {v31.16b}, v1.16b
-    ldr q31, [sp, #64]
-    tbl v2.16b, {v31.16b}, v0.16b
-    ldr q31, [sp, #176]
-    sub v0.16b, v0.16b, v31.16b
-    ldr q31, [sp, #80]
     tbl v0.16b, {v31.16b}, v0.16b
-    orr v0.16b, v2.16b, v0.16b
-    and v0.16b, v0.16b, v1.16b
-    cmeq v0.16b, v0.16b, v1.16b
-    ldr q1, [x23, x21]
-    ldr q31, [sp, #160]
-    and v1.16b, v1.16b, v31.16b
-    ldr q2, [x23, x21]
-    ushr v2.16b, v2.16b, #4
-    ldr q31, [sp, #144]
-    tbl v2.16b, {v31.16b}, v2.16b
-    ldr q31, [sp, #112]
-    tbl v3.16b, {v31.16b}, v1.16b
+    ldr q31, [sp, #64]
+    tbl v2.16b, {v31.16b}, v1.16b
     ldr q31, [sp, #176]
     sub v1.16b, v1.16b, v31.16b
-    ldr q31, [sp, #128]
+    ldr q31, [sp, #80]
     tbl v1.16b, {v31.16b}, v1.16b
-    orr v1.16b, v3.16b, v1.16b
-    and v1.16b, v1.16b, v2.16b
-    cmeq v1.16b, v1.16b, v2.16b
+    orr v1.16b, v2.16b, v1.16b
+    and v1.16b, v1.16b, v0.16b
+    cmeq v0.16b, v1.16b, v0.16b
+    ldr q1, [x23, x21]
+    ldr q31, [sp, #160]
+    and v2.16b, v1.16b, v31.16b
+    ushr v1.16b, v1.16b, #4
+    ldr q31, [sp, #144]
+    tbl v1.16b, {v31.16b}, v1.16b
+    ldr q31, [sp, #112]
+    tbl v3.16b, {v31.16b}, v2.16b
+    ldr q31, [sp, #176]
+    sub v2.16b, v2.16b, v31.16b
+    ldr q31, [sp, #128]
+    tbl v2.16b, {v31.16b}, v2.16b
+    orr v2.16b, v3.16b, v2.16b
+    and v2.16b, v2.16b, v1.16b
+    cmeq v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
@@ -12834,33 +12824,31 @@ L.nvol_find_byteset_pair_visit_neon:
     movn x10, #0
     lsl x9, x10, x9
     ldr q0, [x22, x20]
-    and v0.16b, v0.16b, v3.16b
-    ldr q1, [x22, x20]
-    ushr v1.16b, v1.16b, #4
+    and v1.16b, v0.16b, v3.16b
+    ushr v0.16b, v0.16b, #4
     ldr q31, [sp, #96]
-    tbl v1.16b, {v31.16b}, v1.16b
-    ldr q31, [sp, #64]
-    tbl v2.16b, {v31.16b}, v0.16b
-    sub v0.16b, v0.16b, v4.16b
-    ldr q31, [sp, #80]
     tbl v0.16b, {v31.16b}, v0.16b
-    orr v0.16b, v2.16b, v0.16b
-    and v0.16b, v0.16b, v1.16b
-    cmeq v0.16b, v0.16b, v1.16b
-    ldr q1, [x22, x21]
-    and v1.16b, v1.16b, v3.16b
-    ldr q2, [x22, x21]
-    ushr v2.16b, v2.16b, #4
-    ldr q31, [sp, #144]
-    tbl v2.16b, {v31.16b}, v2.16b
-    ldr q31, [sp, #112]
-    tbl v3.16b, {v31.16b}, v1.16b
+    ldr q31, [sp, #64]
+    tbl v2.16b, {v31.16b}, v1.16b
     sub v1.16b, v1.16b, v4.16b
-    ldr q31, [sp, #128]
+    ldr q31, [sp, #80]
     tbl v1.16b, {v31.16b}, v1.16b
-    orr v1.16b, v3.16b, v1.16b
-    and v1.16b, v1.16b, v2.16b
-    cmeq v1.16b, v1.16b, v2.16b
+    orr v1.16b, v2.16b, v1.16b
+    and v1.16b, v1.16b, v0.16b
+    cmeq v0.16b, v1.16b, v0.16b
+    ldr q1, [x22, x21]
+    and v2.16b, v1.16b, v3.16b
+    ushr v1.16b, v1.16b, #4
+    ldr q31, [sp, #144]
+    tbl v1.16b, {v31.16b}, v1.16b
+    ldr q31, [sp, #112]
+    tbl v3.16b, {v31.16b}, v2.16b
+    sub v2.16b, v2.16b, v4.16b
+    ldr q31, [sp, #128]
+    tbl v2.16b, {v31.16b}, v2.16b
+    orr v2.16b, v3.16b, v2.16b
+    and v2.16b, v2.16b, v1.16b
+    cmeq v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
     shrn v0.8b, v0.8h, #4
     fmov x10, d0
@@ -15897,27 +15885,25 @@ L.nvol_find_byteset_pair_entry_neon:
     b.hi .Lnvol_find_byteset_pair_entry_neon.L76
 .Lnvol_find_byteset_pair_entry_neon.L75:
     ldr q16, [x1, x9]
-    and v16.16b, v16.16b, v6.16b
-    ldr q17, [x1, x9]
-    ushr v17.16b, v17.16b, #4
-    tbl v17.16b, {v2.16b}, v17.16b
-    tbl v18.16b, {v0.16b}, v16.16b
-    sub v16.16b, v16.16b, v7.16b
-    tbl v16.16b, {v1.16b}, v16.16b
-    orr v16.16b, v18.16b, v16.16b
-    and v16.16b, v16.16b, v17.16b
-    cmeq v16.16b, v16.16b, v17.16b
-    ldr q17, [x1, x10]
-    and v17.16b, v17.16b, v6.16b
-    ldr q18, [x1, x10]
-    ushr v18.16b, v18.16b, #4
-    tbl v18.16b, {v5.16b}, v18.16b
-    tbl v19.16b, {v3.16b}, v17.16b
+    and v17.16b, v16.16b, v6.16b
+    ushr v16.16b, v16.16b, #4
+    tbl v16.16b, {v2.16b}, v16.16b
+    tbl v18.16b, {v0.16b}, v17.16b
     sub v17.16b, v17.16b, v7.16b
-    tbl v17.16b, {v4.16b}, v17.16b
-    orr v17.16b, v19.16b, v17.16b
-    and v17.16b, v17.16b, v18.16b
-    cmeq v17.16b, v17.16b, v18.16b
+    tbl v17.16b, {v1.16b}, v17.16b
+    orr v17.16b, v18.16b, v17.16b
+    and v17.16b, v17.16b, v16.16b
+    cmeq v16.16b, v17.16b, v16.16b
+    ldr q17, [x1, x10]
+    and v18.16b, v17.16b, v6.16b
+    ushr v17.16b, v17.16b, #4
+    tbl v17.16b, {v5.16b}, v17.16b
+    tbl v19.16b, {v3.16b}, v18.16b
+    sub v18.16b, v18.16b, v7.16b
+    tbl v18.16b, {v4.16b}, v18.16b
+    orr v18.16b, v19.16b, v18.16b
+    and v18.16b, v18.16b, v17.16b
+    cmeq v17.16b, v18.16b, v17.16b
     and v16.16b, v16.16b, v17.16b
     shrn v16.8b, v16.8h, #4
     fmov x12, d16
@@ -15936,27 +15922,25 @@ L.nvol_find_byteset_pair_entry_neon:
     movn x13, #0
     lsl x12, x13, x12
     ldr q16, [x11, x9]
-    and v16.16b, v16.16b, v6.16b
-    ldr q17, [x11, x9]
-    ushr v17.16b, v17.16b, #4
-    tbl v2.16b, {v2.16b}, v17.16b
-    tbl v0.16b, {v0.16b}, v16.16b
-    sub v16.16b, v16.16b, v7.16b
+    and v17.16b, v16.16b, v6.16b
+    ushr v16.16b, v16.16b, #4
+    tbl v2.16b, {v2.16b}, v16.16b
+    tbl v0.16b, {v0.16b}, v17.16b
+    sub v16.16b, v17.16b, v7.16b
     tbl v1.16b, {v1.16b}, v16.16b
     orr v0.16b, v0.16b, v1.16b
     and v0.16b, v0.16b, v2.16b
     cmeq v0.16b, v0.16b, v2.16b
     ldr q1, [x11, x10]
-    and v1.16b, v1.16b, v6.16b
-    ldr q2, [x11, x10]
-    ushr v2.16b, v2.16b, #4
-    tbl v2.16b, {v5.16b}, v2.16b
-    tbl v3.16b, {v3.16b}, v1.16b
-    sub v1.16b, v1.16b, v7.16b
-    tbl v1.16b, {v4.16b}, v1.16b
-    orr v1.16b, v3.16b, v1.16b
-    and v1.16b, v1.16b, v2.16b
-    cmeq v1.16b, v1.16b, v2.16b
+    and v2.16b, v1.16b, v6.16b
+    ushr v1.16b, v1.16b, #4
+    tbl v1.16b, {v5.16b}, v1.16b
+    tbl v3.16b, {v3.16b}, v2.16b
+    sub v2.16b, v2.16b, v7.16b
+    tbl v2.16b, {v4.16b}, v2.16b
+    orr v2.16b, v3.16b, v2.16b
+    and v2.16b, v2.16b, v1.16b
+    cmeq v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
@@ -16622,27 +16606,25 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     nop
 .Lnvol_find_byteset_pair_mask_entry_neon.L75:
     ldr q16, [x1, x9]
-    and v16.16b, v16.16b, v6.16b
-    ldr q17, [x1, x9]
-    ushr v17.16b, v17.16b, #4
-    tbl v17.16b, {v2.16b}, v17.16b
-    tbl v18.16b, {v0.16b}, v16.16b
-    sub v16.16b, v16.16b, v7.16b
-    tbl v16.16b, {v1.16b}, v16.16b
-    orr v16.16b, v18.16b, v16.16b
-    and v16.16b, v16.16b, v17.16b
-    cmeq v16.16b, v16.16b, v17.16b
-    ldr q17, [x1, x10]
-    and v17.16b, v17.16b, v6.16b
-    ldr q18, [x1, x10]
-    ushr v18.16b, v18.16b, #4
-    tbl v18.16b, {v5.16b}, v18.16b
-    tbl v19.16b, {v3.16b}, v17.16b
+    and v17.16b, v16.16b, v6.16b
+    ushr v16.16b, v16.16b, #4
+    tbl v16.16b, {v2.16b}, v16.16b
+    tbl v18.16b, {v0.16b}, v17.16b
     sub v17.16b, v17.16b, v7.16b
-    tbl v17.16b, {v4.16b}, v17.16b
-    orr v17.16b, v19.16b, v17.16b
-    and v17.16b, v17.16b, v18.16b
-    cmeq v17.16b, v17.16b, v18.16b
+    tbl v17.16b, {v1.16b}, v17.16b
+    orr v17.16b, v18.16b, v17.16b
+    and v17.16b, v17.16b, v16.16b
+    cmeq v16.16b, v17.16b, v16.16b
+    ldr q17, [x1, x10]
+    and v18.16b, v17.16b, v6.16b
+    ushr v17.16b, v17.16b, #4
+    tbl v17.16b, {v5.16b}, v17.16b
+    tbl v19.16b, {v3.16b}, v18.16b
+    sub v18.16b, v18.16b, v7.16b
+    tbl v18.16b, {v4.16b}, v18.16b
+    orr v18.16b, v19.16b, v18.16b
+    and v18.16b, v18.16b, v17.16b
+    cmeq v17.16b, v18.16b, v17.16b
     and v16.16b, v16.16b, v17.16b
     shrn v16.8b, v16.8h, #4
     fmov x11, d16
@@ -16661,27 +16643,25 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     movn x12, #0
     lsl x11, x12, x11
     ldr q16, [x0, x9]
-    and v16.16b, v16.16b, v6.16b
-    ldr q17, [x0, x9]
-    ushr v17.16b, v17.16b, #4
-    tbl v2.16b, {v2.16b}, v17.16b
-    tbl v0.16b, {v0.16b}, v16.16b
-    sub v16.16b, v16.16b, v7.16b
+    and v17.16b, v16.16b, v6.16b
+    ushr v16.16b, v16.16b, #4
+    tbl v2.16b, {v2.16b}, v16.16b
+    tbl v0.16b, {v0.16b}, v17.16b
+    sub v16.16b, v17.16b, v7.16b
     tbl v1.16b, {v1.16b}, v16.16b
     orr v0.16b, v0.16b, v1.16b
     and v0.16b, v0.16b, v2.16b
     cmeq v0.16b, v0.16b, v2.16b
     ldr q1, [x0, x10]
-    and v1.16b, v1.16b, v6.16b
-    ldr q2, [x0, x10]
-    ushr v2.16b, v2.16b, #4
-    tbl v2.16b, {v5.16b}, v2.16b
-    tbl v3.16b, {v3.16b}, v1.16b
-    sub v1.16b, v1.16b, v7.16b
-    tbl v1.16b, {v4.16b}, v1.16b
-    orr v1.16b, v3.16b, v1.16b
-    and v1.16b, v1.16b, v2.16b
-    cmeq v1.16b, v1.16b, v2.16b
+    and v2.16b, v1.16b, v6.16b
+    ushr v1.16b, v1.16b, #4
+    tbl v1.16b, {v5.16b}, v1.16b
+    tbl v3.16b, {v3.16b}, v2.16b
+    sub v2.16b, v2.16b, v7.16b
+    tbl v2.16b, {v4.16b}, v2.16b
+    orr v2.16b, v3.16b, v2.16b
+    and v2.16b, v2.16b, v1.16b
+    cmeq v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
@@ -17602,36 +17582,34 @@ L.nvol_find_byteset_pair_visit_entry_neon:
 .Lnvol_find_byteset_pair_visit_entry_neon.L101:
     ldr q0, [x23, x21]
     ldr q31, [sp, #832]
-    and v0.16b, v0.16b, v31.16b
-    ldr q1, [x23, x21]
-    ushr v1.16b, v1.16b, #4
+    and v1.16b, v0.16b, v31.16b
+    ushr v0.16b, v0.16b, #4
     ldr q31, [sp, #768]
-    tbl v1.16b, {v31.16b}, v1.16b
-    ldr q31, [sp, #736]
-    tbl v2.16b, {v31.16b}, v0.16b
-    ldr q31, [sp, #848]
-    sub v0.16b, v0.16b, v31.16b
-    ldr q31, [sp, #752]
     tbl v0.16b, {v31.16b}, v0.16b
-    orr v0.16b, v2.16b, v0.16b
-    and v0.16b, v0.16b, v1.16b
-    cmeq v0.16b, v0.16b, v1.16b
-    ldr q1, [x23, x22]
-    ldr q31, [sp, #832]
-    and v1.16b, v1.16b, v31.16b
-    ldr q2, [x23, x22]
-    ushr v2.16b, v2.16b, #4
-    ldr q31, [sp, #816]
-    tbl v2.16b, {v31.16b}, v2.16b
-    ldr q31, [sp, #784]
-    tbl v3.16b, {v31.16b}, v1.16b
+    ldr q31, [sp, #736]
+    tbl v2.16b, {v31.16b}, v1.16b
     ldr q31, [sp, #848]
     sub v1.16b, v1.16b, v31.16b
-    ldr q31, [sp, #800]
+    ldr q31, [sp, #752]
     tbl v1.16b, {v31.16b}, v1.16b
-    orr v1.16b, v3.16b, v1.16b
-    and v1.16b, v1.16b, v2.16b
-    cmeq v1.16b, v1.16b, v2.16b
+    orr v1.16b, v2.16b, v1.16b
+    and v1.16b, v1.16b, v0.16b
+    cmeq v0.16b, v1.16b, v0.16b
+    ldr q1, [x23, x22]
+    ldr q31, [sp, #832]
+    and v2.16b, v1.16b, v31.16b
+    ushr v1.16b, v1.16b, #4
+    ldr q31, [sp, #816]
+    tbl v1.16b, {v31.16b}, v1.16b
+    ldr q31, [sp, #784]
+    tbl v3.16b, {v31.16b}, v2.16b
+    ldr q31, [sp, #848]
+    sub v2.16b, v2.16b, v31.16b
+    ldr q31, [sp, #800]
+    tbl v2.16b, {v31.16b}, v2.16b
+    orr v2.16b, v3.16b, v2.16b
+    and v2.16b, v2.16b, v1.16b
+    cmeq v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
@@ -17660,33 +17638,31 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     movn x10, #0
     lsl x9, x10, x9
     ldr q0, [x19, x21]
-    and v0.16b, v0.16b, v3.16b
-    ldr q1, [x19, x21]
-    ushr v1.16b, v1.16b, #4
+    and v1.16b, v0.16b, v3.16b
+    ushr v0.16b, v0.16b, #4
     ldr q31, [sp, #768]
-    tbl v1.16b, {v31.16b}, v1.16b
-    ldr q31, [sp, #736]
-    tbl v2.16b, {v31.16b}, v0.16b
-    sub v0.16b, v0.16b, v4.16b
-    ldr q31, [sp, #752]
     tbl v0.16b, {v31.16b}, v0.16b
-    orr v0.16b, v2.16b, v0.16b
-    and v0.16b, v0.16b, v1.16b
-    cmeq v0.16b, v0.16b, v1.16b
-    ldr q1, [x19, x22]
-    and v1.16b, v1.16b, v3.16b
-    ldr q2, [x19, x22]
-    ushr v2.16b, v2.16b, #4
-    ldr q31, [sp, #816]
-    tbl v2.16b, {v31.16b}, v2.16b
-    ldr q31, [sp, #784]
-    tbl v3.16b, {v31.16b}, v1.16b
+    ldr q31, [sp, #736]
+    tbl v2.16b, {v31.16b}, v1.16b
     sub v1.16b, v1.16b, v4.16b
-    ldr q31, [sp, #800]
+    ldr q31, [sp, #752]
     tbl v1.16b, {v31.16b}, v1.16b
-    orr v1.16b, v3.16b, v1.16b
-    and v1.16b, v1.16b, v2.16b
-    cmeq v1.16b, v1.16b, v2.16b
+    orr v1.16b, v2.16b, v1.16b
+    and v1.16b, v1.16b, v0.16b
+    cmeq v0.16b, v1.16b, v0.16b
+    ldr q1, [x19, x22]
+    and v2.16b, v1.16b, v3.16b
+    ushr v1.16b, v1.16b, #4
+    ldr q31, [sp, #816]
+    tbl v1.16b, {v31.16b}, v1.16b
+    ldr q31, [sp, #784]
+    tbl v3.16b, {v31.16b}, v2.16b
+    sub v2.16b, v2.16b, v4.16b
+    ldr q31, [sp, #800]
+    tbl v2.16b, {v31.16b}, v2.16b
+    orr v2.16b, v3.16b, v2.16b
+    and v2.16b, v2.16b, v1.16b
+    cmeq v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
     shrn v0.8b, v0.8h, #4
     fmov x10, d0

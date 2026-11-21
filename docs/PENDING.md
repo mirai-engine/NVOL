@@ -178,7 +178,8 @@ The detail is in "Done".
       Clang;
     - byteset AVX2, +18 % (with 32 alignment it drops to +4 %, but that makes other rows
       worse);
-    - pair AVX2, +20 %, with 13 % fewer instructions;
+    - ~~pair AVX2, +20 %, with 13 % fewer instructions~~: each block was loaded twice. Fixed
+      (see Done): at 4 KiB the asm now gives 460 cycles, against 467 for GCC and 490 for Clang;
     - memmem SSE2, +22 %;
     - 14b: rapidjson, `pretty` of `citm_catalog` against SSE4.2, +0.6…+0.8 %.
 
@@ -472,6 +473,24 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **One load per vector in the asm (item 25, pair AVX2).** The port counters showed the
+  pair loop putting twice the µops on the load ports. Two causes, one defect:
+  - `Lower.gen` left foldable vector loads out of its per-statement CSE, on the idea that
+    repeating them is free. But each folded operand is still a load µop: `vpcmpeqb ymm1,
+    ymm15, [r14 + r12]` against three needles is three loads. Now they are shared, and a load
+    with one use still folds (`_fold_loads`);
+  - `_member` (`nvol/kernels/byteset.py`) used the loaded chunk in two statements (the low
+    and high nibble lookups), so every backend saw two loads. It now binds the chunk with
+    a `let` (the C, C++, Rust and Odin get one `loadu` instead of two).
+
+  Static count on x86 System V: 41844 → 42021 instructions, and 8150 → 7610 with a memory
+  operand. Only the pair AVX2 functions change. Counters (asm, best of 5): pair AVX2 at 64 B
+  −3.9 %, 256 B −8.1 %, 4 KiB −16.4 % (550 → 460 cycles; GCC 467, Clang 490), 64 KiB −3.4 %.
+  Path 0 of `pair` in `bench` is the scalar kernel and does not change. GCC and Clang give the same
+  instructions in byteset, byteset_not and pair, and cycles within ±2 %. Every other asm row
+  is unchanged code at unchanged addresses. Its swings, for example memchr 4 KiB AVX2 at
+  +8.5, −1.1 and −9.6 % in three repeats, are that row's noise.
 
 - **ripgrep end to end on Linux (item 30, former 1.10).** It runs in WSL Arch (glibc), with
   the builds on the Linux filesystem (`setup.sh` and `bench.py` take `W`), and

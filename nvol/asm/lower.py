@@ -132,8 +132,11 @@ class Lower:
             return h
         # the same subexpression twice in one statement (the kernels repeat `load8(p + i)`):
         # once. Nothing is assigned inside a statement and nothing stores, so loads and mutable
-        # variables are fine; a call might store, so it empties the cache
-        key = self.key(e) if type(e) not in (ir.Var, ir.Const) and not self.foldable(e) else None
+        # variables are fine; a call might store, so it empties the cache. A foldable vector
+        # load is shared too: folded into two operations it would still be two loads (two
+        # µops on the load ports); shared, it is one `vmovdqu`, and a load used once still
+        # folds (`_fold_loads`)
+        key = self.key(e) if type(e) not in (ir.Var, ir.Const) else None
         if key is not None and key in self.cse:
             return self.cse[key]
         if key is not None and key in self.dom:

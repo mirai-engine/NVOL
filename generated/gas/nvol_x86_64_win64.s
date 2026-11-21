@@ -25481,37 +25481,37 @@ nvol_find_byteset_pair_ssse3:
     .byte 15, 31, 0
 .Lnvol_find_byteset_pair_ssse3.L2:
     movdqu (%rdx,%r9), %xmm8
-    pand %xmm6, %xmm8
-    movdqu (%rdx,%r9), %xmm9
+    movdqa %xmm8, %xmm9
+    pand %xmm6, %xmm9
+    psrlw $4, %xmm8
+    pand NVOL_K1(%rip), %xmm8
+    movdqa %xmm2, %xmm10
+    pshufb %xmm8, %xmm10
+    movdqa %xmm0, %xmm8
+    pshufb %xmm9, %xmm8
+    psubb %xmm7, %xmm9
+    movdqa %xmm1, %xmm11
+    pshufb %xmm9, %xmm11
+    por %xmm11, %xmm8
+    pand %xmm10, %xmm8
+    pcmpeqb %xmm10, %xmm8
+    movdqu (%rdx,%r10), %xmm9
+    movdqa %xmm9, %xmm10
+    pand %xmm6, %xmm10
     psrlw $4, %xmm9
     pand NVOL_K1(%rip), %xmm9
-    movdqa %xmm2, %xmm10
-    pshufb %xmm9, %xmm10
-    movdqa %xmm0, %xmm9
-    pshufb %xmm8, %xmm9
-    psubb %xmm7, %xmm8
-    movdqa %xmm1, %xmm11
-    pshufb %xmm8, %xmm11
-    por %xmm11, %xmm9
-    pand %xmm10, %xmm9
-    pcmpeqb %xmm10, %xmm9
-    movdqu (%rdx,%r10), %xmm8
-    pand %xmm6, %xmm8
-    movdqu (%rdx,%r10), %xmm10
-    psrlw $4, %xmm10
-    pand NVOL_K1(%rip), %xmm10
     movdqa %xmm5, %xmm11
-    pshufb %xmm10, %xmm11
-    movdqa %xmm3, %xmm10
-    pshufb %xmm8, %xmm10
-    psubb %xmm7, %xmm8
+    pshufb %xmm9, %xmm11
+    movdqa %xmm3, %xmm9
+    pshufb %xmm10, %xmm9
+    psubb %xmm7, %xmm10
     movdqa %xmm4, %xmm12
-    pshufb %xmm8, %xmm12
-    por %xmm12, %xmm10
-    pand %xmm11, %xmm10
-    pcmpeqb %xmm11, %xmm10
-    pand %xmm10, %xmm9
-    pmovmskb %xmm9, %eax
+    pshufb %xmm10, %xmm12
+    por %xmm12, %xmm9
+    pand %xmm11, %xmm9
+    pcmpeqb %xmm11, %xmm9
+    pand %xmm9, %xmm8
+    pmovmskb %xmm8, %eax
     test %eax, %eax
     {disp32} jne .Lnvol_find_byteset_pair_ssse3.L5
 .Lnvol_find_byteset_pair_ssse3.L4:
@@ -25527,26 +25527,26 @@ nvol_find_byteset_pair_ssse3:
     mov %rdx, %rcx
     shl %cl, %eax
     movdqu (%r8,%r9), %xmm8
-    pand %xmm6, %xmm8
-    movdqu (%r8,%r9), %xmm9
-    psrlw $4, %xmm9
-    pand NVOL_K1(%rip), %xmm9
-    pshufb %xmm9, %xmm2
-    pshufb %xmm8, %xmm0
-    psubb %xmm7, %xmm8
-    pshufb %xmm8, %xmm1
+    movdqa %xmm8, %xmm9
+    pand %xmm6, %xmm9
+    psrlw $4, %xmm8
+    pand NVOL_K1(%rip), %xmm8
+    pshufb %xmm8, %xmm2
+    pshufb %xmm9, %xmm0
+    psubb %xmm7, %xmm9
+    pshufb %xmm9, %xmm1
     por %xmm1, %xmm0
     pand %xmm2, %xmm0
     pcmpeqb %xmm2, %xmm0
     movdqu (%r8,%r10), %xmm1
-    pand %xmm6, %xmm1
-    movdqu (%r8,%r10), %xmm2
-    psrlw $4, %xmm2
-    pand NVOL_K1(%rip), %xmm2
-    pshufb %xmm2, %xmm5
-    pshufb %xmm1, %xmm3
-    psubb %xmm7, %xmm1
-    pshufb %xmm1, %xmm4
+    movdqa %xmm1, %xmm2
+    pand %xmm6, %xmm2
+    psrlw $4, %xmm1
+    pand NVOL_K1(%rip), %xmm1
+    pshufb %xmm1, %xmm5
+    pshufb %xmm2, %xmm3
+    psubb %xmm7, %xmm2
+    pshufb %xmm2, %xmm4
     por %xmm4, %xmm3
     pand %xmm5, %xmm3
     pcmpeqb %xmm5, %xmm3
@@ -25577,7 +25577,8 @@ nvol_find_byteset_pair_ssse3:
     {disp8} jmp .Lnvol_find_byteset_pair_ssse3.L1
 .seh_endproc
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_sse2_k4
 .def nvol_find_byteset_sse2_k4; .scl 2; .type 32; .endef
 nvol_find_byteset_sse2_k4:
@@ -28945,37 +28946,37 @@ nvol_find_byteset_pair_mask_ssse3:
     .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_ssse3.L2:
     movdqu (%rdx,%r10), %xmm8
-    pand %xmm6, %xmm8
-    movdqu (%rdx,%r10), %xmm9
+    movdqa %xmm8, %xmm9
+    pand %xmm6, %xmm9
+    psrlw $4, %xmm8
+    pand NVOL_K1(%rip), %xmm8
+    movdqa %xmm2, %xmm10
+    pshufb %xmm8, %xmm10
+    movdqa %xmm0, %xmm8
+    pshufb %xmm9, %xmm8
+    psubb %xmm7, %xmm9
+    movdqa %xmm1, %xmm11
+    pshufb %xmm9, %xmm11
+    por %xmm11, %xmm8
+    pand %xmm10, %xmm8
+    pcmpeqb %xmm10, %xmm8
+    movdqu (%rdx,%r11), %xmm9
+    movdqa %xmm9, %xmm10
+    pand %xmm6, %xmm10
     psrlw $4, %xmm9
     pand NVOL_K1(%rip), %xmm9
-    movdqa %xmm2, %xmm10
-    pshufb %xmm9, %xmm10
-    movdqa %xmm0, %xmm9
-    pshufb %xmm8, %xmm9
-    psubb %xmm7, %xmm8
-    movdqa %xmm1, %xmm11
-    pshufb %xmm8, %xmm11
-    por %xmm11, %xmm9
-    pand %xmm10, %xmm9
-    pcmpeqb %xmm10, %xmm9
-    movdqu (%rdx,%r11), %xmm8
-    pand %xmm6, %xmm8
-    movdqu (%rdx,%r11), %xmm10
-    psrlw $4, %xmm10
-    pand NVOL_K1(%rip), %xmm10
     movdqa %xmm5, %xmm11
-    pshufb %xmm10, %xmm11
-    movdqa %xmm3, %xmm10
-    pshufb %xmm8, %xmm10
-    psubb %xmm7, %xmm8
+    pshufb %xmm9, %xmm11
+    movdqa %xmm3, %xmm9
+    pshufb %xmm10, %xmm9
+    psubb %xmm7, %xmm10
     movdqa %xmm4, %xmm12
-    pshufb %xmm8, %xmm12
-    por %xmm12, %xmm10
-    pand %xmm11, %xmm10
-    pcmpeqb %xmm11, %xmm10
-    pand %xmm10, %xmm9
-    pmovmskb %xmm9, %eax
+    pshufb %xmm10, %xmm12
+    por %xmm12, %xmm9
+    pand %xmm11, %xmm9
+    pcmpeqb %xmm11, %xmm9
+    pand %xmm9, %xmm8
+    pmovmskb %xmm8, %eax
     test %eax, %eax
     {disp32} jne .Lnvol_find_byteset_pair_mask_ssse3.L5
 .Lnvol_find_byteset_pair_mask_ssse3.L4:
@@ -28991,26 +28992,26 @@ nvol_find_byteset_pair_mask_ssse3:
     mov %rdx, %rcx
     shl %cl, %eax
     movdqu (%r8,%r10), %xmm8
-    pand %xmm6, %xmm8
-    movdqu (%r8,%r10), %xmm9
-    psrlw $4, %xmm9
-    pand NVOL_K1(%rip), %xmm9
-    pshufb %xmm9, %xmm2
-    pshufb %xmm8, %xmm0
-    psubb %xmm7, %xmm8
-    pshufb %xmm8, %xmm1
+    movdqa %xmm8, %xmm9
+    pand %xmm6, %xmm9
+    psrlw $4, %xmm8
+    pand NVOL_K1(%rip), %xmm8
+    pshufb %xmm8, %xmm2
+    pshufb %xmm9, %xmm0
+    psubb %xmm7, %xmm9
+    pshufb %xmm9, %xmm1
     por %xmm1, %xmm0
     pand %xmm2, %xmm0
     pcmpeqb %xmm2, %xmm0
     movdqu (%r8,%r11), %xmm1
-    pand %xmm6, %xmm1
-    movdqu (%r8,%r11), %xmm2
-    psrlw $4, %xmm2
-    pand NVOL_K1(%rip), %xmm2
-    pshufb %xmm2, %xmm5
-    pshufb %xmm1, %xmm3
-    psubb %xmm7, %xmm1
-    pshufb %xmm1, %xmm4
+    movdqa %xmm1, %xmm2
+    pand %xmm6, %xmm2
+    psrlw $4, %xmm1
+    pand NVOL_K1(%rip), %xmm1
+    pshufb %xmm1, %xmm5
+    pshufb %xmm2, %xmm3
+    psubb %xmm7, %xmm2
+    pshufb %xmm2, %xmm4
     por %xmm4, %xmm3
     pand %xmm5, %xmm3
     pcmpeqb %xmm5, %xmm3
@@ -29044,7 +29045,7 @@ nvol_find_byteset_pair_mask_ssse3:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_ssse3_k1
 .def nvol_find_byteset_pair_mask_ssse3_k1; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_mask_ssse3_k1:
@@ -29922,37 +29923,37 @@ nvol_find_byteset_pair_visit_ssse3:
     .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_ssse3.L2:
     movdqu (%r12,%rdi), %xmm0
-    pand %xmm12, %xmm0
-    movdqu (%r12,%rdi), %xmm1
+    movdqa %xmm0, %xmm1
+    pand %xmm12, %xmm1
+    psrlw $4, %xmm0
+    pand NVOL_K1(%rip), %xmm0
+    movdqa %xmm8, %xmm2
+    pshufb %xmm0, %xmm2
+    movdqa %xmm6, %xmm0
+    pshufb %xmm1, %xmm0
+    psubb %xmm13, %xmm1
+    movdqa %xmm7, %xmm3
+    pshufb %xmm1, %xmm3
+    por %xmm3, %xmm0
+    pand %xmm2, %xmm0
+    pcmpeqb %xmm2, %xmm0
+    movdqu (%r12,%rbx), %xmm1
+    movdqa %xmm1, %xmm2
+    pand %xmm12, %xmm2
     psrlw $4, %xmm1
     pand NVOL_K1(%rip), %xmm1
-    movdqa %xmm8, %xmm2
-    pshufb %xmm1, %xmm2
-    movdqa %xmm6, %xmm1
-    pshufb %xmm0, %xmm1
-    psubb %xmm13, %xmm0
-    movdqa %xmm7, %xmm3
-    pshufb %xmm0, %xmm3
-    por %xmm3, %xmm1
-    pand %xmm2, %xmm1
-    pcmpeqb %xmm2, %xmm1
-    movdqu (%r12,%rbx), %xmm0
-    pand %xmm12, %xmm0
-    movdqu (%r12,%rbx), %xmm2
-    psrlw $4, %xmm2
-    pand NVOL_K1(%rip), %xmm2
     movdqa %xmm11, %xmm3
-    pshufb %xmm2, %xmm3
-    movdqa %xmm9, %xmm2
-    pshufb %xmm0, %xmm2
-    psubb %xmm13, %xmm0
+    pshufb %xmm1, %xmm3
+    movdqa %xmm9, %xmm1
+    pshufb %xmm2, %xmm1
+    psubb %xmm13, %xmm2
     movdqa %xmm10, %xmm4
-    pshufb %xmm0, %xmm4
-    por %xmm4, %xmm2
-    pand %xmm3, %xmm2
-    pcmpeqb %xmm3, %xmm2
-    pand %xmm2, %xmm1
-    pmovmskb %xmm1, %r8d
+    pshufb %xmm2, %xmm4
+    por %xmm4, %xmm1
+    pand %xmm3, %xmm1
+    pcmpeqb %xmm3, %xmm1
+    pand %xmm1, %xmm0
+    pmovmskb %xmm0, %r8d
     test %r8d, %r8d
     {disp8} je .Lnvol_find_byteset_pair_visit_ssse3.L4
     mov (%rsi), %rax
@@ -29978,26 +29979,26 @@ nvol_find_byteset_pair_visit_ssse3:
     mov %r12, %rcx
     shl %cl, %eax
     movdqu (%rbp,%rdi), %xmm0
-    pand %xmm12, %xmm0
-    movdqu (%rbp,%rdi), %xmm1
-    psrlw $4, %xmm1
-    pand NVOL_K1(%rip), %xmm1
-    pshufb %xmm1, %xmm8
-    pshufb %xmm0, %xmm6
-    psubb %xmm13, %xmm0
-    pshufb %xmm0, %xmm7
+    movdqa %xmm0, %xmm1
+    pand %xmm12, %xmm1
+    psrlw $4, %xmm0
+    pand NVOL_K1(%rip), %xmm0
+    pshufb %xmm0, %xmm8
+    pshufb %xmm1, %xmm6
+    psubb %xmm13, %xmm1
+    pshufb %xmm1, %xmm7
     por %xmm7, %xmm6
     pand %xmm8, %xmm6
     pcmpeqb %xmm8, %xmm6
     movdqu (%rbp,%rbx), %xmm0
-    pand %xmm12, %xmm0
-    movdqu (%rbp,%rbx), %xmm1
-    psrlw $4, %xmm1
-    pand NVOL_K1(%rip), %xmm1
-    pshufb %xmm1, %xmm11
-    pshufb %xmm0, %xmm9
-    psubb %xmm13, %xmm0
-    pshufb %xmm0, %xmm10
+    movdqa %xmm0, %xmm1
+    pand %xmm12, %xmm1
+    psrlw $4, %xmm0
+    pand NVOL_K1(%rip), %xmm0
+    pshufb %xmm0, %xmm11
+    pshufb %xmm1, %xmm9
+    psubb %xmm13, %xmm1
+    pshufb %xmm1, %xmm10
     por %xmm10, %xmm9
     pand %xmm11, %xmm9
     pcmpeqb %xmm11, %xmm9
@@ -30043,7 +30044,6 @@ nvol_find_byteset_pair_visit_ssse3:
     {disp8} jmp .Lnvol_find_byteset_pair_visit_ssse3.L1
 .seh_endproc
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k1
 .def nvol_find_byteset_pair_visit_ssse3_k1; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_visit_ssse3_k1:
@@ -31302,28 +31302,28 @@ nvol_find_byteset_pair_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_avx2.L3
     .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_avx2.L2:
-    vpand (%rdx,%r9), %ymm6, %ymm8
-    vmovdqu (%rdx,%r9), %ymm9
+    vmovdqu (%rdx,%r9), %ymm8
+    vpand %ymm6, %ymm8, %ymm9
+    vpsrlw $4, %ymm8, %ymm8
+    vpand NVOL_K3(%rip), %ymm8, %ymm8
+    vpshufb %ymm8, %ymm2, %ymm8
+    vpshufb %ymm9, %ymm0, %ymm10
+    vpsubb %ymm7, %ymm9, %ymm9
+    vpshufb %ymm9, %ymm1, %ymm9
+    vpor %ymm9, %ymm10, %ymm9
+    vpand %ymm8, %ymm9, %ymm9
+    vpcmpeqb %ymm8, %ymm9, %ymm8
+    vmovdqu (%rdx,%r10), %ymm9
+    vpand %ymm6, %ymm9, %ymm10
     vpsrlw $4, %ymm9, %ymm9
     vpand NVOL_K3(%rip), %ymm9, %ymm9
-    vpshufb %ymm9, %ymm2, %ymm9
-    vpshufb %ymm8, %ymm0, %ymm10
-    vpsubb %ymm7, %ymm8, %ymm8
-    vpshufb %ymm8, %ymm1, %ymm8
-    vpor %ymm8, %ymm10, %ymm8
-    vpand %ymm9, %ymm8, %ymm8
-    vpcmpeqb %ymm9, %ymm8, %ymm8
-    vpand (%rdx,%r10), %ymm6, %ymm9
-    vmovdqu (%rdx,%r10), %ymm10
-    vpsrlw $4, %ymm10, %ymm10
-    vpand NVOL_K3(%rip), %ymm10, %ymm10
-    vpshufb %ymm10, %ymm5, %ymm10
-    vpshufb %ymm9, %ymm3, %ymm11
-    vpsubb %ymm7, %ymm9, %ymm9
-    vpshufb %ymm9, %ymm4, %ymm9
-    vpor %ymm9, %ymm11, %ymm9
-    vpand %ymm10, %ymm9, %ymm9
-    vpcmpeqb %ymm10, %ymm9, %ymm9
+    vpshufb %ymm9, %ymm5, %ymm9
+    vpshufb %ymm10, %ymm3, %ymm11
+    vpsubb %ymm7, %ymm10, %ymm10
+    vpshufb %ymm10, %ymm4, %ymm10
+    vpor %ymm10, %ymm11, %ymm10
+    vpand %ymm9, %ymm10, %ymm10
+    vpcmpeqb %ymm9, %ymm10, %ymm9
     vpand %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %eax
     test %eax, %eax
@@ -31340,28 +31340,28 @@ nvol_find_byteset_pair_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpand (%r8,%r9), %ymm6, %ymm8
-    vmovdqu (%r8,%r9), %ymm9
-    vpsrlw $4, %ymm9, %ymm9
-    vpand NVOL_K3(%rip), %ymm9, %ymm9
-    vpshufb %ymm9, %ymm2, %ymm2
-    vpshufb %ymm8, %ymm0, %ymm0
-    vpsubb %ymm7, %ymm8, %ymm8
+    vmovdqu (%r8,%r9), %ymm8
+    vpand %ymm6, %ymm8, %ymm9
+    vpsrlw $4, %ymm8, %ymm8
+    vpand NVOL_K3(%rip), %ymm8, %ymm8
+    vpshufb %ymm8, %ymm2, %ymm2
+    vpshufb %ymm9, %ymm0, %ymm0
+    vpsubb %ymm7, %ymm9, %ymm8
     vpshufb %ymm8, %ymm1, %ymm1
     vpor %ymm1, %ymm0, %ymm0
     vpand %ymm2, %ymm0, %ymm0
     vpcmpeqb %ymm2, %ymm0, %ymm0
-    vpand (%r8,%r10), %ymm6, %ymm1
-    vmovdqu (%r8,%r10), %ymm2
-    vpsrlw $4, %ymm2, %ymm2
-    vpand NVOL_K3(%rip), %ymm2, %ymm2
-    vpshufb %ymm2, %ymm5, %ymm2
-    vpshufb %ymm1, %ymm3, %ymm3
-    vpsubb %ymm7, %ymm1, %ymm1
-    vpshufb %ymm1, %ymm4, %ymm1
-    vpor %ymm1, %ymm3, %ymm1
-    vpand %ymm2, %ymm1, %ymm1
-    vpcmpeqb %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpand %ymm6, %ymm1, %ymm2
+    vpsrlw $4, %ymm1, %ymm1
+    vpand NVOL_K3(%rip), %ymm1, %ymm1
+    vpshufb %ymm1, %ymm5, %ymm1
+    vpshufb %ymm2, %ymm3, %ymm3
+    vpsubb %ymm7, %ymm2, %ymm2
+    vpshufb %ymm2, %ymm4, %ymm2
+    vpor %ymm2, %ymm3, %ymm2
+    vpand %ymm1, %ymm2, %ymm2
+    vpcmpeqb %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -31389,6 +31389,7 @@ nvol_find_byteset_pair_avx2:
     {disp8} jmp .Lnvol_find_byteset_pair_avx2.L1
 .seh_endproc
 
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_avx2_k4
 .def nvol_find_byteset_avx2_k4; .scl 2; .type 32; .endef
 nvol_find_byteset_avx2_k4:
@@ -33806,12 +33807,14 @@ nvol_find_byteset_pair_avx2_k2:
     {disp8} ja .Lnvol_find_byteset_pair_avx2_k2.L3
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_avx2_k2.L2:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm4
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm5
-    vpor %ymm5, %ymm4, %ymm4
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm5
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm6
-    vpor %ymm6, %ymm5, %ymm5
+    vmovdqu (%rdx,%r9), %ymm4
+    vpcmpeqb %ymm0, %ymm4, %ymm5
+    vpcmpeqb %ymm1, %ymm4, %ymm4
+    vpor %ymm4, %ymm5, %ymm4
+    vmovdqu (%rdx,%r10), %ymm5
+    vpcmpeqb %ymm2, %ymm5, %ymm6
+    vpcmpeqb %ymm3, %ymm5, %ymm5
+    vpor %ymm5, %ymm6, %ymm5
     vpand %ymm5, %ymm4, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
@@ -33828,12 +33831,14 @@ nvol_find_byteset_pair_avx2_k2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm4
+    vpcmpeqb %ymm0, %ymm4, %ymm0
+    vpcmpeqb %ymm1, %ymm4, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm2, %ymm1, %ymm2
+    vpcmpeqb %ymm3, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -33856,19 +33861,22 @@ nvol_find_byteset_pair_avx2_k2:
     {disp8} jmp .Lnvol_find_byteset_pair_avx2_k2.L1
 .seh_endproc
 
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_avx2_k3
 .def nvol_find_byteset_pair_avx2_k3; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_avx2_k3:
 .seh_proc nvol_find_byteset_pair_avx2_k3
-    sub $56, %rsp
-.seh_stackalloc 56
+    sub $72, %rsp
+.seh_stackalloc 72
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
 .seh_savexmm %xmm7, 16
     vmovdqu %xmm8, 32(%rsp)
 .seh_savexmm %xmm8, 32
+    vmovdqu %xmm9, 48(%rsp)
+.seh_savexmm %xmm9, 48
 .seh_endprologue
     mov 224(%rcx), %r9
     mov 232(%rcx), %r10
@@ -33897,17 +33905,21 @@ nvol_find_byteset_pair_avx2_k3:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_avx2_k3.L3
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_avx2_k3.L2:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm6
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm7
-    vpor %ymm7, %ymm6, %ymm6
-    vpcmpeqb (%rdx,%r9), %ymm2, %ymm7
-    vpor %ymm7, %ymm6, %ymm6
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm7
-    vpcmpeqb (%rdx,%r10), %ymm4, %ymm8
+    vmovdqu (%rdx,%r9), %ymm6
+    vpcmpeqb %ymm0, %ymm6, %ymm7
+    vpcmpeqb %ymm1, %ymm6, %ymm8
     vpor %ymm8, %ymm7, %ymm7
-    vpcmpeqb (%rdx,%r10), %ymm5, %ymm8
-    vpor %ymm8, %ymm7, %ymm7
+    vpcmpeqb %ymm2, %ymm6, %ymm6
+    vpor %ymm6, %ymm7, %ymm6
+    vmovdqu (%rdx,%r10), %ymm7
+    vpcmpeqb %ymm3, %ymm7, %ymm8
+    vpcmpeqb %ymm4, %ymm7, %ymm9
+    vpor %ymm9, %ymm8, %ymm8
+    vpcmpeqb %ymm5, %ymm7, %ymm7
+    vpor %ymm7, %ymm8, %ymm7
     vpand %ymm7, %ymm6, %ymm6
     vpmovmskb %ymm6, %eax
     test %eax, %eax
@@ -33924,16 +33936,18 @@ nvol_find_byteset_pair_avx2_k3:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm6
+    vpcmpeqb %ymm0, %ymm6, %ymm0
+    vpcmpeqb %ymm1, %ymm6, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm6, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm4, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm5, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm3, %ymm1, %ymm2
+    vpcmpeqb %ymm4, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm5, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -33950,7 +33964,8 @@ nvol_find_byteset_pair_avx2_k3:
     vmovdqu (%rsp), %xmm6
     vmovdqu 16(%rsp), %xmm7
     vmovdqu 32(%rsp), %xmm8
-    add $56, %rsp
+    vmovdqu 48(%rsp), %xmm9
+    add $72, %rsp
     ret
 .Lnvol_find_byteset_pair_avx2_k3.L5:
     bsf %eax, %eax
@@ -33958,14 +33973,13 @@ nvol_find_byteset_pair_avx2_k3:
     {disp8} jmp .Lnvol_find_byteset_pair_avx2_k3.L1
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_avx2_k4
 .def nvol_find_byteset_pair_avx2_k4; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_avx2_k4:
 .seh_proc nvol_find_byteset_pair_avx2_k4
-    sub $88, %rsp
-.seh_stackalloc 88
+    sub $104, %rsp
+.seh_stackalloc 104
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
@@ -33976,6 +33990,8 @@ nvol_find_byteset_pair_avx2_k4:
 .seh_savexmm %xmm9, 48
     vmovdqu %xmm10, 64(%rsp)
 .seh_savexmm %xmm10, 64
+    vmovdqu %xmm11, 80(%rsp)
+.seh_savexmm %xmm11, 80
 .seh_endprologue
     mov 224(%rcx), %r9
     mov 232(%rcx), %r10
@@ -34010,22 +34026,24 @@ nvol_find_byteset_pair_avx2_k4:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_avx2_k4.L3
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_avx2_k4.L2:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm8
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r9), %ymm2, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r9), %ymm3, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r10), %ymm4, %ymm9
-    vpcmpeqb (%rdx,%r10), %ymm5, %ymm10
+    vmovdqu (%rdx,%r9), %ymm8
+    vpcmpeqb %ymm0, %ymm8, %ymm9
+    vpcmpeqb %ymm1, %ymm8, %ymm10
     vpor %ymm10, %ymm9, %ymm9
-    vpcmpeqb (%rdx,%r10), %ymm6, %ymm10
+    vpcmpeqb %ymm2, %ymm8, %ymm10
     vpor %ymm10, %ymm9, %ymm9
-    vpcmpeqb (%rdx,%r10), %ymm7, %ymm10
-    vpor %ymm10, %ymm9, %ymm9
+    vpcmpeqb %ymm3, %ymm8, %ymm8
+    vpor %ymm8, %ymm9, %ymm8
+    vmovdqu (%rdx,%r10), %ymm9
+    vpcmpeqb %ymm4, %ymm9, %ymm10
+    vpcmpeqb %ymm5, %ymm9, %ymm11
+    vpor %ymm11, %ymm10, %ymm10
+    vpcmpeqb %ymm6, %ymm9, %ymm11
+    vpor %ymm11, %ymm10, %ymm10
+    vpcmpeqb %ymm7, %ymm9, %ymm9
+    vpor %ymm9, %ymm10, %ymm9
     vpand %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %eax
     test %eax, %eax
@@ -34042,20 +34060,22 @@ nvol_find_byteset_pair_avx2_k4:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm8
+    vpcmpeqb %ymm0, %ymm8, %ymm0
+    vpcmpeqb %ymm1, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm4, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm5, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm6, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm4, %ymm1, %ymm2
+    vpcmpeqb %ymm5, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm6, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -34074,7 +34094,8 @@ nvol_find_byteset_pair_avx2_k4:
     vmovdqu 32(%rsp), %xmm8
     vmovdqu 48(%rsp), %xmm9
     vmovdqu 64(%rsp), %xmm10
-    add $88, %rsp
+    vmovdqu 80(%rsp), %xmm11
+    add $104, %rsp
     ret
 .Lnvol_find_byteset_pair_avx2_k4.L5:
     bsf %eax, %eax
@@ -34082,13 +34103,13 @@ nvol_find_byteset_pair_avx2_k4:
     {disp8} jmp .Lnvol_find_byteset_pair_avx2_k4.L1
 .seh_endproc
 
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_avx2_k5
 .def nvol_find_byteset_pair_avx2_k5; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_avx2_k5:
 .seh_proc nvol_find_byteset_pair_avx2_k5
-    sub $120, %rsp
-.seh_stackalloc 120
+    sub $136, %rsp
+.seh_stackalloc 136
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
@@ -34103,6 +34124,8 @@ nvol_find_byteset_pair_avx2_k5:
 .seh_savexmm %xmm11, 80
     vmovdqu %xmm12, 96(%rsp)
 .seh_savexmm %xmm12, 96
+    vmovdqu %xmm13, 112(%rsp)
+.seh_savexmm %xmm13, 112
 .seh_endprologue
     mov 224(%rcx), %r9
     mov 232(%rcx), %r10
@@ -34142,28 +34165,29 @@ nvol_find_byteset_pair_avx2_k5:
     lea 32(%rax), %rax
     sub %rax, %r8
     cmp %r8, %rdx
-    {disp32} ja .Lnvol_find_byteset_pair_avx2_k5.L3
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    {disp8} ja .Lnvol_find_byteset_pair_avx2_k5.L3
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_avx2_k5.L2:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm10
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r9), %ymm2, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r9), %ymm3, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r9), %ymm4, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm5, %ymm11
-    vpcmpeqb (%rdx,%r10), %ymm6, %ymm12
+    vmovdqu (%rdx,%r9), %ymm10
+    vpcmpeqb %ymm0, %ymm10, %ymm11
+    vpcmpeqb %ymm1, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r10), %ymm7, %ymm12
+    vpcmpeqb %ymm2, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r10), %ymm8, %ymm12
+    vpcmpeqb %ymm3, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r10), %ymm9, %ymm12
-    vpor %ymm12, %ymm11, %ymm11
+    vpcmpeqb %ymm4, %ymm10, %ymm10
+    vpor %ymm10, %ymm11, %ymm10
+    vmovdqu (%rdx,%r10), %ymm11
+    vpcmpeqb %ymm5, %ymm11, %ymm12
+    vpcmpeqb %ymm6, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm7, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm8, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm9, %ymm11, %ymm11
+    vpor %ymm11, %ymm12, %ymm11
     vpand %ymm11, %ymm10, %ymm10
     vpmovmskb %ymm10, %eax
     test %eax, %eax
@@ -34175,29 +34199,31 @@ nvol_find_byteset_pair_avx2_k5:
 .Lnvol_find_byteset_pair_avx2_k5.L3:
     lea 32(%r8), %rax
     cmp %rax, %rdx
-    {disp32} jae .Lnvol_find_byteset_pair_avx2_k5.L6
+    {disp8} jae .Lnvol_find_byteset_pair_avx2_k5.L6
     sub %r8, %rdx
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm10
+    vpcmpeqb %ymm0, %ymm10, %ymm0
+    vpcmpeqb %ymm1, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm4, %ymm1
+    vpcmpeqb %ymm4, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm5, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm6, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm8, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm9, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm5, %ymm1, %ymm2
+    vpcmpeqb %ymm6, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm8, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm9, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -34218,7 +34244,8 @@ nvol_find_byteset_pair_avx2_k5:
     vmovdqu 64(%rsp), %xmm10
     vmovdqu 80(%rsp), %xmm11
     vmovdqu 96(%rsp), %xmm12
-    add $120, %rsp
+    vmovdqu 112(%rsp), %xmm13
+    add $136, %rsp
     ret
 .Lnvol_find_byteset_pair_avx2_k5.L5:
     bsf %eax, %eax
@@ -34226,13 +34253,14 @@ nvol_find_byteset_pair_avx2_k5:
     {disp8} jmp .Lnvol_find_byteset_pair_avx2_k5.L1
 .seh_endproc
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_avx2_k6
 .def nvol_find_byteset_pair_avx2_k6; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_avx2_k6:
 .seh_proc nvol_find_byteset_pair_avx2_k6
-    sub $152, %rsp
-.seh_stackalloc 152
+    sub $168, %rsp
+.seh_stackalloc 168
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
@@ -34251,6 +34279,8 @@ nvol_find_byteset_pair_avx2_k6:
 .seh_savexmm %xmm13, 112
     vmovdqu %xmm14, 128(%rsp)
 .seh_savexmm %xmm14, 128
+    vmovdqu %xmm15, 144(%rsp)
+.seh_savexmm %xmm15, 144
 .seh_endprologue
     mov 224(%rcx), %r9
     mov 232(%rcx), %r10
@@ -34297,30 +34327,32 @@ nvol_find_byteset_pair_avx2_k6:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp32} ja .Lnvol_find_byteset_pair_avx2_k6.L3
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_find_byteset_pair_avx2_k6.L2:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm2, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm3, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm4, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm5, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm6, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm7, %ymm14
+    vmovdqu (%rdx,%r9), %ymm12
+    vpcmpeqb %ymm0, %ymm12, %ymm13
+    vpcmpeqb %ymm1, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm8, %ymm14
+    vpcmpeqb %ymm2, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm9, %ymm14
+    vpcmpeqb %ymm3, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm10, %ymm14
+    vpcmpeqb %ymm4, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm11, %ymm14
-    vpor %ymm14, %ymm13, %ymm13
+    vpcmpeqb %ymm5, %ymm12, %ymm12
+    vpor %ymm12, %ymm13, %ymm12
+    vmovdqu (%rdx,%r10), %ymm13
+    vpcmpeqb %ymm6, %ymm13, %ymm14
+    vpcmpeqb %ymm7, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm8, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm9, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm10, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm11, %ymm13, %ymm13
+    vpor %ymm13, %ymm14, %ymm13
     vpand %ymm13, %ymm12, %ymm12
     vpmovmskb %ymm12, %eax
     test %eax, %eax
@@ -34337,28 +34369,30 @@ nvol_find_byteset_pair_avx2_k6:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm12
+    vpcmpeqb %ymm0, %ymm12, %ymm0
+    vpcmpeqb %ymm1, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm4, %ymm1
+    vpcmpeqb %ymm4, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm5, %ymm1
+    vpcmpeqb %ymm5, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm6, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm8, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm9, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm10, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm11, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm6, %ymm1, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm8, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm9, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm10, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm11, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -34381,7 +34415,8 @@ nvol_find_byteset_pair_avx2_k6:
     vmovdqu 96(%rsp), %xmm12
     vmovdqu 112(%rsp), %xmm13
     vmovdqu 128(%rsp), %xmm14
-    add $152, %rsp
+    vmovdqu 144(%rsp), %xmm15
+    add $168, %rsp
     ret
 .Lnvol_find_byteset_pair_avx2_k6.L5:
     bsf %eax, %eax
@@ -34390,7 +34425,7 @@ nvol_find_byteset_pair_avx2_k6:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2
 .def nvol_find_byteset_pair_mask_avx2; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_mask_avx2:
@@ -34429,28 +34464,28 @@ nvol_find_byteset_pair_mask_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_mask_avx2.L3
     .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_mask_avx2.L2:
-    vpand (%rdx,%r10), %ymm6, %ymm8
-    vmovdqu (%rdx,%r10), %ymm9
+    vmovdqu (%rdx,%r10), %ymm8
+    vpand %ymm6, %ymm8, %ymm9
+    vpsrlw $4, %ymm8, %ymm8
+    vpand NVOL_K3(%rip), %ymm8, %ymm8
+    vpshufb %ymm8, %ymm2, %ymm8
+    vpshufb %ymm9, %ymm0, %ymm10
+    vpsubb %ymm7, %ymm9, %ymm9
+    vpshufb %ymm9, %ymm1, %ymm9
+    vpor %ymm9, %ymm10, %ymm9
+    vpand %ymm8, %ymm9, %ymm9
+    vpcmpeqb %ymm8, %ymm9, %ymm8
+    vmovdqu (%rdx,%r11), %ymm9
+    vpand %ymm6, %ymm9, %ymm10
     vpsrlw $4, %ymm9, %ymm9
     vpand NVOL_K3(%rip), %ymm9, %ymm9
-    vpshufb %ymm9, %ymm2, %ymm9
-    vpshufb %ymm8, %ymm0, %ymm10
-    vpsubb %ymm7, %ymm8, %ymm8
-    vpshufb %ymm8, %ymm1, %ymm8
-    vpor %ymm8, %ymm10, %ymm8
-    vpand %ymm9, %ymm8, %ymm8
-    vpcmpeqb %ymm9, %ymm8, %ymm8
-    vpand (%rdx,%r11), %ymm6, %ymm9
-    vmovdqu (%rdx,%r11), %ymm10
-    vpsrlw $4, %ymm10, %ymm10
-    vpand NVOL_K3(%rip), %ymm10, %ymm10
-    vpshufb %ymm10, %ymm5, %ymm10
-    vpshufb %ymm9, %ymm3, %ymm11
-    vpsubb %ymm7, %ymm9, %ymm9
-    vpshufb %ymm9, %ymm4, %ymm9
-    vpor %ymm9, %ymm11, %ymm9
-    vpand %ymm10, %ymm9, %ymm9
-    vpcmpeqb %ymm10, %ymm9, %ymm9
+    vpshufb %ymm9, %ymm5, %ymm9
+    vpshufb %ymm10, %ymm3, %ymm11
+    vpsubb %ymm7, %ymm10, %ymm10
+    vpshufb %ymm10, %ymm4, %ymm10
+    vpor %ymm10, %ymm11, %ymm10
+    vpand %ymm9, %ymm10, %ymm10
+    vpcmpeqb %ymm9, %ymm10, %ymm9
     vpand %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %eax
     test %eax, %eax
@@ -34467,28 +34502,28 @@ nvol_find_byteset_pair_mask_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpand (%r8,%r10), %ymm6, %ymm8
-    vmovdqu (%r8,%r10), %ymm9
-    vpsrlw $4, %ymm9, %ymm9
-    vpand NVOL_K3(%rip), %ymm9, %ymm9
-    vpshufb %ymm9, %ymm2, %ymm2
-    vpshufb %ymm8, %ymm0, %ymm0
-    vpsubb %ymm7, %ymm8, %ymm8
+    vmovdqu (%r8,%r10), %ymm8
+    vpand %ymm6, %ymm8, %ymm9
+    vpsrlw $4, %ymm8, %ymm8
+    vpand NVOL_K3(%rip), %ymm8, %ymm8
+    vpshufb %ymm8, %ymm2, %ymm2
+    vpshufb %ymm9, %ymm0, %ymm0
+    vpsubb %ymm7, %ymm9, %ymm8
     vpshufb %ymm8, %ymm1, %ymm1
     vpor %ymm1, %ymm0, %ymm0
     vpand %ymm2, %ymm0, %ymm0
     vpcmpeqb %ymm2, %ymm0, %ymm0
-    vpand (%r8,%r11), %ymm6, %ymm1
-    vmovdqu (%r8,%r11), %ymm2
-    vpsrlw $4, %ymm2, %ymm2
-    vpand NVOL_K3(%rip), %ymm2, %ymm2
-    vpshufb %ymm2, %ymm5, %ymm2
-    vpshufb %ymm1, %ymm3, %ymm3
-    vpsubb %ymm7, %ymm1, %ymm1
-    vpshufb %ymm1, %ymm4, %ymm1
-    vpor %ymm1, %ymm3, %ymm1
-    vpand %ymm2, %ymm1, %ymm1
-    vpcmpeqb %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpand %ymm6, %ymm1, %ymm2
+    vpsrlw $4, %ymm1, %ymm1
+    vpand NVOL_K3(%rip), %ymm1, %ymm1
+    vpshufb %ymm1, %ymm5, %ymm1
+    vpshufb %ymm2, %ymm3, %ymm3
+    vpsubb %ymm7, %ymm2, %ymm2
+    vpshufb %ymm2, %ymm4, %ymm2
+    vpor %ymm2, %ymm3, %ymm2
+    vpand %ymm1, %ymm2, %ymm2
+    vpcmpeqb %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -34518,7 +34553,8 @@ nvol_find_byteset_pair_mask_avx2:
     {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2.L1
 .seh_endproc
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_mask_avx2_k1
 .def nvol_find_byteset_pair_mask_avx2_k1; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_mask_avx2_k1:
@@ -34612,12 +34648,14 @@ nvol_find_byteset_pair_mask_avx2_k2:
     {disp8} ja .Lnvol_find_byteset_pair_mask_avx2_k2.L3
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_mask_avx2_k2.L2:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm4
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm5
-    vpor %ymm5, %ymm4, %ymm4
-    vpcmpeqb (%rdx,%r11), %ymm2, %ymm5
-    vpcmpeqb (%rdx,%r11), %ymm3, %ymm6
-    vpor %ymm6, %ymm5, %ymm5
+    vmovdqu (%rdx,%r10), %ymm4
+    vpcmpeqb %ymm0, %ymm4, %ymm5
+    vpcmpeqb %ymm1, %ymm4, %ymm4
+    vpor %ymm4, %ymm5, %ymm4
+    vmovdqu (%rdx,%r11), %ymm5
+    vpcmpeqb %ymm2, %ymm5, %ymm6
+    vpcmpeqb %ymm3, %ymm5, %ymm5
+    vpor %ymm5, %ymm6, %ymm5
     vpand %ymm5, %ymm4, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
@@ -34634,12 +34672,14 @@ nvol_find_byteset_pair_mask_avx2_k2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm4
+    vpcmpeqb %ymm0, %ymm4, %ymm0
+    vpcmpeqb %ymm1, %ymm4, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm2, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm3, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm2, %ymm1, %ymm2
+    vpcmpeqb %ymm3, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -34664,19 +34704,22 @@ nvol_find_byteset_pair_mask_avx2_k2:
     {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k2.L1
 .seh_endproc
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k3
 .def nvol_find_byteset_pair_mask_avx2_k3; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_mask_avx2_k3:
 .seh_proc nvol_find_byteset_pair_mask_avx2_k3
-    sub $56, %rsp
-.seh_stackalloc 56
+    sub $72, %rsp
+.seh_stackalloc 72
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
 .seh_savexmm %xmm7, 16
     vmovdqu %xmm8, 32(%rsp)
 .seh_savexmm %xmm8, 32
+    vmovdqu %xmm9, 48(%rsp)
+.seh_savexmm %xmm9, 48
 .seh_endprologue
     mov 224(%rcx), %r10
     mov 232(%rcx), %r11
@@ -34705,17 +34748,21 @@ nvol_find_byteset_pair_mask_avx2_k3:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_mask_avx2_k3.L3
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_mask_avx2_k3.L2:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm6
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm7
-    vpor %ymm7, %ymm6, %ymm6
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm7
-    vpor %ymm7, %ymm6, %ymm6
-    vpcmpeqb (%rdx,%r11), %ymm3, %ymm7
-    vpcmpeqb (%rdx,%r11), %ymm4, %ymm8
+    vmovdqu (%rdx,%r10), %ymm6
+    vpcmpeqb %ymm0, %ymm6, %ymm7
+    vpcmpeqb %ymm1, %ymm6, %ymm8
     vpor %ymm8, %ymm7, %ymm7
-    vpcmpeqb (%rdx,%r11), %ymm5, %ymm8
-    vpor %ymm8, %ymm7, %ymm7
+    vpcmpeqb %ymm2, %ymm6, %ymm6
+    vpor %ymm6, %ymm7, %ymm6
+    vmovdqu (%rdx,%r11), %ymm7
+    vpcmpeqb %ymm3, %ymm7, %ymm8
+    vpcmpeqb %ymm4, %ymm7, %ymm9
+    vpor %ymm9, %ymm8, %ymm8
+    vpcmpeqb %ymm5, %ymm7, %ymm7
+    vpor %ymm7, %ymm8, %ymm7
     vpand %ymm7, %ymm6, %ymm6
     vpmovmskb %ymm6, %eax
     test %eax, %eax
@@ -34732,16 +34779,18 @@ nvol_find_byteset_pair_mask_avx2_k3:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm6
+    vpcmpeqb %ymm0, %ymm6, %ymm0
+    vpcmpeqb %ymm1, %ymm6, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm6, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm3, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm4, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm5, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm3, %ymm1, %ymm2
+    vpcmpeqb %ymm4, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm5, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -34759,7 +34808,8 @@ nvol_find_byteset_pair_mask_avx2_k3:
     vmovdqu (%rsp), %xmm6
     vmovdqu 16(%rsp), %xmm7
     vmovdqu 32(%rsp), %xmm8
-    add $56, %rsp
+    vmovdqu 48(%rsp), %xmm9
+    add $72, %rsp
     ret
 .Lnvol_find_byteset_pair_mask_avx2_k3.L5:
     mov %rax, (%r9)
@@ -34768,14 +34818,13 @@ nvol_find_byteset_pair_mask_avx2_k3:
     {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k3.L1
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k4
 .def nvol_find_byteset_pair_mask_avx2_k4; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_mask_avx2_k4:
 .seh_proc nvol_find_byteset_pair_mask_avx2_k4
-    sub $88, %rsp
-.seh_stackalloc 88
+    sub $104, %rsp
+.seh_stackalloc 104
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
@@ -34786,6 +34835,8 @@ nvol_find_byteset_pair_mask_avx2_k4:
 .seh_savexmm %xmm9, 48
     vmovdqu %xmm10, 64(%rsp)
 .seh_savexmm %xmm10, 64
+    vmovdqu %xmm11, 80(%rsp)
+.seh_savexmm %xmm11, 80
 .seh_endprologue
     mov 224(%rcx), %r10
     mov 232(%rcx), %r11
@@ -34820,22 +34871,24 @@ nvol_find_byteset_pair_mask_avx2_k4:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_mask_avx2_k4.L3
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_mask_avx2_k4.L2:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm8
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r11), %ymm4, %ymm9
-    vpcmpeqb (%rdx,%r11), %ymm5, %ymm10
+    vmovdqu (%rdx,%r10), %ymm8
+    vpcmpeqb %ymm0, %ymm8, %ymm9
+    vpcmpeqb %ymm1, %ymm8, %ymm10
     vpor %ymm10, %ymm9, %ymm9
-    vpcmpeqb (%rdx,%r11), %ymm6, %ymm10
+    vpcmpeqb %ymm2, %ymm8, %ymm10
     vpor %ymm10, %ymm9, %ymm9
-    vpcmpeqb (%rdx,%r11), %ymm7, %ymm10
-    vpor %ymm10, %ymm9, %ymm9
+    vpcmpeqb %ymm3, %ymm8, %ymm8
+    vpor %ymm8, %ymm9, %ymm8
+    vmovdqu (%rdx,%r11), %ymm9
+    vpcmpeqb %ymm4, %ymm9, %ymm10
+    vpcmpeqb %ymm5, %ymm9, %ymm11
+    vpor %ymm11, %ymm10, %ymm10
+    vpcmpeqb %ymm6, %ymm9, %ymm11
+    vpor %ymm11, %ymm10, %ymm10
+    vpcmpeqb %ymm7, %ymm9, %ymm9
+    vpor %ymm9, %ymm10, %ymm9
     vpand %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %eax
     test %eax, %eax
@@ -34852,20 +34905,22 @@ nvol_find_byteset_pair_mask_avx2_k4:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm8
+    vpcmpeqb %ymm0, %ymm8, %ymm0
+    vpcmpeqb %ymm1, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm4, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm5, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm6, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm4, %ymm1, %ymm2
+    vpcmpeqb %ymm5, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm6, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -34885,7 +34940,8 @@ nvol_find_byteset_pair_mask_avx2_k4:
     vmovdqu 32(%rsp), %xmm8
     vmovdqu 48(%rsp), %xmm9
     vmovdqu 64(%rsp), %xmm10
-    add $88, %rsp
+    vmovdqu 80(%rsp), %xmm11
+    add $104, %rsp
     ret
 .Lnvol_find_byteset_pair_mask_avx2_k4.L5:
     mov %rax, (%r9)
@@ -34894,13 +34950,13 @@ nvol_find_byteset_pair_mask_avx2_k4:
     {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k4.L1
 .seh_endproc
 
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k5
 .def nvol_find_byteset_pair_mask_avx2_k5; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_mask_avx2_k5:
 .seh_proc nvol_find_byteset_pair_mask_avx2_k5
-    sub $120, %rsp
-.seh_stackalloc 120
+    sub $136, %rsp
+.seh_stackalloc 136
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
@@ -34915,6 +34971,8 @@ nvol_find_byteset_pair_mask_avx2_k5:
 .seh_savexmm %xmm11, 80
     vmovdqu %xmm12, 96(%rsp)
 .seh_savexmm %xmm12, 96
+    vmovdqu %xmm13, 112(%rsp)
+.seh_savexmm %xmm13, 112
 .seh_endprologue
     mov 224(%rcx), %r10
     mov 232(%rcx), %r11
@@ -34954,28 +35012,29 @@ nvol_find_byteset_pair_mask_avx2_k5:
     lea 32(%rax), %rax
     sub %rax, %r8
     cmp %r8, %rdx
-    {disp32} ja .Lnvol_find_byteset_pair_mask_avx2_k5.L3
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    {disp8} ja .Lnvol_find_byteset_pair_mask_avx2_k5.L3
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_avx2_k5.L2:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm4, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r11), %ymm5, %ymm11
-    vpcmpeqb (%rdx,%r11), %ymm6, %ymm12
+    vmovdqu (%rdx,%r10), %ymm10
+    vpcmpeqb %ymm0, %ymm10, %ymm11
+    vpcmpeqb %ymm1, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r11), %ymm7, %ymm12
+    vpcmpeqb %ymm2, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r11), %ymm8, %ymm12
+    vpcmpeqb %ymm3, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r11), %ymm9, %ymm12
-    vpor %ymm12, %ymm11, %ymm11
+    vpcmpeqb %ymm4, %ymm10, %ymm10
+    vpor %ymm10, %ymm11, %ymm10
+    vmovdqu (%rdx,%r11), %ymm11
+    vpcmpeqb %ymm5, %ymm11, %ymm12
+    vpcmpeqb %ymm6, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm7, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm8, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm9, %ymm11, %ymm11
+    vpor %ymm11, %ymm12, %ymm11
     vpand %ymm11, %ymm10, %ymm10
     vpmovmskb %ymm10, %eax
     test %eax, %eax
@@ -34992,24 +35051,26 @@ nvol_find_byteset_pair_mask_avx2_k5:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm10
+    vpcmpeqb %ymm0, %ymm10, %ymm0
+    vpcmpeqb %ymm1, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm4, %ymm1
+    vpcmpeqb %ymm4, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm5, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm6, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm8, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm9, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm5, %ymm1, %ymm2
+    vpcmpeqb %ymm6, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm8, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm9, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -35031,7 +35092,8 @@ nvol_find_byteset_pair_mask_avx2_k5:
     vmovdqu 64(%rsp), %xmm10
     vmovdqu 80(%rsp), %xmm11
     vmovdqu 96(%rsp), %xmm12
-    add $120, %rsp
+    vmovdqu 112(%rsp), %xmm13
+    add $136, %rsp
     ret
 .Lnvol_find_byteset_pair_mask_avx2_k5.L5:
     mov %rax, (%r9)
@@ -35041,12 +35103,13 @@ nvol_find_byteset_pair_mask_avx2_k5:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_mask_avx2_k6
 .def nvol_find_byteset_pair_mask_avx2_k6; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_mask_avx2_k6:
 .seh_proc nvol_find_byteset_pair_mask_avx2_k6
-    sub $152, %rsp
-.seh_stackalloc 152
+    sub $168, %rsp
+.seh_stackalloc 168
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
@@ -35065,6 +35128,8 @@ nvol_find_byteset_pair_mask_avx2_k6:
 .seh_savexmm %xmm13, 112
     vmovdqu %xmm14, 128(%rsp)
 .seh_savexmm %xmm14, 128
+    vmovdqu %xmm15, 144(%rsp)
+.seh_savexmm %xmm15, 144
 .seh_endprologue
     mov 224(%rcx), %r10
     mov 232(%rcx), %r11
@@ -35111,30 +35176,32 @@ nvol_find_byteset_pair_mask_avx2_k6:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp32} ja .Lnvol_find_byteset_pair_mask_avx2_k6.L3
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_find_byteset_pair_mask_avx2_k6.L2:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm4, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm5, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r11), %ymm6, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm7, %ymm14
+    vmovdqu (%rdx,%r10), %ymm12
+    vpcmpeqb %ymm0, %ymm12, %ymm13
+    vpcmpeqb %ymm1, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm8, %ymm14
+    vpcmpeqb %ymm2, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm9, %ymm14
+    vpcmpeqb %ymm3, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm10, %ymm14
+    vpcmpeqb %ymm4, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm11, %ymm14
-    vpor %ymm14, %ymm13, %ymm13
+    vpcmpeqb %ymm5, %ymm12, %ymm12
+    vpor %ymm12, %ymm13, %ymm12
+    vmovdqu (%rdx,%r11), %ymm13
+    vpcmpeqb %ymm6, %ymm13, %ymm14
+    vpcmpeqb %ymm7, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm8, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm9, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm10, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm11, %ymm13, %ymm13
+    vpor %ymm13, %ymm14, %ymm13
     vpand %ymm13, %ymm12, %ymm12
     vpmovmskb %ymm12, %eax
     test %eax, %eax
@@ -35151,28 +35218,30 @@ nvol_find_byteset_pair_mask_avx2_k6:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm12
+    vpcmpeqb %ymm0, %ymm12, %ymm0
+    vpcmpeqb %ymm1, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm4, %ymm1
+    vpcmpeqb %ymm4, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm5, %ymm1
+    vpcmpeqb %ymm5, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm6, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm8, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm9, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm10, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm11, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm6, %ymm1, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm8, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm9, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm10, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm11, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -35196,7 +35265,8 @@ nvol_find_byteset_pair_mask_avx2_k6:
     vmovdqu 96(%rsp), %xmm12
     vmovdqu 112(%rsp), %xmm13
     vmovdqu 128(%rsp), %xmm14
-    add $152, %rsp
+    vmovdqu 144(%rsp), %xmm15
+    add $168, %rsp
     ret
 .Lnvol_find_byteset_pair_mask_avx2_k6.L5:
     mov %rax, (%r9)
@@ -35205,7 +35275,6 @@ nvol_find_byteset_pair_mask_avx2_k6:
     {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k6.L1
 .seh_endproc
 
-    .byte 144
 .globl nvol_find_byteset_pair_visit_avx2
 .def nvol_find_byteset_pair_visit_avx2; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_visit_avx2:
@@ -35255,38 +35324,38 @@ nvol_find_byteset_pair_visit_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_visit_avx2.L3
     .byte 144
 .Lnvol_find_byteset_pair_visit_avx2.L2:
+    vmovdqu (%r12,%rdi), %ymm0
     vmovdqu 224(%rsp), %ymm15
-    vpand (%r12,%rdi), %ymm15, %ymm0
-    vmovdqu (%r12,%rdi), %ymm1
-    vpsrlw $4, %ymm1, %ymm1
-    vpand NVOL_K3(%rip), %ymm1, %ymm1
+    vpand %ymm15, %ymm0, %ymm1
+    vpsrlw $4, %ymm0, %ymm0
+    vpand NVOL_K3(%rip), %ymm0, %ymm0
     vmovdqu 96(%rsp), %ymm15
-    vpshufb %ymm1, %ymm15, %ymm1
-    vmovdqu 32(%rsp), %ymm15
-    vpshufb %ymm0, %ymm15, %ymm2
-    vmovdqu 256(%rsp), %ymm15
-    vpsubb %ymm15, %ymm0, %ymm0
-    vmovdqu 64(%rsp), %ymm15
     vpshufb %ymm0, %ymm15, %ymm0
-    vpor %ymm0, %ymm2, %ymm0
-    vpand %ymm1, %ymm0, %ymm0
-    vpcmpeqb %ymm1, %ymm0, %ymm0
-    vmovdqu 224(%rsp), %ymm15
-    vpand (%r12,%rbx), %ymm15, %ymm1
-    vmovdqu (%r12,%rbx), %ymm2
-    vpsrlw $4, %ymm2, %ymm2
-    vpand NVOL_K3(%rip), %ymm2, %ymm2
-    vmovdqu 192(%rsp), %ymm15
-    vpshufb %ymm2, %ymm15, %ymm2
-    vmovdqu 128(%rsp), %ymm15
-    vpshufb %ymm1, %ymm15, %ymm3
+    vmovdqu 32(%rsp), %ymm15
+    vpshufb %ymm1, %ymm15, %ymm2
     vmovdqu 256(%rsp), %ymm15
     vpsubb %ymm15, %ymm1, %ymm1
-    vmovdqu 160(%rsp), %ymm15
+    vmovdqu 64(%rsp), %ymm15
     vpshufb %ymm1, %ymm15, %ymm1
-    vpor %ymm1, %ymm3, %ymm1
-    vpand %ymm2, %ymm1, %ymm1
-    vpcmpeqb %ymm2, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
+    vpand %ymm0, %ymm1, %ymm1
+    vpcmpeqb %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbx), %ymm1
+    vmovdqu 224(%rsp), %ymm15
+    vpand %ymm15, %ymm1, %ymm2
+    vpsrlw $4, %ymm1, %ymm1
+    vpand NVOL_K3(%rip), %ymm1, %ymm1
+    vmovdqu 192(%rsp), %ymm15
+    vpshufb %ymm1, %ymm15, %ymm1
+    vmovdqu 128(%rsp), %ymm15
+    vpshufb %ymm2, %ymm15, %ymm3
+    vmovdqu 256(%rsp), %ymm15
+    vpsubb %ymm15, %ymm2, %ymm2
+    vmovdqu 160(%rsp), %ymm15
+    vpshufb %ymm2, %ymm15, %ymm2
+    vpor %ymm2, %ymm3, %ymm2
+    vpand %ymm1, %ymm2, %ymm2
+    vpcmpeqb %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -35316,34 +35385,34 @@ nvol_find_byteset_pair_visit_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
-    vpand (%rbp,%rdi), %ymm3, %ymm0
-    vmovdqu (%rbp,%rdi), %ymm1
+    vmovdqu (%rbp,%rdi), %ymm0
+    vpand %ymm3, %ymm0, %ymm1
+    vpsrlw $4, %ymm0, %ymm0
+    vpand NVOL_K3(%rip), %ymm0, %ymm0
+    vmovdqu 96(%rsp), %ymm15
+    vpshufb %ymm0, %ymm15, %ymm0
+    vmovdqu 32(%rsp), %ymm15
+    vpshufb %ymm1, %ymm15, %ymm2
+    vpsubb %ymm4, %ymm1, %ymm1
+    vmovdqu 64(%rsp), %ymm15
+    vpshufb %ymm1, %ymm15, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
+    vpand %ymm0, %ymm1, %ymm1
+    vpcmpeqb %ymm0, %ymm1, %ymm0
+    vmovdqu (%rbp,%rbx), %ymm1
+    vpand %ymm3, %ymm1, %ymm2
     vpsrlw $4, %ymm1, %ymm1
     vpand NVOL_K3(%rip), %ymm1, %ymm1
-    vmovdqu 96(%rsp), %ymm15
-    vpshufb %ymm1, %ymm15, %ymm1
-    vmovdqu 32(%rsp), %ymm15
-    vpshufb %ymm0, %ymm15, %ymm2
-    vpsubb %ymm4, %ymm0, %ymm0
-    vmovdqu 64(%rsp), %ymm15
-    vpshufb %ymm0, %ymm15, %ymm0
-    vpor %ymm0, %ymm2, %ymm0
-    vpand %ymm1, %ymm0, %ymm0
-    vpcmpeqb %ymm1, %ymm0, %ymm0
-    vpand (%rbp,%rbx), %ymm3, %ymm1
-    vmovdqu (%rbp,%rbx), %ymm2
-    vpsrlw $4, %ymm2, %ymm2
-    vpand NVOL_K3(%rip), %ymm2, %ymm2
     vmovdqu 192(%rsp), %ymm15
-    vpshufb %ymm2, %ymm15, %ymm2
-    vmovdqu 128(%rsp), %ymm15
-    vpshufb %ymm1, %ymm15, %ymm3
-    vpsubb %ymm4, %ymm1, %ymm1
-    vmovdqu 160(%rsp), %ymm15
     vpshufb %ymm1, %ymm15, %ymm1
-    vpor %ymm1, %ymm3, %ymm1
-    vpand %ymm2, %ymm1, %ymm1
-    vpcmpeqb %ymm2, %ymm1, %ymm1
+    vmovdqu 128(%rsp), %ymm15
+    vpshufb %ymm2, %ymm15, %ymm3
+    vpsubb %ymm4, %ymm2, %ymm2
+    vmovdqu 160(%rsp), %ymm15
+    vpshufb %ymm2, %ymm15, %ymm2
+    vpor %ymm2, %ymm3, %ymm2
+    vpand %ymm1, %ymm2, %ymm2
+    vpcmpeqb %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -35381,7 +35450,8 @@ nvol_find_byteset_pair_visit_avx2:
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2.L1
 .seh_endproc
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_visit_avx2_k1
 .def nvol_find_byteset_pair_visit_avx2_k1; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_visit_avx2_k1:
@@ -35557,16 +35627,18 @@ nvol_find_byteset_pair_visit_avx2_k2:
     {disp8} ja .Lnvol_find_byteset_pair_visit_avx2_k2.L3
     .byte 102, 144
 .Lnvol_find_byteset_pair_visit_avx2_k2.L2:
+    vmovdqu (%r12,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbx), %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -35589,21 +35661,23 @@ nvol_find_byteset_pair_visit_avx2_k2:
 .Lnvol_find_byteset_pair_visit_avx2_k2.L3:
     lea 32(%rbp), %rax
     cmp %rax, %r12
-    {disp8} jae .Lnvol_find_byteset_pair_visit_avx2_k2.L8
+    {disp32} jae .Lnvol_find_byteset_pair_visit_avx2_k2.L8
     sub %rbp, %r12
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rbp,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rbp,%rbx), %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -35641,8 +35715,7 @@ nvol_find_byteset_pair_visit_avx2_k2:
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k2.L1
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_avx2_k3
 .def nvol_find_byteset_pair_visit_avx2_k3; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_visit_avx2_k3:
@@ -35712,22 +35785,24 @@ nvol_find_byteset_pair_visit_avx2_k3:
     {disp32} ja .Lnvol_find_byteset_pair_visit_avx2_k3.L3
     .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_avx2_k3.L2:
+    vmovdqu (%r12,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbx), %ymm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -35755,22 +35830,24 @@ nvol_find_byteset_pair_visit_avx2_k3:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rbp,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rbp,%rbx), %ymm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -35808,8 +35885,7 @@ nvol_find_byteset_pair_visit_avx2_k3:
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k3.L1
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_visit_avx2_k4
 .def nvol_find_byteset_pair_visit_avx2_k4; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_visit_avx2_k4:
@@ -35891,28 +35967,30 @@ nvol_find_byteset_pair_visit_avx2_k4:
     {disp32} ja .Lnvol_find_byteset_pair_visit_avx2_k4.L3
     .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_visit_avx2_k4.L2:
+    vmovdqu (%r12,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbx), %ymm1
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 224(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 256(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -35940,28 +36018,30 @@ nvol_find_byteset_pair_visit_avx2_k4:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rbp,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rbp,%rbx), %ymm1
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 224(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 256(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -35999,8 +36079,7 @@ nvol_find_byteset_pair_visit_avx2_k4:
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k4.L1
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_visit_avx2_k5
 .def nvol_find_byteset_pair_visit_avx2_k5; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_visit_avx2_k5:
@@ -36094,34 +36173,36 @@ nvol_find_byteset_pair_visit_avx2_k5:
     {disp32} ja .Lnvol_find_byteset_pair_visit_avx2_k5.L3
     .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_avx2_k5.L2:
+    vmovdqu (%r12,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbx), %ymm1
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 224(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 256(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 288(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 320(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -36149,34 +36230,36 @@ nvol_find_byteset_pair_visit_avx2_k5:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rbp,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rbp,%rbx), %ymm1
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 224(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 256(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 288(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 320(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -36215,7 +36298,7 @@ nvol_find_byteset_pair_visit_avx2_k5:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_visit_avx2_k6
 .def nvol_find_byteset_pair_visit_avx2_k6; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_visit_avx2_k6:
@@ -36321,40 +36404,42 @@ nvol_find_byteset_pair_visit_avx2_k6:
     {disp32} ja .Lnvol_find_byteset_pair_visit_avx2_k6.L3
     .byte 102, 144
 .Lnvol_find_byteset_pair_visit_avx2_k6.L2:
+    vmovdqu (%r12,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%r12,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbx), %ymm1
     vmovdqu 224(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 256(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 288(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 320(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 352(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 384(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -36382,40 +36467,42 @@ nvol_find_byteset_pair_visit_avx2_k6:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rbp,%rdi), %ymm0
     vmovdqu 32(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 64(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rdi), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rbp,%rbx), %ymm1
     vmovdqu 224(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 256(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 288(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 320(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 352(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 384(%rsp), %ymm15
-    vpcmpeqb (%rbp,%rbx), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -41675,8 +41762,8 @@ nvol_find_byteset_pair_entry_avx2:
 .seh_proc nvol_find_byteset_pair_entry_avx2
     push %rsi
 .seh_pushreg %rsi
-    sub $144, %rsp
-.seh_stackalloc 144
+    sub $160, %rsp
+.seh_stackalloc 160
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
@@ -41695,6 +41782,8 @@ nvol_find_byteset_pair_entry_avx2:
 .seh_savexmm %xmm13, 112
     vmovdqu %xmm14, 128(%rsp)
 .seh_savexmm %xmm14, 128
+    vmovdqu %xmm15, 144(%rsp)
+.seh_savexmm %xmm15, 144
 .seh_endprologue
     mov 240(%rcx), %r9
     mov 248(%rcx), %r10
@@ -41727,7 +41816,7 @@ nvol_find_byteset_pair_entry_avx2:
     sub %r11, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L10
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L9:
     movzbl (%rdx,%r9), %eax
     mov %rax, %r11
@@ -41781,8 +41870,7 @@ nvol_find_byteset_pair_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L20
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_find_byteset_pair_entry_avx2.L19:
     vpcmpeqb (%rdx,%r9), %xmm0, %xmm2
     vpcmpeqb (%rdx,%r10), %xmm1, %xmm3
@@ -41842,12 +41930,14 @@ nvol_find_byteset_pair_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L30
     .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L29:
-    vpcmpeqb (%rdx,%r9), %xmm0, %xmm4
-    vpcmpeqb (%rdx,%r9), %xmm1, %xmm5
-    vpor %xmm5, %xmm4, %xmm4
-    vpcmpeqb (%rdx,%r10), %xmm2, %xmm5
-    vpcmpeqb (%rdx,%r10), %xmm3, %xmm6
-    vpor %xmm6, %xmm5, %xmm5
+    vmovdqu (%rdx,%r9), %xmm4
+    vpcmpeqb %xmm0, %xmm4, %xmm5
+    vpcmpeqb %xmm1, %xmm4, %xmm4
+    vpor %xmm4, %xmm5, %xmm4
+    vmovdqu (%rdx,%r10), %xmm5
+    vpcmpeqb %xmm2, %xmm5, %xmm6
+    vpcmpeqb %xmm3, %xmm5, %xmm5
+    vpor %xmm5, %xmm6, %xmm5
     vpand %xmm5, %xmm4, %xmm4
     vpmovmskb %xmm4, %eax
     test %eax, %eax
@@ -41864,12 +41954,14 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm1, %xmm1
+    vmovdqu (%r8,%r9), %xmm4
+    vpcmpeqb %xmm0, %xmm4, %xmm0
+    vpcmpeqb %xmm1, %xmm4, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm2, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm3, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm1
+    vpcmpeqb %xmm2, %xmm1, %xmm2
+    vpcmpeqb %xmm3, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -41912,18 +42004,21 @@ nvol_find_byteset_pair_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L40
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_entry_avx2.L39:
-    vpcmpeqb (%rdx,%r9), %xmm0, %xmm6
-    vpcmpeqb (%rdx,%r9), %xmm1, %xmm7
-    vpor %xmm7, %xmm6, %xmm6
-    vpcmpeqb (%rdx,%r9), %xmm2, %xmm7
-    vpor %xmm7, %xmm6, %xmm6
-    vpcmpeqb (%rdx,%r10), %xmm3, %xmm7
-    vpcmpeqb (%rdx,%r10), %xmm4, %xmm8
+    vmovdqu (%rdx,%r9), %xmm6
+    vpcmpeqb %xmm0, %xmm6, %xmm7
+    vpcmpeqb %xmm1, %xmm6, %xmm8
     vpor %xmm8, %xmm7, %xmm7
-    vpcmpeqb (%rdx,%r10), %xmm5, %xmm8
-    vpor %xmm8, %xmm7, %xmm7
+    vpcmpeqb %xmm2, %xmm6, %xmm6
+    vpor %xmm6, %xmm7, %xmm6
+    vmovdqu (%rdx,%r10), %xmm7
+    vpcmpeqb %xmm3, %xmm7, %xmm8
+    vpcmpeqb %xmm4, %xmm7, %xmm9
+    vpor %xmm9, %xmm8, %xmm8
+    vpcmpeqb %xmm5, %xmm7, %xmm7
+    vpor %xmm7, %xmm8, %xmm7
     vpand %xmm7, %xmm6, %xmm6
     vpmovmskb %xmm6, %eax
     test %eax, %eax
@@ -41940,16 +42035,18 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm1, %xmm1
+    vmovdqu (%r8,%r9), %xmm6
+    vpcmpeqb %xmm0, %xmm6, %xmm0
+    vpcmpeqb %xmm1, %xmm6, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm2, %xmm1
+    vpcmpeqb %xmm2, %xmm6, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm3, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm4, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm5, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm1
+    vpcmpeqb %xmm3, %xmm1, %xmm2
+    vpcmpeqb %xmm4, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm5, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -42000,20 +42097,22 @@ nvol_find_byteset_pair_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L50
     .byte 15, 31, 0
 .Lnvol_find_byteset_pair_entry_avx2.L49:
-    vpcmpeqb (%rdx,%r9), %xmm0, %xmm8
-    vpcmpeqb (%rdx,%r9), %xmm1, %xmm9
-    vpor %xmm9, %xmm8, %xmm8
-    vpcmpeqb (%rdx,%r9), %xmm2, %xmm9
-    vpor %xmm9, %xmm8, %xmm8
-    vpcmpeqb (%rdx,%r9), %xmm3, %xmm9
-    vpor %xmm9, %xmm8, %xmm8
-    vpcmpeqb (%rdx,%r10), %xmm4, %xmm9
-    vpcmpeqb (%rdx,%r10), %xmm5, %xmm10
+    vmovdqu (%rdx,%r9), %xmm8
+    vpcmpeqb %xmm0, %xmm8, %xmm9
+    vpcmpeqb %xmm1, %xmm8, %xmm10
     vpor %xmm10, %xmm9, %xmm9
-    vpcmpeqb (%rdx,%r10), %xmm6, %xmm10
+    vpcmpeqb %xmm2, %xmm8, %xmm10
     vpor %xmm10, %xmm9, %xmm9
-    vpcmpeqb (%rdx,%r10), %xmm7, %xmm10
-    vpor %xmm10, %xmm9, %xmm9
+    vpcmpeqb %xmm3, %xmm8, %xmm8
+    vpor %xmm8, %xmm9, %xmm8
+    vmovdqu (%rdx,%r10), %xmm9
+    vpcmpeqb %xmm4, %xmm9, %xmm10
+    vpcmpeqb %xmm5, %xmm9, %xmm11
+    vpor %xmm11, %xmm10, %xmm10
+    vpcmpeqb %xmm6, %xmm9, %xmm11
+    vpor %xmm11, %xmm10, %xmm10
+    vpcmpeqb %xmm7, %xmm9, %xmm9
+    vpor %xmm9, %xmm10, %xmm9
     vpand %xmm9, %xmm8, %xmm8
     vpmovmskb %xmm8, %eax
     test %eax, %eax
@@ -42030,20 +42129,22 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm1, %xmm1
+    vmovdqu (%r8,%r9), %xmm8
+    vpcmpeqb %xmm0, %xmm8, %xmm0
+    vpcmpeqb %xmm1, %xmm8, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm2, %xmm1
+    vpcmpeqb %xmm2, %xmm8, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm3, %xmm1
+    vpcmpeqb %xmm3, %xmm8, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm4, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm5, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm6, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm7, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm1
+    vpcmpeqb %xmm4, %xmm1, %xmm2
+    vpcmpeqb %xmm5, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm6, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm7, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -42097,27 +42198,28 @@ nvol_find_byteset_pair_entry_avx2:
     lea 16(%rax), %rax
     sub %rax, %r8
     cmp %r8, %rdx
-    {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L60
-    .byte 15, 31, 64, 0
+    {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L60
 .Lnvol_find_byteset_pair_entry_avx2.L59:
-    vpcmpeqb (%rdx,%r9), %xmm0, %xmm10
-    vpcmpeqb (%rdx,%r9), %xmm1, %xmm11
-    vpor %xmm11, %xmm10, %xmm10
-    vpcmpeqb (%rdx,%r9), %xmm2, %xmm11
-    vpor %xmm11, %xmm10, %xmm10
-    vpcmpeqb (%rdx,%r9), %xmm3, %xmm11
-    vpor %xmm11, %xmm10, %xmm10
-    vpcmpeqb (%rdx,%r9), %xmm4, %xmm11
-    vpor %xmm11, %xmm10, %xmm10
-    vpcmpeqb (%rdx,%r10), %xmm5, %xmm11
-    vpcmpeqb (%rdx,%r10), %xmm6, %xmm12
+    vmovdqu (%rdx,%r9), %xmm10
+    vpcmpeqb %xmm0, %xmm10, %xmm11
+    vpcmpeqb %xmm1, %xmm10, %xmm12
     vpor %xmm12, %xmm11, %xmm11
-    vpcmpeqb (%rdx,%r10), %xmm7, %xmm12
+    vpcmpeqb %xmm2, %xmm10, %xmm12
     vpor %xmm12, %xmm11, %xmm11
-    vpcmpeqb (%rdx,%r10), %xmm8, %xmm12
+    vpcmpeqb %xmm3, %xmm10, %xmm12
     vpor %xmm12, %xmm11, %xmm11
-    vpcmpeqb (%rdx,%r10), %xmm9, %xmm12
-    vpor %xmm12, %xmm11, %xmm11
+    vpcmpeqb %xmm4, %xmm10, %xmm10
+    vpor %xmm10, %xmm11, %xmm10
+    vmovdqu (%rdx,%r10), %xmm11
+    vpcmpeqb %xmm5, %xmm11, %xmm12
+    vpcmpeqb %xmm6, %xmm11, %xmm13
+    vpor %xmm13, %xmm12, %xmm12
+    vpcmpeqb %xmm7, %xmm11, %xmm13
+    vpor %xmm13, %xmm12, %xmm12
+    vpcmpeqb %xmm8, %xmm11, %xmm13
+    vpor %xmm13, %xmm12, %xmm12
+    vpcmpeqb %xmm9, %xmm11, %xmm11
+    vpor %xmm11, %xmm12, %xmm11
     vpand %xmm11, %xmm10, %xmm10
     vpmovmskb %xmm10, %eax
     test %eax, %eax
@@ -42129,29 +42231,31 @@ nvol_find_byteset_pair_entry_avx2:
 .Lnvol_find_byteset_pair_entry_avx2.L60:
     lea 16(%r8), %rax
     cmp %rax, %rdx
-    {disp32} jae .Lnvol_find_byteset_pair_entry_avx2.L63
+    {disp8} jae .Lnvol_find_byteset_pair_entry_avx2.L63
     sub %r8, %rdx
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm1, %xmm1
+    vmovdqu (%r8,%r9), %xmm10
+    vpcmpeqb %xmm0, %xmm10, %xmm0
+    vpcmpeqb %xmm1, %xmm10, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm2, %xmm1
+    vpcmpeqb %xmm2, %xmm10, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm3, %xmm1
+    vpcmpeqb %xmm3, %xmm10, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm4, %xmm1
+    vpcmpeqb %xmm4, %xmm10, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm5, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm6, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm7, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm8, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm9, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm1
+    vpcmpeqb %xmm5, %xmm1, %xmm2
+    vpcmpeqb %xmm6, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm7, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm8, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm9, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -42214,28 +42318,30 @@ nvol_find_byteset_pair_entry_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L70
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L69:
-    vpcmpeqb (%rdx,%r9), %xmm0, %xmm12
-    vpcmpeqb (%rdx,%r9), %xmm1, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r9), %xmm2, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r9), %xmm3, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r9), %xmm4, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r9), %xmm5, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r10), %xmm6, %xmm13
-    vpcmpeqb (%rdx,%r10), %xmm7, %xmm14
+    vmovdqu (%rdx,%r9), %xmm12
+    vpcmpeqb %xmm0, %xmm12, %xmm13
+    vpcmpeqb %xmm1, %xmm12, %xmm14
     vpor %xmm14, %xmm13, %xmm13
-    vpcmpeqb (%rdx,%r10), %xmm8, %xmm14
+    vpcmpeqb %xmm2, %xmm12, %xmm14
     vpor %xmm14, %xmm13, %xmm13
-    vpcmpeqb (%rdx,%r10), %xmm9, %xmm14
+    vpcmpeqb %xmm3, %xmm12, %xmm14
     vpor %xmm14, %xmm13, %xmm13
-    vpcmpeqb (%rdx,%r10), %xmm10, %xmm14
+    vpcmpeqb %xmm4, %xmm12, %xmm14
     vpor %xmm14, %xmm13, %xmm13
-    vpcmpeqb (%rdx,%r10), %xmm11, %xmm14
-    vpor %xmm14, %xmm13, %xmm13
+    vpcmpeqb %xmm5, %xmm12, %xmm12
+    vpor %xmm12, %xmm13, %xmm12
+    vmovdqu (%rdx,%r10), %xmm13
+    vpcmpeqb %xmm6, %xmm13, %xmm14
+    vpcmpeqb %xmm7, %xmm13, %xmm15
+    vpor %xmm15, %xmm14, %xmm14
+    vpcmpeqb %xmm8, %xmm13, %xmm15
+    vpor %xmm15, %xmm14, %xmm14
+    vpcmpeqb %xmm9, %xmm13, %xmm15
+    vpor %xmm15, %xmm14, %xmm14
+    vpcmpeqb %xmm10, %xmm13, %xmm15
+    vpor %xmm15, %xmm14, %xmm14
+    vpcmpeqb %xmm11, %xmm13, %xmm13
+    vpor %xmm13, %xmm14, %xmm13
     vpand %xmm13, %xmm12, %xmm12
     vpmovmskb %xmm12, %eax
     test %eax, %eax
@@ -42252,28 +42358,30 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm1, %xmm1
+    vmovdqu (%r8,%r9), %xmm12
+    vpcmpeqb %xmm0, %xmm12, %xmm0
+    vpcmpeqb %xmm1, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm2, %xmm1
+    vpcmpeqb %xmm2, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm3, %xmm1
+    vpcmpeqb %xmm3, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm4, %xmm1
+    vpcmpeqb %xmm4, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r9), %xmm5, %xmm1
+    vpcmpeqb %xmm5, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm6, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm7, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm8, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm9, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm10, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r10), %xmm11, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm1
+    vpcmpeqb %xmm6, %xmm1, %xmm2
+    vpcmpeqb %xmm7, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm8, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm9, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm10, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm11, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -42305,28 +42413,28 @@ nvol_find_byteset_pair_entry_avx2:
     cmp %r8, %rdx
     {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L78
 .Lnvol_find_byteset_pair_entry_avx2.L77:
-    vpand (%rdx,%r9), %xmm6, %xmm8
-    vmovdqu (%rdx,%r9), %xmm9
+    vmovdqu (%rdx,%r9), %xmm8
+    vpand %xmm6, %xmm8, %xmm9
+    vpsrlw $4, %xmm8, %xmm8
+    vpand NVOL_K1(%rip), %xmm8, %xmm8
+    vpshufb %xmm8, %xmm2, %xmm8
+    vpshufb %xmm9, %xmm0, %xmm10
+    vpsubb %xmm7, %xmm9, %xmm9
+    vpshufb %xmm9, %xmm1, %xmm9
+    vpor %xmm9, %xmm10, %xmm9
+    vpand %xmm8, %xmm9, %xmm9
+    vpcmpeqb %xmm8, %xmm9, %xmm8
+    vmovdqu (%rdx,%r10), %xmm9
+    vpand %xmm6, %xmm9, %xmm10
     vpsrlw $4, %xmm9, %xmm9
     vpand NVOL_K1(%rip), %xmm9, %xmm9
-    vpshufb %xmm9, %xmm2, %xmm9
-    vpshufb %xmm8, %xmm0, %xmm10
-    vpsubb %xmm7, %xmm8, %xmm8
-    vpshufb %xmm8, %xmm1, %xmm8
-    vpor %xmm8, %xmm10, %xmm8
-    vpand %xmm9, %xmm8, %xmm8
-    vpcmpeqb %xmm9, %xmm8, %xmm8
-    vpand (%rdx,%r10), %xmm6, %xmm9
-    vmovdqu (%rdx,%r10), %xmm10
-    vpsrlw $4, %xmm10, %xmm10
-    vpand NVOL_K1(%rip), %xmm10, %xmm10
-    vpshufb %xmm10, %xmm5, %xmm10
-    vpshufb %xmm9, %xmm3, %xmm11
-    vpsubb %xmm7, %xmm9, %xmm9
-    vpshufb %xmm9, %xmm4, %xmm9
-    vpor %xmm9, %xmm11, %xmm9
-    vpand %xmm10, %xmm9, %xmm9
-    vpcmpeqb %xmm10, %xmm9, %xmm9
+    vpshufb %xmm9, %xmm5, %xmm9
+    vpshufb %xmm10, %xmm3, %xmm11
+    vpsubb %xmm7, %xmm10, %xmm10
+    vpshufb %xmm10, %xmm4, %xmm10
+    vpor %xmm10, %xmm11, %xmm10
+    vpand %xmm9, %xmm10, %xmm10
+    vpcmpeqb %xmm9, %xmm10, %xmm9
     vpand %xmm9, %xmm8, %xmm8
     vpmovmskb %xmm8, %eax
     test %eax, %eax
@@ -42343,28 +42451,28 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpand (%r8,%r9), %xmm6, %xmm8
-    vmovdqu (%r8,%r9), %xmm9
-    vpsrlw $4, %xmm9, %xmm9
-    vpand NVOL_K1(%rip), %xmm9, %xmm9
-    vpshufb %xmm9, %xmm2, %xmm2
-    vpshufb %xmm8, %xmm0, %xmm0
-    vpsubb %xmm7, %xmm8, %xmm8
+    vmovdqu (%r8,%r9), %xmm8
+    vpand %xmm6, %xmm8, %xmm9
+    vpsrlw $4, %xmm8, %xmm8
+    vpand NVOL_K1(%rip), %xmm8, %xmm8
+    vpshufb %xmm8, %xmm2, %xmm2
+    vpshufb %xmm9, %xmm0, %xmm0
+    vpsubb %xmm7, %xmm9, %xmm8
     vpshufb %xmm8, %xmm1, %xmm1
     vpor %xmm1, %xmm0, %xmm0
     vpand %xmm2, %xmm0, %xmm0
     vpcmpeqb %xmm2, %xmm0, %xmm0
-    vpand (%r8,%r10), %xmm6, %xmm1
-    vmovdqu (%r8,%r10), %xmm2
-    vpsrlw $4, %xmm2, %xmm2
-    vpand NVOL_K1(%rip), %xmm2, %xmm2
-    vpshufb %xmm2, %xmm5, %xmm2
-    vpshufb %xmm1, %xmm3, %xmm3
-    vpsubb %xmm7, %xmm1, %xmm1
-    vpshufb %xmm1, %xmm4, %xmm1
-    vpor %xmm1, %xmm3, %xmm1
-    vpand %xmm2, %xmm1, %xmm1
-    vpcmpeqb %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm1
+    vpand %xmm6, %xmm1, %xmm2
+    vpsrlw $4, %xmm1, %xmm1
+    vpand NVOL_K1(%rip), %xmm1, %xmm1
+    vpshufb %xmm1, %xmm5, %xmm1
+    vpshufb %xmm2, %xmm3, %xmm3
+    vpsubb %xmm7, %xmm2, %xmm2
+    vpshufb %xmm2, %xmm4, %xmm2
+    vpor %xmm2, %xmm3, %xmm2
+    vpand %xmm1, %xmm2, %xmm2
+    vpcmpeqb %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -42395,7 +42503,7 @@ nvol_find_byteset_pair_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L88
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L87:
     vpcmpeqb (%rdx,%r9), %ymm0, %ymm2
     vpcmpeqb (%rdx,%r10), %ymm1, %ymm3
@@ -42455,12 +42563,14 @@ nvol_find_byteset_pair_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L98
     .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L97:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm4
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm5
-    vpor %ymm5, %ymm4, %ymm4
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm5
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm6
-    vpor %ymm6, %ymm5, %ymm5
+    vmovdqu (%rdx,%r9), %ymm4
+    vpcmpeqb %ymm0, %ymm4, %ymm5
+    vpcmpeqb %ymm1, %ymm4, %ymm4
+    vpor %ymm4, %ymm5, %ymm4
+    vmovdqu (%rdx,%r10), %ymm5
+    vpcmpeqb %ymm2, %ymm5, %ymm6
+    vpcmpeqb %ymm3, %ymm5, %ymm5
+    vpor %ymm5, %ymm6, %ymm5
     vpand %ymm5, %ymm4, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
@@ -42477,12 +42587,14 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm4
+    vpcmpeqb %ymm0, %ymm4, %ymm0
+    vpcmpeqb %ymm1, %ymm4, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm2, %ymm1, %ymm2
+    vpcmpeqb %ymm3, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -42525,18 +42637,21 @@ nvol_find_byteset_pair_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L108
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_entry_avx2.L107:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm6
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm7
-    vpor %ymm7, %ymm6, %ymm6
-    vpcmpeqb (%rdx,%r9), %ymm2, %ymm7
-    vpor %ymm7, %ymm6, %ymm6
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm7
-    vpcmpeqb (%rdx,%r10), %ymm4, %ymm8
+    vmovdqu (%rdx,%r9), %ymm6
+    vpcmpeqb %ymm0, %ymm6, %ymm7
+    vpcmpeqb %ymm1, %ymm6, %ymm8
     vpor %ymm8, %ymm7, %ymm7
-    vpcmpeqb (%rdx,%r10), %ymm5, %ymm8
-    vpor %ymm8, %ymm7, %ymm7
+    vpcmpeqb %ymm2, %ymm6, %ymm6
+    vpor %ymm6, %ymm7, %ymm6
+    vmovdqu (%rdx,%r10), %ymm7
+    vpcmpeqb %ymm3, %ymm7, %ymm8
+    vpcmpeqb %ymm4, %ymm7, %ymm9
+    vpor %ymm9, %ymm8, %ymm8
+    vpcmpeqb %ymm5, %ymm7, %ymm7
+    vpor %ymm7, %ymm8, %ymm7
     vpand %ymm7, %ymm6, %ymm6
     vpmovmskb %ymm6, %eax
     test %eax, %eax
@@ -42553,16 +42668,18 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm6
+    vpcmpeqb %ymm0, %ymm6, %ymm0
+    vpcmpeqb %ymm1, %ymm6, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm6, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm4, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm5, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm3, %ymm1, %ymm2
+    vpcmpeqb %ymm4, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm5, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -42613,20 +42730,22 @@ nvol_find_byteset_pair_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L118
     .byte 15, 31, 0
 .Lnvol_find_byteset_pair_entry_avx2.L117:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm8
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r9), %ymm2, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r9), %ymm3, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r10), %ymm4, %ymm9
-    vpcmpeqb (%rdx,%r10), %ymm5, %ymm10
+    vmovdqu (%rdx,%r9), %ymm8
+    vpcmpeqb %ymm0, %ymm8, %ymm9
+    vpcmpeqb %ymm1, %ymm8, %ymm10
     vpor %ymm10, %ymm9, %ymm9
-    vpcmpeqb (%rdx,%r10), %ymm6, %ymm10
+    vpcmpeqb %ymm2, %ymm8, %ymm10
     vpor %ymm10, %ymm9, %ymm9
-    vpcmpeqb (%rdx,%r10), %ymm7, %ymm10
-    vpor %ymm10, %ymm9, %ymm9
+    vpcmpeqb %ymm3, %ymm8, %ymm8
+    vpor %ymm8, %ymm9, %ymm8
+    vmovdqu (%rdx,%r10), %ymm9
+    vpcmpeqb %ymm4, %ymm9, %ymm10
+    vpcmpeqb %ymm5, %ymm9, %ymm11
+    vpor %ymm11, %ymm10, %ymm10
+    vpcmpeqb %ymm6, %ymm9, %ymm11
+    vpor %ymm11, %ymm10, %ymm10
+    vpcmpeqb %ymm7, %ymm9, %ymm9
+    vpor %ymm9, %ymm10, %ymm9
     vpand %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %eax
     test %eax, %eax
@@ -42643,20 +42762,22 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm8
+    vpcmpeqb %ymm0, %ymm8, %ymm0
+    vpcmpeqb %ymm1, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm4, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm5, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm6, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm4, %ymm1, %ymm2
+    vpcmpeqb %ymm5, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm6, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -42710,27 +42831,28 @@ nvol_find_byteset_pair_entry_avx2:
     lea 32(%rax), %rax
     sub %rax, %r8
     cmp %r8, %rdx
-    {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L128
-    .byte 15, 31, 64, 0
+    {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L128
 .Lnvol_find_byteset_pair_entry_avx2.L127:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm10
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r9), %ymm2, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r9), %ymm3, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r9), %ymm4, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm5, %ymm11
-    vpcmpeqb (%rdx,%r10), %ymm6, %ymm12
+    vmovdqu (%rdx,%r9), %ymm10
+    vpcmpeqb %ymm0, %ymm10, %ymm11
+    vpcmpeqb %ymm1, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r10), %ymm7, %ymm12
+    vpcmpeqb %ymm2, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r10), %ymm8, %ymm12
+    vpcmpeqb %ymm3, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r10), %ymm9, %ymm12
-    vpor %ymm12, %ymm11, %ymm11
+    vpcmpeqb %ymm4, %ymm10, %ymm10
+    vpor %ymm10, %ymm11, %ymm10
+    vmovdqu (%rdx,%r10), %ymm11
+    vpcmpeqb %ymm5, %ymm11, %ymm12
+    vpcmpeqb %ymm6, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm7, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm8, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm9, %ymm11, %ymm11
+    vpor %ymm11, %ymm12, %ymm11
     vpand %ymm11, %ymm10, %ymm10
     vpmovmskb %ymm10, %eax
     test %eax, %eax
@@ -42742,29 +42864,31 @@ nvol_find_byteset_pair_entry_avx2:
 .Lnvol_find_byteset_pair_entry_avx2.L128:
     lea 32(%r8), %rax
     cmp %rax, %rdx
-    {disp32} jae .Lnvol_find_byteset_pair_entry_avx2.L131
+    {disp8} jae .Lnvol_find_byteset_pair_entry_avx2.L131
     sub %r8, %rdx
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm10
+    vpcmpeqb %ymm0, %ymm10, %ymm0
+    vpcmpeqb %ymm1, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm4, %ymm1
+    vpcmpeqb %ymm4, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm5, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm6, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm8, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm9, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm5, %ymm1, %ymm2
+    vpcmpeqb %ymm6, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm8, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm9, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -42827,28 +42951,30 @@ nvol_find_byteset_pair_entry_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L138
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L137:
-    vpcmpeqb (%rdx,%r9), %ymm0, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm1, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm2, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm3, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm4, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r9), %ymm5, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm6, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm7, %ymm14
+    vmovdqu (%rdx,%r9), %ymm12
+    vpcmpeqb %ymm0, %ymm12, %ymm13
+    vpcmpeqb %ymm1, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm8, %ymm14
+    vpcmpeqb %ymm2, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm9, %ymm14
+    vpcmpeqb %ymm3, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm10, %ymm14
+    vpcmpeqb %ymm4, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r10), %ymm11, %ymm14
-    vpor %ymm14, %ymm13, %ymm13
+    vpcmpeqb %ymm5, %ymm12, %ymm12
+    vpor %ymm12, %ymm13, %ymm12
+    vmovdqu (%rdx,%r10), %ymm13
+    vpcmpeqb %ymm6, %ymm13, %ymm14
+    vpcmpeqb %ymm7, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm8, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm9, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm10, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm11, %ymm13, %ymm13
+    vpor %ymm13, %ymm14, %ymm13
     vpand %ymm13, %ymm12, %ymm12
     vpmovmskb %ymm12, %eax
     test %eax, %eax
@@ -42865,28 +42991,30 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r9), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm1, %ymm1
+    vmovdqu (%r8,%r9), %ymm12
+    vpcmpeqb %ymm0, %ymm12, %ymm0
+    vpcmpeqb %ymm1, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm4, %ymm1
+    vpcmpeqb %ymm4, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r9), %ymm5, %ymm1
+    vpcmpeqb %ymm5, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm6, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm8, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm9, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm10, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r10), %ymm11, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpcmpeqb %ymm6, %ymm1, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm8, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm9, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm10, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm11, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -42920,28 +43048,28 @@ nvol_find_byteset_pair_entry_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 144
 .Lnvol_find_byteset_pair_entry_avx2.L145:
-    vpand (%rdx,%r9), %ymm6, %ymm8
-    vmovdqu (%rdx,%r9), %ymm9
+    vmovdqu (%rdx,%r9), %ymm8
+    vpand %ymm6, %ymm8, %ymm9
+    vpsrlw $4, %ymm8, %ymm8
+    vpand NVOL_K3(%rip), %ymm8, %ymm8
+    vpshufb %ymm8, %ymm2, %ymm8
+    vpshufb %ymm9, %ymm0, %ymm10
+    vpsubb %ymm7, %ymm9, %ymm9
+    vpshufb %ymm9, %ymm1, %ymm9
+    vpor %ymm9, %ymm10, %ymm9
+    vpand %ymm8, %ymm9, %ymm9
+    vpcmpeqb %ymm8, %ymm9, %ymm8
+    vmovdqu (%rdx,%r10), %ymm9
+    vpand %ymm6, %ymm9, %ymm10
     vpsrlw $4, %ymm9, %ymm9
     vpand NVOL_K3(%rip), %ymm9, %ymm9
-    vpshufb %ymm9, %ymm2, %ymm9
-    vpshufb %ymm8, %ymm0, %ymm10
-    vpsubb %ymm7, %ymm8, %ymm8
-    vpshufb %ymm8, %ymm1, %ymm8
-    vpor %ymm8, %ymm10, %ymm8
-    vpand %ymm9, %ymm8, %ymm8
-    vpcmpeqb %ymm9, %ymm8, %ymm8
-    vpand (%rdx,%r10), %ymm6, %ymm9
-    vmovdqu (%rdx,%r10), %ymm10
-    vpsrlw $4, %ymm10, %ymm10
-    vpand NVOL_K3(%rip), %ymm10, %ymm10
-    vpshufb %ymm10, %ymm5, %ymm10
-    vpshufb %ymm9, %ymm3, %ymm11
-    vpsubb %ymm7, %ymm9, %ymm9
-    vpshufb %ymm9, %ymm4, %ymm9
-    vpor %ymm9, %ymm11, %ymm9
-    vpand %ymm10, %ymm9, %ymm9
-    vpcmpeqb %ymm10, %ymm9, %ymm9
+    vpshufb %ymm9, %ymm5, %ymm9
+    vpshufb %ymm10, %ymm3, %ymm11
+    vpsubb %ymm7, %ymm10, %ymm10
+    vpshufb %ymm10, %ymm4, %ymm10
+    vpor %ymm10, %ymm11, %ymm10
+    vpand %ymm9, %ymm10, %ymm10
+    vpcmpeqb %ymm9, %ymm10, %ymm9
     vpand %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %eax
     test %eax, %eax
@@ -42958,28 +43086,28 @@ nvol_find_byteset_pair_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpand (%r8,%r9), %ymm6, %ymm8
-    vmovdqu (%r8,%r9), %ymm9
-    vpsrlw $4, %ymm9, %ymm9
-    vpand NVOL_K3(%rip), %ymm9, %ymm9
-    vpshufb %ymm9, %ymm2, %ymm2
-    vpshufb %ymm8, %ymm0, %ymm0
-    vpsubb %ymm7, %ymm8, %ymm8
+    vmovdqu (%r8,%r9), %ymm8
+    vpand %ymm6, %ymm8, %ymm9
+    vpsrlw $4, %ymm8, %ymm8
+    vpand NVOL_K3(%rip), %ymm8, %ymm8
+    vpshufb %ymm8, %ymm2, %ymm2
+    vpshufb %ymm9, %ymm0, %ymm0
+    vpsubb %ymm7, %ymm9, %ymm8
     vpshufb %ymm8, %ymm1, %ymm1
     vpor %ymm1, %ymm0, %ymm0
     vpand %ymm2, %ymm0, %ymm0
     vpcmpeqb %ymm2, %ymm0, %ymm0
-    vpand (%r8,%r10), %ymm6, %ymm1
-    vmovdqu (%r8,%r10), %ymm2
-    vpsrlw $4, %ymm2, %ymm2
-    vpand NVOL_K3(%rip), %ymm2, %ymm2
-    vpshufb %ymm2, %ymm5, %ymm2
-    vpshufb %ymm1, %ymm3, %ymm3
-    vpsubb %ymm7, %ymm1, %ymm1
-    vpshufb %ymm1, %ymm4, %ymm1
-    vpor %ymm1, %ymm3, %ymm1
-    vpand %ymm2, %ymm1, %ymm1
-    vpcmpeqb %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm1
+    vpand %ymm6, %ymm1, %ymm2
+    vpsrlw $4, %ymm1, %ymm1
+    vpand NVOL_K3(%rip), %ymm1, %ymm1
+    vpshufb %ymm1, %ymm5, %ymm1
+    vpshufb %ymm2, %ymm3, %ymm3
+    vpsubb %ymm7, %ymm2, %ymm2
+    vpshufb %ymm2, %ymm4, %ymm2
+    vpor %ymm2, %ymm3, %ymm2
+    vpand %ymm1, %ymm2, %ymm2
+    vpcmpeqb %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -43002,7 +43130,8 @@ nvol_find_byteset_pair_entry_avx2:
     vmovdqu 96(%rsp), %xmm12
     vmovdqu 112(%rsp), %xmm13
     vmovdqu 128(%rsp), %xmm14
-    add $144, %rsp
+    vmovdqu 144(%rsp), %xmm15
+    add $160, %rsp
     pop %rsi
     ret
 .Lnvol_find_byteset_pair_entry_avx2.L14:
@@ -43031,7 +43160,7 @@ nvol_find_byteset_pair_entry_avx2:
 .Lnvol_find_byteset_pair_entry_avx2.L72:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
 .Lnvol_find_byteset_pair_entry_avx2.L80:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
@@ -43066,7 +43195,7 @@ nvol_find_byteset_pair_entry_avx2:
     {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
 .seh_endproc
 
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_mask_entry_avx2
 .def nvol_find_byteset_pair_mask_entry_avx2; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_mask_entry_avx2:
@@ -43075,8 +43204,8 @@ nvol_find_byteset_pair_mask_entry_avx2:
 .seh_pushreg %rdi
     push %rsi
 .seh_pushreg %rsi
-    sub $152, %rsp
-.seh_stackalloc 152
+    sub $168, %rsp
+.seh_stackalloc 168
     vmovdqu %xmm6, (%rsp)
 .seh_savexmm %xmm6, 0
     vmovdqu %xmm7, 16(%rsp)
@@ -43095,6 +43224,8 @@ nvol_find_byteset_pair_mask_entry_avx2:
 .seh_savexmm %xmm13, 112
     vmovdqu %xmm14, 128(%rsp)
 .seh_savexmm %xmm14, 128
+    vmovdqu %xmm15, 144(%rsp)
+.seh_savexmm %xmm15, 144
 .seh_endprologue
     mov 240(%rcx), %r10
     mov 248(%rcx), %r11
@@ -43127,7 +43258,7 @@ nvol_find_byteset_pair_mask_entry_avx2:
     sub %rsi, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L10
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L9:
     movzbl (%rdx,%r10), %eax
     mov %rax, %rsi
@@ -43240,13 +43371,16 @@ nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L30
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L29:
-    vpcmpeqb (%rdx,%r10), %xmm0, %xmm4
-    vpcmpeqb (%rdx,%r10), %xmm1, %xmm5
-    vpor %xmm5, %xmm4, %xmm4
-    vpcmpeqb (%rdx,%r11), %xmm2, %xmm5
-    vpcmpeqb (%rdx,%r11), %xmm3, %xmm6
-    vpor %xmm6, %xmm5, %xmm5
+    vmovdqu (%rdx,%r10), %xmm4
+    vpcmpeqb %xmm0, %xmm4, %xmm5
+    vpcmpeqb %xmm1, %xmm4, %xmm4
+    vpor %xmm4, %xmm5, %xmm4
+    vmovdqu (%rdx,%r11), %xmm5
+    vpcmpeqb %xmm2, %xmm5, %xmm6
+    vpcmpeqb %xmm3, %xmm5, %xmm5
+    vpor %xmm5, %xmm6, %xmm5
     vpand %xmm5, %xmm4, %xmm4
     vpmovmskb %xmm4, %eax
     test %eax, %eax
@@ -43263,12 +43397,14 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm4
+    vpcmpeqb %xmm0, %xmm4, %xmm0
+    vpcmpeqb %xmm1, %xmm4, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r11), %xmm2, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm3, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r11), %xmm1
+    vpcmpeqb %xmm2, %xmm1, %xmm2
+    vpcmpeqb %xmm3, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -43314,16 +43450,18 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L40
     .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L39:
-    vpcmpeqb (%rdx,%r10), %xmm0, %xmm6
-    vpcmpeqb (%rdx,%r10), %xmm1, %xmm7
-    vpor %xmm7, %xmm6, %xmm6
-    vpcmpeqb (%rdx,%r10), %xmm2, %xmm7
-    vpor %xmm7, %xmm6, %xmm6
-    vpcmpeqb (%rdx,%r11), %xmm3, %xmm7
-    vpcmpeqb (%rdx,%r11), %xmm4, %xmm8
+    vmovdqu (%rdx,%r10), %xmm6
+    vpcmpeqb %xmm0, %xmm6, %xmm7
+    vpcmpeqb %xmm1, %xmm6, %xmm8
     vpor %xmm8, %xmm7, %xmm7
-    vpcmpeqb (%rdx,%r11), %xmm5, %xmm8
-    vpor %xmm8, %xmm7, %xmm7
+    vpcmpeqb %xmm2, %xmm6, %xmm6
+    vpor %xmm6, %xmm7, %xmm6
+    vmovdqu (%rdx,%r11), %xmm7
+    vpcmpeqb %xmm3, %xmm7, %xmm8
+    vpcmpeqb %xmm4, %xmm7, %xmm9
+    vpor %xmm9, %xmm8, %xmm8
+    vpcmpeqb %xmm5, %xmm7, %xmm7
+    vpor %xmm7, %xmm8, %xmm7
     vpand %xmm7, %xmm6, %xmm6
     vpmovmskb %xmm6, %eax
     test %eax, %eax
@@ -43340,16 +43478,18 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm6
+    vpcmpeqb %xmm0, %xmm6, %xmm0
+    vpcmpeqb %xmm1, %xmm6, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm2, %xmm1
+    vpcmpeqb %xmm2, %xmm6, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r11), %xmm3, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm4, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm5, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r11), %xmm1
+    vpcmpeqb %xmm3, %xmm1, %xmm2
+    vpcmpeqb %xmm4, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm5, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -43401,20 +43541,22 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L50
     .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L49:
-    vpcmpeqb (%rdx,%r10), %xmm0, %xmm8
-    vpcmpeqb (%rdx,%r10), %xmm1, %xmm9
-    vpor %xmm9, %xmm8, %xmm8
-    vpcmpeqb (%rdx,%r10), %xmm2, %xmm9
-    vpor %xmm9, %xmm8, %xmm8
-    vpcmpeqb (%rdx,%r10), %xmm3, %xmm9
-    vpor %xmm9, %xmm8, %xmm8
-    vpcmpeqb (%rdx,%r11), %xmm4, %xmm9
-    vpcmpeqb (%rdx,%r11), %xmm5, %xmm10
+    vmovdqu (%rdx,%r10), %xmm8
+    vpcmpeqb %xmm0, %xmm8, %xmm9
+    vpcmpeqb %xmm1, %xmm8, %xmm10
     vpor %xmm10, %xmm9, %xmm9
-    vpcmpeqb (%rdx,%r11), %xmm6, %xmm10
+    vpcmpeqb %xmm2, %xmm8, %xmm10
     vpor %xmm10, %xmm9, %xmm9
-    vpcmpeqb (%rdx,%r11), %xmm7, %xmm10
-    vpor %xmm10, %xmm9, %xmm9
+    vpcmpeqb %xmm3, %xmm8, %xmm8
+    vpor %xmm8, %xmm9, %xmm8
+    vmovdqu (%rdx,%r11), %xmm9
+    vpcmpeqb %xmm4, %xmm9, %xmm10
+    vpcmpeqb %xmm5, %xmm9, %xmm11
+    vpor %xmm11, %xmm10, %xmm10
+    vpcmpeqb %xmm6, %xmm9, %xmm11
+    vpor %xmm11, %xmm10, %xmm10
+    vpcmpeqb %xmm7, %xmm9, %xmm9
+    vpor %xmm9, %xmm10, %xmm9
     vpand %xmm9, %xmm8, %xmm8
     vpmovmskb %xmm8, %eax
     test %eax, %eax
@@ -43431,20 +43573,22 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm8
+    vpcmpeqb %xmm0, %xmm8, %xmm0
+    vpcmpeqb %xmm1, %xmm8, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm2, %xmm1
+    vpcmpeqb %xmm2, %xmm8, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm3, %xmm1
+    vpcmpeqb %xmm3, %xmm8, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r11), %xmm4, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm5, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm6, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm7, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r11), %xmm1
+    vpcmpeqb %xmm4, %xmm1, %xmm2
+    vpcmpeqb %xmm5, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm6, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm7, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -43502,24 +43646,26 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L60
     .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L59:
-    vpcmpeqb (%rdx,%r10), %xmm0, %xmm10
-    vpcmpeqb (%rdx,%r10), %xmm1, %xmm11
-    vpor %xmm11, %xmm10, %xmm10
-    vpcmpeqb (%rdx,%r10), %xmm2, %xmm11
-    vpor %xmm11, %xmm10, %xmm10
-    vpcmpeqb (%rdx,%r10), %xmm3, %xmm11
-    vpor %xmm11, %xmm10, %xmm10
-    vpcmpeqb (%rdx,%r10), %xmm4, %xmm11
-    vpor %xmm11, %xmm10, %xmm10
-    vpcmpeqb (%rdx,%r11), %xmm5, %xmm11
-    vpcmpeqb (%rdx,%r11), %xmm6, %xmm12
+    vmovdqu (%rdx,%r10), %xmm10
+    vpcmpeqb %xmm0, %xmm10, %xmm11
+    vpcmpeqb %xmm1, %xmm10, %xmm12
     vpor %xmm12, %xmm11, %xmm11
-    vpcmpeqb (%rdx,%r11), %xmm7, %xmm12
+    vpcmpeqb %xmm2, %xmm10, %xmm12
     vpor %xmm12, %xmm11, %xmm11
-    vpcmpeqb (%rdx,%r11), %xmm8, %xmm12
+    vpcmpeqb %xmm3, %xmm10, %xmm12
     vpor %xmm12, %xmm11, %xmm11
-    vpcmpeqb (%rdx,%r11), %xmm9, %xmm12
-    vpor %xmm12, %xmm11, %xmm11
+    vpcmpeqb %xmm4, %xmm10, %xmm10
+    vpor %xmm10, %xmm11, %xmm10
+    vmovdqu (%rdx,%r11), %xmm11
+    vpcmpeqb %xmm5, %xmm11, %xmm12
+    vpcmpeqb %xmm6, %xmm11, %xmm13
+    vpor %xmm13, %xmm12, %xmm12
+    vpcmpeqb %xmm7, %xmm11, %xmm13
+    vpor %xmm13, %xmm12, %xmm12
+    vpcmpeqb %xmm8, %xmm11, %xmm13
+    vpor %xmm13, %xmm12, %xmm12
+    vpcmpeqb %xmm9, %xmm11, %xmm11
+    vpor %xmm11, %xmm12, %xmm11
     vpand %xmm11, %xmm10, %xmm10
     vpmovmskb %xmm10, %eax
     test %eax, %eax
@@ -43536,24 +43682,26 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm10
+    vpcmpeqb %xmm0, %xmm10, %xmm0
+    vpcmpeqb %xmm1, %xmm10, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm2, %xmm1
+    vpcmpeqb %xmm2, %xmm10, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm3, %xmm1
+    vpcmpeqb %xmm3, %xmm10, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm4, %xmm1
+    vpcmpeqb %xmm4, %xmm10, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r11), %xmm5, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm6, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm7, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm8, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm9, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r11), %xmm1
+    vpcmpeqb %xmm5, %xmm1, %xmm2
+    vpcmpeqb %xmm6, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm7, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm8, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm9, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -43615,30 +43763,32 @@ nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L70
-    .byte 102, 144
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L69:
-    vpcmpeqb (%rdx,%r10), %xmm0, %xmm12
-    vpcmpeqb (%rdx,%r10), %xmm1, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r10), %xmm2, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r10), %xmm3, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r10), %xmm4, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r10), %xmm5, %xmm13
-    vpor %xmm13, %xmm12, %xmm12
-    vpcmpeqb (%rdx,%r11), %xmm6, %xmm13
-    vpcmpeqb (%rdx,%r11), %xmm7, %xmm14
+    vmovdqu (%rdx,%r10), %xmm12
+    vpcmpeqb %xmm0, %xmm12, %xmm13
+    vpcmpeqb %xmm1, %xmm12, %xmm14
     vpor %xmm14, %xmm13, %xmm13
-    vpcmpeqb (%rdx,%r11), %xmm8, %xmm14
+    vpcmpeqb %xmm2, %xmm12, %xmm14
     vpor %xmm14, %xmm13, %xmm13
-    vpcmpeqb (%rdx,%r11), %xmm9, %xmm14
+    vpcmpeqb %xmm3, %xmm12, %xmm14
     vpor %xmm14, %xmm13, %xmm13
-    vpcmpeqb (%rdx,%r11), %xmm10, %xmm14
+    vpcmpeqb %xmm4, %xmm12, %xmm14
     vpor %xmm14, %xmm13, %xmm13
-    vpcmpeqb (%rdx,%r11), %xmm11, %xmm14
-    vpor %xmm14, %xmm13, %xmm13
+    vpcmpeqb %xmm5, %xmm12, %xmm12
+    vpor %xmm12, %xmm13, %xmm12
+    vmovdqu (%rdx,%r11), %xmm13
+    vpcmpeqb %xmm6, %xmm13, %xmm14
+    vpcmpeqb %xmm7, %xmm13, %xmm15
+    vpor %xmm15, %xmm14, %xmm14
+    vpcmpeqb %xmm8, %xmm13, %xmm15
+    vpor %xmm15, %xmm14, %xmm14
+    vpcmpeqb %xmm9, %xmm13, %xmm15
+    vpor %xmm15, %xmm14, %xmm14
+    vpcmpeqb %xmm10, %xmm13, %xmm15
+    vpor %xmm15, %xmm14, %xmm14
+    vpcmpeqb %xmm11, %xmm13, %xmm13
+    vpor %xmm13, %xmm14, %xmm13
     vpand %xmm13, %xmm12, %xmm12
     vpmovmskb %xmm12, %eax
     test %eax, %eax
@@ -43655,28 +43805,30 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm1, %xmm1
+    vmovdqu (%r8,%r10), %xmm12
+    vpcmpeqb %xmm0, %xmm12, %xmm0
+    vpcmpeqb %xmm1, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm2, %xmm1
+    vpcmpeqb %xmm2, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm3, %xmm1
+    vpcmpeqb %xmm3, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm4, %xmm1
+    vpcmpeqb %xmm4, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r10), %xmm5, %xmm1
+    vpcmpeqb %xmm5, %xmm12, %xmm1
     vpor %xmm1, %xmm0, %xmm0
-    vpcmpeqb (%r8,%r11), %xmm6, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm7, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm8, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm9, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm10, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
-    vpcmpeqb (%r8,%r11), %xmm11, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r11), %xmm1
+    vpcmpeqb %xmm6, %xmm1, %xmm2
+    vpcmpeqb %xmm7, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm8, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm9, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm10, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
+    vpcmpeqb %xmm11, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -43708,30 +43860,30 @@ nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L78
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_mask_entry_avx2.L77:
-    vpand (%rdx,%r10), %xmm6, %xmm8
-    vmovdqu (%rdx,%r10), %xmm9
+    vmovdqu (%rdx,%r10), %xmm8
+    vpand %xmm6, %xmm8, %xmm9
+    vpsrlw $4, %xmm8, %xmm8
+    vpand NVOL_K1(%rip), %xmm8, %xmm8
+    vpshufb %xmm8, %xmm2, %xmm8
+    vpshufb %xmm9, %xmm0, %xmm10
+    vpsubb %xmm7, %xmm9, %xmm9
+    vpshufb %xmm9, %xmm1, %xmm9
+    vpor %xmm9, %xmm10, %xmm9
+    vpand %xmm8, %xmm9, %xmm9
+    vpcmpeqb %xmm8, %xmm9, %xmm8
+    vmovdqu (%rdx,%r11), %xmm9
+    vpand %xmm6, %xmm9, %xmm10
     vpsrlw $4, %xmm9, %xmm9
     vpand NVOL_K1(%rip), %xmm9, %xmm9
-    vpshufb %xmm9, %xmm2, %xmm9
-    vpshufb %xmm8, %xmm0, %xmm10
-    vpsubb %xmm7, %xmm8, %xmm8
-    vpshufb %xmm8, %xmm1, %xmm8
-    vpor %xmm8, %xmm10, %xmm8
-    vpand %xmm9, %xmm8, %xmm8
-    vpcmpeqb %xmm9, %xmm8, %xmm8
-    vpand (%rdx,%r11), %xmm6, %xmm9
-    vmovdqu (%rdx,%r11), %xmm10
-    vpsrlw $4, %xmm10, %xmm10
-    vpand NVOL_K1(%rip), %xmm10, %xmm10
-    vpshufb %xmm10, %xmm5, %xmm10
-    vpshufb %xmm9, %xmm3, %xmm11
-    vpsubb %xmm7, %xmm9, %xmm9
-    vpshufb %xmm9, %xmm4, %xmm9
-    vpor %xmm9, %xmm11, %xmm9
-    vpand %xmm10, %xmm9, %xmm9
-    vpcmpeqb %xmm10, %xmm9, %xmm9
+    vpshufb %xmm9, %xmm5, %xmm9
+    vpshufb %xmm10, %xmm3, %xmm11
+    vpsubb %xmm7, %xmm10, %xmm10
+    vpshufb %xmm10, %xmm4, %xmm10
+    vpor %xmm10, %xmm11, %xmm10
+    vpand %xmm9, %xmm10, %xmm10
+    vpcmpeqb %xmm9, %xmm10, %xmm9
     vpand %xmm9, %xmm8, %xmm8
     vpmovmskb %xmm8, %eax
     test %eax, %eax
@@ -43748,28 +43900,28 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpand (%r8,%r10), %xmm6, %xmm8
-    vmovdqu (%r8,%r10), %xmm9
-    vpsrlw $4, %xmm9, %xmm9
-    vpand NVOL_K1(%rip), %xmm9, %xmm9
-    vpshufb %xmm9, %xmm2, %xmm2
-    vpshufb %xmm8, %xmm0, %xmm0
-    vpsubb %xmm7, %xmm8, %xmm8
+    vmovdqu (%r8,%r10), %xmm8
+    vpand %xmm6, %xmm8, %xmm9
+    vpsrlw $4, %xmm8, %xmm8
+    vpand NVOL_K1(%rip), %xmm8, %xmm8
+    vpshufb %xmm8, %xmm2, %xmm2
+    vpshufb %xmm9, %xmm0, %xmm0
+    vpsubb %xmm7, %xmm9, %xmm8
     vpshufb %xmm8, %xmm1, %xmm1
     vpor %xmm1, %xmm0, %xmm0
     vpand %xmm2, %xmm0, %xmm0
     vpcmpeqb %xmm2, %xmm0, %xmm0
-    vpand (%r8,%r11), %xmm6, %xmm1
-    vmovdqu (%r8,%r11), %xmm2
-    vpsrlw $4, %xmm2, %xmm2
-    vpand NVOL_K1(%rip), %xmm2, %xmm2
-    vpshufb %xmm2, %xmm5, %xmm2
-    vpshufb %xmm1, %xmm3, %xmm3
-    vpsubb %xmm7, %xmm1, %xmm1
-    vpshufb %xmm1, %xmm4, %xmm1
-    vpor %xmm1, %xmm3, %xmm1
-    vpand %xmm2, %xmm1, %xmm1
-    vpcmpeqb %xmm2, %xmm1, %xmm1
+    vmovdqu (%r8,%r11), %xmm1
+    vpand %xmm6, %xmm1, %xmm2
+    vpsrlw $4, %xmm1, %xmm1
+    vpand NVOL_K1(%rip), %xmm1, %xmm1
+    vpshufb %xmm1, %xmm5, %xmm1
+    vpshufb %xmm2, %xmm3, %xmm3
+    vpsubb %xmm7, %xmm2, %xmm2
+    vpshufb %xmm2, %xmm4, %xmm2
+    vpor %xmm2, %xmm3, %xmm2
+    vpand %xmm1, %xmm2, %xmm2
+    vpcmpeqb %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     and %rax, %rcx
@@ -43801,8 +43953,7 @@ nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L88
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_find_byteset_pair_mask_entry_avx2.L87:
     vpcmpeqb (%rdx,%r10), %ymm0, %ymm2
     vpcmpeqb (%rdx,%r11), %ymm1, %ymm3
@@ -43863,12 +44014,14 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L98
     .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L97:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm4
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm5
-    vpor %ymm5, %ymm4, %ymm4
-    vpcmpeqb (%rdx,%r11), %ymm2, %ymm5
-    vpcmpeqb (%rdx,%r11), %ymm3, %ymm6
-    vpor %ymm6, %ymm5, %ymm5
+    vmovdqu (%rdx,%r10), %ymm4
+    vpcmpeqb %ymm0, %ymm4, %ymm5
+    vpcmpeqb %ymm1, %ymm4, %ymm4
+    vpor %ymm4, %ymm5, %ymm4
+    vmovdqu (%rdx,%r11), %ymm5
+    vpcmpeqb %ymm2, %ymm5, %ymm6
+    vpcmpeqb %ymm3, %ymm5, %ymm5
+    vpor %ymm5, %ymm6, %ymm5
     vpand %ymm5, %ymm4, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
@@ -43885,12 +44038,14 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm4
+    vpcmpeqb %ymm0, %ymm4, %ymm0
+    vpcmpeqb %ymm1, %ymm4, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm2, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm3, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm2, %ymm1, %ymm2
+    vpcmpeqb %ymm3, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -43936,16 +44091,18 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L108
     .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L107:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm6
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm7
-    vpor %ymm7, %ymm6, %ymm6
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm7
-    vpor %ymm7, %ymm6, %ymm6
-    vpcmpeqb (%rdx,%r11), %ymm3, %ymm7
-    vpcmpeqb (%rdx,%r11), %ymm4, %ymm8
+    vmovdqu (%rdx,%r10), %ymm6
+    vpcmpeqb %ymm0, %ymm6, %ymm7
+    vpcmpeqb %ymm1, %ymm6, %ymm8
     vpor %ymm8, %ymm7, %ymm7
-    vpcmpeqb (%rdx,%r11), %ymm5, %ymm8
-    vpor %ymm8, %ymm7, %ymm7
+    vpcmpeqb %ymm2, %ymm6, %ymm6
+    vpor %ymm6, %ymm7, %ymm6
+    vmovdqu (%rdx,%r11), %ymm7
+    vpcmpeqb %ymm3, %ymm7, %ymm8
+    vpcmpeqb %ymm4, %ymm7, %ymm9
+    vpor %ymm9, %ymm8, %ymm8
+    vpcmpeqb %ymm5, %ymm7, %ymm7
+    vpor %ymm7, %ymm8, %ymm7
     vpand %ymm7, %ymm6, %ymm6
     vpmovmskb %ymm6, %eax
     test %eax, %eax
@@ -43962,16 +44119,18 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm6
+    vpcmpeqb %ymm0, %ymm6, %ymm0
+    vpcmpeqb %ymm1, %ymm6, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm6, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm3, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm4, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm5, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm3, %ymm1, %ymm2
+    vpcmpeqb %ymm4, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm5, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -44023,20 +44182,22 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L118
     .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L117:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm8
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm9
-    vpor %ymm9, %ymm8, %ymm8
-    vpcmpeqb (%rdx,%r11), %ymm4, %ymm9
-    vpcmpeqb (%rdx,%r11), %ymm5, %ymm10
+    vmovdqu (%rdx,%r10), %ymm8
+    vpcmpeqb %ymm0, %ymm8, %ymm9
+    vpcmpeqb %ymm1, %ymm8, %ymm10
     vpor %ymm10, %ymm9, %ymm9
-    vpcmpeqb (%rdx,%r11), %ymm6, %ymm10
+    vpcmpeqb %ymm2, %ymm8, %ymm10
     vpor %ymm10, %ymm9, %ymm9
-    vpcmpeqb (%rdx,%r11), %ymm7, %ymm10
-    vpor %ymm10, %ymm9, %ymm9
+    vpcmpeqb %ymm3, %ymm8, %ymm8
+    vpor %ymm8, %ymm9, %ymm8
+    vmovdqu (%rdx,%r11), %ymm9
+    vpcmpeqb %ymm4, %ymm9, %ymm10
+    vpcmpeqb %ymm5, %ymm9, %ymm11
+    vpor %ymm11, %ymm10, %ymm10
+    vpcmpeqb %ymm6, %ymm9, %ymm11
+    vpor %ymm11, %ymm10, %ymm10
+    vpcmpeqb %ymm7, %ymm9, %ymm9
+    vpor %ymm9, %ymm10, %ymm9
     vpand %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %eax
     test %eax, %eax
@@ -44053,20 +44214,22 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm8
+    vpcmpeqb %ymm0, %ymm8, %ymm0
+    vpcmpeqb %ymm1, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm8, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm4, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm5, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm6, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm4, %ymm1, %ymm2
+    vpcmpeqb %ymm5, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm6, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -44124,24 +44287,26 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L128
     .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L127:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r10), %ymm4, %ymm11
-    vpor %ymm11, %ymm10, %ymm10
-    vpcmpeqb (%rdx,%r11), %ymm5, %ymm11
-    vpcmpeqb (%rdx,%r11), %ymm6, %ymm12
+    vmovdqu (%rdx,%r10), %ymm10
+    vpcmpeqb %ymm0, %ymm10, %ymm11
+    vpcmpeqb %ymm1, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r11), %ymm7, %ymm12
+    vpcmpeqb %ymm2, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r11), %ymm8, %ymm12
+    vpcmpeqb %ymm3, %ymm10, %ymm12
     vpor %ymm12, %ymm11, %ymm11
-    vpcmpeqb (%rdx,%r11), %ymm9, %ymm12
-    vpor %ymm12, %ymm11, %ymm11
+    vpcmpeqb %ymm4, %ymm10, %ymm10
+    vpor %ymm10, %ymm11, %ymm10
+    vmovdqu (%rdx,%r11), %ymm11
+    vpcmpeqb %ymm5, %ymm11, %ymm12
+    vpcmpeqb %ymm6, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm7, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm8, %ymm11, %ymm13
+    vpor %ymm13, %ymm12, %ymm12
+    vpcmpeqb %ymm9, %ymm11, %ymm11
+    vpor %ymm11, %ymm12, %ymm11
     vpand %ymm11, %ymm10, %ymm10
     vpmovmskb %ymm10, %eax
     test %eax, %eax
@@ -44158,24 +44323,26 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm10
+    vpcmpeqb %ymm0, %ymm10, %ymm0
+    vpcmpeqb %ymm1, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm4, %ymm1
+    vpcmpeqb %ymm4, %ymm10, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm5, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm6, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm8, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm9, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm5, %ymm1, %ymm2
+    vpcmpeqb %ymm6, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm8, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm9, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -44237,30 +44404,32 @@ nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %r8
     cmp %r8, %rdx
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L138
-    .byte 102, 144
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L137:
-    vpcmpeqb (%rdx,%r10), %ymm0, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm1, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm2, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm3, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm4, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r10), %ymm5, %ymm13
-    vpor %ymm13, %ymm12, %ymm12
-    vpcmpeqb (%rdx,%r11), %ymm6, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm7, %ymm14
+    vmovdqu (%rdx,%r10), %ymm12
+    vpcmpeqb %ymm0, %ymm12, %ymm13
+    vpcmpeqb %ymm1, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm8, %ymm14
+    vpcmpeqb %ymm2, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm9, %ymm14
+    vpcmpeqb %ymm3, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm10, %ymm14
+    vpcmpeqb %ymm4, %ymm12, %ymm14
     vpor %ymm14, %ymm13, %ymm13
-    vpcmpeqb (%rdx,%r11), %ymm11, %ymm14
-    vpor %ymm14, %ymm13, %ymm13
+    vpcmpeqb %ymm5, %ymm12, %ymm12
+    vpor %ymm12, %ymm13, %ymm12
+    vmovdqu (%rdx,%r11), %ymm13
+    vpcmpeqb %ymm6, %ymm13, %ymm14
+    vpcmpeqb %ymm7, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm8, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm9, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm10, %ymm13, %ymm15
+    vpor %ymm15, %ymm14, %ymm14
+    vpcmpeqb %ymm11, %ymm13, %ymm13
+    vpor %ymm13, %ymm14, %ymm13
     vpand %ymm13, %ymm12, %ymm12
     vpmovmskb %ymm12, %eax
     test %eax, %eax
@@ -44277,28 +44446,30 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpcmpeqb (%r8,%r10), %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm1, %ymm1
+    vmovdqu (%r8,%r10), %ymm12
+    vpcmpeqb %ymm0, %ymm12, %ymm0
+    vpcmpeqb %ymm1, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm2, %ymm1
+    vpcmpeqb %ymm2, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm3, %ymm1
+    vpcmpeqb %ymm3, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm4, %ymm1
+    vpcmpeqb %ymm4, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r10), %ymm5, %ymm1
+    vpcmpeqb %ymm5, %ymm12, %ymm1
     vpor %ymm1, %ymm0, %ymm0
-    vpcmpeqb (%r8,%r11), %ymm6, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm7, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm8, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm9, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm10, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
-    vpcmpeqb (%r8,%r11), %ymm11, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpcmpeqb %ymm6, %ymm1, %ymm2
+    vpcmpeqb %ymm7, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm8, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm9, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm10, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
+    vpcmpeqb %ymm11, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -44332,28 +44503,28 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L146
     .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L145:
-    vpand (%rdx,%r10), %ymm6, %ymm8
-    vmovdqu (%rdx,%r10), %ymm9
+    vmovdqu (%rdx,%r10), %ymm8
+    vpand %ymm6, %ymm8, %ymm9
+    vpsrlw $4, %ymm8, %ymm8
+    vpand NVOL_K3(%rip), %ymm8, %ymm8
+    vpshufb %ymm8, %ymm2, %ymm8
+    vpshufb %ymm9, %ymm0, %ymm10
+    vpsubb %ymm7, %ymm9, %ymm9
+    vpshufb %ymm9, %ymm1, %ymm9
+    vpor %ymm9, %ymm10, %ymm9
+    vpand %ymm8, %ymm9, %ymm9
+    vpcmpeqb %ymm8, %ymm9, %ymm8
+    vmovdqu (%rdx,%r11), %ymm9
+    vpand %ymm6, %ymm9, %ymm10
     vpsrlw $4, %ymm9, %ymm9
     vpand NVOL_K3(%rip), %ymm9, %ymm9
-    vpshufb %ymm9, %ymm2, %ymm9
-    vpshufb %ymm8, %ymm0, %ymm10
-    vpsubb %ymm7, %ymm8, %ymm8
-    vpshufb %ymm8, %ymm1, %ymm8
-    vpor %ymm8, %ymm10, %ymm8
-    vpand %ymm9, %ymm8, %ymm8
-    vpcmpeqb %ymm9, %ymm8, %ymm8
-    vpand (%rdx,%r11), %ymm6, %ymm9
-    vmovdqu (%rdx,%r11), %ymm10
-    vpsrlw $4, %ymm10, %ymm10
-    vpand NVOL_K3(%rip), %ymm10, %ymm10
-    vpshufb %ymm10, %ymm5, %ymm10
-    vpshufb %ymm9, %ymm3, %ymm11
-    vpsubb %ymm7, %ymm9, %ymm9
-    vpshufb %ymm9, %ymm4, %ymm9
-    vpor %ymm9, %ymm11, %ymm9
-    vpand %ymm10, %ymm9, %ymm9
-    vpcmpeqb %ymm10, %ymm9, %ymm9
+    vpshufb %ymm9, %ymm5, %ymm9
+    vpshufb %ymm10, %ymm3, %ymm11
+    vpsubb %ymm7, %ymm10, %ymm10
+    vpshufb %ymm10, %ymm4, %ymm10
+    vpor %ymm10, %ymm11, %ymm10
+    vpand %ymm9, %ymm10, %ymm10
+    vpcmpeqb %ymm9, %ymm10, %ymm9
     vpand %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %eax
     test %eax, %eax
@@ -44370,28 +44541,28 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov $4294967295, %eax
     mov %rdx, %rcx
     shl %cl, %eax
-    vpand (%r8,%r10), %ymm6, %ymm8
-    vmovdqu (%r8,%r10), %ymm9
-    vpsrlw $4, %ymm9, %ymm9
-    vpand NVOL_K3(%rip), %ymm9, %ymm9
-    vpshufb %ymm9, %ymm2, %ymm2
-    vpshufb %ymm8, %ymm0, %ymm0
-    vpsubb %ymm7, %ymm8, %ymm8
+    vmovdqu (%r8,%r10), %ymm8
+    vpand %ymm6, %ymm8, %ymm9
+    vpsrlw $4, %ymm8, %ymm8
+    vpand NVOL_K3(%rip), %ymm8, %ymm8
+    vpshufb %ymm8, %ymm2, %ymm2
+    vpshufb %ymm9, %ymm0, %ymm0
+    vpsubb %ymm7, %ymm9, %ymm8
     vpshufb %ymm8, %ymm1, %ymm1
     vpor %ymm1, %ymm0, %ymm0
     vpand %ymm2, %ymm0, %ymm0
     vpcmpeqb %ymm2, %ymm0, %ymm0
-    vpand (%r8,%r11), %ymm6, %ymm1
-    vmovdqu (%r8,%r11), %ymm2
-    vpsrlw $4, %ymm2, %ymm2
-    vpand NVOL_K3(%rip), %ymm2, %ymm2
-    vpshufb %ymm2, %ymm5, %ymm2
-    vpshufb %ymm1, %ymm3, %ymm3
-    vpsubb %ymm7, %ymm1, %ymm1
-    vpshufb %ymm1, %ymm4, %ymm1
-    vpor %ymm1, %ymm3, %ymm1
-    vpand %ymm2, %ymm1, %ymm1
-    vpcmpeqb %ymm2, %ymm1, %ymm1
+    vmovdqu (%r8,%r11), %ymm1
+    vpand %ymm6, %ymm1, %ymm2
+    vpsrlw $4, %ymm1, %ymm1
+    vpand NVOL_K3(%rip), %ymm1, %ymm1
+    vpshufb %ymm1, %ymm5, %ymm1
+    vpshufb %ymm2, %ymm3, %ymm3
+    vpsubb %ymm7, %ymm2, %ymm2
+    vpshufb %ymm2, %ymm4, %ymm2
+    vpor %ymm2, %ymm3, %ymm2
+    vpand %ymm1, %ymm2, %ymm2
+    vpcmpeqb %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
@@ -44415,7 +44586,8 @@ nvol_find_byteset_pair_mask_entry_avx2:
     vmovdqu 96(%rsp), %xmm12
     vmovdqu 112(%rsp), %xmm13
     vmovdqu 128(%rsp), %xmm14
-    add $152, %rsp
+    vmovdqu 144(%rsp), %xmm15
+    add $168, %rsp
     pop %rsi
     pop %rdi
     ret
@@ -44433,7 +44605,7 @@ nvol_find_byteset_pair_mask_entry_avx2:
     mov %rax, (%r9)
     movq $16, 8(%r9)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
 .Lnvol_find_byteset_pair_mask_entry_avx2.L42:
     mov %rax, (%r9)
     movq $16, 8(%r9)
@@ -44496,6 +44668,7 @@ nvol_find_byteset_pair_mask_entry_avx2:
     {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
 .seh_endproc
 
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_visit_entry_avx2
 .def nvol_find_byteset_pair_visit_entry_avx2; .scl 2; .type 32; .endef
 nvol_find_byteset_pair_visit_entry_avx2:
@@ -44722,19 +44895,21 @@ nvol_find_byteset_pair_visit_entry_avx2:
     sub %rax, %rsi
     mov %rdx, %r12
     cmp %rsi, %r12
-    {disp8} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L36
-    .byte 144
+    {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L36
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L35:
+    vmovdqu (%r12,%rbx), %xmm0
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%r12,%rbp), %xmm1
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %r8d
     test %r8d, %r8d
@@ -44762,16 +44937,18 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %xmm0
     vmovdqu 96(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 128(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%rsi,%rbp), %xmm1
     vmovdqu 160(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 192(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     mov %rcx, %r8
@@ -44845,24 +45022,26 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L50
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L49:
+    vmovdqu (%r12,%rbx), %xmm0
     vmovdqu 224(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 256(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 288(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%r12,%rbp), %xmm1
     vmovdqu 320(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 352(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 384(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %r8d
     test %r8d, %r8d
@@ -44890,22 +45069,24 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %xmm0
     vmovdqu 224(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 256(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 288(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%rsi,%rbp), %xmm1
     vmovdqu 320(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 352(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 384(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     mov %rcx, %r8
@@ -44993,28 +45174,30 @@ nvol_find_byteset_pair_visit_entry_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L64
     .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L63:
+    vmovdqu (%r12,%rbx), %xmm0
     vmovdqu 416(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 448(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 480(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 512(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%r12,%rbp), %xmm1
     vmovdqu 544(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 576(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 608(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 640(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %r8d
     test %r8d, %r8d
@@ -45042,28 +45225,30 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %xmm0
     vmovdqu 416(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 448(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 480(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 512(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%rsi,%rbp), %xmm1
     vmovdqu 544(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 576(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 608(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 640(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     mov %rcx, %r8
@@ -45161,36 +45346,38 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L78
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L77:
+    vmovdqu (%r12,%rbx), %xmm0
     vmovdqu 672(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 704(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 736(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 768(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 800(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%r12,%rbp), %xmm1
     vmovdqu 832(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 864(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 896(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 928(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 960(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %r8d
     test %r8d, %r8d
@@ -45218,34 +45405,36 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %xmm0
     vmovdqu 672(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 704(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 736(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 768(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 800(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%rsi,%rbp), %xmm1
     vmovdqu 832(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 864(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 896(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 928(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 960(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     mov %rcx, %r8
@@ -45355,42 +45544,44 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L92
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L91:
+    vmovdqu (%r12,%rbx), %xmm0
     vmovdqu 992(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 1024(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 1056(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 1088(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 1120(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 1152(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%r12,%rbp), %xmm1
     vmovdqu 1184(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 1216(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 1248(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 1280(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 1312(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 1344(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %r8d
     test %r8d, %r8d
@@ -45418,40 +45609,42 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %xmm0
     vmovdqu 992(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm1
     vmovdqu 1024(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 1056(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 1088(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 1120(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm2
+    vpor %xmm2, %xmm1, %xmm1
     vmovdqu 1152(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %xmm15, %xmm1
-    vpor %xmm1, %xmm0, %xmm0
+    vpcmpeqb %xmm15, %xmm0, %xmm0
+    vpor %xmm0, %xmm1, %xmm0
+    vmovdqu (%rsi,%rbp), %xmm1
     vmovdqu 1184(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm2
     vmovdqu 1216(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 1248(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 1280(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 1312(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm3
+    vpor %xmm3, %xmm2, %xmm2
     vmovdqu 1344(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %xmm15, %xmm2
-    vpor %xmm2, %xmm1, %xmm1
+    vpcmpeqb %xmm15, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     mov %rcx, %r8
@@ -45503,40 +45696,40 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L104
-    .byte 15, 31, 0
+    .byte 144
 .Lnvol_find_byteset_pair_visit_entry_avx2.L103:
+    vmovdqu (%r12,%rbx), %xmm0
     vmovdqu 1568(%rsp), %ymm15
-    vpand (%r12,%rbx), %xmm15, %xmm0
-    vmovdqu (%r12,%rbx), %xmm1
-    vpsrlw $4, %xmm1, %xmm1
-    vpand NVOL_K1(%rip), %xmm1, %xmm1
+    vpand %xmm15, %xmm0, %xmm1
+    vpsrlw $4, %xmm0, %xmm0
+    vpand NVOL_K1(%rip), %xmm0, %xmm0
     vmovdqu 1440(%rsp), %ymm15
-    vpshufb %xmm1, %xmm15, %xmm1
-    vmovdqu 1376(%rsp), %ymm15
-    vpshufb %xmm0, %xmm15, %xmm2
-    vmovdqu 1600(%rsp), %ymm15
-    vpsubb %xmm15, %xmm0, %xmm0
-    vmovdqu 1408(%rsp), %ymm15
     vpshufb %xmm0, %xmm15, %xmm0
-    vpor %xmm0, %xmm2, %xmm0
-    vpand %xmm1, %xmm0, %xmm0
-    vpcmpeqb %xmm1, %xmm0, %xmm0
-    vmovdqu 1568(%rsp), %ymm15
-    vpand (%r12,%rbp), %xmm15, %xmm1
-    vmovdqu (%r12,%rbp), %xmm2
-    vpsrlw $4, %xmm2, %xmm2
-    vpand NVOL_K1(%rip), %xmm2, %xmm2
-    vmovdqu 1536(%rsp), %ymm15
-    vpshufb %xmm2, %xmm15, %xmm2
-    vmovdqu 1472(%rsp), %ymm15
-    vpshufb %xmm1, %xmm15, %xmm3
+    vmovdqu 1376(%rsp), %ymm15
+    vpshufb %xmm1, %xmm15, %xmm2
     vmovdqu 1600(%rsp), %ymm15
     vpsubb %xmm15, %xmm1, %xmm1
-    vmovdqu 1504(%rsp), %ymm15
+    vmovdqu 1408(%rsp), %ymm15
     vpshufb %xmm1, %xmm15, %xmm1
-    vpor %xmm1, %xmm3, %xmm1
-    vpand %xmm2, %xmm1, %xmm1
-    vpcmpeqb %xmm2, %xmm1, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
+    vpand %xmm0, %xmm1, %xmm1
+    vpcmpeqb %xmm0, %xmm1, %xmm0
+    vmovdqu (%r12,%rbp), %xmm1
+    vmovdqu 1568(%rsp), %ymm15
+    vpand %xmm15, %xmm1, %xmm2
+    vpsrlw $4, %xmm1, %xmm1
+    vpand NVOL_K1(%rip), %xmm1, %xmm1
+    vmovdqu 1536(%rsp), %ymm15
+    vpshufb %xmm1, %xmm15, %xmm1
+    vmovdqu 1472(%rsp), %ymm15
+    vpshufb %xmm2, %xmm15, %xmm3
+    vmovdqu 1600(%rsp), %ymm15
+    vpsubb %xmm15, %xmm2, %xmm2
+    vmovdqu 1504(%rsp), %ymm15
+    vpshufb %xmm2, %xmm15, %xmm2
+    vpor %xmm2, %xmm3, %xmm2
+    vpand %xmm1, %xmm2, %xmm2
+    vpcmpeqb %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %r8d
     test %r8d, %r8d
@@ -45566,34 +45759,34 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
-    vpand (%rsi,%rbx), %xmm3, %xmm0
-    vmovdqu (%rsi,%rbx), %xmm1
+    vmovdqu (%rsi,%rbx), %xmm0
+    vpand %xmm3, %xmm0, %xmm1
+    vpsrlw $4, %xmm0, %xmm0
+    vpand NVOL_K1(%rip), %xmm0, %xmm0
+    vmovdqu 1440(%rsp), %ymm15
+    vpshufb %xmm0, %xmm15, %xmm0
+    vmovdqu 1376(%rsp), %ymm15
+    vpshufb %xmm1, %xmm15, %xmm2
+    vpsubb %xmm4, %xmm1, %xmm1
+    vmovdqu 1408(%rsp), %ymm15
+    vpshufb %xmm1, %xmm15, %xmm1
+    vpor %xmm1, %xmm2, %xmm1
+    vpand %xmm0, %xmm1, %xmm1
+    vpcmpeqb %xmm0, %xmm1, %xmm0
+    vmovdqu (%rsi,%rbp), %xmm1
+    vpand %xmm3, %xmm1, %xmm2
     vpsrlw $4, %xmm1, %xmm1
     vpand NVOL_K1(%rip), %xmm1, %xmm1
-    vmovdqu 1440(%rsp), %ymm15
-    vpshufb %xmm1, %xmm15, %xmm1
-    vmovdqu 1376(%rsp), %ymm15
-    vpshufb %xmm0, %xmm15, %xmm2
-    vpsubb %xmm4, %xmm0, %xmm0
-    vmovdqu 1408(%rsp), %ymm15
-    vpshufb %xmm0, %xmm15, %xmm0
-    vpor %xmm0, %xmm2, %xmm0
-    vpand %xmm1, %xmm0, %xmm0
-    vpcmpeqb %xmm1, %xmm0, %xmm0
-    vpand (%rsi,%rbp), %xmm3, %xmm1
-    vmovdqu (%rsi,%rbp), %xmm2
-    vpsrlw $4, %xmm2, %xmm2
-    vpand NVOL_K1(%rip), %xmm2, %xmm2
     vmovdqu 1536(%rsp), %ymm15
-    vpshufb %xmm2, %xmm15, %xmm2
-    vmovdqu 1472(%rsp), %ymm15
-    vpshufb %xmm1, %xmm15, %xmm3
-    vpsubb %xmm4, %xmm1, %xmm1
-    vmovdqu 1504(%rsp), %ymm15
     vpshufb %xmm1, %xmm15, %xmm1
-    vpor %xmm1, %xmm3, %xmm1
-    vpand %xmm2, %xmm1, %xmm1
-    vpcmpeqb %xmm2, %xmm1, %xmm1
+    vmovdqu 1472(%rsp), %ymm15
+    vpshufb %xmm2, %xmm15, %xmm3
+    vpsubb %xmm4, %xmm2, %xmm2
+    vmovdqu 1504(%rsp), %ymm15
+    vpshufb %xmm2, %xmm15, %xmm2
+    vpor %xmm2, %xmm3, %xmm2
+    vpand %xmm1, %xmm2, %xmm2
+    vpcmpeqb %xmm1, %xmm2, %xmm1
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %ecx
     mov %rcx, %r8
@@ -45643,7 +45836,7 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp8} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L118
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L117:
     vmovdqu 1632(%rsp), %ymm15
     vpcmpeqb (%r12,%rbx), %ymm15, %ymm0
@@ -45740,19 +45933,21 @@ nvol_find_byteset_pair_visit_entry_avx2:
     sub %rax, %rsi
     mov %rdx, %r12
     cmp %rsi, %r12
-    {disp8} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L132
-    .byte 15, 31, 64, 0
+    {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L132
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L131:
+    vmovdqu (%r12,%rbx), %ymm0
     vmovdqu 1696(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 1728(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbp), %ymm1
     vmovdqu 1760(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 1792(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -45771,7 +45966,7 @@ nvol_find_byteset_pair_visit_entry_avx2:
 .Lnvol_find_byteset_pair_visit_entry_avx2.L133:
     add $32, %r12
     cmp %rsi, %r12
-    {disp8} jbe .Lnvol_find_byteset_pair_visit_entry_avx2.L131
+    {disp32} jbe .Lnvol_find_byteset_pair_visit_entry_avx2.L131
 .Lnvol_find_byteset_pair_visit_entry_avx2.L132:
     lea 32(%rsi), %rax
     cmp %rax, %r12
@@ -45780,16 +45975,18 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %ymm0
     vmovdqu 1696(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 1728(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rsi,%rbp), %ymm1
     vmovdqu 1760(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 1792(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -45863,24 +46060,26 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L146
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L145:
+    vmovdqu (%r12,%rbx), %ymm0
     vmovdqu 1824(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 1856(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 1888(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbp), %ymm1
     vmovdqu 1920(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 1952(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 1984(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -45908,22 +46107,24 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %ymm0
     vmovdqu 1824(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 1856(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 1888(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rsi,%rbp), %ymm1
     vmovdqu 1920(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 1952(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 1984(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -46011,28 +46212,30 @@ nvol_find_byteset_pair_visit_entry_avx2:
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L160
     .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L159:
+    vmovdqu (%r12,%rbx), %ymm0
     vmovdqu 2016(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 2048(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2080(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2112(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbp), %ymm1
     vmovdqu 2144(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 2176(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2208(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2240(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -46060,28 +46263,30 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %ymm0
     vmovdqu 2016(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 2048(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2080(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2112(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rsi,%rbp), %ymm1
     vmovdqu 2144(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 2176(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2208(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2240(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -46179,36 +46384,38 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L174
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L173:
+    vmovdqu (%r12,%rbx), %ymm0
     vmovdqu 2272(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 2304(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2336(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2368(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2400(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbp), %ymm1
     vmovdqu 2432(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 2464(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2496(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2528(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2560(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -46236,34 +46443,36 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %ymm0
     vmovdqu 2272(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 2304(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2336(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2368(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2400(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rsi,%rbp), %ymm1
     vmovdqu 2432(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 2464(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2496(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2528(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2560(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -46373,42 +46582,43 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L188
-    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L187:
+    vmovdqu (%r12,%rbx), %ymm0
     vmovdqu 2592(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 2624(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2656(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2688(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2720(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2752(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbp), %ymm1
     vmovdqu 2784(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 2816(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2848(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2880(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2912(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2944(%rsp), %ymm15
-    vpcmpeqb (%r12,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -46436,40 +46646,42 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
+    vmovdqu (%rsi,%rbx), %ymm0
     vmovdqu 2592(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm1
     vmovdqu 2624(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2656(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2688(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2720(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm2
+    vpor %ymm2, %ymm1, %ymm1
     vmovdqu 2752(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbx), %ymm15, %ymm1
-    vpor %ymm1, %ymm0, %ymm0
+    vpcmpeqb %ymm15, %ymm0, %ymm0
+    vpor %ymm0, %ymm1, %ymm0
+    vmovdqu (%rsi,%rbp), %ymm1
     vmovdqu 2784(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm2
     vmovdqu 2816(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2848(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2880(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2912(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm3
+    vpor %ymm3, %ymm2, %ymm2
     vmovdqu 2944(%rsp), %ymm15
-    vpcmpeqb (%rsi,%rbp), %ymm15, %ymm2
-    vpor %ymm2, %ymm1, %ymm1
+    vpcmpeqb %ymm15, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -46521,40 +46733,40 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov %rdx, %r12
     cmp %rsi, %r12
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L200
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L199:
+    vmovdqu (%r12,%rbx), %ymm0
     vmovdqu 3168(%rsp), %ymm15
-    vpand (%r12,%rbx), %ymm15, %ymm0
-    vmovdqu (%r12,%rbx), %ymm1
-    vpsrlw $4, %ymm1, %ymm1
-    vpand NVOL_K3(%rip), %ymm1, %ymm1
+    vpand %ymm15, %ymm0, %ymm1
+    vpsrlw $4, %ymm0, %ymm0
+    vpand NVOL_K3(%rip), %ymm0, %ymm0
     vmovdqu 3040(%rsp), %ymm15
-    vpshufb %ymm1, %ymm15, %ymm1
-    vmovdqu 2976(%rsp), %ymm15
-    vpshufb %ymm0, %ymm15, %ymm2
-    vmovdqu 3200(%rsp), %ymm15
-    vpsubb %ymm15, %ymm0, %ymm0
-    vmovdqu 3008(%rsp), %ymm15
     vpshufb %ymm0, %ymm15, %ymm0
-    vpor %ymm0, %ymm2, %ymm0
-    vpand %ymm1, %ymm0, %ymm0
-    vpcmpeqb %ymm1, %ymm0, %ymm0
-    vmovdqu 3168(%rsp), %ymm15
-    vpand (%r12,%rbp), %ymm15, %ymm1
-    vmovdqu (%r12,%rbp), %ymm2
-    vpsrlw $4, %ymm2, %ymm2
-    vpand NVOL_K3(%rip), %ymm2, %ymm2
-    vmovdqu 3136(%rsp), %ymm15
-    vpshufb %ymm2, %ymm15, %ymm2
-    vmovdqu 3072(%rsp), %ymm15
-    vpshufb %ymm1, %ymm15, %ymm3
+    vmovdqu 2976(%rsp), %ymm15
+    vpshufb %ymm1, %ymm15, %ymm2
     vmovdqu 3200(%rsp), %ymm15
     vpsubb %ymm15, %ymm1, %ymm1
-    vmovdqu 3104(%rsp), %ymm15
+    vmovdqu 3008(%rsp), %ymm15
     vpshufb %ymm1, %ymm15, %ymm1
-    vpor %ymm1, %ymm3, %ymm1
-    vpand %ymm2, %ymm1, %ymm1
-    vpcmpeqb %ymm2, %ymm1, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
+    vpand %ymm0, %ymm1, %ymm1
+    vpcmpeqb %ymm0, %ymm1, %ymm0
+    vmovdqu (%r12,%rbp), %ymm1
+    vmovdqu 3168(%rsp), %ymm15
+    vpand %ymm15, %ymm1, %ymm2
+    vpsrlw $4, %ymm1, %ymm1
+    vpand NVOL_K3(%rip), %ymm1, %ymm1
+    vmovdqu 3136(%rsp), %ymm15
+    vpshufb %ymm1, %ymm15, %ymm1
+    vmovdqu 3072(%rsp), %ymm15
+    vpshufb %ymm2, %ymm15, %ymm3
+    vmovdqu 3200(%rsp), %ymm15
+    vpsubb %ymm15, %ymm2, %ymm2
+    vmovdqu 3104(%rsp), %ymm15
+    vpshufb %ymm2, %ymm15, %ymm2
+    vpor %ymm2, %ymm3, %ymm2
+    vpand %ymm1, %ymm2, %ymm2
+    vpcmpeqb %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %r8d
     test %r8d, %r8d
@@ -46584,34 +46796,34 @@ nvol_find_byteset_pair_visit_entry_avx2:
     mov $4294967295, %eax
     mov %r12, %rcx
     shl %cl, %eax
-    vpand (%rsi,%rbx), %ymm3, %ymm0
-    vmovdqu (%rsi,%rbx), %ymm1
+    vmovdqu (%rsi,%rbx), %ymm0
+    vpand %ymm3, %ymm0, %ymm1
+    vpsrlw $4, %ymm0, %ymm0
+    vpand NVOL_K3(%rip), %ymm0, %ymm0
+    vmovdqu 3040(%rsp), %ymm15
+    vpshufb %ymm0, %ymm15, %ymm0
+    vmovdqu 2976(%rsp), %ymm15
+    vpshufb %ymm1, %ymm15, %ymm2
+    vpsubb %ymm4, %ymm1, %ymm1
+    vmovdqu 3008(%rsp), %ymm15
+    vpshufb %ymm1, %ymm15, %ymm1
+    vpor %ymm1, %ymm2, %ymm1
+    vpand %ymm0, %ymm1, %ymm1
+    vpcmpeqb %ymm0, %ymm1, %ymm0
+    vmovdqu (%rsi,%rbp), %ymm1
+    vpand %ymm3, %ymm1, %ymm2
     vpsrlw $4, %ymm1, %ymm1
     vpand NVOL_K3(%rip), %ymm1, %ymm1
-    vmovdqu 3040(%rsp), %ymm15
-    vpshufb %ymm1, %ymm15, %ymm1
-    vmovdqu 2976(%rsp), %ymm15
-    vpshufb %ymm0, %ymm15, %ymm2
-    vpsubb %ymm4, %ymm0, %ymm0
-    vmovdqu 3008(%rsp), %ymm15
-    vpshufb %ymm0, %ymm15, %ymm0
-    vpor %ymm0, %ymm2, %ymm0
-    vpand %ymm1, %ymm0, %ymm0
-    vpcmpeqb %ymm1, %ymm0, %ymm0
-    vpand (%rsi,%rbp), %ymm3, %ymm1
-    vmovdqu (%rsi,%rbp), %ymm2
-    vpsrlw $4, %ymm2, %ymm2
-    vpand NVOL_K3(%rip), %ymm2, %ymm2
     vmovdqu 3136(%rsp), %ymm15
-    vpshufb %ymm2, %ymm15, %ymm2
-    vmovdqu 3072(%rsp), %ymm15
-    vpshufb %ymm1, %ymm15, %ymm3
-    vpsubb %ymm4, %ymm1, %ymm1
-    vmovdqu 3104(%rsp), %ymm15
     vpshufb %ymm1, %ymm15, %ymm1
-    vpor %ymm1, %ymm3, %ymm1
-    vpand %ymm2, %ymm1, %ymm1
-    vpcmpeqb %ymm2, %ymm1, %ymm1
+    vmovdqu 3072(%rsp), %ymm15
+    vpshufb %ymm2, %ymm15, %ymm3
+    vpsubb %ymm4, %ymm2, %ymm2
+    vmovdqu 3104(%rsp), %ymm15
+    vpshufb %ymm2, %ymm15, %ymm2
+    vpor %ymm2, %ymm3, %ymm2
+    vpand %ymm1, %ymm2, %ymm2
+    vpcmpeqb %ymm1, %ymm2, %ymm1
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %ecx
     mov %rcx, %r8
@@ -46692,7 +46904,8 @@ nvol_find_byteset_pair_visit_entry_avx2:
     {disp8} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L1
 .seh_endproc
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_entry_avx2
 .def nvol_copy_until_byteset_entry_avx2; .scl 2; .type 32; .endef
 nvol_copy_until_byteset_entry_avx2:
