@@ -20,6 +20,15 @@ their directives. `check_lengths` compares `encode.length` (what NVOL decides, j
 GNU as assembled, instruction by instruction.
 
     python -m nvol.asm.samebytes win64|sysv     # assembles the generator's output itself
+
+aarch64 (`aapcs64`) has one syntax, GNU as, and two assemblers: binutils' `as` and Clang's
+integrated one. The same `.s` must give the same bytes in both (every instruction, the
+constants, the function tables), the same unwind rules (`cfa_rules`: the encoding of
+`.eh_frame` is the assembler's choice), and each function the size `a64.code_size`
+predicts: A64 has no relaxation, so a wrong prediction would misplace an `align` and every
+branch range NVOL checks. `NVOL_A64_AS`, `NVOL_A64_CC` and `NVOL_A64_OBJDUMP` name the tools.
+
+    python -m nvol.asm.samebytes aapcs64
 """
 from __future__ import annotations
 
@@ -42,9 +51,19 @@ DIRECTION = {(0x89, 0x8B), (0x88, 0x8A), (0x39, 0x3B), (0x29, 0x2B), (0x31, 0x33
              (0x09, 0x0B), (0x01, 0x03), (0x11, 0x13), (0x19, 0x1B)}
 
 
-def disassemble(obj: str, objdump: str = "objdump"):
+def _bytes(field: str) -> list:
+    """The raw bytes objdump prints: x86 one byte per token; aarch64 one 32-bit word per
+    instruction, printed as a number (little-endian in memory)."""
+    out = []
+    for t in field.split():
+        v = int(t, 16)
+        out += [v] if len(t) == 2 else list(v.to_bytes(len(t) // 2, "little"))
+    return out
+
+
+def disassemble(obj: str, objdump: str = "objdump", intel: bool = True):
     """({function: [(bytes with relocated bytes as None, text)]}, {table: bytes}) of the code."""
-    out = subprocess.run([objdump, "-dr", "-M", "intel", obj],
+    out = subprocess.run([objdump, "-dr"] + (["-M", "intel"] if intel else []) + [obj],
                          capture_output=True, text=True, check=True).stdout
     funcs, cur, relocs, code = {}, None, [], False
     for line in out.splitlines():
@@ -70,15 +89,15 @@ def disassemble(obj: str, objdump: str = "objdump"):
             continue
         m = _INS.match(line)
         if m and m.group(3) is not None:
-            cur.append([int(m.group(1), 16), [int(x, 16) for x in m.group(2).split()],
-                        m.group(3).strip()])
+            cur.append([int(m.group(1), 16), _bytes(m.group(2)), m.group(3).strip()])
             continue
         if m and cur:                                   # a continuation line of raw bytes
-            cur[-1][1] += [int(x, 16) for x in m.group(2).split()]
+            cur[-1][1] += _bytes(m.group(2))
             continue
         r = _REL.match(line)
-        if r and r.group(2) in _RELSIZE:
-            relocs.append((int(r.group(1), 16), _RELSIZE[r.group(2)]))
+        if r and (r.group(2) in _RELSIZE or r.group(2).startswith("R_AARCH64_")):
+            # an aarch64 relocation patches a field of its 4-byte instruction
+            relocs.append((int(r.group(1), 16), _RELSIZE.get(r.group(2), 4)))
     masked = set()
     for off, n in relocs:
         masked.update(range(off, off + n))
@@ -262,7 +281,70 @@ def tables_equal(a: dict, b: dict, mod=None) -> bool:
     return a == b
 
 
+def cfa_rules(obj: str, objdump: str) -> list:
+    """The unwind rules of .eh_frame as objdump interprets them (each FDE's pc range and its
+    table of CFA and saved registers), without the encoding: GNU as writes the aarch64 CIE with
+    code/data alignment factors 4/-8 and Clang with 1/-4, so the same directives give other
+    bytes and other FDE lengths, and the same rules."""
+    out = subprocess.run([objdump, "--dwarf=frames-interp", obj],
+                         capture_output=True, text=True, check=True).stdout
+    rules = []
+    for line in out.splitlines():
+        if "file format" in line or not line.strip():
+            continue
+        if " CIE " in line:
+            rules.append("CIE " + line.split()[-1])             # ra=30
+        elif " FDE " in line:
+            rules.append("FDE " + line.split()[-1])             # pc=start..end
+        else:
+            rules.append(" ".join(line.split()))
+    return rules
+
+
+def main_a64() -> int:
+    """GNU as (binutils) against Clang's integrated assembler on the aarch64 library."""
+    import shlex
+    from . import a64, compile_function, library
+    from .lower import Pool
+    from ..kernels import build_modules
+    mod = build_modules()["aarch64"]
+    gas = os.environ.get("NVOL_A64_AS", "aarch64-alpine-linux-musl-as")
+    cc = shlex.split(os.environ.get("NVOL_A64_CC", "clang --target=aarch64-alpine-linux-musl"))
+    objdump = os.environ.get("NVOL_A64_OBJDUMP", "aarch64-alpine-linux-musl-objdump")
+    with tempfile.TemporaryDirectory() as work:
+        src = os.path.join(work, "lib.s")
+        with open(src, "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(library(mod, "aapcs64", "gas"))
+        objs = {"gas": os.path.join(work, "gas.o"), "clang": os.path.join(work, "clang.o")}
+        subprocess.run([gas, "-o", objs["gas"], src], check=True)
+        subprocess.run(cc + ["-c", "-o", objs["clang"], src], check=True)
+        dis = {k: disassemble(o, objdump, intel=False) for k, o in objs.items()}
+        st = compare(dis["gas"][0], dis["clang"][0])
+        same_tables = fn_tables(objs["gas"], mod, objdump) == fn_tables(objs["clang"], mod, objdump)
+        same_ro = rodata(objs["gas"], objdump) == rodata(objs["clang"], objdump)
+        same_eh = cfa_rules(objs["gas"], objdump) == cfa_rules(objs["clang"], objdump)
+        print(f"aapcs64: gas vs clang: {st['same']} same, {st['diff']} diff; function tables "
+              f"{'equal' if same_tables else 'DIFFER'}, read-only data {'equal' if same_ro else 'DIFFERS'}, "
+              f".eh_frame {'equal' if same_eh else 'DIFFERS'}")
+        for e in st["examples"][:12]:
+            print("   ", e)
+        bad, pool = [], Pool()
+        for f in mod.functions:
+            if f.ifunc:                       # a single NEON target: one `b`, no resolver
+                continue
+            want = a64.code_size(compile_function(f, "aapcs64", pool, mod))
+            got = 4 * len(dis["gas"][0][f.name])
+            if want != got:
+                bad.append((f.name, want, got))
+        print(f"aapcs64: a64.code_size vs GNU as: {len(bad)} mismatches")
+        for e in bad[:12]:
+            print("   ", e)
+        return 1 if st["diff"] or bad or not (same_tables and same_ro and same_eh) else 0
+
+
 def main(abi: str) -> int:
+    if abi == "aapcs64":
+        return main_a64()
     from ..kernels import build_modules
     mod = build_modules()["x86_64"]
     with tempfile.TemporaryDirectory() as work:
