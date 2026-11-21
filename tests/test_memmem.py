@@ -5,8 +5,9 @@ import pytest
 
 from nvol import oracle
 from nvol.__main__ import memmem_cases
+from conftest import paths
 
-PATHS = {"sse2": 0, "avx2": 1}
+PATHS = paths({"sse2": 0, "avx2": 1})
 
 
 @pytest.fixture(params=list(PATHS))

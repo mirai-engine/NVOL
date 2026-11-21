@@ -8,8 +8,9 @@ import pytest
 
 from nvol import oracle
 from nvol.__main__ import teddy_cases
+from conftest import ARCH, paths
 
-PATHS = {"ssse3": 0, "avx2": 1}
+PATHS = paths({"ssse3": 0, "avx2": 1})
 
 
 @pytest.fixture(params=list(PATHS))
@@ -24,7 +25,7 @@ def test_random(native, path):
     avx2 = path == "avx2"
     for pats, hay, start, end in teddy_cases(rng, 4000):
         s = native.PackedSearcher.build(pats)
-        assert (s is not None) == oracle.teddy_buildable(pats, avx2, True), (path, len(pats), pats[:3])
+        assert (s is not None) == oracle.teddy_buildable(pats, avx2, True, ARCH), (path, len(pats), pats[:3])
         if s is None:
             continue
         assert s.find(hay, start, end) == oracle.leftmost_first(pats, hay, start, end), (path, pats, hay, start, end)
@@ -54,5 +55,6 @@ def test_find_iter_and_none(native):
     assert list(s.find_iter(b"xfoobarfo foox")) == [(0, 1, 4), (1, 4, 7), (2, 7, 9), (0, 10, 13)]
     assert native.PackedSearcher.build([]) is None
     assert native.PackedSearcher.build([b"a", b""]) is None
-    assert native.PackedSearcher.build([bytes([i]) for i in range(17)]) is None   # mask 1, > 16
+    # mask 1 with > 16 patterns: rejected on x86_64; aho-corasick's NEON branch never rejects
+    assert (native.PackedSearcher.build([bytes([i]) for i in range(17)]) is None) == (ARCH == "x86_64")
     assert native.PackedSearcher.build([b"ab%d" % i for i in range(65)]) is None   # > 64

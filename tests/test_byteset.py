@@ -8,8 +8,9 @@ import pytest
 
 from nvol.__main__ import byteset_cases
 from nvol.kernels.byteset import CLASS_BYTES, PAIR_BYTES
+from conftest import mask_positions, paths
 
-PATHS = {"no-avx2": 0, "avx2": 1, "sse42": 2}   # 0: no AVX2, no SSE4.2
+PATHS = paths({"no-avx2": 0, "avx2": 1, "sse42": 2})   # 0: no AVX2, no SSE4.2
 P = ctypes.c_void_p
 
 
@@ -178,7 +179,7 @@ def test_pair_visit(lib):
         base = ctypes.addressof(buf)
         want = [q for q in range(start, end - max(i1, i2)) if hay[q + i1] in s1 and hay[q + i2] in s2]
         chunks, r = _visit(lib, pst, base, start, end)
-        got = [o + b for o, m in chunks for b in range(64) if m >> b & 1]
+        got = [o + i for o, m in chunks for i in mask_positions(m)]
         assert r is None and got == want and all(m for _, m in chunks), (s1, s2, i1, i2, hay, start, end)
         if chunks:
             stop = rng.randrange(len(chunks))

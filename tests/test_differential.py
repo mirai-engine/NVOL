@@ -10,8 +10,9 @@ import random
 import pytest
 
 from nvol import oracle
+from conftest import paths
 
-PATHS = {"sse2": 0, "avx2": 1}
+PATHS = paths({"sse2": 0, "avx2": 1})
 
 
 def _api(module):
