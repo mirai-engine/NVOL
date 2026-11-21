@@ -275,8 +275,22 @@ The detail is in "Done".
         asm is on par with Clang, and GCC is the outlier. Not mispredictions (1.0 per call in
         all three), not BACLEARS, not the frontend. Both GCC and NVOL take two branches per
         16-byte iteration (`je` over the verification, then the latch). GCC issues both loads
-        before the compares, and uses `tzcnt` where NVOL uses `bsf`. What makes GCC faster is
-        still open;
+        before the compares, and uses `tzcnt` where NVOL uses `bsf`. Neither explains it.
+        The asm hand-edited with both loads first gives 812-823 cycles (unchanged). `tzcnt`
+        in every `first_offset` has no measurable gain against a position control (below).
+        What makes GCC faster is still open;
+      - **`tzcnt` for `bsf`, tried and rejected (2026-11-21).** `bsf` waits on its
+        destination's old value, a false dependency that `tzcnt` (`rep bsf`) does not have.
+        Emitted in all 627 `first_offset`s, it seemed to give memmem 4 KiB AVX2 −29 % and 256 B
+        SSE2 −7 %. The control is the old code generated with a CS prefix (`0x2e`, ignored)
+        before each `bsf`: the same length as `tzcnt`, so the same layout (the same function
+        addresses), with `bsf`'s execution. Against it, 113 of 120 rows are within ±3 %, the
+        other 7 within ±5 % and in functions whose hot path has no `tzcnt`. Every gain was the
+        layout: memmem 4 KiB AVX2 559.5 before, 386.8 in the control, 396.6 with `tzcnt`.
+      - **memmem 4 KiB AVX2 swings 30 % on position alone** (that control: 559.5 → 386.8
+        cycles with every function after the first `bsf` shifted by a few bytes), and the
+        committed layout is the slow one. Next: find the window or alignment it depends on,
+        with the frontend events and a pad scan as for memchr's call.
       - **memrchr AVX2:** 5 rounds (best of 7 each): asm 129-147, GCC 123-134, Clang
         110-118. The asm is about +20 % against Clang with fewer instructions (465 against
         495), everything from the DSB. It is a fixed cost per call, not the loop. At 64 KiB the
