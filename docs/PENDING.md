@@ -195,9 +195,8 @@ The detail is in "Done".
       memchr at 16 B AVX2 goes from 16.8 to 18.5 cycles (3 rounds), and memrchr at 64 B from
       19.9 to 21.6. A 3-byte NOP after `push rbx` puts the same code back at 0x69f, and it
       gives 16.8 again. The cost is therefore the position, not the code. It was accepted,
-      with one instruction fewer per call. The mechanism is probably how the µop cache splits
-      the 32-byte windows. It needs `idq.dsb_uops` / `idq.mite_uops`, which WSL does not
-      give (2.12).
+      with one instruction fewer per call. The mechanism is the µop cache (DSB): measured
+      with frontend counters below.
 
     - **Accepted position losses.** The maintainer's rule (2026-11-21): an optimization
       whose worse row a control shows to be position only is accepted, and logged here. The
@@ -223,11 +222,31 @@ The detail is in "Done".
       | cycles | 18.9 | 18.8 | 18.8 | 18.4 | 18.9 | 18.8 | 18.9 | 19.1 | 18.8 | 18.6 | 18.7 | 17.9 | 19.1 |
       | MITE µops | 9.0 | 0.3 | 0 | 1.2 | 0 | 2.3 | 1.5 | 1.0 | 0 | 0 | 0 | 0 | 0.7 |
 
-      In this binary no pad reaches the 16.8 of the musl one, and the legacy-decode µops
-      (0-9 per call) do not follow the cycles: pad 0 and pad 4 both give 18.9, with 9 and 0.
-      The µop-cache hypothesis is therefore not confirmed. The effect depends on the layout
-      of the whole binary (the musl and glibc builds differ), not on this call alone. Next:
-      the same scan in the musl binary, and the position of the callee and of the bench loop.
+      In this binary every pad is slow; the fastest, pad 11, gives 17.9. The legacy-decode
+      µops (0-9 per call) do not follow the cycles here: pad 0 and pad 4 both give 18.9,
+      with 9 and 0.
+
+      The same scan in the musl binary (Alpine). Its `perf` takes the raw codes: `r0879`
+      for `idq.dsb_uops`, `r0479` for `idq.mite_uops`, `r02ab` for the DSB-to-MITE switch
+      penalty. The call lands at 0x3bcc-0x3bd8:
+
+      | pad | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+      |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+      | cycles | 18.3 | 16.8 | 16.9 | 16.9 | 16.9 | 17.1 | 18.9 | 19.0 | 19.1 | 19.3 | 19.6 | 19.1 | 19.3 |
+      | MITE µops | 0.8 | 0 | 0.3 | 0.2 | 0 | 0.4 | 10.6 | 11.6 | 11.2 | 12.1 | 12.7 | 13.4 | 19.9 |
+      | switch penalty | 2.95 | 0 | 1.25 | 0.5 | 0.1 | 0.3 | 2.4 | 2.3 | 2.2 | 2.2 | 2.8 | 2.5 | 1.1 |
+
+      **Here the µop cache explains it.** The fast pads (1-5) decode everything from the DSB.
+      From pad 6 up, 10-20 µops per call come from the legacy decoder (MITE) and cost
+      2-2.5 cycles. Pad 0 has almost no MITE µops but pays about 3 cycles of switch penalty.
+      This is copy_back's case: the call at 0x69c in the object, the slow 18.5.
+
+      In the glibc binary every pad is slow and MITE does not explain it, so something else
+      limits that layout: another 32-byte window (the callee's, or the bench loop's), to be
+      found with the same events. The fix for the generator would be to place the hot
+      dispatch code so that no 32-byte window overflows the DSB (on Skylake, at most 3 ways
+      of 6 µops per window). That needs the µop counts per window that
+      `encode.py` can give.
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
