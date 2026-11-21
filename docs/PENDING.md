@@ -254,9 +254,19 @@ The detail is in "Done".
       2-2.5 cycles. Pad 0 has almost no MITE µops but pays about 3 cycles of switch penalty.
       This is copy_back's case: the call at 0x69c in the object, the slow 18.5.
 
-      In the glibc binary every pad is slow and MITE does not explain it, so something else
-      limits that layout: another 32-byte window (the callee's, or the bench loop's), to be
-      found with the same events. The fix for the generator would be to place the hot
+      In the glibc binary every pad of the *call* is slow and MITE does not explain it. Moving
+      the *callee* does (NOPs at the start of `nvol_memchr_entry_avx2`, Arch, best of 9):
+
+      | pad | 0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 20 | 24 | 28 |
+      |---|---|---|---|---|---|---|---|---|---|---|---|---|
+      | cycles | 18.0 | 16.6 | 16.7 | 16.9 | 17.4 | 18.0 | 19.0 | 19.5 | 19.2 | 18.4 | 19.9 | 21.2 |
+      | MITE µops | 0.8 | 0 | 0 | 0 | 0 | 0 | 0.9 | 0 | 20.0 | 24.0 | 28.4 | 31.9 |
+      | switch penalty | 0.1 | 0.1 | 0 | 0 | 0 | 0 | 2.8 | 0 | 0.1 | 0 | 0.9 | 0 |
+
+      (The NOPs run at the entry, so the DSB µops grow with the pad.) Pads 2-6 reach the
+      musl binary's fast state (16.8), and from 16 bytes up the callee falls out of the DSB.
+      So the µop cache explains the effect in both binaries; in glibc the window that decides
+      is the callee's. The fix for the generator would be to place the hot
       dispatch code so that no 32-byte window overflows the DSB (on Skylake, at most 3 ways
       of 6 µops per window). That needs the µop counts per window that
       `encode.py` can give.
@@ -353,7 +363,18 @@ The detail is in "Done".
           is layout. Rows near the threshold cannot be judged without a position control.
         Done as an asm-only loop attribute, `While.exit_first` (see Done), accepted with a
         recorded trade-off: −12…−18 % at 4 KiB AVX2, and about 3 % real cost at 256-512 B AVX2.
-        SSE2 gains nothing from the shape, so the SSE2 part of the gap is still open.
+        SSE2 gains nothing from the shape. Measured since (2026-11-21):
+        - **SSE2 has no gap up to 4 KiB:** 1 KiB asm 84.0, GCC 81.7, Clang 85.7; 4 KiB asm
+          284.6, GCC 285.3, Clang 302.5. The gap is at 16-64 KiB, in both paths: 64 KiB SSE2
+          asm 5607-5710 against GCC 4796-4925, and 16 KiB AVX2 504-525 against 445-468, with
+          the same instructions (19512 against 19520 at 64 KiB);
+        - not memory: the same L1 replacements (1029 per call = 64 KiB / 64), L2 demand reads
+          (768 against 782) and L2 prefetches (1231 against 1125). The asm has 3× the
+          RS-full stalls (`resource_stalls.rs`, r04a2: 1044 against 365 cycles per call in
+          SSE2, 1096 against 823 in AVX2); store buffer and ROB are not full;
+        - ruled out by hand-edited asm (3 rounds): the four loads in descending order (5572-
+          5651, unchanged), and GCC's operand form (`movdqa xN, xV; pcmpeqb xN, [m]`, the
+          load folded: 6062-6101 and 1364 RS-full stalls, worse). Still open.
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
