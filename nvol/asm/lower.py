@@ -366,6 +366,32 @@ class Lower:
             walk(s.cond)
             for e in hoist:
                 self.hoisted[id(e)] = self.gen(e)
+            last = s.body[-1] if s.body else None
+            if s.exit_first is not None and isinstance(last, ir.If) and not last.els and last.then                     and isinstance(last.then[-1], ir.Return):
+                # the exit-first copy (`While.exit_first`): on long trips, `cmp; jb` out at the
+                # top and `test; je` back on "no match" (Clang's shape), which predicts the exit
+                # where the rotated loop mispredicts it once; the match falls through to the
+                # body's own `if`. Then the rotated loop below finishes what is left
+                # The copy is a cold region (moved after the ret, its branch inverted), so a
+                # short trip falls through to the rotated loop instead of taking a jump
+                skip, top, out, cold = self.label(), self.label(), self.label(), self.label()
+                self.branch(s.exit_first, skip, False)
+                self.emit("coldbegin", [cold])
+                self.place(cold)
+                self.emit("align", [Imm(16), Imm(10), Imm(0)])
+                self.place(top)
+                self.cse = {}
+                self.branch(s.cond, out, False)
+                self.slots.append(1)
+                self.block(s.body[:-1])
+                self.branch(last.cond, top, False)
+                self.block(last.then)
+                self.slots.pop()
+                self.place(out)
+                self.emit("jmp", [skip])
+                self.emit("coldend", [])
+                self.place(skip)
+                self.cse = {}
             # inverted: the condition tested once on entry (to the exit when false) and at the
             # bottom of the body, with no label in between, so the last arithmetic of the body
             # can set the flags the test needs (_peephole fuses them)

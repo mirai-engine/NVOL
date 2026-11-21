@@ -9,6 +9,11 @@ and, via regex-automata, `memchr2/3` prefilters):
     movemask is taken per iteration,
   * an overlapping unaligned load for the tail instead of a byte loop.
 
+Reverse search on x86, in NVOL's own assembly: from REV_LONG[V] iterations of the unrolled
+loop, the loop first runs in the exit-first shape (`While.exit_first`: Clang's shape, which
+predicts the exit of a long loop), then in the usual rotated one, which costs less for a few
+iterations (PENDING item 25). The language backends ignore it.
+
 Dispatch mirrors memchr's x86_64 front-end: len < 16 -> scalar,
 len < 32 -> SSE2, otherwise AVX2 when the CPU has it.
 """
@@ -19,6 +24,8 @@ from ..isa import ISA, movemask
 from .dispatch import add_public
 
 NAMES = {1: "memchr", 2: "memchr2", 3: "memchr3"}
+# unrolled iterations from which the reverse loop runs exit-first (asm, x86), by vector bytes
+REV_LONG = {32: 32, 16: 16}
 
 
 def _fname(n: int, reverse: bool, isa: "ISA | None") -> str:
@@ -103,7 +110,8 @@ def find_vector(isa: ISA, n: int, reverse: bool) -> Function:
         search_chunk(end - V)
         cur = b.var("cur", end - (end.addr() & isa.align_mask))
         with b.if_(length >= LOOP):
-            with b.while_(cur >= start + LOOP):
+            long = (length >= REV_LONG[V] * LOOP) if V in REV_LONG and isa.name != "neon" else None
+            with b.while_(cur >= start + LOOP, exit_first=long):
                 b.set(cur, cur - LOOP)
                 unrolled_body(cur)
         with b.while_(cur >= start + V):

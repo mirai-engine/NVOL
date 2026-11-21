@@ -302,6 +302,11 @@ class Assign(Stmt):
 class While(Stmt):
     cond: Expr
     body: list
+    # NVOL's own assembly only (the language backends and the interpreter ignore it): when this
+    # holds on entry, the loop first runs in the exit-first shape (test at the top, the body's
+    # final `if c: ... return` as the fallthrough, the back edge on not c), whose exit the
+    # branch predictor gets right on long trips, then falls into the usual rotated loop
+    exit_first: Optional[Expr] = None
 
 
 @dataclass(eq=False)
@@ -438,12 +443,12 @@ class Builder:
         self.emit(Store64(p, lift(value, U64)))
 
     @contextmanager
-    def while_(self, cond: Expr):
+    def while_(self, cond: Expr, exit_first: Optional[Expr] = None):
         body: list = []
         self._stack.append(body)
         yield
         self._stack.pop()
-        self.emit(While(cond, body))
+        self.emit(While(cond, body, exit_first))
 
     @contextmanager
     def if_(self, cond: Expr):
@@ -492,6 +497,8 @@ def _uses(stmts, acc: dict) -> dict:
             ex(s.value)
         elif isinstance(s, While):
             ex(s.cond); _uses(s.body, acc)
+            if s.exit_first is not None:
+                ex(s.exit_first)
         elif isinstance(s, If):
             ex(s.cond); _uses(s.then, acc)
             if s.els:
@@ -520,7 +527,7 @@ def prune_unused_lets(stmts: list) -> list:
                 if isinstance(s, Assign) and used.get(s.var.name, 0) == 0:
                     continue
                 if isinstance(s, While):
-                    s = While(s.cond, walk(s.body))
+                    s = While(s.cond, walk(s.body), s.exit_first)
                 elif isinstance(s, If):
                     s = If(s.cond, walk(s.then), walk(s.els) if s.els else s.els)
                 out.append(s)

@@ -217,6 +217,12 @@ The detail is in "Done".
       | copy_back (item 17) | memchr 16 B AVX2 | 16.8 → 18.5 | 16.8 |
       | copy_back (item 17) | memrchr 64 B AVX2 | 19.9 → 21.6 | 3-byte NOP restores it |
       | reloads across labels (item 17) | memmem 256 B SSE2 | 71.5 → 72.4 | 70.8 |
+      | exit-first memrchr (item 25) | memrchr 256 B AVX2 | 20.0-21.0 → 23.7-24.9 | NOP 22.0-22.4, guard 22.4-23.3 |
+      | exit-first memrchr (item 25) | memrchr 512 B AVX2 | 25.6-25.9 → 29.2-29.5 | NOP 26.5-26.7, guard 26.8-28.3 |
+
+      The last two rows are not all position: of their +3.5-3.8 cycles, the length check
+      itself costs 0.4-0.9 (the guard control against the NOP control). That part is a code
+      cost, and it was accepted as a trade-off (see Done).
 
     - **Frontend counters (2026-11-21).** WSL's kernel does count `idq.dsb_uops`,
       `idq.mite_uops` and `dsb2mite_switches.penalty_cycles`; Alpine's `perf` just has no
@@ -302,10 +308,9 @@ The detail is in "Done".
           starts at 32. SSE2 gains from 16. So the threshold is not one count of iterations;
         - rows with the same instruction count swing ±6…18 % either way (16 B and 64 B), which
           is layout. Rows near the threshold cannot be judged without a position control.
-        To do it right: an asm-only loop attribute (`While(..., shape="exit_first")`, honored by
-        `Lower` and ignored by the C, Rust and Odin backends), so the compilers keep the single
-        loop; and a threshold per ISA (AVX2 32 iterations, SSE2 16), checked with a position
-        control.
+        Done as an asm-only loop attribute, `While.exit_first` (see Done), accepted with a
+        recorded trade-off: −12…−18 % at 4 KiB AVX2, and about 3 % real cost at 256-512 B AVX2.
+        SSE2 gains nothing from the shape, so the SSE2 part of the gap is still open.
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
@@ -544,6 +549,28 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **memrchr's long loop, exit-first (item 25), accepted with a trade-off.** At 4 KiB AVX2 the
+  asm was ~28 cycles behind Clang. The cause is a misprediction at the exit of the unrolled
+  reverse loop (~31 iterations): NVOL's rotated shape (`test; jne` to the match, `cmp; jae`
+  back) mispredicts it once per call, and Clang's (`cmp; jb` out at the top, `test; je` back)
+  does not.
+  - `While.exit_first` (`nvol/ir.py`) is a guard that only NVOL's lowering honors. The C,
+    Rust and Odin backends and the interpreter ignore it, and their generated code does not
+    change. When the guard holds and the body ends in an `if c: ... return`, `Lower` first
+    runs a copy in Clang's shape: the exit test at the top, the body, the back edge on `not
+    c`, and the match as the fallthrough. Then the rotated loop finishes. The copy is a cold
+    region (after the ret, its branch inverted), so a short call falls through.
+  - The reverse memchr kernels set the guard on x86 at 32 iterations for AVX2 (4 KiB) and 16
+    for SSE2 (1 KiB).
+  - Cycles (asm, 3 rounds): memrchr 4 KiB AVX2 148-157 → 125-136 (−12…−18 %; Clang
+    117-128). 8 KiB −1…+5 %, 64 KiB −1…+2 %. SSE2 unchanged (±3 %).
+  - **The trade-off:** 256 B AVX2 20.0-21.0 → 23.7-24.9 and 512 B 25.6-25.9 → 29.2-29.5.
+    Two controls split it: a 10-byte NOP at the guard's place (pure shift) gives +0.9…+1.6
+    cycles, and the guard's two instructions +0.4…+0.9 more (≈ 3 %, the real cost of the
+    length check). The rest is the copy's own shift of what follows it. Below 128 B the
+    check is never reached. The maintainer accepted it: ~15 % on long reverse searches for
+    ~3 % on 256-512 B ones.
 
 - **Teddy over short haystacks: the Rabin-Karp (item 27, former 1.2a).** Below Teddy's minimum
   length, `nvol_teddy_slow` tried every pattern at every position. It is now aho-corasick
