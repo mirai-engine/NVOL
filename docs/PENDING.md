@@ -278,7 +278,18 @@ The detail is in "Done".
         before the compares, and uses `tzcnt` where NVOL uses `bsf`. Neither explains it.
         The asm hand-edited with both loads first gives 812-823 cycles (unchanged). `tzcnt`
         in every `first_offset` has no measurable gain against a position control (below).
-        What makes GCC faster is still open;
+        What makes GCC faster is still open. Narrowed further (2026-11-21):
+        - the same instructions (2916 against 2918 per call), the same branches (527: 256
+          iterations × 2, so the bench finds no candidate) and the same mispredictions (1.0
+          against 1.2), at 841 against 710 cycles: 3.3 cycles per 16-byte iteration against 2.8;
+        - not placement alone: NOPs at the function's start (0-28 bytes) give 809-1070 cycles,
+          never GCC's 685-710;
+        - an idea to beat both: move the candidate loop (`while m != 0`, a loop nested in the
+          scan) out of line as a cold region, so that each iteration takes one branch instead
+          of two (`je` over the verification, then the latch). Tried in `Lower`'s `While`; it
+          broke the allocation of a large function (a 5032-byte frame, refused: no stack
+          probes). The new `jmp` back from the region adds blocks that `_regions`/`_split` handle
+          badly. Reverted; it needs that fixed first;
       - **`tzcnt` for `bsf`, tried and rejected (2026-11-21).** `bsf` waits on its
         destination's old value, a false dependency that `tzcnt` (`rep bsf`) does not have.
         Emitted in all 627 `first_offset`s, it seemed to give memmem 4 KiB AVX2 −29 % and 256 B
@@ -367,7 +378,11 @@ The detail is in "Done".
       ahead at 3, 8, 12 and 15 B (11.0, 16.0, 20.1 and 23.1 cycles, against 11.5, 16.6, 20.6
       and 23.6).
     - Still open: 5 B gives 17.1 against 14.9 in both builds, with no MITE and no
-      mispredictions.
+      mispredictions. It is part of a curve that is not monotonic in the size (JCC-safe build,
+      best of 7): NVOL 16.0 / 17.1 / 14.1 cycles at 4 / 5 / 6 B, against the crate's 12.5 / 14.9
+      / 14.5, with fewer µops issued (45 / 48 / 51 against 48 / 51 / 54), no recovery cycles
+      and no resource stalls. A byte loop that gets faster with one more byte is not its
+      work; the bench's call or the layout. The counters available do not split it further.
     - The layout belongs to the user's build (a rustc flag), not to the generated code: it
       goes to the toolchain log (item 21). Port memchr's SWAR for the path without SIMD.
 29. 1.5: `first_non_ascii` against `bstr`. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): −20 % cycles at
