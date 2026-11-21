@@ -100,7 +100,7 @@ nvol/kernels/       memchr.py, count.py, ascii.py, memmem.py, rank.py, teddy.py,
 nvol/interp.py      reference interpreter (detects UB)
 nvol/oracle.py      executable specification of each API
 nvol/backends/      c.py (C and C++), rust.py, python.py, odin.py, iters.py (memchr_iter), finder.py (memmem), packed.py (Teddy)
-nvol/asm/           lower.py (IR → instructions, with inlining), regalloc.py (intervals with holes, spill splitting, frame), abi.py (Win64, System V), encode.py (lengths, jump sizes), nasm.py, masm.py, gas.py (AT&T), samebytes.py (all three give the same code)
+nvol/asm/           lower.py (IR → instructions, with inlining; shared by the targets), x86.py (x86-64 instruction selection, spill code, frame), regalloc.py (intervals with holes, spill splitting, frame), abi.py (Win64, System V), encode.py (lengths, jump sizes), nasm.py, masm.py, gas.py (AT&T), samebytes.py (all three give the same code)
 generated/          current generator output
 harness/verify.sh   full verification (see Usage)
 harness/rust        parity tests + benchmark vs memchr

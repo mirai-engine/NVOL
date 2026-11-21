@@ -9,7 +9,7 @@ provides the CPU checks the resolvers call and everything that is not IR."""
 from __future__ import annotations
 
 from .. import ir
-from . import encode, gas, masm, nasm
+from . import encode, gas, masm, nasm, x86
 from .abi import ABIS
 from .lower import Pool, lower
 from .mir import PHYS, RSP, Imm, Ins, Lab, Mem, Reg
@@ -18,7 +18,7 @@ from .regalloc import allocate
 
 def compile_function(f, abi_name: str, pool: Pool = None, mod: ir.Module = None) -> list:
     """Lowered, allocated, and every jump sized (encode.relax)."""
-    return encode.relax(allocate(lower(f, ABIS[abi_name], pool, mod), ABIS[abi_name]))
+    return encode.relax(allocate(lower(f, ABIS[abi_name], pool, mod), ABIS[abi_name], x86))
 
 
 def fmt_of(abi_name: str) -> str:

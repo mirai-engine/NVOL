@@ -180,7 +180,10 @@ Adding a language = writing a printer (~150 lines) + the lowering table.
 The IR is lowered to instructions with no compiler in between, in three layers so that each new
 syntax (MASM, GNU as) is only a printer:
 
-- **`lower.py`, IR → MIR** (x86 instructions on virtual registers). Every integer, pointer
+- **`lower.py`, IR → MIR** (instructions on virtual registers), the target-neutral part:
+  inlining, CSE, the statement and loop structure, the cold and rare markers. A target
+  selects the instructions: **`x86.py`** for x86-64, which also gives the allocator its
+  scratch registers, spill code, peephole and frame. Every integer, pointer
   and bool lives zero-extended to 64 bits: `Cast`s are free and only `wadd`/`wsub`/`wmul`/`shl`
   on u8/u32 truncate. `While` loops are rotated (test at the bottom) and conditions are fused into
   `cmp`/`test` + jump. Inlining follows the C rule (what is `NVOL_INLINE` in C); an AVX2

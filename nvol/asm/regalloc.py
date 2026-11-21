@@ -1,4 +1,7 @@
-"""Linear-scan register allocation over machine IR, then the stack frame.
+"""Register allocation over machine IR, then the stack frame.
+
+The algorithm is target-neutral. What names a target's instructions (scratch registers, copy and
+spill instructions, the peephole, the frame) comes from a target module `T` (`x86`).
 
 Positions: instruction i reads its operands at 2i and writes its results at 2i + 1, so a value
 defined by `mov v, rcx` never conflicts with rcx, and `mov rcx, v` followed by a use of rcx keeps
@@ -24,11 +27,7 @@ from __future__ import annotations
 from bisect import bisect_left
 
 from .abi import ABI
-from .mir import CONDJUMPS, PHYS, RSP, TERMINATORS, Imm, Ins, Lab, Mem, Phys, Reg, VReg
-
-# held back once anything spills: an instruction reads at most three registers of a class (a
-# store to [base + index] of a register); rbx is never named by the ABI or the lowering
-SCRATCH = {"g": ("r11", "r10", "rbx"), "v": ("xmm15", "xmm14", "xmm13")}
+from .mir import CONDJUMPS, PHYS, TERMINATORS, Ins, Lab, Mem, Phys, Reg, VReg
 
 
 def _blocks(code: list):
@@ -182,11 +181,11 @@ def _fixed(code):
     return busy
 
 
-def _hints(code, assign_of):
+def _hints(code, assign_of, T):
     """v -> preferred physical register, from copies (mov v, x / mov x, v)."""
     hints = {}
     for ins in code:
-        if ins.op in ("mov", "movdqa", "vmovdqa") and len(ins.args) == 2 \
+        if ins.op in T.MOVES and len(ins.args) == 2 \
                 and isinstance(ins.args[0], Reg) and isinstance(ins.args[1], Reg):
             d, s = ins.args[0].r, ins.args[1].r
             if isinstance(d, VReg) and isinstance(s, Phys):
@@ -222,15 +221,15 @@ def _freq(code) -> list:
     return out
 
 
-def _scan(code, abi: ABI, reserve: dict, late=frozenset()):
+def _scan(code, abi: ABI, T, reserve: dict, late=frozenset()):
     ranges, succ = _blocks(code)
     live_in, live_out = _liveness(code, ranges, succ)
     iv = _intervals(code, ranges, live_in, live_out)
     busy = _fixed(code)
-    hints = _hints(code, None)
+    hints = _hints(code, None, T)
     order = {"g": [PHYS[r] for r in abi.gpr_order], "v": [PHYS[r] for r in abi.vec_order]}
     for c in order:            # the scratch registers spill code needs, held back
-        order[c] = [p for p in order[c] if p.name not in SCRATCH[c][:reserve.get(c, 0)]]
+        order[c] = [p for p in order[c] if p.name not in T.SCRATCH[c][:reserve.get(c, 0)]]
 
     # a fixed range inside one block conflicts with v only where v is live: read later in the
     # block or live out of it, and already written (`mov rax, x; jmp .Lret` at a return site
@@ -346,31 +345,11 @@ def _scan(code, abi: ABI, reserve: dict, late=frozenset()):
 
 
 
-_MOVES = {"mov", "movdqa", "vmovdqa"}
-
-
-def _direct(ins: Ins, spilled) -> str:
-    """"load" / "store" when a register-to-register move touches one spilled register and can
-    read or write its slot itself (no scratch register, one instruction), else ""."""
-    if ins.op not in _MOVES or len(ins.args) != 2 or not all(isinstance(a, Reg) for a in ins.args):
-        return ""
-    d, s = ins.args[0].r, ins.args[1].r
-    ds, ss = isinstance(d, VReg) and d in spilled, isinstance(s, VReg) and s in spilled
-    if ss and not ds:
-        return "load"
-    # a 32-bit mov zero-extends; a 32-bit store would leave the slot's upper half stale
-    if ds and not ss and (ins.op != "mov" or ins.args[0].w == 64):
-        return "store"
-    if ds and ss and (ins.op != "mov" or ins.args[0].w == 64):
-        return "both"
-    return ""
-
-
-def _need(code, spilled) -> dict:
+def _need(code, spilled, T) -> dict:
     """Scratch registers per class the spill code of `spilled` needs (at most 3)."""
     need = {"g": 0, "v": 0}
     for ins in code:
-        kind = _direct(ins, spilled)
+        kind = T.direct(ins, spilled)
         if kind:
             if kind == "both":
                 c = ins.args[0].r.cls
@@ -380,102 +359,6 @@ def _need(code, spilled) -> dict:
         for c in need:
             need[c] = max(need[c], sum(1 for r in regs if r.cls == c))
     return need
-
-
-def _rewrite(code, assign, spilled):
-    """Physical registers for every virtual one; spill code around instructions that touch a
-    spilled register (loaded into a scratch register before, stored back after). A move that
-    touches one spilled register reads or writes the slot itself."""
-    slot = {v: k for k, v in enumerate(sorted(spilled, key=lambda r: r.id))}
-    avx = _avx(code)
-    out = []
-    for ins in code:
-        if not any(isinstance(r, VReg) and r in spilled for r in ins.uses + ins.defs):
-            out.append(_subst(ins, assign))
-            continue
-        kind = _direct(ins, spilled)
-        if kind:
-            d, s = ins.args
-            vec = d.r.cls == "v"
-            op = ("vmovdqu" if avx else "movdqu") if vec else "mov"
-            w = (256 if avx else 128) if vec else d.w
-            if kind == "both":
-                t = PHYS[SCRATCH[d.r.cls][0]]
-                out.append(Ins(op, [Reg(t, w), Mem(spill=slot[s.r], w=0 if vec else w)], [t], []))
-                out.append(Ins(op, [Mem(spill=slot[d.r], w=0 if vec else 64), Reg(t, w)], [], [t]))
-            elif kind == "load":
-                pd = assign[d.r] if isinstance(d.r, VReg) else d.r
-                out.append(Ins(op, [Reg(pd, w), Mem(spill=slot[s.r], w=0 if vec else w)], [pd], []))
-            else:
-                ps = assign[s.r] if isinstance(s.r, VReg) else s.r
-                out.append(Ins(op, [Mem(spill=slot[d.r], w=0 if vec else 64), Reg(ps, w)], [], [ps]))
-            continue
-        used = {"g": 0, "v": 0}
-        local = dict(assign)
-        pre, post = [], []
-        for r in dict.fromkeys(ins.uses + ins.defs):
-            if isinstance(r, VReg) and r in spilled:
-                if used[r.cls] == len(SCRATCH[r.cls]):
-                    raise NotImplementedError(f"{ins}: more spilled {r.cls} registers than scratch ones")
-                s = PHYS[SCRATCH[r.cls][used[r.cls]]]
-                used[r.cls] += 1
-                local[r] = s
-                w = 64 if r.cls == "g" else 256
-                mop = "mov" if r.cls == "g" else "vmovdqu" if _avx(code) else "movdqu"
-                wv = 64 if r.cls == "g" else (256 if mop == "vmovdqu" else 128)
-                if r in ins.uses:
-                    pre.append(Ins(mop, [Reg(s, wv), Mem(spill=slot[r], w=0)], [s], []))
-                if r in ins.defs:
-                    post.append(Ins(mop, [Mem(spill=slot[r], w=0), Reg(s, wv)], [], [s]))
-        out += pre + [_subst(ins, local)] + post
-    return _reloads(out), len(slot)
-
-
-def _reloads(code):
-    """A 64-bit load of a spill slot whose value a register still holds (stored there earlier
-    in the same block, the register not written since) reads the register instead, or goes."""
-    out = []
-    held = {}                       # slot -> register holding its value
-    for ins in code:
-        if ins.op in ("label", "call", "callind") or ins.op in TERMINATORS:
-            held = {}
-        if ins.op == "mov" and len(ins.args) == 2 and isinstance(ins.args[0], Reg)                 and isinstance(ins.args[1], Mem) and ins.args[1].spill is not None                 and ins.args[0].w == 64 and ins.args[1].spill in held:
-            r = held[ins.args[1].spill]
-            d = ins.args[0].r
-            if d == r:
-                continue
-            ins = Ins("mov", [ins.args[0], Reg(r, 64)], [d], [r])
-        for r in list(ins.defs) + list(ins.clobbers):
-            held = {k: v for k, v in held.items() if v != r}
-        if ins.op == "mov" and len(ins.args) == 2 and isinstance(ins.args[0], Mem)                 and ins.args[0].spill is not None:
-            k = ins.args[0].spill
-            held.pop(k, None)
-            if isinstance(ins.args[1], Reg) and ins.args[1].w == 64:
-                held[k] = ins.args[1].r
-        out.append(ins)
-    # a store to a slot that the same block stores again before reading it is dead
-    res, dead = [], set()
-    for ins in reversed(out):
-        if ins.op == "label" or ins.op == "jmp" or ins.op in CONDJUMPS or ins.op in TERMINATORS                 or ins.op in ("call", "callind"):
-            dead = set()
-        st = ins.op in _SPILL_MOVES and isinstance(ins.args[0], Mem) and ins.args[0].spill is not None
-        if st:
-            if ins.args[0].spill in dead:
-                continue
-            dead.add(ins.args[0].spill)
-        for a in ins.args[1:] if st else ins.args:
-            if isinstance(a, Mem) and a.spill is not None:
-                dead.discard(a.spill)
-        res.append(ins)
-    return res[::-1]
-
-
-_SPILL_MOVES = {"mov", "movdqu", "vmovdqu"}
-
-
-def _avx(code) -> bool:
-    """A VEX function (it ends in vzeroupper): its spills and saves are VEX too."""
-    return any(ins.op == "vzeroupper" for ins in code)
 
 
 def _subst(ins: Ins, assign) -> Ins:
@@ -532,21 +415,21 @@ def layout_cold(code: list) -> list:
     return code
 
 
-def _alloc(code, abi, late=frozenset()):
+def _alloc(code, abi, T, late=frozenset()):
     """assign, spilled; once anything spills, only the scratch registers its spill code needs
     are held back. A second scan may spill other registers, so its needs are checked and the
     reservation widened until they fit."""
-    assign, spilled, free = _scan(code, abi, reserve={}, late=late)
+    assign, spilled, free = _scan(code, abi, T, reserve={}, late=late)
     if spilled:
-        need = _need(code, spilled)
+        need = _need(code, spilled, T)
         for _ in range(4):
-            assign, spilled, free = _scan(code, abi, reserve=need, late=late)
-            more = _need(code, spilled)
+            assign, spilled, free = _scan(code, abi, T, reserve=need, late=late)
+            more = _need(code, spilled, T)
             if all(more[c] <= need[c] for c in need):
                 break
             need = {c: max(need[c], more[c]) for c in need}
         else:
-            assign, spilled, free = _scan(code, abi, reserve={"g": 3, "v": 3}, late=late)
+            assign, spilled, free = _scan(code, abi, T, reserve={"g": 3, "v": 3}, late=late)
     return assign, spilled, free
 
 
@@ -589,7 +472,7 @@ def _regions(code):
     return out
 
 
-def _split(code, spilled, parent, tried, free):
+def _split(code, spilled, parent, tried, free, T):
     """Split spilled registers where a register is free: a copy of v inserted at the start of
     a single-entry stretch of code takes v's reads there (v is not written there, so its slot
     stays valid) and competes for a register over that stretch alone.
@@ -612,7 +495,7 @@ def _split(code, spilled, parent, tried, free):
         for r in ins.defs:
             if isinstance(r, VReg):
                 defs.setdefault(r, []).append(i)
-    avx = _avx(code)
+    avx = T.avx(code)
     nid = max((r.id for ins in code for r in ins.uses + ins.defs if isinstance(r, VReg)), default=0)
     inserts = {}            # position -> copies
     renames = []            # (at, end, {old: new})
@@ -648,11 +531,7 @@ def _split(code, spilled, parent, tried, free):
                 taken.append((h, u))
                 nid += 1
                 c = VReg(v.cls, nid)
-                if v.cls == "g":
-                    copy = Ins("mov", [Reg(c, 64), Reg(v, 64)], [c], [v])
-                else:
-                    w = 256 if avx else 128
-                    copy = Ins("vmovdqa" if avx else "movdqa", [Reg(c, w), Reg(v, w)], [c], [v])
+                copy = T.copy_ins(c, v, avx)
                 parent[c] = (v, copy)
                 inserts.setdefault(h, []).append(copy)
                 renames.append((h, u, {v: c}))
@@ -678,200 +557,25 @@ def _unsplit(code, bad, parent):
     return [_map(ins, lambda r: m.get(r, r)) for ins in code if id(ins) not in drop]
 
 
-def allocate(code: list, abi: ABI) -> list:
+def allocate(code: list, abi: ABI, T) -> list:
     """Allocate; then split spilled registers around the loops that only read them, allocate
     again, and undo the splits that spilled anyway, until nothing changes."""
     parent, tried = {}, set()
     for _ in range(16):
-        assign, spilled, free = _alloc(code, abi, set(parent))
+        assign, spilled, free = _alloc(code, abi, T, set(parent))
         bad = [c for c in parent if c in spilled]
         if bad:
             code = _unsplit(code, bad, parent)
             continue
-        new = _split(code, spilled, parent, tried, free)
+        new = _split(code, spilled, parent, tried, free, T)
         if new is None:
             break
         code = new
     else:
-        assign, spilled, _ = _alloc(code, abi, set(parent))
+        assign, spilled, _ = _alloc(code, abi, T, set(parent))
     code = [ins for ins in code if ins.op not in ("rarebegin", "rareend")]
-    code, nslots = _rewrite(code, assign, spilled)
-    code = _peephole(code)
-    return layout_cold(_frame(code, abi, nslots))
+    code, nslots = T.rewrite(code, assign, spilled)
+    code = T.peephole(code)
+    return layout_cold(T.frame(code, abi, nslots))
 
 
-def _peephole(code: list) -> list:
-    # identity moves go (a 32-bit `mov` stays: it zeroes the upper half). A 128-bit VEX move to
-    # itself would zero bits 255:128 too, which no lowering relies on: a 256-bit value is never
-    # read after a 128-bit move of the same register; a lowering that did would need it kept.
-    out = []
-    for i, ins in enumerate(code):
-        if ins.op in ("mov", "movdqa", "vmovdqa") and isinstance(ins.args[0], Reg) \
-                and isinstance(ins.args[1], Reg) and ins.args[0].r == ins.args[1].r \
-                and ins.args[0].w == ins.args[1].w and (ins.args[0].w == 64 or ins.op != "mov"):
-            continue
-        out.append(ins)
-    # flags: an arithmetic on r, then `test r, r` / `cmp r, 0` and a je/jne/ja/jbe, needs no
-    # test (the arithmetic sets ZF; after test or cmp 0, ja is jne and jbe is je). A
-    # `lea r, [r + k]` there becomes `add r, k` to set them
-    fused = []
-    k = 0
-    while k < len(out):
-        ins = out[k]
-        if k + 2 < len(out) and _fusible(ins, out[k + 1], out[k + 2]):
-            if ins.op == "lea":
-                m = ins.args[1]
-                ins = Ins("add", [ins.args[0], Imm(m.disp)], ins.defs, ins.uses, ins.clobbers)
-            j = out[k + 2]
-            op = {"ja": "jne", "jbe": "je"}.get(j.op, j.op)
-            fused += [ins, Ins(op, j.args, j.defs, j.uses, j.clobbers)]
-            k += 3
-            continue
-        fused.append(ins)
-        k += 1
-    out = fused
-    # `lea r, [r + k]` before a compare (which writes the flags anyway) as `add r, k`, and
-    # `sub r, -128` for k = 128: an 8-bit immediate (4 bytes, against 7 for lea's disp32), as
-    # GCC writes a 128-byte loop step
-    for k in range(len(out) - 1):
-        ins, nxt = out[k], out[k + 1]
-        if ins.op == "lea" and nxt.op in ("cmp", "test") and isinstance(ins.args[0], Reg)                 and ins.args[0].w == 64:
-            m = ins.args[1]
-            if isinstance(m, Mem) and m.base == ins.args[0].r and m.index is None                     and m.sym is None and m.spill is None and m.arg is None and m.disp:
-                op, v = ("sub", -m.disp) if m.disp == 128 else ("add", m.disp)
-                out[k] = Ins(op, [ins.args[0], Imm(v)], ins.defs, ins.uses, ins.clobbers)
-    # nothing runs after an unconditional jump until the next label
-    live, dead = [], False
-    for ins in out:
-        if ins.op in ("label", "align", "coldbegin", "coldend", "endprolog"):
-            dead = False if ins.op == "label" else dead
-            live.append(ins)
-            continue
-        if not dead:
-            live.append(ins)
-        if ins.op in ("jmp", "ret", "tailjmp", "tailcall"):
-            dead = True
-    out = live
-    # a jump to a jump goes straight to the final target
-    nxt = {}
-    for i, ins in enumerate(out):
-        if ins.op == "label":
-            j = i + 1
-            while j < len(out) and out[j].op == "label":
-                j += 1
-            if j < len(out) and out[j].op == "jmp" and isinstance(out[j].args[0], Lab):
-                nxt[ins.args[0].name] = out[j].args[0].name
-
-    def final(name):
-        seen = set()
-        while name in nxt and name not in seen:
-            seen.add(name)
-            name = nxt[name]
-        return name
-
-    out = [Ins(i.op, [Lab(final(i.args[0].name))], i.defs, i.uses, i.clobbers)
-           if (i.op == "jmp" or i.op in CONDJUMPS) and isinstance(i.args[0], Lab) else i
-           for i in out]
-    # a jump to the label that follows it
-    res = []
-    for i, ins in enumerate(out):
-        if ins.op == "jmp" and i + 1 < len(out) and out[i + 1].op == "label" \
-                and out[i + 1].args[0].name == ins.args[0].name:
-            continue
-        res.append(ins)
-    # labels nothing jumps to
-    targets = {a.name for ins in res if ins.op != "label" for a in ins.args if isinstance(a, Lab)}
-    res = [ins for ins in res if ins.op != "label" or ins.args[0].name in targets]
-    # (with the labels gone, more stores and reloads of a slot share a block)
-    return [ins for ins in _reloads(res) if not _identity(ins)]
-
-
-def _identity(ins: Ins) -> bool:
-    return ins.op == "mov" and len(ins.args) == 2 and all(isinstance(a, Reg) for a in ins.args)         and ins.args[0].r == ins.args[1].r and ins.args[0].w == ins.args[1].w == 64
-
-
-_SETS_ZF = {"add", "sub", "and", "or", "xor"}
-
-
-def _fusible(ins: Ins, test: Ins, jcc: Ins) -> bool:
-    if jcc.op not in ("je", "jne", "ja", "jbe") or not test.args or not ins.args:
-        return False
-    if test.op == "test":
-        a, b = test.args
-        if not (isinstance(a, Reg) and isinstance(b, Reg) and a.r == b.r and a.w == b.w):
-            return False
-    elif test.op == "cmp":
-        a, b = test.args
-        if not (isinstance(a, Reg) and isinstance(b, Imm) and b.v == 0):
-            return False
-    else:
-        return False
-    d = ins.args[0]
-    if not (isinstance(d, Reg) and d.r == a.r):
-        return False
-    # a 32-bit operation zero-extends: its ZF is that of the whole 64-bit register
-    if ins.op in _SETS_ZF and (d.w == a.w or (d.w == 32 and a.w == 64)):
-        return True
-    if d.w != a.w:
-        return False
-    if ins.op == "lea" and a.w == 64:            # lea r, [r + k] -> add r, k
-        m = ins.args[1]
-        return isinstance(m, Mem) and m.base == a.r and m.index is None and m.sym is None \
-            and m.spill is None and m.arg is None
-    return False
-
-
-def _frame(code: list, abi: ABI, nslots: int) -> list:
-    used = {r for ins in code for r in ins.defs if isinstance(r, Phys)}
-    saved = [PHYS[r] for r in abi.callee_saved if PHYS[r] in used]
-    vsaved = [PHYS[r] for r in abi.vec_callee_saved if PHYS[r] in used]
-    calls = any(ins.op in ("call", "callind") for ins in code)
-    shadow = abi.shadow if calls else 0
-    # outgoing stack arguments ([rsp + shadow + 8k] at the call) sit below the spill slots
-    out = max([a.disp + 8 for ins in code for a in ins.args
-               if isinstance(a, Mem) and a.base == RSP], default=0)
-    spill_off = max(shadow, out)
-    # the xmm saves at a multiple of 16 from rsp: Win64 unwind info stores the offset / 16
-    vsave_off = -(-(spill_off + 32 * nslots) // 16) * 16
-    size = vsave_off + 16 * len(vsaved)
-    npush = len(saved)
-    # rsp is 16-byte aligned at every call this function makes (and its frame stays aligned)
-    if (calls or size) and (8 + 8 * npush + size) % 16:
-        size += 8
-    if size >= 4096:
-        # Win64 needs a stack probe (__chkstk) to grow past a guard page, and the unwind info
-        # here covers frames under 512 KiB: no function comes near; say so if one ever does
-        raise NotImplementedError(f"a {size}-byte frame: stack probes are not generated")
-
-    def fix(a):
-        if isinstance(a, Mem) and a.spill is not None:
-            return Mem(_RSP, disp=spill_off + 32 * a.spill, w=a.w)
-        if isinstance(a, Mem) and a.arg is not None:
-            return Mem(_RSP, disp=size + 8 * npush + abi.stack_arg_offset(a.arg), w=a.w)
-        return a
-
-    body = [Ins(i.op, [fix(a) for a in i.args], i.defs, i.uses, i.clobbers, i.hint) for i in code]
-    # the prologue, each step marked for the unwind info (Win64 .pdata/.xdata)
-    pro = [Ins("push", [Reg(r, 64)], hint="push") for r in saved]
-    if size:
-        pro.append(Ins("sub", [Reg(_RSP, 64), Imm(size)], hint="alloc"))
-    mv = "vmovdqu" if _avx(code) else "movdqu"      # no legacy SSE inside an AVX function
-    for k, r in enumerate(vsaved):
-        pro.append(Ins(mv, [Mem(_RSP, disp=vsave_off + 16 * k, w=0), Reg(r, 128)], hint="savexmm"))
-    if pro:
-        pro.append(Ins("endprolog", []))
-    epi = []
-    for k, r in enumerate(vsaved):
-        epi.append(Ins(mv, [Reg(r, 128), Mem(_RSP, disp=vsave_off + 16 * k, w=0)]))
-    if size:
-        epi.append(Ins("add", [Reg(_RSP, 64), Imm(size)], hint="unalloc"))
-    epi += [Ins("pop", [Reg(r, 64)], hint="pop") for r in reversed(saved)]
-    out = pro
-    for ins in body:
-        if ins.op in ("ret", "tailcall"):     # a tail call leaves through the epilogue too
-            out += epi
-        out.append(ins)
-    return out
-
-
-_RSP = RSP
