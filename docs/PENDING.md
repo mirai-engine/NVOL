@@ -327,7 +327,11 @@ The detail is in "Done".
       whether anything should change.
 30. ~~1.10: ripgrep end to end on Linux~~ (see Done). What remains from it: the whole-file
     Teddy search (`Moriarty|Lestrade|Mycroft|Hudson`) is +0.54…+0.65 % in cycles in 3 rounds,
-    with 2.8 % fewer instructions ([report](benchmarks/2026-11-21-ripgrep-linux.md)).
+    with 2.8 % fewer instructions ([report](benchmarks/2026-11-21-ripgrep-linux.md)). A
+    `perf record` of one run per build cannot split it by function: the page faults
+    (`clear_page_erms`) land in a different place in each binary (22.6 % against 1.9 %), and
+    that run's totals were even (155.2 M against 154.9 M cycles). It needs several runs per
+    build, or counters on the Teddy function alone (`tedcount` gives NVOL ahead at 4 KiB-1 MiB).
 31. ~~1.7a and 2.1c under QEMU~~: `bench`, `membench` and `tedbench` ran emulated ([report](benchmarks/2026-11-21-a64-qemu.md)).
     What remains:
     - `Finder::find 3B frequent "the"` is −5.0…−7.8 % at every size, a match at the start:
@@ -337,8 +341,15 @@ The detail is in "Done".
 32. **AU21.** ugrep `-c zq` (2-byte memmem). Measured with counters
     (`harness/ugrep-e2e/counters.sh`, [report](benchmarks/2026-11-21-rust-counters.md)): the whole process gives +0.40, +0.80 and
     +0.68 % cycles in 3 rounds, with 0.2 % fewer instructions. The other queries are within
-    ±0.65 %. The +2.8 % of the wall clock was mostly noise. What remains is small but
-    systematic; look at it per function (`perf record`) on the `chars<2>` path.
+    ±0.65 %. The +2.8 % of the wall clock was mostly noise.
+    - Per function (`perf record`, 5 runs of `-c zq` over 64 MiB): the process is dominated by
+      the kernel's copy in `read()` (`rep_movs_alternative`, 34-37 %). The search itself is
+      stock's `simd_advance_chars_avx2<2>`, 16.3 % of 42.7 M cycles (≈ 7.0 M), against
+      NVOL's `nvol_memmem_find_entry_avx2`, 20.7 % of 39.4 M (≈ 8.2 M). That is about +17 % in
+      the kernel for a 2-byte needle, diluted to +0.6 % over the process. ugrep's `chars<2>`
+      compares both bytes at fixed offsets. NVOL's packed pair takes the rare-byte offsets
+      from the Finder and verifies each candidate. Next: a 2-byte specialization in memmem,
+      measured in the asm bench as well.
 
 ### Phase 6. simdjson (1.17)
 
