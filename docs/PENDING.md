@@ -181,7 +181,12 @@ The detail is in "Done".
     - ~~pair AVX2, +20 %, with 13 % fewer instructions~~: each block was loaded twice. Fixed
       (see Done): at 4 KiB the asm now gives 460 cycles, against 467 for GCC and 490 for Clang;
     - memmem SSE2, +22 %;
-    - 14b: rapidjson, `pretty` of `citm_catalog` against SSE4.2, +0.6…+0.8 %.
+    - 14b: rapidjson, `pretty` of `citm_catalog` against SSE4.2. Rebuilt with the current
+      header and measured in 3 rounds (`harness/rapidjson-e2e/counters.sh`, best of 7):
+      cycles +0.0, +0.8 and +1.5 %, instructions +0.07, +0.02 and +0.01 %, mispredictions
+      −15 % (6.2 k against 7.2 k per op). With the raw frontend events: DSB µops +3 %, MITE
+      µops −6 %, switch penalty −11 %. The remaining difference is within this row's spread
+      (±1 %). Without a cause that the counters can see, it stays open with that spread recorded.
 
     - **Position of a call site** (found with `copy_back`, item 17). `nvol_memchr` at 16 B
       (AVX2) costs 16.8-17.0 cycles when its 6-byte `call *ptr` starts at 0x69d-0x6a1, and
@@ -259,10 +264,16 @@ The detail is in "Done".
         block twice, `vpand ymm8, ymm6, [rsi + r8]` and `vmovdqu ymm9, [rsi + r8]`, and
         `NVOL_K3` twice per iteration from memory. Fixed by sharing foldable loads (see Done);
       - **memmem SSE2:** ports and issued µops are the same in the three builds (2428, 2434
-        and 2415), and the cycles are not (asm 810, GCC 661, Clang 794). The same work,
-        scheduled worse: a latency chain, to be looked at in the loop;
-      - **memrchr AVX2:** the same ports and µops. GCC's cycles swing between 82 and 137
-        across runs, so this row needs more repeats before it means anything.
+        and 2415), and the cycles are not: asm 797-810, Clang 794-798, GCC 660-665. So the
+        asm is on par with Clang, and GCC is the outlier. Not mispredictions (1.0 per call in
+        all three), not BACLEARS, not the frontend. Both GCC and NVOL take two branches per
+        16-byte iteration (`je` over the verification, then the latch). GCC issues both loads
+        before the compares, and uses `tzcnt` where NVOL uses `bsf`. What makes GCC faster is
+        still open;
+      - **memrchr AVX2:** 5 rounds (best of 7 each): asm 129-147, GCC 123-134, Clang
+        110-118. The asm is about +20 % against Clang with fewer instructions (465 against
+        495), everything from the DSB, and 1 misprediction per call in all three. Open: the
+        loop's dependency chain, compared with Clang's line by line.
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
