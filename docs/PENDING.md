@@ -248,6 +248,21 @@ The detail is in "Done".
       of 6 µops per window). That needs the µop counts per window that
       `encode.py` can give.
 
+    - **The loop rows are not the frontend.** `harness/asm/frontend.sh` (4 raw events per
+      run, asm against GCC and Clang): in memrchr 4 KiB AVX2, byteset 4-64 KiB AVX2, pair
+      4-64 KiB AVX2 and memmem 4-64 KiB SSE2, the three builds take every µop from the DSB
+      (MITE ≈ 0). With the port events (`EV=cycles,r01a1,...`, `uops_dispatched_port`, and
+      `r010e` for `uops_issued.any`), at 4 KiB:
+      - **pair AVX2:** the asm sends twice the µops to the load ports (265 + 266 on ports 2
+        and 3, against 137 + 138) and issues 2011 µops against 1769. The loop reads each
+        block twice, `vpand ymm8, ymm6, [rsi + r8]` and `vmovdqu ymm9, [rsi + r8]`, and
+        `NVOL_K3` twice per iteration from memory. Fixed by sharing foldable loads (see Done);
+      - **memmem SSE2:** ports and issued µops are the same in the three builds (2428, 2434
+        and 2415), and the cycles are not (asm 810, GCC 661, Clang 794). The same work,
+        scheduled worse: a latency chain, to be looked at in the loop;
+      - **memrchr AVX2:** the same ports and µops. GCC's cycles swing between 82 and 137
+        across runs, so this row needs more repeats before it means anything.
+
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
 26. ~~1.4: "one memchr per line"~~: measured with counters (see Done).
