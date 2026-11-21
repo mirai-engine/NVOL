@@ -234,7 +234,12 @@ The detail is in "Done".
       `len`. The wrappers therefore already match the public API; the maintainer decides
       whether anything should change.
 30. 1.10: ripgrep end to end on Linux, with the SIMD contribution isolated.
-31. 1.7a and 2.1c: `bench`, `membench`, `tedbench` and Odin on aarch64 under QEMU (emulated).
+31. ~~1.7a and 2.1c under QEMU~~: `bench`, `membench` and `tedbench` ran emulated ([report](benchmarks/2026-11-21-a64-qemu.md)).
+    What remains:
+    - `Finder::find 3B frequent "the"` is −5.0…−7.8 % at every size, a match at the start:
+      the call and the prefilter setup;
+    - Odin on aarch64 needs an `odin` that targets `linux_arm64` in WSL;
+    - real hardware (1.7a, 2.12).
 32. **AU21.** ugrep `-c zq` (2-byte memmem). Measured with counters
     (`harness/ugrep-e2e/counters.sh`, [report](benchmarks/2026-11-21-rust-counters.md)): the whole process gives +0.40, +0.80 and
     +0.68 % cycles in 3 rounds, with 0.2 % fewer instructions. The other queries are within
