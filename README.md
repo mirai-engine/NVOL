@@ -1,9 +1,9 @@
 # NVOL — Native Vector Operations Library
 
 A generator (in Python) of verified libraries of low-level SIMD operations
-for **C, C++, Rust, Python and Odin**, on x86_64 and aarch64, and in **its own x86-64 assembly**
-(NASM and GNU as on Win64 and System V, MASM on Win64: NVOL lowers the IR to instructions, with no
-compiler in between).
+for **C, C++, Rust, Python and Odin**, on x86_64 and aarch64, and in **its own assembly**
+(x86-64: NASM and GNU as on Win64 and System V, MASM on Win64; aarch64: GNU as, AAPCS64, NEON.
+NVOL lowers the IR to instructions, with no compiler in between).
 
 The in-house assembly will be the internal reference. When it is mature (today it is under review),
 each language is compared against it and every difference is explained. This separates NVOL's
@@ -26,13 +26,15 @@ bash harness/verify.sh                       # SKIP="rust-a64 odin-a64" to skip 
 ```sh
 python -m nvol list                          # ISAs, kernels and primitives
 python -m nvol check --cases 50              # kernels (IR) vs oracle, with UB checking
-python -m nvol gen --out generated           # generates C, C++, Rust, Python, Odin (x86_64 + aarch64), NASM, MASM and GNU as (x86_64)
+python -m nvol gen --out generated           # generates C, C++, Rust, Python, Odin (x86_64 + aarch64), NASM, MASM (x86_64) and GNU as (x86_64 + aarch64)
 python -m nvol gen --lang rust --arch x86_64 --isa sse2,avx2 --kernels memchr,count
 python -m pytest -q tests                    # generated C and asm through the forced paths (base, AVX2, SSE4.2) + generated/ up to date
 nasm -f win64 generated/nasm/nvol_x86_64_win64.asm -o k.obj && gcc -shared -DNVOL_BUILD_DLL -o nvol.dll generated/nasm/nvol.c k.obj
 nasm -f elf64 generated/nasm/nvol_x86_64_sysv.asm -o k.o && cc -shared -fPIC -o libnvol.so generated/nasm/nvol.c k.o
 ml64 -c -Fo k.obj generated/masm/nvol_x86_64_win64.asm && cl /LD /DNVOL_BUILD_DLL generated/masm/nvol.c k.obj
 as --64 -o k.o generated/gas/nvol_x86_64_sysv.s && cc -shared -fPIC -o libnvol.so generated/gas/nvol.c k.o
+aarch64-linux-gnu-as -o k.o generated/gas/nvol_aarch64_aapcs64.s && aarch64-linux-gnu-gcc -shared -fPIC -o libnvol.so generated/gas/nvol.c k.o
+wsl -d Alpine -- sh harness/asm/run-a64.sh   # aarch64 asm: GNU as = Clang bytes, smoke, test_asm + native suites under QEMU
 cd harness/rust && cargo test --release      # generated Rust vs naive and vs the memchr crate
 cd harness/rust && cargo run --release --bin bench
 odin run harness/odin/tests -collection:nvol=generated -o:speed   # Odin: AVX2, base (SSE2/SSSE3) and SSE4.2
@@ -42,7 +44,7 @@ odin run harness/odin/xbench -collection:nvol=generated -o:speed
 RIPGREP=../ripgrep TEST=1 bash harness/ripgrep-e2e/setup.sh   # ripgrep built on NVOL + its tests
 python harness/ripgrep-e2e/bench.py                             # identical output + timings vs original ripgrep
 QEMU="wsl -d Alpine -- qemu-aarch64" bash harness/run-aarch64.sh   # NEON parity under QEMU
-wsl -d Alpine -- sh harness/cpp/setup-aarch64-sysroot.sh          # once: aarch64 sysroot for the cpp-a64 step
+wsl -d Alpine -- sh harness/cpp/setup-aarch64-sysroot.sh          # once: aarch64 sysroot for the cpp-a64 and asm-a64 steps
 ```
 
 Requirements: Python ≥ 3.9 (no dependencies to generate), `pytest` + GCC/Clang
@@ -100,12 +102,12 @@ nvol/kernels/       memchr.py, count.py, ascii.py, memmem.py, rank.py, teddy.py,
 nvol/interp.py      reference interpreter (detects UB)
 nvol/oracle.py      executable specification of each API
 nvol/backends/      c.py (C and C++), rust.py, python.py, odin.py, iters.py (memchr_iter), finder.py (memmem), packed.py (Teddy)
-nvol/asm/           lower.py (IR → instructions, with inlining; shared by the targets), x86.py (x86-64 instruction selection, spill code, frame), regalloc.py (intervals with holes, spill splitting, frame), abi.py (Win64, System V), encode.py (lengths, jump sizes), nasm.py, masm.py, gas.py (AT&T), samebytes.py (all three give the same code)
+nvol/asm/           lower.py (IR → instructions, with inlining; shared by the targets), x86.py (x86-64 instruction selection, spill code, frame), a64.py (A64 and NEON selection, AAPCS64 frame, branch ranges), regalloc.py (intervals with holes, spill splitting, jump cleanup), abi.py (Win64, System V, AAPCS64), encode.py (x86 lengths, jump sizes), nasm.py, masm.py, gas.py (AT&T), gas_a64.py (aarch64), samebytes.py (every syntax and assembler gives the same code)
 generated/          current generator output
 harness/verify.sh   full verification (see Usage)
 harness/rust        parity tests + benchmark vs memchr
 harness/cpp         smoke test of the C++ header (native and aarch64 under QEMU)
-harness/asm         smoke of generated/{nasm,masm,gas} (gcc and MSVC on Win64; System V in WSL with the whole asm pytest)
+harness/asm         smoke of generated/{nasm,masm,gas} (gcc and MSVC on Win64; System V in WSL with the whole asm pytest; aarch64 under QEMU: run-a64.sh), counters, a64_static.py
 harness/odin        tests, benchmarks and counters of the Odin backend
 harness/ripgrep-e2e patches to memchr/aho-corasick to build ripgrep on NVOL
 harness/ugrep-e2e   patch to ugrep (C++) on nvol.hpp; build, bench and set microbench in WSL
@@ -125,8 +127,8 @@ harness/rapidjson-e2e patch to rapidjson on nvol.hpp; 5 builds (no SIMD, SSE2, S
 7. Formal verification of primitives (bitvectors/SMT).
 8. Assembly as internal reference: ~~x86-64 in NASM, Win64 and System V~~ · ~~MASM~~ ·
    ~~GNU as~~ · ~~same bytes in all three~~ · ~~review~~ · ~~optimization against
-   GCC/Clang/MSVC~~ (median instruction count +0.2 % at 4 KiB, +5.1 % at 16 B) · aarch64 ·
-   maturity.
+   GCC/Clang/MSVC~~ (median instruction count +0.2 % at 4 KiB, +5.1 % at 16 B) · ~~aarch64~~
+   (tested under QEMU; +12.1 % static instructions against Clang -O2) · maturity.
 9. Parity of each language against the assembly, with each difference explained (parity and
    toolchain logs).
 10. simdjson: block-to-mask kernels (64-bit masks, `prefix_xor`, UTF-8, digits), Phase 6 of

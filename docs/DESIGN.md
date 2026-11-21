@@ -42,8 +42,8 @@ architectures, and **prove with tests** that they all meet the same contract.
         ├──► nvol/backends/{c,rust,python,odin}.py ──► generated/<lang>/ ─────┤ tests
         │    (c.py emits C and C++)                                           │
         │    nvol/isa.py: lowering primitive → intrinsic per (ISA, language)  │
-        └──► nvol/asm/ (lower → regalloc → nasm) ─────► generated/nasm/ ──────┘
-             in-house x86-64 instructions; the glue stays in C (c.py, asm_kernels)
+        └──► nvol/asm/ (lower → regalloc → printer) ──► generated/{nasm,masm,gas}/ ┘
+             in-house x86-64 and A64 instructions; the glue stays in C (c.py, asm_kernels)
 ```
 
 ### Three levels of verification
@@ -182,8 +182,9 @@ syntax (MASM, GNU as) is only a printer:
 
 - **`lower.py`, IR → MIR** (instructions on virtual registers), the target-neutral part:
   inlining, CSE, the statement and loop structure, the cold and rare markers. A target
-  selects the instructions: **`x86.py`** for x86-64, which also gives the allocator its
-  scratch registers, spill code, peephole and frame. Every integer, pointer
+  selects the instructions: **`x86.py`** for x86-64 and **`a64.py`** for aarch64 (A64 and
+  NEON). Each also gives the allocator its scratch registers, spill code, peephole and frame.
+  Every integer, pointer
   and bool lives zero-extended to 64 bits: `Cast`s are free and only `wadd`/`wsub`/`wmul`/`shl`
   on u8/u32 truncate. `While` loops are rotated (test at the bottom) and conditions are fused into
   `cmp`/`test` + jump. Inlining follows the C rule (what is `NVOL_INLINE` in C); an AVX2
@@ -216,6 +217,28 @@ syntax (MASM, GNU as) is only a printer:
   are exported with `-export:` in `.drectve`. Both `ld` and `link.exe` read that; MASM's
   `PROC EXPORT` writes `/EXPORT:`, which `ld` ignores. MASM requires the size of memory operands
   that NASM deduces from the register (`ymmword ptr`).
+
+**aarch64** (`a64.py`, `gas_a64.py`, AAPCS64 in `abi.py`):
+- **Instructions:** every one is 4 bytes, so there is no relaxation. `a64.check_ranges` makes a
+  branch out of reach a generation error (b.cond, cbz and cbnz reach ±1 MiB; tbz ±32 KiB).
+  Immediates come from `movz`/`movn`/`movk`/`orr` (`mov_parts`, with the logical-immediate
+  check), symbols from `adrp` + `:lo12:`, and conditions from `cmp` + `b.cc`,
+  `cbz`/`cbnz`/`tbz`/`tbnz`, `csel` and `cset`.
+- **NEON:** the primitives are the C backend's (`cmeq`, `orr`, `and`, `sub`, `umin`, `tbl`,
+  `ext`, `ushr`, `sshr`, `uaddlp`, `addp`, `umaxp`, `dup`). `movemask` is `shrn #4` and a mask
+  `0x8888…`, so position i is bit 4i+3, as `nvol.h` documents.
+- **Frame:** x29/x30 are saved only when the function calls. The used registers of x19-x28 and
+  d8-d15 are saved (AAPCS64 keeps only the low 64 bits of v8-v15, so a call clobbers every
+  vector), then the 16-byte spill slots. The frame is one `sub sp`, with `.cfi_*` directives.
+- **No resolver:** NEON is the baseline, and each public function with a single target is one
+  `b` to it.
+- **One reference:** `samebytes aapcs64` checks that GNU as and Clang give the same bytes, the
+  same unwind rules and the size `code_size` predicts for each function. The encoding of
+  `.eh_frame` is the assembler's choice: GNU as writes the CIE with factors 4/-8 and Clang
+  with 1/-4.
+- **Tests:** `harness/asm/run-a64.sh` runs `test_asm` and the native suites under QEMU. The
+  Python and pytest of the aarch64 sysroot run there, and the native Clang cross-compiles
+  inside the tests. QEMU says whether the code is correct, not how fast it is.
 
 Dispatch is the same as in C: a pointer in `.data` that starts at a resolver, the public
 symbol jumps through it, and the resolver chooses with the C `nvol_cpu_*` functions. The library

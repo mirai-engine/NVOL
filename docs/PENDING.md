@@ -6,7 +6,7 @@ Priority in the tables: **P0** blocks parity with ripgrep, **P1** quality/portab
 **P2** improvements. The work order is the one in section 0.
 
 Last review: 2026-11-21. The list was regenerated when item 15 (asm optimization) closed,
-and the simdjson phase was added. Items 1-15 keep their numbers; the pending items
+and the simdjson phase was added. Item 16 (aarch64 assembly) closed the same day. Items 1-15 keep their numbers; the pending items
 continue from 16.
 
 ## 0. Work list
@@ -51,7 +51,7 @@ What is discovered midway is recorded as a new item in its phase. It is fixed on
 if it blocks the current item. Performance measurements use counters in WSL on an idle
 machine. A borderline row is repeated three times and the noise is recorded.
 
-### Done: phases 0-3 up to item 15
+### Done: phases 0-3 up to item 16
 
 The detail is in "Done".
 
@@ -61,7 +61,8 @@ The detail is in "Done".
 - **Phase 2** (9): rapidjson on par against SSE4.2.
 - **Phase 3, the assembler** (10-15): x86-64 code generation with Win64 and System V (10);
   MASM (11); GNU as (12); the three syntaxes give the same machine code (13); review with a
-  fuzzer, unwind and edge cases (14); optimization against GCC, Clang and MSVC (15).
+  fuzzer, unwind and edge cases (14); optimization against GCC, Clang and MSVC (15); aarch64
+  (NEON, AAPCS64) in GNU as, tested under QEMU (16).
 
   State when item 15 closed, over 120 rows (12 operations × 5 sizes × 2 paths), against the
   best of GCC and Clang:
@@ -80,9 +81,8 @@ The detail is in "Done".
 
 ### Phase 3. The assembler up to maturity (closing)
 
-16. **aarch64 (NEON) in GNU as**, AAPCS64, tested under QEMU (emulated: correctness, not speed).
-    Same tests, in the `asm-a64` step of `verify.sh`.
-17. **What is left from item 15**, by weight:
+16. ~~**aarch64 (NEON) in GNU as**, AAPCS64, tested under QEMU~~ (see Done).
+17. **What is left from items 15 and 16**, by weight:
     - **Small sizes (16 B: +5 % instructions, +26 % cycles).** The entry cost of the dispatch
       functions: `push` of callee-saved registers before the early exits (shrink-wrapping),
       and parameters saved on the stack in memmem (+16 %).
@@ -98,6 +98,16 @@ The detail is in "Done".
       Compare with GCC and MSVC.
     - **Justified, not changed:** `count_parity` is the faithful port of memchr's `count_raw`.
       GCC and Clang autovectorize its scalar head and tail, and the asm does not autovectorize.
+    - **aarch64 (item 16): +12.1 % static instructions against Clang -O2** over the 31 public
+      functions ([report](benchmarks/2026-11-21-a64-static.md); only static, cycles wait for
+      item 31). Seen in `nvol_memchr` (16 against 12 instructions):
+      - the save as `sub sp` + `stp` instead of a pre-indexed `stp x29, x30, [sp, #-32]!`;
+      - a branch where Clang uses `cmp` + `csinv`;
+      - a copy not coalesced while its source is live (`mov x19, x1` … `mov x1, x19`);
+      - `and w0, w0, #255` that the callee repeats.
+
+      The byteset family (+25…+53 %), memmem (+34 %) and Teddy (+36 %) need their loops
+      compared by hand.
 18. **Maturity:** criterion and declaration. The three syntaxes identical (13), the review
     closed (14), no row worse in instructions than the best compiler except justified
     deviations (17), the cycle gaps with a measured cause (25) and aarch64 tested (16). From
@@ -314,11 +324,11 @@ as little-endian). The detail of both is in Done.
 
 | # | P | Pending | Detail |
 |---|---|---|---|
-| 4.1 | P1 | **NASM, MASM and GNU as** | Requested to validate the lowest level without a compiler in between. A common code generator (instruction selection from the IR, register allocation, System V and Win64 conventions, dispatch) and three printers: NASM (done, item 10), MASM (`ml64`) and GNU as in AT&T syntax; then aarch64 in GNU as under QEMU. The same differential tests as the C; performance equal to or better than the best compiler (items 11-18). |
+| 4.1 | P1 | **NASM, MASM and GNU as** | Requested to validate the lowest level without a compiler in between. A common code generator (instruction selection from the IR, register allocation, System V and Win64 conventions, dispatch) and three printers: NASM (done, item 10), MASM (`ml64`) and GNU as in AT&T syntax (done, items 11-13); then aarch64 in GNU as under QEMU (done, item 16). The same differential tests as the C; performance equal to or better than the best compiler (items 11-18). |
 | 4.2 | P1 | **The assembler as the internal reference** | Once mature (item 18), each language is compared against it, kernel by kernel, and every difference is explained in the parity log (items 19-24). It serves to find problems in the languages, their compilers and their toolchains, and to be able to fix and patch them without depending on their maintainers (toolchain log, item 21). |
 
-Design of 4.1. Done for x86-64 in NASM (item 10, see Done); MASM, GNU as and aarch64 are
-missing:
+Design of 4.1. Done: x86-64 in NASM (item 10), MASM (11) and GNU as (12), and aarch64 in GNU
+as (16); see Done. What remains is maturity (items 17-18):
 
 1. **Machine IR.** Each IR function is lowered to a linear list of x86-64 instructions over
    virtual registers (64-bit integers and vectors), with labels and conditional jumps on the
@@ -347,6 +357,57 @@ missing:
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **aarch64 in NVOL's own assembly (item 16).** The IR is lowered to A64 and NEON, with the
+  AAPCS64 calling convention, in GNU as syntax: `generated/gas/nvol_aarch64_aapcs64.s` and
+  the C glue in `generated/gas/nvol.c`.
+
+  **One lowering, two targets.**
+  - `lower.py` keeps the shared machinery; `x86.py` and `a64.py` select the instructions.
+  - `regalloc.py` takes the scratch registers, spill code, peephole and frame from the
+    target.
+  - The x86 output stayed byte-identical through the split.
+
+  **The A64 rules.**
+  - Every instruction is 4 bytes. A branch out of range (b.cond, cbz ±1 MiB; tbz ±32 KiB) is
+    an error, not silently widened.
+  - x29/x30 are saved only when the function calls. x19-x28 and d8-d15 are saved when used.
+    A call clobbers every vector, because only the low 64 bits of v8-v15 survive it.
+  - The NEON `movemask` is `shrn #4` and `0x8888…`, the same as in the C.
+  - There is no resolver: each public function with a single target is one `b`.
+
+  **Tests, in the `asm-a64` step (`harness/asm/run-a64.sh`).**
+  - `samebytes aapcs64`: GNU as (binutils 2.45.1) and Clang 22 give the same bytes (15 047
+    instructions), the same function tables and constants, the same unwind rules, and the
+    sizes that `a64.code_size` predicts (0 mismatches).
+  - The committed library is built and smoke-tested.
+  - Under QEMU, the aarch64 Python of the sysroot runs:
+    - `test_asm`: 150 tests, every function and NEON primitive against the interpreter,
+      through an AAPCS64 trampoline that checks x19-x28 and d8-d15;
+    - the native suites (differential, byteset, memmem, Teddy) over the C and over the
+      assembly (the `gas-a64` backend): 56 tests.
+
+  **Tested red.** Each mutation fails the step:
+  - `cmeq` → `cmhi` (`test_scalar_function[nvol_memchr_raw]`);
+  - x19 left unsaved ("a callee-saved register came back changed", in
+    `nvol_memmem_find_raw`);
+  - a `code_size` 4 bytes off (122 mismatches in `samebytes`).
+
+  **Found along the way:**
+  - Threading a jump rebuilt it with its label only, so `cbz x9, .L2` lost its register. x86
+    never saw it: its conditional jumps take only a label.
+  - The native suites had never run on aarch64:
+    - the byteset visitor test decoded the mask as x86's bit i, not as aarch64's bit 4i+3,
+      which is the contract in `nvol.h`;
+    - the Teddy test asserted x86's rule (mask 1 with more than 16 patterns is rejected),
+      while aho-corasick's NEON branch never rejects.
+
+    These were bugs in the tests, not in the generated code.
+  - In asm mode, the C prelude's memory helpers have no caller, and Clang with `-Werror`
+    rejects an unused `static inline` of a `.c`. GCC does not, which is why x86 never showed
+    it. They are now `NVOL_UNUSED`.
+  - GNU as and Clang encode the same `.cfi_*` directives with different CIE factors, so
+    `.eh_frame` is compared by its rules.
 
 - **Measurements on an idle machine (item 15).** The full counters in WSL (best of 15)
   and the table against MSVC on Windows are in the
