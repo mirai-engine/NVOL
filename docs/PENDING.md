@@ -293,10 +293,19 @@ The detail is in "Done".
         No shape wins everywhere. Clang's removes the misprediction once the loop runs ~31
         times (4 KiB: −14 %), but costs ~3 cycles when it runs once or twice (128 B: +18 %).
         Clang itself also loses to NVOL there. Under the rule (a worse row rejects), the swap
-        is not taken. What would keep both: the two loops, chosen by length at the entry
-        (NVOL's below ~1 KiB, Clang's above; the 1 KiB row is even), at the cost of a second
-        copy of the unrolled loop in every reverse kernel. That is a code-size decision for the
-        maintainer.
+        is not taken. Tried next (maintainer's go-ahead): both loops in the kernel IR, chosen by
+        length (Clang's shape from 24 iterations of the unrolled loop, x86 only). Rejected:
+        - the IR is shared, so the C gets both loops too, and **Clang compiles it worse:
+          memrchr 4 KiB AVX2 +22.5 %** (123.7 → 151.5). GCC is within noise;
+        - the asm gains where expected (4 KiB AVX2 −12.3 %, SSE2 −8…−9 % from 1.5 KiB, 64 KiB
+          −1…−2 %). But on AVX2, 24 iterations (3 KiB) still loses (+8.5 %), and the gain
+          starts at 32. SSE2 gains from 16. So the threshold is not one count of iterations;
+        - rows with the same instruction count swing ±6…18 % either way (16 B and 64 B), which
+          is layout. Rows near the threshold cannot be judged without a position control.
+        To do it right: an asm-only loop attribute (`While(..., shape="exit_first")`, honored by
+        `Lower` and ignored by the C, Rust and Odin backends), so the compilers keep the single
+        loop; and a threshold per ISA (AVX2 32 iterations, SSE2 16), checked with a position
+        control.
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
