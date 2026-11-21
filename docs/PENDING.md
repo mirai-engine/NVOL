@@ -273,8 +273,14 @@ The detail is in "Done".
         still open;
       - **memrchr AVX2:** 5 rounds (best of 7 each): asm 129-147, GCC 123-134, Clang
         110-118. The asm is about +20 % against Clang with fewer instructions (465 against
-        495), everything from the DSB, and 1 misprediction per call in all three. Open: the
-        loop's dependency chain, compared with Clang's line by line.
+        495), everything from the DSB. It is a fixed cost per call, not the loop. At 64 KiB the
+        asm and Clang are even (2773-2908 against 2776-2887), and at 4 KiB about 28 cycles
+        are left. Issuing the four loads off the old pointer before the `lea`, in Clang's
+        order, changes nothing (149-150 against 147-153, 3 rounds), so the address chain is
+        ruled out. What does differ: **1.0 mispredictions per call in the asm and in GCC, 0.0
+        in Clang** (batch of 2026-11-21, best of 7). That is the loop exit, about 31
+        iterations at 4 KiB. Next: compare how Clang's loop is shaped (its exit test is at the
+        top: `cmp; jb` out, `test; je` back) with NVOL's (`test; jne` out, `cmp; jae` back).
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
