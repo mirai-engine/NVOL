@@ -5,7 +5,8 @@
 # pytest (tests/test_asm.py, both syntaxes, and the `nasm` and `gas` backends of the `native`
 # fixture), which builds its own libraries from the generator.
 # Needs nasm, binutils (as), gcc, python3 and pytest
-# (Alpine: apk add nasm gcc g++ musl-dev python3 py3-pytest; g++ for the unwind test).
+# (Alpine: apk add nasm gcc g++ musl-dev python3 py3-pytest; g++ for the unwind test;
+# py3-pytest-xdist to run on every CPU).
 set -eu
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
@@ -18,4 +19,7 @@ for syntax in nasm gas; do
         "generated/$syntax/nvol.c" "$W/$syntax.o"
     python3 harness/asm/smoke.py "$W/libnvol_$syntax.so"
 done
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider tests -k "test_asm or nasm or gas"
+N=""      # one worker per CPU with pytest-xdist (Alpine: apk add py3-pytest-xdist)
+if python3 -c "import xdist" 2>/dev/null; then N="-n $(nproc)"; fi
+# shellcheck disable=SC2086
+PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider $N tests -k "test_asm or nasm or gas"

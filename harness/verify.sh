@@ -132,8 +132,15 @@ odin_native() { odin run "$ROOT/harness/odin/tests" -collection:nvol="$ROOT/gene
 odin_a64() { need_qemu && bash "$ROOT/harness/odin/run-aarch64.sh"; }
 asm_a64() { need_qemu && linux_sh "$ROOT/harness/asm/run-a64.sh"; }
 
+# one worker per CPU when pytest-xdist is installed (each worker builds its own libraries)
+pytest_native() {
+    if "$PY" -c "import xdist" 2>/dev/null; then "$PY" -m pytest -q -n auto tests
+    else "$PY" -m pytest -q tests
+    fi
+}
+
 step check    "$PY"   "$PY" -m nvol check
-step pytest   "$PY"   "$PY" -m pytest -q tests
+step pytest   "$PY"   pytest_native
 step cpp      "$CXX"  cpp_header
 step cpp-a64  ""     cpp_a64
 step rust     cargo   rust_native
