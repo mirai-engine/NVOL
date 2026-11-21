@@ -3950,6 +3950,87 @@ L.nvol_memmem_pp_neon:
     nop
     nop
     nop
+.globl nvol_memmem_pp2_neon
+.type nvol_memmem_pp2_neon, %function
+.hidden nvol_memmem_pp2_neon
+nvol_memmem_pp2_neon:
+L.nvol_memmem_pp2_neon:
+.cfi_startproc
+    sub x9, x2, x1
+    ldr x10, [x0]
+    ldr x11, [x0, #8]
+    ldrb w12, [x1, x10]
+    dup v0.16b, w12
+    ldrb w12, [x1, x11]
+    dup v1.16b, w12
+    cmp x10, x11
+    csel x12, x10, x11, hs
+    add x12, x12, #16
+    cmp x9, x12
+    csel x12, x9, x12, hs
+    sub x12, x4, x12
+    cmp x3, x12
+    b.hi .Lnvol_memmem_pp2_neon.L3
+    nop
+.Lnvol_memmem_pp2_neon.L2:
+    ldr q2, [x3, x10]
+    cmeq v2.16b, v2.16b, v0.16b
+    ldr q3, [x3, x11]
+    cmeq v3.16b, v3.16b, v1.16b
+    and v2.16b, v2.16b, v3.16b
+    shrn v2.8b, v2.8h, #4
+    fmov x13, d2
+    and x13, x13, #9838263505978427528
+    cbnz x13, .Lnvol_memmem_pp2_neon.L5
+.Lnvol_memmem_pp2_neon.L4:
+    add x3, x3, #16
+    cmp x3, x12
+    b.ls .Lnvol_memmem_pp2_neon.L2
+.Lnvol_memmem_pp2_neon.L3:
+    cmp x3, x4
+    b.hs .Lnvol_memmem_pp2_neon.L6
+    sub x13, x4, x3
+    cmp x13, x9
+    b.hs .Lnvol_memmem_pp2_neon.L8
+    movz w0, #0
+    b .Lnvol_memmem_pp2_neon.L1
+.Lnvol_memmem_pp2_neon.L8:
+    sub x9, x3, x12
+    lsl x9, x9, #2
+    movn x13, #0
+    lsl x9, x13, x9
+    ldr q2, [x12, x10]
+    cmeq v0.16b, v2.16b, v0.16b
+    ldr q2, [x12, x11]
+    cmeq v1.16b, v2.16b, v1.16b
+    and v0.16b, v0.16b, v1.16b
+    shrn v0.8b, v0.8h, #4
+    fmov x10, d0
+    and x10, x10, #9838263505978427528
+    and x9, x10, x9
+    cbz x9, .Lnvol_memmem_pp2_neon.L10
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #2
+    add x0, x12, x9
+    b .Lnvol_memmem_pp2_neon.L1
+.Lnvol_memmem_pp2_neon.L10:
+.Lnvol_memmem_pp2_neon.L6:
+    movz w0, #0
+.Lnvol_memmem_pp2_neon.L1:
+    ret
+.Lnvol_memmem_pp2_neon.L5:
+    rbit x9, x13
+    clz x9, x9
+    lsr x9, x9, #2
+    add x0, x3, x9
+    b .Lnvol_memmem_pp2_neon.L1
+.cfi_endproc
+.size nvol_memmem_pp2_neon, .-nvol_memmem_pp2_neon
+
+    nop
+    nop
+    nop
 .globl nvol_memmem_tw_neon
 .type nvol_memmem_tw_neon, %function
 .hidden nvol_memmem_tw_neon
@@ -4391,6 +4472,8 @@ L.nvol_memmem_find_entry_neon:
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
 .Lnvol_memmem_find_entry_neon.L10:
+    cmp x9, #2
+    b.ne .Lnvol_memmem_find_entry_neon.L35
     ldr x10, [x0]
     ldr x11, [x0, #8]
     ldrb w12, [x1, x10]
@@ -4404,10 +4487,8 @@ L.nvol_memmem_find_entry_neon:
     csel x12, x9, x12, hs
     sub x12, x4, x12
     cmp x3, x12
-    b.hi .Lnvol_memmem_find_entry_neon.L36
-    nop
-    nop
-.Lnvol_memmem_find_entry_neon.L35:
+    b.hi .Lnvol_memmem_find_entry_neon.L38
+.Lnvol_memmem_find_entry_neon.L37:
     ldr q2, [x3, x10]
     cmeq v2.16b, v2.16b, v0.16b
     ldr q3, [x3, x11]
@@ -4416,71 +4497,134 @@ L.nvol_memmem_find_entry_neon:
     shrn v2.8b, v2.8h, #4
     fmov x13, d2
     and x13, x13, #9838263505978427528
-    cbz x13, .Lnvol_memmem_find_entry_neon.L38
+    cbnz x13, .Lnvol_memmem_find_entry_neon.L40
+.Lnvol_memmem_find_entry_neon.L39:
+    add x3, x3, #16
+    cmp x3, x12
+    b.ls .Lnvol_memmem_find_entry_neon.L37
+.Lnvol_memmem_find_entry_neon.L38:
+    cmp x3, x4
+    b.hs .Lnvol_memmem_find_entry_neon.L41
+    sub x13, x4, x3
+    cmp x13, x9
+    b.hs .Lnvol_memmem_find_entry_neon.L43
+    movz w0, #0
+    b .Lnvol_memmem_find_entry_neon.L1
+.Lnvol_memmem_find_entry_neon.L43:
+    sub x9, x3, x12
+    lsl x9, x9, #2
+    movn x13, #0
+    lsl x9, x13, x9
+    ldr q2, [x12, x10]
+    cmeq v0.16b, v2.16b, v0.16b
+    ldr q2, [x12, x11]
+    cmeq v1.16b, v2.16b, v1.16b
+    and v0.16b, v0.16b, v1.16b
+    shrn v0.8b, v0.8h, #4
+    fmov x10, d0
+    and x10, x10, #9838263505978427528
+    and x9, x10, x9
+    cbz x9, .Lnvol_memmem_find_entry_neon.L45
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #2
+    add x0, x12, x9
+    b .Lnvol_memmem_find_entry_neon.L1
+.Lnvol_memmem_find_entry_neon.L45:
+.Lnvol_memmem_find_entry_neon.L41:
+    movz w0, #0
+    b .Lnvol_memmem_find_entry_neon.L1
+.Lnvol_memmem_find_entry_neon.L35:
+    ldr x10, [x0]
+    ldr x11, [x0, #8]
+    ldrb w12, [x1, x10]
+    dup v0.16b, w12
+    ldrb w12, [x1, x11]
+    dup v1.16b, w12
+    cmp x10, x11
+    csel x12, x10, x11, hs
+    add x12, x12, #16
+    cmp x9, x12
+    csel x12, x9, x12, hs
+    sub x12, x4, x12
+    cmp x3, x12
+    b.hi .Lnvol_memmem_find_entry_neon.L48
     nop
-.Lnvol_memmem_find_entry_neon.L37:
+    nop
+.Lnvol_memmem_find_entry_neon.L47:
+    ldr q2, [x3, x10]
+    cmeq v2.16b, v2.16b, v0.16b
+    ldr q3, [x3, x11]
+    cmeq v3.16b, v3.16b, v1.16b
+    and v2.16b, v2.16b, v3.16b
+    shrn v2.8b, v2.8h, #4
+    fmov x13, d2
+    and x13, x13, #9838263505978427528
+    cbz x13, .Lnvol_memmem_find_entry_neon.L50
+    nop
+.Lnvol_memmem_find_entry_neon.L49:
     rbit x14, x13
     clz x14, x14
     lsr x14, x14, #2
     add x0, x3, x14
     sub x14, x4, x0
     cmp x14, x9
-    b.lo .Lnvol_memmem_find_entry_neon.L40
-.Lnvol_memmem_find_entry_neon.L39:
+    b.lo .Lnvol_memmem_find_entry_neon.L52
+.Lnvol_memmem_find_entry_neon.L51:
     movz w14, #0
     add x15, x14, #4
     cmp x15, x9
-    b.hi .Lnvol_memmem_find_entry_neon.L45
+    b.hi .Lnvol_memmem_find_entry_neon.L57
     nop
-.Lnvol_memmem_find_entry_neon.L44:
+.Lnvol_memmem_find_entry_neon.L56:
     ldr w15, [x1, x14]
     ldr w2, [x0, x14]
     cmp x15, x2
-    b.ne .Lnvol_memmem_find_entry_neon.L47
-.Lnvol_memmem_find_entry_neon.L46:
+    b.ne .Lnvol_memmem_find_entry_neon.L59
+.Lnvol_memmem_find_entry_neon.L58:
     add x14, x14, #4
     add x15, x14, #4
     cmp x15, x9
-    b.ls .Lnvol_memmem_find_entry_neon.L44
-.Lnvol_memmem_find_entry_neon.L45:
+    b.ls .Lnvol_memmem_find_entry_neon.L56
+.Lnvol_memmem_find_entry_neon.L57:
     add x15, x14, #2
     cmp x15, x9
-    b.hi .Lnvol_memmem_find_entry_neon.L48
+    b.hi .Lnvol_memmem_find_entry_neon.L60
     ldrh w15, [x1, x14]
     ldrh w2, [x0, x14]
     cmp x15, x2
-    b.ne .Lnvol_memmem_find_entry_neon.L51
-.Lnvol_memmem_find_entry_neon.L50:
+    b.ne .Lnvol_memmem_find_entry_neon.L63
+.Lnvol_memmem_find_entry_neon.L62:
     add x14, x14, #2
-.Lnvol_memmem_find_entry_neon.L48:
+.Lnvol_memmem_find_entry_neon.L60:
     cmp x14, x9
-    b.hs .Lnvol_memmem_find_entry_neon.L52
+    b.hs .Lnvol_memmem_find_entry_neon.L64
     ldrb w15, [x1, x14]
     ldrb w14, [x0, x14]
     cmp x15, x14
-    b.ne .Lnvol_memmem_find_entry_neon.L55
-.Lnvol_memmem_find_entry_neon.L54:
-.Lnvol_memmem_find_entry_neon.L52:
+    b.ne .Lnvol_memmem_find_entry_neon.L67
+.Lnvol_memmem_find_entry_neon.L66:
+.Lnvol_memmem_find_entry_neon.L64:
     orr w14, wzr, #1
-.Lnvol_memmem_find_entry_neon.L43:
-    cbnz x14, .Lnvol_memmem_find_entry_neon.L42
-.Lnvol_memmem_find_entry_neon.L41:
+.Lnvol_memmem_find_entry_neon.L55:
+    cbnz x14, .Lnvol_memmem_find_entry_neon.L54
+.Lnvol_memmem_find_entry_neon.L53:
     sub x14, x13, #1
     and x13, x13, x14
-    cbnz x13, .Lnvol_memmem_find_entry_neon.L37
-.Lnvol_memmem_find_entry_neon.L38:
+    cbnz x13, .Lnvol_memmem_find_entry_neon.L49
+.Lnvol_memmem_find_entry_neon.L50:
     add x3, x3, #16
     cmp x3, x12
-    b.ls .Lnvol_memmem_find_entry_neon.L35
-.Lnvol_memmem_find_entry_neon.L36:
+    b.ls .Lnvol_memmem_find_entry_neon.L47
+.Lnvol_memmem_find_entry_neon.L48:
     cmp x3, x4
-    b.hs .Lnvol_memmem_find_entry_neon.L56
+    b.hs .Lnvol_memmem_find_entry_neon.L68
     sub x13, x4, x3
     cmp x13, x9
-    b.hs .Lnvol_memmem_find_entry_neon.L58
+    b.hs .Lnvol_memmem_find_entry_neon.L70
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L58:
+.Lnvol_memmem_find_entry_neon.L70:
     sub x13, x3, x12
     lsl x13, x13, #2
     movn x14, #0
@@ -4494,70 +4638,70 @@ L.nvol_memmem_find_entry_neon:
     fmov x10, d0
     and x10, x10, #9838263505978427528
     and x10, x10, x13
-    cbz x10, .Lnvol_memmem_find_entry_neon.L61
+    cbz x10, .Lnvol_memmem_find_entry_neon.L73
     nop
-.Lnvol_memmem_find_entry_neon.L60:
+.Lnvol_memmem_find_entry_neon.L72:
     rbit x11, x10
     clz x11, x11
     lsr x11, x11, #2
     add x0, x12, x11
     sub x11, x4, x0
     cmp x11, x9
-    b.lo .Lnvol_memmem_find_entry_neon.L63
-.Lnvol_memmem_find_entry_neon.L62:
+    b.lo .Lnvol_memmem_find_entry_neon.L75
+.Lnvol_memmem_find_entry_neon.L74:
     movz w11, #0
     add x13, x11, #4
     cmp x13, x9
-    b.hi .Lnvol_memmem_find_entry_neon.L68
+    b.hi .Lnvol_memmem_find_entry_neon.L80
     nop
-.Lnvol_memmem_find_entry_neon.L67:
+.Lnvol_memmem_find_entry_neon.L79:
     ldr w13, [x1, x11]
     ldr w14, [x0, x11]
     cmp x13, x14
-    b.ne .Lnvol_memmem_find_entry_neon.L70
-.Lnvol_memmem_find_entry_neon.L69:
+    b.ne .Lnvol_memmem_find_entry_neon.L82
+.Lnvol_memmem_find_entry_neon.L81:
     add x11, x11, #4
     add x13, x11, #4
     cmp x13, x9
-    b.ls .Lnvol_memmem_find_entry_neon.L67
-.Lnvol_memmem_find_entry_neon.L68:
+    b.ls .Lnvol_memmem_find_entry_neon.L79
+.Lnvol_memmem_find_entry_neon.L80:
     add x13, x11, #2
     cmp x13, x9
-    b.hi .Lnvol_memmem_find_entry_neon.L71
+    b.hi .Lnvol_memmem_find_entry_neon.L83
     ldrh w13, [x1, x11]
     ldrh w14, [x0, x11]
     cmp x13, x14
-    b.ne .Lnvol_memmem_find_entry_neon.L74
-.Lnvol_memmem_find_entry_neon.L73:
+    b.ne .Lnvol_memmem_find_entry_neon.L86
+.Lnvol_memmem_find_entry_neon.L85:
     add x11, x11, #2
-.Lnvol_memmem_find_entry_neon.L71:
+.Lnvol_memmem_find_entry_neon.L83:
     cmp x11, x9
-    b.hs .Lnvol_memmem_find_entry_neon.L75
+    b.hs .Lnvol_memmem_find_entry_neon.L87
     ldrb w13, [x1, x11]
     ldrb w11, [x0, x11]
     cmp x13, x11
-    b.ne .Lnvol_memmem_find_entry_neon.L78
-.Lnvol_memmem_find_entry_neon.L77:
-.Lnvol_memmem_find_entry_neon.L75:
+    b.ne .Lnvol_memmem_find_entry_neon.L90
+.Lnvol_memmem_find_entry_neon.L89:
+.Lnvol_memmem_find_entry_neon.L87:
     orr w11, wzr, #1
-.Lnvol_memmem_find_entry_neon.L66:
-    cbnz x11, .Lnvol_memmem_find_entry_neon.L65
-.Lnvol_memmem_find_entry_neon.L64:
+.Lnvol_memmem_find_entry_neon.L78:
+    cbnz x11, .Lnvol_memmem_find_entry_neon.L77
+.Lnvol_memmem_find_entry_neon.L76:
     sub x11, x10, #1
     and x10, x10, x11
-    cbnz x10, .Lnvol_memmem_find_entry_neon.L60
-.Lnvol_memmem_find_entry_neon.L61:
-.Lnvol_memmem_find_entry_neon.L56:
+    cbnz x10, .Lnvol_memmem_find_entry_neon.L72
+.Lnvol_memmem_find_entry_neon.L73:
+.Lnvol_memmem_find_entry_neon.L68:
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
 .Lnvol_memmem_find_entry_neon.L8:
     cmp x10, #16
-    b.hs .Lnvol_memmem_find_entry_neon.L79
+    b.hs .Lnvol_memmem_find_entry_neon.L91
     cmp x9, x10
-    b.ls .Lnvol_memmem_find_entry_neon.L81
+    b.ls .Lnvol_memmem_find_entry_neon.L93
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L81:
+.Lnvol_memmem_find_entry_neon.L93:
     ldr x10, [x0, #16]
     ldr x11, [x0, #24]
     sub x12, x4, x9
@@ -4565,61 +4709,61 @@ L.nvol_memmem_find_entry_neon:
     mov x14, x3
     add x15, x3, x9
     cmp x14, x15
-    b.hs .Lnvol_memmem_find_entry_neon.L84
+    b.hs .Lnvol_memmem_find_entry_neon.L96
     nop
-.Lnvol_memmem_find_entry_neon.L83:
+.Lnvol_memmem_find_entry_neon.L95:
     lsl w0, w13, #1
     ldrb w2, [x14]
     add w13, w0, w2
     add x14, x14, #1
     cmp x14, x15
-    b.lo .Lnvol_memmem_find_entry_neon.L83
-.Lnvol_memmem_find_entry_neon.L84:
-.Lnvol_memmem_find_entry_neon.L85:
+    b.lo .Lnvol_memmem_find_entry_neon.L95
+.Lnvol_memmem_find_entry_neon.L96:
+.Lnvol_memmem_find_entry_neon.L97:
     cmp x13, x10
-    b.ne .Lnvol_memmem_find_entry_neon.L87
+    b.ne .Lnvol_memmem_find_entry_neon.L99
     movz w14, #0
     add x15, x14, #4
     cmp x15, x9
-    b.hi .Lnvol_memmem_find_entry_neon.L91
+    b.hi .Lnvol_memmem_find_entry_neon.L103
     nop
     nop
-.Lnvol_memmem_find_entry_neon.L90:
+.Lnvol_memmem_find_entry_neon.L102:
     ldr w15, [x3, x14]
     ldr w0, [x1, x14]
     cmp x15, x0
-    b.ne .Lnvol_memmem_find_entry_neon.L93
-.Lnvol_memmem_find_entry_neon.L92:
+    b.ne .Lnvol_memmem_find_entry_neon.L105
+.Lnvol_memmem_find_entry_neon.L104:
     add x14, x14, #4
     add x15, x14, #4
     cmp x15, x9
-    b.ls .Lnvol_memmem_find_entry_neon.L90
-.Lnvol_memmem_find_entry_neon.L91:
+    b.ls .Lnvol_memmem_find_entry_neon.L102
+.Lnvol_memmem_find_entry_neon.L103:
     add x15, x14, #2
     cmp x15, x9
-    b.hi .Lnvol_memmem_find_entry_neon.L94
+    b.hi .Lnvol_memmem_find_entry_neon.L106
     ldrh w15, [x3, x14]
     ldrh w0, [x1, x14]
     cmp x15, x0
-    b.ne .Lnvol_memmem_find_entry_neon.L97
-.Lnvol_memmem_find_entry_neon.L96:
+    b.ne .Lnvol_memmem_find_entry_neon.L109
+.Lnvol_memmem_find_entry_neon.L108:
     add x14, x14, #2
-.Lnvol_memmem_find_entry_neon.L94:
+.Lnvol_memmem_find_entry_neon.L106:
     cmp x14, x9
-    b.hs .Lnvol_memmem_find_entry_neon.L98
+    b.hs .Lnvol_memmem_find_entry_neon.L110
     ldrb w15, [x3, x14]
     ldrb w14, [x1, x14]
     cmp x15, x14
-    b.ne .Lnvol_memmem_find_entry_neon.L101
-.Lnvol_memmem_find_entry_neon.L100:
-.Lnvol_memmem_find_entry_neon.L98:
+    b.ne .Lnvol_memmem_find_entry_neon.L113
+.Lnvol_memmem_find_entry_neon.L112:
+.Lnvol_memmem_find_entry_neon.L110:
     orr w14, wzr, #1
-.Lnvol_memmem_find_entry_neon.L89:
-    cbnz x14, .Lnvol_memmem_find_entry_neon.L88
-.Lnvol_memmem_find_entry_neon.L87:
+.Lnvol_memmem_find_entry_neon.L101:
+    cbnz x14, .Lnvol_memmem_find_entry_neon.L100
+.Lnvol_memmem_find_entry_neon.L99:
     cmp x3, x12
-    b.hs .Lnvol_memmem_find_entry_neon.L103
-.Lnvol_memmem_find_entry_neon.L102:
+    b.hs .Lnvol_memmem_find_entry_neon.L115
+.Lnvol_memmem_find_entry_neon.L114:
     ldrb w14, [x3]
     mul w14, w14, w11
     sub w14, w13, w14
@@ -4627,10 +4771,10 @@ L.nvol_memmem_find_entry_neon:
     ldrb w15, [x3, x9]
     add w13, w14, w15
     add x3, x3, #1
-    b .Lnvol_memmem_find_entry_neon.L85
+    b .Lnvol_memmem_find_entry_neon.L97
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L79:
+.Lnvol_memmem_find_entry_neon.L91:
     ldr x11, [x0, #40]
     ldr x12, [x0, #48]
     cmp x12, #0
@@ -4652,63 +4796,63 @@ L.nvol_memmem_find_entry_neon:
     sub x17, x9, #1
     add x19, x8, x9
     cmp x19, x10
-    b.hi .Lnvol_memmem_find_entry_neon.L105
+    b.hi .Lnvol_memmem_find_entry_neon.L117
     nop
     nop
-.Lnvol_memmem_find_entry_neon.L104:
+.Lnvol_memmem_find_entry_neon.L116:
     cmp x11, x16
     csel x19, x11, x16, hs
     movz w20, #0
-    cbz x6, .Lnvol_memmem_find_entry_neon.L106
+    cbz x6, .Lnvol_memmem_find_entry_neon.L118
     sub x21, x6, #1
     cmp x21, #50
-    b.hs .Lnvol_memmem_find_entry_neon.L108
+    b.hs .Lnvol_memmem_find_entry_neon.L120
     orr w20, wzr, #1
-    b .Lnvol_memmem_find_entry_neon.L109
-.Lnvol_memmem_find_entry_neon.L108:
+    b .Lnvol_memmem_find_entry_neon.L121
+.Lnvol_memmem_find_entry_neon.L120:
     sub x21, x6, #1
     lsl x21, x21, #3
     cmp x7, x21
-    b.lo .Lnvol_memmem_find_entry_neon.L110
+    b.lo .Lnvol_memmem_find_entry_neon.L122
     orr w20, wzr, #1
-    b .Lnvol_memmem_find_entry_neon.L111
-.Lnvol_memmem_find_entry_neon.L110:
+    b .Lnvol_memmem_find_entry_neon.L123
+.Lnvol_memmem_find_entry_neon.L122:
     movz w6, #0
-.Lnvol_memmem_find_entry_neon.L111:
-.Lnvol_memmem_find_entry_neon.L109:
-.Lnvol_memmem_find_entry_neon.L106:
-    cbz x20, .Lnvol_memmem_find_entry_neon.L112
+.Lnvol_memmem_find_entry_neon.L123:
+.Lnvol_memmem_find_entry_neon.L121:
+.Lnvol_memmem_find_entry_neon.L118:
+    cbz x20, .Lnvol_memmem_find_entry_neon.L124
     sub x16, x10, x8
     add x19, x3, x8
     movn x20, #0
     cmp x16, x2
-    b.hs .Lnvol_memmem_find_entry_neon.L114
+    b.hs .Lnvol_memmem_find_entry_neon.L126
     mov x21, x19
     cmp x21, x4
-    b.hs .Lnvol_memmem_find_entry_neon.L117
+    b.hs .Lnvol_memmem_find_entry_neon.L129
     ldrb w22, [x21]
     cmp x22, x5
-    b.eq .Lnvol_memmem_find_entry_neon.L117
-.Lnvol_memmem_find_entry_neon.L116:
+    b.eq .Lnvol_memmem_find_entry_neon.L129
+.Lnvol_memmem_find_entry_neon.L128:
     add x21, x21, #1
     cmp x21, x4
-    b.hs .Lnvol_memmem_find_entry_neon.L118
+    b.hs .Lnvol_memmem_find_entry_neon.L130
     ldrb w22, [x21]
     cmp x22, x5
-    b.ne .Lnvol_memmem_find_entry_neon.L116
-.Lnvol_memmem_find_entry_neon.L118:
-.Lnvol_memmem_find_entry_neon.L117:
+    b.ne .Lnvol_memmem_find_entry_neon.L128
+.Lnvol_memmem_find_entry_neon.L130:
+.Lnvol_memmem_find_entry_neon.L129:
     cmp x21, x4
-    b.hs .Lnvol_memmem_find_entry_neon.L115
+    b.hs .Lnvol_memmem_find_entry_neon.L127
     sub x19, x21, x19
     cmp x19, x15
-    b.lo .Lnvol_memmem_find_entry_neon.L121
+    b.lo .Lnvol_memmem_find_entry_neon.L133
     sub x20, x19, x15
-    b .Lnvol_memmem_find_entry_neon.L115
-.Lnvol_memmem_find_entry_neon.L121:
+    b .Lnvol_memmem_find_entry_neon.L127
+.Lnvol_memmem_find_entry_neon.L133:
     movz w20, #0
-    b .Lnvol_memmem_find_entry_neon.L115
-.Lnvol_memmem_find_entry_neon.L114:
+    b .Lnvol_memmem_find_entry_neon.L127
+.Lnvol_memmem_find_entry_neon.L126:
     mov x20, x9
     ldr x21, [x0]
     ldr x22, [x0, #8]
@@ -4724,9 +4868,9 @@ L.nvol_memmem_find_entry_neon:
     sub x20, x4, x20
     mov x23, x19
     cmp x23, x20
-    b.hi .Lnvol_memmem_find_entry_neon.L125
+    b.hi .Lnvol_memmem_find_entry_neon.L137
     nop
-.Lnvol_memmem_find_entry_neon.L124:
+.Lnvol_memmem_find_entry_neon.L136:
     ldr q2, [x23, x21]
     cmeq v2.16b, v2.16b, v0.16b
     ldr q3, [x23, x22]
@@ -4735,14 +4879,14 @@ L.nvol_memmem_find_entry_neon:
     shrn v2.8b, v2.8h, #4
     fmov x24, d2
     and x24, x24, #9838263505978427528
-    cbnz x24, .Lnvol_memmem_find_entry_neon.L127
-.Lnvol_memmem_find_entry_neon.L126:
+    cbnz x24, .Lnvol_memmem_find_entry_neon.L139
+.Lnvol_memmem_find_entry_neon.L138:
     add x23, x23, #16
     cmp x23, x20
-    b.ls .Lnvol_memmem_find_entry_neon.L124
-.Lnvol_memmem_find_entry_neon.L125:
+    b.ls .Lnvol_memmem_find_entry_neon.L136
+.Lnvol_memmem_find_entry_neon.L137:
     cmp x23, x4
-    b.hs .Lnvol_memmem_find_entry_neon.L128
+    b.hs .Lnvol_memmem_find_entry_neon.L140
     ldr q2, [x20, x21]
     cmeq v0.16b, v2.16b, v0.16b
     ldr q2, [x20, x22]
@@ -4751,31 +4895,31 @@ L.nvol_memmem_find_entry_neon:
     shrn v0.8b, v0.8h, #4
     fmov x21, d0
     and x21, x21, #9838263505978427528
-    cbnz x21, .Lnvol_memmem_find_entry_neon.L131
-.Lnvol_memmem_find_entry_neon.L130:
-.Lnvol_memmem_find_entry_neon.L128:
+    cbnz x21, .Lnvol_memmem_find_entry_neon.L143
+.Lnvol_memmem_find_entry_neon.L142:
+.Lnvol_memmem_find_entry_neon.L140:
     movn x20, #0
-.Lnvol_memmem_find_entry_neon.L123:
-.Lnvol_memmem_find_entry_neon.L115:
+.Lnvol_memmem_find_entry_neon.L135:
+.Lnvol_memmem_find_entry_neon.L127:
     add x6, x6, #1
     cmn x20, #1
-    b.ne .Lnvol_memmem_find_entry_neon.L132
+    b.ne .Lnvol_memmem_find_entry_neon.L144
     add x7, x7, x16
-    b .Lnvol_memmem_find_entry_neon.L133
-.Lnvol_memmem_find_entry_neon.L132:
+    b .Lnvol_memmem_find_entry_neon.L145
+.Lnvol_memmem_find_entry_neon.L144:
     add x7, x7, x20
-.Lnvol_memmem_find_entry_neon.L133:
+.Lnvol_memmem_find_entry_neon.L145:
     cmn x20, #1
-    b.eq .Lnvol_memmem_find_entry_neon.L135
-.Lnvol_memmem_find_entry_neon.L134:
+    b.eq .Lnvol_memmem_find_entry_neon.L147
+.Lnvol_memmem_find_entry_neon.L146:
     add x8, x8, x20
     movz w16, #0
     mov x19, x11
     add x20, x8, x9
     cmp x20, x10
-    b.hi .Lnvol_memmem_find_entry_neon.L137
-.Lnvol_memmem_find_entry_neon.L136:
-.Lnvol_memmem_find_entry_neon.L112:
+    b.hi .Lnvol_memmem_find_entry_neon.L149
+.Lnvol_memmem_find_entry_neon.L148:
+.Lnvol_memmem_find_entry_neon.L124:
     movz w20, #0
     add x21, x8, x17
     ldrb w21, [x3, x21]
@@ -4785,106 +4929,106 @@ L.nvol_memmem_find_entry_neon:
     cmp x21, #0
     cset w21, ne
     cmp x20, x21
-    b.ne .Lnvol_memmem_find_entry_neon.L138
+    b.ne .Lnvol_memmem_find_entry_neon.L150
     add x8, x8, x9
     movz w16, #0
-    b .Lnvol_memmem_find_entry_neon.L139
-.Lnvol_memmem_find_entry_neon.L138:
-    cbnz x12, .Lnvol_memmem_find_entry_neon.L140
+    b .Lnvol_memmem_find_entry_neon.L151
+.Lnvol_memmem_find_entry_neon.L150:
+    cbnz x12, .Lnvol_memmem_find_entry_neon.L152
     mov x19, x11
-.Lnvol_memmem_find_entry_neon.L140:
+.Lnvol_memmem_find_entry_neon.L152:
     add x20, x3, x8
     cmp x19, x9
-    b.hs .Lnvol_memmem_find_entry_neon.L143
+    b.hs .Lnvol_memmem_find_entry_neon.L155
     ldrb w20, [x1, x19]
     add x21, x8, x19
     ldrb w21, [x3, x21]
     cmp x20, x21
-    b.ne .Lnvol_memmem_find_entry_neon.L143
+    b.ne .Lnvol_memmem_find_entry_neon.L155
     nop
-.Lnvol_memmem_find_entry_neon.L142:
+.Lnvol_memmem_find_entry_neon.L154:
     add x19, x19, #1
     cmp x19, x9
-    b.hs .Lnvol_memmem_find_entry_neon.L144
+    b.hs .Lnvol_memmem_find_entry_neon.L156
     ldrb w20, [x1, x19]
     add x21, x8, x19
     ldrb w21, [x3, x21]
     cmp x20, x21
-    b.eq .Lnvol_memmem_find_entry_neon.L142
-.Lnvol_memmem_find_entry_neon.L144:
-.Lnvol_memmem_find_entry_neon.L143:
+    b.eq .Lnvol_memmem_find_entry_neon.L154
+.Lnvol_memmem_find_entry_neon.L156:
+.Lnvol_memmem_find_entry_neon.L155:
     cmp x19, x9
-    b.hs .Lnvol_memmem_find_entry_neon.L145
+    b.hs .Lnvol_memmem_find_entry_neon.L157
     sub x16, x19, x11
     add x16, x8, x16
     add x8, x16, #1
     movz w16, #0
-    b .Lnvol_memmem_find_entry_neon.L146
-.Lnvol_memmem_find_entry_neon.L145:
-    cbz x12, .Lnvol_memmem_find_entry_neon.L147
+    b .Lnvol_memmem_find_entry_neon.L158
+.Lnvol_memmem_find_entry_neon.L157:
+    cbz x12, .Lnvol_memmem_find_entry_neon.L159
     mov x19, x11
     add x20, x3, x8
     cmp x19, x16
-    b.ls .Lnvol_memmem_find_entry_neon.L150
+    b.ls .Lnvol_memmem_find_entry_neon.L162
     ldrb w20, [x1, x19]
     add x21, x8, x19
     ldrb w21, [x3, x21]
     cmp x20, x21
-    b.ne .Lnvol_memmem_find_entry_neon.L150
+    b.ne .Lnvol_memmem_find_entry_neon.L162
     nop
-.Lnvol_memmem_find_entry_neon.L149:
+.Lnvol_memmem_find_entry_neon.L161:
     sub x19, x19, #1
     cmp x19, x16
-    b.ls .Lnvol_memmem_find_entry_neon.L151
+    b.ls .Lnvol_memmem_find_entry_neon.L163
     ldrb w20, [x1, x19]
     add x21, x8, x19
     ldrb w21, [x3, x21]
     cmp x20, x21
-    b.eq .Lnvol_memmem_find_entry_neon.L149
-.Lnvol_memmem_find_entry_neon.L151:
-.Lnvol_memmem_find_entry_neon.L150:
+    b.eq .Lnvol_memmem_find_entry_neon.L161
+.Lnvol_memmem_find_entry_neon.L163:
+.Lnvol_memmem_find_entry_neon.L162:
     cmp x19, x16
-    b.hi .Lnvol_memmem_find_entry_neon.L152
+    b.hi .Lnvol_memmem_find_entry_neon.L164
     ldrb w19, [x1, x16]
     add x16, x8, x16
     ldrb w16, [x3, x16]
     cmp x19, x16
-    b.eq .Lnvol_memmem_find_entry_neon.L153
-.Lnvol_memmem_find_entry_neon.L152:
+    b.eq .Lnvol_memmem_find_entry_neon.L165
+.Lnvol_memmem_find_entry_neon.L164:
     add x8, x8, x13
     sub x16, x9, x13
-    b .Lnvol_memmem_find_entry_neon.L148
-.Lnvol_memmem_find_entry_neon.L147:
+    b .Lnvol_memmem_find_entry_neon.L160
+.Lnvol_memmem_find_entry_neon.L159:
     orr w19, wzr, #1
     mov x20, x11
-    cbz x19, .Lnvol_memmem_find_entry_neon.L155
+    cbz x19, .Lnvol_memmem_find_entry_neon.L167
     cmp x20, #0
-    b.ls .Lnvol_memmem_find_entry_neon.L155
+    b.ls .Lnvol_memmem_find_entry_neon.L167
     nop
-.Lnvol_memmem_find_entry_neon.L154:
+.Lnvol_memmem_find_entry_neon.L166:
     sub x20, x20, #1
     ldrb w21, [x1, x20]
     add x22, x8, x20
     ldrb w22, [x3, x22]
     cmp x21, x22
-    b.eq .Lnvol_memmem_find_entry_neon.L156
+    b.eq .Lnvol_memmem_find_entry_neon.L168
     movz w19, #0
-.Lnvol_memmem_find_entry_neon.L156:
-    cbz x19, .Lnvol_memmem_find_entry_neon.L158
+.Lnvol_memmem_find_entry_neon.L168:
+    cbz x19, .Lnvol_memmem_find_entry_neon.L170
     cmp x20, #0
-    b.hi .Lnvol_memmem_find_entry_neon.L154
-.Lnvol_memmem_find_entry_neon.L158:
-.Lnvol_memmem_find_entry_neon.L155:
-    cbnz x19, .Lnvol_memmem_find_entry_neon.L160
-.Lnvol_memmem_find_entry_neon.L159:
+    b.hi .Lnvol_memmem_find_entry_neon.L166
+.Lnvol_memmem_find_entry_neon.L170:
+.Lnvol_memmem_find_entry_neon.L167:
+    cbnz x19, .Lnvol_memmem_find_entry_neon.L172
+.Lnvol_memmem_find_entry_neon.L171:
     add x8, x8, x13
-.Lnvol_memmem_find_entry_neon.L148:
-.Lnvol_memmem_find_entry_neon.L146:
-.Lnvol_memmem_find_entry_neon.L139:
+.Lnvol_memmem_find_entry_neon.L160:
+.Lnvol_memmem_find_entry_neon.L158:
+.Lnvol_memmem_find_entry_neon.L151:
     add x19, x8, x9
     cmp x19, x10
-    b.ls .Lnvol_memmem_find_entry_neon.L104
-.Lnvol_memmem_find_entry_neon.L105:
+    b.ls .Lnvol_memmem_find_entry_neon.L116
+.Lnvol_memmem_find_entry_neon.L117:
     movz w0, #0
 .Lnvol_memmem_find_entry_neon.L1:
     ldp x19, x20, [sp]
@@ -4908,78 +5052,83 @@ L.nvol_memmem_find_entry_neon:
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
 .Lnvol_memmem_find_entry_neon.L40:
+    rbit x9, x13
+    clz x9, x9
+    lsr x9, x9, #2
+    add x0, x3, x9
+    b .Lnvol_memmem_find_entry_neon.L1
+.Lnvol_memmem_find_entry_neon.L52:
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L47:
+.Lnvol_memmem_find_entry_neon.L59:
     movz w14, #0
-    b .Lnvol_memmem_find_entry_neon.L43
-.Lnvol_memmem_find_entry_neon.L51:
-    movz w14, #0
-    b .Lnvol_memmem_find_entry_neon.L43
-.Lnvol_memmem_find_entry_neon.L55:
-    movz w14, #0
-    b .Lnvol_memmem_find_entry_neon.L43
-.Lnvol_memmem_find_entry_neon.L42:
-    b .Lnvol_memmem_find_entry_neon.L1
+    b .Lnvol_memmem_find_entry_neon.L55
 .Lnvol_memmem_find_entry_neon.L63:
+    movz w14, #0
+    b .Lnvol_memmem_find_entry_neon.L55
+.Lnvol_memmem_find_entry_neon.L67:
+    movz w14, #0
+    b .Lnvol_memmem_find_entry_neon.L55
+.Lnvol_memmem_find_entry_neon.L54:
+    b .Lnvol_memmem_find_entry_neon.L1
+.Lnvol_memmem_find_entry_neon.L75:
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L70:
+.Lnvol_memmem_find_entry_neon.L82:
     movz w11, #0
-    b .Lnvol_memmem_find_entry_neon.L66
-.Lnvol_memmem_find_entry_neon.L74:
+    b .Lnvol_memmem_find_entry_neon.L78
+.Lnvol_memmem_find_entry_neon.L86:
     movz w11, #0
-    b .Lnvol_memmem_find_entry_neon.L66
-.Lnvol_memmem_find_entry_neon.L78:
+    b .Lnvol_memmem_find_entry_neon.L78
+.Lnvol_memmem_find_entry_neon.L90:
     movz w11, #0
-    b .Lnvol_memmem_find_entry_neon.L66
-.Lnvol_memmem_find_entry_neon.L65:
+    b .Lnvol_memmem_find_entry_neon.L78
+.Lnvol_memmem_find_entry_neon.L77:
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L93:
+.Lnvol_memmem_find_entry_neon.L105:
     movz w14, #0
-    b .Lnvol_memmem_find_entry_neon.L89
-.Lnvol_memmem_find_entry_neon.L97:
+    b .Lnvol_memmem_find_entry_neon.L101
+.Lnvol_memmem_find_entry_neon.L109:
     movz w14, #0
-    b .Lnvol_memmem_find_entry_neon.L89
-.Lnvol_memmem_find_entry_neon.L101:
+    b .Lnvol_memmem_find_entry_neon.L101
+.Lnvol_memmem_find_entry_neon.L113:
     movz w14, #0
-    b .Lnvol_memmem_find_entry_neon.L89
-.Lnvol_memmem_find_entry_neon.L88:
+    b .Lnvol_memmem_find_entry_neon.L101
+.Lnvol_memmem_find_entry_neon.L100:
     mov x0, x3
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L103:
+.Lnvol_memmem_find_entry_neon.L115:
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L127:
+.Lnvol_memmem_find_entry_neon.L139:
     sub x19, x23, x19
     rbit x20, x24
     clz x20, x20
     lsr x20, x20, #2
     add x20, x19, x20
-    b .Lnvol_memmem_find_entry_neon.L123
-.Lnvol_memmem_find_entry_neon.L131:
+    b .Lnvol_memmem_find_entry_neon.L135
+.Lnvol_memmem_find_entry_neon.L143:
     sub x19, x20, x19
     rbit x20, x21
     clz x20, x20
     lsr x20, x20, #2
     add x20, x19, x20
-    b .Lnvol_memmem_find_entry_neon.L123
-.Lnvol_memmem_find_entry_neon.L135:
+    b .Lnvol_memmem_find_entry_neon.L135
+.Lnvol_memmem_find_entry_neon.L147:
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L137:
+.Lnvol_memmem_find_entry_neon.L149:
     movz w0, #0
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L153:
+.Lnvol_memmem_find_entry_neon.L165:
     add x0, x3, x8
     b .Lnvol_memmem_find_entry_neon.L1
-.Lnvol_memmem_find_entry_neon.L160:
+.Lnvol_memmem_find_entry_neon.L172:
     add x0, x3, x8
     b .Lnvol_memmem_find_entry_neon.L1
 .cfi_endproc
 .size nvol_memmem_find_entry_neon, .-nvol_memmem_find_entry_neon
 
-    nop
 .globl nvol_memmem_find_raw
 .type nvol_memmem_find_raw, %function
 nvol_memmem_find_raw:

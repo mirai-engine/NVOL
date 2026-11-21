@@ -240,6 +240,7 @@ class RustPrinter(Printer):
 
 def generate(module) -> dict:
     """module: an ir.Module or {arch: ir.Module}."""
+    module = ir.for_languages(module)
     mods = module if isinstance(module, dict) else {getattr(module, "arch", "x86_64"): module}
     p = RustPrinter(next(iter(mods.values())))
     p.mods = mods

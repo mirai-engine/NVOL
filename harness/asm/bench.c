@@ -4,7 +4,7 @@
  * or against NVOL's own assembly (the C glue in asm mode plus the kernels object).
  *
  *     bench OP SIZE N PATH [time]
- *     OP: memchr memrchr memchr2 memchr3 count count_parity first_non_ascii memmem
+ *     OP: memchr memrchr memchr2 memchr3 count count_parity first_non_ascii memmem memmem2
  *         byteset byteset_not pair teddy
  *     PATH: -1 autodetect, 0 SSE2/SSSE3, 1 AVX2, 2 SSE4.2 without AVX2 (the test hook)
  *     time: run the N calls 9 times and print the best nanoseconds per call
@@ -45,7 +45,7 @@ ALIGNED64 static uint8_t buf[(1 << 20) + 64];
 ALIGNED64 static uint8_t spaces[(1 << 20) + 64];
 static uint8_t cls[NVOL_BYTESET_CLASS_BYTES], ws[NVOL_BYTESET_CLASS_BYTES];
 static uint8_t pair[NVOL_BYTESET_PAIR_BYTES];
-static nvol_memmem_finder fin;
+static nvol_memmem_finder fin, fin2;
 static uint8_t blob[4096];
 static nvol_teddy ted;
 
@@ -61,6 +61,7 @@ static size_t run(const char *op, size_t size, size_t n) {
     else if (!strcmp(op, "count_parity"))    for (i = 0; i < n; i++) sink += nvol_count_parity('a', h, size);
     else if (!strcmp(op, "first_non_ascii")) for (i = 0; i < n; i++) sink += nvol_first_non_ascii(h, size);
     else if (!strcmp(op, "memmem"))          for (i = 0; i < n; i++) sink += nvol_memmem_finder_find(&fin, h, size);
+    else if (!strcmp(op, "memmem2"))         for (i = 0; i < n; i++) sink += nvol_memmem_finder_find(&fin2, h, size);
     else if (!strcmp(op, "byteset"))         for (i = 0; i < n; i++) sink += (size_t)nvol_find_byteset_raw(cls, h, e);
     else if (!strcmp(op, "byteset_not"))     for (i = 0; i < n; i++) sink += (size_t)nvol_find_not_byteset_raw(ws, spaces, spaces + size);
     else if (!strcmp(op, "pair"))            for (i = 0; i < n; i++) sink += (size_t)nvol_find_byteset_pair_raw(pair, h, e);
@@ -89,6 +90,7 @@ int main(int argc, char **argv) {
     nvol_byteset_init((const uint8_t *)" \t\n\r", 4, ws);
     nvol_byteset_pair_init((const uint8_t *)"xy", 2, (const uint8_t *)"q", 1, 0, 1, pair);
     nvol_memmem_finder_init(&fin, (const uint8_t *)"needle12", 8);
+    nvol_memmem_finder_init(&fin2, (const uint8_t *)"zq", 2);           /* ugrep's -c zq */
     static const char *pats[] = {"foo", "bar", "quux", "zebra", "xylo", "jump", "wizard", "yoyo"};
     const uint8_t *pp[8];
     size_t pl[8];

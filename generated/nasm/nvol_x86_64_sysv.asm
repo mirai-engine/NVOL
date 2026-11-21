@@ -7725,6 +7725,82 @@ L.nvol_memmem_pp_sse2:
 .cfi_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_memmem_pp2_sse2:function hidden (L.nvol_memmem_pp2_sse2.cfi_end - nvol_memmem_pp2_sse2)
+nvol_memmem_pp2_sse2:
+L.nvol_memmem_pp2_sse2:
+    sub rdx, rsi
+    mov r9, qword [rdi]
+    mov rdi, qword [rdi + 8]
+    movzx eax, byte [rsi + r9]
+    imul eax, eax, 16843009
+    movd xmm0, eax
+    pshufd xmm0, xmm0, 0
+    movzx eax, byte [rsi + rdi]
+    imul eax, eax, 16843009
+    movd xmm1, eax
+    pshufd xmm1, xmm1, 0
+    mov rax, rdx
+    mov rsi, r9
+    cmp rsi, rdi
+    cmovb rsi, rdi
+    add rsi, 16
+    cmp rax, rsi
+    cmovb rax, rsi
+    mov rsi, r8
+    sub rsi, rax
+    cmp rcx, rsi
+    ja strict short .L3
+    db 0xf, 0x1f, 0x40, 0x0
+.L2:
+    movdqu xmm2, [rcx + r9]
+    pcmpeqb xmm2, xmm0
+    movdqu xmm3, [rcx + rdi]
+    pcmpeqb xmm3, xmm1
+    pand xmm2, xmm3
+    pmovmskb eax, xmm2
+    test eax, eax
+    jne strict short .L5
+.L4:
+    add rcx, 16
+    cmp rcx, rsi
+    jbe strict short .L2
+.L3:
+    cmp rcx, r8
+    jae strict short .L6
+    sub r8, rcx
+    cmp r8, rdx
+    jae strict short .L8
+    xor eax, eax
+    jmp strict short .L1
+.L8:
+    sub rcx, rsi
+    mov eax, 4294967295
+    shl eax, cl
+    movdqu xmm2, [rsi + r9]
+    pcmpeqb xmm2, xmm0
+    movdqu xmm0, [rsi + rdi]
+    pcmpeqb xmm0, xmm1
+    pand xmm2, xmm0
+    pmovmskb ecx, xmm2
+    and rcx, rax
+    test ecx, ecx
+    je strict short .L10
+    bsf eax, ecx
+    lea rax, [rsi + rax]
+    jmp strict short .L1
+.L10:
+.L6:
+    xor eax, eax
+.L1:
+    ret
+.L5:
+    bsf eax, eax
+    lea rax, [rcx + rax]
+    jmp strict short .L1
+.cfi_end:
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memmem_tw_sse2:function hidden (L.nvol_memmem_tw_sse2.cfi_end - nvol_memmem_tw_sse2)
 nvol_memmem_tw_sse2:
 L.nvol_memmem_tw_sse2:
@@ -8303,6 +8379,76 @@ L.nvol_memmem_pp_avx2:
 .cfi_end:
 
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_memmem_pp2_avx2:function hidden (L.nvol_memmem_pp2_avx2.cfi_end - nvol_memmem_pp2_avx2)
+nvol_memmem_pp2_avx2:
+L.nvol_memmem_pp2_avx2:
+    sub rdx, rsi
+    mov r9, qword [rdi]
+    mov rdi, qword [rdi + 8]
+    movzx eax, byte [rsi + r9]
+    vmovd xmm0, eax
+    vpbroadcastb ymm0, xmm0
+    movzx eax, byte [rsi + rdi]
+    vmovd xmm1, eax
+    vpbroadcastb ymm1, xmm1
+    mov rax, rdx
+    mov rsi, r9
+    cmp rsi, rdi
+    cmovb rsi, rdi
+    add rsi, 32
+    cmp rax, rsi
+    cmovb rax, rsi
+    mov rsi, r8
+    sub rsi, rax
+    cmp rcx, rsi
+    ja strict short .L3
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L2:
+    vpcmpeqb ymm2, ymm0, [rcx + r9]
+    vpcmpeqb ymm3, ymm1, [rcx + rdi]
+    vpand ymm2, ymm2, ymm3
+    vpmovmskb eax, ymm2
+    test eax, eax
+    jne strict short .L5
+.L4:
+    add rcx, 32
+    cmp rcx, rsi
+    jbe strict short .L2
+.L3:
+    cmp rcx, r8
+    jae strict short .L6
+    sub r8, rcx
+    cmp r8, rdx
+    jae strict short .L8
+    xor eax, eax
+    jmp strict short .L1
+.L8:
+    sub rcx, rsi
+    mov eax, 4294967295
+    shl eax, cl
+    vpcmpeqb ymm0, ymm0, [rsi + r9]
+    vpcmpeqb ymm1, ymm1, [rsi + rdi]
+    vpand ymm0, ymm0, ymm1
+    vpmovmskb ecx, ymm0
+    and rcx, rax
+    test ecx, ecx
+    je strict short .L10
+    bsf eax, ecx
+    lea rax, [rsi + rax]
+    jmp strict short .L1
+.L10:
+.L6:
+    xor eax, eax
+.L1:
+    vzeroupper
+    ret
+.L5:
+    bsf eax, eax
+    lea rax, [rcx + rax]
+    jmp strict short .L1
+.cfi_end:
+
+    db 0xf, 0x1f, 0x0
 global nvol_memmem_tw_avx2:function hidden (L.nvol_memmem_tw_avx2.cfi_end - nvol_memmem_tw_avx2)
 nvol_memmem_tw_avx2:
 L.nvol_memmem_tw_avx2:
@@ -8887,6 +9033,67 @@ L.nvol_memmem_find_entry_avx2:
     cmovb rbx, rcx
     cmp r9, rbx
     jae strict near .L35
+    cmp rdx, 2
+    jne strict near .L37
+    mov rdi, qword [r13]
+    mov r9, qword [r13 + 8]
+    movzx ecx, byte [rsi + rdi]
+    vmovd xmm0, ecx
+    vpbroadcastb xmm0, xmm0
+    movzx ecx, byte [rsi + r9]
+    vmovd xmm1, ecx
+    vpbroadcastb xmm1, xmm1
+    mov rcx, rdx
+    mov rsi, rdi
+    cmp rsi, r9
+    cmovb rsi, r9
+    add rsi, 16
+    cmp rcx, rsi
+    cmovb rcx, rsi
+    mov rsi, r8
+    sub rsi, rcx
+    cmp rax, rsi
+    ja strict short .L40
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L39:
+    vpcmpeqb xmm2, xmm0, [rax + rdi]
+    vpcmpeqb xmm3, xmm1, [rax + r9]
+    vpand xmm2, xmm2, xmm3
+    vpmovmskb ecx, xmm2
+    test ecx, ecx
+    jne strict near .L42
+.L41:
+    add rax, 16
+    cmp rax, rsi
+    jbe strict short .L39
+.L40:
+    cmp rax, r8
+    jae strict short .L43
+    sub r8, rax
+    cmp r8, rdx
+    jae strict short .L45
+    xor eax, eax
+    jmp strict near .L1
+.L45:
+    sub rax, rsi
+    mov edx, 4294967295
+    mov rcx, rax
+    shl edx, cl
+    vpcmpeqb xmm0, xmm0, [rsi + rdi]
+    vpcmpeqb xmm1, xmm1, [rsi + r9]
+    vpand xmm0, xmm0, xmm1
+    vpmovmskb eax, xmm0
+    and rax, rdx
+    test eax, eax
+    je strict short .L47
+    bsf eax, eax
+    lea rax, [rsi + rax]
+    jmp strict near .L1
+.L47:
+.L43:
+    xor eax, eax
+    jmp strict near .L1
+.L37:
     mov rdi, qword [r13]
     mov r9, qword [r13 + 8]
     movzx ecx, byte [rsi + rdi]
@@ -8905,83 +9112,83 @@ L.nvol_memmem_find_entry_avx2:
     mov rbx, r8
     sub rbx, rcx
     cmp rax, rbx
-    ja strict near .L38
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L37:
+    ja strict near .L50
+    db 0xf, 0x1f, 0x40, 0x0
+.L49:
     vpcmpeqb xmm2, xmm0, [rax + rdi]
     vpcmpeqb xmm3, xmm1, [rax + r9]
     vpand xmm2, xmm2, xmm3
     vpmovmskb ecx, xmm2
     test ecx, ecx
-    je strict near .L40
+    je strict near .L52
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L39:
+.L51:
     bsf ebp, ecx
     lea rbp, [rax + rbp]
     mov r12, r8
     sub r12, rbp
     cmp r12, rdx
-    jb strict near .L42
-.L41:
+    jb strict near .L54
+.L53:
     xor r12d, r12d
     lea r13, [r12 + 4]
     cmp r13, rdx
-    ja strict short .L47
+    ja strict short .L59
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L46:
+.L58:
     mov r13d, dword [rsi + r12]
     mov r14d, dword [rbp + r12]
     cmp r13d, r14d
-    jne strict near .L49
-.L48:
+    jne strict near .L61
+.L60:
     lea r12, [r12 + 4]
     lea r13, [r12 + 4]
     cmp r13, rdx
-    jbe strict short .L46
-.L47:
+    jbe strict short .L58
+.L59:
     lea r13, [r12 + 2]
     cmp r13, rdx
-    ja strict short .L50
+    ja strict short .L62
     movzx r13d, word [rsi + r12]
     movzx r14d, word [rbp + r12]
     cmp r13d, r14d
-    jne strict near .L53
-.L52:
+    jne strict near .L65
+.L64:
     lea r12, [r12 + 2]
-.L50:
+.L62:
     cmp r12, rdx
-    jae strict short .L54
+    jae strict short .L66
     movzx r13d, byte [rsi + r12]
     movzx r12d, byte [rbp + r12]
     cmp r13d, r12d
-    jne strict near .L57
-.L56:
-.L54:
+    jne strict near .L69
+.L68:
+.L66:
     mov r12d, 1
-.L45:
+.L57:
     test r12d, r12d
-    jne strict near .L44
-.L43:
+    jne strict near .L56
+.L55:
     mov rbp, rcx
     lea r12, [rcx - 1]
     and rbp, r12
     mov rcx, rbp
     test ecx, ecx
-    jne strict near .L39
-.L40:
+    jne strict near .L51
+.L52:
     add rax, 16
     cmp rax, rbx
-    jbe strict near .L37
-.L38:
+    jbe strict near .L49
+.L50:
     cmp rax, r8
-    jae strict near .L58
+    jae strict near .L70
     mov rcx, r8
     sub rcx, rax
     cmp rcx, rdx
-    jae strict short .L60
+    jae strict short .L72
     xor eax, eax
     jmp strict near .L1
-.L60:
+.L72:
     sub rax, rbx
     mov ebp, 4294967295
     mov rcx, rax
@@ -8992,66 +9199,127 @@ L.nvol_memmem_find_entry_avx2:
     vpmovmskb eax, xmm0
     and rax, rbp
     test eax, eax
-    je strict near .L63
+    je strict near .L75
     db 0xf, 0x1f, 0x40, 0x0
-.L62:
+.L74:
     bsf ecx, eax
     lea rcx, [rbx + rcx]
     mov rdi, r8
     sub rdi, rcx
     cmp rdi, rdx
-    jb strict near .L65
-.L64:
+    jb strict near .L77
+.L76:
     xor edi, edi
     lea r9, [rdi + 4]
     cmp r9, rdx
-    ja strict short .L70
+    ja strict short .L82
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L69:
+.L81:
     mov r9d, dword [rsi + rdi]
     mov ebp, dword [rcx + rdi]
     cmp r9d, ebp
-    jne strict near .L72
-.L71:
+    jne strict near .L84
+.L83:
     lea rdi, [rdi + 4]
     lea r9, [rdi + 4]
     cmp r9, rdx
-    jbe strict short .L69
-.L70:
+    jbe strict short .L81
+.L82:
     lea r9, [rdi + 2]
     cmp r9, rdx
-    ja strict short .L73
+    ja strict short .L85
     movzx r9d, word [rsi + rdi]
     movzx ebp, word [rcx + rdi]
     cmp r9d, ebp
-    jne strict near .L76
-.L75:
+    jne strict near .L88
+.L87:
     lea rdi, [rdi + 2]
-.L73:
+.L85:
     cmp rdi, rdx
-    jae strict short .L77
+    jae strict short .L89
     movzx r9d, byte [rsi + rdi]
     movzx edi, byte [rcx + rdi]
     cmp r9d, edi
-    jne strict near .L80
-.L79:
-.L77:
+    jne strict near .L92
+.L91:
+.L89:
     mov edi, 1
-.L68:
+.L80:
     test edi, edi
-    jne strict near .L67
-.L66:
+    jne strict near .L79
+.L78:
     mov rcx, rax
     lea rdi, [rax - 1]
     and rcx, rdi
     mov rax, rcx
     test eax, eax
-    jne strict near .L62
-.L63:
-.L58:
+    jne strict near .L74
+.L75:
+.L70:
     xor eax, eax
     jmp strict near .L1
 .L35:
+    cmp rdx, 2
+    jne strict near .L93
+    mov rdi, qword [r13]
+    mov r9, qword [r13 + 8]
+    movzx ecx, byte [rsi + rdi]
+    vmovd xmm0, ecx
+    vpbroadcastb ymm0, xmm0
+    movzx ecx, byte [rsi + r9]
+    vmovd xmm1, ecx
+    vpbroadcastb ymm1, xmm1
+    mov rcx, rdx
+    mov rsi, rdi
+    cmp rsi, r9
+    cmovb rsi, r9
+    add rsi, 32
+    cmp rcx, rsi
+    cmovb rcx, rsi
+    mov rsi, r8
+    sub rsi, rcx
+    cmp rax, rsi
+    ja strict short .L96
+    db 0xf, 0x1f, 0x40, 0x0
+.L95:
+    vpcmpeqb ymm2, ymm0, [rax + rdi]
+    vpcmpeqb ymm3, ymm1, [rax + r9]
+    vpand ymm2, ymm2, ymm3
+    vpmovmskb ecx, ymm2
+    test ecx, ecx
+    jne strict near .L98
+.L97:
+    add rax, 32
+    cmp rax, rsi
+    jbe strict short .L95
+.L96:
+    cmp rax, r8
+    jae strict short .L99
+    sub r8, rax
+    cmp r8, rdx
+    jae strict short .L101
+    xor eax, eax
+    jmp strict near .L1
+.L101:
+    sub rax, rsi
+    mov edx, 4294967295
+    mov rcx, rax
+    shl edx, cl
+    vpcmpeqb ymm0, ymm0, [rsi + rdi]
+    vpcmpeqb ymm1, ymm1, [rsi + r9]
+    vpand ymm0, ymm0, ymm1
+    vpmovmskb eax, ymm0
+    and rax, rdx
+    test eax, eax
+    je strict short .L103
+    bsf eax, eax
+    lea rax, [rsi + rax]
+    jmp strict near .L1
+.L103:
+.L99:
+    xor eax, eax
+    jmp strict near .L1
+.L93:
     mov rdi, qword [r13]
     mov r9, qword [r13 + 8]
     movzx ecx, byte [rsi + rdi]
@@ -9070,84 +9338,83 @@ L.nvol_memmem_find_entry_avx2:
     mov rbx, r8
     sub rbx, rcx
     cmp rax, rbx
-    ja strict near .L82
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-.L81:
+    ja strict near .L106
+    db 0xf, 0x1f, 0x40, 0x0
+.L105:
     vpcmpeqb ymm2, ymm0, [rax + rdi]
     vpcmpeqb ymm3, ymm1, [rax + r9]
     vpand ymm2, ymm2, ymm3
     vpmovmskb ecx, ymm2
     test ecx, ecx
-    je strict near .L84
+    je strict near .L108
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L83:
+.L107:
     bsf ebp, ecx
     lea rbp, [rax + rbp]
     mov r12, r8
     sub r12, rbp
     cmp r12, rdx
-    jb strict near .L86
-.L85:
+    jb strict near .L110
+.L109:
     xor r12d, r12d
     lea r13, [r12 + 4]
     cmp r13, rdx
-    ja strict short .L91
+    ja strict short .L115
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L90:
+.L114:
     mov r13d, dword [rsi + r12]
     mov r14d, dword [rbp + r12]
     cmp r13d, r14d
-    jne strict near .L93
-.L92:
+    jne strict near .L117
+.L116:
     lea r12, [r12 + 4]
     lea r13, [r12 + 4]
     cmp r13, rdx
-    jbe strict short .L90
-.L91:
+    jbe strict short .L114
+.L115:
     lea r13, [r12 + 2]
     cmp r13, rdx
-    ja strict short .L94
+    ja strict short .L118
     movzx r13d, word [rsi + r12]
     movzx r14d, word [rbp + r12]
     cmp r13d, r14d
-    jne strict near .L97
-.L96:
+    jne strict near .L121
+.L120:
     lea r12, [r12 + 2]
-.L94:
+.L118:
     cmp r12, rdx
-    jae strict short .L98
+    jae strict short .L122
     movzx r13d, byte [rsi + r12]
     movzx r12d, byte [rbp + r12]
     cmp r13d, r12d
-    jne strict near .L101
-.L100:
-.L98:
+    jne strict near .L125
+.L124:
+.L122:
     mov r12d, 1
-.L89:
+.L113:
     test r12d, r12d
-    jne strict near .L88
-.L87:
+    jne strict near .L112
+.L111:
     mov rbp, rcx
     lea r12, [rcx - 1]
     and rbp, r12
     mov rcx, rbp
     test ecx, ecx
-    jne strict near .L83
-.L84:
+    jne strict near .L107
+.L108:
     add rax, 32
     cmp rax, rbx
-    jbe strict near .L81
-.L82:
+    jbe strict near .L105
+.L106:
     cmp rax, r8
-    jae strict near .L102
+    jae strict near .L126
     mov rcx, r8
     sub rcx, rax
     cmp rcx, rdx
-    jae strict short .L104
+    jae strict short .L128
     xor eax, eax
     jmp strict near .L1
-.L104:
+.L128:
     sub rax, rbx
     mov ebp, 4294967295
     mov rcx, rax
@@ -9158,73 +9425,73 @@ L.nvol_memmem_find_entry_avx2:
     vpmovmskb eax, ymm0
     and rax, rbp
     test eax, eax
-    je strict near .L107
+    je strict near .L131
     db 0xf, 0x1f, 0x40, 0x0
-.L106:
+.L130:
     bsf ecx, eax
     lea rcx, [rbx + rcx]
     mov rdi, r8
     sub rdi, rcx
     cmp rdi, rdx
-    jb strict near .L109
-.L108:
+    jb strict near .L133
+.L132:
     xor edi, edi
     lea r9, [rdi + 4]
     cmp r9, rdx
-    ja strict short .L114
+    ja strict short .L138
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L113:
+.L137:
     mov r9d, dword [rsi + rdi]
     mov ebp, dword [rcx + rdi]
     cmp r9d, ebp
-    jne strict near .L116
-.L115:
+    jne strict near .L140
+.L139:
     lea rdi, [rdi + 4]
     lea r9, [rdi + 4]
     cmp r9, rdx
-    jbe strict short .L113
-.L114:
+    jbe strict short .L137
+.L138:
     lea r9, [rdi + 2]
     cmp r9, rdx
-    ja strict short .L117
+    ja strict short .L141
     movzx r9d, word [rsi + rdi]
     movzx ebp, word [rcx + rdi]
     cmp r9d, ebp
-    jne strict near .L120
-.L119:
+    jne strict near .L144
+.L143:
     lea rdi, [rdi + 2]
-.L117:
+.L141:
     cmp rdi, rdx
-    jae strict short .L121
+    jae strict short .L145
     movzx r9d, byte [rsi + rdi]
     movzx edi, byte [rcx + rdi]
     cmp r9d, edi
-    jne strict near .L124
-.L123:
-.L121:
+    jne strict near .L148
+.L147:
+.L145:
     mov edi, 1
-.L112:
+.L136:
     test edi, edi
-    jne strict near .L111
-.L110:
+    jne strict near .L135
+.L134:
     mov rcx, rax
     lea rdi, [rax - 1]
     and rcx, rdi
     mov rax, rcx
     test eax, eax
-    jne strict near .L106
-.L107:
-.L102:
+    jne strict near .L130
+.L131:
+.L126:
     xor eax, eax
     jmp strict near .L1
 .L8:
     cmp r9, 16
-    jae strict near .L125
+    jae strict near .L149
     cmp rdx, r9
-    jbe strict short .L127
+    jbe strict short .L151
     xor eax, eax
     jmp strict near .L1
-.L127:
+.L151:
     mov rcx, qword [r13 + 16]
     mov rdi, qword [r13 + 24]
     sub r8, rdx
@@ -9232,61 +9499,62 @@ L.nvol_memmem_find_entry_avx2:
     mov rbx, rax
     lea rbp, [rax + rdx]
     cmp rbx, rbp
-    jae strict short .L130
+    jae strict short .L154
     db 0xf, 0x1f, 0x40, 0x0
-.L129:
+.L153:
     shl r9d, 1
     movzx r12d, byte [rbx]
     add r9d, r12d
     add rbx, 1
     cmp rbx, rbp
-    jb strict short .L129
-.L130:
+    jb strict short .L153
+.L154:
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L131:
+.L155:
     cmp r9d, ecx
-    jne strict short .L133
+    jne strict short .L157
     xor ebx, ebx
     lea rbp, [rbx + 4]
     cmp rbp, rdx
-    ja strict short .L137
-.L136:
+    ja strict short .L161
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L160:
     mov ebp, dword [rax + rbx]
     mov r12d, dword [rsi + rbx]
     cmp ebp, r12d
-    jne strict near .L139
-.L138:
+    jne strict near .L163
+.L162:
     lea rbx, [rbx + 4]
     lea rbp, [rbx + 4]
     cmp rbp, rdx
-    jbe strict short .L136
-.L137:
+    jbe strict short .L160
+.L161:
     lea rbp, [rbx + 2]
     cmp rbp, rdx
-    ja strict short .L140
+    ja strict short .L164
     movzx ebp, word [rax + rbx]
     movzx r12d, word [rsi + rbx]
     cmp ebp, r12d
-    jne strict near .L143
-.L142:
+    jne strict near .L167
+.L166:
     lea rbx, [rbx + 2]
-.L140:
+.L164:
     cmp rbx, rdx
-    jae strict short .L144
+    jae strict short .L168
     movzx ebp, byte [rax + rbx]
     movzx ebx, byte [rsi + rbx]
     cmp ebp, ebx
-    jne strict near .L147
-.L146:
-.L144:
+    jne strict near .L171
+.L170:
+.L168:
     mov ebx, 1
-.L135:
+.L159:
     test ebx, ebx
-    jne strict near .L134
-.L133:
+    jne strict near .L158
+.L157:
     cmp rax, r8
-    jae strict near .L149
-.L148:
+    jae strict near .L173
+.L172:
     movzx ebx, byte [rax]
     imul ebx, edi
     sub r9d, ebx
@@ -9294,10 +9562,10 @@ L.nvol_memmem_find_entry_avx2:
     movzx ebx, byte [rax + rdx]
     add r9d, ebx
     lea rax, [rax + 1]
-    jmp strict near .L131
+    jmp strict near .L155
     xor eax, eax
     jmp strict near .L1
-.L125:
+.L149:
     mov qword [rsp + 32], r9
     mov rbx, qword [r13 + 40]
     mov rcx, qword [r13 + 48]
@@ -9344,35 +9612,35 @@ L.nvol_memmem_find_entry_avx2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    ja strict near .L151
+    ja strict near .L175
     db 0xf, 0x1f, 0x40, 0x0
-.L150:
+.L174:
     mov rbp, rbx
     cmp rbp, rdi
     cmovb rbp, rdi
     xor ecx, ecx
     test r13, r13
-    je strict short .L152
+    je strict short .L176
     lea r14, [r13 - 1]
     cmp r14, 50
-    jae strict short .L154
+    jae strict short .L178
     mov ecx, 1
-    jmp strict short .L155
-.L154:
+    jmp strict short .L179
+.L178:
     lea r14, [r13 - 1]
     shl r14, 3
     mov r11, [rsp + 352]
     cmp r11, r14
-    jb strict short .L156
+    jb strict short .L180
     mov ecx, 1
-    jmp strict short .L157
-.L156:
+    jmp strict short .L181
+.L180:
     xor r13d, r13d
-.L157:
-.L155:
-.L152:
+.L181:
+.L179:
+.L176:
     test ecx, ecx
-    je strict near .L158
+    je strict near .L182
     mov rcx, qword [rsp + 160]
     mov rdi, qword [rsp]
     mov r9, qword [rsp + 128]
@@ -9385,43 +9653,43 @@ L.nvol_memmem_find_entry_avx2:
     mov r11, [rsp + 416]
     mov r10, [rsp + 192]
     cmp r11, r10
-    jae strict short .L160
+    jae strict short .L184
     mov r14, qword [rsp + 448]
     cmp r14, r8
-    jae strict short .L163
+    jae strict short .L187
     movzx r11d, byte [r14]
     mov [rsp + 480], r11
     cmp r11d, ecx
-    je strict short .L163
+    je strict short .L187
     mov rdi, rcx
     db 0x66, 0x90
-.L162:
+.L186:
     add r14, 1
     cmp r14, r8
-    jae strict short .L164
+    jae strict short .L188
     movzx ecx, byte [r14]
     cmp ecx, edi
-    jne strict short .L162
-.L164:
-.L163:
+    jne strict short .L186
+.L188:
+.L187:
     cmp r14, r8
-    jae strict near .L161
+    jae strict near .L185
     mov r11, [rsp + 448]
     sub r14, r11
     cmp r14, r9
-    jb strict short .L167
+    jb strict short .L191
     mov rbp, r14
     sub rbp, r9
-    jmp strict near .L161
-.L167:
+    jmp strict near .L185
+.L191:
     xor ebp, ebp
-    jmp strict near .L161
-.L160:
+    jmp strict near .L185
+.L184:
     mov r9, qword [rsp + 448]
     mov r11, [rsp + 416]
     mov r10, [rsp + 288]
     cmp r11, r10
-    jae strict near .L169
+    jae strict near .L193
     mov rcx, rdx
     mov r11, qword [rdi]
     mov [rsp + 512], r11
@@ -9452,37 +9720,37 @@ L.nvol_memmem_find_entry_avx2:
     sub rcx, r11
     mov rdi, r9
     cmp rdi, rcx
-    ja strict short .L173
+    ja strict short .L197
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-.L172:
+.L196:
     mov r11, [rsp + 512]
     vpcmpeqb xmm2, xmm0, [rdi + r11]
     vpcmpeqb xmm3, xmm1, [rdi + r14]
     vpand xmm2, xmm2, xmm3
     vpmovmskb ebp, xmm2
     test ebp, ebp
-    jne strict near .L175
-.L174:
+    jne strict near .L199
+.L198:
     add rdi, 16
     cmp rdi, rcx
-    jbe strict short .L172
-.L173:
+    jbe strict short .L196
+.L197:
     cmp rdi, r8
-    jae strict short .L176
+    jae strict short .L200
     mov r11, [rsp + 512]
     vpcmpeqb xmm0, xmm0, [rcx + r11]
     vpcmpeqb xmm1, xmm1, [rcx + r14]
     vpand xmm0, xmm0, xmm1
     vpmovmskb edi, xmm0
     test edi, edi
-    jne strict near .L179
-.L178:
-.L176:
+    jne strict near .L203
+.L202:
+.L200:
     mov rbp, -1
-    jmp strict near .L170
-    jmp strict near .L170
-.L169:
+    jmp strict near .L194
+    jmp strict near .L194
+.L193:
     mov rcx, rdx
     mov r11, qword [rdi]
     mov [rsp + 704], r11
@@ -9504,62 +9772,62 @@ L.nvol_memmem_find_entry_avx2:
     sub r14, rcx
     mov rcx, qword [rsp + 448]
     cmp rcx, r14
-    ja strict short .L182
+    ja strict short .L206
     mov r9, qword [rsp + 448]
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L181:
+.L205:
     mov r11, [rsp + 704]
     vpcmpeqb ymm2, ymm0, [rcx + r11]
     vpcmpeqb ymm3, ymm1, [rcx + rbp]
     vpand ymm2, ymm2, ymm3
     vpmovmskb edi, ymm2
     test edi, edi
-    jne strict near .L184
-.L183:
+    jne strict near .L208
+.L207:
     add rcx, 32
     cmp rcx, r14
-    jbe strict short .L181
-.L182:
+    jbe strict short .L205
+.L206:
     cmp rcx, r8
-    jae strict short .L185
+    jae strict short .L209
     mov r11, [rsp + 704]
     vpcmpeqb ymm0, ymm0, [r14 + r11]
     vpcmpeqb ymm1, ymm1, [r14 + rbp]
     vpand ymm0, ymm0, ymm1
     vpmovmskb ecx, ymm0
     test ecx, ecx
-    jne strict near .L188
-.L187:
-.L185:
+    jne strict near .L212
+.L211:
+.L209:
     mov rbp, -1
-.L180:
-.L170:
-.L161:
+.L204:
+.L194:
+.L185:
     add r13, 1
     cmp rbp, -1
-    jne strict short .L189
+    jne strict short .L213
     mov r11, [rsp + 352]
     mov r10, [rsp + 416]
     lea r11, [r11 + r10]
     mov [rsp + 352], r11
-    jmp strict short .L190
-.L189:
+    jmp strict short .L214
+.L213:
     mov r11, [rsp + 352]
     lea r11, [r11 + rbp]
     mov [rsp + 352], r11
-.L190:
+.L214:
     cmp rbp, -1
-    je strict near .L192
-.L191:
+    je strict near .L216
+.L215:
     lea r15, [r15 + rbp]
     xor edi, edi
     mov rbp, rbx
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    ja strict near .L194
-.L193:
-.L158:
+    ja strict near .L218
+.L217:
+.L182:
     xor r14d, r14d
     mov r11, [rsp + 384]
     lea rcx, [r15 + r11]
@@ -9572,114 +9840,114 @@ L.nvol_memmem_find_entry_avx2:
     setne cl
     movzx ecx, cl
     cmp r14d, ecx
-    jne strict short .L195
+    jne strict short .L219
     lea r15, [r15 + rdx]
     xor edi, edi
-    jmp strict near .L196
-.L195:
+    jmp strict near .L220
+.L219:
     mov r14, qword [rsp + 64]
     test r14d, r14d
-    jne strict short .L197
+    jne strict short .L221
     mov rbp, rbx
-.L197:
+.L221:
     lea rcx, [rax + r15]
     cmp rbp, rdx
-    jae strict short .L200
+    jae strict short .L224
     movzx ecx, byte [rsi + rbp]
     lea r9, [r15 + rbp]
     movzx r9d, byte [rax + r9]
     cmp ecx, r9d
-    jne strict short .L200
+    jne strict short .L224
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L199:
+.L223:
     add rbp, 1
     cmp rbp, rdx
-    jae strict short .L201
+    jae strict short .L225
     movzx ecx, byte [rsi + rbp]
     lea r9, [r15 + rbp]
     movzx r9d, byte [rax + r9]
     cmp ecx, r9d
-    je strict short .L199
-.L201:
-.L200:
+    je strict short .L223
+.L225:
+.L224:
     cmp rbp, rdx
-    jae strict short .L202
+    jae strict short .L226
     sub rbp, rbx
     lea rcx, [r15 + rbp]
     lea r15, [rcx + 1]
     xor edi, edi
-    jmp strict near .L203
-.L202:
+    jmp strict near .L227
+.L226:
     test r14d, r14d
-    je strict short .L204
+    je strict short .L228
     mov rcx, rbx
     lea r9, [rax + r15]
     cmp rcx, rdi
-    jbe strict short .L207
+    jbe strict short .L231
     movzx r9d, byte [rsi + rcx]
     lea rbp, [r15 + rcx]
     movzx ebp, byte [rax + rbp]
     cmp r9d, ebp
-    jne strict short .L207
+    jne strict short .L231
     db 0xf, 0x1f, 0x0
-.L206:
+.L230:
     add rcx, -1
     cmp rcx, rdi
-    jbe strict short .L208
+    jbe strict short .L232
     movzx r9d, byte [rsi + rcx]
     lea rbp, [r15 + rcx]
     movzx ebp, byte [rax + rbp]
     cmp r9d, ebp
-    je strict short .L206
-.L208:
-.L207:
+    je strict short .L230
+.L232:
+.L231:
     cmp rcx, rdi
-    ja strict short .L209
+    ja strict short .L233
     movzx ecx, byte [rsi + rdi]
     lea rdi, [r15 + rdi]
     movzx edi, byte [rax + rdi]
     cmp ecx, edi
-    je strict near .L210
-.L209:
+    je strict near .L234
+.L233:
     lea r15, [r15 + r12]
     mov rdi, rdx
     sub rdi, r12
-    jmp strict short .L205
-.L204:
+    jmp strict short .L229
+.L228:
     mov ecx, 1
     mov r9, rbx
     test ecx, ecx
-    je strict short .L212
+    je strict short .L236
     cmp r9, 0
-    jbe strict short .L212
+    jbe strict short .L236
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L211:
+.L235:
     lea r9, [r9 - 1]
     movzx ebp, byte [rsi + r9]
     lea r14, [r15 + r9]
     movzx r14d, byte [rax + r14]
     cmp ebp, r14d
-    je strict short .L213
+    je strict short .L237
     xor ecx, ecx
-.L213:
+.L237:
     test ecx, ecx
-    je strict short .L215
+    je strict short .L239
     cmp r9, 0
-    ja strict short .L211
-.L215:
-.L212:
+    ja strict short .L235
+.L239:
+.L236:
     test ecx, ecx
-    jne strict near .L217
-.L216:
+    jne strict near .L241
+.L240:
     lea r15, [r15 + r12]
-.L205:
-.L203:
-.L196:
+.L229:
+.L227:
+.L220:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    jbe strict near .L150
-.L151:
+    jbe strict near .L174
+.L175:
     xor eax, eax
 .L1:
     vzeroupper
@@ -9706,116 +9974,124 @@ L.nvol_memmem_find_entry_avx2:
     xor eax, eax
     jmp strict short .L1
 .L42:
+    bsf ecx, ecx
+    lea rax, [rax + rcx]
+    jmp strict short .L1
+.L54:
     xor eax, eax
     jmp strict short .L1
-.L49:
+.L61:
     xor r12d, r12d
-    jmp strict near .L45
-.L53:
-    xor r12d, r12d
-    jmp strict near .L45
-.L57:
-    xor r12d, r12d
-    jmp strict near .L45
-.L44:
-    mov rax, rbp
-    jmp strict short .L1
+    jmp strict near .L57
 .L65:
+    xor r12d, r12d
+    jmp strict near .L57
+.L69:
+    xor r12d, r12d
+    jmp strict near .L57
+.L56:
+    mov rax, rbp
+    jmp strict short .L1
+.L77:
     xor eax, eax
     jmp strict short .L1
-.L72:
+.L84:
     xor edi, edi
-    jmp strict near .L68
-.L76:
+    jmp strict near .L80
+.L88:
     xor edi, edi
-    jmp strict near .L68
-.L80:
+    jmp strict near .L80
+.L92:
     xor edi, edi
-    jmp strict near .L68
-.L67:
+    jmp strict near .L80
+.L79:
     mov rax, rcx
     jmp strict short .L1
-.L86:
+.L98:
+    bsf ecx, ecx
+    lea rax, [rax + rcx]
+    jmp strict near .L1
+.L110:
     xor eax, eax
-    jmp strict short .L1
-.L93:
+    jmp strict near .L1
+.L117:
     xor r12d, r12d
-    jmp strict near .L89
-.L97:
+    jmp strict near .L113
+.L121:
     xor r12d, r12d
-    jmp strict near .L89
-.L101:
+    jmp strict near .L113
+.L125:
     xor r12d, r12d
-    jmp strict near .L89
-.L88:
+    jmp strict near .L113
+.L112:
     mov rax, rbp
     jmp strict near .L1
-.L109:
+.L133:
     xor eax, eax
     jmp strict near .L1
-.L116:
+.L140:
     xor edi, edi
-    jmp strict near .L112
-.L120:
+    jmp strict near .L136
+.L144:
     xor edi, edi
-    jmp strict near .L112
-.L124:
+    jmp strict near .L136
+.L148:
     xor edi, edi
-    jmp strict near .L112
-.L111:
+    jmp strict near .L136
+.L135:
     mov rax, rcx
     jmp strict near .L1
-.L139:
+.L163:
     xor ebx, ebx
-    jmp strict near .L135
-.L143:
+    jmp strict near .L159
+.L167:
     xor ebx, ebx
-    jmp strict near .L135
-.L147:
+    jmp strict near .L159
+.L171:
     xor ebx, ebx
-    jmp strict near .L135
-.L134:
+    jmp strict near .L159
+.L158:
     jmp strict near .L1
-.L149:
+.L173:
     xor eax, eax
     jmp strict near .L1
-.L175:
+.L199:
     sub rdi, r9
     bsf ecx, ebp
     lea rbp, [rdi + rcx]
-    jmp strict near .L170
-.L179:
+    jmp strict near .L194
+.L203:
     mov r11, [rsp + 448]
     sub rcx, r11
     bsf edi, edi
     lea rbp, [rcx + rdi]
-    jmp strict near .L170
-.L184:
+    jmp strict near .L194
+.L208:
     sub rcx, r9
     bsf edi, edi
     lea rbp, [rcx + rdi]
-    jmp strict near .L180
-.L188:
+    jmp strict near .L204
+.L212:
     mov r11, [rsp + 448]
     sub r14, r11
     bsf ecx, ecx
     lea rbp, [r14 + rcx]
-    jmp strict near .L180
-.L192:
+    jmp strict near .L204
+.L216:
     xor eax, eax
     jmp strict near .L1
-.L194:
+.L218:
     xor eax, eax
     jmp strict near .L1
-.L210:
+.L234:
     lea rax, [rax + r15]
     jmp strict near .L1
-.L217:
+.L241:
     lea rax, [rax + r15]
     jmp strict near .L1
 .cfi_end:
 
-    db 0x90
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_memmem_find_entry_sse2:function hidden (L.nvol_memmem_find_entry_sse2.cfi_end - nvol_memmem_find_entry_sse2)
 nvol_memmem_find_entry_sse2:
 L.nvol_memmem_find_entry_sse2:
@@ -9945,6 +10221,74 @@ L.nvol_memmem_find_entry_sse2:
     xor eax, eax
     jmp strict near .L1
 .L10:
+    cmp rdx, 2
+    jne strict near .L35
+    mov rdi, qword [rbp]
+    mov r9, qword [rbp + 8]
+    movzx ecx, byte [rsi + rdi]
+    imul ecx, ecx, 16843009
+    movd xmm0, ecx
+    pshufd xmm0, xmm0, 0
+    movzx ecx, byte [rsi + r9]
+    imul ecx, ecx, 16843009
+    movd xmm1, ecx
+    pshufd xmm1, xmm1, 0
+    mov rcx, rdx
+    mov rsi, rdi
+    cmp rsi, r9
+    cmovb rsi, r9
+    add rsi, 16
+    cmp rcx, rsi
+    cmovb rcx, rsi
+    mov rsi, r8
+    sub rsi, rcx
+    cmp rax, rsi
+    ja strict short .L38
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+.L37:
+    movdqu xmm2, [rax + rdi]
+    pcmpeqb xmm2, xmm0
+    movdqu xmm3, [rax + r9]
+    pcmpeqb xmm3, xmm1
+    pand xmm2, xmm3
+    pmovmskb ecx, xmm2
+    test ecx, ecx
+    jne strict near .L40
+.L39:
+    add rax, 16
+    cmp rax, rsi
+    jbe strict short .L37
+.L38:
+    cmp rax, r8
+    jae strict short .L41
+    sub r8, rax
+    cmp r8, rdx
+    jae strict short .L43
+    xor eax, eax
+    jmp strict near .L1
+.L43:
+    sub rax, rsi
+    mov edx, 4294967295
+    mov rcx, rax
+    shl edx, cl
+    movdqu xmm2, [rsi + rdi]
+    pcmpeqb xmm2, xmm0
+    movdqu xmm0, [rsi + r9]
+    pcmpeqb xmm0, xmm1
+    pand xmm2, xmm0
+    pmovmskb eax, xmm2
+    and rax, rdx
+    test eax, eax
+    je strict short .L45
+    bsf eax, eax
+    lea rax, [rsi + rax]
+    jmp strict near .L1
+.L45:
+.L41:
+    xor eax, eax
+    jmp strict near .L1
+.L35:
     mov rdi, qword [rbp]
     mov r9, qword [rbp + 8]
     movzx ecx, byte [rsi + rdi]
@@ -9965,8 +10309,9 @@ L.nvol_memmem_find_entry_sse2:
     mov rbx, r8
     sub rbx, rcx
     cmp rax, rbx
-    ja strict near .L36
-.L35:
+    ja strict near .L48
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L47:
     movdqu xmm2, [rax + rdi]
     pcmpeqb xmm2, xmm0
     movdqu xmm3, [rax + r9]
@@ -9974,75 +10319,75 @@ L.nvol_memmem_find_entry_sse2:
     pand xmm2, xmm3
     pmovmskb ecx, xmm2
     test ecx, ecx
-    je strict near .L38
+    je strict near .L50
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L37:
+.L49:
     bsf ebp, ecx
     lea rbp, [rax + rbp]
     mov r12, r8
     sub r12, rbp
     cmp r12, rdx
-    jb strict near .L40
-.L39:
+    jb strict near .L52
+.L51:
     xor r12d, r12d
     lea r13, [r12 + 4]
     cmp r13, rdx
-    ja strict short .L45
+    ja strict short .L57
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L44:
+.L56:
     mov r13d, dword [rsi + r12]
     mov r14d, dword [rbp + r12]
     cmp r13d, r14d
-    jne strict near .L47
-.L46:
+    jne strict near .L59
+.L58:
     lea r12, [r12 + 4]
     lea r13, [r12 + 4]
     cmp r13, rdx
-    jbe strict short .L44
-.L45:
+    jbe strict short .L56
+.L57:
     lea r13, [r12 + 2]
     cmp r13, rdx
-    ja strict short .L48
+    ja strict short .L60
     movzx r13d, word [rsi + r12]
     movzx r14d, word [rbp + r12]
     cmp r13d, r14d
-    jne strict near .L51
-.L50:
+    jne strict near .L63
+.L62:
     lea r12, [r12 + 2]
-.L48:
+.L60:
     cmp r12, rdx
-    jae strict short .L52
+    jae strict short .L64
     movzx r13d, byte [rsi + r12]
     movzx r12d, byte [rbp + r12]
     cmp r13d, r12d
-    jne strict near .L55
-.L54:
-.L52:
+    jne strict near .L67
+.L66:
+.L64:
     mov r12d, 1
-.L43:
+.L55:
     test r12d, r12d
-    jne strict near .L42
-.L41:
+    jne strict near .L54
+.L53:
     mov rbp, rcx
     lea r12, [rcx - 1]
     and rbp, r12
     mov rcx, rbp
     test ecx, ecx
-    jne strict near .L37
-.L38:
+    jne strict near .L49
+.L50:
     add rax, 16
     cmp rax, rbx
-    jbe strict near .L35
-.L36:
+    jbe strict near .L47
+.L48:
     cmp rax, r8
-    jae strict near .L56
+    jae strict near .L68
     mov rcx, r8
     sub rcx, rax
     cmp rcx, rdx
-    jae strict short .L58
+    jae strict short .L70
     xor eax, eax
     jmp strict near .L1
-.L58:
+.L70:
     sub rax, rbx
     mov ebp, 4294967295
     mov rcx, rax
@@ -10055,73 +10400,73 @@ L.nvol_memmem_find_entry_sse2:
     pmovmskb eax, xmm2
     and rax, rbp
     test eax, eax
-    je strict near .L61
+    je strict near .L73
     db 0xf, 0x1f, 0x40, 0x0
-.L60:
+.L72:
     bsf ecx, eax
     lea rcx, [rbx + rcx]
     mov rdi, r8
     sub rdi, rcx
     cmp rdi, rdx
-    jb strict near .L63
-.L62:
+    jb strict near .L75
+.L74:
     xor edi, edi
     lea r9, [rdi + 4]
     cmp r9, rdx
-    ja strict short .L68
+    ja strict short .L80
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L67:
+.L79:
     mov r9d, dword [rsi + rdi]
     mov ebp, dword [rcx + rdi]
     cmp r9d, ebp
-    jne strict near .L70
-.L69:
+    jne strict near .L82
+.L81:
     lea rdi, [rdi + 4]
     lea r9, [rdi + 4]
     cmp r9, rdx
-    jbe strict short .L67
-.L68:
+    jbe strict short .L79
+.L80:
     lea r9, [rdi + 2]
     cmp r9, rdx
-    ja strict short .L71
+    ja strict short .L83
     movzx r9d, word [rsi + rdi]
     movzx ebp, word [rcx + rdi]
     cmp r9d, ebp
-    jne strict near .L74
-.L73:
+    jne strict near .L86
+.L85:
     lea rdi, [rdi + 2]
-.L71:
+.L83:
     cmp rdi, rdx
-    jae strict short .L75
+    jae strict short .L87
     movzx r9d, byte [rsi + rdi]
     movzx edi, byte [rcx + rdi]
     cmp r9d, edi
-    jne strict near .L78
-.L77:
-.L75:
+    jne strict near .L90
+.L89:
+.L87:
     mov edi, 1
-.L66:
+.L78:
     test edi, edi
-    jne strict near .L65
-.L64:
+    jne strict near .L77
+.L76:
     mov rcx, rax
     lea rdi, [rax - 1]
     and rcx, rdi
     mov rax, rcx
     test eax, eax
-    jne strict near .L60
-.L61:
-.L56:
+    jne strict near .L72
+.L73:
+.L68:
     xor eax, eax
     jmp strict near .L1
 .L8:
     cmp r9, 16
-    jae strict near .L79
+    jae strict near .L91
     cmp rdx, r9
-    jbe strict short .L81
+    jbe strict short .L93
     xor eax, eax
     jmp strict near .L1
-.L81:
+.L93:
     mov rcx, qword [rbp + 16]
     mov rdi, qword [rbp + 24]
     sub r8, rdx
@@ -10129,61 +10474,61 @@ L.nvol_memmem_find_entry_sse2:
     mov rbx, rax
     lea rbp, [rax + rdx]
     cmp rbx, rbp
-    jae strict short .L84
+    jae strict short .L96
     db 0xf, 0x1f, 0x40, 0x0
-.L83:
+.L95:
     shl r9d, 1
     movzx r12d, byte [rbx]
     add r9d, r12d
     add rbx, 1
     cmp rbx, rbp
-    jb strict short .L83
-.L84:
+    jb strict short .L95
+.L96:
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L85:
+.L97:
     cmp r9d, ecx
-    jne strict short .L87
+    jne strict short .L99
     xor ebx, ebx
     lea rbp, [rbx + 4]
     cmp rbp, rdx
-    ja strict short .L91
-.L90:
+    ja strict short .L103
+.L102:
     mov ebp, dword [rax + rbx]
     mov r12d, dword [rsi + rbx]
     cmp ebp, r12d
-    jne strict near .L93
-.L92:
+    jne strict near .L105
+.L104:
     lea rbx, [rbx + 4]
     lea rbp, [rbx + 4]
     cmp rbp, rdx
-    jbe strict short .L90
-.L91:
+    jbe strict short .L102
+.L103:
     lea rbp, [rbx + 2]
     cmp rbp, rdx
-    ja strict short .L94
+    ja strict short .L106
     movzx ebp, word [rax + rbx]
     movzx r12d, word [rsi + rbx]
     cmp ebp, r12d
-    jne strict near .L97
-.L96:
+    jne strict near .L109
+.L108:
     lea rbx, [rbx + 2]
-.L94:
+.L106:
     cmp rbx, rdx
-    jae strict short .L98
+    jae strict short .L110
     movzx ebp, byte [rax + rbx]
     movzx ebx, byte [rsi + rbx]
     cmp ebp, ebx
-    jne strict near .L101
-.L100:
-.L98:
+    jne strict near .L113
+.L112:
+.L110:
     mov ebx, 1
-.L89:
+.L101:
     test ebx, ebx
-    jne strict near .L88
-.L87:
+    jne strict near .L100
+.L99:
     cmp rax, r8
-    jae strict near .L103
-.L102:
+    jae strict near .L115
+.L114:
     movzx ebx, byte [rax]
     imul ebx, edi
     sub r9d, ebx
@@ -10191,10 +10536,10 @@ L.nvol_memmem_find_entry_sse2:
     movzx ebx, byte [rax + rdx]
     add r9d, ebx
     lea rax, [rax + 1]
-    jmp strict near .L85
+    jmp strict near .L97
     xor eax, eax
     jmp strict near .L1
-.L79:
+.L91:
     mov qword [rsp + 32], r9
     mov rbx, qword [rbp + 40]
     mov rcx, qword [rbp + 48]
@@ -10230,35 +10575,35 @@ L.nvol_memmem_find_entry_sse2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    ja strict near .L105
+    ja strict near .L117
     db 0xf, 0x1f, 0x0
-.L104:
+.L116:
     mov rdi, rbx
     cmp rdi, r13
     cmovb rdi, r13
     xor ecx, ecx
     test r14, r14
-    je strict short .L106
+    je strict short .L118
     lea rbp, [r14 - 1]
     cmp rbp, 50
-    jae strict short .L108
+    jae strict short .L120
     mov ecx, 1
-    jmp strict short .L109
-.L108:
+    jmp strict short .L121
+.L120:
     lea rbp, [r14 - 1]
     shl rbp, 3
     mov r11, [rsp + 224]
     cmp r11, rbp
-    jb strict short .L110
+    jb strict short .L122
     mov ecx, 1
-    jmp strict short .L111
-.L110:
+    jmp strict short .L123
+.L122:
     xor r14d, r14d
-.L111:
-.L109:
-.L106:
+.L123:
+.L121:
+.L118:
     test ecx, ecx
-    je strict near .L112
+    je strict near .L124
     mov rcx, qword [rsp + 160]
     mov rdi, qword [rsp]
     mov r9, qword [rsp + 32]
@@ -10271,39 +10616,39 @@ L.nvol_memmem_find_entry_sse2:
     mov r11, [rsp + 288]
     mov r10, [rsp + 192]
     cmp r11, r10
-    jae strict short .L114
+    jae strict short .L126
     mov r13, qword [rsp + 320]
     cmp r13, r8
-    jae strict short .L117
+    jae strict short .L129
     movzx r11d, byte [r13]
     mov [rsp + 352], r11
     cmp r11d, ecx
-    je strict short .L117
+    je strict short .L129
     mov rdi, rcx
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L116:
+.L128:
     add r13, 1
     cmp r13, r8
-    jae strict short .L118
+    jae strict short .L130
     movzx ecx, byte [r13]
     cmp ecx, edi
-    jne strict short .L116
-.L118:
-.L117:
+    jne strict short .L128
+.L130:
+.L129:
     cmp r13, r8
-    jae strict near .L115
+    jae strict near .L127
     mov rcx, qword [rsp + 128]
     mov r11, [rsp + 320]
     sub r13, r11
     cmp r13, rcx
-    jb strict short .L121
+    jb strict short .L133
     mov rbp, r13
     sub rbp, rcx
-    jmp strict near .L115
-.L121:
+    jmp strict near .L127
+.L133:
     xor ebp, ebp
-    jmp strict near .L115
-.L114:
+    jmp strict near .L127
+.L126:
     mov rcx, rdx
     mov r11, qword [rdi]
     mov [rsp + 384], r11
@@ -10340,9 +10685,9 @@ L.nvol_memmem_find_entry_sse2:
     sub rcx, r11
     mov rdi, qword [rsp + 320]
     cmp rdi, rcx
-    ja strict short .L125
+    ja strict short .L137
     db 0x90
-.L124:
+.L136:
     mov r11, [rsp + 384]
     movdqu xmm2, [rdi + r11]
     pcmpeqb xmm2, xmm0
@@ -10351,14 +10696,14 @@ L.nvol_memmem_find_entry_sse2:
     pand xmm2, xmm3
     pmovmskb ebp, xmm2
     test ebp, ebp
-    jne strict near .L127
-.L126:
+    jne strict near .L139
+.L138:
     add rdi, 16
     cmp rdi, rcx
-    jbe strict short .L124
-.L125:
+    jbe strict short .L136
+.L137:
     cmp rdi, r8
-    jae strict short .L128
+    jae strict short .L140
     mov r11, [rsp + 384]
     movdqu xmm2, [rcx + r11]
     pcmpeqb xmm2, xmm0
@@ -10367,36 +10712,36 @@ L.nvol_memmem_find_entry_sse2:
     pand xmm2, xmm0
     pmovmskb edi, xmm2
     test edi, edi
-    jne strict near .L131
-.L130:
-.L128:
+    jne strict near .L143
+.L142:
+.L140:
     mov rbp, -1
-.L123:
-.L115:
+.L135:
+.L127:
     add r14, 1
     cmp rbp, -1
-    jne strict short .L132
+    jne strict short .L144
     mov r11, [rsp + 224]
     mov r10, [rsp + 288]
     lea r11, [r11 + r10]
     mov [rsp + 224], r11
-    jmp strict short .L133
-.L132:
+    jmp strict short .L145
+.L144:
     mov r11, [rsp + 224]
     lea r11, [r11 + rbp]
     mov [rsp + 224], r11
-.L133:
+.L145:
     cmp rbp, -1
-    je strict near .L135
-.L134:
+    je strict near .L147
+.L146:
     lea r15, [r15 + rbp]
     xor r13d, r13d
     mov rdi, rbx
     lea rcx, [r15 + rdx]
     cmp rcx, r9
-    ja strict near .L137
-.L136:
-.L112:
+    ja strict near .L149
+.L148:
+.L124:
     xor r11d, r11d
     mov [rsp + 640], r11
     mov r11, [rsp + 256]
@@ -10411,114 +10756,114 @@ L.nvol_memmem_find_entry_sse2:
     movzx ecx, cl
     mov r11, [rsp + 640]
     cmp r11d, ecx
-    jne strict short .L138
+    jne strict short .L150
     lea r15, [r15 + rdx]
     xor r13d, r13d
-    jmp strict near .L139
-.L138:
+    jmp strict near .L151
+.L150:
     mov r9, qword [rsp + 64]
     test r9d, r9d
-    jne strict short .L140
+    jne strict short .L152
     mov rdi, rbx
-.L140:
+.L152:
     lea rcx, [rax + r15]
     cmp rdi, rdx
-    jae strict short .L143
+    jae strict short .L155
     movzx ecx, byte [rsi + rdi]
     lea rbp, [r15 + rdi]
     movzx ebp, byte [rax + rbp]
     cmp ecx, ebp
-    jne strict short .L143
+    jne strict short .L155
     db 0x66, 0x90
-.L142:
+.L154:
     add rdi, 1
     cmp rdi, rdx
-    jae strict short .L144
+    jae strict short .L156
     movzx ecx, byte [rsi + rdi]
     lea rbp, [r15 + rdi]
     movzx ebp, byte [rax + rbp]
     cmp ecx, ebp
-    je strict short .L142
-.L144:
-.L143:
+    je strict short .L154
+.L156:
+.L155:
     cmp rdi, rdx
-    jae strict short .L145
+    jae strict short .L157
     sub rdi, rbx
     lea rcx, [r15 + rdi]
     lea r15, [rcx + 1]
     xor r13d, r13d
-    jmp strict near .L146
-.L145:
+    jmp strict near .L158
+.L157:
     test r9d, r9d
-    je strict short .L147
+    je strict short .L159
     mov rcx, rbx
     lea rdi, [rax + r15]
     cmp rcx, r13
-    jbe strict short .L150
+    jbe strict short .L162
     movzx edi, byte [rsi + rcx]
     lea rbp, [r15 + rcx]
     movzx ebp, byte [rax + rbp]
     cmp edi, ebp
-    jne strict short .L150
+    jne strict short .L162
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L149:
+.L161:
     add rcx, -1
     cmp rcx, r13
-    jbe strict short .L151
+    jbe strict short .L163
     movzx edi, byte [rsi + rcx]
     lea rbp, [r15 + rcx]
     movzx ebp, byte [rax + rbp]
     cmp edi, ebp
-    je strict short .L149
-.L151:
-.L150:
+    je strict short .L161
+.L163:
+.L162:
     cmp rcx, r13
-    ja strict short .L152
+    ja strict short .L164
     movzx ecx, byte [rsi + r13]
     lea rdi, [r15 + r13]
     movzx edi, byte [rax + rdi]
     cmp ecx, edi
-    je strict near .L153
-.L152:
+    je strict near .L165
+.L164:
     lea r15, [r15 + r12]
     mov r13, rdx
     sub r13, r12
-    jmp strict short .L148
-.L147:
+    jmp strict short .L160
+.L159:
     mov ecx, 1
     mov rdi, rbx
     test ecx, ecx
-    je strict short .L155
+    je strict short .L167
     cmp rdi, 0
-    jbe strict short .L155
+    jbe strict short .L167
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L154:
+.L166:
     lea rdi, [rdi - 1]
     movzx ebp, byte [rsi + rdi]
     lea r9, [r15 + rdi]
     movzx r9d, byte [rax + r9]
     cmp ebp, r9d
-    je strict short .L156
+    je strict short .L168
     xor ecx, ecx
-.L156:
+.L168:
     test ecx, ecx
-    je strict short .L158
+    je strict short .L170
     cmp rdi, 0
-    ja strict short .L154
-.L158:
-.L155:
+    ja strict short .L166
+.L170:
+.L167:
     test ecx, ecx
-    jne strict near .L160
-.L159:
+    jne strict near .L172
+.L171:
     lea r15, [r15 + r12]
-.L148:
-.L146:
-.L139:
+.L160:
+.L158:
+.L151:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    jbe strict near .L104
-.L105:
+    jbe strict near .L116
+.L117:
     xor eax, eax
 .L1:
     add rsp, 680
@@ -10544,76 +10889,81 @@ L.nvol_memmem_find_entry_sse2:
     xor eax, eax
     jmp strict short .L1
 .L40:
+    bsf ecx, ecx
+    lea rax, [rax + rcx]
+    jmp strict short .L1
+.L52:
     xor eax, eax
     jmp strict short .L1
-.L47:
+.L59:
     xor r12d, r12d
-    jmp strict near .L43
-.L51:
+    jmp strict near .L55
+.L63:
     xor r12d, r12d
-    jmp strict near .L43
-.L55:
+    jmp strict near .L55
+.L67:
     xor r12d, r12d
-    jmp strict near .L43
-.L42:
+    jmp strict near .L55
+.L54:
     mov rax, rbp
     jmp strict short .L1
-.L63:
+.L75:
     xor eax, eax
     jmp strict short .L1
-.L70:
+.L82:
     xor edi, edi
-    jmp strict near .L66
-.L74:
+    jmp strict near .L78
+.L86:
     xor edi, edi
-    jmp strict near .L66
-.L78:
+    jmp strict near .L78
+.L90:
     xor edi, edi
-    jmp strict near .L66
-.L65:
+    jmp strict near .L78
+.L77:
     mov rax, rcx
     jmp strict short .L1
-.L93:
+.L105:
     xor ebx, ebx
-    jmp strict near .L89
-.L97:
+    jmp strict near .L101
+.L109:
     xor ebx, ebx
-    jmp strict near .L89
-.L101:
+    jmp strict near .L101
+.L113:
     xor ebx, ebx
-    jmp strict near .L89
-.L88:
+    jmp strict near .L101
+.L100:
     jmp strict near .L1
-.L103:
+.L115:
     xor eax, eax
     jmp strict near .L1
-.L127:
+.L139:
     mov r11, [rsp + 320]
     sub rdi, r11
     bsf ecx, ebp
     lea rbp, [rdi + rcx]
-    jmp strict near .L123
-.L131:
+    jmp strict near .L135
+.L143:
     mov r11, [rsp + 320]
     sub rcx, r11
     bsf edi, edi
     lea rbp, [rcx + rdi]
-    jmp strict near .L123
-.L135:
+    jmp strict near .L135
+.L147:
     xor eax, eax
     jmp strict near .L1
-.L137:
+.L149:
     xor eax, eax
     jmp strict near .L1
-.L153:
+.L165:
     lea rax, [rax + r15]
     jmp strict near .L1
-.L160:
+.L172:
     lea rax, [rax + r15]
     jmp strict near .L1
 .cfi_end:
 
-    db 0xf, 0x1f, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 global nvol_memmem_find_raw:function (L.nvol_memmem_find_raw.cfi_end - nvol_memmem_find_raw)
 nvol_memmem_find_raw:
 L.nvol_memmem_find_raw:
@@ -48701,6 +49051,11 @@ nvol_cie:
     dd L.nvol_memmem_pp_sse2 - $
     dd L.nvol_memmem_pp_sse2.cfi_end - L.nvol_memmem_pp_sse2
     db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 3, 17, 2, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_memmem_pp2_sse2 - $
+    dd L.nvol_memmem_pp2_sse2.cfi_end - L.nvol_memmem_pp2_sse2
+    db 0, 0, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_memmem_tw_sse2 - $
@@ -48711,6 +49066,11 @@ nvol_cie:
     dd L.nvol_memmem_pp_avx2 - $
     dd L.nvol_memmem_pp_avx2.cfi_end - L.nvol_memmem_pp_avx2
     db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 3, 244, 1, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_memmem_pp2_avx2 - $
+    dd L.nvol_memmem_pp2_avx2.cfi_end - L.nvol_memmem_pp2_avx2
+    db 0, 0, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_memmem_tw_avx2 - $
@@ -48720,12 +49080,12 @@ nvol_cie:
     dd $ - nvol_cie
     dd L.nvol_memmem_find_entry_avx2 - $
     dd L.nvol_memmem_find_entry_avx2.cfi_end - L.nvol_memmem_find_entry_avx2
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 6, 123, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 204, 11, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 6, 123, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 92, 13, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
     dd 100
     dd $ - nvol_cie
     dd L.nvol_memmem_find_entry_sse2 - $
     dd L.nvol_memmem_find_entry_sse2.cfi_end - L.nvol_memmem_find_entry_sse2
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 5, 120, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 179, 8, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 5, 120, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 163, 9, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memmem_find_raw - $

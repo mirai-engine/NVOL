@@ -423,8 +423,12 @@ The detail is in "Done".
       NVOL's `nvol_memmem_find_entry_avx2`, 20.7 % of 39.4 M (≈ 8.2 M). That is about +17 % in
       the kernel for a 2-byte needle, diluted to +0.6 % over the process. ugrep's `chars<2>`
       compares both bytes at fixed offsets. NVOL's packed pair takes the rare-byte offsets
-      from the Finder and verifies each candidate. Next: a 2-byte specialization in memmem,
-      measured in the asm bench as well.
+      from the Finder and verifies each candidate.
+    - **The 2-byte kernel (see Done):** in NVOL's own asm the 2-byte path is now 14-21 %
+      faster (SSE2), but it is asm-only. In C, GCC (which builds ugrep's header) already
+      schedules the general loop well, and next to it Clang compiled both worse. So ugrep's
+      own row is unchanged by it, and the ugrep residual stays open: GCC's C of the general
+      kernel against ugrep's inline loop.
 
 ### Phase 6. simdjson (1.17)
 
@@ -597,6 +601,36 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **A 2-byte memmem in the asm (item 32).** With a 2-byte needle, the packed pair's two
+  offsets are 0 and 1, so every candidate is a match. `nvol_memmem_pp2_<isa>` (`packed_pair(...,
+  exact2=True)`) returns the first candidate with no verification. A return inside the scan
+  is lowered as a cold exit, so each 16- or 32-byte chunk takes one branch instead of two
+  (`je` over the verification loop, then the latch), as ugrep's `chars<2>` does. The entry
+  routes `nlen == 2` to it.
+  - **Asm-only:** `Function.asm_only` and `If.asm_only` (`nvol/ir.py`), dropped by
+    `ir.for_languages` in the C, C++, Rust, Odin and Python backends, so their generated code
+    does not change. In C, GCC already gets the general loop close (memmem2 4 KiB SSE2 664),
+    and inlined next to it Clang compiled both worse (the 8-byte needle +5…+19 %, 1240 → 1368
+    instructions). Called out of line, GCC paid the call at 64 B (+13…+16 %). The interpreter
+    runs the asm-only `if`, so `nvol check` tests `pp2` against the oracle.
+  - `bench.c` gains `memmem2` (needle "zq", ugrep's `-c zq`).
+  - Cycles (asm, 3 rounds). memmem with the 8-byte needle, whose kernel did not change, is the
+    position control in the same binary:
+
+    | asm | memmem2 before → after | memmem 8 B before → after |
+    |---|---|---|
+    | 256 B SSE2 | 73.9-74.4 → 63.5-63.9 (−14 %) | 73.9-74.0 → 73.0-73.5 |
+    | 4 KiB SSE2 | 811.7-820.1 → 641.2-647.4 (−21 %) | 811.8-816.9 → 812.6-819.3 |
+    | 64 KiB SSE2 | 12385-12479 → 10054-10147 (−18 %) | 12382-12520 → 12353-12474 |
+    | 4 KiB AVX2 | 558.4-562.9 → 395.3-404.8 | 560.9-562.3 → 429.9-437.0 |
+    | 64 KiB AVX2 | 8154-8383 → 6812-6828 | 8214-8526 → 7122-7251 |
+
+    In SSE2 the gain is all code. In AVX2 the new layout also helps the 8-byte needle (−22 %),
+    so about 8 % of memmem2's −28 % is code. No row is worse. The asm now beats GCC's C on the
+    2-byte needle (4 KiB SSE2 641-647 against 664).
+  - Red check: returning one byte too far gives 12/480 oracle mismatches per architecture and
+    12 failed asm tests.
 
 - **memrchr's long loop, exit-first (item 25), accepted with a trade-off.** At 4 KiB AVX2 the
   asm was ~28 cycles behind Clang. The cause is a misprediction at the exit of the unrolled

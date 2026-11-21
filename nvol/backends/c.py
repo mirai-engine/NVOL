@@ -461,5 +461,12 @@ def generate(module, lang: str = "c", asm_kernels=False) -> dict:
     """module: an ir.Module or {arch: ir.Module}. asm_kernels: the C for a library whose
     kernels come from the assembly backend (C only): True for x86_64, or the set of
     architectures."""
+    # the asm-only parts belong to the asm: dropped wherever this prints C (in asm_kernels mode,
+    # the architectures whose kernels are not asm)
+    asm = ({"x86_64"} if asm_kernels is True else set(asm_kernels or ())) if lang == "c" else set()
+    if isinstance(module, dict):
+        module = {a: m if a in asm else ir.for_languages(m) for a, m in module.items()}
+    elif getattr(module, "arch", "x86_64") not in asm:
+        module = ir.for_languages(module)
     p = CPrinter(module, cpp=(lang == "cpp"), asm_kernels=asm_kernels if lang == "c" else False)
     return p.emit_cpp() if lang == "cpp" else p.emit_c()

@@ -138,16 +138,21 @@ def _min_hay(nlen, i1, i2, V):
     return max_(nlen, max_(i1, i2) + V)
 
 
-def packed_pair(isa: ISA, prefilter: bool) -> Function:
+def packed_pair(isa: ISA, prefilter: bool, exact2: bool = False) -> Function:
     """memchr `arch/generic/packedpair.rs` Finder::find / find_prefilter.
 
     find: candidates from the two rare bytes, verified with is_equal.
     prefilter: first candidate offset only (no verification), index or NONE.
+    exact2: a 2-byte needle, whose rare-byte offsets are 0 and 1, so every candidate is a
+    match: the first one is returned, with no verification. A return inside the scan is a cold
+    exit, so the loop takes one branch per chunk, as ugrep's `chars<2>` does (PENDING item 32).
     Requires hend - hstart >= max(nlen, max(i1, i2) + V).
     """
     V = isa.bytes
-    name = f"nvol_memmem_pp{'pre' if prefilter else ''}_{isa.name}"
-    b = Builder(name, USIZE if prefilter else PTR, isa=isa.name,
+    name = f"nvol_memmem_pp{'pre' if prefilter else '2' if exact2 else ''}_{isa.name}"
+    # (exact2 is asm-only: in C, GCC already schedules the general loop well, and next to
+    # it Clang compiled both worse, the 8-byte needle +5..+19 % cycles; PENDING item 32)
+    b = Builder(name, USIZE if prefilter else PTR, isa=isa.name, asm_only=exact2,
                 doc=("first packed-pair candidate index" if prefilter else "packed-pair search")
                     + f"; requires hlen >= max(nlen, max(i1, i2) + {V})")
     state, nstart, nend, hstart, hend = _hdr(b)
@@ -168,6 +173,11 @@ def packed_pair(isa: ISA, prefilter: bool) -> Function:
             m = b.let("offs", offs)
             with b.if_(m.ne(0)):
                 b.ret((at - hstart) + prim("first_offset", m))
+            return
+        if exact2:                  # (c + 2 <= hend: at <= max, or the masked tail chunk)
+            m = b.let("offs", offs if mask is None else offs & mask)
+            with b.if_(m.ne(0)):
+                b.ret(at + prim("first_offset", m))
             return
         m = b.var("offs", offs if mask is None else offs & mask)
         with b.while_(m.ne(0)):
@@ -455,7 +465,11 @@ def _entry(isa: str) -> Function:
             b.ret(Call("nvol_memmem_rk", args, PTR))
         if isa == "avx2":
             with b.if_(hlen < _min_hay(nlen, i1, i2, 32)):
+                with b.if_(nlen.eq(2), asm_only=True):
+                    b.ret(Call("nvol_memmem_pp2_sse2", args, PTR))
                 b.ret(Call("nvol_memmem_pp_sse2", args, PTR))
+        with b.if_(nlen.eq(2), asm_only=True):   # every candidate of a 2-byte needle is a match
+            b.ret(Call(f"nvol_memmem_pp2_{isa}", args, PTR))
         b.ret(Call(f"nvol_memmem_pp_{isa}", args, PTR))
     with b.if_(hlen < RK_FAST):
         b.ret(Call("nvol_memmem_rk", args, PTR))
@@ -470,7 +484,8 @@ def build(isas: list, mod: Module) -> None:
     for isa in isas:
         mod.functions.append(packed_pair(isa, prefilter=True))
     for isa in isas:
-        mod.functions += [packed_pair(isa, prefilter=False), two_way(isa)]
+        mod.functions += [packed_pair(isa, prefilter=False), packed_pair(isa, False, exact2=True),
+                          two_way(isa)]
     targets = []
     names = [i.name for i in isas]
     if "neon" in names:

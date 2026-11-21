@@ -101,6 +101,7 @@ def _byteset(module) -> list:
 
 
 def generate(module) -> dict:
+    module = ir.for_languages(module)
     if isinstance(module, dict):                 # the binding only needs the (shared) API
         module = next(iter(module.values()))
     out = []

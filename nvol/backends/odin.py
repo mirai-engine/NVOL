@@ -502,6 +502,7 @@ def glue(mod) -> list:
 
 
 def generate(module) -> dict:
+    module = ir.for_languages(module)
     mods = module if isinstance(module, dict) else {getattr(module, "arch", "x86_64"): module}
     p = OdinPrinter(next(iter(mods.values())))
     return p.emit(mods)

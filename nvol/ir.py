@@ -314,6 +314,9 @@ class If(Stmt):
     cond: Expr
     then: list
     els: Optional[list] = None
+    # NVOL's own assembly only: the language backends drop this `if` (see for_languages),
+    # so it must not change the function's result, only how the asm gets it
+    asm_only: bool = False
 
 
 @dataclass(eq=False)
@@ -358,6 +361,9 @@ class Function:
     # keep out of line: big kernels selected by a dispatcher get their own
     # prologue instead of bloating the caller's (Win64 saves xmm6-15)
     noinline: bool = False
+    # a function only NVOL's own assembly emits (reached from asm-only ifs): the language
+    # backends drop it (see for_languages)
+    asm_only: bool = False
 # Builder
 # --------------------------------------------------------------------------
 # Keywords of every target language: a variable never gets one of these names.
@@ -379,9 +385,11 @@ max min len cap abs clamp raw_data make delete new free append swizzle context t
 
 class Builder:
     def __init__(self, name: str, ret: Ty, isa: Optional[str] = None,
-                 public: bool = False, doc: str = "", noinline: bool = False):
+                 public: bool = False, doc: str = "", noinline: bool = False,
+                 asm_only: bool = False):
         self.name, self.ret_ty, self.isa, self.public, self.doc = name, ret, isa, public, doc
         self.noinline = noinline
+        self.asm_only = asm_only
         self.params: list = []
         self._stack: list = [[]]
         self._names: dict = {}
@@ -451,12 +459,12 @@ class Builder:
         self.emit(While(cond, body, exit_first))
 
     @contextmanager
-    def if_(self, cond: Expr):
+    def if_(self, cond: Expr, asm_only: bool = False):
         body: list = []
         self._stack.append(body)
         yield
         self._stack.pop()
-        self.emit(If(cond, body))
+        self.emit(If(cond, body, None, asm_only))
 
     @contextmanager
     def else_(self):
@@ -472,7 +480,8 @@ class Builder:
         assert len(self._stack) == 1
         body = prune_unused_lets(self._stack[0])
         return Function(self.name, self.params, self.ret_ty, body,
-                        self.isa, self.public, self.doc, noinline=self.noinline)
+                        self.isa, self.public, self.doc, noinline=self.noinline,
+                        asm_only=self.asm_only)
 
 
 # --------------------------------------------------------------------------
@@ -529,12 +538,37 @@ def prune_unused_lets(stmts: list) -> list:
                 if isinstance(s, While):
                     s = While(s.cond, walk(s.body), s.exit_first)
                 elif isinstance(s, If):
-                    s = If(s.cond, walk(s.then), walk(s.els) if s.els else s.els)
+                    s = If(s.cond, walk(s.then), walk(s.els) if s.els else s.els, s.asm_only)
                 out.append(s)
             return out
         stmts = walk(stmts)
         if not dead:
             return stmts
+
+
+def for_languages(module):
+    """The module the language backends (C, C++, Rust, Odin, Python) print: without the
+    asm-only functions and ifs. module: an ir.Module or {arch: ir.Module}."""
+    import copy
+    import dataclasses
+    if isinstance(module, dict):
+        return {k: for_languages(m) for k, m in module.items()}
+
+    def strip(stmts):
+        out = []
+        for s in stmts:
+            if isinstance(s, If):
+                if s.asm_only:
+                    continue
+                s = If(s.cond, strip(s.then), strip(s.els) if s.els else s.els)
+            elif isinstance(s, While):
+                s = While(s.cond, strip(s.body), s.exit_first)
+            out.append(s)
+        return out
+    m = copy.copy(module)
+    m.functions = [dataclasses.replace(f, body=strip(f.body)) for f in module.functions
+                   if not f.asm_only]
+    return m
 
 
 @dataclass
