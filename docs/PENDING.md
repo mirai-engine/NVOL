@@ -289,11 +289,29 @@ The detail is in "Done".
       and not the Rust's.
 28. 1.6: memchr with 1-15 bytes. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): NVOL has 4 fewer instructions
     per call (both scan byte by byte, 5 instructions per byte), but from 3 B up it takes 1-2.5
-    more cycles: +4…+19 %, the same in 3 rounds. Find the cause: a dependency chain in the
-    byte loop, or the entry. Then port memchr's SWAR for the path without SIMD.
+    more cycles: +4…+19 %, the same in 3 rounds.
+    - **Cause: the JCC erratum, in LLVM's layout of this binary.** The byte loop is the same
+      as the crate's (`cmp %dil,(%rax); je; inc; cmp; jne`). But in `nvol_memchr_entry_avx2`
+      the loop exit `jmp` sits at 0x1c07d-0x1c082 and crosses a 32-byte boundary, so that
+      window is not cached in the DSB: 2-5 MITE µops and 0.5-1.1 cycles of switch penalty per
+      call, against 0 for the crate. There are no mispredictions. Built with `RUSTFLAGS="-C
+      llvm-args=-x86-branches-within-32B-boundaries"`, MITE drops to 0, and NVOL comes out
+      ahead at 3, 8, 12 and 15 B (11.0, 16.0, 20.1 and 23.1 cycles, against 11.5, 16.6, 20.6
+      and 23.6).
+    - Still open: 5 B gives 17.1 against 14.9 in both builds, with no MITE and no
+      mispredictions.
+    - The layout belongs to the user's build (a rustc flag), not to the generated code: it
+      goes to the toolchain log (item 21). Port memchr's SWAR for the path without SIMD.
 29. 1.5: `first_non_ascii` against `bstr`. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): −20 % cycles at
     256 B, −43 % from 4 KiB, on par at 64 B, but **+2 cycles at 16 B** (11.0 against 9.0, 3
     rounds), to be closed.
+    - **Cause: the call.** bstr compiles `first_non_ascii_byte` with static SSE2 and inlines it
+      into the caller (the binary has no symbol for it). NVOL goes through its runtime
+      dispatch: an indirect call through `nvol_first_non_ascii_raw::FN`, then `vzeroupper` in
+      the AVX2 entry. The work is the same (one 16-byte load and `pmovmskb`). NVOL issues 37
+      µops against 34, with no MITE and no mispredictions. A fix would be an inline SSE2 path
+      in the wrappers for haystacks shorter than 32 B, before the dispatch: a feature to
+      measure against the bigger code it inlines.
     - The semantics of "none": bstr's public `find_non_ascii_byte` returns `None` when every
       byte is ASCII, the same as NVOL. Only its internal `ascii::first_non_ascii_byte` returns
       `len`. The wrappers therefore already match the public API; the maintainer decides
