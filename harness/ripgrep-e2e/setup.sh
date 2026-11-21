@@ -12,7 +12,7 @@
 # everything runs with --offline.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-W="$HERE/work"
+W="${W:-$HERE/work}"          # W=... builds elsewhere (a Linux filesystem: faster)
 RIPGREP="${RIPGREP:?set RIPGREP to a ripgrep checkout (15.x, Cargo.lock with memchr 2.8.3 / aho-corasick 1.1.5)}"
 REG="$(ls -d "$HOME"/.cargo/registry/src/*/memchr-2.8.3 | head -1)"
 REG="$(dirname "$REG")"

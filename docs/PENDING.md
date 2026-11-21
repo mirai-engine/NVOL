@@ -34,7 +34,9 @@ patch it on its own, without waiting for the maintainers of each language. What 
 way goes to the toolchain log (item 21), with a reproducer and NVOL's fix or workaround.
 
 Tools: MSVC 14.51 (`cl`, `ml64`), NASM 2.16 and GNU as 2.42 (MinGW) are installed. WSL
-(Alpine) has `perf`, `valgrind` and QEMU. Anything missing (Intel SDE, z3, ARM libc++, …) is
+(Alpine) has `perf`, `valgrind` and QEMU. A minimal WSL Arch Linux (glibc, rust, gcc, clang,
+nasm, perf 7.3.5) is used for ripgrep on Linux and for the frontend counters: its `perf`
+knows `idq.*` and `dsb2mite_*`, while Alpine's does not. Anything missing (Intel SDE, z3, ARM libc++, …) is
 downloaded. WSL does not expose frontend counters, and Windows gives no counters to a user
 program. Sourcetrail indexes C, C++, Rust and Odin; the assembler is worked on without an
 indexer. NEON is measured under QEMU and documented as emulated: it serves to compare variants
@@ -210,6 +212,23 @@ The detail is in "Done".
       | copy_back (item 17) | memrchr 64 B AVX2 | 19.9 → 21.6 | 3-byte NOP restores it |
       | reloads across labels (item 17) | memmem 256 B SSE2 | 71.5 → 72.4 | 70.8 |
 
+    - **Frontend counters (2026-11-21).** WSL's kernel does count `idq.dsb_uops`,
+      `idq.mite_uops` and `dsb2mite_switches.penalty_cycles`; Alpine's `perf` just has no
+      event table for them. Arch's does. A first scan over the position of memchr's call (13
+      single-byte NOP pads, 4 events, so no multiplexing, best of 9) in the glibc binary,
+      where the call lands at 0x3ddc-0x3de8:
+
+      | pad | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+      |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+      | cycles | 18.9 | 18.8 | 18.8 | 18.4 | 18.9 | 18.8 | 18.9 | 19.1 | 18.8 | 18.6 | 18.7 | 17.9 | 19.1 |
+      | MITE µops | 9.0 | 0.3 | 0 | 1.2 | 0 | 2.3 | 1.5 | 1.0 | 0 | 0 | 0 | 0 | 0.7 |
+
+      In this binary no pad reaches the 16.8 of the musl one, and the legacy-decode µops
+      (0-9 per call) do not follow the cycles: pad 0 and pad 4 both give 18.9, with 9 and 0.
+      The µop-cache hypothesis is therefore not confirmed. The effect depends on the layout
+      of the whole binary (the musl and glibc builds differ), not on this call alone. Next:
+      the same scan in the musl binary, and the position of the callee and of the bench loop.
+
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
 26. ~~1.4: "one memchr per line"~~: measured with counters (see Done).
@@ -233,7 +252,9 @@ The detail is in "Done".
       byte is ASCII, the same as NVOL. Only its internal `ascii::first_non_ascii_byte` returns
       `len`. The wrappers therefore already match the public API; the maintainer decides
       whether anything should change.
-30. 1.10: ripgrep end to end on Linux, with the SIMD contribution isolated.
+30. ~~1.10: ripgrep end to end on Linux~~ (see Done). What remains from it: the whole-file
+    Teddy search (`Moriarty|Lestrade|Mycroft|Hudson`) is +0.54…+0.65 % in cycles in 3 rounds,
+    with 2.8 % fewer instructions ([report](benchmarks/2026-11-21-ripgrep-linux.md)).
 31. ~~1.7a and 2.1c under QEMU~~: `bench`, `membench` and `tedbench` ran emulated ([report](benchmarks/2026-11-21-a64-qemu.md)).
     What remains:
     - `Finder::find 3B frequent "the"` is −5.0…−7.8 % at every size, a match at the start:
@@ -349,7 +370,6 @@ as little-endian). The detail of both is in Done.
 | 1.7b | P2 | **wasm32 simd128** | memchr and aho-corasick do not use it on native ripgrep's path; it does exist in memchr (`arch/wasm32`). Add it as an ISA if grepper is wanted in WASM. |
 | 1.8 | P2 | **AVX-512 / AVX10** | memchr does not use it; it would be "better than ripgrep". It requires 64-bit masks (today `MASK` is u32). |
 | 1.9 | P2 | **An even faster `count`** | Tested (item 15): two accumulators in the kernel lower the asm (140 → 131 cycles at 4 KiB AVX2) and Clang (136 → 123), but make GCC worse (SSE2: 264 → 307 cycles), so it was discarded. The asm reassociates the subtractions in pairs in the lowering, like GCC. It remains to see how to give the C the same without losing with GCC (item 44). |
-| 1.10 | P2 | **ripgrep end to end: SIMD contribution unmeasured** | With NVOL, ripgrep gives the same output and passes the same suite (`harness/ripgrep-e2e`), but on Windows the per-process time varies ±15 % and the SIMD is ~1-10 % of the total (rg runs at 1-2 GB/s; startup costs ~80 ms). Measure on Linux with `perf stat`, cached files and multi-threaded directory search, or profile per function to isolate the time of memchr, memmem and Teddy inside rg. |
 | 1.13 | P1 | **ugrep: UTF-8 validation** | The only part of ugrep's SIMD that NVOL does not cover ([inventory](UGREP_SIMD_INVENTORY.md)): `isutf8` (ASCII path + sequence validation). `first_non_ascii` covers the ASCII path; a validation kernel is missing (e.g. Keiser-Lemire's, nibble tables as in `byteset`). AVX-512BW stays out until there is hardware (1.8). |
 | 1.17 | P1 | **simdjson: block-to-mask kernels (phase 6, items 33-38)** | No simdjson routine has an equivalent in NVOL ([inventory](SIMDJSON_SIMD_INVENTORY.md)): all of them turn 64 B blocks (with guaranteed padding) into 64-bit masks. Missing: a per-block membership mask (one `pshufb` when possible, Muła otherwise), equality masks for several bytes, `prefix_xor` (`pclmulqdq`/`pmull` and scalar), UTF-8 validation (1.13) and 8 digits to integer. The first three cover stage 1. |
 | 1.11 | P2 | **`memmem_init` can be 2× faster** | Inlined by LTO, building a 40 B Finder took 114 ns in one binary and 301 ns in another; now it is `noinline` and takes ~230 ns (memchr: ~240-255 ns). See what LLVM did in the 114 ns case (did it vectorize the rarity scan or the byteset?) and bring it into the IR. |
@@ -373,7 +393,7 @@ as little-endian). The detail of both is in Done.
 | 2.9 | P2 | **Formal verification of primitives** | Design plan: prove lowering ↔ `ref` equivalence with bitvectors/SMT (z3) for the pure primitives. |
 | 2.10 | P2 | **Python binding copies read-only buffers** | A read-only `memoryview` that is not `bytes` is copied once (`_buf`). Avoidable with `ctypes.pythonapi.PyObject_GetBuffer`. |
 | 2.11 | P2 | **The interpreter does not test alignments > 64 or high addresses** | It uses bases `0x10000 + [0,64)`. Add cases near page boundaries (4 KiB) to document that reads never cross outside `[start, end)`. |
-| 2.12 | P2 | **More sizes/CPUs in benchmarks** | Only the i5-7400, on Windows and on Linux (WSL2 Alpine, musl; the ugrep and rapidjson e2e and the counters run there). Native glibc (it has its own `memchr` to compare against), AMD (Zen) and real ARM are missing. |
+| 2.12 | P2 | **More sizes/CPUs in benchmarks** | Only the i5-7400, on Windows and on Linux (WSL2 Alpine, musl; the ugrep and rapidjson e2e and the counters run there; WSL2 Arch, glibc, for ripgrep and the frontend counters). AMD (Zen) and real ARM are missing, and glibc's own `memchr` has not been compared yet. |
 
 ## 3. Tools
 
@@ -418,6 +438,17 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **ripgrep end to end on Linux (item 30, former 1.10).** It runs in WSL Arch (glibc), with
+  the builds on the Linux filesystem (`setup.sh` and `bench.py` take `W`), and
+  `harness/ripgrep-e2e/counters.sh` adds `perf stat` and the share of the kernels per query
+  ([report](benchmarks/2026-11-21-ripgrep-linux.md)).
+  - Outputs: identical on all 14 queries.
+  - Cycles: NVOL is equal or better on every query except the whole-file Teddy search
+    (+0.6 %, item 30). `-n` is −21.7 %, the memmem queries −2.0…−3.3 % with 16-38 % fewer
+    instructions.
+  - On Linux, the SIMD kernels take 38-95 % of rg's cycles over a cached file. On Windows,
+    per-process noise had hidden that share.
 
 - **"One memchr per line" (item 26, former 1.4), measured with counters.** `linecount`
   (`harness/rust/pcounters.sh`) runs grep-searcher's LineStep over 1 MiB with lines of 8 to

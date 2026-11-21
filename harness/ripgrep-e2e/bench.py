@@ -17,7 +17,7 @@ import sys
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-WORK = os.path.join(HERE, "work")
+WORK = os.environ.get("W") or os.path.join(HERE, "work")   # as in setup.sh
 EXE = ".exe" if os.name == "nt" else ""
 
 WORDS = ["the ", "quick ", "brown ", "fox ", "jumps ", "over ", "lazy ", "dog ", "Sherlock ", "Holmes ",
