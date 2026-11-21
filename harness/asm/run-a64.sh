@@ -36,4 +36,10 @@ if [ $# -eq 0 ]; then
     set -- tests/test_asm.py tests/test_differential.py tests/test_byteset.py \
         tests/test_memmem.py tests/test_teddy.py
 fi
+# one QEMU process per CPU when the sysroot has pytest-xdist (QEMU user mode is single-threaded).
+# Each worker is started through qemu-aarch64 too: without binfmt_misc (WSL) the aarch64
+# python cannot be exec'd directly, and a process under qemu-user runs a native binary
+if qemu-aarch64 -L "$R" "$R/usr/bin/python3" -c "import xdist" 2>/dev/null; then
+    set -- --dist load --tx "$(nproc)*popen//python=qemu-aarch64 -L $R $R/usr/bin/python3" "$@"
+fi
 qemu-aarch64 -L "$R" "$R/usr/bin/python3" -m pytest -q -p no:cacheprovider "$@"

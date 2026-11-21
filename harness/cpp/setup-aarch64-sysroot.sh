@@ -3,7 +3,8 @@
 # C and C++ headers and libraries, plus clang, lld and qemu-aarch64, so that
 # harness/cpp/run-aarch64.sh can build the generated C/C++ for aarch64 and run it; and for
 # harness/asm/run-a64.sh, binutils-aarch64 (GNU as and objdump for aarch64), a native python3,
-# and python3 with pytest inside the sysroot (pytest runs under QEMU).
+# and python3 with pytest and pytest-xdist inside the sysroot (pytest runs under QEMU, one
+# process per CPU).
 #
 #   sh harness/cpp/setup-aarch64-sysroot.sh          # SYSROOT defaults to /opt/sysroot-aarch64
 set -e
@@ -16,5 +17,8 @@ if [ ! -f "$R/usr/include/stdio.h" ]; then
 fi
 if [ ! -x "$R/usr/bin/python3" ]; then
     apk --arch aarch64 --root "$R" --allow-untrusted --no-scripts -q add python3 py3-pytest
+fi
+if [ ! -d "$(ls -d "$R"/usr/lib/python3*/site-packages/xdist 2>/dev/null | head -1)" ]; then
+    apk --arch aarch64 --root "$R" --allow-untrusted --no-scripts -q add py3-pytest-xdist
 fi
 echo "aarch64 sysroot ready: $R"
