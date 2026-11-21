@@ -384,13 +384,14 @@ The detail is in "Done".
       byte is ASCII, the same as NVOL. Only its internal `ascii::first_non_ascii_byte` returns
       `len`. The wrappers therefore already match the public API; the maintainer decides
       whether anything should change.
-30. ~~1.10: ripgrep end to end on Linux~~ (see Done). What remains from it: the whole-file
-    Teddy search (`Moriarty|Lestrade|Mycroft|Hudson`) is +0.54…+0.65 % in cycles in 3 rounds,
-    with 2.8 % fewer instructions ([report](benchmarks/2026-11-21-ripgrep-linux.md)). A
-    `perf record` of one run per build cannot split it by function: the page faults
-    (`clear_page_erms`) land in a different place in each binary (22.6 % against 1.9 %), and
-    that run's totals were even (155.2 M against 154.9 M cycles). It needs several runs per
-    build, or counters on the Teddy function alone (`tedcount` gives NVOL ahead at 4 KiB-1 MiB).
+30. ~~1.10: ripgrep end to end on Linux~~ (see Done). ~~The whole-file Teddy residual~~
+    (`Moriarty|Lestrade|Mycroft|Hudson`: +0.54…+0.65 % cycles over the process, 3 rounds, with
+    2.8 % fewer instructions) is not in the SIMD. A `perf record` over 5 runs per build (a
+    single run attributed the page faults differently in each binary) gives aho-corasick's
+    `SlimAVX2<4>::find` 80.05 % of 923.6 M sampled cycles (≈ 739 M), against NVOL's
+    `nvol_teddy_slim_avx2_4` at 89.95 % of 806.7 M (≈ 726 M): **NVOL's kernel takes ≈ 1.8 %
+    fewer cycles**. The process-level difference is elsewhere in rg
+    ([report](benchmarks/2026-11-21-ripgrep-linux.md)).
 31. ~~1.7a and 2.1c under QEMU~~: `bench`, `membench` and `tedbench` ran emulated ([report](benchmarks/2026-11-21-a64-qemu.md)).
     What remains:
     - `Finder::find 3B frequent "the"` is −5.0…−7.8 % at every size, a match at the start:
