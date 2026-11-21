@@ -277,10 +277,13 @@ The detail is in "Done".
         asm and Clang are even (2773-2908 against 2776-2887), and at 4 KiB about 28 cycles
         are left. Issuing the four loads off the old pointer before the `lea`, in Clang's
         order, changes nothing (149-150 against 147-153, 3 rounds), so the address chain is
-        ruled out. What does differ: **1.0 mispredictions per call in the asm and in GCC, 0.0
-        in Clang** (batch of 2026-11-21, best of 7). That is the loop exit, about 31
-        iterations at 4 KiB. Next: compare how Clang's loop is shaped (its exit test is at the
-        top: `cmp; jb` out, `test; je` back) with NVOL's (`test; jne` out, `cmp; jae` back).
+        ruled out. The asm and GCC have 1.0 mispredictions per call and Clang 0.0, but that is
+        not the cause either. With the loop rewritten in Clang's shape (exit test at the top:
+        `cmp; jb` out, then the body, `test; je` back, `jmp` to the match), the asm gives
+        124-131 cycles at 4 KiB, on par with Clang's 124, and it still has 1.0 mispredictions.
+        **The shape is the cause.** But the same shape costs +36 % at 256 B (20.9 → 28.4,
+        2 rounds) and nothing at 64 KiB. Next: a shape that keeps the short row, e.g. Clang's
+        loop only once more than two iterations remain.
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
