@@ -39,6 +39,7 @@ fi
 # one QEMU process per CPU when the sysroot has pytest-xdist (QEMU user mode is single-threaded).
 # Each worker is started through qemu-aarch64 too: without binfmt_misc (WSL) the aarch64
 # python cannot be exec'd directly, and a process under qemu-user runs a native binary
+if [ -n "${PYTEST_K:-}" ]; then set -- "$@" -k "$PYTEST_K"; fi     # verify.sh's PYTEST_K
 if qemu-aarch64 -L "$R" "$R/usr/bin/python3" -c "import xdist" 2>/dev/null; then
     set -- --dist load --tx "$(nproc)*popen//python=qemu-aarch64 -L $R $R/usr/bin/python3" "$@"
 fi

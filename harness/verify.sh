@@ -1,10 +1,36 @@
 #!/usr/bin/env bash
 # Full verification of NVOL: every step must pass before a change is committed.
 #
-#   bash harness/verify.sh            # all steps
+#   bash harness/verify.sh                    # all steps (the default; required to close an item)
+#   bash harness/verify.sh pytest rust        # only these steps
+#   bash harness/verify.sh --changed [REV]    # only the steps the changed files reach (below)
 #   SKIP="rust-a64 odin-a64" bash harness/verify.sh
+#   PYTEST_K="teddy" bash harness/verify.sh --changed   # -k for every pytest step
 #
-# Steps (names usable in SKIP):
+# --changed takes the files that differ from REV (default HEAD: the uncommitted changes,
+# untracked files included; e.g. `--changed HEAD~1` checks the last commit) and maps them to
+# steps:
+#   nvol/ (the generator)                 check, pytest (it also checks generated/ is in sync)
+#   generated/c/                          pytest, cpp-a64, asm-a64
+#   generated/cpp/                        cpp, cpp-a64
+#   generated/rust/                       rust, rust-a64
+#   generated/odin/                       odin, odin-a64
+#   generated/python/                     pytest
+#   generated/nasm/, masm/, gas/ x86_64   asm, asm-sysv, pytest
+#   generated/gas/ aarch64, gas/nvol.c    asm-a64 (gas/nvol.c: also asm, asm-sysv)
+#   tests/                                pytest, asm-sysv, asm-a64
+#   harness/rust/, harness/run-aarch64.sh rust, rust-a64
+#   harness/odin/                         odin, odin-a64
+#   harness/cpp/                          cpp, cpp-a64, asm-a64 (the aarch64 sysroot)
+#   harness/asm/run-sysv.sh               asm-sysv
+#   harness/asm/run-a64.sh                asm-a64
+#   harness/asm/assemble.py, build_msvc.py, smoke.py   asm, asm-sysv, asm-a64
+#   docs/, *.md, harness/*-e2e/, the measurement tools in harness/asm/   nothing
+#   anything else (harness/verify.sh, pyproject.toml, ...)            every step
+# A generator change regenerates generated/, so the languages it touched show up there.
+# Steps a selection leaves out are "not selected", not failures.
+#
+# Steps (names usable in SKIP and as arguments):
 #   check     python -m nvol check: kernels (IR) vs oracle, x86_64 and aarch64
 #   pytest    the generated C via ctypes, on the forced CPU paths
 #   cpp       the generated C++ header compiles (raw layer C++17, wrappers C++20) and
@@ -40,10 +66,62 @@
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+STEPS="check pytest cpp cpp-a64 rust rust-a64 odin odin-a64 asm asm-sysv asm-a64"
+
+# the files that differ from $1 (tracked changes and untracked files) -> the steps they reach
+changed_steps() {
+    local rev=$1 f out=""
+    for f in $( { git diff --name-only "$rev" --; git ls-files --others --exclude-standard; } | sort -u); do
+        case $f in
+            nvol/*)                              out+=" check pytest" ;;
+            generated/c/*)                       out+=" pytest cpp-a64 asm-a64" ;;
+            generated/cpp/*)                     out+=" cpp cpp-a64" ;;
+            generated/rust/*)                    out+=" rust rust-a64" ;;
+            generated/odin/*)                    out+=" odin odin-a64" ;;
+            generated/python/*)                  out+=" pytest" ;;
+            generated/gas/nvol.c|generated/gas/nvol.h)  out+=" asm asm-sysv asm-a64" ;;
+            generated/gas/*aarch64*)             out+=" asm-a64" ;;
+            generated/nasm/*|generated/masm/*|generated/gas/*)  out+=" asm asm-sysv pytest" ;;
+            tests/*)                             out+=" pytest asm-sysv asm-a64" ;;
+            harness/rust/*|harness/run-aarch64.sh)  out+=" rust rust-a64" ;;
+            harness/odin/*)                      out+=" odin odin-a64" ;;
+            harness/cpp/*)                       out+=" cpp cpp-a64 asm-a64" ;;
+            harness/asm/run-sysv.sh)             out+=" asm-sysv" ;;
+            harness/asm/run-a64.sh)              out+=" asm-a64" ;;
+            harness/asm/assemble.py|harness/asm/build_msvc.py|harness/asm/smoke.py)
+                                                 out+=" asm asm-sysv asm-a64" ;;
+            docs/*|*.md|harness/*-e2e/*|harness/asm/*) ;;
+            *)                                   out+=" $STEPS" ;;
+        esac
+    done
+    echo "$out"
+}
+
+SELECTED=""
+if [ $# -gt 0 ] && [ "$1" = --changed ]; then
+    REV=${2:-HEAD}
+    SELECTED=$(changed_steps "$REV")
+    if [ -z "${SELECTED// /}" ]; then
+        echo "--changed $REV: no file reaches a step; nothing to verify"
+        exit 0
+    fi
+    echo "--changed $REV: steps$(for s in $STEPS; do [[ " $SELECTED " == *" $s "* ]] && printf ' %s' "$s"; done)"
+elif [ $# -gt 0 ]; then
+    for s in "$@"; do
+        [[ " $STEPS " == *" $s "* ]] || { echo "unknown step: $s (steps: $STEPS)"; exit 2; }
+    done
+    SELECTED="$*"
+fi
+SELECTED=" $SELECTED "
+
 LOG="$(mktemp -d)"
 SKIP=" ${SKIP:-} "
 CXX=${CXX:-g++}
 PY=${PY:-python}
+PYTEST_K=${PYTEST_K:-}
+export PYTEST_K
+WSLENV="${WSLENV:+$WSLENV:}PYTEST_K/u"     # into WSL for run-sysv.sh and run-a64.sh
+export WSLENV
 if [ -z "${QEMU:-}" ]; then
     if command -v qemu-aarch64 >/dev/null 2>&1; then QEMU=qemu-aarch64
     elif command -v wsl >/dev/null 2>&1; then QEMU="wsl -d ${WSL_DISTRO:-Alpine} -- qemu-aarch64"
@@ -58,6 +136,10 @@ passed=()
 # step NAME REQUIRED_TOOL COMMAND...
 step() {
     local name=$1 tool=$2; shift 2
+    if [ -n "${SELECTED// /}" ] && [[ "$SELECTED" != *" $name "* ]]; then
+        echo "=== $name: not selected"
+        return
+    fi
     if [[ "$SKIP" == *" $name "* ]]; then
         echo "=== $name: skipped (SKIP)"
         return
@@ -132,10 +214,13 @@ odin_native() { odin run "$ROOT/harness/odin/tests" -collection:nvol="$ROOT/gene
 odin_a64() { need_qemu && bash "$ROOT/harness/odin/run-aarch64.sh"; }
 asm_a64() { need_qemu && linux_sh "$ROOT/harness/asm/run-a64.sh"; }
 
-# one worker per CPU when pytest-xdist is installed (each worker builds its own libraries)
+# one worker per CPU when pytest-xdist is installed (each worker builds its own libraries);
+# PYTEST_K narrows it to the tests whose names match that -k expression
 pytest_native() {
-    if "$PY" -c "import xdist" 2>/dev/null; then "$PY" -m pytest -q -n auto tests
-    else "$PY" -m pytest -q tests
+    local k=()
+    [ -n "$PYTEST_K" ] && k=(-k "$PYTEST_K")
+    if "$PY" -c "import xdist" 2>/dev/null; then "$PY" -m pytest -q -n auto "${k[@]}" tests
+    else "$PY" -m pytest -q "${k[@]}" tests
     fi
 }
 
@@ -155,6 +240,9 @@ echo
 echo "passed:  ${passed[*]:-none}"
 [ ${#skipped[@]} -gt 0 ] && echo "skipped: ${skipped[*]} (not requested: counts as a failure)"
 [ ${#failed[@]} -gt 0 ] && echo "FAILED:  ${failed[*]}  (logs in $LOG)"
+if [ -n "${SELECTED// /}" ]; then
+    echo "(a selection: only the steps above ran; the full run is still the one that closes an item)"
+fi
 if [ ${#failed[@]} -eq 0 ] && [ ${#skipped[@]} -eq 0 ]; then
     echo "overall: OK"
     rm -rf "$LOG"

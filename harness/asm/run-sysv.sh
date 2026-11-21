@@ -22,4 +22,6 @@ done
 N=""      # one worker per CPU with pytest-xdist (Alpine: apk add py3-pytest-xdist)
 if python3 -c "import xdist" 2>/dev/null; then N="-n $(nproc)"; fi
 # shellcheck disable=SC2086
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider $N tests -k "test_asm or nasm or gas"
+K="test_asm or nasm or gas"
+if [ -n "${PYTEST_K:-}" ]; then K="($K) and ($PYTEST_K)"; fi     # verify.sh's PYTEST_K
+PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider $N tests -k "$K"
