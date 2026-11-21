@@ -289,8 +289,26 @@ The detail is in "Done".
         layout: memmem 4 KiB AVX2 559.5 before, 386.8 in the control, 396.6 with `tzcnt`.
       - **memmem 4 KiB AVX2 swings 30 % on position alone** (that control: 559.5 → 386.8
         cycles with every function after the first `bsf` shifted by a few bytes), and the
-        committed layout is the slow one. Next: find the window or alignment it depends on,
-        with the frontend events and a pad scan as for memchr's call.
+        committed layout is the slow one.
+        - The cause: in the slow layout the packed-pair loop (`9a70-9a8b`) straddles a 32-
+          and 64-byte boundary (`vpmovmskb` at line+63, `test; je` in the next line). It issues
+          ~117 more µops per call (1418 against 1301, for the same 1258-1261 instructions),
+          about one per iteration, with the same mispredictions (0.97 against 0.84), machine
+          clears (≈1 per call in both) and MITE (≈0). In the fast layout the loop (`9b20-9b3b`)
+          sits inside one 32-byte window.
+        - **Tried and rejected: a layout rule.** Functions 32-aligned (so that offsets map to
+          windows), plus a short loop (≤ 32 bytes) that would straddle a window moved 16 bytes
+          further, still 16-aligned. A control with the functions 32-aligned and the rule off
+          splits the two effects:
+          - the 32 alignment alone: 13 rows better than −3 %, 33 worse than +3 %. memmem
+            4 KiB AVX2 556.9 → 391.1, but `count_parity` 16 B SSE2 +29 % and `byteset_not`
+            64 B AVX2 +19 %;
+          - the rule on top of it: 17 better, 13 worse; memmem 391.1 → 403.4 (it is not
+            what fixes memmem).
+
+          (A first version, the least padding that fits rather than keeping 16-alignment,
+          moved every loop head and made byteset AVX2 4 KiB +12.7 %.) Both are draws in the
+          same position lottery, not a rule that holds. memmem's loop placement stays open.
       - **memrchr AVX2:** 5 rounds (best of 7 each): asm 129-147, GCC 123-134, Clang
         110-118. The asm is about +20 % against Clang with fewer instructions (465 against
         495), everything from the DSB. It is a fixed cost per call, not the loop. At 64 KiB the
