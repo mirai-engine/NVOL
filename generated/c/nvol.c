@@ -2195,20 +2195,33 @@ NVOL_INLINE size_t nvol_teddy_verify64_fat(const uint8_t *state, const uint8_t *
     return SIZE_MAX;
 }
 
-/* leftmost-first by direct scan */
+/* leftmost-first by Rabin-Karp */
 NVOL_NOINLINE static size_t nvol_teddy_slow(const uint8_t *state, const uint8_t *blob, const uint8_t *hstart, const uint8_t *hend) {
-    const size_t n = ((size_t)(nvol_load64((state + ((size_t)16u)))));
-    const size_t minlen = ((size_t)(nvol_load64((state + ((size_t)32u)))));
+    const size_t hl = ((size_t)(nvol_load64((state + ((size_t)32u)))));
+    if (((size_t)(hend - hstart)) < hl) {
+        return SIZE_MAX;
+    }
+    uint64_t h = UINT64_C(0);
+    size_t j = ((size_t)0u);
+    while (j < hl) {
+        h = ((h << UINT64_C(1)) + ((uint64_t)((*((hstart + j))))));
+        j = (j + ((size_t)1u));
+    }
+    const uint64_t top = ((uint64_t)((hl - ((size_t)1u))));
     const uint8_t *at = hstart;
-    while ((at < hend) && (minlen <= ((size_t)(hend - at)))) {
-        size_t pid = ((size_t)0u);
-        while (pid < n) {
+    while (hl <= ((size_t)(hend - at))) {
+        uint64_t bm = nvol_load64(((state + ((size_t)1424u)) + (((size_t)((h & UINT64_C(63)))) << ((size_t)3u))));
+        while (bm != UINT64_C(0)) {
+            const size_t pid = ((size_t)nvol_ctz64(bm));
             const uint8_t *const pptr = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (pid << ((size_t)4u)))))));
             const size_t plen = ((size_t)(nvol_load64(((blob + ((size_t)16u)) + (pid << ((size_t)4u))))));
-            if ((plen <= ((size_t)(hend - at))) && nvol_is_equal_ac(pptr, at, plen)) {
+            if ((nvol_load64(((state + ((size_t)1936u)) + (pid << ((size_t)3u)))) == h) && ((plen <= ((size_t)(hend - at))) && nvol_is_equal_ac(pptr, at, plen))) {
                 return ((((size_t)(at - hstart)) << ((size_t)8u)) | pid);
             }
-            pid = (pid + ((size_t)1u));
+            bm = (bm & (bm - UINT64_C(1)));
+        }
+        if (hl < ((size_t)(hend - at))) {
+            h = (((h - (((uint64_t)((*(at)))) << top)) << UINT64_C(1)) + ((uint64_t)((*((at + hl))))));
         }
         at = (at + ((size_t)1u));
     }
@@ -2218,7 +2231,7 @@ NVOL_NOINLINE static size_t nvol_teddy_slow(const uint8_t *state, const uint8_t 
 /* Build a Teddy searcher for a patterns blob into out[NVOL_TEDDY_STATE_BYTES]; out word 0 (kind) is 0 when Teddy cannot be used (aho-corasick returns None) */
 NVOL_API void nvol_teddy_init(const uint8_t *blob, uint8_t *out) {
     size_t z = ((size_t)0u);
-    while (z < ((size_t)1424u)) {
+    while (z < ((size_t)2448u)) {
         nvol_store64((out + z), UINT64_C(0));
         z = (z + ((size_t)8u));
     }
@@ -2238,6 +2251,20 @@ NVOL_API void nvol_teddy_init(const uint8_t *blob, uint8_t *out) {
     if (minlen == ((size_t)0u)) {
         return;
     }
+    size_t rk = ((size_t)0u);
+    while (rk < n) {
+        const uint8_t *const rp = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (rk << ((size_t)4u)))))));
+        uint64_t h = UINT64_C(0);
+        size_t j = ((size_t)0u);
+        while (j < minlen) {
+            h = ((h << UINT64_C(1)) + ((uint64_t)((*((rp + j))))));
+            j = (j + ((size_t)1u));
+        }
+        uint8_t *const slot = ((out + ((size_t)1424u)) + (((size_t)((h & UINT64_C(63)))) << ((size_t)3u)));
+        nvol_store64(slot, (nvol_load64(slot) | (UINT64_C(1) << ((uint64_t)(rk)))));
+        nvol_store64(((out + ((size_t)1936u)) + (rk << ((size_t)3u))), h);
+        rk = (rk + ((size_t)1u));
+    }
     const size_t m = ((minlen) < (((size_t)4u)) ? (minlen) : (((size_t)4u)));
     const int avx2 = nvol_cpu_avx2();
     const int ssse3 = (avx2 || nvol_cpu_ssse3());
@@ -2256,9 +2283,9 @@ NVOL_API void nvol_teddy_init(const uint8_t *blob, uint8_t *out) {
     while (pid < n) {
         const uint8_t *const pi = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (pid << ((size_t)4u)))))));
         size_t bucket = ((size_t)255u);
-        size_t j = ((size_t)0u);
-        while ((j < pid) && (bucket == ((size_t)255u))) {
-            const uint8_t *const pj = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (j << ((size_t)4u)))))));
+        size_t j1 = ((size_t)0u);
+        while ((j1 < pid) && (bucket == ((size_t)255u))) {
+            const uint8_t *const pj = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (j1 << ((size_t)4u)))))));
             int same = 1;
             size_t k = ((size_t)0u);
             while (same && (k < m)) {
@@ -2268,9 +2295,9 @@ NVOL_API void nvol_teddy_init(const uint8_t *blob, uint8_t *out) {
                 k = (k + ((size_t)1u));
             }
             if (same) {
-                bucket = ((size_t)((*(((out + ((size_t)1360u)) + j)))));
+                bucket = ((size_t)((*(((out + ((size_t)1360u)) + j1)))));
             }
-            j = (j + ((size_t)1u));
+            j1 = (j1 + ((size_t)1u));
         }
         if (bucket == ((size_t)255u)) {
             bucket = ((nbuckets - ((size_t)1u)) - (pid & (nbuckets - ((size_t)1u))));
@@ -9103,20 +9130,33 @@ NVOL_INLINE size_t nvol_teddy_verify64_slim(const uint8_t *state, const uint8_t 
     return SIZE_MAX;
 }
 
-/* leftmost-first by direct scan */
+/* leftmost-first by Rabin-Karp */
 NVOL_NOINLINE static size_t nvol_teddy_slow(const uint8_t *state, const uint8_t *blob, const uint8_t *hstart, const uint8_t *hend) {
-    const size_t n = ((size_t)(nvol_load64((state + ((size_t)16u)))));
-    const size_t minlen = ((size_t)(nvol_load64((state + ((size_t)32u)))));
+    const size_t hl = ((size_t)(nvol_load64((state + ((size_t)32u)))));
+    if (((size_t)(hend - hstart)) < hl) {
+        return SIZE_MAX;
+    }
+    uint64_t h = UINT64_C(0);
+    size_t j = ((size_t)0u);
+    while (j < hl) {
+        h = ((h << UINT64_C(1)) + ((uint64_t)((*((hstart + j))))));
+        j = (j + ((size_t)1u));
+    }
+    const uint64_t top = ((uint64_t)((hl - ((size_t)1u))));
     const uint8_t *at = hstart;
-    while ((at < hend) && (minlen <= ((size_t)(hend - at)))) {
-        size_t pid = ((size_t)0u);
-        while (pid < n) {
+    while (hl <= ((size_t)(hend - at))) {
+        uint64_t bm = nvol_load64(((state + ((size_t)1424u)) + (((size_t)((h & UINT64_C(63)))) << ((size_t)3u))));
+        while (bm != UINT64_C(0)) {
+            const size_t pid = ((size_t)nvol_ctz64(bm));
             const uint8_t *const pptr = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (pid << ((size_t)4u)))))));
             const size_t plen = ((size_t)(nvol_load64(((blob + ((size_t)16u)) + (pid << ((size_t)4u))))));
-            if ((plen <= ((size_t)(hend - at))) && nvol_is_equal_ac(pptr, at, plen)) {
+            if ((nvol_load64(((state + ((size_t)1936u)) + (pid << ((size_t)3u)))) == h) && ((plen <= ((size_t)(hend - at))) && nvol_is_equal_ac(pptr, at, plen))) {
                 return ((((size_t)(at - hstart)) << ((size_t)8u)) | pid);
             }
-            pid = (pid + ((size_t)1u));
+            bm = (bm & (bm - UINT64_C(1)));
+        }
+        if (hl < ((size_t)(hend - at))) {
+            h = (((h - (((uint64_t)((*(at)))) << top)) << UINT64_C(1)) + ((uint64_t)((*((at + hl))))));
         }
         at = (at + ((size_t)1u));
     }
@@ -9126,7 +9166,7 @@ NVOL_NOINLINE static size_t nvol_teddy_slow(const uint8_t *state, const uint8_t 
 /* Build a Teddy searcher for a patterns blob into out[NVOL_TEDDY_STATE_BYTES]; out word 0 (kind) is 0 when Teddy cannot be used (aho-corasick returns None) */
 NVOL_API void nvol_teddy_init(const uint8_t *blob, uint8_t *out) {
     size_t z = ((size_t)0u);
-    while (z < ((size_t)1424u)) {
+    while (z < ((size_t)2448u)) {
         nvol_store64((out + z), UINT64_C(0));
         z = (z + ((size_t)8u));
     }
@@ -9146,6 +9186,20 @@ NVOL_API void nvol_teddy_init(const uint8_t *blob, uint8_t *out) {
     if (minlen == ((size_t)0u)) {
         return;
     }
+    size_t rk = ((size_t)0u);
+    while (rk < n) {
+        const uint8_t *const rp = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (rk << ((size_t)4u)))))));
+        uint64_t h = UINT64_C(0);
+        size_t j = ((size_t)0u);
+        while (j < minlen) {
+            h = ((h << UINT64_C(1)) + ((uint64_t)((*((rp + j))))));
+            j = (j + ((size_t)1u));
+        }
+        uint8_t *const slot = ((out + ((size_t)1424u)) + (((size_t)((h & UINT64_C(63)))) << ((size_t)3u)));
+        nvol_store64(slot, (nvol_load64(slot) | (UINT64_C(1) << ((uint64_t)(rk)))));
+        nvol_store64(((out + ((size_t)1936u)) + (rk << ((size_t)3u))), h);
+        rk = (rk + ((size_t)1u));
+    }
     const size_t m = ((minlen) < (((size_t)4u)) ? (minlen) : (((size_t)4u)));
     const int avx2 = 0;
     const int fat = (avx2 && (n > ((size_t)32u)));
@@ -9157,9 +9211,9 @@ NVOL_API void nvol_teddy_init(const uint8_t *blob, uint8_t *out) {
     while (pid < n) {
         const uint8_t *const pi = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (pid << ((size_t)4u)))))));
         size_t bucket = ((size_t)255u);
-        size_t j = ((size_t)0u);
-        while ((j < pid) && (bucket == ((size_t)255u))) {
-            const uint8_t *const pj = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (j << ((size_t)4u)))))));
+        size_t j1 = ((size_t)0u);
+        while ((j1 < pid) && (bucket == ((size_t)255u))) {
+            const uint8_t *const pj = (blob + ((size_t)(nvol_load64(((blob + ((size_t)8u)) + (j1 << ((size_t)4u)))))));
             int same = 1;
             size_t k = ((size_t)0u);
             while (same && (k < m)) {
@@ -9169,9 +9223,9 @@ NVOL_API void nvol_teddy_init(const uint8_t *blob, uint8_t *out) {
                 k = (k + ((size_t)1u));
             }
             if (same) {
-                bucket = ((size_t)((*(((out + ((size_t)1360u)) + j)))));
+                bucket = ((size_t)((*(((out + ((size_t)1360u)) + j1)))));
             }
-            j = (j + ((size_t)1u));
+            j1 = (j1 + ((size_t)1u));
         }
         if (bucket == ((size_t)255u)) {
             bucket = ((nbuckets - ((size_t)1u)) - (pid & (nbuckets - ((size_t)1u))));

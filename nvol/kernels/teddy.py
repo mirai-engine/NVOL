@@ -10,9 +10,9 @@ then `searcher.find_in(haystack, span)`. Parity points:
   * variant choice: AVX2 -> Slim256 (<= 32 patterns) or Fat256 (> 32),
     else SSSE3 -> Slim128; mask length m = min(4, shortest pattern);
   * bucket assignment, masks, verification order and leftmost-first result are
-    the same; haystacks shorter than 16 + m - 1 use the slow path (aho-corasick
-    uses its packed Rabin-Karp there; for the first-pattern-in-order at the
-    leftmost position both give the same match -- see `slow()`).
+    the same; haystacks shorter than 16 + m - 1 use aho-corasick's packed
+    Rabin-Karp (`slow()`): 64 buckets over the hash of each pattern's first
+    `minlen` bytes, scanned in pattern order.
 
 Data layout
 -----------
@@ -25,6 +25,10 @@ state (STATE_BYTES, written once by `nvol_teddy_init`, then read-only):
     @ OFF_COUNTS  16 bucket sizes (u8)
     @ OFF_LISTS   16 x 64 pattern ids (u8), bucket-major, insertion order
     @ OFF_BUCKET  64 bucket-of-pattern (u8), used while building
+    @ OFF_RK      64 x u64 Rabin-Karp buckets: bit pid set when hash(pattern pid's
+                  first minlen bytes) % 64 is that bucket
+    @ OFF_RKH     64 x u64 that hash, per pattern (compared before the bytes, as
+                  aho-corasick does)
 Result of a search: (start - hstart) << 8 | pattern id, or NONE.
 """
 from __future__ import annotations
@@ -37,8 +41,9 @@ W_KIND, W_MASK_LEN, W_NPAT, W_MINLEN_SEARCH, W_MINLEN_PAT, W_SEL, W_SEL_SMALL, W
 # function table `teddy`: index = variant * 4 + (m - 1)
 VARIANTS = [("slim", "ssse3"), ("slim", "avx2"), ("fat", "avx2")]
 KIND_NONE, KIND_SLIM128, KIND_SLIM256, KIND_FAT256 = range(4)
-OFF_MASKS, OFF_COUNTS, OFF_LISTS, OFF_BUCKET = 64, 320, 336, 1360
-STATE_BYTES = 1424
+OFF_MASKS, OFF_COUNTS, OFF_LISTS, OFF_BUCKET, OFF_RK, OFF_RKH = 64, 320, 336, 1360, 1424, 1936
+STATE_BYTES = 2448
+RK_BUCKETS = 64
 MAX_PATTERNS = 64
 
 
@@ -179,26 +184,45 @@ def search(isa: str, m: int, fat: bool) -> Function:
     return b.build()
 
 
+def _rk_hash(b, at, hl):
+    """aho-corasick's Rabin-Karp hash of hl bytes: h = h * 2 + byte, wrapping."""
+    h = b.var("h", lift(0, U64))
+    j = b.var("j", 0, USIZE)
+    with b.while_(j < hl):
+        b.set(h, (h << 1) + (at + j).load8().cast(U64))
+        b.set(j, j + 1)
+    return h
+
+
 def slow() -> Function:
-    """Short haystacks (< 16 + m - 1 bytes). aho-corasick runs its packed
-    Rabin-Karp here; a bucket holds patterns in insertion order and only equal
-    hashes are compared, so its answer is the first pattern (in order) that is
-    a prefix at the leftmost possible position -- which this computes directly."""
-    b = Builder("nvol_teddy_slow", USIZE, noinline=True, doc="leftmost-first by direct scan")
+    """Short haystacks (< 16 + m - 1 bytes): aho-corasick 1.1.5's packed Rabin-Karp
+    (`packed/rabinkarp.rs`). The hash covers the first minlen bytes, so every pattern that
+    matches at a position is in that position's bucket; a bucket is a mask of pattern ids,
+    scanned from the lowest (insertion order), so the first prefix found is the
+    leftmost-first match. A bucket that holds the hash but not the pattern only costs a
+    failed comparison."""
+    b = Builder("nvol_teddy_slow", USIZE, noinline=True, doc="leftmost-first by Rabin-Karp")
     state, blob, hstart, hend = (b.param("state", PTR), b.param("blob", PTR),
                                  b.param("hstart", PTR), b.param("hend", PTR))
-    n = b.let("n", _w(state, W_NPAT))
-    minlen = b.let("minlen", _w(state, W_MINLEN_PAT))
+    hl = b.let("hl", _w(state, W_MINLEN_PAT))
+    with b.if_((hend - hstart) < hl):
+        b.ret(NONE)
+    h = _rk_hash(b, hstart, hl)
+    top = b.let("top", (hl - 1).cast(U64))            # 2^(hl - 1): the oldest byte's weight
     at = b.var("at", hstart)
-    with b.while_(land(at < hend, minlen <= (hend - at))):
-        pid = b.var("pid", 0, USIZE)
-        with b.while_(pid < n):
+    with b.while_(hl <= (hend - at)):
+        bm = b.var("bm", prim("load64", state + OFF_RK + ((h & (RK_BUCKETS - 1)).cast(USIZE) << 3)))
+        with b.while_(bm.ne(0)):
+            pid = b.let("pid", prim("first_offset64", bm))
             pp, pl = _pat(blob, pid)
             pptr = b.let("pptr", pp)
             plen = b.let("plen", pl)
-            with b.if_(_is_prefix(b, pptr, plen, at, hend)):
+            same = prim("load64", state + OFF_RKH + (pid << 3)).eq(h)
+            with b.if_(land(same, _is_prefix(b, pptr, plen, at, hend))):
                 b.ret(((at - hstart) << 8) | pid)
-            b.set(pid, pid + 1)
+            b.set(bm, bm & (bm - 1))
+        with b.if_(hl < (hend - at)):
+            b.set(h, ((h - (at.load8().cast(U64) << top)) << 1) + (at + hl).load8().cast(U64))
         b.set(at, at + 1)
     b.ret(NONE)
     return b.build()
@@ -232,6 +256,15 @@ def init(arch: str = "x86_64") -> Function:
         b.set(i, i + 1)
     with b.if_(minlen.eq(0)):
         b.ret()
+    # Rabin-Karp buckets for the short-haystack path (`slow`)
+    rk = b.var("rk", 0, USIZE)
+    with b.while_(rk < n):
+        rp, _ = _pat(blob, rk)
+        rh = _rk_hash(b, b.let("rp", rp), minlen)
+        slot = b.let("slot", out + OFF_RK + ((rh & (RK_BUCKETS - 1)).cast(USIZE) << 3))
+        b.store64(slot, prim("load64", slot) | (lift(1, U64) << rk.cast(U64)))
+        b.store64(out + OFF_RKH + (rk << 3), rh)
+        b.set(rk, rk + 1)
     m = b.let("m", min_(minlen, 4))
     if arch == "aarch64":
         avx2 = b.let("avx2", lift(False, BOOL))

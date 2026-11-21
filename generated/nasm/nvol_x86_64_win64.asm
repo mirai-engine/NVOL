@@ -10408,79 +10408,130 @@ nvol_teddy_slow:
     push rsi
     push r12
     push r13
-    mov r10, qword [rcx + 16]
-    mov rcx, qword [rcx + 32]
-    mov r11, r8
-    cmp r11, r9
-    jae strict near .L3
+    push r14
+    push r15
+    sub rsp, 72
+    mov r10, rcx
+    mov qword [rsp], r8
+    mov rcx, r8
+    mov rsi, qword [r10 + 32]
     mov rax, r9
-    sub rax, r11
-    cmp rcx, rax
-    ja strict near .L3
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    sub rax, rcx
+    cmp rax, rsi
+    jae strict short .L2
+    mov rax, -1
+    jmp strict near .L1
 .L2:
-    xor esi, esi
-    cmp rsi, r10
-    jae strict near .L5
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L4:
-    mov rax, rsi
-    shl rax, 4
-    mov rax, qword [rdx + rax + 8]
-    lea rax, [rdx + rax]
-    mov rdi, rsi
-    shl rdi, 4
-    mov rdi, qword [rdx + rdi + 16]
-    mov rbx, r9
-    sub rbx, r11
-    cmp rdi, rbx
-    ja strict short .L6
-    cmp rdi, 4
-    jb strict near .L10
-.L9:
-    lea rbx, [rdi - 4]
-    lea rbx, [rax + rbx]
-    lea rdi, [rdi - 4]
-    lea rdi, [r11 + rdi]
-    mov rbp, r11
-    cmp rax, rbx
-    jae strict short .L19
+    mov rbp, rcx
+    xor edi, edi
+    xor eax, eax
+    cmp rax, rsi
+    jae strict short .L5
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L18:
-    mov r12d, dword [rax]
-    mov r13d, dword [rbp]
-    cmp r12d, r13d
-    jne strict near .L21
-.L20:
-    lea rax, [rax + 4]
-    add rbp, 4
-    cmp rax, rbx
-    jb strict short .L18
-.L19:
-    mov eax, dword [rbx]
-    mov edi, dword [rdi]
-    cmp rax, rdi
-    sete dil
-    movzx edi, dil
-.L8:
-    test edi, edi
-    jne strict near .L7
-.L6:
-    add rsi, 1
-    cmp rsi, r10
-    jb strict near .L4
+.L4:
+    mov rcx, rdi
+    shl rcx, 1
+    movzx ebx, byte [rbp + rax]
+    lea rdi, [rcx + rbx]
+    add rax, 1
+    cmp rax, rsi
+    jb strict short .L4
 .L5:
-    add r11, 1
-    cmp r11, r9
-    jae strict short .L22
+    lea r11, [rsi - 1]
+    mov [rsp + 32], r11
     mov rax, r9
-    sub rax, r11
-    cmp rcx, rax
-    jbe strict near .L2
+    sub rax, rbp
+    cmp rsi, rax
+    ja strict near .L7
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
+    mov rax, rdi
+    and rax, 63
+    shl rax, 3
+    mov rcx, qword [r10 + rax + 1424]
+    test rcx, rcx
+    je strict near .L9
+    db 0xf, 0x1f, 0x40, 0x0
+.L8:
+    bsf rax, rcx
+    mov r12, rax
+    shl r12, 4
+    mov r12, qword [rdx + r12 + 8]
+    lea r12, [rdx + r12]
+    mov r13, rax
+    shl r13, 4
+    mov r13, qword [rdx + r13 + 16]
+    mov r14, rax
+    shl r14, 3
+    mov r14, qword [r10 + r14 + 1936]
+    cmp r14, rdi
+    jne strict short .L10
+    mov r14, r9
+    sub r14, rbp
+    cmp r13, r14
+    ja strict short .L10
+    cmp r13, 4
+    jb strict near .L14
+.L13:
+    lea r14, [r13 - 4]
+    lea r14, [r12 + r14]
+    lea r13, [r13 - 4]
+    lea r13, [rbp + r13]
+    mov r15, rbp
+    cmp r12, r14
+    jae strict short .L23
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 .L22:
-.L3:
+    mov r8d, dword [r12]
+    mov ebx, dword [r15]
+    cmp r8d, ebx
+    jne strict near .L25
+.L24:
+    lea r12, [r12 + 4]
+    add r15, 4
+    cmp r12, r14
+    jb strict short .L22
+.L23:
+    mov r8d, dword [r14]
+    mov ebx, dword [r13]
+    cmp r8, rbx
+    sete r13b
+    movzx r13d, r13b
+.L12:
+    test r13d, r13d
+    jne strict near .L11
+.L10:
+    mov rax, rcx
+    lea r8, [rcx - 1]
+    and rax, r8
+    mov rcx, rax
+    test rcx, rcx
+    jne strict near .L8
+.L9:
+    mov rax, r9
+    sub rax, rbp
+    cmp rsi, rax
+    jae strict short .L26
+    movzx eax, byte [rbp]
+    mov rcx, qword [rsp + 32]
+    shl rax, cl
+    mov rcx, rdi
+    sub rcx, rax
+    shl rcx, 1
+    movzx eax, byte [rbp + rsi]
+    lea rdi, [rcx + rax]
+.L26:
+    lea rbp, [rbp + 1]
+    mov rax, r9
+    sub rax, rbp
+    cmp rsi, rax
+    jbe strict near .L6
+.L7:
     mov rax, -1
 .L1:
+    add rsp, 72
+    pop r15
+    pop r14
     pop r13
     pop r12
     pop rsi
@@ -10488,56 +10539,57 @@ nvol_teddy_slow:
     pop rbp
     pop rbx
     ret
-.L12:
-    mov edi, 1
-    jmp strict short .L8
-.L14:
-    movzx eax, byte [rax]
-    movzx edi, byte [r11]
-    cmp rax, rdi
-    sete dil
-    movzx edi, dil
-    jmp strict short .L8
 .L16:
-    movzx eax, word [rax]
-    movzx edi, word [r11]
-    cmp rax, rdi
-    sete dil
-    movzx edi, dil
-    jmp strict short .L8
-.L10:
-    test rdi, rdi
-    je strict short .L12
-.L11:
-    cmp rdi, 1
-    je strict short .L14
-.L13:
-    cmp rdi, 2
+    mov r13d, 1
+    jmp strict short .L12
+.L18:
+    movzx r12d, byte [r12]
+    movzx r13d, byte [rbp]
+    cmp r12, r13
+    sete r13b
+    movzx r13d, r13b
+    jmp strict near .L12
+.L20:
+    movzx r12d, word [r12]
+    movzx r13d, word [rbp]
+    cmp r12, r13
+    sete r13b
+    movzx r13d, r13b
+    jmp strict near .L12
+.L14:
+    test r13, r13
     je strict short .L16
 .L15:
-    xor edi, edi
-    movzx ebx, word [rax]
-    movzx ebp, word [r11]
-    cmp ebx, ebp
-    jne strict near .L8
-    movzx eax, byte [rax + 2]
-    movzx ebx, byte [r11 + 2]
-    cmp eax, ebx
-    jne strict near .L8
-    mov edi, 1
-    jmp strict near .L8
-.L21:
-    xor edi, edi
-    jmp strict near .L8
-.L7:
-    sub r11, r8
-    shl r11, 8
-    or r11, rsi
-    mov rax, r11
+    cmp r13, 1
+    je strict short .L18
+.L17:
+    cmp r13, 2
+    je strict short .L20
+.L19:
+    xor r13d, r13d
+    movzx r14d, word [r12]
+    movzx r15d, word [rbp]
+    cmp r14d, r15d
+    jne strict near .L12
+    movzx r12d, byte [r12 + 2]
+    movzx r14d, byte [rbp + 2]
+    cmp r12d, r14d
+    jne strict near .L12
+    mov r13d, 1
+    jmp strict near .L12
+.L25:
+    xor r13d, r13d
+    jmp strict near .L12
+.L11:
+    mov r11, [rsp]
+    sub rbp, r11
+    shl rbp, 8
+    or rbp, rax
+    mov rax, rbp
     jmp strict near .L1
 .unwind_end:
 
-    db 0x66, 0x90
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_teddy_init
 nvol_teddy_init:
     push rbx
@@ -10552,48 +10604,87 @@ nvol_teddy_init:
     mov rsi, rcx
     mov rdi, rdx
     xor eax, eax
-    cmp rax, 1424
+    cmp rax, 2448
     jae strict short .L3
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L2:
     mov qword [rdi + rax], 0
     add rax, 8
-    cmp rax, 1424
+    cmp rax, 2448
     jb strict short .L2
 .L3:
-    mov rbx, qword [rsi]
-    test rbx, rbx
+    mov r11, qword [rsi]
+    mov [rsp + 32], r11
+    mov rax, r11
+    test rax, rax
     je strict near .L1
-    cmp rbx, 64
+    cmp rax, 64
     jbe strict short .L4
     jmp strict near .L1
 .L4:
-    mov r11, -1
-    mov [rsp + 32], r11
+    mov rbx, r11
+    mov rbp, -1
     xor eax, eax
     cmp rax, rbx
     jae strict short .L8
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    db 0xf, 0x1f, 0x40, 0x0
 .L7:
     mov rcx, rax
     shl rcx, 4
     mov rcx, qword [rsi + rcx + 16]
-    mov r11, [rsp + 32]
-    cmp rcx, r11
+    cmp rcx, rbp
     jae strict short .L9
-    mov qword [rsp + 32], rcx
+    mov rbp, rcx
 .L9:
     add rax, 1
     cmp rax, rbx
     jb strict short .L7
 .L8:
-    mov r11, [rsp + 32]
-    test r11, r11
+    test rbp, rbp
     jne strict short .L11
     jmp strict near .L1
 .L11:
-    mov r12, qword [rsp + 32]
+    xor eax, eax
+    cmp rax, rbx
+    jae strict short .L14
+    db 0x66, 0x90
+.L13:
+    mov rcx, rax
+    shl rcx, 4
+    mov rcx, qword [rsi + rcx + 8]
+    lea rcx, [rsi + rcx]
+    xor edx, edx
+    xor r8d, r8d
+    cmp r8, rbp
+    jae strict short .L16
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+.L15:
+    mov r9, rdx
+    shl r9, 1
+    movzx r10d, byte [rcx + r8]
+    lea rdx, [r9 + r10]
+    add r8, 1
+    cmp r8, rbp
+    jb strict short .L15
+.L16:
+    mov rcx, rdx
+    and rcx, 63
+    shl rcx, 3
+    lea r8, [rdi + rcx + 1424]
+    mov rcx, qword [r8]
+    mov r9, rcx
+    mov r10d, 1
+    mov rcx, rax
+    shl r10, cl
+    or r9, r10
+    mov qword [r8], r9
+    shl rcx, 3
+    mov qword [rdi + rcx + 1936], rdx
+    add rax, 1
+    cmp rax, rbx
+    jb strict short .L13
+.L14:
+    mov r12, rbp
     mov eax, 4
     cmp r12, rax
     cmova r12, rax
@@ -10604,46 +10695,46 @@ nvol_teddy_init:
     mov [rsp + 64], r11
     xor r14d, r14d
     test r11d, r11d
-    jne strict short .L14
+    jne strict short .L18
     call nvol_cpu_ssse3
     test eax, eax
     setne al
     movzx eax, al
     test eax, eax
-    je strict short .L13
-.L14:
+    je strict short .L17
+.L18:
     mov r14d, 1
-.L13:
-    test r14d, r14d
-    jne strict short .L15
-    jmp strict near .L1
-.L15:
-    cmp r12, 1
-    jne strict short .L17
-    cmp rbx, 16
-    jbe strict short .L17
-    jmp strict near .L1
 .L17:
+    test r14d, r14d
+    jne strict short .L19
+    jmp strict near .L1
+.L19:
+    cmp r12, 1
+    jne strict short .L21
+    cmp rbx, 16
+    jbe strict short .L21
+    jmp strict near .L1
+.L21:
     xor eax, eax
     mov r11, [rsp + 64]
     test r11d, r11d
-    je strict short .L19
+    je strict short .L23
     cmp rbx, 32
-    jbe strict short .L19
+    jbe strict short .L23
     mov eax, 1
-.L19:
+.L23:
     mov r11d, 8
     mov [rsp + 96], r11
     test eax, eax
-    je strict short .L20
+    je strict short .L24
     mov r11d, 16
     mov [rsp + 96], r11
-.L20:
+.L24:
     xor r8d, r8d
     cmp r8, rbx
-    jae strict near .L23
-    db 0x90
-.L22:
+    jae strict near .L27
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+.L26:
     mov rcx, r8
     shl rcx, 4
     mov rcx, qword [rsi + rcx + 8]
@@ -10651,11 +10742,11 @@ nvol_teddy_init:
     mov r10d, 255
     xor ecx, ecx
     cmp rcx, r8
-    jae strict near .L25
+    jae strict near .L29
     cmp r10, 255
-    jne strict short .L25
+    jne strict short .L29
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L24:
+.L28:
     mov r14, rcx
     shl r14, 4
     mov r14, qword [rsi + r14 + 8]
@@ -10663,45 +10754,45 @@ nvol_teddy_init:
     mov r15d, 1
     xor r13d, r13d
     test r15d, r15d
-    je strict short .L27
+    je strict short .L31
     cmp r13, r12
-    jae strict short .L27
+    jae strict short .L31
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L26:
+.L30:
     movzx edx, byte [r9 + r13]
     and rdx, 15
-    movzx ebp, byte [r14 + r13]
-    and rbp, 15
-    cmp edx, ebp
-    je strict short .L28
+    movzx ebx, byte [r14 + r13]
+    and rbx, 15
+    cmp edx, ebx
+    je strict short .L32
     xor r15d, r15d
-.L28:
+.L32:
     add r13, 1
     test r15d, r15d
-    je strict short .L30
+    je strict short .L34
     cmp r13, r12
-    jb strict short .L26
-.L30:
-.L27:
-    test r15d, r15d
-    je strict short .L31
-    movzx r10d, byte [rdi + rcx + 1360]
+    jb strict short .L30
+.L34:
 .L31:
+    test r15d, r15d
+    je strict short .L35
+    movzx r10d, byte [rdi + rcx + 1360]
+.L35:
     add rcx, 1
     cmp rcx, r8
-    jae strict short .L33
+    jae strict short .L37
     cmp r10, 255
-    je strict short .L24
-.L33:
-.L25:
+    je strict short .L28
+.L37:
+.L29:
     cmp r10, 255
-    jne strict short .L34
+    jne strict short .L38
     mov r11, [rsp + 96]
     lea r10, [r11 - 1]
     mov rcx, r8
     and rcx, r10
     sub r10, rcx
-.L34:
+.L38:
     mov byte [rdi + r8 + 1360], r10b
     movzx ecx, byte [rdi + r10 + 320]
     mov rdx, r10
@@ -10712,12 +10803,12 @@ nvol_teddy_init:
     mov byte [rdi + r10 + 320], cl
     xor edx, edx
     cmp rdx, r12
-    jae strict near .L37
+    jae strict near .L41
     db 0xf, 0x1f, 0x0
-.L36:
+.L40:
     movzx ecx, byte [r9 + rdx]
-    mov rbp, rcx
-    and rbp, 15
+    mov rbx, rcx
+    and rbx, 15
     mov r13, rcx
     shr r13, 4
     mov rcx, rdx
@@ -10729,76 +10820,77 @@ nvol_teddy_init:
     shl r15d, cl
     movzx r15d, r15b
     test eax, eax
-    je strict short .L38
+    je strict short .L42
     cmp r10, 8
-    jae strict short .L40
-    movzx ecx, byte [r14 + rbp]
+    jae strict short .L44
+    movzx ecx, byte [r14 + rbx]
     or rcx, r15
-    mov byte [r14 + rbp], cl
+    mov byte [r14 + rbx], cl
     movzx ecx, byte [r14 + r13 + 32]
     or rcx, r15
     mov byte [r14 + r13 + 32], cl
-    jmp strict short .L39
-.L40:
-    movzx ecx, byte [r14 + rbp + 16]
+    jmp strict short .L43
+.L44:
+    movzx ecx, byte [r14 + rbx + 16]
     or rcx, r15
-    mov byte [r14 + rbp + 16], cl
+    mov byte [r14 + rbx + 16], cl
     movzx ecx, byte [r14 + r13 + 48]
     or rcx, r15
     mov byte [r14 + r13 + 48], cl
-    jmp strict short .L39
-.L38:
-    movzx ecx, byte [r14 + rbp]
+    jmp strict short .L43
+.L42:
+    movzx ecx, byte [r14 + rbx]
     or rcx, r15
-    mov byte [r14 + rbp], cl
-    movzx ecx, byte [r14 + rbp + 16]
+    mov byte [r14 + rbx], cl
+    movzx ecx, byte [r14 + rbx + 16]
     or rcx, r15
-    mov byte [r14 + rbp + 16], cl
+    mov byte [r14 + rbx + 16], cl
     movzx ecx, byte [r14 + r13 + 32]
     or rcx, r15
     mov byte [r14 + r13 + 32], cl
     movzx ecx, byte [r14 + r13 + 48]
     or rcx, r15
     mov byte [r14 + r13 + 48], cl
-.L39:
+.L43:
     add rdx, 1
     cmp rdx, r12
-    jb strict near .L36
-.L37:
-    add r8, 1
-    cmp r8, rbx
-    jb strict near .L22
-.L23:
+    jb strict near .L40
+.L41:
+    lea r8, [r8 + 1]
+    mov r11, [rsp + 32]
+    cmp r8, r11
+    jb strict near .L26
+.L27:
     mov ecx, 1
     mov r11, [rsp + 64]
     test r11d, r11d
-    je strict short .L42
+    je strict short .L46
     mov ecx, 2
     test eax, eax
-    je strict short .L44
+    je strict short .L48
     mov ecx, 3
-.L44:
-.L42:
+.L48:
+.L46:
     mov qword [rdi], rcx
     mov qword [rdi + 8], r12
-    mov qword [rdi + 16], rbx
+    mov r11, [rsp + 32]
+    mov qword [rdi + 16], r11
     lea rax, [r12 + 15]
     mov qword [rdi + 24], rax
-    mov r11, [rsp + 32]
-    mov qword [rdi + 32], r11
+    mov qword [rdi + 32], rbp
     lea rax, [r12 - 1]
     lea rdx, [r12 - 1]
     xor r8d, r8d
     cmp rcx, 2
-    jne strict short .L46
+    jne strict short .L50
     lea rax, [r12 + 3]
     lea r8, [r12 + 31]
-.L46:
+.L50:
     cmp rcx, 3
-    jne strict short .L48
+    jne strict short .L52
     lea rax, [r12 + 7]
     lea rdx, [r12 + 7]
-.L48:
+.L52:
     mov qword [rdi + 40], rax
     mov qword [rdi + 48], rdx
     mov qword [rdi + 56], r8
@@ -10816,7 +10908,7 @@ nvol_teddy_init:
 .unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    db 0xf, 0x1f, 0x40, 0x0
 global nvol_teddy_slim_ssse3_1
 nvol_teddy_slim_ssse3_1:
     push rbx
@@ -48321,7 +48413,7 @@ nvol_unwind_nvol_teddy_verify64_fat:
     db 1, 19, 10, 0, 19, 1, 17, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
 align 4, db 0
 nvol_unwind_nvol_teddy_slow:
-    db 1, 8, 6, 0, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
+    db 1, 16, 9, 0, 16, 130, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48, 0, 0
 align 4, db 0
 nvol_unwind_nvol_teddy_init:
     db 1, 19, 10, 0, 19, 1, 17, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48

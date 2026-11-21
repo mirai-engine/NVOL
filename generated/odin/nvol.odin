@@ -2175,21 +2175,34 @@ when ODIN_ARCH == .amd64 {
 		return max(uint)
 	}
 
-	// leftmost-first by direct scan
+	// leftmost-first by Rabin-Karp
 	@(private)
 	nvol_teddy_slow :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
-		n: uint = uint(intrinsics.unaligned_load((^u64)(state[uint(16):])))
-		minlen: uint = uint(intrinsics.unaligned_load((^u64)(state[uint(32):])))
+		hl: uint = uint(intrinsics.unaligned_load((^u64)(state[uint(32):])))
+		if (uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(hstart))) < hl) {
+			return max(uint)
+		}
+		h: u64 = u64(0)
+		j: uint = uint(0)
+		for (j < hl) {
+			h = ((h << u64(1)) + u64(hstart[j:][0]))
+			j = (j + uint(1))
+		}
+		top: u64 = u64((hl - uint(1)))
 		at: [^]u8 = hstart
-		for ((at < hend) && (minlen <= uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at))))) {
-			pid: uint = uint(0)
-			for (pid < n) {
+		for (hl <= uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at)))) {
+			bm: u64 = intrinsics.unaligned_load((^u64)(state[uint(1424):][(uint((h & u64(63))) << uint(3)):]))
+			for (bm != u64(0)) {
+				pid: uint = uint(intrinsics.count_trailing_zeros(bm))
 				pptr: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(pid << uint(4)):]))):]
 				plen: uint = uint(intrinsics.unaligned_load((^u64)(blob[uint(16):][(pid << uint(4)):])))
-				if ((plen <= uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at)))) && nvol_is_equal_ac(pptr, at, plen)) {
+				if ((intrinsics.unaligned_load((^u64)(state[uint(1936):][(pid << uint(3)):])) == h) && ((plen <= uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at)))) && nvol_is_equal_ac(pptr, at, plen))) {
 					return ((uint(intrinsics.ptr_sub((^u8)(at), (^u8)(hstart))) << uint(8)) | pid)
 				}
-				pid = (pid + uint(1))
+				bm = (bm & (bm - u64(1)))
+			}
+			if (hl < uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at)))) {
+				h = (((h - (u64(at[0]) << top)) << u64(1)) + u64(at[hl:][0]))
 			}
 			at = at[uint(1):]
 		}
@@ -2199,7 +2212,7 @@ when ODIN_ARCH == .amd64 {
 	// Build a Teddy searcher for a patterns blob into out[NVOL_TEDDY_STATE_BYTES]; out word 0 (kind) is 0 when Teddy cannot be used (aho-corasick returns None)
 	nvol_teddy_init :: proc "contextless" (blob: [^]u8, out: [^]u8) #no_bounds_check {
 		z: uint = uint(0)
-		for (z < uint(1424)) {
+		for (z < uint(2448)) {
 			intrinsics.unaligned_store((^u64)(out[z:]), u64(0))
 			z = (z + uint(8))
 		}
@@ -2219,6 +2232,20 @@ when ODIN_ARCH == .amd64 {
 		if (minlen == uint(0)) {
 			return
 		}
+		rk: uint = uint(0)
+		for (rk < n) {
+			rp: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(rk << uint(4)):]))):]
+			h: u64 = u64(0)
+			j: uint = uint(0)
+			for (j < minlen) {
+				h = ((h << u64(1)) + u64(rp[j:][0]))
+				j = (j + uint(1))
+			}
+			slot: [^]u8 = out[uint(1424):][(uint((h & u64(63))) << uint(3)):]
+			intrinsics.unaligned_store((^u64)(slot), (intrinsics.unaligned_load((^u64)(slot)) | (u64(1) << u64(rk))))
+			intrinsics.unaligned_store((^u64)(out[uint(1936):][(rk << uint(3)):]), h)
+			rk = (rk + uint(1))
+		}
 		m: uint = min(minlen, uint(4))
 		avx2: bool = nvol_cpu_avx2()
 		ssse3: bool = (avx2 || (.ssse3 in info.cpu_features()))
@@ -2237,9 +2264,9 @@ when ODIN_ARCH == .amd64 {
 		for (pid < n) {
 			pi: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(pid << uint(4)):]))):]
 			bucket: uint = uint(255)
-			j: uint = uint(0)
-			for ((j < pid) && (bucket == uint(255))) {
-				pj: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(j << uint(4)):]))):]
+			j1: uint = uint(0)
+			for ((j1 < pid) && (bucket == uint(255))) {
+				pj: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(j1 << uint(4)):]))):]
 				same: bool = true
 				k: uint = uint(0)
 				for (same && (k < m)) {
@@ -2249,9 +2276,9 @@ when ODIN_ARCH == .amd64 {
 					k = (k + uint(1))
 				}
 				if same {
-					bucket = uint(out[uint(1360):][j:][0])
+					bucket = uint(out[uint(1360):][j1:][0])
 				}
-				j = (j + uint(1))
+				j1 = (j1 + uint(1))
 			}
 			if (bucket == uint(255)) {
 				bucket = ((nbuckets - uint(1)) - (pid & (nbuckets - uint(1))))
@@ -9209,21 +9236,34 @@ when ODIN_ARCH == .amd64 {
 		return max(uint)
 	}
 
-	// leftmost-first by direct scan
+	// leftmost-first by Rabin-Karp
 	@(private)
 	nvol_teddy_slow :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
-		n: uint = uint(intrinsics.unaligned_load((^u64)(state[uint(16):])))
-		minlen: uint = uint(intrinsics.unaligned_load((^u64)(state[uint(32):])))
+		hl: uint = uint(intrinsics.unaligned_load((^u64)(state[uint(32):])))
+		if (uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(hstart))) < hl) {
+			return max(uint)
+		}
+		h: u64 = u64(0)
+		j: uint = uint(0)
+		for (j < hl) {
+			h = ((h << u64(1)) + u64(hstart[j:][0]))
+			j = (j + uint(1))
+		}
+		top: u64 = u64((hl - uint(1)))
 		at: [^]u8 = hstart
-		for ((at < hend) && (minlen <= uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at))))) {
-			pid: uint = uint(0)
-			for (pid < n) {
+		for (hl <= uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at)))) {
+			bm: u64 = intrinsics.unaligned_load((^u64)(state[uint(1424):][(uint((h & u64(63))) << uint(3)):]))
+			for (bm != u64(0)) {
+				pid: uint = uint(intrinsics.count_trailing_zeros(bm))
 				pptr: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(pid << uint(4)):]))):]
 				plen: uint = uint(intrinsics.unaligned_load((^u64)(blob[uint(16):][(pid << uint(4)):])))
-				if ((plen <= uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at)))) && nvol_is_equal_ac(pptr, at, plen)) {
+				if ((intrinsics.unaligned_load((^u64)(state[uint(1936):][(pid << uint(3)):])) == h) && ((plen <= uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at)))) && nvol_is_equal_ac(pptr, at, plen))) {
 					return ((uint(intrinsics.ptr_sub((^u8)(at), (^u8)(hstart))) << uint(8)) | pid)
 				}
-				pid = (pid + uint(1))
+				bm = (bm & (bm - u64(1)))
+			}
+			if (hl < uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(at)))) {
+				h = (((h - (u64(at[0]) << top)) << u64(1)) + u64(at[hl:][0]))
 			}
 			at = at[uint(1):]
 		}
@@ -9233,7 +9273,7 @@ when ODIN_ARCH == .amd64 {
 	// Build a Teddy searcher for a patterns blob into out[NVOL_TEDDY_STATE_BYTES]; out word 0 (kind) is 0 when Teddy cannot be used (aho-corasick returns None)
 	nvol_teddy_init :: proc "contextless" (blob: [^]u8, out: [^]u8) #no_bounds_check {
 		z: uint = uint(0)
-		for (z < uint(1424)) {
+		for (z < uint(2448)) {
 			intrinsics.unaligned_store((^u64)(out[z:]), u64(0))
 			z = (z + uint(8))
 		}
@@ -9253,6 +9293,20 @@ when ODIN_ARCH == .amd64 {
 		if (minlen == uint(0)) {
 			return
 		}
+		rk: uint = uint(0)
+		for (rk < n) {
+			rp: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(rk << uint(4)):]))):]
+			h: u64 = u64(0)
+			j: uint = uint(0)
+			for (j < minlen) {
+				h = ((h << u64(1)) + u64(rp[j:][0]))
+				j = (j + uint(1))
+			}
+			slot: [^]u8 = out[uint(1424):][(uint((h & u64(63))) << uint(3)):]
+			intrinsics.unaligned_store((^u64)(slot), (intrinsics.unaligned_load((^u64)(slot)) | (u64(1) << u64(rk))))
+			intrinsics.unaligned_store((^u64)(out[uint(1936):][(rk << uint(3)):]), h)
+			rk = (rk + uint(1))
+		}
 		m: uint = min(minlen, uint(4))
 		avx2: bool = false
 		fat: bool = (avx2 && (n > uint(32)))
@@ -9264,9 +9318,9 @@ when ODIN_ARCH == .amd64 {
 		for (pid < n) {
 			pi: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(pid << uint(4)):]))):]
 			bucket: uint = uint(255)
-			j: uint = uint(0)
-			for ((j < pid) && (bucket == uint(255))) {
-				pj: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(j << uint(4)):]))):]
+			j1: uint = uint(0)
+			for ((j1 < pid) && (bucket == uint(255))) {
+				pj: [^]u8 = blob[uint(intrinsics.unaligned_load((^u64)(blob[uint(8):][(j1 << uint(4)):]))):]
 				same: bool = true
 				k: uint = uint(0)
 				for (same && (k < m)) {
@@ -9276,9 +9330,9 @@ when ODIN_ARCH == .amd64 {
 					k = (k + uint(1))
 				}
 				if same {
-					bucket = uint(out[uint(1360):][j:][0])
+					bucket = uint(out[uint(1360):][j1:][0])
 				}
-				j = (j + uint(1))
+				j1 = (j1 + uint(1))
 			}
 			if (bucket == uint(255)) {
 				bucket = ((nbuckets - uint(1)) - (pid & (nbuckets - uint(1))))
@@ -12261,7 +12315,7 @@ memmem :: proc "contextless" (hay, needle: []u8) -> (index: int, ok: bool) {
 	return memmem_find(&f, hay)
 }
 
-TEDDY_STATE_BYTES :: 1424
+TEDDY_STATE_BYTES :: 2448
 // Packed multi-literal searcher (aho_corasick::packed::Searcher, LeftmostFirst).
 Teddy :: struct { blob: []u64, state: [TEDDY_STATE_BYTES / 8]u64 }
 Teddy_Match :: struct { pattern, start, end: int }

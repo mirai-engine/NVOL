@@ -11218,80 +11218,138 @@ L.nvol_teddy_slow:
     push %r13
 .cfi_def_cfa_offset 40
 .cfi_offset %r13, -40
-    mov 16(%rdi), %r8
-    mov 32(%rdi), %rdi
-    mov %rdx, %r9
-    cmp %rcx, %r9
-    {disp32} jae .Lnvol_teddy_slow.L3
-    mov %rcx, %rax
-    sub %r9, %rax
-    cmp %rax, %rdi
-    {disp32} ja .Lnvol_teddy_slow.L3
-    .byte 15, 31, 128, 0, 0, 0, 0
+    push %r14
+.cfi_def_cfa_offset 48
+.cfi_offset %r14, -48
+    push %r15
+.cfi_def_cfa_offset 56
+.cfi_offset %r15, -56
+    sub $72, %rsp
+.cfi_def_cfa_offset 128
+    mov %rdx, (%rsp)
+    mov %rcx, %r8
+    mov 32(%rdi), %r9
+    mov %r8, %rax
+    sub %rdx, %rax
+    cmp %r9, %rax
+    {disp8} jae .Lnvol_teddy_slow.L2
+    mov $-1, %rax
+    {disp32} jmp .Lnvol_teddy_slow.L1
 .Lnvol_teddy_slow.L2:
     xor %r10d, %r10d
-    cmp %r8, %r10
-    {disp32} jae .Lnvol_teddy_slow.L5
-    .byte 15, 31, 64, 0
+    xor %eax, %eax
+    cmp %r9, %rax
+    {disp8} jae .Lnvol_teddy_slow.L5
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slow.L4:
-    mov %r10, %rax
-    shl $4, %rax
-    mov 8(%rsi,%rax), %rax
-    lea (%rsi,%rax), %rax
-    mov %r10, %r11
-    shl $4, %r11
-    mov 16(%rsi,%r11), %r11
-    mov %rcx, %rbx
-    sub %r9, %rbx
-    cmp %rbx, %r11
-    {disp8} ja .Lnvol_teddy_slow.L6
-    cmp $4, %r11
-    {disp32} jb .Lnvol_teddy_slow.L10
-.Lnvol_teddy_slow.L9:
-    lea -4(%r11), %rbx
-    lea (%rax,%rbx), %rbx
-    lea -4(%r11), %r11
-    lea (%r9,%r11), %r11
-    mov %r9, %rbp
-    cmp %rbx, %rax
-    {disp8} jae .Lnvol_teddy_slow.L19
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_teddy_slow.L18:
-    mov (%rax), %r12d
-    mov (%rbp), %r13d
-    cmp %r13d, %r12d
-    {disp32} jne .Lnvol_teddy_slow.L21
-.Lnvol_teddy_slow.L20:
-    lea 4(%rax), %rax
-    add $4, %rbp
-    cmp %rbx, %rax
-    {disp8} jb .Lnvol_teddy_slow.L18
-.Lnvol_teddy_slow.L19:
-    mov (%rbx), %eax
-    mov (%r11), %r11d
-    cmp %r11, %rax
-    sete %r11b
-    movzbl %r11b, %r11d
-.Lnvol_teddy_slow.L8:
-    test %r11d, %r11d
-    {disp32} jne .Lnvol_teddy_slow.L7
-.Lnvol_teddy_slow.L6:
-    add $1, %r10
-    cmp %r8, %r10
-    {disp32} jb .Lnvol_teddy_slow.L4
+    mov %r10, %rcx
+    shl $1, %rcx
+    movzbl (%rdx,%rax), %ebx
+    lea (%rcx,%rbx), %r10
+    add $1, %rax
+    cmp %r9, %rax
+    {disp8} jb .Lnvol_teddy_slow.L4
 .Lnvol_teddy_slow.L5:
-    add $1, %r9
-    cmp %rcx, %r9
-    {disp8} jae .Lnvol_teddy_slow.L22
-    mov %rcx, %rax
-    sub %r9, %rax
-    cmp %rax, %rdi
-    {disp32} jbe .Lnvol_teddy_slow.L2
+    lea -1(%r9), %r11
+    mov %r11, 32(%rsp)
+    mov %rdx, %rbp
+    mov %r8, %rax
+    sub %rbp, %rax
+    cmp %rax, %r9
+    {disp32} ja .Lnvol_teddy_slow.L7
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slow.L6:
+    mov %r10, %rax
+    and $63, %rax
+    shl $3, %rax
+    mov 1424(%rdi,%rax), %rcx
+    test %rcx, %rcx
+    {disp32} je .Lnvol_teddy_slow.L9
+    .byte 15, 31, 64, 0
+.Lnvol_teddy_slow.L8:
+    bsf %rcx, %rax
+    mov %rax, %r12
+    shl $4, %r12
+    mov 8(%rsi,%r12), %r12
+    lea (%rsi,%r12), %r12
+    mov %rax, %r13
+    shl $4, %r13
+    mov 16(%rsi,%r13), %r13
+    mov %rax, %r14
+    shl $3, %r14
+    mov 1936(%rdi,%r14), %r14
+    cmp %r10, %r14
+    {disp8} jne .Lnvol_teddy_slow.L10
+    mov %r8, %r14
+    sub %rbp, %r14
+    cmp %r14, %r13
+    {disp8} ja .Lnvol_teddy_slow.L10
+    cmp $4, %r13
+    {disp32} jb .Lnvol_teddy_slow.L14
+.Lnvol_teddy_slow.L13:
+    lea -4(%r13), %r14
+    lea (%r12,%r14), %r14
+    lea -4(%r13), %r13
+    lea (%rbp,%r13), %r13
+    mov %rbp, %r15
+    cmp %r14, %r12
+    {disp8} jae .Lnvol_teddy_slow.L23
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slow.L22:
-.Lnvol_teddy_slow.L3:
+    mov (%r12), %edx
+    mov (%r15), %ebx
+    cmp %ebx, %edx
+    {disp32} jne .Lnvol_teddy_slow.L25
+.Lnvol_teddy_slow.L24:
+    lea 4(%r12), %r12
+    add $4, %r15
+    cmp %r14, %r12
+    {disp8} jb .Lnvol_teddy_slow.L22
+.Lnvol_teddy_slow.L23:
+    mov (%r14), %edx
+    mov (%r13), %ebx
+    cmp %rbx, %rdx
+    sete %r13b
+    movzbl %r13b, %r13d
+.Lnvol_teddy_slow.L12:
+    test %r13d, %r13d
+    {disp32} jne .Lnvol_teddy_slow.L11
+.Lnvol_teddy_slow.L10:
+    mov %rcx, %rax
+    lea -1(%rcx), %rdx
+    and %rdx, %rax
+    mov %rax, %rcx
+    test %rcx, %rcx
+    {disp32} jne .Lnvol_teddy_slow.L8
+.Lnvol_teddy_slow.L9:
+    mov %r8, %rax
+    sub %rbp, %rax
+    cmp %rax, %r9
+    {disp8} jae .Lnvol_teddy_slow.L26
+    movzbl (%rbp), %eax
+    mov 32(%rsp), %rcx
+    shl %cl, %rax
+    mov %r10, %rcx
+    sub %rax, %rcx
+    shl $1, %rcx
+    movzbl (%rbp,%r9), %eax
+    lea (%rcx,%rax), %r10
+.Lnvol_teddy_slow.L26:
+    lea 1(%rbp), %rbp
+    mov %r8, %rax
+    sub %rbp, %rax
+    cmp %rax, %r9
+    {disp32} jbe .Lnvol_teddy_slow.L6
+.Lnvol_teddy_slow.L7:
     mov $-1, %rax
 .Lnvol_teddy_slow.L1:
 .cfi_remember_state
+    add $72, %rsp
+.cfi_def_cfa_offset 56
+    pop %r15
+.cfi_def_cfa_offset 48
+    pop %r14
+.cfi_def_cfa_offset 40
     pop %r13
 .cfi_def_cfa_offset 32
     pop %r12
@@ -11301,59 +11359,60 @@ L.nvol_teddy_slow:
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
-.Lnvol_teddy_slow.L12:
-.cfi_restore_state
-    mov $1, %r11d
-    {disp8} jmp .Lnvol_teddy_slow.L8
-.Lnvol_teddy_slow.L14:
-    movzbl (%rax), %eax
-    movzbl (%r9), %r11d
-    cmp %r11, %rax
-    sete %r11b
-    movzbl %r11b, %r11d
-    {disp8} jmp .Lnvol_teddy_slow.L8
 .Lnvol_teddy_slow.L16:
-    movzwl (%rax), %eax
-    movzwl (%r9), %r11d
-    cmp %r11, %rax
-    sete %r11b
-    movzbl %r11b, %r11d
-    {disp8} jmp .Lnvol_teddy_slow.L8
-.Lnvol_teddy_slow.L10:
-    test %r11, %r11
-    {disp8} je .Lnvol_teddy_slow.L12
-.Lnvol_teddy_slow.L11:
-    cmp $1, %r11
-    {disp8} je .Lnvol_teddy_slow.L14
-.Lnvol_teddy_slow.L13:
-    cmp $2, %r11
+.cfi_restore_state
+    mov $1, %r13d
+    {disp8} jmp .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L18:
+    movzbl (%r12), %r12d
+    movzbl (%rbp), %r13d
+    cmp %r13, %r12
+    sete %r13b
+    movzbl %r13b, %r13d
+    {disp32} jmp .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L20:
+    movzwl (%r12), %r12d
+    movzwl (%rbp), %r13d
+    cmp %r13, %r12
+    sete %r13b
+    movzbl %r13b, %r13d
+    {disp32} jmp .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L14:
+    test %r13, %r13
     {disp8} je .Lnvol_teddy_slow.L16
 .Lnvol_teddy_slow.L15:
-    xor %r11d, %r11d
-    movzwl (%rax), %ebx
-    movzwl (%r9), %ebp
-    cmp %ebp, %ebx
-    {disp32} jne .Lnvol_teddy_slow.L8
-    movzbl 2(%rax), %eax
-    movzbl 2(%r9), %ebx
-    cmp %ebx, %eax
-    {disp32} jne .Lnvol_teddy_slow.L8
-    mov $1, %r11d
-    {disp32} jmp .Lnvol_teddy_slow.L8
-.Lnvol_teddy_slow.L21:
-    xor %r11d, %r11d
-    {disp32} jmp .Lnvol_teddy_slow.L8
-.Lnvol_teddy_slow.L7:
-    sub %rdx, %r9
-    shl $8, %r9
-    or %r10, %r9
-    mov %r9, %rax
+    cmp $1, %r13
+    {disp8} je .Lnvol_teddy_slow.L18
+.Lnvol_teddy_slow.L17:
+    cmp $2, %r13
+    {disp8} je .Lnvol_teddy_slow.L20
+.Lnvol_teddy_slow.L19:
+    xor %r13d, %r13d
+    movzwl (%r12), %r14d
+    movzwl (%rbp), %r15d
+    cmp %r15d, %r14d
+    {disp32} jne .Lnvol_teddy_slow.L12
+    movzbl 2(%r12), %r12d
+    movzbl 2(%rbp), %r14d
+    cmp %r14d, %r12d
+    {disp32} jne .Lnvol_teddy_slow.L12
+    mov $1, %r13d
+    {disp32} jmp .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L25:
+    xor %r13d, %r13d
+    {disp32} jmp .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L11:
+    mov (%rsp), %r11
+    sub %r11, %rbp
+    shl $8, %rbp
+    or %rax, %rbp
+    mov %rbp, %rax
     {disp32} jmp .Lnvol_teddy_slow.L1
 .cfi_endproc
 .size nvol_teddy_slow, .-nvol_teddy_slow
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_teddy_init
 .type nvol_teddy_init, @function
 nvol_teddy_init:
@@ -11382,48 +11441,87 @@ L.nvol_teddy_init:
     mov %rdi, %rbx
     mov %rsi, %rbp
     xor %eax, %eax
-    cmp $1424, %rax
+    cmp $2448, %rax
     {disp8} jae .Lnvol_teddy_init.L3
     .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_teddy_init.L2:
     movq $0, (%rbp,%rax)
     add $8, %rax
-    cmp $1424, %rax
+    cmp $2448, %rax
     {disp8} jb .Lnvol_teddy_init.L2
 .Lnvol_teddy_init.L3:
-    mov (%rbx), %r12
-    test %r12, %r12
+    mov (%rbx), %r11
+    mov %r11, (%rsp)
+    mov %r11, %rax
+    test %rax, %rax
     {disp32} je .Lnvol_teddy_init.L1
-    cmp $64, %r12
+    cmp $64, %rax
     {disp8} jbe .Lnvol_teddy_init.L4
     {disp32} jmp .Lnvol_teddy_init.L1
 .Lnvol_teddy_init.L4:
-    mov $-1, %r11
-    mov %r11, (%rsp)
+    mov %r11, %r12
+    mov $-1, %r13
     xor %eax, %eax
     cmp %r12, %rax
     {disp8} jae .Lnvol_teddy_init.L8
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 64, 0
 .Lnvol_teddy_init.L7:
     mov %rax, %rcx
     shl $4, %rcx
     mov 16(%rbx,%rcx), %rcx
-    mov (%rsp), %r11
-    cmp %r11, %rcx
+    cmp %r13, %rcx
     {disp8} jae .Lnvol_teddy_init.L9
-    mov %rcx, (%rsp)
+    mov %rcx, %r13
 .Lnvol_teddy_init.L9:
     add $1, %rax
     cmp %r12, %rax
     {disp8} jb .Lnvol_teddy_init.L7
 .Lnvol_teddy_init.L8:
-    mov (%rsp), %r11
-    test %r11, %r11
+    test %r13, %r13
     {disp8} jne .Lnvol_teddy_init.L11
     {disp32} jmp .Lnvol_teddy_init.L1
 .Lnvol_teddy_init.L11:
-    mov (%rsp), %r14
+    xor %eax, %eax
+    cmp %r12, %rax
+    {disp8} jae .Lnvol_teddy_init.L14
+    .byte 102, 144
+.Lnvol_teddy_init.L13:
+    mov %rax, %rcx
+    shl $4, %rcx
+    mov 8(%rbx,%rcx), %rcx
+    lea (%rbx,%rcx), %rcx
+    xor %edx, %edx
+    xor %esi, %esi
+    cmp %r13, %rsi
+    {disp8} jae .Lnvol_teddy_init.L16
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_teddy_init.L15:
+    mov %rdx, %rdi
+    shl $1, %rdi
+    movzbl (%rcx,%rsi), %r8d
+    lea (%rdi,%r8), %rdx
+    add $1, %rsi
+    cmp %r13, %rsi
+    {disp8} jb .Lnvol_teddy_init.L15
+.Lnvol_teddy_init.L16:
+    mov %rdx, %rcx
+    and $63, %rcx
+    shl $3, %rcx
+    lea 1424(%rbp,%rcx), %rsi
+    mov (%rsi), %rcx
+    mov %rcx, %rdi
+    mov $1, %r8d
+    mov %rax, %rcx
+    shl %cl, %r8
+    or %r8, %rdi
+    mov %rdi, (%rsi)
+    shl $3, %rcx
+    mov %rdx, 1936(%rbp,%rcx)
+    add $1, %rax
+    cmp %r12, %rax
+    {disp8} jb .Lnvol_teddy_init.L13
+.Lnvol_teddy_init.L14:
+    mov %r13, %r14
     mov $4, %eax
     cmp %rax, %r14
     cmova %rax, %r14
@@ -11436,48 +11534,48 @@ L.nvol_teddy_init:
     mov %r11, 64(%rsp)
     mov 32(%rsp), %r11
     test %r11d, %r11d
-    {disp8} jne .Lnvol_teddy_init.L14
+    {disp8} jne .Lnvol_teddy_init.L18
     call nvol_cpu_ssse3@PLT
     test %eax, %eax
     setne %al
     movzbl %al, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_teddy_init.L13
-.Lnvol_teddy_init.L14:
+    {disp8} je .Lnvol_teddy_init.L17
+.Lnvol_teddy_init.L18:
     mov $1, %r11d
     mov %r11, 64(%rsp)
-.Lnvol_teddy_init.L13:
+.Lnvol_teddy_init.L17:
     mov 64(%rsp), %r11
     test %r11d, %r11d
-    {disp8} jne .Lnvol_teddy_init.L15
+    {disp8} jne .Lnvol_teddy_init.L19
     {disp32} jmp .Lnvol_teddy_init.L1
-.Lnvol_teddy_init.L15:
+.Lnvol_teddy_init.L19:
     cmp $1, %r14
-    {disp8} jne .Lnvol_teddy_init.L17
+    {disp8} jne .Lnvol_teddy_init.L21
     cmp $16, %r12
-    {disp8} jbe .Lnvol_teddy_init.L17
+    {disp8} jbe .Lnvol_teddy_init.L21
     {disp32} jmp .Lnvol_teddy_init.L1
-.Lnvol_teddy_init.L17:
+.Lnvol_teddy_init.L21:
     xor %eax, %eax
     mov 32(%rsp), %r11
     test %r11d, %r11d
-    {disp8} je .Lnvol_teddy_init.L19
+    {disp8} je .Lnvol_teddy_init.L23
     cmp $32, %r12
-    {disp8} jbe .Lnvol_teddy_init.L19
+    {disp8} jbe .Lnvol_teddy_init.L23
     mov $1, %eax
-.Lnvol_teddy_init.L19:
+.Lnvol_teddy_init.L23:
     mov $8, %r11d
     mov %r11, 96(%rsp)
     test %eax, %eax
-    {disp8} je .Lnvol_teddy_init.L20
+    {disp8} je .Lnvol_teddy_init.L24
     mov $16, %r11d
     mov %r11, 96(%rsp)
-.Lnvol_teddy_init.L20:
+.Lnvol_teddy_init.L24:
     xor %esi, %esi
     cmp %r12, %rsi
-    {disp32} jae .Lnvol_teddy_init.L23
-    .byte 102, 144
-.Lnvol_teddy_init.L22:
+    {disp32} jae .Lnvol_teddy_init.L27
+    .byte 15, 31, 0
+.Lnvol_teddy_init.L26:
     mov %rsi, %rcx
     shl $4, %rcx
     mov 8(%rbx,%rcx), %rcx
@@ -11485,11 +11583,11 @@ L.nvol_teddy_init:
     mov $255, %r8d
     xor %ecx, %ecx
     cmp %rsi, %rcx
-    {disp32} jae .Lnvol_teddy_init.L25
+    {disp8} jae .Lnvol_teddy_init.L29
     cmp $255, %r8
-    {disp8} jne .Lnvol_teddy_init.L25
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_init.L24:
+    {disp8} jne .Lnvol_teddy_init.L29
+    .byte 102, 144
+.Lnvol_teddy_init.L28:
     mov %rcx, %r9
     shl $4, %r9
     mov 8(%rbx,%r9), %r9
@@ -11497,45 +11595,45 @@ L.nvol_teddy_init:
     mov $1, %r10d
     xor %r15d, %r15d
     test %r10d, %r10d
-    {disp8} je .Lnvol_teddy_init.L27
+    {disp8} je .Lnvol_teddy_init.L31
     cmp %r14, %r15
-    {disp8} jae .Lnvol_teddy_init.L27
+    {disp8} jae .Lnvol_teddy_init.L31
     .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_init.L26:
+.Lnvol_teddy_init.L30:
     movzbl (%rdi,%r15), %edx
     and $15, %rdx
-    movzbl (%r9,%r15), %r13d
-    and $15, %r13
-    cmp %r13d, %edx
-    {disp8} je .Lnvol_teddy_init.L28
+    movzbl (%r9,%r15), %r12d
+    and $15, %r12
+    cmp %r12d, %edx
+    {disp8} je .Lnvol_teddy_init.L32
     xor %r10d, %r10d
-.Lnvol_teddy_init.L28:
+.Lnvol_teddy_init.L32:
     add $1, %r15
     test %r10d, %r10d
-    {disp8} je .Lnvol_teddy_init.L30
+    {disp8} je .Lnvol_teddy_init.L34
     cmp %r14, %r15
-    {disp8} jb .Lnvol_teddy_init.L26
-.Lnvol_teddy_init.L30:
-.Lnvol_teddy_init.L27:
-    test %r10d, %r10d
-    {disp8} je .Lnvol_teddy_init.L31
-    movzbl 1360(%rbp,%rcx), %r8d
+    {disp8} jb .Lnvol_teddy_init.L30
+.Lnvol_teddy_init.L34:
 .Lnvol_teddy_init.L31:
+    test %r10d, %r10d
+    {disp8} je .Lnvol_teddy_init.L35
+    movzbl 1360(%rbp,%rcx), %r8d
+.Lnvol_teddy_init.L35:
     add $1, %rcx
     cmp %rsi, %rcx
-    {disp8} jae .Lnvol_teddy_init.L33
+    {disp8} jae .Lnvol_teddy_init.L37
     cmp $255, %r8
-    {disp8} je .Lnvol_teddy_init.L24
-.Lnvol_teddy_init.L33:
-.Lnvol_teddy_init.L25:
+    {disp8} je .Lnvol_teddy_init.L28
+.Lnvol_teddy_init.L37:
+.Lnvol_teddy_init.L29:
     cmp $255, %r8
-    {disp8} jne .Lnvol_teddy_init.L34
+    {disp8} jne .Lnvol_teddy_init.L38
     mov 96(%rsp), %r11
     lea -1(%r11), %r8
     mov %rsi, %rcx
     and %r8, %rcx
     sub %rcx, %r8
-.Lnvol_teddy_init.L34:
+.Lnvol_teddy_init.L38:
     mov %r8b, 1360(%rbp,%rsi)
     movzbl 320(%rbp,%r8), %ecx
     mov %r8, %rdx
@@ -11546,10 +11644,10 @@ L.nvol_teddy_init:
     mov %cl, 320(%rbp,%r8)
     xor %edx, %edx
     cmp %r14, %rdx
-    {disp32} jae .Lnvol_teddy_init.L37
+    {disp32} jae .Lnvol_teddy_init.L41
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 144
-.Lnvol_teddy_init.L36:
+.Lnvol_teddy_init.L40:
     movzbl (%rdi,%rdx), %ecx
     mov %rcx, %r9
     and $15, %r9
@@ -11557,83 +11655,84 @@ L.nvol_teddy_init:
     shr $4, %r10
     mov %rdx, %rcx
     shl $6, %rcx
-    lea 64(%rbp,%rcx), %r13
+    lea 64(%rbp,%rcx), %r12
     mov $1, %r15d
     mov %r8, %rcx
     and $7, %rcx
     shl %cl, %r15d
     movzbl %r15b, %r15d
     test %eax, %eax
-    {disp8} je .Lnvol_teddy_init.L38
+    {disp8} je .Lnvol_teddy_init.L42
     cmp $8, %r8
-    {disp8} jae .Lnvol_teddy_init.L40
-    movzbl (%r13,%r9), %ecx
+    {disp8} jae .Lnvol_teddy_init.L44
+    movzbl (%r12,%r9), %ecx
     or %r15, %rcx
-    mov %cl, (%r13,%r9)
-    movzbl 32(%r13,%r10), %ecx
+    mov %cl, (%r12,%r9)
+    movzbl 32(%r12,%r10), %ecx
     or %r15, %rcx
-    mov %cl, 32(%r13,%r10)
-    {disp8} jmp .Lnvol_teddy_init.L39
-.Lnvol_teddy_init.L40:
-    movzbl 16(%r13,%r9), %ecx
+    mov %cl, 32(%r12,%r10)
+    {disp8} jmp .Lnvol_teddy_init.L43
+.Lnvol_teddy_init.L44:
+    movzbl 16(%r12,%r9), %ecx
     or %r15, %rcx
-    mov %cl, 16(%r13,%r9)
-    movzbl 48(%r13,%r10), %ecx
+    mov %cl, 16(%r12,%r9)
+    movzbl 48(%r12,%r10), %ecx
     or %r15, %rcx
-    mov %cl, 48(%r13,%r10)
-    {disp8} jmp .Lnvol_teddy_init.L39
-.Lnvol_teddy_init.L38:
-    movzbl (%r13,%r9), %ecx
+    mov %cl, 48(%r12,%r10)
+    {disp8} jmp .Lnvol_teddy_init.L43
+.Lnvol_teddy_init.L42:
+    movzbl (%r12,%r9), %ecx
     or %r15, %rcx
-    mov %cl, (%r13,%r9)
-    movzbl 16(%r13,%r9), %ecx
+    mov %cl, (%r12,%r9)
+    movzbl 16(%r12,%r9), %ecx
     or %r15, %rcx
-    mov %cl, 16(%r13,%r9)
-    movzbl 32(%r13,%r10), %ecx
+    mov %cl, 16(%r12,%r9)
+    movzbl 32(%r12,%r10), %ecx
     or %r15, %rcx
-    mov %cl, 32(%r13,%r10)
-    movzbl 48(%r13,%r10), %ecx
+    mov %cl, 32(%r12,%r10)
+    movzbl 48(%r12,%r10), %ecx
     or %r15, %rcx
-    mov %cl, 48(%r13,%r10)
-.Lnvol_teddy_init.L39:
+    mov %cl, 48(%r12,%r10)
+.Lnvol_teddy_init.L43:
     add $1, %rdx
     cmp %r14, %rdx
-    {disp32} jb .Lnvol_teddy_init.L36
-.Lnvol_teddy_init.L37:
-    add $1, %rsi
-    cmp %r12, %rsi
-    {disp32} jb .Lnvol_teddy_init.L22
-.Lnvol_teddy_init.L23:
+    {disp32} jb .Lnvol_teddy_init.L40
+.Lnvol_teddy_init.L41:
+    lea 1(%rsi), %rsi
+    mov (%rsp), %r11
+    cmp %r11, %rsi
+    {disp32} jb .Lnvol_teddy_init.L26
+.Lnvol_teddy_init.L27:
     mov $1, %ecx
     mov 32(%rsp), %r11
     test %r11d, %r11d
-    {disp8} je .Lnvol_teddy_init.L42
+    {disp8} je .Lnvol_teddy_init.L46
     mov $2, %ecx
     test %eax, %eax
-    {disp8} je .Lnvol_teddy_init.L44
+    {disp8} je .Lnvol_teddy_init.L48
     mov $3, %ecx
-.Lnvol_teddy_init.L44:
-.Lnvol_teddy_init.L42:
+.Lnvol_teddy_init.L48:
+.Lnvol_teddy_init.L46:
     mov %rcx, (%rbp)
     mov %r14, 8(%rbp)
-    mov %r12, 16(%rbp)
+    mov (%rsp), %r11
+    mov %r11, 16(%rbp)
     lea 15(%r14), %rax
     mov %rax, 24(%rbp)
-    mov (%rsp), %r11
-    mov %r11, 32(%rbp)
+    mov %r13, 32(%rbp)
     lea -1(%r14), %rax
     lea -1(%r14), %rdx
     xor %esi, %esi
     cmp $2, %rcx
-    {disp8} jne .Lnvol_teddy_init.L46
+    {disp8} jne .Lnvol_teddy_init.L50
     lea 3(%r14), %rax
     lea 31(%r14), %rsi
-.Lnvol_teddy_init.L46:
+.Lnvol_teddy_init.L50:
     cmp $3, %rcx
-    {disp8} jne .Lnvol_teddy_init.L48
+    {disp8} jne .Lnvol_teddy_init.L52
     lea 7(%r14), %rax
     lea 7(%r14), %rdx
-.Lnvol_teddy_init.L48:
+.Lnvol_teddy_init.L52:
     mov %rax, 40(%rbp)
     mov %rdx, 48(%rbp)
     mov %rsi, 56(%rbp)

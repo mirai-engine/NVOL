@@ -5198,120 +5198,155 @@ L.nvol_teddy_verify64_slim:
 nvol_teddy_slow:
 L.nvol_teddy_slow:
 .cfi_startproc
-    ldr x9, [x0, #16]
-    ldr x10, [x0, #32]
-    mov x11, x2
-    cmp x11, x3
-    b.hs .Lnvol_teddy_slow.L3
-    sub x12, x3, x11
-    cmp x10, x12
-    b.hi .Lnvol_teddy_slow.L3
+    ldr x9, [x0, #32]
+    sub x10, x3, x2
+    cmp x10, x9
+    b.hs .Lnvol_teddy_slow.L2
+    movn x0, #0
+    b .Lnvol_teddy_slow.L1
 .Lnvol_teddy_slow.L2:
-    movz w12, #0
-    cmp x12, x9
+    movz w10, #0
+    movz w11, #0
+    cmp x11, x9
     b.hs .Lnvol_teddy_slow.L5
     nop
-.Lnvol_teddy_slow.L4:
-    lsl x13, x12, #4
-    add x13, x1, x13
-    ldr x13, [x13, #8]
-    add x13, x1, x13
-    lsl x14, x12, #4
-    add x14, x1, x14
-    ldr x14, [x14, #16]
-    sub x15, x3, x11
-    cmp x14, x15
-    b.hi .Lnvol_teddy_slow.L6
-    cmp x14, #4
-    b.lo .Lnvol_teddy_slow.L10
-.Lnvol_teddy_slow.L9:
-    sub x15, x14, #4
-    add x15, x13, x15
-    sub x14, x14, #4
-    add x14, x11, x14
-    mov x0, x11
-    cmp x13, x15
-    b.hs .Lnvol_teddy_slow.L19
     nop
-.Lnvol_teddy_slow.L18:
-    ldr w4, [x13]
-    ldr w5, [x0]
-    cmp x4, x5
-    b.ne .Lnvol_teddy_slow.L21
-.Lnvol_teddy_slow.L20:
-    add x13, x13, #4
-    add x0, x0, #4
-    cmp x13, x15
-    b.lo .Lnvol_teddy_slow.L18
-.Lnvol_teddy_slow.L19:
-    ldr w13, [x15]
-    ldr w14, [x14]
-    cmp x13, x14
-    cset w14, eq
-.Lnvol_teddy_slow.L8:
-    cbnz x14, .Lnvol_teddy_slow.L7
-.Lnvol_teddy_slow.L6:
-    add x12, x12, #1
-    cmp x12, x9
+.Lnvol_teddy_slow.L4:
+    lsl x12, x10, #1
+    ldrb w13, [x2, x11]
+    add x10, x12, x13
+    add x11, x11, #1
+    cmp x11, x9
     b.lo .Lnvol_teddy_slow.L4
 .Lnvol_teddy_slow.L5:
-    add x11, x11, #1
-    cmp x11, x3
-    b.hs .Lnvol_teddy_slow.L22
-    sub x12, x3, x11
-    cmp x10, x12
-    b.ls .Lnvol_teddy_slow.L2
+    sub x11, x9, #1
+    mov x12, x2
+    sub x13, x3, x12
+    cmp x9, x13
+    b.hi .Lnvol_teddy_slow.L7
+    nop
+.Lnvol_teddy_slow.L6:
+    and x13, x10, #63
+    lsl x13, x13, #3
+    add x13, x0, x13
+    ldr x13, [x13, #1424]
+    cbz x13, .Lnvol_teddy_slow.L9
+    nop
+.Lnvol_teddy_slow.L8:
+    rbit x14, x13
+    clz x14, x14
+    lsl x15, x14, #4
+    add x15, x1, x15
+    ldr x15, [x15, #8]
+    add x15, x1, x15
+    lsl x4, x14, #4
+    add x4, x1, x4
+    ldr x4, [x4, #16]
+    lsl x5, x14, #3
+    add x5, x0, x5
+    ldr x5, [x5, #1936]
+    cmp x5, x10
+    b.ne .Lnvol_teddy_slow.L10
+    sub x5, x3, x12
+    cmp x4, x5
+    b.hi .Lnvol_teddy_slow.L10
+    cmp x4, #4
+    b.lo .Lnvol_teddy_slow.L14
+.Lnvol_teddy_slow.L13:
+    sub x5, x4, #4
+    add x5, x15, x5
+    sub x4, x4, #4
+    add x4, x12, x4
+    mov x6, x12
+    cmp x15, x5
+    b.hs .Lnvol_teddy_slow.L23
 .Lnvol_teddy_slow.L22:
-.Lnvol_teddy_slow.L3:
+    ldr w7, [x15]
+    ldr w8, [x6]
+    cmp x7, x8
+    b.ne .Lnvol_teddy_slow.L25
+.Lnvol_teddy_slow.L24:
+    add x15, x15, #4
+    add x6, x6, #4
+    cmp x15, x5
+    b.lo .Lnvol_teddy_slow.L22
+.Lnvol_teddy_slow.L23:
+    ldr w15, [x5]
+    ldr w4, [x4]
+    cmp x15, x4
+    cset w4, eq
+.Lnvol_teddy_slow.L12:
+    cbnz x4, .Lnvol_teddy_slow.L11
+.Lnvol_teddy_slow.L10:
+    sub x14, x13, #1
+    and x13, x13, x14
+    cbnz x13, .Lnvol_teddy_slow.L8
+.Lnvol_teddy_slow.L9:
+    sub x13, x3, x12
+    cmp x9, x13
+    b.hs .Lnvol_teddy_slow.L26
+    ldrb w13, [x12]
+    lsl x13, x13, x11
+    sub x13, x10, x13
+    lsl x13, x13, #1
+    ldrb w14, [x12, x9]
+    add x10, x13, x14
+.Lnvol_teddy_slow.L26:
+    add x12, x12, #1
+    sub x13, x3, x12
+    cmp x9, x13
+    b.ls .Lnvol_teddy_slow.L6
+.Lnvol_teddy_slow.L7:
     movn x0, #0
 .Lnvol_teddy_slow.L1:
     ret
-.Lnvol_teddy_slow.L12:
-    orr w14, wzr, #1
-    b .Lnvol_teddy_slow.L8
-.Lnvol_teddy_slow.L14:
-    ldrb w13, [x13]
-    ldrb w14, [x11]
-    cmp x13, x14
-    cset w14, eq
-    b .Lnvol_teddy_slow.L8
 .Lnvol_teddy_slow.L16:
-    ldrh w13, [x13]
-    ldrh w14, [x11]
-    cmp x13, x14
-    cset w14, eq
-    b .Lnvol_teddy_slow.L8
-.Lnvol_teddy_slow.L10:
-    cbz x14, .Lnvol_teddy_slow.L12
-.Lnvol_teddy_slow.L11:
-    cmp x14, #1
-    b.eq .Lnvol_teddy_slow.L14
-.Lnvol_teddy_slow.L13:
-    cmp x14, #2
-    b.eq .Lnvol_teddy_slow.L16
+    orr w4, wzr, #1
+    b .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L18:
+    ldrb w15, [x15]
+    ldrb w4, [x12]
+    cmp x15, x4
+    cset w4, eq
+    b .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L20:
+    ldrh w15, [x15]
+    ldrh w4, [x12]
+    cmp x15, x4
+    cset w4, eq
+    b .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L14:
+    cbz x4, .Lnvol_teddy_slow.L16
 .Lnvol_teddy_slow.L15:
-    movz w14, #0
-    ldrh w15, [x13]
-    ldrh w0, [x11]
-    cmp x15, x0
-    b.ne .Lnvol_teddy_slow.L8
-    ldrb w13, [x13, #2]
-    ldrb w15, [x11, #2]
-    cmp x13, x15
-    b.ne .Lnvol_teddy_slow.L8
-    orr w14, wzr, #1
-    b .Lnvol_teddy_slow.L8
-.Lnvol_teddy_slow.L21:
-    movz w14, #0
-    b .Lnvol_teddy_slow.L8
-.Lnvol_teddy_slow.L7:
-    sub x9, x11, x2
+    cmp x4, #1
+    b.eq .Lnvol_teddy_slow.L18
+.Lnvol_teddy_slow.L17:
+    cmp x4, #2
+    b.eq .Lnvol_teddy_slow.L20
+.Lnvol_teddy_slow.L19:
+    movz w4, #0
+    ldrh w5, [x15]
+    ldrh w6, [x12]
+    cmp x5, x6
+    b.ne .Lnvol_teddy_slow.L12
+    ldrb w15, [x15, #2]
+    ldrb w5, [x12, #2]
+    cmp x15, x5
+    b.ne .Lnvol_teddy_slow.L12
+    orr w4, wzr, #1
+    b .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L25:
+    movz w4, #0
+    b .Lnvol_teddy_slow.L12
+.Lnvol_teddy_slow.L11:
+    sub x9, x12, x2
     lsl x9, x9, #8
-    orr x0, x9, x12
+    orr x0, x9, x14
     b .Lnvol_teddy_slow.L1
 .cfi_endproc
 .size nvol_teddy_slow, .-nvol_teddy_slow
 
+    nop
     nop
     nop
 .globl nvol_teddy_init
@@ -5320,13 +5355,13 @@ nvol_teddy_init:
 L.nvol_teddy_init:
 .cfi_startproc
     movz w9, #0
-    cmp x9, #1424
+    cmp x9, #2448
     b.hs .Lnvol_teddy_init.L3
     nop
 .Lnvol_teddy_init.L2:
     str xzr, [x1, x9]
     add x9, x9, #8
-    cmp x9, #1424
+    cmp x9, #2448
     b.lo .Lnvol_teddy_init.L2
 .Lnvol_teddy_init.L3:
     ldr x9, [x0]
@@ -5355,24 +5390,60 @@ L.nvol_teddy_init:
     cbnz x10, .Lnvol_teddy_init.L11
     b .Lnvol_teddy_init.L1
 .Lnvol_teddy_init.L11:
+    movz w11, #0
+    cmp x11, x9
+    b.hs .Lnvol_teddy_init.L14
+.Lnvol_teddy_init.L13:
+    lsl x12, x11, #4
+    add x12, x0, x12
+    ldr x12, [x12, #8]
+    add x12, x0, x12
+    movz w13, #0
+    movz w14, #0
+    cmp x14, x10
+    b.hs .Lnvol_teddy_init.L16
+.Lnvol_teddy_init.L15:
+    lsl x15, x13, #1
+    ldrb w2, [x12, x14]
+    add x13, x15, x2
+    add x14, x14, #1
+    cmp x14, x10
+    b.lo .Lnvol_teddy_init.L15
+.Lnvol_teddy_init.L16:
+    and x12, x13, #63
+    lsl x12, x12, #3
+    add x12, x1, x12
+    add x12, x12, #1424
+    ldr x14, [x12]
+    orr w15, wzr, #1
+    lsl x15, x15, x11
+    orr x14, x14, x15
+    str x14, [x12]
+    lsl x12, x11, #3
+    add x12, x1, x12
+    str x13, [x12, #1936]
+    add x11, x11, #1
+    cmp x11, x9
+    b.lo .Lnvol_teddy_init.L13
+.Lnvol_teddy_init.L14:
     orr w11, wzr, #4
     cmp x10, x11
     csel x11, x10, x11, ls
     movz w12, #0
     movz w13, #0
-    cbz x12, .Lnvol_teddy_init.L13
+    cbz x12, .Lnvol_teddy_init.L17
     cmp x9, #32
-    b.ls .Lnvol_teddy_init.L13
+    b.ls .Lnvol_teddy_init.L17
     orr w13, wzr, #1
-.Lnvol_teddy_init.L13:
+.Lnvol_teddy_init.L17:
     orr w14, wzr, #8
-    cbz x13, .Lnvol_teddy_init.L14
+    cbz x13, .Lnvol_teddy_init.L18
     orr w14, wzr, #16
-.Lnvol_teddy_init.L14:
+.Lnvol_teddy_init.L18:
     movz w15, #0
     cmp x15, x9
-    b.hs .Lnvol_teddy_init.L17
-.Lnvol_teddy_init.L16:
+    b.hs .Lnvol_teddy_init.L21
+.Lnvol_teddy_init.L20:
     lsl x2, x15, #4
     add x2, x0, x2
     ldr x2, [x2, #8]
@@ -5380,54 +5451,54 @@ L.nvol_teddy_init:
     orr w3, wzr, #255
     movz w4, #0
     cmp x4, x15
-    b.hs .Lnvol_teddy_init.L19
+    b.hs .Lnvol_teddy_init.L23
     cmp x3, #255
-    b.ne .Lnvol_teddy_init.L19
+    b.ne .Lnvol_teddy_init.L23
     nop
     nop
-.Lnvol_teddy_init.L18:
+.Lnvol_teddy_init.L22:
     lsl x5, x4, #4
     add x5, x0, x5
     ldr x5, [x5, #8]
     add x5, x0, x5
     orr w6, wzr, #1
     movz w7, #0
-    cbz x6, .Lnvol_teddy_init.L21
+    cbz x6, .Lnvol_teddy_init.L25
     cmp x7, x11
-    b.hs .Lnvol_teddy_init.L21
+    b.hs .Lnvol_teddy_init.L25
     nop
-.Lnvol_teddy_init.L20:
+.Lnvol_teddy_init.L24:
     ldrb w8, [x2, x7]
     and x8, x8, #15
     ldrb w16, [x5, x7]
     and x16, x16, #15
     cmp x8, x16
-    b.eq .Lnvol_teddy_init.L22
+    b.eq .Lnvol_teddy_init.L26
     movz w6, #0
-.Lnvol_teddy_init.L22:
+.Lnvol_teddy_init.L26:
     add x7, x7, #1
-    cbz x6, .Lnvol_teddy_init.L24
+    cbz x6, .Lnvol_teddy_init.L28
     cmp x7, x11
-    b.lo .Lnvol_teddy_init.L20
-.Lnvol_teddy_init.L24:
-.Lnvol_teddy_init.L21:
-    cbz x6, .Lnvol_teddy_init.L25
+    b.lo .Lnvol_teddy_init.L24
+.Lnvol_teddy_init.L28:
+.Lnvol_teddy_init.L25:
+    cbz x6, .Lnvol_teddy_init.L29
     add x3, x1, x4
     ldrb w3, [x3, #1360]
-.Lnvol_teddy_init.L25:
+.Lnvol_teddy_init.L29:
     add x4, x4, #1
     cmp x4, x15
-    b.hs .Lnvol_teddy_init.L27
+    b.hs .Lnvol_teddy_init.L31
     cmp x3, #255
-    b.eq .Lnvol_teddy_init.L18
-.Lnvol_teddy_init.L27:
-.Lnvol_teddy_init.L19:
+    b.eq .Lnvol_teddy_init.L22
+.Lnvol_teddy_init.L31:
+.Lnvol_teddy_init.L23:
     cmp x3, #255
-    b.ne .Lnvol_teddy_init.L28
+    b.ne .Lnvol_teddy_init.L32
     sub x3, x14, #1
     and x4, x15, x3
     sub x3, x3, x4
-.Lnvol_teddy_init.L28:
+.Lnvol_teddy_init.L32:
     add x4, x1, x15
     strb w3, [x4, #1360]
     add x4, x1, x3
@@ -5441,8 +5512,8 @@ L.nvol_teddy_init:
     strb w4, [x5, #320]
     movz w4, #0
     cmp x4, x11
-    b.hs .Lnvol_teddy_init.L31
-.Lnvol_teddy_init.L30:
+    b.hs .Lnvol_teddy_init.L35
+.Lnvol_teddy_init.L34:
     ldrb w5, [x2, x4]
     and x6, x5, #15
     lsr x5, x5, #4
@@ -5453,9 +5524,9 @@ L.nvol_teddy_init:
     and x16, x3, #7
     lsl w8, w8, w16
     and w8, w8, #255
-    cbz x13, .Lnvol_teddy_init.L32
+    cbz x13, .Lnvol_teddy_init.L36
     cmp x3, #8
-    b.hs .Lnvol_teddy_init.L34
+    b.hs .Lnvol_teddy_init.L38
     ldrb w16, [x7, x6]
     orr x16, x16, x8
     strb w16, [x7, x6]
@@ -5464,8 +5535,8 @@ L.nvol_teddy_init:
     ldrb w5, [x5, #32]
     orr x5, x5, x8
     strb w5, [x6, #32]
-    b .Lnvol_teddy_init.L33
-.Lnvol_teddy_init.L34:
+    b .Lnvol_teddy_init.L37
+.Lnvol_teddy_init.L38:
     add x16, x7, x6
     add x6, x7, x6
     ldrb w6, [x6, #16]
@@ -5476,8 +5547,8 @@ L.nvol_teddy_init:
     ldrb w5, [x5, #48]
     orr x5, x5, x8
     strb w5, [x6, #48]
-    b .Lnvol_teddy_init.L33
-.Lnvol_teddy_init.L32:
+    b .Lnvol_teddy_init.L37
+.Lnvol_teddy_init.L36:
     ldrb w16, [x7, x6]
     orr x16, x16, x8
     strb w16, [x7, x6]
@@ -5496,22 +5567,22 @@ L.nvol_teddy_init:
     ldrb w5, [x5, #48]
     orr x5, x5, x8
     strb w5, [x6, #48]
-.Lnvol_teddy_init.L33:
+.Lnvol_teddy_init.L37:
     add x4, x4, #1
     cmp x4, x11
-    b.lo .Lnvol_teddy_init.L30
-.Lnvol_teddy_init.L31:
+    b.lo .Lnvol_teddy_init.L34
+.Lnvol_teddy_init.L35:
     add x15, x15, #1
     cmp x15, x9
-    b.lo .Lnvol_teddy_init.L16
-.Lnvol_teddy_init.L17:
+    b.lo .Lnvol_teddy_init.L20
+.Lnvol_teddy_init.L21:
     orr w14, wzr, #1
-    cbz x12, .Lnvol_teddy_init.L36
+    cbz x12, .Lnvol_teddy_init.L40
     orr w14, wzr, #2
-    cbz x13, .Lnvol_teddy_init.L38
+    cbz x13, .Lnvol_teddy_init.L42
     orr w14, wzr, #3
-.Lnvol_teddy_init.L38:
-.Lnvol_teddy_init.L36:
+.Lnvol_teddy_init.L42:
+.Lnvol_teddy_init.L40:
     str x14, [x1]
     str x11, [x1, #8]
     str x9, [x1, #16]
@@ -5522,15 +5593,15 @@ L.nvol_teddy_init:
     sub x10, x11, #1
     movz w12, #0
     cmp x14, #2
-    b.ne .Lnvol_teddy_init.L40
+    b.ne .Lnvol_teddy_init.L44
     add x9, x11, #3
     add x12, x11, #31
-.Lnvol_teddy_init.L40:
+.Lnvol_teddy_init.L44:
     cmp x14, #3
-    b.ne .Lnvol_teddy_init.L42
+    b.ne .Lnvol_teddy_init.L46
     add x9, x11, #7
     add x10, x11, #7
-.Lnvol_teddy_init.L42:
+.Lnvol_teddy_init.L46:
     str x9, [x1, #40]
     str x10, [x1, #48]
     str x12, [x1, #56]

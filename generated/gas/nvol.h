@@ -114,7 +114,7 @@ NVOL_API size_t nvol_memmem_finder_find(const nvol_memmem_finder *f, const uint8
 /* One-shot: index of needle in hay, or SIZE_MAX (memchr::memmem::find; RK below 64 bytes). */
 NVOL_API size_t nvol_memmem(const uint8_t *hay, size_t hlen, const uint8_t *needle, size_t nlen);
 
-#define NVOL_TEDDY_STATE_BYTES 1424
+#define NVOL_TEDDY_STATE_BYTES 2448
 /* Packed multi-literal searcher (aho_corasick::packed::Searcher, LeftmostFirst). */
 typedef struct nvol_teddy { const uint8_t *blob; uint64_t state[NVOL_TEDDY_STATE_BYTES / 8]; } nvol_teddy;
 typedef struct nvol_teddy_match { size_t pattern, start, end; } nvol_teddy_match;

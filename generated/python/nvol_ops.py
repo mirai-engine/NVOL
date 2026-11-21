@@ -268,7 +268,7 @@ _lib.nvol_teddy_init.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 _lib.nvol_teddy_init.restype = None
 _lib.nvol_teddy_find_raw.argtypes = [ctypes.c_void_p] * 4
 _lib.nvol_teddy_find_raw.restype = ctypes.c_size_t
-TEDDY_STATE_BYTES = 1424
+TEDDY_STATE_BYTES = 2448
 
 
 class PackedSearcher:

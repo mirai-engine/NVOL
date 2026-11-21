@@ -97,7 +97,8 @@ The detail is in "Done".
         (an 8-byte needle over 16 B) gets past all three, and GCC pushes 6 registers there too.
         At 16 B the call takes the Rabin-Karp path (233 instructions, against 128 at 64 B):
         that is where the gap with GCC (~200) is.
-    - **Teddy:** +6/+10 % instructions from 64 B to 64 KiB. At 16 B it gives +55 %: it is the
+    - **Teddy:** +6/+10 % instructions from 64 B to 64 KiB. (At 16 B, 3452 → 415
+      instructions with the Rabin-Karp, item 27.) It was the
       slow path `nvol_teddy_slow` (see 1.2a, item 27).
     - **NASM local labels in the ELF symbol table:** `.L36` after `L.nvol_x:` ends up as the
       local symbol `L.nvol_x.L36`. `perf` and `gdb` attribute samples and backtraces to those
@@ -279,10 +280,9 @@ The detail is in "Done".
     out. The asm serves as the control: it is the same kernel without a compiler.
 26. ~~1.4: "one memchr per line"~~: measured with counters (see Done).
 27. 1.2a: Teddy over short haystacks. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)):
-    - **at 16 B, NVOL is 2× to 40× slower than aho-corasick** in every case whose patterns
-      have more than one byte (case 6, 64 patterns × 6 B: 3348 cycles against 84). Below
-      Teddy's minimum length, `nvol_teddy_slow` tries every pattern at every position, while
-      aho-corasick runs its 64-bucket Rabin-Karp. Port the Rabin-Karp (a feature);
+    - ~~at 16 B, NVOL is 2× to 40× slower than aho-corasick~~: `nvol_teddy_slow` is now
+      aho-corasick's Rabin-Karp (see Done). At 8-18 B it is on par in cycles (−20…+7 %), and
+      it is equal or below in instructions in all 24 rows;
     - from 64 B up, NVOL is ahead or on par: +6.9…+27.2 % at 64 B (the −6…+27 % of
       `tedbench` was wall-clock noise), −5.0…+11.6 % from 256 B to 64 KiB. In instructions,
       NVOL is below aho in every row from 64 B up, so the Teddy gap in item 17 is the asm's
@@ -484,6 +484,28 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **Teddy over short haystacks: the Rabin-Karp (item 27, former 1.2a).** Below Teddy's minimum
+  length, `nvol_teddy_slow` tried every pattern at every position. It is now aho-corasick
+  1.1.5's packed Rabin-Karp (`packed/rabinkarp.rs`):
+  - `nvol_teddy_init` hashes each pattern's first `minlen` bytes (h = 2h + byte, wrapping),
+    and sets its bit in one of 64 buckets (`OFF_RK`, one u64 mask each). It also stores the
+    hash (`OFF_RKH`). `STATE_BYTES` goes from 1424 to 2448;
+  - the search rolls the hash, scans its bucket from the lowest pattern id (insertion order,
+    so leftmost-first), and compares the stored hash before the bytes, as aho-corasick does.
+
+  Red check: comparing against `h + 1` gives 38/544 mismatches on x86 and 27/224 on aarch64
+  in `nvol check`. Counters (Rust, `tedcount`, cycles per call, before → after, aho):
+
+  | case | 8 B | 16 B | 18 B |
+  |---|---|---|---|
+  | 1 (8 × 3) | 217 → 47 (59) | 520 → 89 (111) | 27 → 26 (30) |
+  | 4 (32 × 5) | 687 → 39 (39) | 2068 → 78 (77) | 2414 → 88 (88) |
+  | 5 (40 × 3) | 1113 → 54 (67) | 2613 → 100 (123) | 50 → 50 (69) |
+  | 6 (64 × 6) | 935 → 47 (44) | 3351 → 84 (81) | 3953 → 101 (109) |
+
+  The asm (`bench teddy`, both paths) goes from 307 to 55 cycles at 8 B and from 767 to
+  100 at 16 B. Instructions are equal or below aho in all 24 rows.
 
 - **One load per vector in the asm (item 25, pair AVX2).** The port counters showed the
   pair loop putting twice the µops on the load ports. Two causes, one defect:

@@ -2386,22 +2386,35 @@ pub mod raw {
         }
     }
 
-    /// leftmost-first by direct scan
+    /// leftmost-first by Rabin-Karp
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_slow(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
-            let n: usize = ((state.add(16usize) as *const u64).read_unaligned() as usize);
-            let minlen: usize = ((state.add(32usize) as *const u64).read_unaligned() as usize);
+            let hl: usize = ((state.add(32usize) as *const u64).read_unaligned() as usize);
+            if (((hend as usize) - (hstart as usize)) < hl) {
+                return usize::MAX;
+            }
+            let mut h: u64 = 0u64;
+            let mut j: usize = 0usize;
+            while (j < hl) {
+                h = ((h << 1u64) + ((*hstart.add(j)) as u64));
+                j = (j + 1usize);
+            }
+            let top: u64 = ((hl - 1usize) as u64);
             let mut at: *const u8 = hstart;
-            while ((at < hend) && (minlen <= ((hend as usize) - (at as usize)))) {
-                let mut pid: usize = 0usize;
-                while (pid < n) {
+            while (hl <= ((hend as usize) - (at as usize))) {
+                let mut bm: u64 = (state.add(1424usize).add((((h & 63u64) as usize) << 3usize)) as *const u64).read_unaligned();
+                while (bm != 0u64) {
+                    let pid: usize = (bm.trailing_zeros() as usize);
                     let pptr: *const u8 = blob.add(((blob.add(8usize).add((pid << 4usize)) as *const u64).read_unaligned() as usize));
                     let plen: usize = ((blob.add(16usize).add((pid << 4usize)) as *const u64).read_unaligned() as usize);
-                    if ((plen <= ((hend as usize) - (at as usize))) && nvol_is_equal_ac(pptr, at, plen)) {
+                    if (((state.add(1936usize).add((pid << 3usize)) as *const u64).read_unaligned() == h) && ((plen <= ((hend as usize) - (at as usize))) && nvol_is_equal_ac(pptr, at, plen))) {
                         return ((((at as usize) - (hstart as usize)) << 8usize) | pid);
                     }
-                    pid = (pid + 1usize);
+                    bm = (bm & (bm - 1u64));
+                }
+                if (hl < ((hend as usize) - (at as usize))) {
+                    h = (((h - (((*at) as u64) << top)) << 1u64) + ((*at.add(hl)) as u64));
                 }
                 at = at.add(1usize);
             }
@@ -2414,7 +2427,7 @@ pub mod raw {
     pub unsafe fn nvol_teddy_init(blob: *const u8, out: *mut u8) -> () {
         unsafe {
             let mut z: usize = 0usize;
-            while (z < 1424usize) {
+            while (z < 2448usize) {
                 (out.add(z) as *mut u64).write_unaligned(0u64);
                 z = (z + 8usize);
             }
@@ -2434,6 +2447,20 @@ pub mod raw {
             if (minlen == 0usize) {
                 return;
             }
+            let mut rk: usize = 0usize;
+            while (rk < n) {
+                let rp: *const u8 = blob.add(((blob.add(8usize).add((rk << 4usize)) as *const u64).read_unaligned() as usize));
+                let mut h: u64 = 0u64;
+                let mut j: usize = 0usize;
+                while (j < minlen) {
+                    h = ((h << 1u64) + ((*rp.add(j)) as u64));
+                    j = (j + 1usize);
+                }
+                let slot: *mut u8 = out.add(1424usize).add((((h & 63u64) as usize) << 3usize));
+                (slot as *mut u64).write_unaligned(((slot as *const u64).read_unaligned() | (1u64 << (rk as u64))));
+                (out.add(1936usize).add((rk << 3usize)) as *mut u64).write_unaligned(h);
+                rk = (rk + 1usize);
+            }
             let m: usize = minlen.min(4usize);
             let avx2: bool = std::is_x86_feature_detected!("avx2");
             let ssse3: bool = (avx2 || std::is_x86_feature_detected!("ssse3"));
@@ -2452,9 +2479,9 @@ pub mod raw {
             while (pid < n) {
                 let pi: *const u8 = blob.add(((blob.add(8usize).add((pid << 4usize)) as *const u64).read_unaligned() as usize));
                 let mut bucket: usize = 255usize;
-                let mut j: usize = 0usize;
-                while ((j < pid) && (bucket == 255usize)) {
-                    let pj: *const u8 = blob.add(((blob.add(8usize).add((j << 4usize)) as *const u64).read_unaligned() as usize));
+                let mut j1: usize = 0usize;
+                while ((j1 < pid) && (bucket == 255usize)) {
+                    let pj: *const u8 = blob.add(((blob.add(8usize).add((j1 << 4usize)) as *const u64).read_unaligned() as usize));
                     let mut same: bool = true;
                     let mut k: usize = 0usize;
                     while (same && (k < m)) {
@@ -2464,9 +2491,9 @@ pub mod raw {
                         k = (k + 1usize);
                     }
                     if same {
-                        bucket = ((*out.add(1360usize).add(j)) as usize);
+                        bucket = ((*out.add(1360usize).add(j1)) as usize);
                     }
-                    j = (j + 1usize);
+                    j1 = (j1 + 1usize);
                 }
                 if (bucket == 255usize) {
                     bucket = ((nbuckets - 1usize) - (pid & (nbuckets - 1usize)));
@@ -9963,22 +9990,35 @@ pub mod raw {
         }
     }
 
-    /// leftmost-first by direct scan
+    /// leftmost-first by Rabin-Karp
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_slow(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
-            let n: usize = ((state.add(16usize) as *const u64).read_unaligned() as usize);
-            let minlen: usize = ((state.add(32usize) as *const u64).read_unaligned() as usize);
+            let hl: usize = ((state.add(32usize) as *const u64).read_unaligned() as usize);
+            if (((hend as usize) - (hstart as usize)) < hl) {
+                return usize::MAX;
+            }
+            let mut h: u64 = 0u64;
+            let mut j: usize = 0usize;
+            while (j < hl) {
+                h = ((h << 1u64) + ((*hstart.add(j)) as u64));
+                j = (j + 1usize);
+            }
+            let top: u64 = ((hl - 1usize) as u64);
             let mut at: *const u8 = hstart;
-            while ((at < hend) && (minlen <= ((hend as usize) - (at as usize)))) {
-                let mut pid: usize = 0usize;
-                while (pid < n) {
+            while (hl <= ((hend as usize) - (at as usize))) {
+                let mut bm: u64 = (state.add(1424usize).add((((h & 63u64) as usize) << 3usize)) as *const u64).read_unaligned();
+                while (bm != 0u64) {
+                    let pid: usize = (bm.trailing_zeros() as usize);
                     let pptr: *const u8 = blob.add(((blob.add(8usize).add((pid << 4usize)) as *const u64).read_unaligned() as usize));
                     let plen: usize = ((blob.add(16usize).add((pid << 4usize)) as *const u64).read_unaligned() as usize);
-                    if ((plen <= ((hend as usize) - (at as usize))) && nvol_is_equal_ac(pptr, at, plen)) {
+                    if (((state.add(1936usize).add((pid << 3usize)) as *const u64).read_unaligned() == h) && ((plen <= ((hend as usize) - (at as usize))) && nvol_is_equal_ac(pptr, at, plen))) {
                         return ((((at as usize) - (hstart as usize)) << 8usize) | pid);
                     }
-                    pid = (pid + 1usize);
+                    bm = (bm & (bm - 1u64));
+                }
+                if (hl < ((hend as usize) - (at as usize))) {
+                    h = (((h - (((*at) as u64) << top)) << 1u64) + ((*at.add(hl)) as u64));
                 }
                 at = at.add(1usize);
             }
@@ -9991,7 +10031,7 @@ pub mod raw {
     pub unsafe fn nvol_teddy_init(blob: *const u8, out: *mut u8) -> () {
         unsafe {
             let mut z: usize = 0usize;
-            while (z < 1424usize) {
+            while (z < 2448usize) {
                 (out.add(z) as *mut u64).write_unaligned(0u64);
                 z = (z + 8usize);
             }
@@ -10011,6 +10051,20 @@ pub mod raw {
             if (minlen == 0usize) {
                 return;
             }
+            let mut rk: usize = 0usize;
+            while (rk < n) {
+                let rp: *const u8 = blob.add(((blob.add(8usize).add((rk << 4usize)) as *const u64).read_unaligned() as usize));
+                let mut h: u64 = 0u64;
+                let mut j: usize = 0usize;
+                while (j < minlen) {
+                    h = ((h << 1u64) + ((*rp.add(j)) as u64));
+                    j = (j + 1usize);
+                }
+                let slot: *mut u8 = out.add(1424usize).add((((h & 63u64) as usize) << 3usize));
+                (slot as *mut u64).write_unaligned(((slot as *const u64).read_unaligned() | (1u64 << (rk as u64))));
+                (out.add(1936usize).add((rk << 3usize)) as *mut u64).write_unaligned(h);
+                rk = (rk + 1usize);
+            }
             let m: usize = minlen.min(4usize);
             let avx2: bool = false;
             let fat: bool = (avx2 && (n > 32usize));
@@ -10022,9 +10076,9 @@ pub mod raw {
             while (pid < n) {
                 let pi: *const u8 = blob.add(((blob.add(8usize).add((pid << 4usize)) as *const u64).read_unaligned() as usize));
                 let mut bucket: usize = 255usize;
-                let mut j: usize = 0usize;
-                while ((j < pid) && (bucket == 255usize)) {
-                    let pj: *const u8 = blob.add(((blob.add(8usize).add((j << 4usize)) as *const u64).read_unaligned() as usize));
+                let mut j1: usize = 0usize;
+                while ((j1 < pid) && (bucket == 255usize)) {
+                    let pj: *const u8 = blob.add(((blob.add(8usize).add((j1 << 4usize)) as *const u64).read_unaligned() as usize));
                     let mut same: bool = true;
                     let mut k: usize = 0usize;
                     while (same && (k < m)) {
@@ -10034,9 +10088,9 @@ pub mod raw {
                         k = (k + 1usize);
                     }
                     if same {
-                        bucket = ((*out.add(1360usize).add(j)) as usize);
+                        bucket = ((*out.add(1360usize).add(j1)) as usize);
                     }
-                    j = (j + 1usize);
+                    j1 = (j1 + 1usize);
                 }
                 if (bucket == 255usize) {
                     bucket = ((nbuckets - 1usize) - (pid & (nbuckets - 1usize)));
@@ -13285,7 +13339,7 @@ pub mod packed {
     pub struct Match { pub pattern: usize, pub start: usize, pub end: usize }
 
     #[derive(Clone, Debug)]
-    pub struct Searcher { blob: std::vec::Vec<u64>, state: std::boxed::Box<[u64; 178]> }
+    pub struct Searcher { blob: std::vec::Vec<u64>, state: std::boxed::Box<[u64; 306]> }
 
     impl Searcher {
         /// None when Teddy can't be used (same cases as aho-corasick's packed builder).
@@ -13306,7 +13360,7 @@ pub mod packed {
                     pos += p.len();
                 }
             }
-            let mut state = std::boxed::Box::new([0u64; 178]);
+            let mut state = std::boxed::Box::new([0u64; 306]);
             unsafe { raw::nvol_teddy_init(blob.as_ptr() as *const u8, state.as_mut_ptr() as *mut u8) };
             if state[0] == 0 { None } else { Some(Searcher { blob, state }) }
         }
