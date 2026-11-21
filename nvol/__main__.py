@@ -24,19 +24,20 @@ LANGS = ("c", "cpp", "rust", "python", "odin", "nasm", "masm", "gas")
 
 
 def asm_files(mod, syntax: str) -> dict:
-    """The x86_64 library from NVOL's own assembly backend in one syntax: a file per calling
-    convention that syntax's assembler targets (NASM and GNU as: Win64 and System V; MASM: Win64) and the
-    C that goes with it (nvol.c in `asm_kernels` mode: glue, CPU checks, test hook; nvol.h is
-    the C backend's)."""
+    """The library from NVOL's own assembly backend in one syntax: a file per calling
+    convention that syntax's assembler targets (NASM: Win64 and System V; MASM: Win64; GNU as:
+    those two and aarch64 AAPCS64) and the C that goes with it (nvol.c in `asm_kernels` mode:
+    glue, CPU checks, test hook; nvol.h is the C backend's)."""
     from .asm import SYNTAX_ABIS, SYNTAX_EXT, library
     mods = mod if isinstance(mod, dict) else {getattr(mod, "arch", "x86_64"): mod}
     if "x86_64" not in mods:
         raise SystemExit(f"{syntax}: the assembly backend generates x86_64 only (use --arch x86_64 or all)")
-    files = c_backend.generate(mods, "c", asm_kernels=True)
+    arches = {"x86_64"} | ({"aarch64"} if "aapcs64" in SYNTAX_ABIS[syntax] and "aarch64" in mods else set())
+    files = c_backend.generate(mods, "c", asm_kernels=arches)
     for abi in SYNTAX_ABIS[syntax]:
-        if abi == "aapcs64":
-            continue
-        files[f"nvol_x86_64_{abi}{SYNTAX_EXT[syntax]}"] = library(mods["x86_64"], abi, syntax)
+        arch = "aarch64" if abi == "aapcs64" else "x86_64"
+        if arch in arches:
+            files[f"nvol_{arch}_{abi}{SYNTAX_EXT[syntax]}"] = library(mods[arch], abi, syntax)
     return files
 
 

@@ -24,6 +24,7 @@
 #  define NVOL_NOINLINE __declspec(noinline)
 #  define NVOL_INLINE __forceinline
 #  define NVOL_FORCE_INLINE __forceinline   /* for callers: the attribute alone */
+#  define NVOL_UNUSED
 #  define NVOL_MEMCPY memcpy
 __forceinline uint32_t nvol_ctz32(uint32_t x) { unsigned long i; _BitScanForward(&i, x); return (uint32_t)i; }
 __forceinline uint32_t nvol_clz32(uint32_t x) { unsigned long i; _BitScanReverse(&i, x); return 31u - (uint32_t)i; }
@@ -38,6 +39,9 @@ __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((uint32_
 #  define NVOL_NOINLINE __attribute__((noinline))
 #  define NVOL_INLINE inline __attribute__((always_inline))
 #  define NVOL_FORCE_INLINE __attribute__((always_inline))   /* for callers: the attribute alone */
+/* the memory helpers below: with the kernels in assembly (asm_kernels) nothing may call
+   them, and clang warns about an unused static inline function of a .c */
+#  define NVOL_UNUSED __attribute__((unused))
 /* the builtin, not memcpy: fortify headers (musl, glibc _FORTIFY_SOURCE) wrap memcpy in an
    inline function with overlap checks that stay in the hot loop of every load64/store64 */
 #  define NVOL_MEMCPY __builtin_memcpy
@@ -48,11 +52,11 @@ __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((uint32_
 #  define nvol_clz64(x) ((uint32_t)__builtin_clzll(x))
 #  define nvol_popcnt64(x) ((uint32_t)__builtin_popcountll(x))
 #endif
-inline uint32_t nvol_load16u(const uint8_t *p) { uint16_t v; NVOL_MEMCPY(&v, p, 2); return v; }
-inline uint32_t nvol_load32u(const uint8_t *p) { uint32_t v; NVOL_MEMCPY(&v, p, 4); return v; }
-inline uint64_t nvol_load64(const uint8_t *p) { uint64_t v; NVOL_MEMCPY(&v, p, 8); return v; }
-inline void nvol_store64(uint8_t *p, uint64_t v) { NVOL_MEMCPY(p, &v, 8); }
-inline void nvol_store8(uint8_t *p, uint8_t v) { *p = v; }
+inline NVOL_UNUSED uint32_t nvol_load16u(const uint8_t *p) { uint16_t v; NVOL_MEMCPY(&v, p, 2); return v; }
+inline NVOL_UNUSED uint32_t nvol_load32u(const uint8_t *p) { uint32_t v; NVOL_MEMCPY(&v, p, 4); return v; }
+inline NVOL_UNUSED uint64_t nvol_load64(const uint8_t *p) { uint64_t v; NVOL_MEMCPY(&v, p, 8); return v; }
+inline NVOL_UNUSED void nvol_store64(uint8_t *p, uint64_t v) { NVOL_MEMCPY(p, &v, 8); }
+inline NVOL_UNUSED void nvol_store8(uint8_t *p, uint8_t v) { *p = v; }
 #ifndef NVOL_VISITOR_DEFINED
 #define NVOL_VISITOR_DEFINED
 /* visitor kernels (_visit): fn(ctx, chunk, mask) for every chunk with candidates; non-zero stops */

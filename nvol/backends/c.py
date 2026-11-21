@@ -20,6 +20,7 @@ COMMON_PRELUDE = r"""
 #  define NVOL_NOINLINE __declspec(noinline)
 #  define NVOL_INLINE static __forceinline
 #  define NVOL_FORCE_INLINE __forceinline   /* for callers: the attribute alone */
+#  define NVOL_UNUSED
 #  define NVOL_MEMCPY memcpy
 static __forceinline uint32_t nvol_ctz32(uint32_t x) { unsigned long i; _BitScanForward(&i, x); return (uint32_t)i; }
 static __forceinline uint32_t nvol_clz32(uint32_t x) { unsigned long i; _BitScanReverse(&i, x); return 31u - (uint32_t)i; }
@@ -34,6 +35,9 @@ static __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((
 #  define NVOL_NOINLINE __attribute__((noinline))
 #  define NVOL_INLINE static inline __attribute__((always_inline))
 #  define NVOL_FORCE_INLINE __attribute__((always_inline))   /* for callers: the attribute alone */
+/* the memory helpers below: with the kernels in assembly (asm_kernels) nothing may call
+   them, and clang warns about an unused static inline function of a .c */
+#  define NVOL_UNUSED __attribute__((unused))
 /* the builtin, not memcpy: fortify headers (musl, glibc _FORTIFY_SOURCE) wrap memcpy in an
    inline function with overlap checks that stay in the hot loop of every load64/store64 */
 #  define NVOL_MEMCPY __builtin_memcpy
@@ -44,11 +48,11 @@ static __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((
 #  define nvol_clz64(x) ((uint32_t)__builtin_clzll(x))
 #  define nvol_popcnt64(x) ((uint32_t)__builtin_popcountll(x))
 #endif
-static inline uint32_t nvol_load16u(const uint8_t *p) { uint16_t v; NVOL_MEMCPY(&v, p, 2); return v; }
-static inline uint32_t nvol_load32u(const uint8_t *p) { uint32_t v; NVOL_MEMCPY(&v, p, 4); return v; }
-static inline uint64_t nvol_load64(const uint8_t *p) { uint64_t v; NVOL_MEMCPY(&v, p, 8); return v; }
-static inline void nvol_store64(uint8_t *p, uint64_t v) { NVOL_MEMCPY(p, &v, 8); }
-static inline void nvol_store8(uint8_t *p, uint8_t v) { *p = v; }
+static inline NVOL_UNUSED uint32_t nvol_load16u(const uint8_t *p) { uint16_t v; NVOL_MEMCPY(&v, p, 2); return v; }
+static inline NVOL_UNUSED uint32_t nvol_load32u(const uint8_t *p) { uint32_t v; NVOL_MEMCPY(&v, p, 4); return v; }
+static inline NVOL_UNUSED uint64_t nvol_load64(const uint8_t *p) { uint64_t v; NVOL_MEMCPY(&v, p, 8); return v; }
+static inline NVOL_UNUSED void nvol_store64(uint8_t *p, uint64_t v) { NVOL_MEMCPY(p, &v, 8); }
+static inline NVOL_UNUSED void nvol_store8(uint8_t *p, uint8_t v) { *p = v; }
 #ifndef NVOL_VISITOR_DEFINED
 #define NVOL_VISITOR_DEFINED
 /* visitor kernels (_visit): fn(ctx, chunk, mask) for every chunk with candidates; non-zero stops */
@@ -148,9 +152,10 @@ class CPrinter(Printer):
         self.mods = mods
         super().__init__(next(iter(mods.values())))     # primary: header + glue
         self.cpp = cpp
-        # x86_64 kernels from the assembly backend (nvol/asm): C keeps the glue, the CPU
-        # checks and the test hook, and declares what the assembly defines
-        self.asm = asm_kernels
+        # the kernels of these architectures come from the assembly backend (nvol/asm): C
+        # keeps the glue, the CPU checks and the test hook, and declares what the assembly
+        # defines. True means x86_64 only (NASM and MASM have no aarch64)
+        self.asm = {"x86_64"} if asm_kernels is True else set(asm_kernels or ())
         self.ifuncs: list = []
 
     def arch_blocks(self, testing_hook: bool):
@@ -159,8 +164,8 @@ class CPrinter(Printer):
         for i, (arch, mod) in enumerate(self.mods.items()):
             self.out.append(f"#{'if' if i == 0 else 'elif'} {ARCH_GUARD[arch]}")
             self.mod, self.ifuncs, self._fn_tables_done = mod, [], set()
-            if self.asm and arch == "x86_64":
-                self.asm_decls(mod)
+            if arch in self.asm:
+                self.asm_decls(mod, arch)
             else:
                 self.out += self.tables() + [""]
                 for f in mod.functions:
@@ -288,10 +293,12 @@ class CPrinter(Printer):
         params = ", ".join(f"{self.ty(p.ty)}{'' if p.ty in (ir.PTR, ir.MPTR, ir.VISIT) else ' '}{p.name}" for p in f.params)
         return f"{self.ty(f.ret)} {f.name}({params or 'void'})"
 
-    def asm_decls(self, mod) -> None:
+    def asm_decls(self, mod, arch: str = "x86_64") -> None:
         """What the C side sees of an assembly library: the ifunc caches and resolvers (for the
-        test hook); the public functions are already declared in nvol.h."""
-        self.out.append("/* kernels, entries and dispatch: nvol_x86_64_<abi>.asm (NVOL assembly backend) */")
+        test hook); the public functions are already declared in nvol.h. aarch64 has no
+        resolvers: each of its ifuncs has a single NEON target."""
+        ext = ".s" if arch == "aarch64" else ".asm"
+        self.out.append(f"/* kernels, entries and dispatch: nvol_{arch}_<abi>{ext} (NVOL assembly backend) */")
         for f in mod.functions:
             if not f.ifunc or (len(f.ifunc) == 1 and f.ifunc[0][0] is None):
                 continue
@@ -397,7 +404,7 @@ class CPrinter(Printer):
         h += ["#ifdef __cplusplus", "}", "#endif", "#endif /* NVOL_H */", ""]
         self.out = [LICENSE, '#include "nvol.h"', COMMON_PRELUDE]
         for i, (arch, _) in enumerate(self.mods.items()):
-            pre = _asm(ARCH_PRELUDE[arch]) if self.asm and arch == "x86_64" else ARCH_PRELUDE[arch]
+            pre = _asm(ARCH_PRELUDE[arch]) if arch in self.asm and arch == "x86_64" else ARCH_PRELUDE[arch]
             self.out += [f"#{'if' if i == 0 else 'elif'} {ARCH_GUARD[arch]}", pre]
         self.out += ["#endif", ""]
         self.arch_blocks(testing_hook=True)
@@ -450,8 +457,9 @@ def byteset_header(mod) -> list:
     from ..kernels.byteset import CONSTANTS
     return [f"#define NVOL_BYTESET_{n} {v}   /* {doc} */" for n, v, doc in CONSTANTS]
 
-def generate(module, lang: str = "c", asm_kernels: bool = False) -> dict:
-    """module: an ir.Module or {arch: ir.Module}. asm_kernels: the C for a library whose x86_64
-    kernels come from the assembly backend (C only)."""
-    p = CPrinter(module, cpp=(lang == "cpp"), asm_kernels=asm_kernels and lang == "c")
+def generate(module, lang: str = "c", asm_kernels=False) -> dict:
+    """module: an ir.Module or {arch: ir.Module}. asm_kernels: the C for a library whose
+    kernels come from the assembly backend (C only): True for x86_64, or the set of
+    architectures."""
+    p = CPrinter(module, cpp=(lang == "cpp"), asm_kernels=asm_kernels if lang == "c" else False)
     return p.emit_cpp() if lang == "cpp" else p.emit_c()
