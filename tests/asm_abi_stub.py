@@ -1,4 +1,4 @@
-"""A NASM trampoline that calls a generated function the way the ABI says a caller may, and
+"""A trampoline (NASM for x86-64, GNU as for AAPCS64) that calls a generated function the way the ABI says a caller may, and
 checks what the ABI says the callee must keep:
 
     abi_call(fn, argv, out)   argv: 8 u64 arguments; out[0] = rax, out[1] = 0 when every
@@ -64,3 +64,39 @@ def sysv() -> str:
     L += ["    mov [r10 + 8], r11", "    add rsp, 40"] + [f"    pop {r}" for r in reversed(gprs)] + \
          ["    ret", ""]
     return "\n".join(L)
+
+
+def aapcs64() -> str:
+    """The same trampoline for AAPCS64 (GNU as): arguments in x0-x7, a distinct value in each of
+    x19-x28 and in the low 64 bits of v8-v15 (all AAPCS64 asks a callee to keep), checked after
+    the call; x0 comes back in out[0]."""
+    L = [".text", ".globl abi_call", ".type abi_call, %function", "abi_call:",
+         "    sub sp, sp, #176",
+         "    stp x29, x30, [sp, #0]", "    stp x19, x20, [sp, #16]", "    stp x21, x22, [sp, #32]",
+         "    stp x23, x24, [sp, #48]", "    stp x25, x26, [sp, #64]", "    stp x27, x28, [sp, #80]",
+         "    stp d8, d9, [sp, #96]", "    stp d10, d11, [sp, #112]", "    stp d12, d13, [sp, #128]",
+         "    stp d14, d15, [sp, #144]", "    str x2, [sp, #160]", "    mov x16, x0", "    mov x17, x1"]
+    for k in range(10):
+        L += _a64_magic(f"x{19 + k}", MAGIC + k)
+    for k in range(8):
+        L += _a64_magic("x9", MAGIC + 100 + k) + [f"    fmov d{8 + k}, x9"]
+    L += [f"    ldr x{k}, [x17, #{8 * k}]" for k in range(8)]
+    L += ["    blr x16", "    ldr x2, [sp, #160]", "    str x0, [x2]", "    mov x11, #0"]
+    for k in range(10):
+        L += _a64_magic("x9", MAGIC + k) + [f"    cmp x{19 + k}, x9", "    cset x10, ne",
+                                             "    orr x11, x11, x10"]
+    for k in range(8):
+        L += _a64_magic("x9", MAGIC + 100 + k) + [f"    fmov x12, d{8 + k}", "    cmp x12, x9",
+                                                   "    cset x10, ne", "    orr x11, x11, x10"]
+    L += ["    str x11, [x2, #8]",
+          "    ldp x29, x30, [sp, #0]", "    ldp x19, x20, [sp, #16]", "    ldp x21, x22, [sp, #32]",
+          "    ldp x23, x24, [sp, #48]", "    ldp x25, x26, [sp, #64]", "    ldp x27, x28, [sp, #80]",
+          "    ldp d8, d9, [sp, #96]", "    ldp d10, d11, [sp, #112]", "    ldp d12, d13, [sp, #128]",
+          "    ldp d14, d15, [sp, #144]", "    add sp, sp, #176", "    ret",
+          '.section .note.GNU-stack,"",@progbits', ""]
+    return "\n".join(L)
+
+
+def _a64_magic(r: str, v: int) -> list:
+    return [f"    movz {r}, #{v & 0xFFFF}"] + \
+        [f"    movk {r}, #{(v >> s) & 0xFFFF}, lsl #{s}" for s in (16, 32, 48)]

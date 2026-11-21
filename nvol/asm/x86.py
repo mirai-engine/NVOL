@@ -10,7 +10,7 @@ from .lower import (CC, NEG, Lower, Unsupported, _bit_test, _cmp_width, _const_v
                     _masked_addr, _same, _target)
 from .mir import (CONDJUMPS, PHYS, RSP, TERMINATORS, VECS, Imm, Ins, Lab, Mem, Phys, Reg, VReg,
                   regs_in)
-from .regalloc import _subst
+from .regalloc import _subst, jump_cleanup, reloads
 
 # element-wise vector operations: one instruction each (legacy name; VEX adds "v")
 VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vsub8": "psubb",
@@ -853,46 +853,7 @@ def _rewrite(code, assign, spilled):
                 if r in ins.defs:
                     post.append(Ins(mop, [Mem(spill=slot[r], w=0), Reg(s, wv)], [], [s]))
         out += pre + [_subst(ins, local)] + post
-    return _reloads(out), len(slot)
-
-
-def _reloads(code):
-    """A 64-bit load of a spill slot whose value a register still holds (stored there earlier
-    in the same block, the register not written since) reads the register instead, or goes."""
-    out = []
-    held = {}                       # slot -> register holding its value
-    for ins in code:
-        if ins.op in ("label", "call", "callind") or ins.op in TERMINATORS:
-            held = {}
-        if ins.op == "mov" and len(ins.args) == 2 and isinstance(ins.args[0], Reg)                 and isinstance(ins.args[1], Mem) and ins.args[1].spill is not None                 and ins.args[0].w == 64 and ins.args[1].spill in held:
-            r = held[ins.args[1].spill]
-            d = ins.args[0].r
-            if d == r:
-                continue
-            ins = Ins("mov", [ins.args[0], Reg(r, 64)], [d], [r])
-        for r in list(ins.defs) + list(ins.clobbers):
-            held = {k: v for k, v in held.items() if v != r}
-        if ins.op == "mov" and len(ins.args) == 2 and isinstance(ins.args[0], Mem)                 and ins.args[0].spill is not None:
-            k = ins.args[0].spill
-            held.pop(k, None)
-            if isinstance(ins.args[1], Reg) and ins.args[1].w == 64:
-                held[k] = ins.args[1].r
-        out.append(ins)
-    # a store to a slot that the same block stores again before reading it is dead
-    res, dead = [], set()
-    for ins in reversed(out):
-        if ins.op == "label" or ins.op == "jmp" or ins.op in CONDJUMPS or ins.op in TERMINATORS                 or ins.op in ("call", "callind"):
-            dead = set()
-        st = ins.op in _SPILL_MOVES and isinstance(ins.args[0], Mem) and ins.args[0].spill is not None
-        if st:
-            if ins.args[0].spill in dead:
-                continue
-            dead.add(ins.args[0].spill)
-        for a in ins.args[1:] if st else ins.args:
-            if isinstance(a, Mem) and a.spill is not None:
-                dead.discard(a.spill)
-        res.append(ins)
-    return res[::-1]
+    return reloads(out, "mov", "mov", _SPILL_MOVES), len(slot)
 
 
 _SPILL_MOVES = {"mov", "movdqu", "vmovdqu"}
@@ -953,50 +914,9 @@ def _peephole(code: list) -> list:
             if isinstance(m, Mem) and m.base == ins.args[0].r and m.index is None                     and m.sym is None and m.spill is None and m.arg is None and m.disp:
                 op, v = ("sub", -m.disp) if m.disp == 128 else ("add", m.disp)
                 out[k] = Ins(op, [ins.args[0], Imm(v)], ins.defs, ins.uses, ins.clobbers)
-    # nothing runs after an unconditional jump until the next label
-    live, dead = [], False
-    for ins in out:
-        if ins.op in ("label", "align", "coldbegin", "coldend", "endprolog"):
-            dead = False if ins.op == "label" else dead
-            live.append(ins)
-            continue
-        if not dead:
-            live.append(ins)
-        if ins.op in ("jmp", "ret", "tailjmp", "tailcall"):
-            dead = True
-    out = live
-    # a jump to a jump goes straight to the final target
-    nxt = {}
-    for i, ins in enumerate(out):
-        if ins.op == "label":
-            j = i + 1
-            while j < len(out) and out[j].op == "label":
-                j += 1
-            if j < len(out) and out[j].op == "jmp" and isinstance(out[j].args[0], Lab):
-                nxt[ins.args[0].name] = out[j].args[0].name
-
-    def final(name):
-        seen = set()
-        while name in nxt and name not in seen:
-            seen.add(name)
-            name = nxt[name]
-        return name
-
-    out = [Ins(i.op, [Lab(final(i.args[0].name))], i.defs, i.uses, i.clobbers)
-           if (i.op == "jmp" or i.op in CONDJUMPS) and isinstance(i.args[0], Lab) else i
-           for i in out]
-    # a jump to the label that follows it
-    res = []
-    for i, ins in enumerate(out):
-        if ins.op == "jmp" and i + 1 < len(out) and out[i + 1].op == "label" \
-                and out[i + 1].args[0].name == ins.args[0].name:
-            continue
-        res.append(ins)
-    # labels nothing jumps to
-    targets = {a.name for ins in res if ins.op != "label" for a in ins.args if isinstance(a, Lab)}
-    res = [ins for ins in res if ins.op != "label" or ins.args[0].name in targets]
+    res = jump_cleanup(out)
     # (with the labels gone, more stores and reloads of a slot share a block)
-    return [ins for ins in _reloads(res) if not _identity(ins)]
+    return [ins for ins in reloads(res, "mov", "mov", _SPILL_MOVES) if not _identity(ins)]
 
 
 def _identity(ins: Ins) -> bool:

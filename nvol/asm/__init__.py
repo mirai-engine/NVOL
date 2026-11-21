@@ -9,7 +9,7 @@ provides the CPU checks the resolvers call and everything that is not IR."""
 from __future__ import annotations
 
 from .. import ir
-from . import encode, gas, masm, nasm, x86
+from . import a64, encode, gas, gas_a64, masm, nasm, x86
 from .abi import ABIS
 from .lower import Pool, lower
 from .mir import PHYS, RSP, Imm, Ins, Lab, Mem, Reg
@@ -17,8 +17,13 @@ from .regalloc import allocate
 
 
 def compile_function(f, abi_name: str, pool: Pool = None, mod: ir.Module = None) -> list:
-    """Lowered, allocated, and every jump sized (encode.relax)."""
-    return encode.relax(allocate(lower(f, ABIS[abi_name], pool, mod), ABIS[abi_name], x86))
+    """Lowered, allocated, and every jump sized (encode.relax; on A64, every branch checked to
+    reach)."""
+    abi = ABIS[abi_name]
+    if abi_name == "aapcs64":
+        from .a64 import A64Lower
+        return a64.check_ranges(f.name, allocate(A64Lower(f, abi, pool, mod).run(), abi, a64))
+    return encode.relax(allocate(lower(f, abi, pool, mod), abi, x86))
 
 
 def fmt_of(abi_name: str) -> str:
@@ -26,8 +31,13 @@ def fmt_of(abi_name: str) -> str:
 
 
 PRINTERS = {"nasm": nasm, "masm": masm, "gas": gas}
+
+
+def printer(syntax: str, abi_name: str):
+    """The printer of a syntax for an ABI: GNU as prints x86-64 (`gas`) or A64 (`gas_a64`)."""
+    return gas_a64 if abi_name == "aapcs64" else PRINTERS[syntax]
 # the ABIs each syntax's assembler targets, and the file extension
-SYNTAX_ABIS = {"nasm": ("win64", "sysv"), "masm": ("win64",), "gas": ("win64", "sysv")}
+SYNTAX_ABIS = {"nasm": ("win64", "sysv"), "masm": ("win64",), "gas": ("win64", "sysv", "aapcs64")}
 SYNTAX_EXT = {"nasm": ".asm", "masm": ".asm", "gas": ".s"}
 
 
@@ -35,7 +45,7 @@ def asm_module(functions: list, abi_name: str, mod: ir.Module = None, syntax: st
     """Assembly text for the given IR functions alone (all exported; calls need `mod`)."""
     pool = Pool()
     code = [(f.name, compile_function(f, abi_name, pool, mod), True) for f in functions]
-    return PRINTERS[syntax].module(code, fmt_of(abi_name), pool.consts,
+    return printer(syntax, abi_name).module(code, fmt_of(abi_name), pool.consts,
                                    mod.tables if mod else None, export_all=True)
 
 
@@ -92,7 +102,7 @@ def library(mod: ir.Module, abi_name: str, syntax: str = "nasm", export_all: boo
             funcs.append((res, resolver(f, abi_name), False))
         else:
             funcs.append((f.name, compile_function(f, abi_name, pool, mod), f.public))
-    return PRINTERS[syntax].module(funcs, fmt_of(abi_name), pool.consts, mod.tables,
+    return printer(syntax, abi_name).module(funcs, fmt_of(abi_name), pool.consts, mod.tables,
                                    mod.fn_tables, ptrs, export_all=export_all)
 
 

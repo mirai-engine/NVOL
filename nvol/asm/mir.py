@@ -1,4 +1,4 @@
-"""Machine IR: x86-64 instructions over virtual and physical registers.
+"""Machine IR: x86-64 or A64 instructions over virtual and physical registers.
 
 The lowering (`lower.py`) turns an IR function into a flat list of `Ins`; the allocator
 (`regalloc.py`) replaces every `VReg` with a `Phys`; a printer (`nasm.py`, later MASM and GNU as)
@@ -16,6 +16,9 @@ from typing import Optional, Union
 GPRS = ["rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "r8", "r9", "r10", "r11",
         "r12", "r13", "r14", "r15"]
 VECS = [f"xmm{i}" for i in range(16)]
+# A64: x0-x30 (x29 the frame pointer, x30 the link register) and v0-v31
+A64_GPRS = [f"x{i}" for i in range(31)]
+A64_VECS = [f"v{i}" for i in range(32)]
 
 
 @dataclass(frozen=True)
@@ -29,7 +32,11 @@ class Phys:
 
 PHYS = {n: Phys(n, "g") for n in GPRS}
 PHYS.update({n: Phys(n, "v") for n in VECS})
+PHYS.update({n: Phys(n, "g") for n in A64_GPRS})
+PHYS.update({n: Phys(n, "v") for n in A64_VECS})
 RSP = Phys("rsp", "g")      # never allocated: frames and outgoing stack arguments
+SP = Phys("sp", "g")        # A64, never allocated
+XZR = Phys("xzr", "g")      # A64 zero register, read only
 
 
 class VReg:
@@ -100,7 +107,12 @@ def regs_in(op) -> list:
     return []
 
 
-# instructions that end a basic block
+# instructions that end a basic block. A conditional jump names its label first; A64's cbz/cbnz
+# (label, register) and tbz/tbnz (label, register, bit) test a register instead of the flags
 JUMPS = {"jmp"}
-CONDJUMPS = {"jb", "jae", "jbe", "ja", "je", "jne", "jz", "jnz", "js", "jns"}
+CONDJUMPS = {"jb", "jae", "jbe", "ja", "je", "jne", "jz", "jnz", "js", "jns",
+             "cbz", "cbnz", "tbz", "tbnz"}
 TERMINATORS = {"ret", "jmp", "tailjmp", "tailcall"}
+# the jump taken when the other one is not
+INVERT = {"jb": "jae", "jae": "jb", "jbe": "ja", "ja": "jbe", "je": "jne", "jne": "je",
+          "js": "jns", "jns": "js", "cbz": "cbnz", "cbnz": "cbz", "tbz": "tbnz", "tbnz": "tbz"}

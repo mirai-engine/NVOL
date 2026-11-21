@@ -34,6 +34,8 @@ def asm_files(mod, syntax: str) -> dict:
         raise SystemExit(f"{syntax}: the assembly backend generates x86_64 only (use --arch x86_64 or all)")
     files = c_backend.generate(mods, "c", asm_kernels=True)
     for abi in SYNTAX_ABIS[syntax]:
+        if abi == "aapcs64":
+            continue
         files[f"nvol_x86_64_{abi}{SYNTAX_EXT[syntax]}"] = library(mods["x86_64"], abi, syntax)
     return files
 

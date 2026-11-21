@@ -27,7 +27,7 @@ from __future__ import annotations
 from bisect import bisect_left
 
 from .abi import ABI
-from .mir import CONDJUMPS, PHYS, TERMINATORS, Ins, Lab, Mem, Phys, Reg, VReg
+from .mir import CONDJUMPS, INVERT, PHYS, TERMINATORS, Ins, Lab, Mem, Phys, Reg, VReg
 
 
 def _blocks(code: list):
@@ -391,7 +391,6 @@ def layout_cold(code: list) -> list:
     jump before it to go there. Registers are already allocated, so only the order changes.
     A region not preceded by a single conditional jump (a `lor` condition ends in a label)
     stays in place."""
-    from .lower import NEG
     code = list(code)
     while True:
         begins = [i for i, ins in enumerate(code) if ins.op == "coldbegin"]
@@ -405,14 +404,105 @@ def layout_cold(code: list) -> list:
         cold = code[i].args[0]
         region = code[i + 1:j]
         prev = code[i - 1]
-        if prev.op in CONDJUMPS and prev.op[1:] in NEG:
+        if prev.op in INVERT:
             del code[i:j + 1]
-            code[i - 1] = Ins("j" + NEG[prev.op[1:]], [cold], prev.defs, prev.uses, prev.clobbers)
+            code[i - 1] = Ins(INVERT[prev.op], [cold] + prev.args[1:], prev.defs, prev.uses,
+                              prev.clobbers)
             code += region
         else:
             del code[j]
             del code[i]
     return code
+
+
+def jump_cleanup(out: list) -> list:
+    """Code after an unconditional jump until the next label goes; a jump to a jump goes straight
+    to the final target; a jump to the label that follows it goes; labels nothing jumps to go."""
+    # nothing runs after an unconditional jump until the next label
+    live, dead = [], False
+    for ins in out:
+        if ins.op in ("label", "align", "coldbegin", "coldend", "endprolog"):
+            dead = False if ins.op == "label" else dead
+            live.append(ins)
+            continue
+        if not dead:
+            live.append(ins)
+        if ins.op in ("jmp", "ret", "tailjmp", "tailcall"):
+            dead = True
+    out = live
+    # a jump to a jump goes straight to the final target
+    nxt = {}
+    for i, ins in enumerate(out):
+        if ins.op == "label":
+            j = i + 1
+            while j < len(out) and out[j].op == "label":
+                j += 1
+            if j < len(out) and out[j].op == "jmp" and isinstance(out[j].args[0], Lab):
+                nxt[ins.args[0].name] = out[j].args[0].name
+
+    def final(name):
+        seen = set()
+        while name in nxt and name not in seen:
+            seen.add(name)
+            name = nxt[name]
+        return name
+
+    out = [Ins(i.op, [Lab(final(i.args[0].name))] + i.args[1:], i.defs, i.uses, i.clobbers)
+           if (i.op == "jmp" or i.op in CONDJUMPS) and isinstance(i.args[0], Lab) else i
+           for i in out]
+    # a jump to the label that follows it
+    res = []
+    for i, ins in enumerate(out):
+        if ins.op == "jmp" and i + 1 < len(out) and out[i + 1].op == "label" \
+                and out[i + 1].args[0].name == ins.args[0].name:
+            continue
+        res.append(ins)
+    # labels nothing jumps to
+    targets = {a.name for ins in res if ins.op != "label" for a in ins.args if isinstance(a, Lab)}
+    res = [ins for ins in res if ins.op != "label" or ins.args[0].name in targets]
+    return res
+
+
+def reloads(code, LD: str, ST: str, STORES: set):
+    """A 64-bit load of a spill slot whose value a register still holds (stored there earlier
+    in the same block, the register not written since) reads the register instead (a `mov`), or
+    goes; a store to a slot that the block stores again before reading it goes. LD and ST are
+    the target's 64-bit slot load and store (`mov`, or A64's `ldr`/`str`), STORES every store
+    op that writes a slot."""
+    out = []
+    held = {}                       # slot -> register holding its value
+    for ins in code:
+        if ins.op in ("label", "call", "callind") or ins.op in TERMINATORS:
+            held = {}
+        if ins.op == LD and len(ins.args) == 2 and isinstance(ins.args[0], Reg)                 and isinstance(ins.args[1], Mem) and ins.args[1].spill is not None                 and ins.args[0].w == 64 and ins.args[1].spill in held:
+            r = held[ins.args[1].spill]
+            d = ins.args[0].r
+            if d == r:
+                continue
+            ins = Ins("mov", [ins.args[0], Reg(r, 64)], [d], [r])
+        for r in list(ins.defs) + list(ins.clobbers):
+            held = {k: v for k, v in held.items() if v != r}
+        if ins.op == ST and len(ins.args) == 2 and isinstance(ins.args[0], Mem)                 and ins.args[0].spill is not None:
+            k = ins.args[0].spill
+            held.pop(k, None)
+            if isinstance(ins.args[1], Reg) and ins.args[1].w == 64:
+                held[k] = ins.args[1].r
+        out.append(ins)
+    # a store to a slot that the same block stores again before reading it is dead
+    res, dead = [], set()
+    for ins in reversed(out):
+        if ins.op == "label" or ins.op == "jmp" or ins.op in CONDJUMPS or ins.op in TERMINATORS                 or ins.op in ("call", "callind"):
+            dead = set()
+        st = ins.op in STORES and isinstance(ins.args[0], Mem) and ins.args[0].spill is not None
+        if st:
+            if ins.args[0].spill in dead:
+                continue
+            dead.add(ins.args[0].spill)
+        for a in ins.args[1:] if st else ins.args:
+            if isinstance(a, Mem) and a.spill is not None:
+                dead.discard(a.spill)
+        res.append(ins)
+    return res[::-1]
 
 
 def _alloc(code, abi, T, late=frozenset()):

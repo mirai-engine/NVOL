@@ -12,12 +12,18 @@ alignment paths (and write the same scratch bytes).
 Every syntax (NASM, GNU as; MASM on Windows) is built from the same machine IR and checked on the same
 cases: the interpreter runs once per case and each library is compared against it.
 
+With NVOL_ARCH=aarch64 the same tests run the aarch64 module (A64, AAPCS64, GNU as syntax) under
+QEMU (harness/asm/run-a64.sh): NVOL_A64_CC is the cross compiler that assembles and links, and
+the primitives are the NEON ones.
+
 Three groups: the scalar functions (with the dispatchers, which resolve through the CPU checks
 of a small C stub), the vector kernels (every ISA this CPU runs), and every vector primitive
 alone (the functions tests/test_prims.py builds). Teddy runs on a patterns blob built here and
 a state built by the interpreter's `nvol_teddy_init`, for each variant (slim/fat, mask 1-4)."""
 import ctypes
+import os
 import random
+import shlex
 import shutil
 import subprocess
 import sys
@@ -38,12 +44,15 @@ from nvol.kernels.byteset import CLASS_BYTES, PAIR_BYTES
 from nvol.kernels.memmem import STATE_WORDS
 from nvol.kernels.teddy import STATE_BYTES as TEDDY_STATE
 
-ABI = "win64" if sys.platform == "win32" else "sysv"
+ARCH = os.environ.get("NVOL_ARCH", "x86_64")
+A64 = ARCH == "aarch64"
+ABI = "aapcs64" if A64 else "win64" if sys.platform == "win32" else "sysv"
 FMT = "win64" if ABI == "win64" else "elf64"
 CASES = 300
+A64_CC = shlex.split(os.environ.get("NVOL_A64_CC", "clang --target=aarch64-alpine-linux-musl"))
 
-MOD = build_modules()["x86_64"]
-CPU_C = test_prims.CPU_C + """
+MOD = build_modules()[ARCH]
+CPU_C = "int prims_cpu_has(const char *isa) { (void)isa; return 1; }\n" if A64 else test_prims.CPU_C + """
 int nvol_cpu_avx2(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 int nvol_cpu_ssse3(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 int nvol_cpu_sse42(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
@@ -63,10 +72,23 @@ def _tested(f) -> bool:
         return False
 
 
-PRIMS = test_prims._module()
+# the NEON primitives (NEON is the baseline of aarch64: every one runs)
+NEON_VEC = ["cmpeq", "vor", "mask_or", "vand", "vsub8", "vmin8", "vshuffle", "shin1", "shin2",
+            "shin3", "sad0", "vadd64", "vnib_hi", "msb_lanes"]
+NEON_SCALAR = ["is_zero", "any_nonzero", "movemask", "lane64_0", "lane64_1", "hsum64"]
 
 
-SYNTAXES = ["nasm"] + (["masm"] if ABI == "win64" and find_ml64() else []) + \
+def _neon_prims():
+    mod = ir.Module("prims")
+    mod.functions += [test_prims._fn_vec("neon", n) for n in NEON_VEC]
+    mod.functions += [test_prims._fn_scalar("neon", n) for n in NEON_SCALAR]
+    return mod
+
+
+PRIMS = _neon_prims() if A64 else test_prims._module()
+
+
+SYNTAXES = ["gas"] if A64 else ["nasm"] + (["masm"] if ABI == "win64" and find_ml64() else []) + \
     (["gas"] if shutil.which("as") else [])
 
 
@@ -78,7 +100,9 @@ class Libs(list):
 
 
 def _assemble(syntax, src, obj):
-    if syntax == "nasm":
+    if A64:
+        subprocess.run(A64_CC + ["-c", "-o", str(obj), str(src)], check=True)
+    elif syntax == "nasm":
         subprocess.run(["nasm", "-f", FMT, str(src), "-o", str(obj)], check=True)
     elif syntax == "gas":
         subprocess.run(["as", "--64", "-o", str(obj), str(src)], check=True)
@@ -88,10 +112,15 @@ def _assemble(syntax, src, obj):
 
 
 def _build(d, name, functions, cc, mod=None):
-    stub = d / "abi_stub.asm"
-    stub.write_text(asm_abi_stub.win64() if ABI == "win64" else asm_abi_stub.sysv(), encoding="utf-8")
     sobj = d / "abi_stub.o"
-    subprocess.run(["nasm", "-f", FMT, str(stub), "-o", str(sobj)], check=True)
+    if A64:
+        stub = d / "abi_stub.s"
+        stub.write_text(asm_abi_stub.aapcs64(), encoding="utf-8")
+        _assemble("gas", stub, sobj)
+    else:
+        stub = d / "abi_stub.asm"
+        stub.write_text(asm_abi_stub.win64() if ABI == "win64" else asm_abi_stub.sysv(), encoding="utf-8")
+        subprocess.run(["nasm", "-f", FMT, str(stub), "-o", str(sobj)], check=True)
     (d / "cpu.c").write_text(CPU_C, encoding="utf-8")
     libs = Libs()
     for syntax in SYNTAXES:
@@ -104,7 +133,8 @@ def _build(d, name, functions, cc, mod=None):
         so = d / (f"{name}_{syntax}.dll" if sys.platform == "win32" else f"lib{name}_{syntax}.so")
         # (on Windows the dllexport in cpu.c turns off mingw's automatic export of the rest)
         exp = ["-Wl,--export-all-symbols"] if sys.platform == "win32" else []
-        subprocess.run([cc, "-shared", *exp, "-o", str(so), str(obj), str(sobj), str(d / "cpu.c")], check=True)
+        link = A64_CC + ["-fuse-ld=lld", "-fPIC"] if A64 else [cc]
+        subprocess.run(link + ["-shared", *exp, "-o", str(so), str(obj), str(sobj), str(d / "cpu.c")], check=True)
         lib = ctypes.CDLL(str(so))
         lib.abi_call.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
         lib.abi_call.restype = None
@@ -115,6 +145,10 @@ def _build(d, name, functions, cc, mod=None):
 
 @pytest.fixture(scope="module")
 def tools():
+    if A64:
+        if not shutil.which(A64_CC[0]):
+            pytest.skip("no aarch64 cross compiler")
+        return A64_CC[0]
     if not shutil.which("nasm"):
         pytest.skip("no nasm")
     cc = _cc()
