@@ -1,0 +1,126 @@
+diff --git a/src/lib.rs b/src/lib.rs
+index 273dd3b..adefa84 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -258,6 +258,11 @@ pub mod automaton;
+ pub mod dfa;
+ pub mod nfa;
+ pub mod packed;
++// NVOL end-to-end: the generated NVOL-Rust module backs packed Teddy.
++#[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++#[allow(warnings)]
++// src/nvol.rs: generated/rust/nvol.rs, copied in by harness/ripgrep-e2e/setup.sh
++pub(crate) mod nvol;
+ #[cfg(test)]
+ mod tests;
+ // I wrote out the module for implementing fst::Automaton only to later realize
+diff --git a/src/packed/api.rs b/src/packed/api.rs
+index 6bea99e..38e5b9f 100644
+--- a/src/packed/api.rs
++++ b/src/packed/api.rs
+@@ -10,6 +10,53 @@ use crate::{
+ /// may be increased.
+ const PATTERN_LIMIT: usize = 128;
+ 
++/// NVOL end-to-end: an NVOL Teddy searcher, built only for the default
++/// packed configuration (leftmost-first, nothing forced, heuristic limits on),
++/// which is what regex-automata and aho-corasick's own prefilter use.
++#[derive(Clone, Debug)]
++struct NvolTeddy {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    s: Option<crate::nvol::packed::Searcher>,
++}
++
++impl NvolTeddy {
++    fn none() -> NvolTeddy {
++        NvolTeddy {
++            #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++            s: None,
++        }
++    }
++
++    fn new(_patterns: &Patterns) -> NvolTeddy {
++        #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++        {
++            let pats = (0.._patterns.len()).map(|i| {
++                _patterns.get(crate::util::primitives::PatternID::new_unchecked(i)).bytes().to_vec()
++            });
++            return NvolTeddy { s: crate::nvol::packed::Searcher::new(pats) };
++        }
++        #[allow(unreachable_code)]
++        NvolTeddy::none()
++    }
++
++    /// `Some(result)` when NVOL handled the search.
++    #[inline(always)]
++    fn find(&self, _haystack: &[u8], _span: Span) -> Option<Option<Match>> {
++        #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++        {
++            if let Some(ref s) = self.s {
++                return Some(s.find_in(_haystack, _span.start.._span.end).map(|m| {
++                    Match::new(
++                        crate::util::primitives::PatternID::new_unchecked(m.pattern),
++                        m.start..m.end,
++                    )
++                }));
++            }
++        }
++        None
++    }
++}
++
+ /// A knob for controlling the match semantics of a packed multiple string
+ /// searcher.
+ ///
+@@ -278,7 +325,18 @@ impl Builder {
+                 (SearchKind::RabinKarp, 0)
+             }
+         };
+-        Some(Searcher { patterns, rabinkarp, search_kind, minimum_len })
++        let c = &self.config;
++        let nvol = if c.kind == MatchKind::LeftmostFirst
++            && c.force.is_none()
++            && c.only_teddy_fat.is_none()
++            && c.only_teddy_256bit.is_none()
++            && c.heuristic_pattern_limits
++        {
++            NvolTeddy::new(&patterns)
++        } else {
++            NvolTeddy::none()
++        };
++        Some(Searcher { patterns, rabinkarp, search_kind, minimum_len, nvol })
+     }
+ 
+     fn build_teddy(&self, patterns: Arc<Patterns>) -> Option<teddy::Searcher> {
+@@ -398,6 +456,7 @@ pub struct Searcher {
+     rabinkarp: RabinKarp,
+     search_kind: SearchKind,
+     minimum_len: usize,
++    nvol: NvolTeddy,
+ }
+ 
+ #[derive(Clone, Debug)]
+@@ -541,6 +600,9 @@ impl Searcher {
+                 if haystack[span].len() < teddy.minimum_len() {
+                     return self.find_in_slow(haystack, span);
+                 }
++                if let Some(r) = self.nvol.find(haystack, span) {
++                    return r;
++                }
+                 teddy.find(&haystack[..span.end], span.start)
+             }
+             SearchKind::RabinKarp => {
+@@ -689,3 +751,13 @@ impl<'s, 'h> Iterator for FindIter<'s, 'h> {
+         }
+     }
+ }
++
++#[cfg(all(test, feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++#[test]
++fn nvol_backs_default_teddy() {
++    let s = Searcher::new(["Sherlock", "Watson", "Moriarty"]).unwrap();
++    assert!(s.nvol.s.is_some(), "default packed searcher must use NVOL Teddy");
++    let h = b"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Doctor Watson and Sherlock";
++    let m = s.find(&h[..]).unwrap();
++    assert_eq!((m.pattern().as_usize(), m.start()), (1, 48));
++}

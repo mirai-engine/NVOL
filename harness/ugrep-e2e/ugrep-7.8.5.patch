@@ -1,0 +1,1338 @@
+diff --git a/include/reflex/absmatcher.h b/include/reflex/absmatcher.h
+index 3cecd2e..0c6a51f 100644
+--- a/include/reflex/absmatcher.h
++++ b/include/reflex/absmatcher.h
+@@ -73,6 +73,7 @@
+ #include <reflex/input.h>
+ #include <reflex/traits.h>
+ #include <reflex/simd.h>
++#include <reflex/nvol_compat.h>
+ #include <cstdlib>
+ #include <cstdint>
+ #include <cctype>
+@@ -757,7 +758,7 @@ class AbstractMatcher {
+       if (cml_)
+       {
+         // count number of matching lines only, not line numbers
+-        n = std::memchr(s, '\n', t - s) != NULL;
++        n = reflex::nvolc::memchr(s, '\n', t - s) != NULL;
+       }
+       else
+       {
+@@ -1162,7 +1163,7 @@ class AbstractMatcher {
+     {
+       if (loc < end_)
+       {
+-        char *s = static_cast<char*>(std::memchr(buf_ + loc, '\n', end_ - loc));
++        char *s = static_cast<char*>(reflex::nvolc::memchr(buf_ + loc, '\n', end_ - loc));
+         if (s != NULL)
+           return s + inclusive;
+       }
+@@ -1288,7 +1289,7 @@ class AbstractMatcher {
+     len_ = 0;
+     while (true)
+     {
+-      txt_ = static_cast<char*>(std::memchr(buf_ + pos_, c, end_ - pos_));
++      txt_ = static_cast<char*>(reflex::nvolc::memchr(buf_ + pos_, c, end_ - pos_));
+       if (txt_ != NULL)
+       {
+         ++txt_;
+diff --git a/include/reflex/fuzzymatcher.h b/include/reflex/fuzzymatcher.h
+index e9e8306..779b8f6 100644
+--- a/include/reflex/fuzzymatcher.h
++++ b/include/reflex/fuzzymatcher.h
+@@ -904,7 +904,7 @@ unrolled:
+       // this part is based on advance() in matcher.cpp, limited to advancing ahead till the one of the first pattern char(s) match excluding \n
+       size_t loc = txt_ - buf_ + 1;
+       const char *s = buf_ + loc;
+-      const char *e = static_cast<const char*>(std::memchr(s, '\n', cur_ - loc));
++      const char *e = static_cast<const char*>(reflex::nvolc::memchr(s, '\n', cur_ - loc));
+       if (e == NULL)
+         e = buf_ + cur_;
+       if (pat_->len_ == 0)
+@@ -934,7 +934,7 @@ unrolled:
+       }
+       else if (s < e)
+       {
+-        s = static_cast<const char*>(std::memchr(s, *pat_->chr_, e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, *pat_->chr_, e - s));
+         if (s != NULL)
+         {
+           loc = s - buf_;
+@@ -1087,7 +1087,7 @@ unrolled:
+               {
+                 const char *s = buf_ + loc;
+                 const char *e = buf_ + end_;
+-                s = static_cast<const char*>(std::memchr(s, *pat_->chr_, e - s));
++                s = static_cast<const char*>(reflex::nvolc::memchr(s, *pat_->chr_, e - s));
+                 if (s != NULL)
+                 {
+                   loc = s - buf_;
+diff --git a/include/reflex/nvol_compat.h b/include/reflex/nvol_compat.h
+new file mode 100644
+index 0000000..68042ae
+--- /dev/null
++++ b/include/reflex/nvol_compat.h
+@@ -0,0 +1,59 @@
++// NVOL end-to-end: ugrep's byte search routed to NVOL's generated C++ header
++// (generated/cpp/nvol.hpp, header-only, raw layer in nvol::raw, C++17). The AVX2
++// matcher calls the *_entry_avx2 kernels directly, so they inline into its loops.
++// The memchr wrappers keep std::memchr's signatures; call sites only change name.
++#ifndef REFLEX_NVOL_COMPAT_H
++#define REFLEX_NVOL_COMPAT_H
++
++#include <cstddef>
++#include <cstdint>
++#include <nvol.hpp>
++
++using namespace ::nvol::raw;   // every NVOL name starts with nvol_
++
++namespace reflex {
++namespace nvolc {
++
++inline const char *memchr(const char *s, int c, size_t n)
++{
++  const uint8_t *p = reinterpret_cast<const uint8_t*>(s);
++  return reinterpret_cast<const char*>(nvol_memchr_raw(static_cast<uint8_t>(c), p, p + n));
++}
++
++inline char *memchr(char *s, int c, size_t n)
++{
++  return const_cast<char*>(memchr(static_cast<const char*>(s), c, n));
++}
++
++inline const void *memchr(const void *s, int c, size_t n)
++{
++  return memchr(static_cast<const char*>(s), c, n);
++}
++
++inline void *memchr(void *s, int c, size_t n)
++{
++  return const_cast<char*>(memchr(static_cast<const char*>(s), c, n));
++}
++
++// nvol_find_byteset_pair_mask_raw: candidate i of a chunk is bit i (x86_64) or bit 4i+3 (aarch64)
++#if defined(__aarch64__) || defined(_M_ARM64)
++const unsigned POS_BITS = 4;
++#else
++const unsigned POS_BITS = 1;
++#endif
++
++inline unsigned ctz64(uint64_t x)
++{
++#if defined(_MSC_VER)
++  unsigned long r;
++  _BitScanForward64(&r, x);
++  return static_cast<unsigned>(r);
++#else
++  return static_cast<unsigned>(__builtin_ctzll(x));
++#endif
++}
++
++} // namespace nvolc
++} // namespace reflex
++
++#endif
+diff --git a/include/reflex/matcher.h b/include/reflex/matcher.h
+index 9421236..2bffc02 100644
+--- a/include/reflex/matcher.h
++++ b/include/reflex/matcher.h
+@@ -1452,6 +1452,12 @@ class Matcher : public PatternMatcher<reflex::Pattern> {
+   std::stack<Stops> stk_; ///< stack to push/pop stops
+   FSM               fsm_; ///< local state for FSM code
+   bool (Matcher::*  adv_)(size_t loc); ///< advance FIND function pointer
++  nvol_memmem_finder nvol_finder_;     ///< NVOL end-to-end: memmem finder for pat_->chr_[0..len_) when len_ >= 2
++  uint8_t nvol_pincls_[NVOL_BYTESET_CLASS_BYTES];            ///< NVOL end-to-end: byte-set class of the pin needles chr_[0..pin_)
++  uint8_t nvol_pinset_[NVOL_BYTESET_PAIR_BYTES];           ///< NVOL end-to-end: pair state, chr_[0..pin_) at lcp_ and chr_[pin_..2 pin_) at lcs_
++  size_t nvol_k_;      ///< NVOL end-to-end: the candidate the pair visitor accepted
++  inline bool nvol_pair_scan(size_t loc);
++  static inline int nvol_pair_visit(void *self, const uint8_t *at, uint64_t m);
+   bool              mrk_; ///< indent \i or dedent \j in pattern found: should check and update indent stops
+ };
+ 
+diff --git a/lib/matcher.cpp b/lib/matcher.cpp
+index 5ac4297..529d70f 100644
+--- a/lib/matcher.cpp
++++ b/lib/matcher.cpp
+@@ -762,6 +762,16 @@ void Matcher::init_advance()
+   adv_ = &Matcher::advance_none;
+   if (pat_ == NULL)
+     return;
++  // NVOL end-to-end: one memmem finder per pattern string, built when the pattern is set
++  if (pat_->len_ >= 2)
++    nvol_memmem_finder_init(&nvol_finder_, reinterpret_cast<const uint8_t*>(pat_->chr_), pat_->len_);
++  // NVOL end-to-end: byte-set states for the pin (needle-set) searches
++  if (pat_->len_ == 0 && pat_->pin_ > 0)
++  {
++    const uint8_t *chr = reinterpret_cast<const uint8_t*>(pat_->chr_);
++    nvol_byteset_init(chr, pat_->pin_, nvol_pincls_);
++    nvol_byteset_pair_init(chr, pat_->pin_, chr + pat_->pin_, pat_->pin_, pat_->lcp_, pat_->lcs_, nvol_pinset_);
++  }
+   if (pat_->len_ == 0)
+   {
+     if (pat_->min_ == 0 && opt_.N)
+@@ -879,7 +889,7 @@ bool Matcher::advance_pattern_pin1_one(size_t loc)
+   {
+     const char *s = buf_ + loc;
+     const char *e = buf_ + end_;
+-    if (s < e && (s = static_cast<const char*>(std::memchr(s, chr0, e - s))) != NULL)
++    if (s < e && (s = static_cast<const char*>(reflex::nvolc::memchr(s, chr0, e - s))) != NULL)
+     {
+       loc = s - buf_;
+       if (REFLEX_UNLIKELY(s > e - Pattern::Const::PM_M) || pat_->predict_match(s))
+@@ -996,7 +1006,7 @@ bool Matcher::advance_pattern_pin1_pma(size_t loc)
+     }
+ #endif
+     e = buf_ + end_;
+-    if (s < e && (s = static_cast<const char*>(std::memchr(s, chr0, e - s))) != NULL)
++    if (s < e && (s = static_cast<const char*>(reflex::nvolc::memchr(s, chr0, e - s))) != NULL)
+     {
+       s -= lcp;
+       loc = s - buf_;
+@@ -1067,21 +1077,74 @@ bool Matcher::advance_pattern_pin##N##_one(size_t loc) \
+   } \
+ }
+ 
+-ADV_PAT_PIN_ONE(2, \
+-    __m128i v0 = _mm_set1_epi8(chr[0]); \
+-    __m128i v1 = _mm_set1_epi8(chr[1]); \
+-  , \
+-    veq = _mm_or_si128(veq, _mm_cmpeq_epi8(v1, vstr)); \
+-  )
++// NVOL end-to-end: the candidate scan is nvol_memchr2_raw (SSE2/AVX2 or NEON inside NVOL);
++// each candidate is still checked by RE/flex's predict_match, as before
++bool Matcher::advance_pattern_pin2_one(size_t loc)
++{
++  const uint8_t c0 = static_cast<uint8_t>(pat_->chr_[0]);
++  const uint8_t c1 = static_cast<uint8_t>(pat_->chr_[1]);
++  while (true)
++  {
++    const uint8_t *s = reinterpret_cast<const uint8_t*>(buf_ + loc);
++    const uint8_t *e = reinterpret_cast<const uint8_t*>(buf_ + end_);
++    while (s < e)
++    {
++      const uint8_t *p = nvol_memchr2_raw(c0, c1, s, e);
++      if (p == NULL)
++      {
++        s = e;
++        break;
++      }
++      size_t k = reinterpret_cast<const char*>(p) - buf_;
++      if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k]))
++      {
++        set_current(k);
++        return true;
++      }
++      s = p + 1;
++    }
++    loc = reinterpret_cast<const char*>(s) - buf_;
++    set_current_and_peek_more(loc);
++    loc = cur_;
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)
++      return true;
++  }
++}
+ 
+-ADV_PAT_PIN_ONE(3, \
+-    __m128i v0 = _mm_set1_epi8(chr[0]); \
+-    __m128i v1 = _mm_set1_epi8(chr[1]); \
+-    __m128i v2 = _mm_set1_epi8(chr[2]); \
+-  , \
+-    veq = _mm_or_si128(veq, _mm_cmpeq_epi8(v1, vstr)); \
+-    veq = _mm_or_si128(veq, _mm_cmpeq_epi8(v2, vstr)); \
+-  )
++// NVOL end-to-end: the candidate scan is nvol_memchr3_raw (SSE2/AVX2 or NEON inside NVOL);
++// each candidate is still checked by RE/flex's predict_match, as before
++bool Matcher::advance_pattern_pin3_one(size_t loc)
++{
++  const uint8_t c0 = static_cast<uint8_t>(pat_->chr_[0]);
++  const uint8_t c1 = static_cast<uint8_t>(pat_->chr_[1]);
++  const uint8_t c2 = static_cast<uint8_t>(pat_->chr_[2]);
++  while (true)
++  {
++    const uint8_t *s = reinterpret_cast<const uint8_t*>(buf_ + loc);
++    const uint8_t *e = reinterpret_cast<const uint8_t*>(buf_ + end_);
++    while (s < e)
++    {
++      const uint8_t *p = nvol_memchr3_raw(c0, c1, c2, s, e);
++      if (p == NULL)
++      {
++        s = e;
++        break;
++      }
++      size_t k = reinterpret_cast<const char*>(p) - buf_;
++      if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k]))
++      {
++        set_current(k);
++        return true;
++      }
++      s = p + 1;
++    }
++    loc = reinterpret_cast<const char*>(s) - buf_;
++    set_current_and_peek_more(loc);
++    loc = cur_;
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)
++      return true;
++  }
++}
+ 
+ ADV_PAT_PIN_ONE(4, \
+     __m128i v0 = _mm_set1_epi8(chr[0]); \
+@@ -1449,25 +1512,74 @@ bool Matcher::advance_pattern_pin##N##_one(size_t loc) \
+   } \
+ }
+ 
+-ADV_PAT_PIN_ONE(2, \
+-    uint8x16_t v0 = vdupq_n_u8(chr[0]); \
+-    uint8x16_t v1 = vdupq_n_u8(chr[1]); \
+-  , \
+-    uint8x16_t vmask8 = vorrq_u8(vceqq_u8(v0, vstr), vceqq_u8(v1, vstr)); \
+-  )
++// NVOL end-to-end: the candidate scan is nvol_memchr2_raw (SSE2/AVX2 or NEON inside NVOL);
++// each candidate is still checked by RE/flex's predict_match, as before
++bool Matcher::advance_pattern_pin2_one(size_t loc)
++{
++  const uint8_t c0 = static_cast<uint8_t>(pat_->chr_[0]);
++  const uint8_t c1 = static_cast<uint8_t>(pat_->chr_[1]);
++  while (true)
++  {
++    const uint8_t *s = reinterpret_cast<const uint8_t*>(buf_ + loc);
++    const uint8_t *e = reinterpret_cast<const uint8_t*>(buf_ + end_);
++    while (s < e)
++    {
++      const uint8_t *p = nvol_memchr2_raw(c0, c1, s, e);
++      if (p == NULL)
++      {
++        s = e;
++        break;
++      }
++      size_t k = reinterpret_cast<const char*>(p) - buf_;
++      if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k]))
++      {
++        set_current(k);
++        return true;
++      }
++      s = p + 1;
++    }
++    loc = reinterpret_cast<const char*>(s) - buf_;
++    set_current_and_peek_more(loc);
++    loc = cur_;
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)
++      return true;
++  }
++}
+ 
+-ADV_PAT_PIN_ONE(3, \
+-    uint8x16_t v0 = vdupq_n_u8(chr[0]); \
+-    uint8x16_t v1 = vdupq_n_u8(chr[1]); \
+-    uint8x16_t v2 = vdupq_n_u8(chr[2]); \
+-  , \
+-    uint8x16_t vmask8 = \
+-      vorrq_u8( \
+-        vorrq_u8( \
+-          vceqq_u8(v0, vstr), \
+-          vceqq_u8(v1, vstr)), \
+-        vceqq_u8(v2, vstr)); \
+-  )
++// NVOL end-to-end: the candidate scan is nvol_memchr3_raw (SSE2/AVX2 or NEON inside NVOL);
++// each candidate is still checked by RE/flex's predict_match, as before
++bool Matcher::advance_pattern_pin3_one(size_t loc)
++{
++  const uint8_t c0 = static_cast<uint8_t>(pat_->chr_[0]);
++  const uint8_t c1 = static_cast<uint8_t>(pat_->chr_[1]);
++  const uint8_t c2 = static_cast<uint8_t>(pat_->chr_[2]);
++  while (true)
++  {
++    const uint8_t *s = reinterpret_cast<const uint8_t*>(buf_ + loc);
++    const uint8_t *e = reinterpret_cast<const uint8_t*>(buf_ + end_);
++    while (s < e)
++    {
++      const uint8_t *p = nvol_memchr3_raw(c0, c1, c2, s, e);
++      if (p == NULL)
++      {
++        s = e;
++        break;
++      }
++      size_t k = reinterpret_cast<const char*>(p) - buf_;
++      if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k]))
++      {
++        set_current(k);
++        return true;
++      }
++      s = p + 1;
++    }
++    loc = reinterpret_cast<const char*>(s) - buf_;
++    set_current_and_peek_more(loc);
++    loc = cur_;
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)
++      return true;
++  }
++}
+ 
+ ADV_PAT_PIN_ONE(4, \
+     uint8x16_t v0 = vdupq_n_u8(chr[0]); \
+@@ -2194,7 +2306,7 @@ bool Matcher::advance_char(size_t loc)
+   {
+     const char *s = buf_ + loc;
+     const char *e = buf_ + end_;
+-    s = static_cast<const char*>(std::memchr(s, chr0, e - s));
++    s = static_cast<const char*>(reflex::nvolc::memchr(s, chr0, e - s));
+     if (s != NULL)
+     {
+       size_t k = s - buf_;
+@@ -2217,7 +2329,7 @@ bool Matcher::advance_char_pma(size_t loc)
+   {
+     const char *s = buf_ + loc;
+     const char *e = buf_ + end_;
+-    s = static_cast<const char*>(std::memchr(s, chr0, e - s));
++    s = static_cast<const char*>(reflex::nvolc::memchr(s, chr0, e - s));
+     if (s != NULL)
+     {
+       loc = s - buf_;
+@@ -2335,7 +2447,7 @@ bool Matcher::advance_chars(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+@@ -2465,7 +2577,7 @@ bool Matcher::advance_chars_pma(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+@@ -2535,7 +2647,7 @@ bool Matcher::advance_string(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+@@ -2605,7 +2717,7 @@ bool Matcher::advance_string_pma(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+diff --git a/lib/matcher_avx2.cpp b/lib/matcher_avx2.cpp
+index fc42048..495f3be 100644
+--- a/lib/matcher_avx2.cpp
++++ b/lib/matcher_avx2.cpp
+@@ -41,6 +41,7 @@
+ #endif
+ 
+ #include <reflex/matcher.h>
++#include <cstring>
+ 
+ namespace reflex {
+ 
+@@ -138,124 +139,194 @@ void Matcher::simd_init_advance_avx2()
+ }
+ 
+ // My homegrown "needle search" method when needle pin=1
++// NVOL end-to-end: the pair search hands every chunk with candidates to nvol_pair_visit, which runs
++// predict_match on them; it stops at the first one predict_match accepts. On a long enough
++// haystack the kernel is picked by the selector nvol_byteset_pair_init stored in the state and
++// inlined here with the visitor, so the two loops become one as in ugrep's own code (k-compare
++// chains for small sets, nibble lookup otherwise); short haystacks go through NVOL's entry, which
++// falls back to SSSE3 or scalar.
++inline NVOL_FORCE_INLINE int Matcher::nvol_pair_visit(void *self, const uint8_t *at, uint64_t m)
++{
++  Matcher *t = static_cast<Matcher*>(self);
++  do
++  {
++    const uint8_t *p = at + reflex::nvolc::ctz64(m) / reflex::nvolc::POS_BITS;
++    size_t k = reinterpret_cast<const char*>(p) - t->buf_;
++    if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > t->end_) || t->pat_->predict_match(&t->buf_[k]))
++    {
++      t->nvol_k_ = k;
++      return 1;
++    }
++    m &= m - 1;
++  } while (m != 0);
++  return 0;
++}
++
++// NVOL end-to-end: true once predict_match accepts a candidate in [loc, end_) (set_current done)
++inline NVOL_FORCE_INLINE bool Matcher::nvol_pair_scan(size_t loc)
++{
++  const uint8_t *st = nvol_pinset_;
++  const uint8_t *s = reinterpret_cast<const uint8_t*>(buf_ + loc);
++  const uint8_t *e = reinterpret_cast<const uint8_t*>(buf_ + end_);
++  if (s >= e)
++    return false;
++  const nvol_visitor v = { &Matcher::nvol_pair_visit, this };
++  uint64_t sel, reach;
++  NVOL_MEMCPY(&sel, st + NVOL_BYTESET_PAIR_SEL, 8);
++  NVOL_MEMCPY(&reach, st + NVOL_BYTESET_PAIR_REACH, 8);
++  const uint8_t *at;
++  // the switch names the kernels NVOL generates for each selector value
++  static_assert(NVOL_BYTESET_CHAIN_MAX == 6, "NVOL pair kernels: _k1.._k6, then the nibble lookup");
++  if (static_cast<uint64_t>(e - s) >= reach + 32)
++  {
++    switch (sel)
++    {
++      case 0: return false;
++      case 1: at = nvol_find_byteset_pair_visit_avx2_k1(st, s, e, &v); break;
++      case 2: at = nvol_find_byteset_pair_visit_avx2_k2(st, s, e, &v); break;
++      case 3: at = nvol_find_byteset_pair_visit_avx2_k3(st, s, e, &v); break;
++      case 4: at = nvol_find_byteset_pair_visit_avx2_k4(st, s, e, &v); break;
++      case 5: at = nvol_find_byteset_pair_visit_avx2_k5(st, s, e, &v); break;
++      case 6: at = nvol_find_byteset_pair_visit_avx2_k6(st, s, e, &v); break;
++      default: at = nvol_find_byteset_pair_visit_avx2(st, s, e, &v); break;
++    }
++  }
++  else
++  {
++    at = nvol_find_byteset_pair_visit_entry_avx2(st, s, e, &v);
++  }
++  if (at == NULL)
++    return false;
++  set_current(nvol_k_);
++  return true;
++}
++
+ bool Matcher::simd_advance_pattern_pin1_pma_avx2(size_t loc)
+ {
+-  const char *chr = pat_->chr_;
++  /* NVOL end-to-end: candidates from nvol_pair_scan (byte set chr[0..N) */
++  /* at lcp, chr[N..2N) at lcs), checked by predict_match inside NVOL's loop (the visitor) */
++  /* and NVOL is called again after a candidate predict_match accepts but the match failed */
+   const uint16_t min = pat_->min_;
+-  const uint16_t lcp = pat_->lcp_;
+-  const uint16_t lcs = pat_->lcs_;
+-  const char chr0 = chr[0];
+-  const char chr1 = chr[1];
+-  __m256i vlcp = _mm256_set1_epi8(chr0);
+-  __m256i vlcs = _mm256_set1_epi8(chr1);
++  const size_t reach = pat_->lcp_ > pat_->lcs_ ? pat_->lcp_ : pat_->lcs_;
+   while (true)
+   {
+-    const char *s = buf_ + loc + lcp;
+-    const char *e = buf_ + end_ + lcp - min + 1;
+-    while (s <= e - 32)
++    if (nvol_pair_scan(loc))
++      return true;
++    /* positions whose lcp/lcs window runs past end_ were not examined: keep them for the refill */
++    if (end_ > reach && end_ - reach > loc)
++      loc = end_ - reach;
++    set_current_and_peek_more(loc);
++    loc = cur_;
++    if (loc + min > end_ && eof_)
++      return false;
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)
++      return true;
++  }
++}
++
++// My homegrown "needle search" methods
++#define ADV_PAT_PIN_ONE(N, INIT, COMP) \
++bool Matcher::simd_advance_pattern_pin##N##_one_avx2(size_t loc) \
++{                                                                                            \
++  /* NVOL end-to-end: candidates from nvol_find_byteset_raw over chr[0..N); each candidate */ \
++  /* is still checked by RE/flex's predict_match */                                          \
++  while (true)                                                                               \
++  {                                                                                          \
++    const uint8_t *s = reinterpret_cast<const uint8_t*>(buf_ + loc);                         \
++    const uint8_t *e = reinterpret_cast<const uint8_t*>(buf_ + end_);                        \
++    while (s < e)                                                                            \
++    {                                                                                        \
++      const uint8_t *p = nvol_find_byteset_entry_avx2(nvol_pincls_, s, e);                          \
++      if (p == NULL)                                                                         \
++      {                                                                                      \
++        s = e;                                                                               \
++        break;                                                                               \
++      }                                                                                      \
++      size_t k = reinterpret_cast<const char*>(p) - buf_;                                    \
++      if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k])) \
++      {                                                                                      \
++        set_current(k);                                                                      \
++        return true;                                                                         \
++      }                                                                                      \
++      s = p + 1;                                                                             \
++    }                                                                                        \
++    loc = reinterpret_cast<const char*>(s) - buf_;                                           \
++    set_current_and_peek_more(loc);                                                          \
++    loc = cur_;                                                                              \
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)                                            \
++      return true;                                                                           \
++  }                                                                                          \
++}
++
++// NVOL end-to-end: the candidate scan is nvol_memchr2_raw; each candidate is still checked
++// by RE/flex's predict_match, as before
++bool Matcher::simd_advance_pattern_pin2_one_avx2(size_t loc)
++{
++  const uint8_t c0 = static_cast<uint8_t>(pat_->chr_[0]);
++  const uint8_t c1 = static_cast<uint8_t>(pat_->chr_[1]);
++  while (true)
++  {
++    const uint8_t *s = reinterpret_cast<const uint8_t*>(buf_ + loc);
++    const uint8_t *e = reinterpret_cast<const uint8_t*>(buf_ + end_);
++    while (s < e)
+     {
+-      __m256i vstrlcp = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s));
+-      __m256i vstrlcs = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s + lcs - lcp));
+-      __m256i veqlcp = _mm256_cmpeq_epi8(vlcp, vstrlcp);
+-      __m256i veqlcs = _mm256_cmpeq_epi8(vlcs, vstrlcs);
+-      uint32_t mask = _mm256_movemask_epi8(_mm256_and_si256(veqlcp, veqlcs));
+-      while (REFLEX_UNLIKELY(mask != 0))
++      const uint8_t *p = nvol_memchr2_raw(c0, c1, s, e);
++      if (p == NULL)
++      {
++        s = e;
++        break;
++      }
++      size_t k = reinterpret_cast<const char*>(p) - buf_;
++      if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k]))
+       {
+-        uint32_t offset = ctz(mask);
+-        size_t k = s - lcp + offset - buf_;
+         set_current(k);
+-        if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k]))
+-          return true;
+-        mask &= mask - 1;
++        return true;
+       }
+-      s += 32;
++      s = p + 1;
+     }
+-    e = buf_ + end_;
+-    if (s < e && (s = static_cast<const char*>(std::memchr(s, chr0, e - s))) != NULL)
++    loc = reinterpret_cast<const char*>(s) - buf_;
++    set_current_and_peek_more(loc);
++    loc = cur_;
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)
++      return true;
++  }
++}
++
++// NVOL end-to-end: the candidate scan is nvol_memchr3_raw; each candidate is still checked
++// by RE/flex's predict_match, as before
++bool Matcher::simd_advance_pattern_pin3_one_avx2(size_t loc)
++{
++  const uint8_t c0 = static_cast<uint8_t>(pat_->chr_[0]);
++  const uint8_t c1 = static_cast<uint8_t>(pat_->chr_[1]);
++  const uint8_t c2 = static_cast<uint8_t>(pat_->chr_[2]);
++  while (true)
++  {
++    const uint8_t *s = reinterpret_cast<const uint8_t*>(buf_ + loc);
++    const uint8_t *e = reinterpret_cast<const uint8_t*>(buf_ + end_);
++    while (s < e)
+     {
+-      s -= lcp;
+-      loc = s - buf_;
+-      if (REFLEX_UNLIKELY(s > e - Pattern::Const::PM_M) || (s[lcs] == chr1 && pat_->predict_match(s)))
++      const uint8_t *p = nvol_memchr3_raw(c0, c1, c2, s, e);
++      if (p == NULL)
++      {
++        s = e;
++        break;
++      }
++      size_t k = reinterpret_cast<const char*>(p) - buf_;
++      if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k]))
+       {
+-        set_current(loc);
++        set_current(k);
+         return true;
+       }
+-      ++loc;
+-    }
+-    else
+-    {
+-      if (e > buf_ + loc + lcp)
+-        loc = e - buf_ - lcp;
+-      set_current_and_peek_more(loc);
+-      loc = cur_;
+-      if (loc + min > end_ && eof_)
+-        return false;
++      s = p + 1;
+     }
++    loc = reinterpret_cast<const char*>(s) - buf_;
++    set_current_and_peek_more(loc);
++    loc = cur_;
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)
++      return true;
+   }
+ }
+ 
+-// My homegrown "needle search" methods
+-#define ADV_PAT_PIN_ONE(N, INIT, COMP) \
+-bool Matcher::simd_advance_pattern_pin##N##_one_avx2(size_t loc) \
+-{ \
+-  const char *chr = pat_->chr_; \
+-  INIT \
+-  while (true) \
+-  { \
+-    const char *s = buf_ + loc; \
+-    const char *e = buf_ + end_; \
+-    while (s <= e - 32) \
+-    { \
+-      __m256i vstr = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s)); \
+-      __m256i veq = _mm256_cmpeq_epi8(v0, vstr); \
+-      COMP \
+-      uint32_t mask = _mm256_movemask_epi8(veq); \
+-      while (REFLEX_UNLIKELY(mask != 0)) \
+-      { \
+-        uint32_t offset = ctz(mask); \
+-        size_t k = s + offset - buf_; \
+-        if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k])) \
+-        { \
+-          set_current(k); \
+-          return true; \
+-        } \
+-        mask &= mask - 1; \
+-      } \
+-      s += 32; \
+-    } \
+-    while (s < e - (Pattern::Const::PM_M - 1)) \
+-    { \
+-      if (pat_->predict_match(s++)) \
+-      { \
+-        size_t k = s - buf_ - 1; \
+-        set_current(k); \
+-        return true; \
+-      } \
+-    } \
+-    loc = s - buf_; \
+-    set_current_and_peek_more(loc); \
+-    loc = cur_; \
+-    if (loc + (Pattern::Const::PM_M - 1) >= end_) \
+-      return true; \
+-  } \
+-}
+-
+-ADV_PAT_PIN_ONE(2, \
+-    __m256i v0 = _mm256_set1_epi8(chr[0]); \
+-    __m256i v1 = _mm256_set1_epi8(chr[1]); \
+-  , \
+-    veq = _mm256_or_si256(veq, _mm256_cmpeq_epi8(v1, vstr)); \
+-  )
+-
+-ADV_PAT_PIN_ONE(3, \
+-    __m256i v0 = _mm256_set1_epi8(chr[0]); \
+-    __m256i v1 = _mm256_set1_epi8(chr[1]); \
+-    __m256i v2 = _mm256_set1_epi8(chr[2]); \
+-  , \
+-    veq = _mm256_or_si256(veq, _mm256_cmpeq_epi8(v1, vstr)); \
+-    veq = _mm256_or_si256(veq, _mm256_cmpeq_epi8(v2, vstr)); \
+-  )
+-
+ ADV_PAT_PIN_ONE(4, \
+     __m256i v0 = _mm256_set1_epi8(chr[0]); \
+     __m256i v1 = _mm256_set1_epi8(chr[1]); \
+@@ -369,56 +440,26 @@ ADV_PAT_PIN_ONE(16, \
+ // My homegrown "needle search" methods
+ #define ADV_PAT_PIN(N, INIT, COMP) \
+ bool Matcher::simd_advance_pattern_pin##N##_pma_avx2(size_t loc) \
+-{ \
+-  const char *chr = pat_->chr_; \
+-  const uint16_t min = pat_->min_; \
+-  const uint16_t lcp = pat_->lcp_; \
+-  const uint16_t lcs = pat_->lcs_; \
+-  INIT \
+-  while (true) \
+-  { \
+-    const char *s = buf_ + loc + lcp; \
+-    const char *e = buf_ + end_ + lcp - min + 1; \
+-    while (s <= e - 32) \
+-    { \
+-      __m256i vstrlcp = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s)); \
+-      __m256i vstrlcs = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s + lcs - lcp)); \
+-      __m256i veqlcp = _mm256_cmpeq_epi8(vlcp0, vstrlcp); \
+-      __m256i veqlcs = _mm256_cmpeq_epi8(vlcs0, vstrlcs); \
+-      COMP \
+-      uint32_t mask = _mm256_movemask_epi8(_mm256_and_si256(veqlcp, veqlcs)); \
+-      while (REFLEX_UNLIKELY(mask != 0)) \
+-      { \
+-        uint32_t offset = ctz(mask); \
+-        size_t k = s - lcp + offset - buf_; \
+-        if (REFLEX_UNLIKELY(k + Pattern::Const::PM_M > end_) || pat_->predict_match(&buf_[k])) \
+-        { \
+-          set_current(k); \
+-          return true; \
+-        } \
+-        mask &= mask - 1; \
+-      } \
+-      s += 32; \
+-    } \
+-    s -= lcp; \
+-    e = buf_ + end_ - (Pattern::Const::PM_M - 1); \
+-    while (s < e) \
+-    { \
+-      if (pat_->predict_match(s++)) \
+-      { \
+-        size_t k = s - buf_ - 1; \
+-        set_current(k); \
+-        return true; \
+-      } \
+-    } \
+-    loc = s - buf_; \
+-    set_current_and_peek_more(loc); \
+-    loc = cur_; \
+-    if (loc + min > end_ && eof_) \
+-      return false; \
+-    if (loc + (Pattern::Const::PM_M - 1) >= end_) \
+-      return true; \
+-  } \
++{                                                                                                   \
++  /* NVOL end-to-end: candidates from nvol_pair_scan (byte set chr[0..N) */                           \
++  /* at lcp, chr[N..2N) at lcs), checked by predict_match inside NVOL's loop (the visitor)  */    \
++  /* and NVOL is called again after a candidate predict_match accepts but the match failed */                                     \
++  const uint16_t min = pat_->min_;                                                                  \
++  const size_t reach = pat_->lcp_ > pat_->lcs_ ? pat_->lcp_ : pat_->lcs_;                           \
++  while (true)                                                                                      \
++  {                                                                                                 \
++    if (nvol_pair_scan(loc))                                                                        \
++      return true;                                                                                  \
++    /* positions whose lcp/lcs window runs past end_ were not examined: keep them for the refill */ \
++    if (end_ > reach && end_ - reach > loc)                                                         \
++      loc = end_ - reach;                                                                           \
++    set_current_and_peek_more(loc);                                                                 \
++    loc = cur_;                                                                                     \
++    if (loc + min > end_ && eof_)                                                                   \
++      return false;                                                                                 \
++    if (loc + (Pattern::Const::PM_M - 1) >= end_)                                                   \
++      return true;                                                                                  \
++  }                                                                                                 \
+ }
+ 
+ ADV_PAT_PIN(2, \
+@@ -730,59 +771,29 @@ bool Matcher::simd_advance_pattern_min4_avx2(size_t loc)
+ template<uint8_t LEN>
+ bool Matcher::simd_advance_chars_avx2(size_t loc)
+ {
+-  const uint16_t lcp = 0;
+-  const uint16_t lcs = LEN - 1;
+-  const char *chr = pat_->chr_;
++  // NVOL end-to-end: the whole scan is one NVOL memmem call (packed pair + verification),
++  // with the finder built once per pattern in init_advance()
++  const size_t len = LEN;
+   while (true)
+   {
+-    const char *s = buf_ + loc + lcp;
+-    const char *e = buf_ + end_ + lcp - LEN + 1;
+-    __m256i vlcp = _mm256_set1_epi8(chr[lcp]);
+-    __m256i vlcs = _mm256_set1_epi8(chr[lcs]);
+-    while (s <= e - 32)
+-    {
+-      __m256i vlcpm = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s));
+-      __m256i vlcsm = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s + lcs - lcp));
+-      __m256i vlcpeq = _mm256_cmpeq_epi8(vlcp, vlcpm);
+-      __m256i vlcseq = _mm256_cmpeq_epi8(vlcs, vlcsm);
+-      uint32_t mask = _mm256_movemask_epi8(_mm256_and_si256(vlcpeq, vlcseq));
+-      while (REFLEX_UNLIKELY(mask != 0))
+-      {
+-        uint32_t offset = ctz(mask);
+-        if (LEN == 2 ||
+-            (LEN == 3 ? s[offset + 1 - lcp] == chr[1] : std::memcmp(s + 1 - lcp + offset, chr + 1, LEN - 2) == 0))
+-        {
+-          size_t k = s - lcp + offset - buf_;
+-          set_current(k);
+-          return true;
+-        }
+-        mask &= mask - 1;
+-      }
+-      s += 32;
+-    }
+-    while (s < e)
++    const char *s = buf_ + loc;
++    const char *e = buf_ + end_;
++    if (static_cast<size_t>(e - s) >= len)
+     {
+-      do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
+-      while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+-      if (s == NULL || s >= e)
++      // straight to the dispatched kernel with the finder's precomputed state (one call, a pointer back)
++      const uint8_t *p = nvol_memmem_find_entry_avx2(reinterpret_cast<const uint8_t*>(nvol_finder_.state),
++          nvol_finder_.needle, nvol_finder_.needle + nvol_finder_.nlen,
++          reinterpret_cast<const uint8_t*>(s), reinterpret_cast<const uint8_t*>(e));
++      if (p != NULL)
+       {
+-        s = e;
+-        break;
+-      }
+-      if (LEN == 2 ||
+-          (LEN == 3 ? s[1 - lcp] == chr[1] : std::memcmp(s + 1 - lcp, chr + 1, LEN - 1) == 0))
+-      {
+-        size_t k = s - lcp - buf_;
+-        set_current(k);
++        set_current(reinterpret_cast<const char*>(p) - buf_);
+         return true;
+       }
+-      ++s;
++      loc = end_ - len + 1;
+     }
+-    loc = s - lcp - buf_;
+     set_current_and_peek_more(loc);
+     loc = cur_;
+-    if (loc + LEN > end_ && eof_)
++    if (loc + len > end_ && eof_)
+       return false;
+   }
+ }
+@@ -828,7 +839,7 @@ bool Matcher::simd_advance_chars_pma_avx2(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+@@ -858,55 +869,26 @@ bool Matcher::simd_advance_chars_pma_avx2(size_t loc)
+ /// Implements AVX2 string search scheme based on http://0x80.pl/articles/simd-friendly-karp-rabin.html
+ bool Matcher::simd_advance_string_avx2(size_t loc)
+ {
+-  const char *chr = pat_->chr_;
+-  const uint16_t len = pat_->len_;
+-  const uint16_t lcp = pat_->lcp_;
+-  const uint16_t lcs = pat_->lcs_;
++  // NVOL end-to-end: the whole scan is one NVOL memmem call (packed pair + verification),
++  // with the finder built once per pattern in init_advance()
++  const size_t len = pat_->len_;
+   while (true)
+   {
+-    const char *s = buf_ + loc + lcp;
+-    const char *e = buf_ + end_ + lcp - len + 1;
+-    __m256i vlcp = _mm256_set1_epi8(chr[lcp]);
+-    __m256i vlcs = _mm256_set1_epi8(chr[lcs]);
+-    while (s <= e - 32)
+-    {
+-      __m256i vlcpm = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s));
+-      __m256i vlcsm = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s + lcs - lcp));
+-      __m256i vlcpeq = _mm256_cmpeq_epi8(vlcp, vlcpm);
+-      __m256i vlcseq = _mm256_cmpeq_epi8(vlcs, vlcsm);
+-      uint32_t mask = _mm256_movemask_epi8(_mm256_and_si256(vlcpeq, vlcseq));
+-      while (REFLEX_UNLIKELY(mask != 0))
+-      {
+-        uint32_t offset = ctz(mask);
+-        if (std::memcmp(s - lcp + offset, chr, len) == 0)
+-        {
+-          size_t k = s - lcp + offset - buf_;
+-          set_current(k);
+-          return true;
+-        }
+-        mask &= mask - 1;
+-      }
+-      s += 32;
+-    }
+-    while (s < e)
++    const char *s = buf_ + loc;
++    const char *e = buf_ + end_;
++    if (static_cast<size_t>(e - s) >= len)
+     {
+-      do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
+-      while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+-      if (s == NULL || s >= e)
+-      {
+-        s = e;
+-        break;
+-      }
+-      if (std::memcmp(s - lcp, chr, len) == 0)
++      // straight to the dispatched kernel with the finder's precomputed state (one call, a pointer back)
++      const uint8_t *p = nvol_memmem_find_entry_avx2(reinterpret_cast<const uint8_t*>(nvol_finder_.state),
++          nvol_finder_.needle, nvol_finder_.needle + nvol_finder_.nlen,
++          reinterpret_cast<const uint8_t*>(s), reinterpret_cast<const uint8_t*>(e));
++      if (p != NULL)
+       {
+-        size_t k = s - lcp - buf_;
+-        set_current(k);
++        set_current(reinterpret_cast<const char*>(p) - buf_);
+         return true;
+       }
+-      ++s;
++      loc = end_ - len + 1;
+     }
+-    loc = s - lcp - buf_;
+     set_current_and_peek_more(loc);
+     loc = cur_;
+     if (loc + len > end_ && eof_)
+@@ -954,7 +936,7 @@ bool Matcher::simd_advance_string_pma_avx2(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+diff --git a/lib/matcher_avx512bw.cpp b/lib/matcher_avx512bw.cpp
+index a1258db..eb780b5 100644
+--- a/lib/matcher_avx512bw.cpp
++++ b/lib/matcher_avx512bw.cpp
+@@ -115,7 +115,7 @@ bool Matcher::simd_advance_chars_avx512bw(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+@@ -178,7 +178,7 @@ bool Matcher::simd_advance_chars_pma_avx512bw(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+@@ -239,7 +239,7 @@ bool Matcher::simd_advance_string_avx512bw(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+@@ -300,7 +300,7 @@ bool Matcher::simd_advance_string_pma_avx512bw(size_t loc)
+     while (s < e)
+     {
+       do
+-        s = static_cast<const char*>(std::memchr(s, chr[lcp], e - s));
++        s = static_cast<const char*>(reflex::nvolc::memchr(s, chr[lcp], e - s));
+       while (s != NULL && s[lcs - lcp] != chr[lcs] && ++s < e);
+       if (s == NULL || s >= e)
+       {
+diff --git a/lib/simd.cpp b/lib/simd.cpp
+index 46d7c3b..8ed6eb1 100644
+--- a/lib/simd.cpp
++++ b/lib/simd.cpp
+@@ -35,6 +35,7 @@
+ */
+ 
+ #include <reflex/simd.h>
++#include <reflex/nvol_compat.h>
+ 
+ namespace reflex {
+ 
+@@ -61,108 +62,10 @@ uint64_t HW = get_HW();
+ 
+ size_t nlcount(const char *s, const char *t)
+ {
+-  size_t n = 0;
+-  if (s <= t - 256)
+-  {
+-#if defined(HAVE_AVX512BW) && (!defined(_MSC_VER) || defined(_WIN64))
+-    if (have_HW_AVX512BW())
+-      n = simd_nlcount_avx512bw(s, t);
+-    else if (have_HW_AVX2())
+-      n = simd_nlcount_avx2(s, t);
+-    else
+-#elif defined(HAVE_AVX512BW) || defined(HAVE_AVX2)
+-    if (have_HW_AVX2())
+-      n = simd_nlcount_avx2(s, t);
+-    else
+-#endif
+-#if defined(HAVE_AVX512BW) || defined(HAVE_AVX2) || defined(HAVE_SSE2)
+-    {
+-      const char *e = t - 64;
+-      // align on 16 bytes
+-      while ((reinterpret_cast<std::ptrdiff_t>(s) & 0x0f) != 0)
+-        n += (*s++ == '\n');
+-      __m128i vlcn = _mm_set1_epi8('\n');
+-      __m128i v0 = _mm_setzero_si128();
+-      while (s <= e)
+-      {
+-        __m128i vlcm1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(s));
+-        __m128i vlcm2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(s + 16));
+-        __m128i vlcm3 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(s + 32));
+-        __m128i vlcm4 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(s + 48));
+-        // take absolute value of comparisons to get 0 or 1 per byte
+-        __m128i vlceq1 = _mm_sub_epi8(v0, _mm_cmpeq_epi8(vlcm1, vlcn));
+-        __m128i vlceq2 = _mm_sub_epi8(v0, _mm_cmpeq_epi8(vlcm2, vlcn));
+-        __m128i vlceq3 = _mm_sub_epi8(v0, _mm_cmpeq_epi8(vlcm3, vlcn));
+-        __m128i vlceq4 = _mm_sub_epi8(v0, _mm_cmpeq_epi8(vlcm4, vlcn));
+-        // sum all up (we have a limited range 0..4 to sum to a total max 4x16=64 < 256)
+-        // more than two times faster than four popcounts over four movemasks for SSE2 (not for AVX2)
+-        __m128i vsum = _mm_add_epi8(_mm_add_epi8(vlceq1, vlceq2), _mm_add_epi8(vlceq3, vlceq4));
+-        uint16_t sum =
+-          _mm_extract_epi16(vsum, 0) +
+-          _mm_extract_epi16(vsum, 1) +
+-          _mm_extract_epi16(vsum, 2) +
+-          _mm_extract_epi16(vsum, 3) +
+-          _mm_extract_epi16(vsum, 4) +
+-          _mm_extract_epi16(vsum, 5) +
+-          _mm_extract_epi16(vsum, 6) +
+-          _mm_extract_epi16(vsum, 7);
+-        n += static_cast<uint8_t>(sum) + (sum >> 8);
+-        s += 64;
+-      }
+-    }
+-#elif defined(HAVE_NEON)
+-    const char *e = t - 64;
+-    uint8x16_t vlcn = vdupq_n_u8('\n');
+-    while (s <= e)
+-    {
+-      uint8x16_t vlcm0 = vld1q_u8(reinterpret_cast<const uint8_t*>(s));
+-      uint8x16_t vleq0 = vceqq_u8(vlcm0, vlcn);
+-      s += 16;
+-      uint8x16_t vlcm1 = vld1q_u8(reinterpret_cast<const uint8_t*>(s));
+-      uint8x16_t vleq1 = vceqq_u8(vlcm1, vlcn);
+-      s += 16;
+-      uint8x16_t vlcm2 = vld1q_u8(reinterpret_cast<const uint8_t*>(s));
+-      uint8x16_t vleq2 = vceqq_u8(vlcm2, vlcn);
+-      s += 16;
+-      uint8x16_t vlcm3 = vld1q_u8(reinterpret_cast<const uint8_t*>(s));
+-      uint8x16_t vleq3 = vceqq_u8(vlcm3, vlcn);
+-      s += 16;
+-#if defined(__aarch64__)
+-      n += vaddvq_s8(vqabsq_s8(vreinterpretq_s8_u8(vaddq_u8(vleq0, vaddq_u8(vleq1, vaddq_u8(vleq2, vleq3))))));
+-#else
+-      // my horizontal sum method (we have a limited range 0..4 to sum to a total max 4x16=64 < 256)
+-      uint64x2_t vsum = vreinterpretq_u64_s8(vqabsq_s8(vreinterpretq_s8_u8(vaddq_u8(vaddq_u8(vleq0, vleq1), vaddq_u8(vleq2, vleq3)))));
+-      uint64_t sum0 = vgetq_lane_u64(vsum, 0) + vgetq_lane_u64(vsum, 1);
+-      uint32_t sum1 = static_cast<uint32_t>(sum0) + (sum0 >> 32);
+-      uint16_t sum2 = static_cast<uint16_t>(sum1) + (sum1 >> 16);
+-      n += static_cast<uint8_t>(sum2) + (sum2 >> 8);
+-#endif
+-    }
+-#endif
+-  }
+-  // 4-way auto-vectorizable loop
+-  uint32_t n0 = 0, n1 = 0, n2 = 0, n3 = 0;
+-  while (s < t - 3)
+-  {
+-    n0 += s[0] == '\n';
+-    n1 += s[1] == '\n';
+-    n2 += s[2] == '\n';
+-    n3 += s[3] == '\n';
+-    s += 4;
+-  }
+-  n += n0 + n1 + n2 + n3;
+-  // epilogue
+-  if (s < t)
+-  {
+-    n += *s == '\n';
+-    if (++s < t)
+-    {
+-      n += *s == '\n';
+-      if (++s < t)
+-        n += *s == '\n';
+-    }
+-  }
+-  return n;
++  // NVOL end-to-end: newline count from the NVOL-generated library (SAD strategy, runtime ISA dispatch)
++  if (s >= t)
++    return 0;
++  return nvol_count_raw('\n', reinterpret_cast<const uint8_t*>(s), reinterpret_cast<const uint8_t*>(t));
+ }
+ 
+ // Check if valid UTF-8 encoding and does not include a NUL, but pass surrogates and 3/4 byte overlongs
+diff --git a/src/output.cpp b/src/output.cpp
+index d855738..112886c 100644
+--- a/src/output.cpp
++++ b/src/output.cpp
+@@ -2261,7 +2261,7 @@ bool Output::flush_truncated_lines(const char *data, size_t size)
+ {
+   if (skip_)
+   {
+-    const char *end = static_cast<const char*>(memchr(data, '\n', size));
++    const char *end = static_cast<const char*>(reflex::nvolc::memchr(data, '\n', size));
+ 
+     if (end == NULL)
+       return false;
+@@ -2415,7 +2415,7 @@ bool Output::flush_truncated_lines(const char *data, size_t size)
+       cols_ = 0;
+ 
+       // look for newline to reach next line
+-      scan = static_cast<const char*>(memchr(data, '\n', size));
++      scan = static_cast<const char*>(reflex::nvolc::memchr(data, '\n', size));
+       if (scan == NULL)
+       {
+         skip_ = true;
+diff --git a/src/query.cpp b/src/query.cpp
+index f24e16d..2aea8ae 100644
+--- a/src/query.cpp
++++ b/src/query.cpp
+@@ -1771,7 +1771,7 @@ bool Query::fetch(int row)
+     bool incomplete = false;
+ 
+     // look for the first newline character in the buffer
+-    char *nlptr = static_cast<char*>(memchr(buffer_, '\n', buflen_));
++    char *nlptr = static_cast<char*>(reflex::nvolc::memchr(buffer_, '\n', buflen_));
+ 
+     if (nlptr == NULL)
+     {
+@@ -1870,7 +1870,7 @@ bool Query::fetch(int row)
+         break;
+ 
+       // we may have more data now, so look again for the first newline character in the buffer
+-      nlptr = static_cast<char*>(memchr(buffer_, '\n', buflen_));
++      nlptr = static_cast<char*>(reflex::nvolc::memchr(buffer_, '\n', buflen_));
+ 
+       if (nlptr == NULL)
+       {
+diff --git a/src/ugrep.cpp b/src/ugrep.cpp
+index 921cacf..c85b2c6 100644
+--- a/src/ugrep.cpp
++++ b/src/ugrep.cpp
+@@ -707,7 +707,7 @@ inline bool is_binary(const char *s, size_t n)
+     return !reflex::isutf8(s, s + n);
+ 
+   // otherwise, file is binary if it contains a \0 (NUL) which is what GNU grep checks
+-  return memchr(s, '\0', n) != NULL;
++  return reflex::nvolc::memchr(s, '\0', n) != NULL;
+ }
+ 
+ // return true if -X or if -W and match s[0..n-1] is binary
+@@ -1352,7 +1352,7 @@ struct Zthread {
+             const char *str = std::search(body, end, key, key + 5);
+             if (str != NULL)
+             {
+-              end = static_cast<const char*>(memchr(str, '\n', end - str));
++              end = static_cast<const char*>(reflex::nvolc::memchr(str, '\n', end - str));
+               if (end != NULL)
+                 long_path.assign(str + 5, end - str - 5);
+             }
+@@ -2282,7 +2282,7 @@ struct Grep {
+     size_t operator()(FILE*, char *buf, size_t len)
+     {
+       // simpler form of binary file detection without Unicode UTF-8 validation, check for NULs like GNU grep
+-      grep.binfile = grep.binfile || (memchr(buf, 0, len) != NULL);
++      grep.binfile = grep.binfile || (reflex::nvolc::memchr(buf, 0, len) != NULL);
+ 
+       return len;
+     }
+@@ -2316,7 +2316,7 @@ struct Grep {
+       else if (!flag_text && !flag_hex && !flag_with_hex && flag_encoding_type != reflex::Input::file_encoding::null_data && !grep.binfile)
+       {
+         // simpler form of binary file detection without Unicode UTF-8 validation, check for NULs like GNU grep
+-        grep.binfile = (memchr(buf, 0, len) != NULL);
++        grep.binfile = (reflex::nvolc::memchr(buf, 0, len) != NULL);
+       }
+ 
+       return len;
+@@ -2399,7 +2399,7 @@ struct Grep {
+       }
+       else
+       {
+-        const char *eol = static_cast<const char*>(memchr(pos, '\n', end - pos));
++        const char *eol = static_cast<const char*>(reflex::nvolc::memchr(pos, '\n', end - pos));
+ 
+         if (eol == NULL)
+           eol = buf + len;
+@@ -11200,7 +11200,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+               const char *from = begin;
+               const char *to;
+ 
+-              while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++              while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+               {
+                 out.str(match_ms);
+                 out.str(from, to - from);
+@@ -11457,7 +11457,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+               {
+                 // check for additional lines in the match output
+                 size_t rest = 0;
+-                const char *to = static_cast<const char*>(memchr(begin, '\n', size));
++                const char *to = static_cast<const char*>(reflex::nvolc::memchr(begin, '\n', size));
+                 if (to != NULL)
+                 {
+                   rest = size;
+@@ -11798,7 +11798,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                   const char *from = begin;
+                   const char *to;
+ 
+-                  while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++                  while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+                   {
+                     out.str(match_ms);
+                     out.str(from, to - from);
+@@ -11954,7 +11954,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                       const char *to;
+                       size_t num = 1;
+ 
+-                      while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++                      while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+                       {
+                         out.str(match_ms);
+                         out.str(from, to - from);
+@@ -12351,7 +12351,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                   const char *from = begin;
+                   const char *to;
+ 
+-                  while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++                  while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+                   {
+                     out.str(v_match_ms);
+                     out.str(from, to - from);
+@@ -12470,7 +12470,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                       const char *to;
+                       size_t num = 1;
+ 
+-                      while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++                      while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+                       {
+                         out.str(v_match_ms);
+                         out.str(from, to - from);
+@@ -12746,7 +12746,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                   const char *from = begin;
+                   const char *to;
+ 
+-                  while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++                  while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+                   {
+                     out.str(match_ms);
+                     out.str(from, to - from);
+@@ -12861,7 +12861,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                       const char *to;
+                       size_t num = 1;
+ 
+-                      while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++                      while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+                       {
+                         out.str(match_ms);
+                         out.str(from, to - from);
+@@ -13154,7 +13154,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                     const char *to;
+                     size_t num = 1;
+ 
+-                    while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++                    while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+                     {
+                       out.str(match_mc);
+                       out.str(from, to - from);
+@@ -13229,7 +13229,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                 const char *from = begin;
+                 const char *to;
+ 
+-                while ((to = static_cast<const char*>(memchr(from, '\n', eol - from))) != NULL)
++                while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', eol - from))) != NULL)
+                 {
+                   if (from == begin)
+                   {
+@@ -13294,7 +13294,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                       const char *to;
+                       size_t num = 1;
+ 
+-                      while ((to = static_cast<const char*>(memchr(from, '\n', size - (from - begin)))) != NULL)
++                      while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', size - (from - begin)))) != NULL)
+                       {
+                         out.str(match_mc);
+                         out.str(from, to - from);
+@@ -13402,7 +13402,7 @@ void Grep::search(const char *pathname, uint16_t cost)
+                 const char *from = begin;
+                 const char *to;
+ 
+-                while ((to = static_cast<const char*>(memchr(from, '\n', eol - from))) != NULL)
++                while ((to = static_cast<const char*>(reflex::nvolc::memchr(from, '\n', eol - from))) != NULL)
+                 {
+                   if (from == begin)
+                   {

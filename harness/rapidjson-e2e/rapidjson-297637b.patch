@@ -1,0 +1,419 @@
+diff --git a/include/rapidjson/nvol_compat.h b/include/rapidjson/nvol_compat.h
+new file mode 100644
+index 0000000..a52161d
+--- /dev/null
++++ b/include/rapidjson/nvol_compat.h
+@@ -0,0 +1,211 @@
++// NVOL end-to-end: rapidjson's SIMD scans (whitespace skip, unescaped string
++// scan, writer copy) routed to NVOL's byte-set search from the generated C++
++// header (nvol.hpp). Enabled with RAPIDJSON_NVOL instead of RAPIDJSON_SSE2 /
++// RAPIDJSON_SSE42; the CPU is checked once at startup and the AVX2 kernel is
++// used when present.
++//
++// The dispatched searches live in one translation unit of the program, the one
++// that defines RAPIDJSON_NVOL_IMPLEMENTATION before including this header (as
++// simdjson ships simdjson.cpp). Every other unit sees declarations:
++// - the searches are opaque calls either way (the kernels are compiled for
++//   AVX2, the parser is not), and declaring them pure lets the compiler keep the
++//   parser state in registers across the call instead of reloading the stream
++//   and re-checking the parse error after every whitespace skip;
++// - the dispatch code is not part of the parser's unit, so it does not use up
++//   the compiler's inlining budget for that unit (GCC's inline-unit-growth),
++//   which otherwise leaves rapidjson's own small helpers out of line.
++// Built with SSE4.2 enabled (-msse4.2, as RAPIDJSON_SSE42 is), the bounded whitespace
++// skip also inlines NVOL's pcmpistri kernel, the only kernel the parser's unit takes.
++#ifndef RAPIDJSON_NVOL_COMPAT_H_
++#define RAPIDJSON_NVOL_COMPAT_H_
++
++#if defined(__SSE4_2__) && (defined(__x86_64__) || defined(_M_X64))
++#define RAPIDJSON_NVOL_INLINE_SSE42 1
++#include <nvol.hpp>
++#endif
++#include <cstring>
++#include <stddef.h>
++#include <stdint.h>
++
++#if defined(__GNUC__) || defined(__clang__)
++#define RAPIDJSON_NVOL_PURE __attribute__((pure))
++#else
++#define RAPIDJSON_NVOL_PURE
++#endif
++
++namespace rapidjson_nvol {
++
++enum { kClassBytes = 112 };   // NVOL_BYTESET_CLASS_BYTES (checked in the implementation)
++
++// Both search sets have well over 6 distinct bytes. The string stop set is a low range
++// plus two bytes, so NVOL gives it the range kernel (_r2: an unsigned min and two
++// compares); the whitespace complement takes the nibble lookup. (Searching past the 4
++// whitespace bytes with nvol_find_not_byteset, one table lookup per vector, measured the
++// same.)
++struct Sets {
++    uint8_t not_ws[kClassBytes];   // every byte except ' ', '\n', '\r', '\t'
++    uint8_t stop[kClassBytes];     // '"', '\\' and 0x00-0x1F
++    uint8_t ws[kClassBytes];       // ' ', '\n', '\r', '\t' (the pcmpistri member list)
++    bool ready;     // false until the constructor ran (static storage starts zeroed)
++    Sets();
++};
++
++// Built during static initialization. A function-local static (built on first
++// use) costs a guard check per call, 3-11 % of rapidjson's parse time.
++extern const Sets sets;
++
++// First byte of [s, e) in the set, or NULL.
++RAPIDJSON_NVOL_PURE const uint8_t *find_checked(const uint8_t *cls, const uint8_t *s, const uint8_t *e);
++
++// First byte from p on in the set, for null-terminated text: the set holds '\0',
++// so the scan stops at the terminator at the latest.
++RAPIDJSON_NVOL_PURE const char *find_terminated(const uint8_t *cls, const char *p);
++
++// Copy [s, e) to dst up to the first byte of the set; returns that byte, or e. Whole
++// vectors are stored: dst needs room for e - s bytes (the writer reserves 6 per source
++// byte), and bytes after the copied prefix are scratch.
++const uint8_t *copy_until_checked(const uint8_t *cls, const uint8_t *s, const uint8_t *e, uint8_t *dst);
++
++#ifdef RAPIDJSON_NVOL_INLINE_SSE42
++// The whitespace class as nvol_find_not_byteset_sse42 reads it: only the member list at
++// NVOL_BYTESET_SET16 (the members in increasing order, then zeros). Constant-initialized,
++// so the inline skip needs no "classes built" check and the compiler sees a constant, as
++// with RAPIDJSON_SSE42's own list. The implementation checks it against nvol_byteset_init.
++struct WsList {
++    uint8_t head[NVOL_BYTESET_SET16];
++    uint8_t list[16];
++};
++static_assert(sizeof(WsList) == NVOL_BYTESET_SET16 + 16, "member list at the end of the class");
++alignas(16) inline constexpr WsList ws_list = {{}, {'\t', '\n', '\r', ' '}};
++
++// First non-whitespace byte of [p, end), or end; needs p <= end - 16 (written exactly like
++// the kernel's own loop test, so the compiler merges the two). Inline: NVOL's pcmpistri
++// kernel, one instruction per 16 bytes, so the short runs of indented JSON cost no call
++// (RAPIDJSON_SSE42 does the same with its own loop).
++inline const char *skip_ws_sse42(const char *p, const char *end) {
++    const uint8_t *r = ::nvol::raw::nvol_find_not_byteset_sse42(reinterpret_cast<const uint8_t *>(&ws_list),
++        reinterpret_cast<const uint8_t *>(p), reinterpret_cast<const uint8_t *>(end));
++    return r ? reinterpret_cast<const char *>(r) : end;
++}
++#endif
++
++} // namespace rapidjson_nvol
++
++#ifdef RAPIDJSON_NVOL_IMPLEMENTATION
++#include <nvol.hpp>
++
++namespace rapidjson_nvol {
++
++using namespace ::nvol::raw;
++
++static_assert(kClassBytes == NVOL_BYTESET_CLASS_BYTES, "class size changed in nvol.hpp");
++static_assert(NVOL_BYTESET_RANGE_EXTRA_MAX >= 2, "the string stop set needs the range kernel _r2");
++
++// A parse that runs from another static initializer before `sets` is built sees
++// empty classes, which match nothing. Until then the searches run these plain loops
++// (the pointers below start on them: constant initialization, before any constructor).
++// They stop at '\0' at the latest, as the kernels do for null-terminated text.
++__attribute__((cold)) static const uint8_t *find_unbuilt(const uint8_t *cls, const uint8_t *s, const uint8_t *e) {
++    for (; s != e; s++) {
++        bool ws = *s == ' ' || *s == '\n' || *s == '\r' || *s == '\t';
++        bool stop = *s == '"' || *s == '\\' || *s < 0x20;
++        if (cls == sets.stop ? stop : !ws)
++            return s;
++    }
++    return NULL;
++}
++
++__attribute__((cold)) static const uint8_t *copy_until_unbuilt(const uint8_t *cls, const uint8_t *s, const uint8_t *e, uint8_t *dst) {
++    const uint8_t *r = find_unbuilt(cls, s, e);
++    if (r == NULL)
++        r = e;
++    std::memcpy(dst, s, static_cast<size_t>(r - s));
++    return r;
++}
++
++#if defined(__x86_64__) || defined(_M_X64)
++NVOL_TARGET_AVX2 static const uint8_t *find_avx2(const uint8_t *cls, const uint8_t *s, const uint8_t *e) {
++    if (e - s >= 32) {
++        if (cls[NVOL_BYTESET_RANGE] == 1 + 2)       // 1 + e: the range kernel _r2
++            return nvol_find_byteset_avx2_r2(cls, s, e);
++        return nvol_find_byteset_avx2(cls, s, e);
++    }
++    return nvol_find_byteset_entry_avx2(cls, s, e);
++}
++
++NVOL_TARGET_AVX2 static const uint8_t *copy_until_avx2(const uint8_t *cls, const uint8_t *s, const uint8_t *e, uint8_t *dst) {
++    if (e - s >= 32) {
++        if (cls[NVOL_BYTESET_RANGE] == 1 + 2)       // 1 + e: the range kernel _r2
++            return nvol_copy_until_byteset_avx2_r2(cls, s, e, dst);
++        return nvol_copy_until_byteset_avx2(cls, s, e, dst);
++    }
++    return nvol_copy_until_byteset_entry_avx2(cls, s, e, dst);
++}
++#endif
++
++// The search for this CPU, chosen once by the constructor below: each search is one
++// call and one indirect jump, with no CPU or "classes built" check on the way.
++typedef const uint8_t *(*find_fn)(const uint8_t *, const uint8_t *, const uint8_t *);
++typedef const uint8_t *(*copy_fn)(const uint8_t *, const uint8_t *, const uint8_t *, uint8_t *);
++static find_fn find_impl = find_unbuilt;
++static copy_fn copy_impl = copy_until_unbuilt;
++
++Sets::Sets() {
++    uint8_t b[256];
++    size_t n = 0;
++    for (int c = 0; c < 256; c++)
++        if (c != ' ' && c != '\n' && c != '\r' && c != '\t')
++            b[n++] = static_cast<uint8_t>(c);
++    nvol_byteset_init(b, n, not_ws);
++    n = 0;
++    for (int c = 0; c < 0x20; c++)
++        b[n++] = static_cast<uint8_t>(c);
++    b[n++] = '"';
++    b[n++] = '\\';
++    nvol_byteset_init(b, n, stop);
++    static const uint8_t space[4] = {' ', '\n', '\r', '\t'};
++    nvol_byteset_init(space, 4, ws);
++#ifdef RAPIDJSON_NVOL_INLINE_SSE42
++    // the constant list the inline skip uses must be the one NVOL builds
++    if (std::memcmp(ws + NVOL_BYTESET_SET16, ws_list.list, 16) != 0 || !ws[NVOL_BYTESET_SET16_OK])
++        __builtin_trap();
++#endif
++    find_impl = nvol_find_byteset_raw;
++    copy_impl = nvol_copy_until_byteset_raw;
++#if defined(__x86_64__) || defined(_M_X64)
++    if (nvol_cpu_avx2()) {
++        find_impl = find_avx2;
++        copy_impl = copy_until_avx2;
++    }
++#endif
++    ready = true;
++}
++
++const Sets sets;
++
++const uint8_t *find_checked(const uint8_t *cls, const uint8_t *s, const uint8_t *e) {
++    return find_impl(cls, s, e);
++}
++
++// Each call to the kernel is bounded by the end of p's 4 KiB page, so no load
++// crosses into a page the text does not reach.
++const char *find_terminated(const uint8_t *cls, const char *p) {
++    for (;;) {
++        const uint8_t *s = reinterpret_cast<const uint8_t *>(p);
++        const uint8_t *e = reinterpret_cast<const uint8_t *>((reinterpret_cast<uintptr_t>(p) | 4095u) + 1);
++        const uint8_t *r = find_impl(cls, s, e);
++        if (r)
++            return reinterpret_cast<const char *>(r);
++        p = reinterpret_cast<const char *>(e);
++    }
++}
++
++const uint8_t *copy_until_checked(const uint8_t *cls, const uint8_t *s, const uint8_t *e, uint8_t *dst) {
++    return copy_impl(cls, s, e, dst);
++}
++
++} // namespace rapidjson_nvol
++
++#endif // RAPIDJSON_NVOL_IMPLEMENTATION
++
++#endif // RAPIDJSON_NVOL_COMPAT_H_
+diff --git a/include/rapidjson/rapidjson.h b/include/rapidjson/rapidjson.h
+index 247b8e6..fb56bac 100644
+--- a/include/rapidjson/rapidjson.h
++++ b/include/rapidjson/rapidjson.h
+@@ -380,7 +380,7 @@
+     \c RAPIDJSON_SIMD to indicate the availability of the optimized code.
+ */
+ #if defined(RAPIDJSON_SSE2) || defined(RAPIDJSON_SSE42) \
+-    || defined(RAPIDJSON_NEON) || defined(RAPIDJSON_DOXYGEN_RUNNING)
++    || defined(RAPIDJSON_NEON) || defined(RAPIDJSON_NVOL) || defined(RAPIDJSON_DOXYGEN_RUNNING)
+ #define RAPIDJSON_SIMD
+ #endif
+ 
+diff --git a/include/rapidjson/reader.h b/include/rapidjson/reader.h
+index f7ef610..16d6e37 100644
+--- a/include/rapidjson/reader.h
++++ b/include/rapidjson/reader.h
+@@ -30,7 +30,9 @@
+ #include <intrin.h>
+ #pragma intrinsic(_BitScanForward)
+ #endif
+-#ifdef RAPIDJSON_SSE42
++#if defined(RAPIDJSON_NVOL)
++#include "nvol_compat.h"
++#elif defined(RAPIDJSON_SSE42)
+ #include <nmmintrin.h>
+ #elif defined(RAPIDJSON_SSE2)
+ #include <emmintrin.h>
+@@ -278,7 +280,75 @@ inline const char* SkipWhitespace(const char* p, const char* end) {
+     return p;
+ }
+ 
+-#ifdef RAPIDJSON_SSE42
++#if defined(RAPIDJSON_NVOL)
++
++// NVOL end-to-end: the first non-whitespace byte, found with NVOL's byte-set search.
++inline const char *SkipWhitespace_SIMD(const char* p) {
++    // Fast return for single non-whitespace
++    if (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t')
++        ++p;
++    else
++        return p;
++#ifdef RAPIDJSON_NVOL_INLINE_SSE42
++    // Built with SSE4.2: the rest of the run inline, with NVOL's pcmpistri kernel, page by
++    // page (no load crosses into a page the text may not reach), and the last bytes of a
++    // page one by one. No call: a call in this function, even one that hardly ever runs,
++    // makes GCC keep the parser's state in callee-saved registers in every function that
++    // inlines it (ParseValue, ParseArray...), +0.5 % of instructions on minified JSON, where
++    // this code does not even run. The terminating '\0' is not whitespace, so the run
++    // stops there at the latest.
++    for (;;) {
++        const char *e = reinterpret_cast<const char *>((reinterpret_cast<uintptr_t>(p) | 4095u) + 1);
++        if (p <= e - 16) {
++            const char *r = rapidjson_nvol::skip_ws_sse42(p, e);
++            if (r != e)
++                return r;
++            p = e;
++            continue;
++        }
++        for (; p != e; ++p)
++            if (*p != ' ' && *p != '\n' && *p != '\r' && *p != '\t')
++                return p;
++    }
++#else
++    // Runs of one byte (": ", ", ") are the most common, and runs of two ("\n " before
++    // every element of an array indented by one) are next: settle both here, without a call.
++    if (*p != ' ' && *p != '\n' && *p != '\r' && *p != '\t')
++        return p;
++    ++p;
++    if (*p != ' ' && *p != '\n' && *p != '\r' && *p != '\t')
++        return p;
++    return rapidjson_nvol::find_terminated(rapidjson_nvol::sets.not_ws, p);
++#endif
++}
++
++inline const char *SkipWhitespace_SIMD(const char* p, const char* end) {
++    // Fast return for single non-whitespace
++    if (p != end && (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t'))
++        ++p;
++    else
++        return p;
++#ifdef RAPIDJSON_NVOL_INLINE_SSE42
++    // Built with SSE4.2: the rest of the run inline, with NVOL's pcmpistri kernel, and under
++    // 16 bytes from the end one by one, as RAPIDJSON_SSE42 does. No call (see above).
++    if (p <= end - 16)
++        return rapidjson_nvol::skip_ws_sse42(p, end);
++    return SkipWhitespace(p, end);
++#else
++    // Runs of one byte (": ", ", ") are the most common, and runs of two ("\n " before
++    // every element of an array indented by one) are next: settle both here, without a call.
++    if (p == end || (*p != ' ' && *p != '\n' && *p != '\r' && *p != '\t'))
++        return p;
++    ++p;
++    if (p == end || (*p != ' ' && *p != '\n' && *p != '\r' && *p != '\t'))
++        return p;
++    const uint8_t *r = rapidjson_nvol::find_checked(rapidjson_nvol::sets.not_ws,
++        reinterpret_cast<const uint8_t *>(p), reinterpret_cast<const uint8_t *>(end));
++    return r ? reinterpret_cast<const char *>(r) : end;
++#endif
++}
++
++#elif defined(RAPIDJSON_SSE42)
+ //! Skip whitespace with SSE 4.2 pcmpistrm instruction, testing 16 8-byte characters at once.
+ inline const char *SkipWhitespace_SIMD(const char* p) {
+     // Fast return for single non-whitespace
+@@ -1072,7 +1142,44 @@ private:
+             // Do nothing for generic version
+     }
+ 
+-#if defined(RAPIDJSON_SSE2) || defined(RAPIDJSON_SSE42)
++#if defined(RAPIDJSON_NVOL)
++    // NVOL end-to-end: the unescaped run ends at the first '"', '\\' or byte < 0x20,
++    // found with NVOL's byte-set search; the run is then copied in one go.
++
++    // StringStream -> StackStream<char>
++    static RAPIDJSON_FORCEINLINE void ScanCopyUnescapedString(StringStream& is, StackStream<char>& os) {
++        const char* p = is.src_;
++        const char* r = rapidjson_nvol::find_terminated(rapidjson_nvol::sets.stop, p);
++        SizeType length = static_cast<SizeType>(r - p);
++        if (length != 0)
++            std::memcpy(os.Push(length), p, length);
++        is.src_ = r;
++    }
++
++    // InsituStringStream -> InsituStringStream
++    static RAPIDJSON_FORCEINLINE void ScanCopyUnescapedString(InsituStringStream& is, InsituStringStream& os) {
++        RAPIDJSON_ASSERT(&is == &os);
++        (void)os;
++
++        if (is.src_ == is.dst_) {
++            SkipUnescapedString(is);
++            return;
++        }
++
++        char* p = is.src_;
++        char* r = const_cast<char*>(rapidjson_nvol::find_terminated(rapidjson_nvol::sets.stop, p));
++        size_t length = static_cast<size_t>(r - p);
++        std::memmove(is.dst_, p, length);   // dst_ trails src_: the ranges may overlap
++        is.src_ = r;
++        is.dst_ += length;
++    }
++
++    // When read/write pointers are the same for insitu stream, just skip unescaped characters
++    static RAPIDJSON_FORCEINLINE void SkipUnescapedString(InsituStringStream& is) {
++        RAPIDJSON_ASSERT(is.src_ == is.dst_);
++        is.src_ = is.dst_ = const_cast<char*>(rapidjson_nvol::find_terminated(rapidjson_nvol::sets.stop, is.src_));
++    }
++#elif defined(RAPIDJSON_SSE2) || defined(RAPIDJSON_SSE42)
+     // StringStream -> StackStream<char>
+     static RAPIDJSON_FORCEINLINE void ScanCopyUnescapedString(StringStream& is, StackStream<char>& os) {
+         const char* p = is.src_;
+diff --git a/include/rapidjson/writer.h b/include/rapidjson/writer.h
+index 89001bd..f8ceceb 100644
+--- a/include/rapidjson/writer.h
++++ b/include/rapidjson/writer.h
+@@ -29,7 +29,9 @@
+ #include <intrin.h>
+ #pragma intrinsic(_BitScanForward)
+ #endif
+-#ifdef RAPIDJSON_SSE42
++#if defined(RAPIDJSON_NVOL)
++#include "nvol_compat.h"
++#elif defined(RAPIDJSON_SSE42)
+ #include <nmmintrin.h>
+ #elif defined(RAPIDJSON_SSE2)
+ #include <emmintrin.h>
+@@ -581,7 +583,34 @@ inline bool Writer<StringBuffer>::WriteDouble(double d) {
+     return true;
+ }
+ 
+-#if defined(RAPIDJSON_SSE2) || defined(RAPIDJSON_SSE42)
++#if defined(RAPIDJSON_NVOL)
++// NVOL end-to-end: copy up to the first byte that needs escaping in one pass
++// (nvol_copy_until_byteset: each vector is stored while it is searched, like the
++// SSE2 loop above). WriteString reserved 2 + 6 * length bytes, so the output has
++// room for the whole rest of the string; PushUnsafe(0) gives its top.
++template<>
++inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, size_t length) {
++    if (length < 16)
++        return RAPIDJSON_LIKELY(is.Tell() < length);
++
++    // The same test as is.Tell() < length, on pointers: written as the short path's return,
++    // GCC merged the two and materialized the bool (setb + test) in rapidjson's
++    // per-character loop, which every short string goes through.
++    const uint8_t* p = reinterpret_cast<const uint8_t*>(is.src_);
++    const uint8_t* end = reinterpret_cast<const uint8_t*>(is.head_ + length);
++    if (!RAPIDJSON_LIKELY(p < end))
++        return false;
++    uint8_t* dst = reinterpret_cast<uint8_t*>(os_->PushUnsafe(0));
++    const uint8_t* stop = rapidjson_nvol::copy_until_checked(rapidjson_nvol::sets.stop, p, end, dst);
++    os_->PushUnsafe(static_cast<size_t>(stop - p));
++
++    is.src_ = reinterpret_cast<const char*>(stop);
++    // stop < end <=> is.Tell() < length. Said this way it is cheaper, and GCC does not merge
++    // it with the `is.Tell() < length` returns above into one block that materializes the
++    // bool (setb + test in rapidjson's per-character loop, for every short string).
++    return RAPIDJSON_LIKELY(stop != end);
++}
++#elif defined(RAPIDJSON_SSE2) || defined(RAPIDJSON_SSE42)
+ template<>
+ inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, size_t length) {
+     if (length < 16)

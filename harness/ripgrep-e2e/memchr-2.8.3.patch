@@ -1,0 +1,302 @@
+diff --git a/src/lib.rs b/src/lib.rs
+index b310516..8fb0e0c 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -217,5 +217,10 @@ pub mod arch;
+ mod cow;
+ mod ext;
+ mod memchr;
++// NVOL end-to-end: the generated NVOL-Rust module backs every SIMD entry point.
++#[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++#[allow(warnings)]
++// src/nvol.rs: generated/rust/nvol.rs, copied in by harness/ripgrep-e2e/setup.sh
++pub(crate) mod nvol;
+ pub mod memmem;
+ mod vector;
+diff --git a/src/memchr.rs b/src/memchr.rs
+index 92a18bd..5a3162b 100644
+--- a/src/memchr.rs
++++ b/src/memchr.rs
+@@ -506,6 +506,11 @@ unsafe fn memchr_raw(
+     start: *const u8,
+     end: *const u8,
+ ) -> Option<*const u8> {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    {
++        let p = crate::nvol::raw::nvol_memchr_raw(needle, start, end);
++        return if p.is_null() { None } else { Some(p) };
++    }
+     #[cfg(target_arch = "x86_64")]
+     {
+         // x86_64 does CPU feature detection at runtime in order to use AVX2
+@@ -543,6 +548,11 @@ unsafe fn memrchr_raw(
+     start: *const u8,
+     end: *const u8,
+ ) -> Option<*const u8> {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    {
++        let p = crate::nvol::raw::nvol_memrchr_raw(needle, start, end);
++        return if p.is_null() { None } else { Some(p) };
++    }
+     #[cfg(target_arch = "x86_64")]
+     {
+         crate::arch::x86_64::memchr::memrchr_raw(needle, start, end)
+@@ -577,6 +587,11 @@ unsafe fn memchr2_raw(
+     start: *const u8,
+     end: *const u8,
+ ) -> Option<*const u8> {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    {
++        let p = crate::nvol::raw::nvol_memchr2_raw(needle1, needle2, start, end);
++        return if p.is_null() { None } else { Some(p) };
++    }
+     #[cfg(target_arch = "x86_64")]
+     {
+         crate::arch::x86_64::memchr::memchr2_raw(needle1, needle2, start, end)
+@@ -612,6 +627,11 @@ unsafe fn memrchr2_raw(
+     start: *const u8,
+     end: *const u8,
+ ) -> Option<*const u8> {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    {
++        let p = crate::nvol::raw::nvol_memrchr2_raw(needle1, needle2, start, end);
++        return if p.is_null() { None } else { Some(p) };
++    }
+     #[cfg(target_arch = "x86_64")]
+     {
+         crate::arch::x86_64::memchr::memrchr2_raw(needle1, needle2, start, end)
+@@ -650,6 +670,11 @@ unsafe fn memchr3_raw(
+     start: *const u8,
+     end: *const u8,
+ ) -> Option<*const u8> {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    {
++        let p = crate::nvol::raw::nvol_memchr3_raw(needle1, needle2, needle3, start, end);
++        return if p.is_null() { None } else { Some(p) };
++    }
+     #[cfg(target_arch = "x86_64")]
+     {
+         crate::arch::x86_64::memchr::memchr3_raw(
+@@ -692,6 +717,11 @@ unsafe fn memrchr3_raw(
+     start: *const u8,
+     end: *const u8,
+ ) -> Option<*const u8> {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    {
++        let p = crate::nvol::raw::nvol_memrchr3_raw(needle1, needle2, needle3, start, end);
++        return if p.is_null() { None } else { Some(p) };
++    }
+     #[cfg(target_arch = "x86_64")]
+     {
+         crate::arch::x86_64::memchr::memrchr3_raw(
+@@ -728,6 +758,10 @@ unsafe fn memrchr3_raw(
+ /// Pointers must be valid. See `One::count_raw`.
+ #[inline]
+ unsafe fn count_raw(needle: u8, start: *const u8, end: *const u8) -> usize {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    {
++        return crate::nvol::raw::nvol_count_raw(needle, start, end);
++    }
+     #[cfg(target_arch = "x86_64")]
+     {
+         crate::arch::x86_64::memchr::count_raw(needle, start, end)
+diff --git a/src/memmem/mod.rs b/src/memmem/mod.rs
+index ab19a9d..5df2a66 100644
+--- a/src/memmem/mod.rs
++++ b/src/memmem/mod.rs
+@@ -86,6 +86,60 @@ use crate::{
+ 
+ mod searcher;
+ 
++/// NVOL end-to-end: the precomputed state of an NVOL `memmem` finder. It is
++/// only built for the default configuration (default ranker, prefilter on),
++/// which is what `Finder::new` (and thus regex-automata) uses.
++#[derive(Clone, Copy, Debug)]
++pub(crate) struct NvolState {
++    #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++    s: Option<[u64; crate::nvol::memmem::STATE_WORDS]>,
++}
++
++impl NvolState {
++    #[inline]
++    fn none() -> NvolState {
++        NvolState {
++            #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++            s: None,
++        }
++    }
++
++    #[inline]
++    fn new(_needle: &[u8]) -> NvolState {
++        #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++        {
++            let mut st = [0u64; crate::nvol::memmem::STATE_WORDS];
++            unsafe {
++                let p = _needle.as_ptr();
++                crate::nvol::raw::nvol_memmem_init(p, p.add(_needle.len()), st.as_mut_ptr() as *mut u8);
++            }
++            return NvolState { s: Some(st) };
++        }
++        #[allow(unreachable_code)]
++        NvolState::none()
++    }
++
++    /// `Some(result)` when NVOL handled the search.
++    #[inline(always)]
++    fn find(&self, _haystack: &[u8], _needle: &[u8]) -> Option<Option<usize>> {
++        #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++        {
++            if let Some(ref st) = self.s {
++                if _haystack.len() < _needle.len() {
++                    return Some(None);
++                }
++                return Some(unsafe {
++                    let (h, n) = (_haystack.as_ptr(), _needle.as_ptr());
++                    let p = crate::nvol::raw::nvol_memmem_find_raw(
++                        st.as_ptr() as *const u8, n, n.add(_needle.len()), h, h.add(_haystack.len()));
++                    if p.is_null() { None } else { Some(p as usize - h as usize) }
++                });
++            }
++        }
++        None
++    }
++}
++
+ /// Returns an iterator over all non-overlapping occurrences of a substring in
+ /// a haystack.
+ ///
+@@ -184,6 +238,13 @@ pub fn rfind_iter<'h, 'n, N: 'n + ?Sized + AsRef<[u8]>>(
+ #[inline]
+ pub fn find(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+     if haystack.len() < 64 {
++        #[cfg(all(feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++        unsafe {
++            let (h, n) = (haystack.as_ptr(), needle.as_ptr());
++            let p = crate::nvol::raw::nvol_memmem_rk_oneshot(n, n.add(needle.len()), h, h.add(haystack.len()));
++            return if p.is_null() { None } else { Some(p as usize - h as usize) };
++        }
++        #[allow(unreachable_code)]
+         rabinkarp::Finder::new(needle).find(haystack, needle)
+     } else {
+         Finder::new(needle).find(haystack)
+@@ -277,7 +338,7 @@ impl<'h, 'n> Iterator for FindIter<'h, 'n> {
+         let needle = self.finder.needle();
+         let haystack = self.haystack.get(self.pos..)?;
+         let idx =
+-            self.finder.searcher.find(&mut self.prestate, haystack, needle)?;
++            self.finder.find_with(&mut self.prestate, haystack)?;
+ 
+         let pos = self.pos + idx;
+         self.pos = pos + needle.len().max(1);
+@@ -384,9 +445,23 @@ impl<'h, 'n> Iterator for FindRevIter<'h, 'n> {
+ pub struct Finder<'n> {
+     needle: CowBytes<'n>,
+     searcher: Searcher,
++    nvol: NvolState,
+ }
+ 
+ impl<'n> Finder<'n> {
++    #[inline(always)]
++    fn find_with(
++        &self,
++        prestate: &mut PrefilterState,
++        haystack: &[u8],
++    ) -> Option<usize> {
++        let needle = self.needle.as_slice();
++        if let Some(r) = self.nvol.find(haystack, needle) {
++            return r;
++        }
++        self.searcher.find(prestate, haystack, needle)
++    }
++
+     /// Create a new finder for the given needle.
+     #[inline]
+     pub fn new<B: ?Sized + AsRef<[u8]>>(needle: &'n B) -> Finder<'n> {
+@@ -421,6 +496,9 @@ impl<'n> Finder<'n> {
+     pub fn find(&self, haystack: &[u8]) -> Option<usize> {
+         let mut prestate = PrefilterState::new();
+         let needle = self.needle.as_slice();
++        if let Some(r) = self.nvol.find(haystack, needle) {
++            return r;
++        }
+         self.searcher.find(&mut prestate, haystack, needle)
+     }
+ 
+@@ -468,7 +546,11 @@ impl<'n> Finder<'n> {
+     #[cfg(feature = "alloc")]
+     #[inline]
+     pub fn into_owned(self) -> Finder<'static> {
+-        Finder { needle: self.needle.into_owned(), searcher: self.searcher }
++        Finder {
++            needle: self.needle.into_owned(),
++            searcher: self.searcher,
++            nvol: self.nvol,
++        }
+     }
+ 
+     /// Convert this finder into its borrowed variant.
+@@ -486,6 +568,7 @@ impl<'n> Finder<'n> {
+         Finder {
+             needle: CowBytes::new(self.needle()),
+             searcher: self.searcher.clone(),
++            nvol: self.nvol,
+         }
+     }
+ 
+@@ -658,7 +741,11 @@ impl FinderBuilder {
+         &self,
+         needle: &'n B,
+     ) -> Finder<'n> {
+-        self.build_forward_with_ranker(DefaultFrequencyRank, needle)
++        let mut f = self.build_forward_with_ranker(DefaultFrequencyRank, needle);
++        if !self.prefilter.is_none() {
++            f.nvol = NvolState::new(needle.as_ref());
++        }
++        f
+     }
+ 
+     /// Build an owned forward finder using the given needle from the current
+@@ -687,6 +774,7 @@ impl FinderBuilder {
+         Finder {
+             needle: CowBytes::new(needle),
+             searcher: Searcher::new(self.prefilter, ranker, needle),
++            nvol: NvolState::none(),
+         }
+     }
+ 
+@@ -704,7 +792,7 @@ impl FinderBuilder {
+     ) -> Finder<'static> {
+         let needle = needle.into();
+         let searcher = Searcher::new(self.prefilter, ranker, &needle);
+-        Finder { needle: CowBytes::new_owned(needle), searcher }
++        Finder { needle: CowBytes::new_owned(needle), searcher, nvol: NvolState::none() }
+     }
+ 
+     /// Build a reverse finder using the given needle from the current
+@@ -765,3 +853,13 @@ mod tests {
+             .run();
+     }
+ }
++
++#[cfg(all(test, feature = "std", any(target_arch = "x86_64", target_arch = "aarch64")))]
++#[test]
++fn nvol_backs_default_finder() {
++    let f = Finder::new("Moriarty");
++    assert!(f.nvol.s.is_some(), "Finder::new must use NVOL memmem");
++    assert!(FinderBuilder::new().prefilter(Prefilter::None).build_forward("x").nvol.s.is_none());
++    let h = b"................................................ Professor Moriarty";
++    assert_eq!(f.find(&h[..]), Some(59));
++}
+diff --git a/src/memmem/searcher.rs b/src/memmem/searcher.rs
+index 73ece73..f9ab588 100644
+--- a/src/memmem/searcher.rs
++++ b/src/memmem/searcher.rs
+@@ -558,7 +558,7 @@ impl Default for PrefilterConfig {
+ 
+ impl PrefilterConfig {
+     /// Returns true when this prefilter is set to the `None` variant.
+-    fn is_none(&self) -> bool {
++    pub(crate) fn is_none(&self) -> bool {
+         matches!(*self, PrefilterConfig::None)
+     }
+ }

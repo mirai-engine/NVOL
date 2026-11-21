@@ -1,0 +1,20 @@
+[package]
+name = "nvol-ffi-bench"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+# Static library for the same-process cross-language benchmark
+# (harness/odin/xbench): NVOL-Rust and the reference crates behind a C ABI.
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+nvol-harness = { path = "../rust" }
+memchr = "=2.8.3"
+aho-corasick = "=1.1.5"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+panic = "abort"

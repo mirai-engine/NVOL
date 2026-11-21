@@ -1,0 +1,14 @@
+[package]
+name = "nvol-harness"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+memchr = "=2.8.3"        # the exact version ripgrep 15 locks: our parity bar
+aho-corasick = "=1.1.5"  # Teddy parity bar (ripgrep lock)
+
+[profile.release]
+debug = false
+codegen-units = 1
+lto = "fat"

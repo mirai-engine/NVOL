@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+harness/rust/target/
+harness/rust/Cargo.lock
+*.dll
+*.so
+*.dylib
+*.exe
+*.o
+*.obj
+.srctrl/
+harness/rust-ffi/target/
+harness/rust-ffi/Cargo.lock
+harness/ripgrep-e2e/work/
+harness/ugrep-e2e/work/
+harness/odin/xcount/xcount
