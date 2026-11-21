@@ -8279,7 +8279,7 @@ nvol_memmem_find_entry_avx2 PROC PUBLIC FRAME
     xor eax, eax
     jmp NEAR PTR L_L1
 L_L2:
-    mov r12, qword ptr [rsp]
+    mov r12, rcx
     test r8, r8
     jne SHORT L_L4
     mov rax, r9
@@ -8328,7 +8328,7 @@ L_L12:
     lea rbp, [r9 + r8]
     cmp rax, rbp
     jae SHORT L_L15
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 L_L14:
     shl ebx, 1
     movzx r12d, byte ptr [rax]
@@ -9357,7 +9357,7 @@ nvol_memmem_find_entry_sse2 PROC PUBLIC FRAME
     xor eax, eax
     jmp NEAR PTR L_L1
 L_L2:
-    mov r12, qword ptr [rsp]
+    mov r12, rcx
     test r8, r8
     jne SHORT L_L4
     mov rax, r9
@@ -9404,7 +9404,7 @@ L_L12:
     lea rbp, [r9 + r8]
     cmp rax, rbp
     jae SHORT L_L15
-    DB 15, 31, 64, 0
+    DB 15, 31, 68, 0, 0
 L_L14:
     shl ebx, 1
     movzx r12d, byte ptr [rax]

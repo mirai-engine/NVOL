@@ -8144,7 +8144,7 @@ L.nvol_memmem_find_entry_avx2:
     xor eax, eax
     jmp strict near .L1
 .L2:
-    mov r13, qword [rsp]
+    mov r13, rdi
     test rdx, rdx
     jne strict short .L4
     jmp strict near .L1
@@ -8190,7 +8190,7 @@ L.nvol_memmem_find_entry_avx2:
     lea rbp, [rax + rdx]
     cmp rbx, rbp
     jae strict short .L15
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L14:
     shl r9d, 1
     movzx r12d, byte [rbx]
@@ -9213,7 +9213,7 @@ L.nvol_memmem_find_entry_sse2:
     xor eax, eax
     jmp strict near .L1
 .L2:
-    mov rbp, qword [rsp]
+    mov rbp, rdi
     test rdx, rdx
     jne strict short .L4
     jmp strict near .L1
@@ -9257,8 +9257,7 @@ L.nvol_memmem_find_entry_sse2:
     lea rbp, [rax + rdx]
     cmp rbx, rbp
     jae strict short .L15
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    db 0xf, 0x1f, 0x0
 .L14:
     shl r9d, 1
     movzx r12d, byte [rbx]
@@ -9275,7 +9274,6 @@ L.nvol_memmem_find_entry_sse2:
     lea rbp, [rbx + 4]
     cmp rbp, rdx
     ja strict short .L22
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 .L21:
     mov ebp, dword [rax + rbx]
     mov r12d, dword [rsi + rbx]
@@ -47834,12 +47832,12 @@ nvol_cie:
     dd $ - nvol_cie
     dd L.nvol_memmem_find_entry_avx2 - $
     dd L.nvol_memmem_find_entry_avx2.cfi_end - L.nvol_memmem_find_entry_avx2
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 6, 124, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 203, 11, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 6, 123, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 204, 11, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
     dd 100
     dd $ - nvol_cie
     dd L.nvol_memmem_find_entry_sse2 - $
     dd L.nvol_memmem_find_entry_sse2.cfi_end - L.nvol_memmem_find_entry_sse2
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 5, 121, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 194, 8, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 5, 120, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 179, 8, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memmem_find_raw - $

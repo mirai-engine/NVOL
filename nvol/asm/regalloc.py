@@ -468,12 +468,42 @@ def reloads(code, LD: str, ST: str, STORES: set):
     in the same block, the register not written since) reads the register instead (a `mov`), or
     goes; a store to a slot that the block stores again before reading it goes. LD and ST are
     the target's 64-bit slot load and store (`mov`, or A64's `ldr`/`str`), STORES every store
-    op that writes a slot."""
+    op that writes a slot.
+
+    What a block knows carries into a label that only forward jumps (and the fallthrough)
+    reach: there it is what all of them agree on. A label behind a backward jump, or named by
+    anything but a jump's target, starts with nothing known."""
+    at = {ins.args[0].name: i for i, ins in enumerate(code) if ins.op == "label"}
+    njumps, opaque = {}, set()
+    for i, ins in enumerate(code):
+        jump = ins.op == "jmp" or ins.op in CONDJUMPS
+        for k, a in enumerate(ins.args):
+            if isinstance(a, Lab) and a.name in at and ins.op != "label":
+                if jump and k == 0 and at[a.name] > i:
+                    njumps[a.name] = njumps.get(a.name, 0) + 1
+                else:
+                    opaque.add(a.name)
+    incoming = {}                   # label -> what each jump seen so far to it knew
     out = []
     held = {}                       # slot -> register holding its value
+    reach = True                    # the previous instruction falls through
     for ins in code:
-        if ins.op in ("label", "call", "callind") or ins.op in TERMINATORS:
+        if ins.op == "label":
+            name = ins.args[0].name
+            preds = incoming.pop(name, [])
+            if name in opaque or len(preds) != njumps.get(name, 0):
+                held = {}
+            else:
+                preds += [held] if reach else []
+                held = {k: v for k, v in preds[0].items()
+                        if all(p.get(k) == v for p in preds[1:])} if preds else {}
+        elif (ins.op == "jmp" or ins.op in CONDJUMPS) and isinstance(ins.args[0], Lab) \
+                and ins.args[0].name in at:
+            incoming.setdefault(ins.args[0].name, []).append(dict(held))
+        if ins.op in ("call", "callind") or ins.op in TERMINATORS:
             held = {}
+        if ins.op not in ("align", "coldbegin", "coldend", "rarebegin", "rareend"):
+            reach = ins.op not in TERMINATORS
         if ins.op == LD and len(ins.args) == 2 and isinstance(ins.args[0], Reg)                 and isinstance(ins.args[1], Mem) and ins.args[1].spill is not None                 and ins.args[0].w == 64 and ins.args[1].spill in held:
             r = held[ins.args[1].spill]
             d = ins.args[0].r

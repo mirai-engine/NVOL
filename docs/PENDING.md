@@ -86,6 +86,15 @@ The detail is in "Done".
     - **Small sizes (16 B: +5 % instructions, +26 % cycles).** The entry cost of the dispatch
       functions: `push` of callee-saved registers before the early exits (shrink-wrapping),
       and parameters saved on the stack in memmem (+16 %).
+      - ~~memmem reloads its first argument from the slot it just stored~~ (`mov [rsp], rdi`
+        … `mov r13, [rsp]` in the next block): `reloads` now carries what a block knows into
+        a label that only forward jumps reach (see Done). The store stays: the vector path
+        reads the slot after its calls.
+      - Shrink-wrapping does not close memmem's 16 B row. GCC moves its three early exits
+        (needle longer than the haystack, empty, 1 byte) before the pushes, but the bench
+        (an 8-byte needle over 16 B) gets past all three, and GCC pushes 6 registers there too.
+        At 16 B the call takes the Rabin-Karp path (233 instructions, against 128 at 64 B):
+        that is where the gap with GCC (~200) is.
     - **Teddy:** +6/+10 % instructions from 64 B to 64 KiB. At 16 B it gives +55 %: it is the
       slow path `nvol_teddy_slow` (see 1.2a, item 27).
     - **NASM local labels in the ELF symbol table:** `.L36` after `L.nvol_x:` ends up as the
@@ -187,6 +196,19 @@ The detail is in "Done".
       with one instruction fewer per call. The mechanism is probably how the µop cache splits
       the 32-byte windows. It needs `idq.dsb_uops` / `idq.mite_uops`, which WSL does not
       give (2.12).
+
+    - **Accepted position losses.** The maintainer's rule (2026-11-21): an optimization
+      whose worse row a control shows to be position only is accepted, and logged here. The
+      control puts the new code at the old addresses (NOP padding) and shows that the code
+      alone is not worse. These rows are layout noise that any later edit moves again, so
+      re-measure them when this item gets frontend counters, or when a row stays bad across
+      unrelated commits:
+
+      | commit | row | before → after | control (new code, old addresses) |
+      |---|---|---|---|
+      | copy_back (item 17) | memchr 16 B AVX2 | 16.8 → 18.5 | 16.8 |
+      | copy_back (item 17) | memrchr 64 B AVX2 | 19.9 → 21.6 | 3-byte NOP restores it |
+      | reloads across labels (item 17) | memmem 256 B SSE2 | 71.5 → 72.4 | 70.8 |
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
@@ -375,6 +397,28 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **Reloads across labels in the asm (item 17).** `regalloc.reloads` knew which register held
+  a spill slot only inside one block. Now a label that only forward jumps (and the
+  fallthrough) reach starts with what all its predecessors agree on. A label behind a
+  backward jump, or named by anything other than a jump's target, still starts empty.
+  - In memmem's AVX2 and SSE2 entries, `mov r13, [rsp]` becomes `mov r13, rdi`. The address
+    of the next loads no longer waits on a store forwarded from the entry. Nothing else
+    changes on x86, and nothing at all on A64.
+  - Cycles (i5-7400, best of 15, 3 rounds):
+
+    | row | before | after |
+    |---|---|---|
+    | memmem 256 B AVX2 | 52.3 | 49.0 |
+    | memmem 16 B SSE2 | 66.2 | 60.7 |
+    | memmem 64 B SSE2 | 38.6 | 36.9 |
+    | memmem 16 and 64 B AVX2 | 58.2 and 34.3 | 58.3 and 34.0 |
+    | memmem 256 B SSE2 | 71.5 | 72.4 |
+
+    In the control (the new code at the old addresses), the 256 B SSE2 row gives 70.8 and
+    the 16 B SSE2 row gives 66.0. The 16 B gain and the 256 B loss are therefore both
+    position; the AVX2 256 B and SSE2 64 B gains are the code. Accepted under the
+    position-loss rule (item 25).
 
 - **The copy back in the asm (item 17).** After `mov a, b`, a later `mov b, a` in the same
   block, with neither register written in between, is removed (`regalloc.copy_back`, on x86

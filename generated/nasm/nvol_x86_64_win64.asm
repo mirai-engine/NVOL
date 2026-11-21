@@ -8130,7 +8130,7 @@ nvol_memmem_find_entry_avx2:
     xor eax, eax
     jmp strict near .L1
 .L2:
-    mov r12, qword [rsp]
+    mov r12, rcx
     test r8, r8
     jne strict short .L4
     mov rax, r9
@@ -8179,7 +8179,7 @@ nvol_memmem_find_entry_avx2:
     lea rbp, [r9 + r8]
     cmp rax, rbp
     jae strict short .L15
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L14:
     shl ebx, 1
     movzx r12d, byte [rax]
@@ -9199,7 +9199,7 @@ nvol_memmem_find_entry_sse2:
     xor eax, eax
     jmp strict near .L1
 .L2:
-    mov r12, qword [rsp]
+    mov r12, rcx
     test r8, r8
     jne strict short .L4
     mov rax, r9
@@ -9246,7 +9246,7 @@ nvol_memmem_find_entry_sse2:
     lea rbp, [r9 + r8]
     cmp rax, rbp
     jae strict short .L15
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L14:
     shl ebx, 1
     movzx r12d, byte [rax]
