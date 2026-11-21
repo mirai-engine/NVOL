@@ -212,17 +212,34 @@ The detail is in "Done".
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
-26. 1.4: "one memchr per line" (−2.3…+10.4 % on the 17th, +3.4…+6.1 % in the audit): measure
-    with the CPU pinned.
-27. 1.2a: Teddy `find_iter` over ~64 B haystacks (−6…+27 % between runs), and the slow path
-    at 16 B (+55 % instructions in the asm, item 17).
-28. 1.6: memchr with 1-15 bytes; port memchr's SWAR for the path without SIMD.
-29. 1.5: `first_non_ascii` against `bstr`, and decide the semantics of "none" (`len` or
-    `NONE`).
+26. ~~1.4: "one memchr per line"~~: measured with counters (see Done).
+27. 1.2a: Teddy over short haystacks. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)):
+    - **at 16 B, NVOL is 2× to 40× slower than aho-corasick** in every case whose patterns
+      have more than one byte (case 6, 64 patterns × 6 B: 3348 cycles against 84). Below
+      Teddy's minimum length, `nvol_teddy_slow` tries every pattern at every position, while
+      aho-corasick runs its 64-bucket Rabin-Karp. Port the Rabin-Karp (a feature);
+    - from 64 B up, NVOL is ahead or on par: +6.9…+27.2 % at 64 B (the −6…+27 % of
+      `tedbench` was wall-clock noise), −5.0…+11.6 % from 256 B to 64 KiB. In instructions,
+      NVOL is below aho in every row from 64 B up, so the Teddy gap in item 17 is the asm's
+      and not the Rust's.
+28. 1.6: memchr with 1-15 bytes. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): NVOL has 4 fewer instructions
+    per call (both scan byte by byte, 5 instructions per byte), but from 3 B up it takes 1-2.5
+    more cycles: +4…+19 %, the same in 3 rounds. Find the cause: a dependency chain in the
+    byte loop, or the entry. Then port memchr's SWAR for the path without SIMD.
+29. 1.5: `first_non_ascii` against `bstr`. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): −20 % cycles at
+    256 B, −43 % from 4 KiB, on par at 64 B, but **+2 cycles at 16 B** (11.0 against 9.0, 3
+    rounds), to be closed.
+    - The semantics of "none": bstr's public `find_non_ascii_byte` returns `None` when every
+      byte is ASCII, the same as NVOL. Only its internal `ascii::first_non_ascii_byte` returns
+      `len`. The wrappers therefore already match the public API; the maintainer decides
+      whether anything should change.
 30. 1.10: ripgrep end to end on Linux, with the SIMD contribution isolated.
 31. 1.7a and 2.1c: `bench`, `membench`, `tedbench` and Odin on aarch64 under QEMU (emulated).
-32. **AU21.** ugrep `-c zq` (2-byte memmem): +2.8 % paired, the size of the control's noise.
-    Measure with counters.
+32. **AU21.** ugrep `-c zq` (2-byte memmem). Measured with counters
+    (`harness/ugrep-e2e/counters.sh`, [report](benchmarks/2026-11-21-rust-counters.md)): the whole process gives +0.40, +0.80 and
+    +0.68 % cycles in 3 rounds, with 0.2 % fewer instructions. The other queries are within
+    ±0.65 %. The +2.8 % of the wall clock was mostly noise. What remains is small but
+    systematic; look at it per function (`perf record`) on the `chars<2>` path.
 
 ### Phase 6. simdjson (1.17)
 
@@ -321,7 +338,6 @@ as little-endian). The detail of both is in Done.
 | 1.2a | P2 | **Teddy `find_iter` over ~64 B haystacks** | With few bytes, the remainders of < 16 + m - 1 bytes fall to the slow path (`nvol_teddy_slow`, direct search) instead of aho-corasick's multi-pattern Rabin-Karp. It gives the same result; in `tedbench` it swung between −6 % and +27 % between runs (the +27.1 % is in `2026-11-18-teddy-i5-7400-windows.md`; the −6 % run was not saved in any report). Measure the slow path separately and, if needed, port the 64-bucket RK. |
 | 1.2b | P2 | **Teddy `MatchKind::LeftmostLongest`** | Only LeftmostFirst exists, which is what `regex-automata` uses. LeftmostLongest changes the order of the patterns (by length) at construction. |
 | 1.2c | P2 | **Fat Teddy with a 1-byte mask: unreachable (for later)** | Fat requires > 32 patterns, and mask 1 with > 16 patterns is rejected, the same as in aho-corasick: `nvol_teddy_fat_avx2_1` is generated but never chosen. It is aho-corasick's problematic variant: the selection rule makes a variant exist with no path that reaches it. It stays to be fixed later (decide whether to remove it, or whether to allow mask 1 with Fat for 17-64 one-byte patterns, and measure it). |
-| 1.4 | P1 | **"One memchr per line" with ±10 % noise** | With ifunc dispatch + raw signature, `line step` gave −2.3 %…+10.4 % depending on size in the report of the 17th (`2026-11-17-i5-7400-windows.md`) and +3.4…+6.1 % at all sizes in the audit of the 18th (NVOL better). No negative row since then, but without a pinned CPU (affinity, no turbo) noise cannot be separated from real differences. |
 | 1.5 | P1 | **`first_non_ascii` without a benchmark against `bstr`** | It is tested but not measured; add `bstr = "=1.13.0"` to the harness. Also, bstr returns `len` when there are no non-ASCII bytes and NVOL returns `NONE`: documented; decide whether each language's wrapper should imitate bstr. |
 | 1.6 | P1 | **Byte-by-byte fallback below 16 bytes** | memchr uses SWAR (one `usize` at a time) in `arch/all/memchr.rs`. The 16 B benchmarks already put us on par or better, but 1-15 B still needs measuring, and SWAR needs porting for platforms without SIMD. |
 | 1.7a | P1 | **NEON: performance unmeasured on real hardware** | Result parity is tested on aarch64 under QEMU (`harness/run-aarch64.sh`), but QEMU cannot measure speed. `bench`, `membench` and `tedbench` still need to run on an ARM64 machine (Apple M*, Graviton, Raspberry Pi 5, Windows on ARM). |
@@ -397,6 +413,12 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **"One memchr per line" (item 26, former 1.4), measured with counters.** `linecount`
+  (`harness/rust/pcounters.sh`) runs grep-searcher's LineStep over 1 MiB with lines of 8 to
+  1000 bytes. NVOL is ahead at every length: −8.8…−11.1 % cycles from 8 to 40 B, −2.1…−4.8 %
+  from 64 to 1000 B, and −3.2…−9.6 % instructions. The one positive row (1000 B, +4.6 %) gave
+  −3.2 and −4.0 % in two more rounds ([report](benchmarks/2026-11-21-rust-counters.md)). With counters, pinning the CPU is not needed.
 
 - **Reloads across labels in the asm (item 17).** `regalloc.reloads` knew which register held
   a spill slot only inside one block. Now a label that only forward jumps (and the

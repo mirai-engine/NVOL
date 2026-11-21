@@ -7,6 +7,7 @@ publish = false
 [dependencies]
 memchr = "=2.8.3"        # the exact version ripgrep 15 locks: our parity bar
 aho-corasick = "=1.1.5"  # Teddy parity bar (ripgrep lock)
+bstr = { version = "=1.13.0", default-features = false }  # first_non_ascii bar (item 29)
 
 [profile.release]
 debug = false
