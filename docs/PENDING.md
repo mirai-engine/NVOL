@@ -277,13 +277,26 @@ The detail is in "Done".
         asm and Clang are even (2773-2908 against 2776-2887), and at 4 KiB about 28 cycles
         are left. Issuing the four loads off the old pointer before the `lea`, in Clang's
         order, changes nothing (149-150 against 147-153, 3 rounds), so the address chain is
-        ruled out. The asm and GCC have 1.0 mispredictions per call and Clang 0.0, but that is
-        not the cause either. With the loop rewritten in Clang's shape (exit test at the top:
-        `cmp; jb` out, then the body, `test; je` back, `jmp` to the match), the asm gives
-        124-131 cycles at 4 KiB, on par with Clang's 124, and it still has 1.0 mispredictions.
-        **The shape is the cause.** But the same shape costs +36 % at 256 B (20.9 → 28.4,
-        2 rounds) and nothing at 64 KiB. Next: a shape that keeps the short row, e.g. Clang's
-        loop only once more than two iterations remain.
+        ruled out. **The cause is the loop exit's misprediction, and the shape decides it.**
+        The asm and GCC mispredict once per call (1.0, taking the best run of 7), and Clang
+        does not (0.0). Rewritten in Clang's shape (exit test at the top: `cmp; jb` out, the
+        body, `test; je` back, `jmp` to the match), the asm also gives 0.01. Three variants
+        (3 rounds, cycles):
+
+        | memrchr AVX2 | 128 B | 256 B | 1 KiB | 4 KiB | 64 KiB |
+        |---|---|---|---|---|---|
+        | NVOL's shape | 16.7-17.1 | 20.1-21.4 | 36.4-39.0 | 146-152 | 2825-2828 |
+        | Clang's, near jumps | 24.8 | 27.5-28.4 | 44.0 | 121-131 | 2808-2857 |
+        | Clang's, short jumps, no repeated entry check | 20.0-20.4 | 23.2-23.4 | 37.2-38.1 | 125-129 | 2832-2916 |
+        | Clang | 18.0-18.2 | 21.0-21.3 | 38.9-40.0 | 117-128 | 2480-2826 |
+
+        No shape wins everywhere. Clang's removes the misprediction once the loop runs ~31
+        times (4 KiB: −14 %), but costs ~3 cycles when it runs once or twice (128 B: +18 %).
+        Clang itself also loses to NVOL there. Under the rule (a worse row rejects), the swap
+        is not taken. What would keep both: the two loops, chosen by length at the entry
+        (NVOL's below ~1 KiB, Clang's above; the 1 KiB row is even), at the cost of a second
+        copy of the unrolled loop in every reverse kernel. That is a code-size decision for the
+        maintainer.
 
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
