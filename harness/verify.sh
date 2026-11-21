@@ -25,6 +25,11 @@
 #   asm-sysv  the same under System V for NASM and GNU as: harness/asm/run-sysv.sh, natively
 #             on Linux or through WSL (needs nasm, binutils, gcc, python3, pytest there),
 #             smoke plus every asm test of pytest
+#   asm-a64   NVOL's own aarch64 assembly (GNU as syntax, AAPCS64): harness/asm/run-a64.sh in
+#             Alpine (WSL or native; needs harness/cpp/setup-aarch64-sysroot.sh once): GNU as
+#             and Clang give the same bytes, the committed generated/gas library built and
+#             smoke-tested, then test_asm and the native suites under QEMU (emulated:
+#             correctness only)
 #
 # A step passes only on exit status 0 of its own command; nothing is decided by
 # reading its output. A step that cannot run (tool missing) is SKIPPED and makes
@@ -125,6 +130,7 @@ asm_sysv() {
 }
 odin_native() { odin run "$ROOT/harness/odin/tests" -collection:nvol="$ROOT/generated" -o:speed; }
 odin_a64() { need_qemu && bash "$ROOT/harness/odin/run-aarch64.sh"; }
+asm_a64() { need_qemu && linux_sh "$ROOT/harness/asm/run-a64.sh"; }
 
 step check    "$PY"   "$PY" -m nvol check
 step pytest   "$PY"   "$PY" -m pytest -q tests
@@ -136,6 +142,7 @@ step odin     odin    odin_native
 step odin-a64 odin    odin_a64
 step asm      nasm    asm_win
 step asm-sysv ""      asm_sysv
+step asm-a64  ""      asm_a64
 
 echo
 echo "passed:  ${passed[*]:-none}"
