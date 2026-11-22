@@ -369,7 +369,7 @@ class X86Lower(Lower):
                 self.mov(d, a)
                 self.emit("sub", [Reg(d, 64), s], defs=[d], uses=[d] + regs_in(s))
             return d
-        if op in ("and", "or"):
+        if op in ("and", "or", "xor"):
             d = self.copy(self.gen(e.a))
             s = self.rhs(e.b)
             self.emit(op, [Reg(d, 64), s], defs=[d], uses=[d] + regs_in(s))
@@ -446,11 +446,11 @@ class X86Lower(Lower):
             else:
                 self.emit("mov", [Reg(d, w), m], defs=[d], uses=regs_in(m))
             return d
-        if n in ("first_offset", "first_offset64", "last_offset"):
+        if n in ("first_offset", "first_offset64", "last_offset", "last_offset64"):
             a = self.gen(e.args[0])
             d = self.new()
-            w = 64 if n == "first_offset64" else 32
-            self.emit("bsf" if n != "last_offset" else "bsr", [Reg(d, w), Reg(a, w)],
+            w = 64 if n.endswith("64") else 32
+            self.emit("bsr" if n.startswith("last") else "bsf", [Reg(d, w), Reg(a, w)],
                       defs=[d], uses=[a])
             return d
         if n == "popcnt":

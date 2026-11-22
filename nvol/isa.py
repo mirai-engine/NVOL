@@ -49,6 +49,8 @@ SCALAR = {
     ("rust", "cpu_sse42"): "std::is_x86_feature_detected!(\"sse4.2\")",
     ("c", "first_offset64"): "((size_t)nvol_ctz64({0}))",
     ("rust", "first_offset64"): "({0}.trailing_zeros() as usize)",
+    ("c", "last_offset64"): "((size_t)(63u - nvol_clz64({0})))",
+    ("rust", "last_offset64"): "((63 - {0}.leading_zeros()) as usize)",
 }
 
 SSE2 = ISA(

@@ -4,7 +4,7 @@ from __future__ import annotations
 from .. import ir
 from ..isa import ISAS, lowering
 
-BINOPS = {"add": "+", "sub": "-", "and": "&", "or": "|", "shr": ">>", "shl": "<<",
+BINOPS = {"add": "+", "sub": "-", "and": "&", "or": "|", "xor": "^", "shr": ">>", "shl": "<<",
           "lt": "<", "le": "<=", "gt": ">", "ge": ">=", "eq": "==", "ne": "!=",
           "land": "&&", "lor": "||"}
 

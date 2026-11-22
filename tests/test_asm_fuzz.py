@@ -74,7 +74,7 @@ class Gen:
         if k == 0:
             return ir.Bin(r.choice(["wadd", "wsub", "wmul"]), a(), a(), ty)
         if k == 1:
-            return ir.Bin(r.choice(["and", "or"]), a(), a(), ty)
+            return ir.Bin(r.choice(["and", "or", "xor"]), a(), a(), ty)
         if k == 2:
             n = ir.Bin("and", a(), ir.Const(w - 1, ty), ty)
             return ir.Bin(r.choice(["shl", "shr"]), a(), n, ty)
@@ -96,10 +96,11 @@ class Gen:
         if k == 6 and ty is U8:
             return ir.TableLoad("fz", self.expr(U8, d - 1).cast(USIZE))
         if k == 7 and ty is USIZE:
-            m = self.expr(U32, d - 1)
-            name = r.choice(["popcnt", "first_offset", "last_offset"])
+            name = r.choice(["popcnt", "first_offset", "last_offset", "first_offset64", "last_offset64"])
+            mt, mw = (U64, 64) if name.endswith("64") else (U32, 32)
+            m = self.expr(mt, d - 1)
             if name != "popcnt":
-                m = ir.Bin("or", m, ir.Const(1 << r.randrange(32), U32), U32)
+                m = ir.Bin("or", m, ir.Const(1 << r.randrange(mw), mt), mt)
             return ir.prim(name, m)
         if k == 8 and self.helpers and d >= 2:
             h = r.choice(self.helpers)

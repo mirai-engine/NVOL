@@ -79,6 +79,9 @@ class Expr:
     def __or__(self, o):
         return Bin("or", self, lift(o, self.ty), self.ty)
 
+    def __xor__(self, o):
+        return Bin("xor", self, lift(o, self.ty), self.ty)
+
     def __rshift__(self, o):
         return Bin("shr", self, lift(o, self.ty), self.ty)
 
@@ -142,7 +145,7 @@ class Const(Expr):
 
 @dataclass(eq=False)
 class Bin(Expr):
-    op: str                   # add sub and or shr shl wadd wsub wmul max min lt le gt ge eq ne land lor
+    op: str                   # add sub and or xor shr shl wadd wsub wmul max min lt le gt ge eq ne land lor
     a: Expr
     b: Expr
     ty: Ty

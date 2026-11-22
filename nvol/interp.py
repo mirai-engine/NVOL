@@ -173,6 +173,8 @@ class Interpreter:
                 return a & b
             if op == "or":
                 return a | b
+            if op == "xor":
+                return a ^ b
             if op == "shr":
                 if b >= WIDTH[e.ty]:
                     raise UB(f"shift by {b} >= width of {e.ty}")

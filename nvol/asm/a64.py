@@ -292,10 +292,10 @@ class A64Lower(Lower):
                 k = _const_value(e.b)
                 return self.add_imm(a, k if op == "add" else -k)
             return self.op3(op, a, Reg(self.gen(e.b), 64))
-        if op in ("and", "or"):
+        if op in ("and", "or", "xor"):
             a = self.gen(e.a)
             b = self.operand(e.b, lambda v: logical_imm(v, 64))
-            return self.op3("and" if op == "and" else "orr", a, b)
+            return self.op3({"and": "and", "or": "orr", "xor": "eor"}[op], a, b)
         # wrapping u8/u32 operations in 32-bit registers (the write zero-extends); a u8 result
         # is cut to its byte. A shift count is below the width (the interpreter's UB otherwise)
         w = 32 if e.ty in (ir.U8, ir.U32) else 64
@@ -365,10 +365,10 @@ class A64Lower(Lower):
             op, w = {2: ("ldrh", 32), 4: ("ldr", 32), 8: ("ldr", 64)}[size]
             self.emit(op, [Reg(d, w), m], defs=[d], uses=regs_in(m))
             return d
-        if n in ("first_offset", "first_offset64", "last_offset"):
+        if n in ("first_offset", "first_offset64", "last_offset", "last_offset64"):
             a = self.gen(e.args[0])
             d = self.new()
-            if n == "last_offset":
+            if n.startswith("last"):
                 c = self.new()
                 self.emit("clz", [Reg(c, 64), Reg(a, 64)], defs=[c], uses=[a])
                 d = self.logic("eor", c, 63)        # 63 - clz, clz in 0..63
@@ -376,7 +376,7 @@ class A64Lower(Lower):
                 t = self.new()
                 self.emit("rbit", [Reg(t, 64), Reg(a, 64)], defs=[t], uses=[a])
                 self.emit("clz", [Reg(d, 64), Reg(t, 64)], defs=[d], uses=[t])
-            if n != "first_offset64" and self.isa is not None and self.isa.name == "neon":
+            if not n.endswith("64") and self.isa is not None and self.isa.name == "neon":
                 d = self.op3("lsr", d, Imm(2))     # 4 mask bits per byte lane
             return d
         if n == "popcnt":

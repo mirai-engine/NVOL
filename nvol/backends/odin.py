@@ -119,6 +119,7 @@ SCALAR = {
     "last_offset": "uint(31 - intrinsics.count_leading_zeros({0}))",
     "popcnt": "uint(intrinsics.count_ones({0}))",
     "first_offset64": "uint(intrinsics.count_trailing_zeros({0}))",
+    "last_offset64": "uint(63 - intrinsics.count_leading_zeros({0}))",
     "load16u": "u32(intrinsics.unaligned_load((^u16)({0})))",
     "load32u": "intrinsics.unaligned_load((^u32)({0}))",
     "load64": "intrinsics.unaligned_load((^u64)({0}))",
@@ -225,6 +226,8 @@ class OdinPrinter(Printer):
             if tpl is None:
                 raise KeyError(f"no Odin lowering for {x.name!r} on {name}")
             return tpl.format(*[self.e(a) for a in x.args])
+        if t is ir.Bin and x.op == "xor":               # Odin's binary xor is `~`
+            return f"({self.e(x.a)} ~ {self.e(x.b)})"
         if t is ir.PtrAdd or t is ir.PtrSub:
             aligned = self.align(x)
             if aligned is not None:
