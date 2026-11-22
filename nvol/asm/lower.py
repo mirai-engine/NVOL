@@ -212,7 +212,7 @@ class Lower:
                 elif isinstance(s, ir.Return):
                     if s.value is not None:
                         ex(s.value)
-                elif isinstance(s, (ir.Store8, ir.Store64, ir.StoreVec)):
+                elif isinstance(s, (ir.Store8, ir.Store32, ir.Store64, ir.StoreVec)):
                     ex(s.ptr); ex(s.value)
         st(self.f.body)
         return total > 0 and fwd == total
@@ -517,6 +517,9 @@ class Lower:
         elif isinstance(s, ir.Store64):
             self.epoch += 1
             self.store64(s)
+        elif isinstance(s, ir.Store32):
+            self.epoch += 1
+            self.store32(s)
         else:
             raise Unsupported(f"{self.f.name}: {type(s).__name__}")
 
@@ -629,7 +632,7 @@ def _effects_expr(e) -> bool:
 def _effects(stmts: list) -> bool:
     """A store or a call anywhere in stmts (memory may change)."""
     for st in stmts:
-        if isinstance(st, (ir.Store8, ir.StoreVec, ir.Store64)):
+        if isinstance(st, (ir.Store8, ir.StoreVec, ir.Store32, ir.Store64)):
             return True
         if isinstance(st, ir.While) and (_effects(st.body) or _effects_expr(st.cond)):
             return True

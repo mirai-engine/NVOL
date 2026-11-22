@@ -85,6 +85,8 @@ class RustPrinter(Printer):
                 self.line("return;" if s.value is None else f"return {self.e(s.value)};")
             elif isinstance(s, ir.Store8):
                 self.line(f"*({self.e(s.ptr)}) = ({self.e(s.value)}) as u8;")
+            elif isinstance(s, ir.Store32):
+                self.line(f"({self.e(s.ptr)} as *mut u32).write_unaligned({self.e(s.value)});")
             elif isinstance(s, ir.Store64):
                 self.line(f"({self.e(s.ptr)} as *mut u64).write_unaligned({self.e(s.value)});")
             elif isinstance(s, ir.StoreVec):

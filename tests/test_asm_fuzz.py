@@ -171,6 +171,8 @@ class Gen:
             b.store64(self.out + self.index(BUF - 8), v)      # read: the assignment stays
         elif k == 7:
             b.store8(self.out + self.index(BUF - 1), self.expr(U8, 3))
+        elif k == 8 and r.random() < 0.5:
+            b.store32(self.out + self.index(BUF - 4), self.expr(U32, 3))
         elif k == 8:
             b.store64(self.out + self.index(BUF - 8), self.expr(U64, 3))
         else:

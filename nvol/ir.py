@@ -342,6 +342,13 @@ class StoreVec(Stmt):
 
 
 @dataclass(eq=False)
+class Store32(Stmt):
+    """Unaligned little-endian u32 store to a mutable pointer."""
+    ptr: Expr
+    value: Expr
+
+
+@dataclass(eq=False)
 class Store64(Stmt):
     """Unaligned little-endian u64 store to a mutable pointer."""
     ptr: Expr
@@ -449,6 +456,10 @@ class Builder:
         assert p.ty is MPTR and value.ty is VEC, "StoreVec needs a mutable pointer and a vector"
         self.emit(StoreVec(p, value))
 
+    def store32(self, p: Expr, value) -> None:
+        assert p.ty is MPTR, "Store32 needs a mutable pointer"
+        self.emit(Store32(p, lift(value, U32)))
+
     def store64(self, p: Expr, value) -> None:
         assert p.ty is MPTR, "Store64 needs a mutable pointer"
         self.emit(Store64(p, lift(value, U64)))
@@ -518,7 +529,7 @@ def _uses(stmts, acc: dict) -> dict:
         elif isinstance(s, Return):
             if s.value is not None:
                 ex(s.value)
-        elif isinstance(s, (Store8, Store64, StoreVec)):
+        elif isinstance(s, (Store8, Store32, Store64, StoreVec)):
             ex(s.ptr); ex(s.value)
     return acc
 

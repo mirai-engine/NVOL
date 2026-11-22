@@ -31,7 +31,7 @@ architectures, and **prove with tests** that they all meet the same contract.
 ```
  nvol/primitives.py   primitive catalog: signature + contract + semantics in Python
         │
- nvol/ir.py           minimal typed IR: statements Let/Assign/While/If/Return/Store8/Store64/StoreVec;
+ nvol/ir.py           minimal typed IR: statements Let/Assign/While/If/Return/Store8/Store32/Store64/StoreVec;
                       expressions Var/Const/Bin/Not/Cast, pointers (PtrAdd/PtrSub/PtrDiff/PtrAddr/Load8),
                       Prim, Call, CallTable, TableLoad and Visit; pointers to u8 and vectors
         │   ▲

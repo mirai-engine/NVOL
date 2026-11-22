@@ -124,6 +124,11 @@ class Interpreter:
                 v = self._e(s.value, env, ctx)
                 assert len(v) == ctx.nbytes
                 self.mem.write(self._e(s.ptr, env, ctx), bytes(v))
+            elif isinstance(s, ir.Store32):
+                v = self._e(s.value, env, ctx)
+                if not 0 <= v < 1 << 32:
+                    raise UB(f"Store32 of {v}")
+                self.mem.write(self._e(s.ptr, env, ctx), v.to_bytes(4, "little"))
             elif isinstance(s, ir.Store64):
                 v = self._e(s.value, env, ctx)
                 self.mem.write(self._e(s.ptr, env, ctx), (v & ((1 << 64) - 1)).to_bytes(8, "little"))

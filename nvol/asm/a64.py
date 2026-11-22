@@ -703,6 +703,14 @@ class A64Lower(Lower):
         v = self.gen(s.value)
         self.emit("str", [m, Reg(v, 128)], uses=regs_in(m) + [v])
 
+    def store32(self, s) -> None:
+        m = self.addr(s.ptr, 4)
+        if isinstance(s.value, ir.Const) and _const_value(s.value) & 0xFFFFFFFF == 0:
+            self.emit("str", [m, Reg(XZR, 32)], uses=regs_in(m))
+            return
+        v = self.gen(s.value)
+        self.emit("str", [m, Reg(v, 32)], uses=regs_in(m) + [v])
+
     def store64(self, s) -> None:
         m = self.addr(s.ptr, 8)
         if isinstance(s.value, ir.Const) and _const_value(s.value) == 0:

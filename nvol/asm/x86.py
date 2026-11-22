@@ -798,6 +798,14 @@ class X86Lower(Lower):
         self.emit("vmovdqu" if self.vex else "movdqu", [m, Reg(v, self.vw)],
                   uses=regs_in(m) + [v])
 
+    def store32(self, s) -> None:
+        m = self.addr(s.ptr, 32)
+        if isinstance(s.value, ir.Const):
+            self.emit("mov", [m, Imm(_const_value(s.value) & 0xFFFFFFFF)], uses=regs_in(m))
+        else:
+            v = self.gen(s.value)
+            self.emit("mov", [m, Reg(v, 32)], uses=regs_in(m) + [v])
+
     def store64(self, s) -> None:
         m = self.addr(s.ptr, 64)
         v = self.rhs(s.value)

@@ -51,6 +51,7 @@ static inline NVOL_UNUSED uint32_t nvol_load16u(const uint8_t *p) { uint16_t v; 
 static inline NVOL_UNUSED uint32_t nvol_load32u(const uint8_t *p) { uint32_t v; NVOL_MEMCPY(&v, p, 4); return v; }
 static inline NVOL_UNUSED uint64_t nvol_load64(const uint8_t *p) { uint64_t v; NVOL_MEMCPY(&v, p, 8); return v; }
 static inline NVOL_UNUSED void nvol_store64(uint8_t *p, uint64_t v) { NVOL_MEMCPY(p, &v, 8); }
+static inline NVOL_UNUSED void nvol_store32(uint8_t *p, uint32_t v) { NVOL_MEMCPY(p, &v, 4); }
 static inline NVOL_UNUSED void nvol_store8(uint8_t *p, uint8_t v) { *p = v; }
 #ifndef NVOL_VISITOR_DEFINED
 #define NVOL_VISITOR_DEFINED

@@ -277,6 +277,8 @@ class OdinPrinter(Printer):
                 self.line("return" if s.value is None else f"return {self.e(s.value)}")
             elif isinstance(s, ir.Store8):
                 self.line(f"{self.e(s.ptr)}[0] = u8({self.e(s.value)})")
+            elif isinstance(s, ir.Store32):
+                self.line(f"intrinsics.unaligned_store((^u32)({self.e(s.ptr)}), {self.e(s.value)})")
             elif isinstance(s, ir.Store64):
                 self.line(f"intrinsics.unaligned_store((^u64)({self.e(s.ptr)}), {self.e(s.value)})")
             elif isinstance(s, ir.StoreVec):

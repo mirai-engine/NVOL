@@ -59,7 +59,7 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 | `tzcnt`, `lzcnt` on `u64` | indexer, `copy_and_find` | `first_offset64`, `last_offset64` | — |
 | `blsr` (`x & (x - 1)`) | indexer (`clear_lowest_bit`) | expressible (`wsub`, `and`) | — |
 | sign smear `int64(x) >> 63` | string scanner (`prev_in_string`) | expressible as `0 - (x >> 63)` | 33 |
-| store of `u32` indices | indexer (`write_index`) | `Store8`, `Store64`, `StoreVec` | 33 |
+| store of `u32` indices | indexer (`write_index`) | `Store32` | — |
 | carry-less multiplication | `prefix_xor` (`_mm_clmulepi64_si128` against all ones) | none | 34 |
 | `pmaddubsw`, `pmaddwd`, `packusdw` (128 bits) | `parse_eight_digits_unrolled` | none | 37 |
 | unaligned 32-byte copy plus two masks | `copy_and_find` | `nvol_copy_until_byteset` (copy plus the first member) | 37 |
