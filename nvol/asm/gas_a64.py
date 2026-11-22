@@ -16,6 +16,8 @@ _VOPS = {
     "vcmeq": ("cmeq", "16b", "16b", "16b"),
     "vorr": ("orr", "16b", "16b", "16b"),
     "vand": ("and", "16b", "16b", "16b"),
+    "veor": ("eor", "16b", "16b", "16b"),
+    "vbic": ("bic", "16b", "16b", "16b"),
     "vsub": ("sub", "16b", "16b", "16b"),
     "vadd": ("add", "16b", "16b", "16b"),
     "vumin": ("umin", "16b", "16b", "16b"),

@@ -13,7 +13,7 @@ from .mir import (CONDJUMPS, PHYS, RSP, TERMINATORS, VECS, Imm, Ins, Lab, Mem, P
 from .regalloc import _subst, copy_back, jump_cleanup, reloads
 
 # element-wise vector operations: one instruction each (legacy name; VEX adds "v")
-VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vsub8": "psubb",
+VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vxor": "pxor", "vsub8": "psubb",
         "vmin8": "pminub", "vadd64": "paddq", "vshuffle": "pshufb", "unpacklo8": "punpcklbw",
         "unpackhi8": "punpckhbw"}
 SHIN = {"shin1": 15, "shin2": 14, "shin3": 13, "hshin1": 15, "hshin2": 14, "hshin3": 13}
@@ -565,6 +565,10 @@ class X86Lower(Lower):
             d = self.new("v")
             self.emit("vbroadcasti128", [Reg(d, 256), m], defs=[d], uses=regs_in(m))
             return d
+        if n == "vandnot":                      # pandn d, s: d = ~d & s, so b goes first
+            a = self.gen(e.args[0])
+            b = self.gen(e.args[1])
+            return self.vop("pandn", b, a)
         if n in VBIN:
             a = self.gen(e.args[0])
             b = self.gen(e.args[1])

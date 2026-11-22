@@ -26,7 +26,7 @@ COND = {"b": "lo", "ae": "hs", "be": "ls", "a": "hi", "e": "eq", "ne": "ne", "s"
 JCC = {"j" + k: v for k, v in COND.items()}
 
 # element-wise vector operations: one instruction each, on 16 byte lanes
-VBIN = {"cmpeq": "vcmeq", "vor": "vorr", "mask_or": "vorr", "vand": "vand", "vsub8": "vsub",
+VBIN = {"cmpeq": "vcmeq", "vor": "vorr", "mask_or": "vorr", "vand": "vand", "vxor": "veor", "vandnot": "vbic", "vsub8": "vsub",
         "vmin8": "vumin"}
 SHIN = {"shin1": 15, "shin2": 14, "shin3": 13}
 

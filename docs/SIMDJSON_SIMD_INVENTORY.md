@@ -47,7 +47,7 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 | operation | where simdjson uses it | NVOL | item |
 |---|---|---|---|
 | `cmpeq`, `or`, `and`, `movemask`, `testz` | everywhere | `cmpeq`, `vor`, `vand`, `movemask`, `is_zero` | — |
-| vector `xor`, `andnot` | `operator^`, `bit_andnot`, `operator~` | neither | 33 |
+| vector `xor`, `andnot` | `operator^`, `bit_andnot`, `operator~` | `vxor`, `vandnot` (`a & ~b`, as `bit_andnot`); `~a` is `vxor` with all ones | — |
 | integer `xor`, `andnot` | escape and string scanners | `xor` (since 2026-11-22); no `andnot` | 33 |
 | 64-bit mask of a 64-byte block | `simd8x64::to_bitmask` (two `vpmovmskb`) | a `u32` per vector on x86 (NEON: `u64`) | 33 |
 | signed `>`/`<`, signed `max`/`min` | `simd8<int8_t>` | none | 33 |

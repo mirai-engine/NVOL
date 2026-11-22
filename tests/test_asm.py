@@ -73,7 +73,7 @@ def _tested(f) -> bool:
 
 
 # the NEON primitives (NEON is the baseline of aarch64: every one runs)
-NEON_VEC = ["cmpeq", "vor", "mask_or", "vand", "vsub8", "vmin8", "vshuffle", "shin1", "shin2",
+NEON_VEC = ["cmpeq", "vor", "mask_or", "vand", "vxor", "vandnot", "vsub8", "vmin8", "vshuffle", "shin1", "shin2",
             "shin3", "sad0", "vadd64", "vnib_hi", "msb_lanes"]
 NEON_SCALAR = ["is_zero", "any_nonzero", "movemask", "lane64_0", "lane64_1", "hsum64"]
 

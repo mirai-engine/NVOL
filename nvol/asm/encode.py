@@ -30,12 +30,12 @@ JCC = {"ja", "jae", "jb", "jbe", "je", "jne", "jz", "jnz", "js", "jns"}
 
 # legacy SSE: (mandatory prefix 66/F3, opcode bytes after it, immediate bytes)
 _SSE = {"pcmpeqb": 2, "por": 2, "pand": 2, "psubb": 2, "paddb": 2, "pminub": 2, "paddq": 2, "punpckhqdq": 2,
-        "punpcklbw": 2, "punpckhbw": 2, "psadbw": 2, "pxor": 2, "pmovmskb": 2, "movd": 2,
+        "punpcklbw": 2, "punpckhbw": 2, "psadbw": 2, "pxor": 2, "pandn": 2, "pmovmskb": 2, "movd": 2,
         "pshufb": 3}
 _SSE_IMM = {"pshufd": 2, "psrlw": 2, "palignr": 3, "pcmpistri": 3}
 # VEX: map (1 = 0F, 2 = 0F38, 3 = 0F3A), W1, immediate
 _VEX = {"vpcmpeqb": (1, 0, 0), "vpor": (1, 0, 0), "vpand": (1, 0, 0), "vpsubb": (1, 0, 0), "vpaddb": (1, 0, 0),
-        "vpminub": (1, 0, 0), "vpaddq": (1, 0, 0), "vpsadbw": (1, 0, 0), "vpxor": (1, 0, 0),
+        "vpminub": (1, 0, 0), "vpaddq": (1, 0, 0), "vpsadbw": (1, 0, 0), "vpxor": (1, 0, 0), "vpandn": (1, 0, 0),
         "vpunpcklbw": (1, 0, 0), "vpunpckhbw": (1, 0, 0), "vpunpckhqdq": (1, 0, 0),
         "vpmovmskb": (1, 0, 0), "vmovd": (1, 0, 0), "vmovq": (1, 1, 0), "vpsrlw": (1, 0, 1),
         "vpshufb": (2, 0, 0), "vptest": (2, 0, 0), "vpbroadcastb": (2, 0, 0),

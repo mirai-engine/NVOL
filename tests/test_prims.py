@@ -20,8 +20,8 @@ from nvol.isa import ISAS
 from nvol.primitives import PRIMS
 
 VEC_TO_VEC = {
-    "ssse3": ["cmpeq", "vor", "mask_or", "vand", "vsub8", "vmin8", "vshr4", "vshuffle", "shin1", "shin2", "shin3"],
-    "avx2": ["cmpeq", "vor", "mask_or", "vand", "vsub8", "vmin8", "vshr4", "vshuffle", "shin1", "shin2", "shin3",
+    "ssse3": ["cmpeq", "vor", "mask_or", "vand", "vxor", "vandnot", "vsub8", "vmin8", "vshr4", "vshuffle", "shin1", "shin2", "shin3"],
+    "avx2": ["cmpeq", "vor", "mask_or", "vand", "vxor", "vandnot", "vsub8", "vmin8", "vshr4", "vshuffle", "shin1", "shin2", "shin3",
              "hshin1", "hshin2", "hshin3", "swap_halves", "unpacklo8", "unpackhi8", "sad0", "vadd64"],
 }
 VEC_TO_SCALAR = {
