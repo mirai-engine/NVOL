@@ -133,6 +133,7 @@ harness/rapidjson-e2e patch to rapidjson on nvol.hpp; 5 builds (no SIMD, SSE2, S
    with its cause).
 9. ~~Parity of each language against the assembly, with each difference explained~~
    ([parity log](docs/PARITY.md), [toolchain log](docs/TOOLCHAINS.md); `harness/parity`).
+   Every change accepted with a worse row is in the [trade-off log](docs/TRADEOFFS.md).
    Open: the rows with the same instructions and more cycles, with item 25
    ([report](docs/benchmarks/2026-11-22-cycle-gaps.md)).
 10. simdjson: block-to-mask kernels (64-bit masks, `prefix_xor`, UTF-8, digits), Phase 6 of

@@ -283,38 +283,9 @@ The detail is in "Done".
       with frontend counters below.
 
     - **Accepted position losses.** The maintainer's rule (2026-11-21): an optimization
-      whose worse row a control shows to be position only is accepted, and logged here. The
-      control puts the new code at the old addresses (NOP padding) and shows that the code
-      alone is not worse. These rows are layout noise that any later edit moves again, so
-      re-measure them when this item gets frontend counters, or when a row stays bad across
-      unrelated commits:
-
-      | commit | row | before → after | control (new code, old addresses) |
-      |---|---|---|---|
-      | copy_back (item 17) | memchr 16 B AVX2 | 16.8 → 18.5 | 16.8 |
-      | copy_back (item 17) | memrchr 64 B AVX2 | 19.9 → 21.6 | 3-byte NOP restores it |
-      | reloads across labels (item 17) | memmem 256 B SSE2 | 71.5 → 72.4 | 70.8 |
-      | exit-first memrchr (item 25) | memrchr 256 B AVX2 | 20.0-21.0 → 23.7-24.9 | NOP 22.0-22.4, guard 22.4-23.3 |
-      | exit-first memrchr (item 25) | memrchr 512 B AVX2 | 25.6-25.9 → 29.2-29.5 | NOP 26.5-26.7, guard 26.8-28.3 |
-      | functions 64-aligned (item 25) | count_parity 16 / 64 / 256 B SSE2 | 48.7 / 55.1 / 83.8 → 63.2 / 68.2 / 95.1 | entry moved 48 bytes into its line: 48.6 / 54.0 / 84.2 |
-      | functions 64-aligned (item 25) | count_parity 4 KiB SSE2 | 765.8 → 809.9 | same code (bodies byte-identical) |
-      | functions 64-aligned (item 25) | byteset 4 / 64 KiB AVX2 | 344.5 / 6041 → 383.8 / 6705 | same code (bodies byte-identical) |
-      | functions 64-aligned (item 25) | count 64 KiB AVX2, first_non_ascii 64 B AVX2 | 2547 / 17.1 → 2781 / 19.2 | same code (bodies byte-identical) |
-      | count below one SAD block (item 17) | count 64 B AVX2 | 13.4-13.9 → 16.2-16.8 | same code, loop heads 32-aligned: 11.0 |
-      | return tails copied (item 17) | memchr 16 B SSE2, count 64 B SSE2 | 13.73 / 15.63 → 15.04 / 16.65 | both 32-aligned: 13.93 → 13.65, 17.04 → 16.98 |
-      | return tails copied (item 17) | first_non_ascii 4 KiB AVX2 / SSE2 | 92.4 / 210.3 → 98.5 / 236.5 | both 32-aligned: 108.7 → 109.2, 237.2 → 234.9 |
-      | rare regions out of line (item 17) | first_non_ascii 16 B AVX2 | 14.53 → 15.86 | both 32-aligned: 15.99 → 15.98 |
-      | `lea` for `(x << k) + y` (item 17) | memmem 256 B / 4 KiB / 64 B SSE2 | 65.9 / 675 / 35.8 → 73.9 / 763 / 39.0 | both 32-aligned: 70.3 → 71.5, 807 → 779, 36.2 → 37.2 |
-      | SWAR memchr (item 28) | memchr2 16 B AVX2 | 13.7-13.9 → 14.9-15.4 | the vector code is unchanged; HEAD's entry with 665 dead bytes, which put it at the new offset (734): 15.8 |
-      | SWAR memchr (item 28) | Rust memchr 3 B (`smallcount`) | 12.05 → 13.96 | the same 47 instructions per call as HEAD (the byte loop) |
-
-      In the 64-aligned layout no function body changed, so each of its rows is position by
-      construction. The count_parity control shows the trade: at +48 bytes, the SSE2 path gets
-      HEAD's cycles back, but the AVX2 path loses its −29 % (81.3 → 116.5 at 64 B).
-
-      The last two rows are not all position: of their +3.5-3.8 cycles, the length check
-      itself costs 0.4-0.9 (the guard control against the NOP control). That part is a code
-      cost, and it was accepted as a trade-off (see Done).
+      whose worse row a control shows to be position only is accepted and logged. The table
+      of those rows, with each control, and every accepted trade-off are in
+      [TRADEOFFS](TRADEOFFS.md).
 
     - **Frontend counters (2026-11-21).** WSL's kernel does count `idq.dsb_uops`,
       `idq.mite_uops` and `dsb2mite_switches.penalty_cycles`; Alpine's `perf` just has no
@@ -891,7 +862,7 @@ as (16); see Done. What remains is maturity (items 17-18):
   better than −5 %, 6 worse than +5 %. The control regenerates HEAD and new with every loop
   head 32-aligned, the same rule for both:
   - **placement:** memchr 16 B SSE2, count 64 B SSE2, first_non_ascii 4 KiB (equal or
-    better in the control), logged in the position-loss table; memrchr 4 KiB AVX2 moves by
+    better in the control), logged in the position-loss table ([TRADEOFFS](TRADEOFFS.md)); memrchr 4 KiB AVX2 moves by
     ±8 between runs;
   - **trade-off:** memrchr 64 B AVX2, +1.5-2 cycles in both layouts with the same µops
     (56.1). In HEAD's layout the copied `vzeroupper; ret` brings 4 µops through legacy decode
@@ -917,7 +888,7 @@ as (16); see Done. What remains is maturity (items 17-18):
   The 64 B AVX2 row is slower with 9 instructions fewer, and its µops all come from the DSB
   in both versions (MITE ≈ 0). The position control (the same code with every loop head
   32-aligned) gives 11.02, so it is placement inside the function: logged in the
-  position-loss table. From 128 B on, the block path is +2 instructions (the compare), and
+  position-loss table ([TRADEOFFS](TRADEOFFS.md)). From 128 B on, the block path is +2 instructions (the compare), and
   the cycles stay inside HEAD's own spread (15.8-17.4 at 128 B between identical copies).
   An earlier form (the block, its accumulator and its sum under `if len >= LOOP`) gave
   the same small-size gains, but repeated the test at the loop's entry.

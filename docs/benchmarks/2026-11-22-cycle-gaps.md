@@ -27,7 +27,8 @@ Five kinds of control separate the code from its placement:
 | **Offset scan** | one function moved 0-48 bytes within its cache line | which window decides |
 
 A row that a control shows to be placement only is accepted and logged (the maintainer's
-rule, PENDING item 25, "Accepted position losses": 14 rows so far, each with its control).
+rule: 16 rows so far, each with its control, in [TRADEOFFS](../TRADEOFFS.md) with the
+accepted trade-offs).
 
 ## 2. What is established
 
