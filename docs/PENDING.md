@@ -235,8 +235,15 @@ The detail is in "Done".
     (`c-clang`, `c-msvc`). Every C/C++ row of `docs/PARITY.md` has its cause: P1 and P5 fixed
     in the generator, P2-P3 and P6-P8 accepted with the reason, P4 (the same instructions, more
     cycles) goes on with item 25.
-23. **Rust** against the asm (`#[target_feature]`, `#[inline(always)]`, LTO).
-24. **Odin** against the asm (LLVM without `inbounds`: 2.1b).
+23. ~~**Rust** against the asm (`#[target_feature]`, `#[inline(always)]`, LTO)~~ **(closed 2026-11-22).**
+    One deviation fixed (P1: `popcnt` in the AVX2 target, count_parity 4 KiB +112 % → −8 %); the rest
+    explained in `docs/PARITY.md`: P2 (inlining, below the asm), P9 (LLVM's unrotated reverse loop),
+    P11 (same instructions, more cycles: with item 25).
+24. ~~**Odin** against the asm (LLVM without `inbounds`: 2.1b)~~ **(closed 2026-11-22).** No row
+    above +10 % in instructions (130 rows; geomean cycles −11.2 % against the asm, P2). The
+    deviations are explained in `docs/PARITY.md`: P9 (memrchr, LLVM's reverse loop, as in Clang and
+    Rust), P10 (pair's SSE2 byte loop, as in GCC and Clang), P11 (placement, with item 25). The
+    `inbounds` issue (2.1b, T3) is drafted in `docs/TOOLCHAINS.md`.
 
 ### Phase 5. Unmeasured or with doubtful measurement (may hide something worse)
 
