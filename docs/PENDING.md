@@ -39,7 +39,9 @@ Tools: MSVC 14.51 (`cl`, `ml64`), NASM 2.16 and GNU as 2.42 (MinGW) are installe
 parity tool and the frontend counters: glibc, rust, gcc 16, clang 23, LLVM 22 (to build Odin
 from source), odin, NASM 3.02, autotools, and a `perf` that knows `idq.*` and `dsb2mite_*`
 by name (Alpine's `perf` has only the raw codes; WSL's kernel counts them in both). WSL gets
-12 GB of memory and 8 GB of swap (`.wslconfig`; NASM's full test suite needs more than 4 GB).
+6 GB of memory and 8 GB of swap, and returns idle memory to Windows (`.wslconfig`,
+`autoMemoryReclaim=gradual`). Everything here fits in 4 GB except NASM's full test suite,
+whose peak goes to swap.
 Anything missing (Intel SDE, z3, ARM libc++, …) is downloaded. Windows gives no counters to a
 user program, and WSL has no counters that need native Linux (item 25). Sourcetrail indexes C, C++, Rust and Odin; the assembler is worked on without an
 indexer. NEON is measured under QEMU and documented as emulated: it serves to compare variants
