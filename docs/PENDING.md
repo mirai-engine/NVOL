@@ -231,7 +231,8 @@ The detail is in "Done".
       in a `.def`. Confirmed by patching the flag to `0x100a00`, which is what NASM and ml64
       write: with that, `link.exe` exports them (item 12).
 22. **C and C++** against the asm, with GCC, Clang and MSVC, including the full suite with
-    Clang (2.5) and with MSVC (2.4).
+    Clang (2.5) and with MSVC (2.4). *(In progress.)* ~~The suites~~ (done 2026-11-22, see Done);
+    the open parity rows P5-P7 of `docs/PARITY.md` remain.
 23. **Rust** against the asm (`#[target_feature]`, `#[inline(always)]`, LTO).
 24. **Odin** against the asm (LLVM without `inbounds`: 2.1b).
 
@@ -670,8 +671,8 @@ as little-endian). The detail of both is in Done.
 | 2.13 | P2 | **Dead `let` elimination is a pass without its own tests** | `ir.prune_unused_lets` was added when moving to the raw signature (there was an unused `len`). It is only tested indirectly; add unit tests for the IR passes. |
 | 2.2 | P1 | **Glue outside the IR** | The iterator, Finder and Teddy glue is handwritten per language (`iters.py`, `finder.py`, `packed.py`, and the API part of `odin.py`), tested by the harnesses but not by the interpreter. With mutable structs in the IR it could be generated and verified once. |
 | 2.3 | P1 | **Primitive lowering: Rust and the scalar ones are missing** | `tests/test_prims.py` already tests each vector primitive × {SSSE3, AVX2} in **C** against `PrimDef.ref` (300 random vectors each). The same is missing for the **Rust** backend and for the scalar primitives (`first_offset`, `popcnt`, `load16u/32u/64`). |
-| 2.4 | P1 | **MSVC path half tested** | The C prelude has branches for MSVC (`_BitScanForward`, `__cpuidex`, `_xgetbv`). Tested: the C++ header compiles with `cl /std:c++20 /W4 /WX` in two linked units and runs (item 6; it used to give C4141, repeated `inline`); the C in `asm_kernels` mode compiles with `cl /W4 /WX`, links with the NASM object through `link.exe` and passes the smoke test (the `asm` step of `verify.sh`, item 10). The full C (the kernels with MSVC intrinsics) under the pytest suite is missing (item 21). |
-| 2.5 | P1 | **C suite not run with Clang** | The generated C already compiles with Clang 21 (AArch64, and x86 linked from Odin), but `pytest` only runs with GCC 13.2. The compiler in `tests/` still needs to be parameterized and the suite run with Clang. |
+| ~~2.4~~ | — | ~~**MSVC path half tested**~~ (closed 2026-11-22: the native C suite runs with `cl /W4 /WX`, step `c-msvc`) | The C prelude has branches for MSVC (`_BitScanForward`, `__cpuidex`, `_xgetbv`). Tested: the C++ header compiles with `cl /std:c++20 /W4 /WX` in two linked units and runs (item 6; it used to give C4141, repeated `inline`); the C in `asm_kernels` mode compiles with `cl /W4 /WX`, links with the NASM object through `link.exe` and passes the smoke test (the `asm` step of `verify.sh`, item 10). The full C (the kernels with MSVC intrinsics) under the pytest suite is missing (item 21). |
+| ~~2.5~~ | — | ~~**C suite not run with Clang**~~ (closed 2026-11-22: the whole suite runs with Clang, step `c-clang`) | The generated C already compiles with Clang 21 (AArch64, and x86 linked from Odin), but `pytest` only runs with GCC 13.2. The compiler in `tests/` still needs to be parameterized and the suite run with Clang. |
 | 2.6 | P1 | **CPU cache and ifunc pointers without atomics in C** | `nvol_cpu_avx2_cache` and the `*_ptr` variables are plain variables written from several threads (a benign race on x86, but UB under C11). Use `_Atomic`/`stdatomic.h` in C11 or `InterlockedExchangePointer` in MSVC; keep the C99 version as an option. Rust already uses `AtomicPtr`. |
 | 2.7 | P1 | **Rust requires `std`** | `is_x86_feature_detected!` comes from `std`. For `no_std`, detection must use `core::arch::x86_64::__cpuid` (as memchr does) behind a cfg. |
 | 2.8 | P1 | **No CI** | GitHub Actions is missing: `python -m nvol check`, `pytest`, the harness's `cargo test`, the C++ smoke test, and checking that `generated/` is up to date with the generator (empty diff). |
@@ -723,6 +724,19 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **The C suite with Clang and with MSVC (item 22, 2.5 and 2.4).** `tests/conftest.py`
+  takes the C compiler from `NVOL_CC`. With `clang`, every C build of the suite uses it (it
+  takes gcc's flags). With `cl`, only the native library of the `native` fixture does: it is
+  built by `cl /O2 /W4 /WX` in vcvars64's environment (`harness/asm/build_msvc.build_dll`,
+  factored out of the asm step's build). Two new `verify.sh` steps:
+  - `c-clang`: the whole suite with Clang (`harness/c/run-clang.sh`, in WSL Alpine, clang
+    22.1.3): 538 passed;
+  - `c-msvc`: the native C suite with MSVC, Visual Studio 18, on Windows: 76 passed. The DLL
+    carries MSVC's Rich header, so it is cl's and not gcc's.
+
+  Red check: one constant of the SWAR bit count changed (0x55555555 → 0x55555554, in both
+  compilers' branches) fails both steps.
 
 - **Parity: the bit count in the C and Rust kernels (item 20, P1).** The first parity run
   (`harness/parity`, item 19) put gcc count_parity 4 KiB SSE2 at 2298 cycles against the asm's

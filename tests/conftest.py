@@ -4,6 +4,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -26,7 +27,13 @@ def gen_dir(module, tmp_path_factory):
     return out
 
 
-def _cc():
+def _cc(native: bool = False):
+    """The C compiler: NVOL_CC if set (clang runs every C build of the suite; cl, MSVC, only
+    the native library of the `native` fixture, whose build knows its flags), else the first
+    of gcc, clang and cc."""
+    want = os.environ.get("NVOL_CC")
+    if want and (want != "cl" or native):
+        return want if want == "cl" or shutil.which(want) else None
     for c in ("gcc", "clang", "cc"):
         if shutil.which(c):
             return c
@@ -64,8 +71,8 @@ def _build_native(gen_dir, backend):
     """The generated C as a shared lib with the test hook; for "nasm", "masm" and "gas" the
     x86_64 kernels come from the assembly backend in that syntax and the C is only the glue
     (`asm_kernels`)."""
-    cc = A64_CC + ["-fuse-ld=lld"] if A64 else [_cc()]
-    if not cc[0] or not shutil.which(cc[0]):
+    cc = A64_CC + ["-fuse-ld=lld"] if A64 else [_cc(native=True)]
+    if not cc[0] or (cc[0] != "cl" and not shutil.which(cc[0])):
         pytest.skip("no C compiler")
     if backend == "c":
         cdir = gen_dir / "c"
@@ -111,6 +118,12 @@ def _build_native(gen_dir, backend):
         objs = [str(obj)]
     name = "nvol" if backend == "c" else f"nvol_{backend}"
     lib = cdir / (f"{name}.dll" if sys.platform == "win32" else f"lib{name}.so")
+    if cc[0] == "cl":           # MSVC (PENDING 2.4): cl /W4 /WX in vcvars64's environment
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "harness" / "asm"))
+        from build_msvc import build_dll
+        if build_dll(str(cdir / "nvol.c"), objs, str(lib)) != 0:
+            pytest.fail("cl failed")
+        return lib
     cmd = cc + ["-O2", "-Wall", "-Wextra", "-Werror", "-std=c99", "-shared", "-DNVOL_BUILD_DLL",
            "-DNVOL_TESTING", "-o", str(lib), str(cdir / "nvol.c")] + objs
     if sys.platform == "win32":

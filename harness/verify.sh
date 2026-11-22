@@ -33,6 +33,10 @@
 # Steps (names usable in SKIP and as arguments):
 #   check     python -m nvol check: kernels (IR) vs oracle, x86_64 and aarch64
 #   pytest    the generated C via ctypes, on the forced CPU paths
+#   c-clang   the whole pytest suite with Clang as the C compiler (NVOL_CC=clang):
+#             harness/c/run-clang.sh, natively on Linux or through WSL (needs clang there)
+#   c-msvc    the native C suite with MSVC (NVOL_CC=cl: the library built by cl /W4 /WX in
+#             vcvars64's environment, found with vswhere); native Windows only
 #   cpp       the generated C++ header compiles (raw layer C++17, wrappers C++20) and
 #             harness/cpp/smoke.cpp (the C++20 wrappers) builds and passes, native
 #   cpp-a64   the generated C and C++ for aarch64: compiled with clang -Werror, smoke.cpp
@@ -66,15 +70,15 @@
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-STEPS="check pytest cpp cpp-a64 rust rust-a64 odin odin-a64 asm asm-sysv asm-a64"
+STEPS="check pytest c-clang c-msvc cpp cpp-a64 rust rust-a64 odin odin-a64 asm asm-sysv asm-a64"
 
 # the files that differ from $1 (tracked changes and untracked files) -> the steps they reach
 changed_steps() {
     local rev=$1 f out=""
     for f in $( { git diff --name-only "$rev" --; git ls-files --others --exclude-standard; } | sort -u); do
         case $f in
-            nvol/*)                              out+=" check pytest" ;;
-            generated/c/*)                       out+=" pytest cpp-a64 asm-a64" ;;
+            nvol/*)                              out+=" check pytest c-clang c-msvc" ;;
+            generated/c/*)                       out+=" pytest c-clang c-msvc cpp-a64 asm-a64" ;;
             generated/cpp/*)                     out+=" cpp cpp-a64" ;;
             generated/rust/*)                    out+=" rust rust-a64" ;;
             generated/odin/*)                    out+=" odin odin-a64" ;;
@@ -82,13 +86,15 @@ changed_steps() {
             generated/gas/nvol.c|generated/gas/nvol.h)  out+=" asm asm-sysv asm-a64" ;;
             generated/gas/*aarch64*)             out+=" asm-a64" ;;
             generated/nasm/*|generated/masm/*|generated/gas/*)  out+=" asm asm-sysv pytest" ;;
-            tests/*)                             out+=" pytest asm-sysv asm-a64" ;;
+            tests/*)                             out+=" pytest c-clang c-msvc asm-sysv asm-a64" ;;
             harness/rust/*|harness/run-aarch64.sh)  out+=" rust rust-a64" ;;
             harness/odin/*)                      out+=" odin odin-a64" ;;
             harness/cpp/*)                       out+=" cpp cpp-a64 asm-a64" ;;
             harness/asm/run-sysv.sh)             out+=" asm-sysv" ;;
+            harness/c/run-clang.sh)              out+=" c-clang" ;;
             harness/asm/run-a64.sh)              out+=" asm-a64" ;;
-            harness/asm/assemble.py|harness/asm/build_msvc.py|harness/asm/smoke.py)
+            harness/asm/build_msvc.py)           out+=" asm asm-sysv asm-a64 c-msvc" ;;
+            harness/asm/assemble.py|harness/asm/smoke.py)
                                                  out+=" asm asm-sysv asm-a64" ;;
             docs/*|*.md|harness/*-e2e/*|harness/asm/*) ;;
             *)                                   out+=" $STEPS" ;;
@@ -210,6 +216,21 @@ asm_sysv() {
     else echo "no Linux and no WSL"; return 1
     fi
 }
+c_clang() {
+    if [[ "$(uname -s)" == Linux ]]; then sh "$ROOT/harness/c/run-clang.sh"
+    elif command -v wsl >/dev/null 2>&1; then linux_sh "$ROOT/harness/c/run-clang.sh"
+    else echo "no Linux and no WSL"; return 1
+    fi
+}
+# the native C suite only: the asm backends' glue is gcc's and MSVC's in the asm step
+c_msvc() {
+    [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]] || { echo "MSVC: native Windows only"; return 1; }
+    local k="not nasm and not masm and not gas and not test_asm"
+    [ -n "$PYTEST_K" ] && k="($k) and ($PYTEST_K)"
+    if "$PY" -c "import xdist" 2>/dev/null; then NVOL_CC=cl "$PY" -m pytest -q -n auto -k "$k" tests
+    else NVOL_CC=cl "$PY" -m pytest -q -k "$k" tests
+    fi
+}
 odin_native() { odin run "$ROOT/harness/odin/tests" -collection:nvol="$ROOT/generated" -o:speed; }
 odin_a64() { need_qemu && bash "$ROOT/harness/odin/run-aarch64.sh"; }
 asm_a64() { need_qemu && linux_sh "$ROOT/harness/asm/run-a64.sh"; }
@@ -226,6 +247,8 @@ pytest_native() {
 
 step check    "$PY"   "$PY" -m nvol check
 step pytest   "$PY"   pytest_native
+step c-clang  ""      c_clang
+step c-msvc   "$PY"   c_msvc
 step cpp      "$CXX"  cpp_header
 step cpp-a64  ""     cpp_a64
 step rust     cargo   rust_native

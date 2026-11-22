@@ -37,34 +37,45 @@ def unread_exports(obj: str) -> list:
     return []
 
 
-def main(obj: str, out: str, syntax: str = "nasm") -> int:
+def vs_path():
+    """The newest Visual Studio with the C++ tools, or None."""
     if not os.path.exists(VSWHERE):
-        print("no vswhere (Visual Studio installer)")
-        return 1
+        return None
     vs = subprocess.run([VSWHERE, "-latest", "-products", "*", "-requires",
                          "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "-property",
                          "installationPath"], capture_output=True, text=True).stdout.strip()
-    if not vs:
+    return vs or None
+
+
+def build_dll(src: str, objs: list, out: str, flags: str = "/O2 /W4 /WX") -> int:
+    """cl `src` (the C, with the test hook) plus `objs` into the DLL `out`, in vcvars64's
+    environment: the exports of an object whose .drectve link.exe ignores go in a .def."""
+    vs = vs_path()
+    if vs is None:
         print("no MSVC (vswhere found no VC tools)")
         return 1
     out = os.path.abspath(out)
     work = os.path.dirname(out)
-    src = os.path.join(ROOT, "generated", syntax, "nvol.c")
-    exports = unread_exports(obj)
+    exports = [n for o in objs for n in unread_exports(o)]
     link = ""
     if exports:
-        print(f"{os.path.basename(obj)}: .drectve without LNK_INFO (link.exe ignores it): "
-              f"{len(exports)} exports passed in a .def file")
+        print(f"{len(exports)} exports from .drectve sections link.exe ignores, passed in a .def file")
         dfile = os.path.join(work, "exports.def")
         with open(dfile, "w") as fh:
             fh.write("EXPORTS\n" + "".join(f"    {n}\n" for n in exports))
         link = f' /link /DEF:"{dfile}"'
-    bat = os.path.join(work, "msvc.bat")
+    stem = os.path.splitext(os.path.basename(out))[0]
+    bat = os.path.join(work, f"{stem}_msvc.bat")
+    objs_q = " ".join(f'"{os.path.abspath(o)}"' for o in objs)
     with open(bat, "w") as fh:
         fh.write(f'@call "{os.path.join(vs, "VC", "Auxiliary", "Build", "vcvars64.bat")}" >nul || exit /b 1\n')
-        fh.write(f'cl /nologo /O2 /W4 /WX /DNVOL_BUILD_DLL /DNVOL_TESTING /LD "{src}" "{os.path.abspath(obj)}" '
-                 f'/Fo"{os.path.join(work, "nvol_msvc.obj")}" /Fe"{out}"{link} || exit /b 1\n')
-    return subprocess.run(["cmd", "/c", bat], cwd=work).returncode
+        fh.write(f'cl /nologo {flags} /DNVOL_BUILD_DLL /DNVOL_TESTING /LD "{src}" {objs_q} '
+                 f'/Fo"{os.path.join(work, stem + "_msvc.obj")}" /Fe"{out}"{link} || exit /b 1\n')
+    return subprocess.run(["cmd", "/c", bat], cwd=work, stdout=subprocess.DEVNULL).returncode
+
+
+def main(obj: str, out: str, syntax: str = "nasm") -> int:
+    return build_dll(os.path.join(ROOT, "generated", syntax, "nvol.c"), [obj], out)
 
 
 if __name__ == "__main__":
