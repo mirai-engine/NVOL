@@ -15,3 +15,4 @@ harness/rust-ffi/Cargo.lock
 harness/ripgrep-e2e/work/
 harness/ugrep-e2e/work/
 harness/odin/xcount/xcount
+/compile_commands.json

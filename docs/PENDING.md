@@ -674,7 +674,7 @@ a 1-byte mask): it stays documented and will be fixed later.
 
 **Blocked by hardware or by third parties:** 2.12 (AMD, real ARM, native glibc, and native
 Linux for the frontend counters of item 25), 2.1b (reporting to Odin: the repo owner's
-decision), 3.2 (a tool; it does not affect generated code).
+decision). 3.2 is done (`harness/c/compile_commands.py`).
 
 **Closed, no action:** 1.7d (documented differences in which NVOL is equal to or more exact
 than the reference); 1.1e (b) and (c) (documented limits: needles of up to 4 GiB, state read
@@ -726,7 +726,7 @@ as little-endian). The detail of both is in Done.
 
 | # | P | Pending | Detail |
 |---|---|---|---|
-| 3.2 | P2 | **Index of the generated C** | `generated/c` can be indexed with a one-line `compile_commands.json`, useful for reviewing the emitted code. |
+| 3.2 | P2 | ~~**Index of the generated C**~~ **(done 2026-11-22)** | `python harness/c/compile_commands.py` writes `compile_commands.json` at the repo root (ignored by git) for the four C translation units of `generated/` (the portable C and the glue of NASM, MASM and GNU as), with the suite's flags. The paths are absolute: a relative `directory` is not resolved against the database's folder (clang-check: "Compile command not found"), so it cannot be committed as generated output. Checked with `clang-check -p` from another directory: both units parse with no diagnostics. |
 
 ## 4. Assembly backends
 
