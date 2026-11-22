@@ -5,7 +5,7 @@ for **C, C++, Rust, Python and Odin**, on x86_64 and aarch64, and in **its own a
 (x86-64: NASM and GNU as on Win64 and System V, MASM on Win64; aarch64: GNU as, AAPCS64, NEON.
 NVOL lowers the IR to instructions, with no compiler in between).
 
-The in-house assembly will be the internal reference. When it is mature (today it is under review),
+The in-house assembly is the internal reference (mature since 2026-11-22, [criterion](docs/PENDING.md)):
 each language is compared against it and every difference is explained. This separates NVOL's
 problems from those of each compiler or toolchain ([design](docs/DESIGN.md#principles)).
 
@@ -128,7 +128,9 @@ harness/rapidjson-e2e patch to rapidjson on nvol.hpp; 5 builds (no SIMD, SSE2, S
 8. Assembly as internal reference: ~~x86-64 in NASM, Win64 and System V~~ · ~~MASM~~ ·
    ~~GNU as~~ · ~~same bytes in all three~~ · ~~review~~ · ~~optimization against
    GCC/Clang/MSVC~~ (median instruction count +0.2 % at 4 KiB, +5.1 % at 16 B) · ~~aarch64~~
-   (tested under QEMU; +12.1 % static instructions against Clang -O2) · maturity.
+   (tested under QEMU; +12.2 % static instructions against Clang -O2) · ~~maturity~~ (every
+   row equal or better in instructions than the best of GCC and Clang, or a listed deviation
+   with its cause).
 9. Parity of each language against the assembly, with each difference explained (parity and
    toolchain logs).
 10. simdjson: block-to-mask kernels (64-bit masks, `prefix_xor`, UTF-8, digits), Phase 6 of

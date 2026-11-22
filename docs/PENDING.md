@@ -84,7 +84,23 @@ The detail is in "Done".
 ### Phase 3. The assembler up to maturity (closing)
 
 16. ~~**aarch64 (NEON) in GNU as**, AAPCS64, tested under QEMU~~ (see Done).
-17. **What is left from items 15 and 16**, by weight:
+17. ~~**What is left from items 15 and 16**~~ **(closed 2026-11-22).** Every row against the
+    best of GCC and Clang (`harness/asm/counters.sh`, 120 rows) is now equal or better in
+    instructions, or listed here with its measured cause:
+
+    | row (asm against the best compiler) | instructions | cause | status |
+    |---|---|---|---|
+    | count_parity AVX2 16-256 B | +72…+115 % | the faithful port of memchr's `count_raw`; the compilers autovectorize its scalar head and tail, the asm does not autovectorize | justified (the public `nvol_count` is NVOL's own, 40 instructions at 16 B, against Clang's 34) |
+    | memmem 16-256 B | +12…+20 % (16 B: 225 against 201) | the Rabin-Karp loop: one copy of the hash per position (`mov rax, r10`) that linear scan does not coalesce, because the hash is a variable live across the loop; the rest is loop control Clang merges | open: an in-place update for `h = f(h, …)` |
+    | Teddy 64 B-64 KiB | +6…+8 % (cycles +0.4…+3 %) | per iteration: the last `vpand` that Clang folds into `vptest a, b`, and the loop bound reloaded from its slot. Folding the reload into the `cmp` is only safe where no other read of the scratch register depends on it, which excludes Teddy's latch (tried, see the cmp-from-slot note below) | open, small |
+    | memrchr 16 B AVX2 | +10 % | the needle's extension at entry (it is compared byte by byte there) | small |
+
+    Tried and not taken: `cmp r, [slot]` for a spilled operand, done in `rewrite`. The
+    instructions fell on 16 rows and no row got worse, but the cycles stayed inside the
+    noise and `.text` grew 0.4 %: the reload pass had forwarded those values in registers,
+    and the compare then read memory just after a store.
+
+    The history, by weight:
     - **Small sizes (16 B: +5 % instructions, +26 % cycles).** The entry cost of the dispatch
       functions: `push` of callee-saved registers before the early exits (shrink-wrapping),
       and parameters saved on the stack in memmem (+16 %).
@@ -154,10 +170,22 @@ The detail is in "Done".
         its cycles can be measured.
       - The Teddy dispatch was a real gap (a `blr` with a frame where Clang has `br`): fixed,
         see Done.
-18. **Maturity:** criterion and declaration. The three syntaxes identical (13), the review
-    closed (14), no row worse in instructions than the best compiler except justified
-    deviations (17), the cycle gaps with a measured cause (25) and aarch64 tested (16). From
-    then on the asm is the internal reference, and README and DESIGN say so.
+18. ~~**Maturity:** criterion and declaration~~ **(declared 2026-11-22).** The criterion,
+    point by point:
+    - **The three syntaxes give the same bytes** (13): `samebytes` for NASM, MASM and GNU as
+      on Win64 and System V, and GNU as against Clang on aarch64, run by `verify.sh`.
+    - **The review is closed** (14).
+    - **No row is worse in instructions than the best compiler** without a cause (17): the
+      four deviations are in item 17's table, each with its measured cause.
+    - **Every cycle gap has a measurement** (25): the position effects are measured with
+      controls and logged. The open ones (memrchr 16-64 KiB RS stalls, memchr 4-6 B, the
+      SSE2 memmem rows that swing 676-807 on placement alone) are recorded with their
+      counters in item 25 and go on in phase 5.
+    - **aarch64 is tested** (16), under QEMU: correctness only, with no ARM hardware for
+      cycles (2.12).
+
+    From here the asm is NVOL's internal reference: each language is compared against it in
+    phase 4, and README and DESIGN say so.
 
 ### Phase 4. The languages against the internal reference
 

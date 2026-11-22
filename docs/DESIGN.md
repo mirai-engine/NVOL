@@ -16,13 +16,15 @@ architectures, and **prove with tests** that they all meet the same contract.
    industry reference implementation (today: `memchr` 2.8.3).
 5. **Two references.**
    - **External:** the implementation that NVOL replaces. Each backend ends up equal or better.
-   - **Internal:** the in-house assembly (`nvol/asm/`: NASM, MASM, GNU as), once it is mature.
+   - **Internal:** the in-house assembly (`nvol/asm/`: NASM, MASM, GNU as), mature since
+     2026-11-22 (PENDING item 18).
      It does not go through any compiler, so it separates generation problems from the
      problems of each language's toolchain. Each language is compared against it, and every
      difference, above or below, is explained in the parity log. NVOL can also fix and patch
      a low-level problem on its own, without depending on the language maintainers.
-   - Until it matures, the asm is under review and its bar is the best of GCC, Clang and MSVC on
-     NVOL's C (`docs/PENDING.md`, phases 3 and 4).
+   - Its own bar was the best of GCC, Clang and MSVC on NVOL's C. At maturity every row is
+     equal or better in instructions, or a listed deviation with its measured cause
+     (`docs/PENDING.md`, item 17).
 
 ## Architecture
 
