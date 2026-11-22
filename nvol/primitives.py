@@ -110,6 +110,8 @@ _DEFS = [
             lambda c, a, b: tuple(x & ~y & 0xFF for x, y in zip(a, b))),
     PrimDef("vsub8", (VEC, VEC), VEC, "lane-wise wrapping a-b (u8)",
             lambda c, a, b: tuple((x - y) & 0xFF for x, y in zip(a, b))),
+    PrimDef("vsubs8", (VEC, VEC), VEC, "lane-wise saturating a-b (u8): max(a - b, 0)",
+            lambda c, a, b: tuple(max(x - y, 0) for x, y in zip(a, b))),
     PrimDef("vmin8", (VEC, VEC), VEC, "lane-wise unsigned min (u8)",
             lambda c, a, b: tuple(min(x, y) for x, y in zip(a, b))),
     PrimDef("movemask", (VEC,), U32,

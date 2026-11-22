@@ -48,17 +48,18 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 |---|---|---|---|
 | `cmpeq`, `or`, `and`, `movemask`, `testz` | everywhere | `cmpeq`, `vor`, `vand`, `movemask`, `is_zero` | — |
 | vector `xor`, `andnot` | `operator^`, `bit_andnot`, `operator~` | `vxor`, `vandnot` (`a & ~b`, as `bit_andnot`); `~a` is `vxor` with all ones | — |
-| integer `xor`, `andnot` | escape and string scanners | `xor` (since 2026-11-22); no `andnot` | 33 |
+| integer `xor`, `andnot` | escape and string scanners | `xor`; `andnot` is `a & (b ^ ~0)` | — |
 | 64-bit mask of a 64-byte block | `simd8x64::to_bitmask` (two `vpmovmskb`) | `bmask64x2` (AVX2), `bmask64x4` (SSE, NEON: `and` with the bit weights and three `addp`), for 0x00/0xFF lanes | — |
-| signed `>`/`<`, signed `max`/`min` | `simd8<int8_t>` | none | 33 |
-| saturating `+`/`-` on `u8` | `gt_bits`, `lt_bits` (UTF-8) | none | 33 |
-| byte shift by N with its mask | `shr<N>`, `shl<N>`, `get_bit<N>` | `vshr4` only | 33 |
-| `prev<N>` (bytes from the previous block) | UTF-8 (`prev<1..3>`) | `shin1-3`, `hshin1-3` within one vector | 33 |
+| signed `>`/`<`, signed `max`/`min` | `simd8<int8_t>`, defined in `simd.h` but not called by the generic code | not needed | — |
+| saturating `-` on `u8` | `gt_bits` (UTF-8 `is_incomplete`), `saturating_sub` (`must_be_2_3_continuation`) | `vsubs8` | — |
+| saturating `+` on `u8`, `lt_bits` | defined, not called by the generic code | not needed | — |
+| byte shift right by 4 | `shr<4>` (UTF-8 lookups); `shl<N>` is not called | `vnib_hi` | — |
+| `prev<N>` (bytes from the previous vector) | UTF-8 (`prev<1..3>`) | `shin1-3(input, prev_input)` (AVX2: across the lanes, as haswell's `prev<N>`) | — |
 | `lookup_16` (`pshufb` on a 16-entry table) | `classify`, UTF-8 | `vshuffle` | — |
 | `popcnt` on `u64` | structural indexer (`count_ones`) | `popcnt64` | — |
 | `tzcnt`, `lzcnt` on `u64` | indexer, `copy_and_find` | `first_offset64`, `last_offset64` | — |
 | `blsr` (`x & (x - 1)`) | indexer (`clear_lowest_bit`) | expressible (`wsub`, `and`) | — |
-| sign smear `int64(x) >> 63` | string scanner (`prev_in_string`) | expressible as `0 - (x >> 63)` | 33 |
+| sign smear `int64(x) >> 63` | string scanner (`prev_in_string`) | expressible as `0 - (x >> 63)` | — |
 | store of `u32` indices | indexer (`write_index`) | `Store32` | — |
 | carry-less multiplication | `prefix_xor` (`_mm_clmulepi64_si128` against all ones) | none | 34 |
 | `pmaddubsw`, `pmaddwd`, `packusdw` (128 bits) | `parse_eight_digits_unrolled` | none | 37 |

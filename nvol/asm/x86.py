@@ -13,7 +13,7 @@ from .mir import (CONDJUMPS, PHYS, RSP, TERMINATORS, VECS, Imm, Ins, Lab, Mem, P
 from .regalloc import _subst, copy_back, jump_cleanup, reloads
 
 # element-wise vector operations: one instruction each (legacy name; VEX adds "v")
-VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vxor": "pxor", "vsub8": "psubb",
+VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vxor": "pxor", "vsub8": "psubb", "vsubs8": "psubusb",
         "vmin8": "pminub", "vadd64": "paddq", "vshuffle": "pshufb", "unpacklo8": "punpcklbw",
         "unpackhi8": "punpckhbw"}
 SHIN = {"shin1": 15, "shin2": 14, "shin3": 13, "hshin1": 15, "hshin2": 14, "hshin3": 13}

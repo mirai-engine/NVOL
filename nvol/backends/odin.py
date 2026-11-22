@@ -67,6 +67,7 @@ def _vec_common(n):
         "vxor": "intrinsics.simd_bit_xor({0}, {1})",
         "vandnot": "intrinsics.simd_bit_and_not({0}, {1})",
         "vsub8": "intrinsics.simd_sub({0}, {1})",
+        "vsubs8": "intrinsics.simd_saturating_sub({0}, {1})",
         "vmin8": "intrinsics.simd_min({0}, {1})",
         "vadd64": f"transmute({t})intrinsics.simd_add(transmute({u64}){{0}}, transmute({u64}){{1}})",
         "hsum64": " + ".join(f"uint(intrinsics.simd_extract(transmute({u64}){{0}}, {k}))" for k in range(n // 8)).join("()"),
