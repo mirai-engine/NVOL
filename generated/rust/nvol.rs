@@ -1266,10 +1266,24 @@ pub mod raw {
     #[inline(always)]
     pub(crate) unsafe fn nvol_count_sad_sse2(n1: u8, start: *const u8, end: *const u8) -> usize {
         unsafe {
+            let len_: usize = ((end as usize) - (start as usize));
             let v1: __m128i = _mm_set1_epi8(n1 as i8);
             let mut cur: *const u8 = start;
-            let mut acc64: __m128i = _mm_setzero_si128();
             let mut count: usize = 0usize;
+            if (len_ < 64usize) {
+                while (cur <= end.sub(16usize)) {
+                    count = (count + ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_loadu_si128(cur as *const __m128i), v1)) as u32).count_ones() as usize));
+                    cur = cur.add(16usize);
+                }
+                if (cur < end) {
+                    let rem: usize = ((end as usize) - (cur as usize));
+                    let mask: u32 = (_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_loadu_si128(end.sub(16usize) as *const __m128i), v1)) as u32);
+                    let shift: u32 = ((16usize - rem) as u32);
+                    count = (count + ((mask >> shift).count_ones() as usize));
+                }
+                return count;
+            }
+            let mut acc64: __m128i = _mm_setzero_si128();
             while (((end as usize) - (cur as usize)) >= 64usize) {
                 let mut iters: usize = (((end as usize) - (cur as usize)) >> 6usize);
                 if (iters > 63usize) {
@@ -1291,10 +1305,10 @@ pub mod raw {
                 cur = cur.add(16usize);
             }
             if (cur < end) {
-                let rem: usize = ((end as usize) - (cur as usize));
-                let mask: u32 = (_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_loadu_si128(end.sub(16usize) as *const __m128i), v1)) as u32);
-                let shift: u32 = ((16usize - rem) as u32);
-                count = (count + ((mask >> shift).count_ones() as usize));
+                let rem1: usize = ((end as usize) - (cur as usize));
+                let mask1: u32 = (_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_loadu_si128(end.sub(16usize) as *const __m128i), v1)) as u32);
+                let shift1: u32 = ((16usize - rem1) as u32);
+                count = (count + ((mask1 >> shift1).count_ones() as usize));
             }
             return (count + ((_mm_cvtsi128_si64(acc64) as u64).wrapping_add(_mm_cvtsi128_si64(_mm_unpackhi_epi64(acc64, acc64)) as u64) as usize));
         }
@@ -1305,10 +1319,24 @@ pub mod raw {
     #[inline]
     pub(crate) unsafe fn nvol_count_sad_avx2(n1: u8, start: *const u8, end: *const u8) -> usize {
         unsafe {
+            let len_: usize = ((end as usize) - (start as usize));
             let v1: __m256i = _mm256_set1_epi8(n1 as i8);
             let mut cur: *const u8 = start;
-            let mut acc64: __m256i = _mm256_setzero_si256();
             let mut count: usize = 0usize;
+            if (len_ < 128usize) {
+                while (cur <= end.sub(32usize)) {
+                    count = (count + ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_loadu_si256(cur as *const __m256i), v1)) as u32).count_ones() as usize));
+                    cur = cur.add(32usize);
+                }
+                if (cur < end) {
+                    let rem: usize = ((end as usize) - (cur as usize));
+                    let mask: u32 = (_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_loadu_si256(end.sub(32usize) as *const __m256i), v1)) as u32);
+                    let shift: u32 = ((32usize - rem) as u32);
+                    count = (count + ((mask >> shift).count_ones() as usize));
+                }
+                return count;
+            }
+            let mut acc64: __m256i = _mm256_setzero_si256();
             while (((end as usize) - (cur as usize)) >= 128usize) {
                 let mut iters: usize = (((end as usize) - (cur as usize)) >> 7usize);
                 if (iters > 63usize) {
@@ -1330,10 +1358,10 @@ pub mod raw {
                 cur = cur.add(32usize);
             }
             if (cur < end) {
-                let rem: usize = ((end as usize) - (cur as usize));
-                let mask: u32 = (_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_loadu_si256(end.sub(32usize) as *const __m256i), v1)) as u32);
-                let shift: u32 = ((32usize - rem) as u32);
-                count = (count + ((mask >> shift).count_ones() as usize));
+                let rem1: usize = ((end as usize) - (cur as usize));
+                let mask1: u32 = (_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_loadu_si256(end.sub(32usize) as *const __m256i), v1)) as u32);
+                let shift1: u32 = ((32usize - rem1) as u32);
+                count = (count + ((mask1 >> shift1).count_ones() as usize));
             }
             return (count + ((_mm256_extract_epi64::<0>(acc64) as u64).wrapping_add(_mm256_extract_epi64::<1>(acc64) as u64).wrapping_add(_mm256_extract_epi64::<2>(acc64) as u64).wrapping_add(_mm256_extract_epi64::<3>(acc64) as u64) as usize));
         }
@@ -9302,10 +9330,24 @@ pub mod raw {
     #[inline(always)]
     pub(crate) unsafe fn nvol_count_sad_neon(n1: u8, start: *const u8, end: *const u8) -> usize {
         unsafe {
+            let len_: usize = ((end as usize) - (start as usize));
             let v1: uint8x16_t = vdupq_n_u8(n1);
             let mut cur: *const u8 = start;
-            let mut acc64: uint8x16_t = vdupq_n_u8(0);
             let mut count: usize = 0usize;
+            if (len_ < 64usize) {
+                while (cur <= end.sub(16usize)) {
+                    count = (count + ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vceqq_u8(vld1q_u8(cur), v1))))) & 0x8888888888888888u64).count_ones() as usize));
+                    cur = cur.add(16usize);
+                }
+                if (cur < end) {
+                    let rem: usize = ((end as usize) - (cur as usize));
+                    let mask: u64 = (vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vceqq_u8(vld1q_u8(end.sub(16usize)), v1))))) & 0x8888888888888888u64);
+                    let shift: u64 = (((16usize - rem) << 2usize) as u64);
+                    count = (count + ((mask >> shift).count_ones() as usize));
+                }
+                return count;
+            }
+            let mut acc64: uint8x16_t = vdupq_n_u8(0);
             while (((end as usize) - (cur as usize)) >= 64usize) {
                 let mut iters: usize = (((end as usize) - (cur as usize)) >> 6usize);
                 if (iters > 63usize) {
@@ -9327,10 +9369,10 @@ pub mod raw {
                 cur = cur.add(16usize);
             }
             if (cur < end) {
-                let rem: usize = ((end as usize) - (cur as usize));
-                let mask: u64 = (vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vceqq_u8(vld1q_u8(end.sub(16usize)), v1))))) & 0x8888888888888888u64);
-                let shift: u64 = (((16usize - rem) << 2usize) as u64);
-                count = (count + ((mask >> shift).count_ones() as usize));
+                let rem1: usize = ((end as usize) - (cur as usize));
+                let mask1: u64 = (vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vceqq_u8(vld1q_u8(end.sub(16usize)), v1))))) & 0x8888888888888888u64);
+                let shift1: u64 = (((16usize - rem1) << 2usize) as u64);
+                count = (count + ((mask1 >> shift1).count_ones() as usize));
             }
             return (count + (vaddvq_u64(vreinterpretq_u64_u8(acc64)) as usize));
         }

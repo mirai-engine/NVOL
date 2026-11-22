@@ -735,10 +735,24 @@ NVOL_API size_t nvol_count_parity(uint8_t n1, const uint8_t *start, size_t len_)
 
 /* SAD-accumulated count; requires len >= 16 */
 NVOL_INLINE size_t nvol_count_sad_neon(uint8_t n1, const uint8_t *start, const uint8_t *end) {
+    const size_t len_ = ((size_t)(end - start));
     const uint8x16_t v1 = vdupq_n_u8((uint8_t)(n1));
     const uint8_t *cur = start;
-    uint8x16_t acc64 = vdupq_n_u8(0);
     size_t count = ((size_t)0u);
+    if (len_ < ((size_t)64u)) {
+        while (cur <= (end - ((size_t)16u))) {
+            count = (count + ((size_t)nvol_popcnt64((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vceqq_u8(vld1q_u8(cur), v1)), 4)), 0) & UINT64_C(0x8888888888888888)))));
+            cur = (cur + ((size_t)16u));
+        }
+        if (cur < end) {
+            const size_t rem = ((size_t)(end - cur));
+            const uint64_t mask = (vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vceqq_u8(vld1q_u8((end - ((size_t)16u))), v1)), 4)), 0) & UINT64_C(0x8888888888888888));
+            const uint64_t shift = ((uint64_t)(((((size_t)16u) - rem) << ((size_t)2u))));
+            count = (count + ((size_t)nvol_popcnt64((mask >> shift))));
+        }
+        return count;
+    }
+    uint8x16_t acc64 = vdupq_n_u8(0);
     while (((size_t)(end - cur)) >= ((size_t)64u)) {
         size_t iters = (((size_t)(end - cur)) >> ((size_t)6u));
         if (iters > ((size_t)63u)) {
@@ -760,10 +774,10 @@ NVOL_INLINE size_t nvol_count_sad_neon(uint8_t n1, const uint8_t *start, const u
         cur = (cur + ((size_t)16u));
     }
     if (cur < end) {
-        const size_t rem = ((size_t)(end - cur));
-        const uint64_t mask = (vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vceqq_u8(vld1q_u8((end - ((size_t)16u))), v1)), 4)), 0) & UINT64_C(0x8888888888888888));
-        const uint64_t shift = ((uint64_t)(((((size_t)16u) - rem) << ((size_t)2u))));
-        count = (count + ((size_t)nvol_popcnt64((mask >> shift))));
+        const size_t rem1 = ((size_t)(end - cur));
+        const uint64_t mask1 = (vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vceqq_u8(vld1q_u8((end - ((size_t)16u))), v1)), 4)), 0) & UINT64_C(0x8888888888888888));
+        const uint64_t shift1 = ((uint64_t)(((((size_t)16u) - rem1) << ((size_t)2u))));
+        count = (count + ((size_t)nvol_popcnt64((mask1 >> shift1))));
     }
     return (count + ((size_t)vaddvq_u64(vreinterpretq_u64_u8(acc64))));
 }

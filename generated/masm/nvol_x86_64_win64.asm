@@ -5691,61 +5691,22 @@ nvol_count_parity ENDP
     DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_count_sad_sse2 PROC PUBLIC
     movzx eax, cl
+    mov rcx, r8
+    sub rcx, rdx
     imul eax, eax, 16843009
     movd xmm0, eax
     pshufd xmm0, xmm0, 0
-    pxor xmm1, xmm1
     xor eax, eax
-    mov rcx, r8
-    sub rcx, rdx
     cmp rcx, 64
-    jb NEAR PTR L_L3
-    DB 15, 31, 132, 0, 0, 0, 0, 0
-L_L2:
-    mov rcx, r8
-    sub rcx, rdx
-    shr rcx, 6
-    cmp rcx, 63
-    jbe SHORT L_L4
-    mov ecx, 63
-L_L4:
-    pxor xmm2, xmm2
-    cmp rcx, 0
-    jbe SHORT L_L7
-    DB 144
-L_L6:
-    movdqu xmm3, xmmword ptr [rdx]
-    pcmpeqb xmm3, xmm0
-    movdqu xmm4, xmmword ptr [rdx + 16]
-    pcmpeqb xmm4, xmm0
-    paddb xmm3, xmm4
-    psubb xmm2, xmm3
-    movdqu xmm3, xmmword ptr [rdx + 32]
-    pcmpeqb xmm3, xmm0
-    movdqu xmm4, xmmword ptr [rdx + 48]
-    pcmpeqb xmm4, xmm0
-    paddb xmm3, xmm4
-    psubb xmm2, xmm3
-    lea rdx, [rdx + 64]
-    add rcx, -1
-    jne SHORT L_L6
-L_L7:
-    pxor xmm3, xmm3
-    psadbw xmm2, xmm3
-    paddq xmm1, xmm2
-    mov rcx, r8
-    sub rcx, rdx
-    cmp rcx, 64
-    jae SHORT L_L2
-L_L3:
+    jae NEAR PTR L_L2
     lea rcx, [r8 - 16]
     cmp rdx, rcx
-    ja SHORT L_L9
-    DB 102, 144
-L_L8:
-    movdqu xmm2, xmmword ptr [rdx]
-    pcmpeqb xmm2, xmm0
-    pmovmskb r9d, xmm2
+    ja SHORT L_L5
+    DB 15, 31, 0
+L_L4:
+    movdqu xmm1, xmmword ptr [rdx]
+    pcmpeqb xmm1, xmm0
+    pmovmskb r9d, xmm1
     lea r10, [NVOL_K0]
     movzx r11d, r9b
     movzx r11d, byte ptr [r10 + r11]
@@ -5756,15 +5717,15 @@ L_L8:
     lea rax, [rax + r11]
     add rdx, 16
     cmp rdx, rcx
-    jbe SHORT L_L8
-L_L9:
+    jbe SHORT L_L4
+L_L5:
     cmp rdx, r8
-    jae SHORT L_L10
+    jae NEAR PTR L_L1
     mov rcx, r8
     sub rcx, rdx
-    movdqu xmm2, xmmword ptr [r8 - 16]
-    pcmpeqb xmm2, xmm0
-    pmovmskb edx, xmm2
+    movdqu xmm1, xmmword ptr [r8 - 16]
+    pcmpeqb xmm1, xmm0
+    pmovmskb edx, xmm1
     mov r8d, 16
     sub r8, rcx
     mov rcx, r8
@@ -5787,311 +5748,9 @@ L_L9:
     movzx ecx, byte ptr [rcx + rdx]
     add r8d, ecx
     lea rax, [rax + r8]
-L_L10:
-    movq rcx, xmm1
-    movdqa xmm0, xmm1
-    punpckhqdq xmm0, xmm1
-    movq rdx, xmm0
-    lea rcx, [rcx + rdx]
-    lea rax, [rax + rcx]
-    ret
-nvol_count_sad_sse2 ENDP
-
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
-nvol_count_sad_avx2 PROC PUBLIC
-    movzx eax, cl
-    vmovd xmm0, eax
-    vpbroadcastb ymm0, xmm0
-    vpxor xmm1, xmm1, xmm1
-    xor eax, eax
-    mov rcx, r8
-    sub rcx, rdx
-    cmp rcx, 128
-    jb SHORT L_L3
-    DB 15, 31, 128, 0, 0, 0, 0
-L_L2:
-    mov rcx, r8
-    sub rcx, rdx
-    shr rcx, 7
-    cmp rcx, 63
-    jbe SHORT L_L4
-    mov ecx, 63
-L_L4:
-    vpxor xmm2, xmm2, xmm2
-    cmp rcx, 0
-    jbe SHORT L_L7
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-L_L6:
-    vpcmpeqb ymm3, ymm0, ymmword ptr [rdx]
-    vpcmpeqb ymm4, ymm0, ymmword ptr [rdx + 32]
-    vpaddb ymm3, ymm3, ymm4
-    vpsubb ymm2, ymm2, ymm3
-    vpcmpeqb ymm3, ymm0, ymmword ptr [rdx + 64]
-    vpcmpeqb ymm4, ymm0, ymmword ptr [rdx + 96]
-    vpaddb ymm3, ymm3, ymm4
-    vpsubb ymm2, ymm2, ymm3
-    lea rdx, [rdx + 128]
-    add rcx, -1
-    jne SHORT L_L6
-L_L7:
-    vpxor xmm3, xmm3, xmm3
-    vpsadbw ymm2, ymm2, ymm3
-    vpaddq ymm1, ymm1, ymm2
-    mov rcx, r8
-    sub rcx, rdx
-    cmp rcx, 128
-    jae SHORT L_L2
-L_L3:
-    lea rcx, [r8 - 32]
-    cmp rdx, rcx
-    ja SHORT L_L9
-    DB 15, 31, 64, 0
-L_L8:
-    vpcmpeqb ymm2, ymm0, ymmword ptr [rdx]
-    vpmovmskb r9d, ymm2
-    popcnt r9d, r9d
-    lea rax, [rax + r9]
-    add rdx, 32
-    cmp rdx, rcx
-    jbe SHORT L_L8
-L_L9:
-    cmp rdx, r8
-    jae SHORT L_L10
-    mov rcx, r8
-    sub rcx, rdx
-    vpcmpeqb ymm0, ymm0, ymmword ptr [r8 - 32]
-    vpmovmskb edx, ymm0
-    mov r8d, 32
-    sub r8, rcx
-    mov rcx, r8
-    shr rdx, cl
-    popcnt ecx, edx
-    lea rax, [rax + rcx]
-L_L10:
-    vextracti128 xmm0, ymm1, 1
-    vpaddq xmm0, xmm0, xmm1
-    vmovq rcx, xmm0
-    vpextrq rdx, xmm0, 1
-    lea rcx, [rcx + rdx]
-    lea rax, [rax + rcx]
-    vzeroupper
-    ret
-nvol_count_sad_avx2 ENDP
-
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
-nvol_count_entry_avx2 PROC PUBLIC
-    movzx r9d, cl
-    mov rcx, r8
-    sub rcx, rdx
-    cmp rcx, 16
-    jae SHORT L_L2
-    xor eax, eax
-    xor r8d, r8d
-    cmp r8, rcx
-    jae NEAR PTR L_L1
-    DB 102, 144
-L_L4:
-    movzx r10d, byte ptr [rdx + r8]
-    cmp r10d, r9d
-    jne SHORT L_L6
-    lea rax, [rax + 1]
-L_L6:
-    add r8, 1
-    cmp r8, rcx
-    jb SHORT L_L4
     jmp NEAR PTR L_L1
 L_L2:
-    cmp rcx, 32
-    jae NEAR PTR L_L8
-    vmovd xmm0, r9d
-    vpbroadcastb xmm0, xmm0
-    vpxor xmm1, xmm1, xmm1
-    xor eax, eax
-    mov rcx, r8
-    sub rcx, rdx
-    cmp rcx, 64
-    jb SHORT L_L11
-    DB 102, 15, 31, 68, 0, 0
-L_L10:
-    mov rcx, r8
-    sub rcx, rdx
-    shr rcx, 6
-    cmp rcx, 63
-    jbe SHORT L_L12
-    mov ecx, 63
-L_L12:
-    vpxor xmm2, xmm2, xmm2
-    cmp rcx, 0
-    jbe SHORT L_L15
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-L_L14:
-    vpcmpeqb xmm3, xmm0, xmmword ptr [rdx]
-    vpcmpeqb xmm4, xmm0, xmmword ptr [rdx + 16]
-    vpaddb xmm3, xmm3, xmm4
-    vpsubb xmm2, xmm2, xmm3
-    vpcmpeqb xmm3, xmm0, xmmword ptr [rdx + 32]
-    vpcmpeqb xmm4, xmm0, xmmword ptr [rdx + 48]
-    vpaddb xmm3, xmm3, xmm4
-    vpsubb xmm2, xmm2, xmm3
-    lea rdx, [rdx + 64]
-    add rcx, -1
-    jne SHORT L_L14
-L_L15:
-    vpxor xmm3, xmm3, xmm3
-    vpsadbw xmm2, xmm2, xmm3
-    vpaddq xmm1, xmm1, xmm2
-    mov rcx, r8
-    sub rcx, rdx
-    cmp rcx, 64
-    jae SHORT L_L10
-L_L11:
-    lea rcx, [r8 - 16]
-    cmp rdx, rcx
-    ja SHORT L_L17
-    DB 102, 144
-L_L16:
-    vpcmpeqb xmm2, xmm0, xmmword ptr [rdx]
-    vpmovmskb r9d, xmm2
-    popcnt r9d, r9d
-    lea rax, [rax + r9]
-    add rdx, 16
-    cmp rdx, rcx
-    jbe SHORT L_L16
-L_L17:
-    cmp rdx, r8
-    jae SHORT L_L18
-    mov rcx, r8
-    sub rcx, rdx
-    vpcmpeqb xmm0, xmm0, xmmword ptr [r8 - 16]
-    vpmovmskb edx, xmm0
-    mov r8d, 16
-    sub r8, rcx
-    mov rcx, r8
-    shr rdx, cl
-    popcnt ecx, edx
-    lea rax, [rax + rcx]
-L_L18:
-    vmovq rcx, xmm1
-    vpextrq rdx, xmm1, 1
-    lea rcx, [rcx + rdx]
-    lea rax, [rax + rcx]
-    jmp NEAR PTR L_L1
-L_L8:
-    vmovd xmm0, r9d
-    vpbroadcastb ymm0, xmm0
-    vpxor xmm1, xmm1, xmm1
-    xor eax, eax
-    mov rcx, r8
-    sub rcx, rdx
-    cmp rcx, 128
-    jb SHORT L_L21
-    DB 15, 31, 0
-L_L20:
-    mov rcx, r8
-    sub rcx, rdx
-    shr rcx, 7
-    cmp rcx, 63
-    jbe SHORT L_L22
-    mov ecx, 63
-L_L22:
-    vpxor xmm2, xmm2, xmm2
-    cmp rcx, 0
-    jbe SHORT L_L25
-    DB 144
-L_L24:
-    vpcmpeqb ymm3, ymm0, ymmword ptr [rdx]
-    vpcmpeqb ymm4, ymm0, ymmword ptr [rdx + 32]
-    vpaddb ymm3, ymm3, ymm4
-    vpsubb ymm2, ymm2, ymm3
-    vpcmpeqb ymm3, ymm0, ymmword ptr [rdx + 64]
-    vpcmpeqb ymm4, ymm0, ymmword ptr [rdx + 96]
-    vpaddb ymm3, ymm3, ymm4
-    vpsubb ymm2, ymm2, ymm3
-    lea rdx, [rdx + 128]
-    add rcx, -1
-    jne SHORT L_L24
-L_L25:
-    vpxor xmm3, xmm3, xmm3
-    vpsadbw ymm2, ymm2, ymm3
-    vpaddq ymm1, ymm1, ymm2
-    mov rcx, r8
-    sub rcx, rdx
-    cmp rcx, 128
-    jae SHORT L_L20
-L_L21:
-    lea rcx, [r8 - 32]
-    cmp rdx, rcx
-    ja SHORT L_L27
-    DB 15, 31, 64, 0
-L_L26:
-    vpcmpeqb ymm2, ymm0, ymmword ptr [rdx]
-    vpmovmskb r9d, ymm2
-    popcnt r9d, r9d
-    lea rax, [rax + r9]
-    add rdx, 32
-    cmp rdx, rcx
-    jbe SHORT L_L26
-L_L27:
-    cmp rdx, r8
-    jae SHORT L_L28
-    mov rcx, r8
-    sub rcx, rdx
-    vpcmpeqb ymm0, ymm0, ymmword ptr [r8 - 32]
-    vpmovmskb edx, ymm0
-    mov r8d, 32
-    sub r8, rcx
-    mov rcx, r8
-    shr rdx, cl
-    popcnt ecx, edx
-    lea rax, [rax + rcx]
-L_L28:
-    vextracti128 xmm0, ymm1, 1
-    vpaddq xmm0, xmm0, xmm1
-    vmovq rcx, xmm0
-    vpextrq rdx, xmm0, 1
-    lea rcx, [rcx + rdx]
-    lea rax, [rax + rcx]
-L_L1:
-    vzeroupper
-    ret
-nvol_count_entry_avx2 ENDP
-
-    DB 144
-nvol_count_entry_sse2 PROC PUBLIC
-    movzx ecx, cl
-    mov rax, r8
-    sub rax, rdx
-    cmp rax, 16
-    jae SHORT L_L2
-    xor r8d, r8d
-    xor r9d, r9d
-    cmp r9, rax
-    jae SHORT L_L5
-    DB 102, 15, 31, 68, 0, 0
-L_L4:
-    movzx r10d, byte ptr [rdx + r9]
-    cmp r10d, ecx
-    jne SHORT L_L6
-    lea r8, [r8 + 1]
-L_L6:
-    add r9, 1
-    cmp r9, rax
-    jb SHORT L_L4
-L_L5:
-    mov rax, r8
-    jmp NEAR PTR L_L1
-L_L2:
-    imul eax, ecx, 16843009
-    movd xmm0, eax
-    pshufd xmm0, xmm0, 0
     pxor xmm1, xmm1
-    xor eax, eax
     mov rcx, r8
     sub rcx, rdx
     cmp rcx, 64
@@ -6183,6 +5842,543 @@ L_L15:
     add r8d, ecx
     lea rax, [rax + r8]
 L_L16:
+    movq rcx, xmm1
+    movdqa xmm0, xmm1
+    punpckhqdq xmm0, xmm1
+    movq rdx, xmm0
+    lea rcx, [rcx + rdx]
+    lea rax, [rax + rcx]
+L_L1:
+    ret
+nvol_count_sad_sse2 ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
+nvol_count_sad_avx2 PROC PUBLIC
+    movzx eax, cl
+    mov rcx, r8
+    sub rcx, rdx
+    vmovd xmm0, eax
+    vpbroadcastb ymm0, xmm0
+    xor eax, eax
+    cmp rcx, 128
+    jae SHORT L_L2
+    lea rcx, [r8 - 32]
+    cmp rdx, rcx
+    ja SHORT L_L5
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
+L_L4:
+    vpcmpeqb ymm1, ymm0, ymmword ptr [rdx]
+    vpmovmskb r9d, ymm1
+    popcnt r9d, r9d
+    lea rax, [rax + r9]
+    add rdx, 32
+    cmp rdx, rcx
+    jbe SHORT L_L4
+L_L5:
+    cmp rdx, r8
+    jae NEAR PTR L_L1
+    mov rcx, r8
+    sub rcx, rdx
+    vpcmpeqb ymm0, ymm0, ymmword ptr [r8 - 32]
+    vpmovmskb edx, ymm0
+    mov r8d, 32
+    sub r8, rcx
+    mov rcx, r8
+    shr rdx, cl
+    popcnt ecx, edx
+    lea rax, [rax + rcx]
+    jmp NEAR PTR L_L1
+L_L2:
+    vpxor xmm1, xmm1, xmm1
+    mov rcx, r8
+    sub rcx, rdx
+    cmp rcx, 128
+    jb SHORT L_L9
+    DB 102, 15, 31, 68, 0, 0
+L_L8:
+    mov rcx, r8
+    sub rcx, rdx
+    shr rcx, 7
+    cmp rcx, 63
+    jbe SHORT L_L10
+    mov ecx, 63
+L_L10:
+    vpxor xmm2, xmm2, xmm2
+    cmp rcx, 0
+    jbe SHORT L_L13
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+L_L12:
+    vpcmpeqb ymm3, ymm0, ymmword ptr [rdx]
+    vpcmpeqb ymm4, ymm0, ymmword ptr [rdx + 32]
+    vpaddb ymm3, ymm3, ymm4
+    vpsubb ymm2, ymm2, ymm3
+    vpcmpeqb ymm3, ymm0, ymmword ptr [rdx + 64]
+    vpcmpeqb ymm4, ymm0, ymmword ptr [rdx + 96]
+    vpaddb ymm3, ymm3, ymm4
+    vpsubb ymm2, ymm2, ymm3
+    lea rdx, [rdx + 128]
+    add rcx, -1
+    jne SHORT L_L12
+L_L13:
+    vpxor xmm3, xmm3, xmm3
+    vpsadbw ymm2, ymm2, ymm3
+    vpaddq ymm1, ymm1, ymm2
+    mov rcx, r8
+    sub rcx, rdx
+    cmp rcx, 128
+    jae SHORT L_L8
+L_L9:
+    lea rcx, [r8 - 32]
+    cmp rdx, rcx
+    ja SHORT L_L15
+    DB 15, 31, 64, 0
+L_L14:
+    vpcmpeqb ymm2, ymm0, ymmword ptr [rdx]
+    vpmovmskb r9d, ymm2
+    popcnt r9d, r9d
+    lea rax, [rax + r9]
+    add rdx, 32
+    cmp rdx, rcx
+    jbe SHORT L_L14
+L_L15:
+    cmp rdx, r8
+    jae SHORT L_L16
+    mov rcx, r8
+    sub rcx, rdx
+    vpcmpeqb ymm0, ymm0, ymmword ptr [r8 - 32]
+    vpmovmskb edx, ymm0
+    mov r8d, 32
+    sub r8, rcx
+    mov rcx, r8
+    shr rdx, cl
+    popcnt ecx, edx
+    lea rax, [rax + rcx]
+L_L16:
+    vextracti128 xmm0, ymm1, 1
+    vpaddq xmm0, xmm0, xmm1
+    vmovq rcx, xmm0
+    vpextrq rdx, xmm0, 1
+    lea rcx, [rcx + rdx]
+    lea rax, [rax + rcx]
+L_L1:
+    vzeroupper
+    ret
+nvol_count_sad_avx2 ENDP
+
+    DB 144
+nvol_count_entry_avx2 PROC PUBLIC
+    movzx r9d, cl
+    mov r10, r8
+    sub r10, rdx
+    cmp r10, 16
+    jae SHORT L_L2
+    xor eax, eax
+    xor ecx, ecx
+    cmp rcx, r10
+    jae NEAR PTR L_L1
+    DB 15, 31, 0
+L_L4:
+    movzx r8d, byte ptr [rdx + rcx]
+    cmp r8d, r9d
+    jne SHORT L_L6
+    lea rax, [rax + 1]
+L_L6:
+    add rcx, 1
+    cmp rcx, r10
+    jb SHORT L_L4
+    jmp NEAR PTR L_L1
+L_L2:
+    cmp r10, 32
+    jae NEAR PTR L_L8
+    vmovd xmm0, r9d
+    vpbroadcastb xmm0, xmm0
+    xor eax, eax
+    cmp r10, 64
+    jae SHORT L_L10
+    lea rcx, [r8 - 16]
+    cmp rdx, rcx
+    ja SHORT L_L13
+    DB 15, 31, 128, 0, 0, 0, 0
+L_L12:
+    vpcmpeqb xmm1, xmm0, xmmword ptr [rdx]
+    vpmovmskb r9d, xmm1
+    popcnt r9d, r9d
+    lea rax, [rax + r9]
+    add rdx, 16
+    cmp rdx, rcx
+    jbe SHORT L_L12
+L_L13:
+    cmp rdx, r8
+    jae NEAR PTR L_L1
+    mov rcx, r8
+    sub rcx, rdx
+    vpcmpeqb xmm0, xmm0, xmmword ptr [r8 - 16]
+    vpmovmskb edx, xmm0
+    mov r8d, 16
+    sub r8, rcx
+    mov rcx, r8
+    shr rdx, cl
+    popcnt ecx, edx
+    lea rax, [rax + rcx]
+    jmp NEAR PTR L_L1
+L_L10:
+    vpxor xmm1, xmm1, xmm1
+    mov rcx, r8
+    sub rcx, rdx
+    cmp rcx, 64
+    jb SHORT L_L17
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+L_L16:
+    mov rcx, r8
+    sub rcx, rdx
+    shr rcx, 6
+    cmp rcx, 63
+    jbe SHORT L_L18
+    mov ecx, 63
+L_L18:
+    vpxor xmm2, xmm2, xmm2
+    cmp rcx, 0
+    jbe SHORT L_L21
+    DB 144
+L_L20:
+    vpcmpeqb xmm3, xmm0, xmmword ptr [rdx]
+    vpcmpeqb xmm4, xmm0, xmmword ptr [rdx + 16]
+    vpaddb xmm3, xmm3, xmm4
+    vpsubb xmm2, xmm2, xmm3
+    vpcmpeqb xmm3, xmm0, xmmword ptr [rdx + 32]
+    vpcmpeqb xmm4, xmm0, xmmword ptr [rdx + 48]
+    vpaddb xmm3, xmm3, xmm4
+    vpsubb xmm2, xmm2, xmm3
+    lea rdx, [rdx + 64]
+    add rcx, -1
+    jne SHORT L_L20
+L_L21:
+    vpxor xmm3, xmm3, xmm3
+    vpsadbw xmm2, xmm2, xmm3
+    vpaddq xmm1, xmm1, xmm2
+    mov rcx, r8
+    sub rcx, rdx
+    cmp rcx, 64
+    jae SHORT L_L16
+L_L17:
+    lea rcx, [r8 - 16]
+    cmp rdx, rcx
+    ja SHORT L_L23
+    DB 102, 144
+L_L22:
+    vpcmpeqb xmm2, xmm0, xmmword ptr [rdx]
+    vpmovmskb r9d, xmm2
+    popcnt r9d, r9d
+    lea rax, [rax + r9]
+    add rdx, 16
+    cmp rdx, rcx
+    jbe SHORT L_L22
+L_L23:
+    cmp rdx, r8
+    jae SHORT L_L24
+    mov rcx, r8
+    sub rcx, rdx
+    vpcmpeqb xmm0, xmm0, xmmword ptr [r8 - 16]
+    vpmovmskb edx, xmm0
+    mov r8d, 16
+    sub r8, rcx
+    mov rcx, r8
+    shr rdx, cl
+    popcnt ecx, edx
+    lea rax, [rax + rcx]
+L_L24:
+    vmovq rcx, xmm1
+    vpextrq rdx, xmm1, 1
+    lea rcx, [rcx + rdx]
+    lea rax, [rax + rcx]
+    jmp NEAR PTR L_L1
+L_L8:
+    vmovd xmm0, r9d
+    vpbroadcastb ymm0, xmm0
+    xor eax, eax
+    cmp r10, 128
+    jae SHORT L_L26
+    lea rcx, [r8 - 32]
+    cmp rdx, rcx
+    ja SHORT L_L29
+    DB 15, 31, 64, 0
+L_L28:
+    vpcmpeqb ymm1, ymm0, ymmword ptr [rdx]
+    vpmovmskb r9d, ymm1
+    popcnt r9d, r9d
+    lea rax, [rax + r9]
+    add rdx, 32
+    cmp rdx, rcx
+    jbe SHORT L_L28
+L_L29:
+    cmp rdx, r8
+    jae NEAR PTR L_L1
+    mov rcx, r8
+    sub rcx, rdx
+    vpcmpeqb ymm0, ymm0, ymmword ptr [r8 - 32]
+    vpmovmskb edx, ymm0
+    mov r8d, 32
+    sub r8, rcx
+    mov rcx, r8
+    shr rdx, cl
+    popcnt ecx, edx
+    lea rax, [rax + rcx]
+    jmp NEAR PTR L_L1
+L_L26:
+    vpxor xmm1, xmm1, xmm1
+    mov rcx, r8
+    sub rcx, rdx
+    cmp rcx, 128
+    jb SHORT L_L33
+    DB 102, 15, 31, 68, 0, 0
+L_L32:
+    mov rcx, r8
+    sub rcx, rdx
+    shr rcx, 7
+    cmp rcx, 63
+    jbe SHORT L_L34
+    mov ecx, 63
+L_L34:
+    vpxor xmm2, xmm2, xmm2
+    cmp rcx, 0
+    jbe SHORT L_L37
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+L_L36:
+    vpcmpeqb ymm3, ymm0, ymmword ptr [rdx]
+    vpcmpeqb ymm4, ymm0, ymmword ptr [rdx + 32]
+    vpaddb ymm3, ymm3, ymm4
+    vpsubb ymm2, ymm2, ymm3
+    vpcmpeqb ymm3, ymm0, ymmword ptr [rdx + 64]
+    vpcmpeqb ymm4, ymm0, ymmword ptr [rdx + 96]
+    vpaddb ymm3, ymm3, ymm4
+    vpsubb ymm2, ymm2, ymm3
+    lea rdx, [rdx + 128]
+    add rcx, -1
+    jne SHORT L_L36
+L_L37:
+    vpxor xmm3, xmm3, xmm3
+    vpsadbw ymm2, ymm2, ymm3
+    vpaddq ymm1, ymm1, ymm2
+    mov rcx, r8
+    sub rcx, rdx
+    cmp rcx, 128
+    jae SHORT L_L32
+L_L33:
+    lea rcx, [r8 - 32]
+    cmp rdx, rcx
+    ja SHORT L_L39
+    DB 15, 31, 64, 0
+L_L38:
+    vpcmpeqb ymm2, ymm0, ymmword ptr [rdx]
+    vpmovmskb r9d, ymm2
+    popcnt r9d, r9d
+    lea rax, [rax + r9]
+    add rdx, 32
+    cmp rdx, rcx
+    jbe SHORT L_L38
+L_L39:
+    cmp rdx, r8
+    jae SHORT L_L40
+    mov rcx, r8
+    sub rcx, rdx
+    vpcmpeqb ymm0, ymm0, ymmword ptr [r8 - 32]
+    vpmovmskb edx, ymm0
+    mov r8d, 32
+    sub r8, rcx
+    mov rcx, r8
+    shr rdx, cl
+    popcnt ecx, edx
+    lea rax, [rax + rcx]
+L_L40:
+    vextracti128 xmm0, ymm1, 1
+    vpaddq xmm0, xmm0, xmm1
+    vmovq rcx, xmm0
+    vpextrq rdx, xmm0, 1
+    lea rcx, [rcx + rdx]
+    lea rax, [rax + rcx]
+L_L1:
+    vzeroupper
+    ret
+nvol_count_entry_avx2 ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
+nvol_count_entry_sse2 PROC PUBLIC
+    movzx ecx, cl
+    mov r9, r8
+    sub r9, rdx
+    cmp r9, 16
+    jae SHORT L_L2
+    xor eax, eax
+    xor r8d, r8d
+    cmp r8, r9
+    jae NEAR PTR L_L1
+    DB 15, 31, 0
+L_L4:
+    movzx r10d, byte ptr [rdx + r8]
+    cmp r10d, ecx
+    jne SHORT L_L6
+    lea rax, [rax + 1]
+L_L6:
+    add r8, 1
+    cmp r8, r9
+    jb SHORT L_L4
+    jmp NEAR PTR L_L1
+L_L2:
+    imul eax, ecx, 16843009
+    movd xmm0, eax
+    pshufd xmm0, xmm0, 0
+    xor eax, eax
+    cmp r9, 64
+    jae NEAR PTR L_L8
+    lea rcx, [r8 - 16]
+    cmp rdx, rcx
+    ja SHORT L_L11
+L_L10:
+    movdqu xmm1, xmmword ptr [rdx]
+    pcmpeqb xmm1, xmm0
+    pmovmskb r9d, xmm1
+    lea r10, [NVOL_K0]
+    movzx r11d, r9b
+    movzx r11d, byte ptr [r10 + r11]
+    mov r9d, r9d
+    shr r9d, 8
+    movzx r9d, byte ptr [r10 + r9]
+    add r11d, r9d
+    lea rax, [rax + r11]
+    add rdx, 16
+    cmp rdx, rcx
+    jbe SHORT L_L10
+L_L11:
+    cmp rdx, r8
+    jae NEAR PTR L_L1
+    mov rcx, r8
+    sub rcx, rdx
+    movdqu xmm1, xmmword ptr [r8 - 16]
+    pcmpeqb xmm1, xmm0
+    pmovmskb edx, xmm1
+    mov r8d, 16
+    sub r8, rcx
+    mov rcx, r8
+    shr rdx, cl
+    lea rcx, [NVOL_K0]
+    movzx r8d, dl
+    movzx r8d, byte ptr [rcx + r8]
+    mov r9d, edx
+    shr r9d, 8
+    movzx r9d, r9b
+    movzx r9d, byte ptr [rcx + r9]
+    add r8d, r9d
+    mov r9d, edx
+    shr r9d, 16
+    movzx r9d, r9b
+    movzx r9d, byte ptr [rcx + r9]
+    add r8d, r9d
+    mov edx, edx
+    shr edx, 24
+    movzx ecx, byte ptr [rcx + rdx]
+    add r8d, ecx
+    lea rax, [rax + r8]
+    jmp NEAR PTR L_L1
+L_L8:
+    pxor xmm1, xmm1
+    mov rcx, r8
+    sub rcx, rdx
+    cmp rcx, 64
+    jb SHORT L_L15
+L_L14:
+    mov rcx, r8
+    sub rcx, rdx
+    shr rcx, 6
+    cmp rcx, 63
+    jbe SHORT L_L16
+    mov ecx, 63
+L_L16:
+    pxor xmm2, xmm2
+    cmp rcx, 0
+    jbe SHORT L_L19
+    DB 144
+L_L18:
+    movdqu xmm3, xmmword ptr [rdx]
+    pcmpeqb xmm3, xmm0
+    movdqu xmm4, xmmword ptr [rdx + 16]
+    pcmpeqb xmm4, xmm0
+    paddb xmm3, xmm4
+    psubb xmm2, xmm3
+    movdqu xmm3, xmmword ptr [rdx + 32]
+    pcmpeqb xmm3, xmm0
+    movdqu xmm4, xmmword ptr [rdx + 48]
+    pcmpeqb xmm4, xmm0
+    paddb xmm3, xmm4
+    psubb xmm2, xmm3
+    lea rdx, [rdx + 64]
+    add rcx, -1
+    jne SHORT L_L18
+L_L19:
+    pxor xmm3, xmm3
+    psadbw xmm2, xmm3
+    paddq xmm1, xmm2
+    mov rcx, r8
+    sub rcx, rdx
+    cmp rcx, 64
+    jae SHORT L_L14
+L_L15:
+    lea rcx, [r8 - 16]
+    cmp rdx, rcx
+    ja SHORT L_L21
+    DB 102, 144
+L_L20:
+    movdqu xmm2, xmmword ptr [rdx]
+    pcmpeqb xmm2, xmm0
+    pmovmskb r9d, xmm2
+    lea r10, [NVOL_K0]
+    movzx r11d, r9b
+    movzx r11d, byte ptr [r10 + r11]
+    mov r9d, r9d
+    shr r9d, 8
+    movzx r9d, byte ptr [r10 + r9]
+    add r11d, r9d
+    lea rax, [rax + r11]
+    add rdx, 16
+    cmp rdx, rcx
+    jbe SHORT L_L20
+L_L21:
+    cmp rdx, r8
+    jae SHORT L_L22
+    mov rcx, r8
+    sub rcx, rdx
+    movdqu xmm2, xmmword ptr [r8 - 16]
+    pcmpeqb xmm2, xmm0
+    pmovmskb edx, xmm2
+    mov r8d, 16
+    sub r8, rcx
+    mov rcx, r8
+    shr rdx, cl
+    lea rcx, [NVOL_K0]
+    movzx r8d, dl
+    movzx r8d, byte ptr [rcx + r8]
+    mov r9d, edx
+    shr r9d, 8
+    movzx r9d, r9b
+    movzx r9d, byte ptr [rcx + r9]
+    add r8d, r9d
+    mov r9d, edx
+    shr r9d, 16
+    movzx r9d, r9b
+    movzx r9d, byte ptr [rcx + r9]
+    add r8d, r9d
+    mov edx, edx
+    shr edx, 24
+    movzx ecx, byte ptr [rcx + rdx]
+    add r8d, ecx
+    lea rax, [rax + r8]
+L_L22:
     movq rcx, xmm1
     movdqa xmm0, xmm1
     punpckhqdq xmm0, xmm1

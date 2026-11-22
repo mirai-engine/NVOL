@@ -5812,29 +5812,83 @@ nvol_count_parity:
 .def nvol_count_sad_sse2; .scl 2; .type 32; .endef
 nvol_count_sad_sse2:
     movzbl %cl, %eax
+    mov %r8, %rcx
+    sub %rdx, %rcx
     imul $16843009, %eax, %eax
     movd %eax, %xmm0
     pshufd $0, %xmm0, %xmm0
-    pxor %xmm1, %xmm1
     xor %eax, %eax
+    cmp $64, %rcx
+    {disp32} jae .Lnvol_count_sad_sse2.L2
+    lea -16(%r8), %rcx
+    cmp %rcx, %rdx
+    {disp8} ja .Lnvol_count_sad_sse2.L5
+    .byte 15, 31, 0
+.Lnvol_count_sad_sse2.L4:
+    movdqu (%rdx), %xmm1
+    pcmpeqb %xmm0, %xmm1
+    pmovmskb %xmm1, %r9d
+    lea NVOL_K0(%rip), %r10
+    movzbl %r9b, %r11d
+    movzbl (%r10,%r11), %r11d
+    mov %r9d, %r9d
+    shr $8, %r9d
+    movzbl (%r10,%r9), %r9d
+    add %r9d, %r11d
+    lea (%rax,%r11), %rax
+    add $16, %rdx
+    cmp %rcx, %rdx
+    {disp8} jbe .Lnvol_count_sad_sse2.L4
+.Lnvol_count_sad_sse2.L5:
+    cmp %r8, %rdx
+    {disp32} jae .Lnvol_count_sad_sse2.L1
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    movdqu -16(%r8), %xmm1
+    pcmpeqb %xmm0, %xmm1
+    pmovmskb %xmm1, %edx
+    mov $16, %r8d
+    sub %rcx, %r8
+    mov %r8, %rcx
+    shr %cl, %rdx
+    lea NVOL_K0(%rip), %rcx
+    movzbl %dl, %r8d
+    movzbl (%rcx,%r8), %r8d
+    mov %edx, %r9d
+    shr $8, %r9d
+    movzbl %r9b, %r9d
+    movzbl (%rcx,%r9), %r9d
+    add %r9d, %r8d
+    mov %edx, %r9d
+    shr $16, %r9d
+    movzbl %r9b, %r9d
+    movzbl (%rcx,%r9), %r9d
+    add %r9d, %r8d
+    mov %edx, %edx
+    shr $24, %edx
+    movzbl (%rcx,%rdx), %ecx
+    add %ecx, %r8d
+    lea (%rax,%r8), %rax
+    {disp32} jmp .Lnvol_count_sad_sse2.L1
+.Lnvol_count_sad_sse2.L2:
+    pxor %xmm1, %xmm1
     mov %r8, %rcx
     sub %rdx, %rcx
     cmp $64, %rcx
-    {disp32} jb .Lnvol_count_sad_sse2.L3
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_count_sad_sse2.L2:
+    {disp8} jb .Lnvol_count_sad_sse2.L9
+.Lnvol_count_sad_sse2.L8:
     mov %r8, %rcx
     sub %rdx, %rcx
     shr $6, %rcx
     cmp $63, %rcx
-    {disp8} jbe .Lnvol_count_sad_sse2.L4
+    {disp8} jbe .Lnvol_count_sad_sse2.L10
     mov $63, %ecx
-.Lnvol_count_sad_sse2.L4:
+.Lnvol_count_sad_sse2.L10:
     pxor %xmm2, %xmm2
     cmp $0, %rcx
-    {disp8} jbe .Lnvol_count_sad_sse2.L7
+    {disp8} jbe .Lnvol_count_sad_sse2.L13
     .byte 144
-.Lnvol_count_sad_sse2.L6:
+.Lnvol_count_sad_sse2.L12:
     movdqu (%rdx), %xmm3
     pcmpeqb %xmm0, %xmm3
     movdqu 16(%rdx), %xmm4
@@ -5849,21 +5903,21 @@ nvol_count_sad_sse2:
     psubb %xmm3, %xmm2
     lea 64(%rdx), %rdx
     add $-1, %rcx
-    {disp8} jne .Lnvol_count_sad_sse2.L6
-.Lnvol_count_sad_sse2.L7:
+    {disp8} jne .Lnvol_count_sad_sse2.L12
+.Lnvol_count_sad_sse2.L13:
     pxor %xmm3, %xmm3
     psadbw %xmm3, %xmm2
     paddq %xmm2, %xmm1
     mov %r8, %rcx
     sub %rdx, %rcx
     cmp $64, %rcx
-    {disp8} jae .Lnvol_count_sad_sse2.L2
-.Lnvol_count_sad_sse2.L3:
+    {disp8} jae .Lnvol_count_sad_sse2.L8
+.Lnvol_count_sad_sse2.L9:
     lea -16(%r8), %rcx
     cmp %rcx, %rdx
-    {disp8} ja .Lnvol_count_sad_sse2.L9
+    {disp8} ja .Lnvol_count_sad_sse2.L15
     .byte 102, 144
-.Lnvol_count_sad_sse2.L8:
+.Lnvol_count_sad_sse2.L14:
     movdqu (%rdx), %xmm2
     pcmpeqb %xmm0, %xmm2
     pmovmskb %xmm2, %r9d
@@ -5877,10 +5931,10 @@ nvol_count_sad_sse2:
     lea (%rax,%r11), %rax
     add $16, %rdx
     cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_count_sad_sse2.L8
-.Lnvol_count_sad_sse2.L9:
+    {disp8} jbe .Lnvol_count_sad_sse2.L14
+.Lnvol_count_sad_sse2.L15:
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_count_sad_sse2.L10
+    {disp8} jae .Lnvol_count_sad_sse2.L16
     mov %r8, %rcx
     sub %rdx, %rcx
     movdqu -16(%r8), %xmm2
@@ -5908,13 +5962,14 @@ nvol_count_sad_sse2:
     movzbl (%rcx,%rdx), %ecx
     add %ecx, %r8d
     lea (%rax,%r8), %rax
-.Lnvol_count_sad_sse2.L10:
+.Lnvol_count_sad_sse2.L16:
     movq %xmm1, %rcx
     movdqa %xmm1, %xmm0
     punpckhqdq %xmm1, %xmm0
     movq %xmm0, %rdx
     lea (%rcx,%rdx), %rcx
     lea (%rax,%rcx), %rax
+.Lnvol_count_sad_sse2.L1:
     ret
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
@@ -5923,63 +5978,29 @@ nvol_count_sad_sse2:
 .def nvol_count_sad_avx2; .scl 2; .type 32; .endef
 nvol_count_sad_avx2:
     movzbl %cl, %eax
+    mov %r8, %rcx
+    sub %rdx, %rcx
     vmovd %eax, %xmm0
     vpbroadcastb %xmm0, %ymm0
-    vpxor %xmm1, %xmm1, %xmm1
     xor %eax, %eax
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    cmp $128, %rcx
-    {disp8} jb .Lnvol_count_sad_avx2.L3
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_count_sad_avx2.L2:
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    shr $7, %rcx
-    cmp $63, %rcx
-    {disp8} jbe .Lnvol_count_sad_avx2.L4
-    mov $63, %ecx
-.Lnvol_count_sad_avx2.L4:
-    vpxor %xmm2, %xmm2, %xmm2
-    cmp $0, %rcx
-    {disp8} jbe .Lnvol_count_sad_avx2.L7
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_count_sad_avx2.L6:
-    vpcmpeqb (%rdx), %ymm0, %ymm3
-    vpcmpeqb 32(%rdx), %ymm0, %ymm4
-    vpaddb %ymm4, %ymm3, %ymm3
-    vpsubb %ymm3, %ymm2, %ymm2
-    vpcmpeqb 64(%rdx), %ymm0, %ymm3
-    vpcmpeqb 96(%rdx), %ymm0, %ymm4
-    vpaddb %ymm4, %ymm3, %ymm3
-    vpsubb %ymm3, %ymm2, %ymm2
-    lea 128(%rdx), %rdx
-    add $-1, %rcx
-    {disp8} jne .Lnvol_count_sad_avx2.L6
-.Lnvol_count_sad_avx2.L7:
-    vpxor %xmm3, %xmm3, %xmm3
-    vpsadbw %ymm3, %ymm2, %ymm2
-    vpaddq %ymm2, %ymm1, %ymm1
-    mov %r8, %rcx
-    sub %rdx, %rcx
     cmp $128, %rcx
     {disp8} jae .Lnvol_count_sad_avx2.L2
-.Lnvol_count_sad_avx2.L3:
     lea -32(%r8), %rcx
     cmp %rcx, %rdx
-    {disp8} ja .Lnvol_count_sad_avx2.L9
-    .byte 15, 31, 64, 0
-.Lnvol_count_sad_avx2.L8:
-    vpcmpeqb (%rdx), %ymm0, %ymm2
-    vpmovmskb %ymm2, %r9d
+    {disp8} ja .Lnvol_count_sad_avx2.L5
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
+.Lnvol_count_sad_avx2.L4:
+    vpcmpeqb (%rdx), %ymm0, %ymm1
+    vpmovmskb %ymm1, %r9d
     popcnt %r9d, %r9d
     lea (%rax,%r9), %rax
     add $32, %rdx
     cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_count_sad_avx2.L8
-.Lnvol_count_sad_avx2.L9:
+    {disp8} jbe .Lnvol_count_sad_avx2.L4
+.Lnvol_count_sad_avx2.L5:
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_count_sad_avx2.L10
+    {disp32} jae .Lnvol_count_sad_avx2.L1
     mov %r8, %rcx
     sub %rdx, %rcx
     vpcmpeqb -32(%r8), %ymm0, %ymm0
@@ -5990,105 +6011,130 @@ nvol_count_sad_avx2:
     shr %cl, %rdx
     popcnt %edx, %ecx
     lea (%rax,%rcx), %rax
+    {disp32} jmp .Lnvol_count_sad_avx2.L1
+.Lnvol_count_sad_avx2.L2:
+    vpxor %xmm1, %xmm1, %xmm1
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    cmp $128, %rcx
+    {disp8} jb .Lnvol_count_sad_avx2.L9
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_count_sad_avx2.L8:
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    shr $7, %rcx
+    cmp $63, %rcx
+    {disp8} jbe .Lnvol_count_sad_avx2.L10
+    mov $63, %ecx
 .Lnvol_count_sad_avx2.L10:
+    vpxor %xmm2, %xmm2, %xmm2
+    cmp $0, %rcx
+    {disp8} jbe .Lnvol_count_sad_avx2.L13
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_count_sad_avx2.L12:
+    vpcmpeqb (%rdx), %ymm0, %ymm3
+    vpcmpeqb 32(%rdx), %ymm0, %ymm4
+    vpaddb %ymm4, %ymm3, %ymm3
+    vpsubb %ymm3, %ymm2, %ymm2
+    vpcmpeqb 64(%rdx), %ymm0, %ymm3
+    vpcmpeqb 96(%rdx), %ymm0, %ymm4
+    vpaddb %ymm4, %ymm3, %ymm3
+    vpsubb %ymm3, %ymm2, %ymm2
+    lea 128(%rdx), %rdx
+    add $-1, %rcx
+    {disp8} jne .Lnvol_count_sad_avx2.L12
+.Lnvol_count_sad_avx2.L13:
+    vpxor %xmm3, %xmm3, %xmm3
+    vpsadbw %ymm3, %ymm2, %ymm2
+    vpaddq %ymm2, %ymm1, %ymm1
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    cmp $128, %rcx
+    {disp8} jae .Lnvol_count_sad_avx2.L8
+.Lnvol_count_sad_avx2.L9:
+    lea -32(%r8), %rcx
+    cmp %rcx, %rdx
+    {disp8} ja .Lnvol_count_sad_avx2.L15
+    .byte 15, 31, 64, 0
+.Lnvol_count_sad_avx2.L14:
+    vpcmpeqb (%rdx), %ymm0, %ymm2
+    vpmovmskb %ymm2, %r9d
+    popcnt %r9d, %r9d
+    lea (%rax,%r9), %rax
+    add $32, %rdx
+    cmp %rcx, %rdx
+    {disp8} jbe .Lnvol_count_sad_avx2.L14
+.Lnvol_count_sad_avx2.L15:
+    cmp %r8, %rdx
+    {disp8} jae .Lnvol_count_sad_avx2.L16
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    vpcmpeqb -32(%r8), %ymm0, %ymm0
+    vpmovmskb %ymm0, %edx
+    mov $32, %r8d
+    sub %rcx, %r8
+    mov %r8, %rcx
+    shr %cl, %rdx
+    popcnt %edx, %ecx
+    lea (%rax,%rcx), %rax
+.Lnvol_count_sad_avx2.L16:
     vextracti128 $1, %ymm1, %xmm0
     vpaddq %xmm1, %xmm0, %xmm0
     vmovq %xmm0, %rcx
     vpextrq $1, %xmm0, %rdx
     lea (%rcx,%rdx), %rcx
     lea (%rax,%rcx), %rax
+.Lnvol_count_sad_avx2.L1:
     vzeroupper
     ret
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_count_entry_avx2
 .def nvol_count_entry_avx2; .scl 2; .type 32; .endef
 nvol_count_entry_avx2:
     movzbl %cl, %r9d
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    cmp $16, %rcx
+    mov %r8, %r10
+    sub %rdx, %r10
+    cmp $16, %r10
     {disp8} jae .Lnvol_count_entry_avx2.L2
     xor %eax, %eax
-    xor %r8d, %r8d
-    cmp %rcx, %r8
+    xor %ecx, %ecx
+    cmp %r10, %rcx
     {disp32} jae .Lnvol_count_entry_avx2.L1
-    .byte 102, 144
+    .byte 15, 31, 0
 .Lnvol_count_entry_avx2.L4:
-    movzbl (%rdx,%r8), %r10d
-    cmp %r9d, %r10d
+    movzbl (%rdx,%rcx), %r8d
+    cmp %r9d, %r8d
     {disp8} jne .Lnvol_count_entry_avx2.L6
     lea 1(%rax), %rax
 .Lnvol_count_entry_avx2.L6:
-    add $1, %r8
-    cmp %rcx, %r8
+    add $1, %rcx
+    cmp %r10, %rcx
     {disp8} jb .Lnvol_count_entry_avx2.L4
     {disp32} jmp .Lnvol_count_entry_avx2.L1
 .Lnvol_count_entry_avx2.L2:
-    cmp $32, %rcx
+    cmp $32, %r10
     {disp32} jae .Lnvol_count_entry_avx2.L8
     vmovd %r9d, %xmm0
     vpbroadcastb %xmm0, %xmm0
-    vpxor %xmm1, %xmm1, %xmm1
     xor %eax, %eax
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    cmp $64, %rcx
-    {disp8} jb .Lnvol_count_entry_avx2.L11
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_count_entry_avx2.L10:
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    shr $6, %rcx
-    cmp $63, %rcx
-    {disp8} jbe .Lnvol_count_entry_avx2.L12
-    mov $63, %ecx
-.Lnvol_count_entry_avx2.L12:
-    vpxor %xmm2, %xmm2, %xmm2
-    cmp $0, %rcx
-    {disp8} jbe .Lnvol_count_entry_avx2.L15
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_count_entry_avx2.L14:
-    vpcmpeqb (%rdx), %xmm0, %xmm3
-    vpcmpeqb 16(%rdx), %xmm0, %xmm4
-    vpaddb %xmm4, %xmm3, %xmm3
-    vpsubb %xmm3, %xmm2, %xmm2
-    vpcmpeqb 32(%rdx), %xmm0, %xmm3
-    vpcmpeqb 48(%rdx), %xmm0, %xmm4
-    vpaddb %xmm4, %xmm3, %xmm3
-    vpsubb %xmm3, %xmm2, %xmm2
-    lea 64(%rdx), %rdx
-    add $-1, %rcx
-    {disp8} jne .Lnvol_count_entry_avx2.L14
-.Lnvol_count_entry_avx2.L15:
-    vpxor %xmm3, %xmm3, %xmm3
-    vpsadbw %xmm3, %xmm2, %xmm2
-    vpaddq %xmm2, %xmm1, %xmm1
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    cmp $64, %rcx
+    cmp $64, %r10
     {disp8} jae .Lnvol_count_entry_avx2.L10
-.Lnvol_count_entry_avx2.L11:
     lea -16(%r8), %rcx
     cmp %rcx, %rdx
-    {disp8} ja .Lnvol_count_entry_avx2.L17
-    .byte 102, 144
-.Lnvol_count_entry_avx2.L16:
-    vpcmpeqb (%rdx), %xmm0, %xmm2
-    vpmovmskb %xmm2, %r9d
+    {disp8} ja .Lnvol_count_entry_avx2.L13
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_count_entry_avx2.L12:
+    vpcmpeqb (%rdx), %xmm0, %xmm1
+    vpmovmskb %xmm1, %r9d
     popcnt %r9d, %r9d
     lea (%rax,%r9), %rax
     add $16, %rdx
     cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_count_entry_avx2.L16
-.Lnvol_count_entry_avx2.L17:
+    {disp8} jbe .Lnvol_count_entry_avx2.L12
+.Lnvol_count_entry_avx2.L13:
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_count_entry_avx2.L18
+    {disp32} jae .Lnvol_count_entry_avx2.L1
     mov %r8, %rcx
     sub %rdx, %rcx
     vpcmpeqb -16(%r8), %xmm0, %xmm0
@@ -6099,7 +6145,73 @@ nvol_count_entry_avx2:
     shr %cl, %rdx
     popcnt %edx, %ecx
     lea (%rax,%rcx), %rax
+    {disp32} jmp .Lnvol_count_entry_avx2.L1
+.Lnvol_count_entry_avx2.L10:
+    vpxor %xmm1, %xmm1, %xmm1
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    cmp $64, %rcx
+    {disp8} jb .Lnvol_count_entry_avx2.L17
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_count_entry_avx2.L16:
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    shr $6, %rcx
+    cmp $63, %rcx
+    {disp8} jbe .Lnvol_count_entry_avx2.L18
+    mov $63, %ecx
 .Lnvol_count_entry_avx2.L18:
+    vpxor %xmm2, %xmm2, %xmm2
+    cmp $0, %rcx
+    {disp8} jbe .Lnvol_count_entry_avx2.L21
+    .byte 144
+.Lnvol_count_entry_avx2.L20:
+    vpcmpeqb (%rdx), %xmm0, %xmm3
+    vpcmpeqb 16(%rdx), %xmm0, %xmm4
+    vpaddb %xmm4, %xmm3, %xmm3
+    vpsubb %xmm3, %xmm2, %xmm2
+    vpcmpeqb 32(%rdx), %xmm0, %xmm3
+    vpcmpeqb 48(%rdx), %xmm0, %xmm4
+    vpaddb %xmm4, %xmm3, %xmm3
+    vpsubb %xmm3, %xmm2, %xmm2
+    lea 64(%rdx), %rdx
+    add $-1, %rcx
+    {disp8} jne .Lnvol_count_entry_avx2.L20
+.Lnvol_count_entry_avx2.L21:
+    vpxor %xmm3, %xmm3, %xmm3
+    vpsadbw %xmm3, %xmm2, %xmm2
+    vpaddq %xmm2, %xmm1, %xmm1
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    cmp $64, %rcx
+    {disp8} jae .Lnvol_count_entry_avx2.L16
+.Lnvol_count_entry_avx2.L17:
+    lea -16(%r8), %rcx
+    cmp %rcx, %rdx
+    {disp8} ja .Lnvol_count_entry_avx2.L23
+    .byte 102, 144
+.Lnvol_count_entry_avx2.L22:
+    vpcmpeqb (%rdx), %xmm0, %xmm2
+    vpmovmskb %xmm2, %r9d
+    popcnt %r9d, %r9d
+    lea (%rax,%r9), %rax
+    add $16, %rdx
+    cmp %rcx, %rdx
+    {disp8} jbe .Lnvol_count_entry_avx2.L22
+.Lnvol_count_entry_avx2.L23:
+    cmp %r8, %rdx
+    {disp8} jae .Lnvol_count_entry_avx2.L24
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    vpcmpeqb -16(%r8), %xmm0, %xmm0
+    vpmovmskb %xmm0, %edx
+    mov $16, %r8d
+    sub %rcx, %r8
+    mov %r8, %rcx
+    shr %cl, %rdx
+    popcnt %edx, %ecx
+    lea (%rax,%rcx), %rax
+.Lnvol_count_entry_avx2.L24:
     vmovq %xmm1, %rcx
     vpextrq $1, %xmm1, %rdx
     lea (%rcx,%rdx), %rcx
@@ -6108,61 +6220,24 @@ nvol_count_entry_avx2:
 .Lnvol_count_entry_avx2.L8:
     vmovd %r9d, %xmm0
     vpbroadcastb %xmm0, %ymm0
-    vpxor %xmm1, %xmm1, %xmm1
     xor %eax, %eax
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    cmp $128, %rcx
-    {disp8} jb .Lnvol_count_entry_avx2.L21
-    .byte 15, 31, 0
-.Lnvol_count_entry_avx2.L20:
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    shr $7, %rcx
-    cmp $63, %rcx
-    {disp8} jbe .Lnvol_count_entry_avx2.L22
-    mov $63, %ecx
-.Lnvol_count_entry_avx2.L22:
-    vpxor %xmm2, %xmm2, %xmm2
-    cmp $0, %rcx
-    {disp8} jbe .Lnvol_count_entry_avx2.L25
-    .byte 144
-.Lnvol_count_entry_avx2.L24:
-    vpcmpeqb (%rdx), %ymm0, %ymm3
-    vpcmpeqb 32(%rdx), %ymm0, %ymm4
-    vpaddb %ymm4, %ymm3, %ymm3
-    vpsubb %ymm3, %ymm2, %ymm2
-    vpcmpeqb 64(%rdx), %ymm0, %ymm3
-    vpcmpeqb 96(%rdx), %ymm0, %ymm4
-    vpaddb %ymm4, %ymm3, %ymm3
-    vpsubb %ymm3, %ymm2, %ymm2
-    lea 128(%rdx), %rdx
-    add $-1, %rcx
-    {disp8} jne .Lnvol_count_entry_avx2.L24
-.Lnvol_count_entry_avx2.L25:
-    vpxor %xmm3, %xmm3, %xmm3
-    vpsadbw %ymm3, %ymm2, %ymm2
-    vpaddq %ymm2, %ymm1, %ymm1
-    mov %r8, %rcx
-    sub %rdx, %rcx
-    cmp $128, %rcx
-    {disp8} jae .Lnvol_count_entry_avx2.L20
-.Lnvol_count_entry_avx2.L21:
+    cmp $128, %r10
+    {disp8} jae .Lnvol_count_entry_avx2.L26
     lea -32(%r8), %rcx
     cmp %rcx, %rdx
-    {disp8} ja .Lnvol_count_entry_avx2.L27
+    {disp8} ja .Lnvol_count_entry_avx2.L29
     .byte 15, 31, 64, 0
-.Lnvol_count_entry_avx2.L26:
-    vpcmpeqb (%rdx), %ymm0, %ymm2
-    vpmovmskb %ymm2, %r9d
+.Lnvol_count_entry_avx2.L28:
+    vpcmpeqb (%rdx), %ymm0, %ymm1
+    vpmovmskb %ymm1, %r9d
     popcnt %r9d, %r9d
     lea (%rax,%r9), %rax
     add $32, %rdx
     cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_count_entry_avx2.L26
-.Lnvol_count_entry_avx2.L27:
+    {disp8} jbe .Lnvol_count_entry_avx2.L28
+.Lnvol_count_entry_avx2.L29:
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_count_entry_avx2.L28
+    {disp32} jae .Lnvol_count_entry_avx2.L1
     mov %r8, %rcx
     sub %rdx, %rcx
     vpcmpeqb -32(%r8), %ymm0, %ymm0
@@ -6173,7 +6248,73 @@ nvol_count_entry_avx2:
     shr %cl, %rdx
     popcnt %edx, %ecx
     lea (%rax,%rcx), %rax
-.Lnvol_count_entry_avx2.L28:
+    {disp32} jmp .Lnvol_count_entry_avx2.L1
+.Lnvol_count_entry_avx2.L26:
+    vpxor %xmm1, %xmm1, %xmm1
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    cmp $128, %rcx
+    {disp8} jb .Lnvol_count_entry_avx2.L33
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_count_entry_avx2.L32:
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    shr $7, %rcx
+    cmp $63, %rcx
+    {disp8} jbe .Lnvol_count_entry_avx2.L34
+    mov $63, %ecx
+.Lnvol_count_entry_avx2.L34:
+    vpxor %xmm2, %xmm2, %xmm2
+    cmp $0, %rcx
+    {disp8} jbe .Lnvol_count_entry_avx2.L37
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_count_entry_avx2.L36:
+    vpcmpeqb (%rdx), %ymm0, %ymm3
+    vpcmpeqb 32(%rdx), %ymm0, %ymm4
+    vpaddb %ymm4, %ymm3, %ymm3
+    vpsubb %ymm3, %ymm2, %ymm2
+    vpcmpeqb 64(%rdx), %ymm0, %ymm3
+    vpcmpeqb 96(%rdx), %ymm0, %ymm4
+    vpaddb %ymm4, %ymm3, %ymm3
+    vpsubb %ymm3, %ymm2, %ymm2
+    lea 128(%rdx), %rdx
+    add $-1, %rcx
+    {disp8} jne .Lnvol_count_entry_avx2.L36
+.Lnvol_count_entry_avx2.L37:
+    vpxor %xmm3, %xmm3, %xmm3
+    vpsadbw %ymm3, %ymm2, %ymm2
+    vpaddq %ymm2, %ymm1, %ymm1
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    cmp $128, %rcx
+    {disp8} jae .Lnvol_count_entry_avx2.L32
+.Lnvol_count_entry_avx2.L33:
+    lea -32(%r8), %rcx
+    cmp %rcx, %rdx
+    {disp8} ja .Lnvol_count_entry_avx2.L39
+    .byte 15, 31, 64, 0
+.Lnvol_count_entry_avx2.L38:
+    vpcmpeqb (%rdx), %ymm0, %ymm2
+    vpmovmskb %ymm2, %r9d
+    popcnt %r9d, %r9d
+    lea (%rax,%r9), %rax
+    add $32, %rdx
+    cmp %rcx, %rdx
+    {disp8} jbe .Lnvol_count_entry_avx2.L38
+.Lnvol_count_entry_avx2.L39:
+    cmp %r8, %rdx
+    {disp8} jae .Lnvol_count_entry_avx2.L40
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    vpcmpeqb -32(%r8), %ymm0, %ymm0
+    vpmovmskb %ymm0, %edx
+    mov $32, %r8d
+    sub %rcx, %r8
+    mov %r8, %rcx
+    shr %cl, %rdx
+    popcnt %edx, %ecx
+    lea (%rax,%rcx), %rax
+.Lnvol_count_entry_avx2.L40:
     vextracti128 $1, %ymm1, %xmm0
     vpaddq %xmm1, %xmm0, %xmm0
     vmovq %xmm0, %rcx
@@ -6184,55 +6325,110 @@ nvol_count_entry_avx2:
     vzeroupper
     ret
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_count_entry_sse2
 .def nvol_count_entry_sse2; .scl 2; .type 32; .endef
 nvol_count_entry_sse2:
     movzbl %cl, %ecx
-    mov %r8, %rax
-    sub %rdx, %rax
-    cmp $16, %rax
+    mov %r8, %r9
+    sub %rdx, %r9
+    cmp $16, %r9
     {disp8} jae .Lnvol_count_entry_sse2.L2
+    xor %eax, %eax
     xor %r8d, %r8d
-    xor %r9d, %r9d
-    cmp %rax, %r9
-    {disp8} jae .Lnvol_count_entry_sse2.L5
-    .byte 102, 15, 31, 68, 0, 0
+    cmp %r9, %r8
+    {disp32} jae .Lnvol_count_entry_sse2.L1
+    .byte 15, 31, 0
 .Lnvol_count_entry_sse2.L4:
-    movzbl (%rdx,%r9), %r10d
+    movzbl (%rdx,%r8), %r10d
     cmp %ecx, %r10d
     {disp8} jne .Lnvol_count_entry_sse2.L6
-    lea 1(%r8), %r8
+    lea 1(%rax), %rax
 .Lnvol_count_entry_sse2.L6:
-    add $1, %r9
-    cmp %rax, %r9
+    add $1, %r8
+    cmp %r9, %r8
     {disp8} jb .Lnvol_count_entry_sse2.L4
-.Lnvol_count_entry_sse2.L5:
-    mov %r8, %rax
     {disp32} jmp .Lnvol_count_entry_sse2.L1
 .Lnvol_count_entry_sse2.L2:
     imul $16843009, %ecx, %eax
     movd %eax, %xmm0
     pshufd $0, %xmm0, %xmm0
-    pxor %xmm1, %xmm1
     xor %eax, %eax
+    cmp $64, %r9
+    {disp32} jae .Lnvol_count_entry_sse2.L8
+    lea -16(%r8), %rcx
+    cmp %rcx, %rdx
+    {disp8} ja .Lnvol_count_entry_sse2.L11
+.Lnvol_count_entry_sse2.L10:
+    movdqu (%rdx), %xmm1
+    pcmpeqb %xmm0, %xmm1
+    pmovmskb %xmm1, %r9d
+    lea NVOL_K0(%rip), %r10
+    movzbl %r9b, %r11d
+    movzbl (%r10,%r11), %r11d
+    mov %r9d, %r9d
+    shr $8, %r9d
+    movzbl (%r10,%r9), %r9d
+    add %r9d, %r11d
+    lea (%rax,%r11), %rax
+    add $16, %rdx
+    cmp %rcx, %rdx
+    {disp8} jbe .Lnvol_count_entry_sse2.L10
+.Lnvol_count_entry_sse2.L11:
+    cmp %r8, %rdx
+    {disp32} jae .Lnvol_count_entry_sse2.L1
+    mov %r8, %rcx
+    sub %rdx, %rcx
+    movdqu -16(%r8), %xmm1
+    pcmpeqb %xmm0, %xmm1
+    pmovmskb %xmm1, %edx
+    mov $16, %r8d
+    sub %rcx, %r8
+    mov %r8, %rcx
+    shr %cl, %rdx
+    lea NVOL_K0(%rip), %rcx
+    movzbl %dl, %r8d
+    movzbl (%rcx,%r8), %r8d
+    mov %edx, %r9d
+    shr $8, %r9d
+    movzbl %r9b, %r9d
+    movzbl (%rcx,%r9), %r9d
+    add %r9d, %r8d
+    mov %edx, %r9d
+    shr $16, %r9d
+    movzbl %r9b, %r9d
+    movzbl (%rcx,%r9), %r9d
+    add %r9d, %r8d
+    mov %edx, %edx
+    shr $24, %edx
+    movzbl (%rcx,%rdx), %ecx
+    add %ecx, %r8d
+    lea (%rax,%r8), %rax
+    {disp32} jmp .Lnvol_count_entry_sse2.L1
+.Lnvol_count_entry_sse2.L8:
+    pxor %xmm1, %xmm1
     mov %r8, %rcx
     sub %rdx, %rcx
     cmp $64, %rcx
-    {disp8} jb .Lnvol_count_entry_sse2.L9
-.Lnvol_count_entry_sse2.L8:
+    {disp8} jb .Lnvol_count_entry_sse2.L15
+.Lnvol_count_entry_sse2.L14:
     mov %r8, %rcx
     sub %rdx, %rcx
     shr $6, %rcx
     cmp $63, %rcx
-    {disp8} jbe .Lnvol_count_entry_sse2.L10
+    {disp8} jbe .Lnvol_count_entry_sse2.L16
     mov $63, %ecx
-.Lnvol_count_entry_sse2.L10:
+.Lnvol_count_entry_sse2.L16:
     pxor %xmm2, %xmm2
     cmp $0, %rcx
-    {disp8} jbe .Lnvol_count_entry_sse2.L13
+    {disp8} jbe .Lnvol_count_entry_sse2.L19
     .byte 144
-.Lnvol_count_entry_sse2.L12:
+.Lnvol_count_entry_sse2.L18:
     movdqu (%rdx), %xmm3
     pcmpeqb %xmm0, %xmm3
     movdqu 16(%rdx), %xmm4
@@ -6247,21 +6443,21 @@ nvol_count_entry_sse2:
     psubb %xmm3, %xmm2
     lea 64(%rdx), %rdx
     add $-1, %rcx
-    {disp8} jne .Lnvol_count_entry_sse2.L12
-.Lnvol_count_entry_sse2.L13:
+    {disp8} jne .Lnvol_count_entry_sse2.L18
+.Lnvol_count_entry_sse2.L19:
     pxor %xmm3, %xmm3
     psadbw %xmm3, %xmm2
     paddq %xmm2, %xmm1
     mov %r8, %rcx
     sub %rdx, %rcx
     cmp $64, %rcx
-    {disp8} jae .Lnvol_count_entry_sse2.L8
-.Lnvol_count_entry_sse2.L9:
+    {disp8} jae .Lnvol_count_entry_sse2.L14
+.Lnvol_count_entry_sse2.L15:
     lea -16(%r8), %rcx
     cmp %rcx, %rdx
-    {disp8} ja .Lnvol_count_entry_sse2.L15
+    {disp8} ja .Lnvol_count_entry_sse2.L21
     .byte 102, 144
-.Lnvol_count_entry_sse2.L14:
+.Lnvol_count_entry_sse2.L20:
     movdqu (%rdx), %xmm2
     pcmpeqb %xmm0, %xmm2
     pmovmskb %xmm2, %r9d
@@ -6275,10 +6471,10 @@ nvol_count_entry_sse2:
     lea (%rax,%r11), %rax
     add $16, %rdx
     cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_count_entry_sse2.L14
-.Lnvol_count_entry_sse2.L15:
+    {disp8} jbe .Lnvol_count_entry_sse2.L20
+.Lnvol_count_entry_sse2.L21:
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_count_entry_sse2.L16
+    {disp8} jae .Lnvol_count_entry_sse2.L22
     mov %r8, %rcx
     sub %rdx, %rcx
     movdqu -16(%r8), %xmm2
@@ -6306,7 +6502,7 @@ nvol_count_entry_sse2:
     movzbl (%rcx,%rdx), %ecx
     add %ecx, %r8d
     lea (%rax,%r8), %rax
-.Lnvol_count_entry_sse2.L16:
+.Lnvol_count_entry_sse2.L22:
     movq %xmm1, %rcx
     movdqa %xmm1, %xmm0
     punpckhqdq %xmm1, %xmm0

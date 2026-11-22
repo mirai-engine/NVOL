@@ -1140,10 +1140,24 @@ when ODIN_ARCH == .amd64 {
 	// SAD-accumulated count; requires len >= 16
 	@(private)
 	nvol_count_sad_sse2 :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> uint #no_bounds_check {
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V16 = V16(n1)
 		cur: [^]u8 = start
-		acc64: V16 = V16(0)
 		count: uint = uint(0)
+		if (len_ < uint(64)) {
+			for (cur <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(16))))) {
+				count = (count + uint(intrinsics.count_ones(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V16)(cur)), v1)))))
+				cur = cur[uint(16):]
+			}
+			if (cur < end) {
+				rem: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
+				mask: u32 = transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V16)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(16)))))), v1))
+				shift: u32 = u32((uint(16) - rem))
+				count = (count + uint(intrinsics.count_ones((mask >> shift))))
+			}
+			return count
+		}
+		acc64: V16 = V16(0)
 		for (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >= uint(64)) {
 			iters: uint = (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >> uint(6))
 			if (iters > uint(63)) {
@@ -1165,10 +1179,10 @@ when ODIN_ARCH == .amd64 {
 			cur = cur[uint(16):]
 		}
 		if (cur < end) {
-			rem: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
-			mask: u32 = transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V16)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(16)))))), v1))
-			shift: u32 = u32((uint(16) - rem))
-			count = (count + uint(intrinsics.count_ones((mask >> shift))))
+			rem1: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
+			mask1: u32 = transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V16)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(16)))))), v1))
+			shift1: u32 = u32((uint(16) - rem1))
+			count = (count + uint(intrinsics.count_ones((mask1 >> shift1))))
 		}
 		return (count + (uint(intrinsics.simd_extract(transmute(U64x2)acc64, 0)) + uint(intrinsics.simd_extract(transmute(U64x2)acc64, 1))))
 	}
@@ -1176,10 +1190,24 @@ when ODIN_ARCH == .amd64 {
 	// SAD-accumulated count; requires len >= 32
 	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
 	nvol_count_sad_avx2 :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> uint #no_bounds_check {
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
 		cur: [^]u8 = start
-		acc64: V32 = V32(0)
 		count: uint = uint(0)
+		if (len_ < uint(128)) {
+			for (cur <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(32))))) {
+				count = (count + uint(intrinsics.count_ones(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V32)(cur)), v1)))))
+				cur = cur[uint(32):]
+			}
+			if (cur < end) {
+				rem: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
+				mask: u32 = transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(32)))))), v1))
+				shift: u32 = u32((uint(32) - rem))
+				count = (count + uint(intrinsics.count_ones((mask >> shift))))
+			}
+			return count
+		}
+		acc64: V32 = V32(0)
 		for (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >= uint(128)) {
 			iters: uint = (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >> uint(7))
 			if (iters > uint(63)) {
@@ -1201,10 +1229,10 @@ when ODIN_ARCH == .amd64 {
 			cur = cur[uint(32):]
 		}
 		if (cur < end) {
-			rem: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
-			mask: u32 = transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(32)))))), v1))
-			shift: u32 = u32((uint(32) - rem))
-			count = (count + uint(intrinsics.count_ones((mask >> shift))))
+			rem1: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
+			mask1: u32 = transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(32)))))), v1))
+			shift1: u32 = u32((uint(32) - rem1))
+			count = (count + uint(intrinsics.count_ones((mask1 >> shift1))))
 		}
 		return (count + (uint(intrinsics.simd_extract(transmute(U64x4)acc64, 0)) + uint(intrinsics.simd_extract(transmute(U64x4)acc64, 1)) + uint(intrinsics.simd_extract(transmute(U64x4)acc64, 2)) + uint(intrinsics.simd_extract(transmute(U64x4)acc64, 3))))
 	}
@@ -8592,10 +8620,24 @@ when ODIN_ARCH == .amd64 {
 	// SAD-accumulated count; requires len >= 16
 	@(private)
 	nvol_count_sad_neon :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> uint #no_bounds_check {
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V16 = V16(n1)
 		cur: [^]u8 = start
-		acc64: V16 = V16(0)
 		count: uint = uint(0)
+		if (len_ < uint(64)) {
+			for (cur <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(16))))) {
+				count = (count + uint(intrinsics.count_ones((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V16)(cur)), v1), (U16x8)(4)) & 0x8888888888888888))))
+				cur = cur[uint(16):]
+			}
+			if (cur < end) {
+				rem: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
+				mask: u64 = (transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V16)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(16)))))), v1), (U16x8)(4)) & 0x8888888888888888)
+				shift: u64 = u64(((uint(16) - rem) << uint(2)))
+				count = (count + uint(intrinsics.count_ones((mask >> shift))))
+			}
+			return count
+		}
+		acc64: V16 = V16(0)
 		for (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >= uint(64)) {
 			iters: uint = (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >> uint(6))
 			if (iters > uint(63)) {
@@ -8617,10 +8659,10 @@ when ODIN_ARCH == .amd64 {
 			cur = cur[uint(16):]
 		}
 		if (cur < end) {
-			rem: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
-			mask: u64 = (transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V16)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(16)))))), v1), (U16x8)(4)) & 0x8888888888888888)
-			shift: u64 = u64(((uint(16) - rem) << uint(2)))
-			count = (count + uint(intrinsics.count_ones((mask >> shift))))
+			rem1: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur)))
+			mask1: u64 = (transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)intrinsics.simd_lanes_eq(intrinsics.unaligned_load((^V16)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(16)))))), v1), (U16x8)(4)) & 0x8888888888888888)
+			shift1: u64 = u64(((uint(16) - rem1) << uint(2)))
+			count = (count + uint(intrinsics.count_ones((mask1 >> shift1))))
 		}
 		return (count + (uint(intrinsics.simd_extract(transmute(U64x2)acc64, 0)) + uint(intrinsics.simd_extract(transmute(U64x2)acc64, 1))))
 	}

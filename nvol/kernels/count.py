@@ -77,8 +77,28 @@ def count_sad(isa: ISA) -> Function:
     n1, start, end, length = _hdr(b)
     v1 = b.let("v1", prim("splat", n1))
     cur = b.var("cur", start)
-    acc64 = b.var("acc64", prim("vzero"))
     count = b.var("count", 0, USIZE)
+
+    def rest():
+        """The vector loop and the overlapping tail, from cur."""
+        with b.while_(cur <= end - V):
+            b.set(count, count + prim("popcnt", movemask(isa, prim("cmpeq", prim("load_u", cur), v1))))
+            b.set(cur, cur + V)
+        with b.if_(cur < end):
+            # overlapping final load; drop the lanes that were already counted
+            rem = b.let("rem", end - cur)
+            m = b.let("mask", movemask(isa, prim("cmpeq", prim("load_u", end - V), v1)))
+            lanes = lift(V, USIZE) - rem
+            if isa.lane_bits == 4:
+                lanes = lanes << 2
+            shift = b.let("shift", lanes.cast(mask_ty(isa)))
+            b.set(count, count + prim("popcnt", m >> shift))
+
+    # below one SAD block: no accumulator to clear and no horizontal sum, just the vector loop
+    with b.if_(length < LOOP):
+        rest()
+        b.ret(count)
+    acc64 = b.var("acc64", prim("vzero"))
     with b.while_((end - cur) >= LOOP):
         iters = b.var("iters", _div(end - cur, LOOP))
         with b.if_(iters > MAX_ITERS):
@@ -91,18 +111,7 @@ def count_sad(isa: ISA) -> Function:
             b.set(cur, cur + LOOP)
             b.set(iters, iters - 1)
         b.set(acc64, prim("vadd64", acc64, prim("sad0", acc8)))
-    with b.while_(cur <= end - V):
-        b.set(count, count + prim("popcnt", movemask(isa, prim("cmpeq", prim("load_u", cur), v1))))
-        b.set(cur, cur + V)
-    with b.if_(cur < end):
-        # overlapping final load; drop the lanes that were already counted
-        rem = b.let("rem", end - cur)
-        m = b.let("mask", movemask(isa, prim("cmpeq", prim("load_u", end - V), v1)))
-        lanes = lift(V, USIZE) - rem
-        if isa.lane_bits == 4:
-            lanes = lanes << 2
-        shift = b.let("shift", lanes.cast(mask_ty(isa)))
-        b.set(count, count + prim("popcnt", m >> shift))
+    rest()
     b.ret(count + prim("hsum64", acc64))
     return b.build()
 

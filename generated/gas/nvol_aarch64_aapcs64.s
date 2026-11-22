@@ -2360,24 +2360,67 @@ nvol_count_sad_neon:
 L.nvol_count_sad_neon:
 .cfi_startproc
     and w9, w0, #255
+    sub x10, x2, x1
     dup v0.16b, w9
-    movi v1.16b, #0
-    movz w9, #0
-    sub x10, x2, x1
+    movz w0, #0
     cmp x10, #64
-    b.lo .Lnvol_count_sad_neon.L3
+    b.hs .Lnvol_count_sad_neon.L2
+    sub x9, x2, #16
+    cmp x1, x9
+    b.hi .Lnvol_count_sad_neon.L5
     nop
-.Lnvol_count_sad_neon.L2:
-    sub x10, x2, x1
-    lsr x10, x10, #6
-    cmp x10, #63
-    b.ls .Lnvol_count_sad_neon.L4
-    orr w10, wzr, #63
 .Lnvol_count_sad_neon.L4:
+    ldr q1, [x1]
+    cmeq v1.16b, v1.16b, v0.16b
+    shrn v1.8b, v1.8h, #4
+    fmov x10, d1
+    and x10, x10, #9838263505978427528
+    fmov d1, x10
+    cnt v1.8b, v1.8b
+    addv b1, v1.8b
+    umov w10, v1.b[0]
+    add x0, x0, x10
+    add x1, x1, #16
+    cmp x1, x9
+    b.ls .Lnvol_count_sad_neon.L4
+.Lnvol_count_sad_neon.L5:
+    cmp x1, x2
+    b.hs .Lnvol_count_sad_neon.L1
+    sub x9, x2, x1
+    ldur q1, [x2, #-16]
+    cmeq v0.16b, v1.16b, v0.16b
+    shrn v0.8b, v0.8h, #4
+    fmov x10, d0
+    and x10, x10, #9838263505978427528
+    orr w11, wzr, #16
+    sub x9, x11, x9
+    lsl x9, x9, #2
+    lsr x9, x10, x9
+    fmov d0, x9
+    cnt v0.8b, v0.8b
+    addv b0, v0.8b
+    umov w9, v0.b[0]
+    add x0, x0, x9
+    b .Lnvol_count_sad_neon.L1
+.Lnvol_count_sad_neon.L2:
+    movi v1.16b, #0
+    sub x9, x2, x1
+    cmp x9, #64
+    b.lo .Lnvol_count_sad_neon.L9
+    nop
+.Lnvol_count_sad_neon.L8:
+    sub x9, x2, x1
+    lsr x9, x9, #6
+    cmp x9, #63
+    b.ls .Lnvol_count_sad_neon.L10
+    orr w9, wzr, #63
+.Lnvol_count_sad_neon.L10:
     movi v2.16b, #0
-    cmp x10, #0
-    b.ls .Lnvol_count_sad_neon.L7
-.Lnvol_count_sad_neon.L6:
+    cmp x9, #0
+    b.ls .Lnvol_count_sad_neon.L13
+    nop
+    nop
+.Lnvol_count_sad_neon.L12:
     ldr q3, [x1]
     cmeq v3.16b, v3.16b, v0.16b
     ldr q4, [x1, #16]
@@ -2391,59 +2434,60 @@ L.nvol_count_sad_neon:
     add v3.16b, v3.16b, v4.16b
     sub v2.16b, v2.16b, v3.16b
     add x1, x1, #64
-    sub x10, x10, #1
-    cmp x10, #0
-    b.hi .Lnvol_count_sad_neon.L6
-.Lnvol_count_sad_neon.L7:
+    sub x9, x9, #1
+    cmp x9, #0
+    b.hi .Lnvol_count_sad_neon.L12
+.Lnvol_count_sad_neon.L13:
     uaddlp v2.8h, v2.16b
     uaddlp v2.4s, v2.8h
     uaddlp v2.2d, v2.4s
     add v1.2d, v1.2d, v2.2d
-    sub x10, x2, x1
-    cmp x10, #64
-    b.hs .Lnvol_count_sad_neon.L2
-.Lnvol_count_sad_neon.L3:
-    sub x10, x2, #16
-    cmp x1, x10
-    b.hi .Lnvol_count_sad_neon.L9
+    sub x9, x2, x1
+    cmp x9, #64
+    b.hs .Lnvol_count_sad_neon.L8
+.Lnvol_count_sad_neon.L9:
+    sub x9, x2, #16
+    cmp x1, x9
+    b.hi .Lnvol_count_sad_neon.L15
     nop
     nop
-.Lnvol_count_sad_neon.L8:
+.Lnvol_count_sad_neon.L14:
     ldr q2, [x1]
     cmeq v2.16b, v2.16b, v0.16b
     shrn v2.8b, v2.8h, #4
-    fmov x11, d2
-    and x11, x11, #9838263505978427528
-    fmov d2, x11
+    fmov x10, d2
+    and x10, x10, #9838263505978427528
+    fmov d2, x10
     cnt v2.8b, v2.8b
     addv b2, v2.8b
-    umov w11, v2.b[0]
-    add x9, x9, x11
+    umov w10, v2.b[0]
+    add x0, x0, x10
     add x1, x1, #16
-    cmp x1, x10
-    b.ls .Lnvol_count_sad_neon.L8
-.Lnvol_count_sad_neon.L9:
+    cmp x1, x9
+    b.ls .Lnvol_count_sad_neon.L14
+.Lnvol_count_sad_neon.L15:
     cmp x1, x2
-    b.hs .Lnvol_count_sad_neon.L10
-    sub x10, x2, x1
+    b.hs .Lnvol_count_sad_neon.L16
+    sub x9, x2, x1
     ldur q2, [x2, #-16]
     cmeq v0.16b, v2.16b, v0.16b
     shrn v0.8b, v0.8h, #4
-    fmov x11, d0
-    and x11, x11, #9838263505978427528
-    orr w12, wzr, #16
-    sub x10, x12, x10
-    lsl x10, x10, #2
-    lsr x10, x11, x10
-    fmov d0, x10
+    fmov x10, d0
+    and x10, x10, #9838263505978427528
+    orr w11, wzr, #16
+    sub x9, x11, x9
+    lsl x9, x9, #2
+    lsr x9, x10, x9
+    fmov d0, x9
     cnt v0.8b, v0.8b
     addv b0, v0.8b
-    umov w10, v0.b[0]
-    add x9, x9, x10
-.Lnvol_count_sad_neon.L10:
+    umov w9, v0.b[0]
+    add x0, x0, x9
+.Lnvol_count_sad_neon.L16:
     addp d0, v1.2d
-    fmov x10, d0
-    add x0, x9, x10
+    fmov x9, d0
+    add x0, x0, x9
+.Lnvol_count_sad_neon.L1:
     ret
 .cfi_endproc
 .size nvol_count_sad_neon, .-nvol_count_sad_neon
@@ -2476,23 +2520,66 @@ L.nvol_count_raw:
     b.lo .Lnvol_count_raw.L4
     b .Lnvol_count_raw.L1
 .Lnvol_count_raw.L2:
+    sub x10, x2, x1
     dup v0.16b, w9
-    movi v1.16b, #0
-    movz w9, #0
-    sub x10, x2, x1
+    movz w0, #0
     cmp x10, #64
-    b.lo .Lnvol_count_raw.L9
-.Lnvol_count_raw.L8:
-    sub x10, x2, x1
-    lsr x10, x10, #6
-    cmp x10, #63
-    b.ls .Lnvol_count_raw.L10
-    orr w10, wzr, #63
+    b.hs .Lnvol_count_raw.L8
+    sub x9, x2, #16
+    cmp x1, x9
+    b.hi .Lnvol_count_raw.L11
+    nop
+    nop
 .Lnvol_count_raw.L10:
+    ldr q1, [x1]
+    cmeq v1.16b, v1.16b, v0.16b
+    shrn v1.8b, v1.8h, #4
+    fmov x10, d1
+    and x10, x10, #9838263505978427528
+    fmov d1, x10
+    cnt v1.8b, v1.8b
+    addv b1, v1.8b
+    umov w10, v1.b[0]
+    add x0, x0, x10
+    add x1, x1, #16
+    cmp x1, x9
+    b.ls .Lnvol_count_raw.L10
+.Lnvol_count_raw.L11:
+    cmp x1, x2
+    b.hs .Lnvol_count_raw.L1
+    sub x9, x2, x1
+    ldur q1, [x2, #-16]
+    cmeq v0.16b, v1.16b, v0.16b
+    shrn v0.8b, v0.8h, #4
+    fmov x10, d0
+    and x10, x10, #9838263505978427528
+    orr w11, wzr, #16
+    sub x9, x11, x9
+    lsl x9, x9, #2
+    lsr x9, x10, x9
+    fmov d0, x9
+    cnt v0.8b, v0.8b
+    addv b0, v0.8b
+    umov w9, v0.b[0]
+    add x0, x0, x9
+    b .Lnvol_count_raw.L1
+.Lnvol_count_raw.L8:
+    movi v1.16b, #0
+    sub x9, x2, x1
+    cmp x9, #64
+    b.lo .Lnvol_count_raw.L15
+    nop
+.Lnvol_count_raw.L14:
+    sub x9, x2, x1
+    lsr x9, x9, #6
+    cmp x9, #63
+    b.ls .Lnvol_count_raw.L16
+    orr w9, wzr, #63
+.Lnvol_count_raw.L16:
     movi v2.16b, #0
-    cmp x10, #0
-    b.ls .Lnvol_count_raw.L13
-.Lnvol_count_raw.L12:
+    cmp x9, #0
+    b.ls .Lnvol_count_raw.L19
+.Lnvol_count_raw.L18:
     ldr q3, [x1]
     cmeq v3.16b, v3.16b, v0.16b
     ldr q4, [x1, #16]
@@ -2506,59 +2593,59 @@ L.nvol_count_raw:
     add v3.16b, v3.16b, v4.16b
     sub v2.16b, v2.16b, v3.16b
     add x1, x1, #64
-    sub x10, x10, #1
-    cmp x10, #0
-    b.hi .Lnvol_count_raw.L12
-.Lnvol_count_raw.L13:
+    sub x9, x9, #1
+    cmp x9, #0
+    b.hi .Lnvol_count_raw.L18
+.Lnvol_count_raw.L19:
     uaddlp v2.8h, v2.16b
     uaddlp v2.4s, v2.8h
     uaddlp v2.2d, v2.4s
     add v1.2d, v1.2d, v2.2d
-    sub x10, x2, x1
-    cmp x10, #64
-    b.hs .Lnvol_count_raw.L8
-.Lnvol_count_raw.L9:
-    sub x10, x2, #16
-    cmp x1, x10
-    b.hi .Lnvol_count_raw.L15
+    sub x9, x2, x1
+    cmp x9, #64
+    b.hs .Lnvol_count_raw.L14
+.Lnvol_count_raw.L15:
+    sub x9, x2, #16
+    cmp x1, x9
+    b.hi .Lnvol_count_raw.L21
     nop
     nop
-.Lnvol_count_raw.L14:
+.Lnvol_count_raw.L20:
     ldr q2, [x1]
     cmeq v2.16b, v2.16b, v0.16b
     shrn v2.8b, v2.8h, #4
-    fmov x11, d2
-    and x11, x11, #9838263505978427528
-    fmov d2, x11
+    fmov x10, d2
+    and x10, x10, #9838263505978427528
+    fmov d2, x10
     cnt v2.8b, v2.8b
     addv b2, v2.8b
-    umov w11, v2.b[0]
-    add x9, x9, x11
+    umov w10, v2.b[0]
+    add x0, x0, x10
     add x1, x1, #16
-    cmp x1, x10
-    b.ls .Lnvol_count_raw.L14
-.Lnvol_count_raw.L15:
+    cmp x1, x9
+    b.ls .Lnvol_count_raw.L20
+.Lnvol_count_raw.L21:
     cmp x1, x2
-    b.hs .Lnvol_count_raw.L16
-    sub x10, x2, x1
+    b.hs .Lnvol_count_raw.L22
+    sub x9, x2, x1
     ldur q2, [x2, #-16]
     cmeq v0.16b, v2.16b, v0.16b
     shrn v0.8b, v0.8h, #4
-    fmov x11, d0
-    and x11, x11, #9838263505978427528
-    orr w12, wzr, #16
-    sub x10, x12, x10
-    lsl x10, x10, #2
-    lsr x10, x11, x10
-    fmov d0, x10
+    fmov x10, d0
+    and x10, x10, #9838263505978427528
+    orr w11, wzr, #16
+    sub x9, x11, x9
+    lsl x9, x9, #2
+    lsr x9, x10, x9
+    fmov d0, x9
     cnt v0.8b, v0.8b
     addv b0, v0.8b
-    umov w10, v0.b[0]
-    add x9, x9, x10
-.Lnvol_count_raw.L16:
+    umov w9, v0.b[0]
+    add x0, x0, x9
+.Lnvol_count_raw.L22:
     addp d0, v1.2d
-    fmov x10, d0
-    add x0, x9, x10
+    fmov x9, d0
+    add x0, x0, x9
 .Lnvol_count_raw.L1:
     ret
 .cfi_endproc

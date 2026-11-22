@@ -135,8 +135,25 @@ The detail is in "Done".
       - ~~`and w0, w0, #255` that the callee repeats~~: a parameter only passed on is no
         longer extended (see Done).
 
-      The byteset family (+25…+53 %), memmem (+34 %) and Teddy (+36 %) need their loops
-      compared by hand.
+      ~~The byteset family (+25…+53 %), memmem (+34 %) and Teddy (+36 %) need their loops
+      compared by hand~~ **(compared, 2026-11-22).** The static gap is not in the hot
+      loops:
+      - **The loops are as short as Clang's or shorter.** byteset's single-byte form, per
+        16 bytes: NVOL 10 instructions, Clang 12. Clang tests at the top and the bottom
+        (two branches per iteration) and carries a counter for the tail mask; NVOL's loops
+        are rotated (one branch).
+      - **The table counts structure.** Each NVOL entry counts with what it tail-calls (the
+        `_u`, `_k1`, `_k2`… variants, and memmem's `pp`, `pp2`, `pppre`, `tw` and `rk`).
+        Clang inlines them into one body, where shared code is counted once. memmem's
+        packed-pair loop also carries its candidate check inline (the word compare), which
+        Clang's merged body shares.
+      - **One loop gain found, deferred:** Clang's post-indexed load (`ldr q2, [x1], #16`)
+        folds the pointer increment, one instruction per iteration. The found path then has
+        to subtract 16, in cold code that is reached from inside the iteration. Without ARM
+        hardware it is a static count only (2.12, item 31), so it waits for a machine where
+        its cycles can be measured.
+      - The Teddy dispatch was a real gap (a `blr` with a frame where Clang has `br`): fixed,
+        see Done.
 18. **Maturity:** criterion and declaration. The three syntaxes identical (13), the review
     closed (14), no row worse in instructions than the best compiler except justified
     deviations (17), the cycle gaps with a measured cause (25) and aarch64 tested (16). From
@@ -239,6 +256,7 @@ The detail is in "Done".
       | functions 64-aligned (item 25) | count_parity 4 KiB SSE2 | 765.8 → 809.9 | same code (bodies byte-identical) |
       | functions 64-aligned (item 25) | byteset 4 / 64 KiB AVX2 | 344.5 / 6041 → 383.8 / 6705 | same code (bodies byte-identical) |
       | functions 64-aligned (item 25) | count 64 KiB AVX2, first_non_ascii 64 B AVX2 | 2547 / 17.1 → 2781 / 19.2 | same code (bodies byte-identical) |
+      | count below one SAD block (item 17) | count 64 B AVX2 | 13.4-13.9 → 16.2-16.8 | same code, loop heads 32-aligned: 11.0 |
 
       In the 64-aligned layout no function body changed, so each of its rows is position by
       construction. The count_parity control shows the trade: at +48 bytes, the SSE2 path gets
@@ -670,6 +688,30 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **count: no SAD setup below one block (item 17).** `count_sad` cleared its 64-bit
+  accumulator and ended with its horizontal sum (`vmovq` / `vpextrq` / two adds) on every
+  call, even when no 4×V block fits (below 64 B in SSE2, 128 B in AVX2), where the block loop
+  never runs. Clang drops that by value range; the asm cannot. Now `len < LOOP` goes straight
+  to the vector loop and the overlapping tail and returns. The block path is HEAD's, with
+  one compare in front. In the IR, so every backend gets it (GCC 64 B AVX2: 66 → 56
+  instructions). Counters, best of 7 to 9, HEAD / new / HEAD again:
+
+  | count | instructions | cycles |
+  |---|---|---|
+  | 16 B AVX2 | 47.99 → 39.94 | 12.16 / 10.72 / 12.21 |
+  | 16 B SSE2 | 53.96 → 44.01 | 12.82 / 10.80 / 12.15 |
+  | 32 B SSE2 | 67.93 → 58.03 | 17.50 / 14.54 / 16.86 |
+  | 64 B AVX2 | 55.97 → 47.01 | 13.40 / 16.82 / 13.74 |
+  | 128 B AVX2 | 68.91 → 71.00 | 16.95 / 17.83 / 17.17 |
+
+  The 64 B AVX2 row is slower with 9 instructions fewer, and its µops all come from the DSB
+  in both versions (MITE ≈ 0). The position control (the same code with every loop head
+  32-aligned) gives 11.02, so it is placement inside the function: logged in the
+  position-loss table. From 128 B on, the block path is +2 instructions (the compare), and
+  the cycles stay inside HEAD's own spread (15.8-17.4 at 128 B between identical copies).
+  An earlier form (the block, its accumulator and its sum under `if len >= LOOP`) gave
+  the same small-size gains, but repeated the test at the loop's entry.
 
 - **A tail call through a function table (item 17).** Teddy's dispatch,
   `return CallTable(...)`, was a call: `blr x9` on aarch64 and `call r8` on x86, with a
