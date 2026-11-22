@@ -15,7 +15,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef NVOL_BENCH_NO_C_HEADER          /* harness/parity/bench_cpp.cpp: the C++ backend */
 #include "nvol.h"
+#endif
 
 #ifdef _MSC_VER
 #  define ALIGNED64 __declspec(align(64))
@@ -39,7 +41,11 @@ static double now_ns(void) {
 }
 #endif
 
+#ifdef NVOL_BENCH_NO_TEST_HOOK
+static void nvol_test_set_avx2(int v) { (void)v; }
+#else
 void nvol_test_set_avx2(int v);
+#endif
 
 ALIGNED64 static uint8_t buf[(1 << 20) + 64];
 ALIGNED64 static uint8_t spaces[(1 << 20) + 64];
