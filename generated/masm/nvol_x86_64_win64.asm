@@ -7705,14 +7705,13 @@ L_L2:
     jae SHORT L_L5
     DB 15, 31, 0
 L_L4:
-    shl esi, 1
     movzx ebx, byte ptr [rax]
-    add esi, ebx
+    lea esi, [rbx + rsi*2]
     add rax, 1
     cmp rax, rdi
     jb SHORT L_L4
 L_L5:
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 L_L6:
     cmp esi, r11d
     jne SHORT L_L8
@@ -7746,12 +7745,12 @@ L_L8:
     cmp r9, r10
     jae SHORT L_L24
 L_L23:
-    movzx eax, byte ptr [r9]
-    imul eax, ecx
-    sub esi, eax
-    shl esi, 1
-    movzx eax, byte ptr [r9 + r8]
-    add esi, eax
+    mov rax, rsi
+    movzx edi, byte ptr [r9]
+    imul edi, ecx
+    sub eax, edi
+    movzx edi, byte ptr [r9 + r8]
+    lea esi, [rdi + rax*2]
     lea r9, [r9 + 1]
     jmp SHORT L_L6
     xor eax, eax
@@ -7799,8 +7798,7 @@ L_L21:
 nvol_memmem_rk ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_memmem_rk_oneshot PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -7828,9 +7826,8 @@ L_L2:
     jae SHORT L_L5
     DB 102, 15, 31, 68, 0, 0
 L_L4:
-    shl r11d, 1
     movzx edi, byte ptr [rax]
-    add r11d, edi
+    lea r11d, [rdi + r11*2]
     cmp rax, rcx
     jbe SHORT L_L6
     shl esi, 1
@@ -7845,15 +7842,15 @@ L_L5:
     lea rdi, [r8 + r10]
     cmp rax, rdi
     jae SHORT L_L9
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 L_L8:
-    shl edx, 1
     movzx ebx, byte ptr [rax]
-    add edx, ebx
+    lea edx, [rbx + rdx*2]
     add rax, 1
     cmp rax, rdi
     jb SHORT L_L8
 L_L9:
+    DB 144
 L_L10:
     cmp edx, r11d
     jne SHORT L_L12
@@ -7887,12 +7884,12 @@ L_L12:
     cmp r8, r9
     jae SHORT L_L28
 L_L27:
-    movzx eax, byte ptr [r8]
-    imul eax, esi
-    sub edx, eax
-    shl edx, 1
-    movzx eax, byte ptr [r8 + r10]
-    add edx, eax
+    mov rax, rdx
+    movzx edi, byte ptr [r8]
+    imul edi, esi
+    sub eax, edi
+    movzx edi, byte ptr [r8 + r10]
+    lea edx, [rdi + rax*2]
     lea r8, [r8 + 1]
     jmp SHORT L_L10
     xor eax, eax
@@ -7944,7 +7941,7 @@ nvol_memmem_rk_oneshot ENDP
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 64, 0
 nvol_memmem_suffix_min PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -8155,9 +8152,8 @@ L_L2:
     jae SHORT L_L13
     DB 15, 31, 128, 0, 0, 0, 0
 L_L12:
-    shl ecx, 1
     movzx esi, byte ptr [r11]
-    add ecx, esi
+    lea ecx, [rsi + rcx*2]
     cmp r11, rax
     jbe SHORT L_L14
     shl r10d, 1
@@ -8180,7 +8176,7 @@ L_L16:
     mov r11, rax
     cmp r11, rdx
     jae SHORT L_L19
-    DB 144
+    DB 102, 144
 L_L18:
     mov esi, 1
     movzx ecx, byte ptr [r11]
@@ -10076,14 +10072,13 @@ L_L12:
     jae SHORT L_L15
     DB 15, 31, 128, 0, 0, 0, 0
 L_L14:
-    shl ebx, 1
     movzx r12d, byte ptr [rax]
-    add ebx, r12d
+    lea ebx, [r12 + rbx*2]
     add rax, 1
     cmp rax, rbp
     jb SHORT L_L14
 L_L15:
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 L_L16:
     cmp ebx, ecx
     jne SHORT L_L18
@@ -10118,12 +10113,12 @@ L_L18:
     cmp r9, rdi
     jae NEAR PTR L_L34
 L_L33:
-    movzx eax, byte ptr [r9]
-    imul eax, esi
-    sub ebx, eax
-    shl ebx, 1
-    movzx eax, byte ptr [r9 + r8]
-    add ebx, eax
+    mov rax, rbx
+    movzx ebp, byte ptr [r9]
+    imul ebp, esi
+    sub eax, ebp
+    movzx ebp, byte ptr [r9 + r8]
+    lea ebx, [rbp + rax*2]
     lea r9, [r9 + 1]
     jmp SHORT L_L16
     xor eax, eax
@@ -10158,7 +10153,7 @@ L_L10:
     sub rdx, rax
     cmp r9, rdx
     ja SHORT L_L40
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 L_L39:
     vpcmpeqb xmm2, xmm0, xmmword ptr [r9 + rsi]
     vpcmpeqb xmm3, xmm1, xmmword ptr [r9 + rbx]
@@ -10561,14 +10556,13 @@ L_L151:
     jae SHORT L_L154
     DB 15, 31, 68, 0, 0
 L_L153:
-    shl ebx, 1
     movzx r12d, byte ptr [rax]
-    add ebx, r12d
+    lea ebx, [r12 + rbx*2]
     add rax, 1
     cmp rax, rbp
     jb SHORT L_L153
 L_L154:
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 L_L155:
     cmp ebx, ecx
     jne SHORT L_L157
@@ -10603,12 +10597,12 @@ L_L157:
     cmp r9, rdi
     jae NEAR PTR L_L173
 L_L172:
-    movzx eax, byte ptr [r9]
-    imul eax, esi
-    sub ebx, eax
-    shl ebx, 1
-    movzx eax, byte ptr [r9 + r8]
-    add ebx, eax
+    mov rax, rbx
+    movzx ebp, byte ptr [r9]
+    imul ebp, esi
+    sub eax, ebp
+    movzx ebp, byte ptr [r9 + r8]
+    lea ebx, [rbp + rax*2]
     lea r9, [r9 + 1]
     jmp SHORT L_L155
     xor eax, eax
@@ -10657,7 +10651,7 @@ L_L149:
     mov r11, rbx
     cmp rcx, r11
     ja NEAR PTR L_L175
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 0
 L_L174:
     mov r12, rbp
     cmp r12, rsi
@@ -11311,14 +11305,13 @@ L_L12:
     jae SHORT L_L15
     DB 15, 31, 68, 0, 0
 L_L14:
-    shl ebx, 1
     movzx r12d, byte ptr [rax]
-    add ebx, r12d
+    lea ebx, [r12 + rbx*2]
     add rax, 1
     cmp rax, rbp
     jb SHORT L_L14
 L_L15:
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 L_L16:
     cmp ebx, ecx
     jne SHORT L_L18
@@ -11353,12 +11346,12 @@ L_L18:
     cmp r9, rdi
     jae NEAR PTR L_L34
 L_L33:
-    movzx eax, byte ptr [r9]
-    imul eax, esi
-    sub ebx, eax
-    shl ebx, 1
-    movzx eax, byte ptr [r9 + r8]
-    add ebx, eax
+    mov rax, rbx
+    movzx ebp, byte ptr [r9]
+    imul ebp, esi
+    sub eax, ebp
+    movzx ebp, byte ptr [r9 + r8]
+    lea ebx, [rbp + rax*2]
     lea r9, [r9 + 1]
     jmp SHORT L_L16
     xor eax, eax
@@ -11387,7 +11380,7 @@ L_L10:
     sub rdx, rax
     cmp r9, rdx
     ja SHORT L_L38
-    DB 15, 31, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 L_L37:
     movdqu xmm2, xmmword ptr [r9 + rsi]
     pcmpeqb xmm2, xmm0
@@ -11452,6 +11445,7 @@ L_L35:
     sub rbp, rax
     cmp r9, rbp
     ja NEAR PTR L_L48
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 L_L47:
     movdqu xmm2, xmmword ptr [r9 + rsi]
     pcmpeqb xmm2, xmm0
@@ -11595,14 +11589,13 @@ L_L93:
     jae SHORT L_L96
     DB 15, 31, 68, 0, 0
 L_L95:
-    shl ebx, 1
     movzx r12d, byte ptr [rax]
-    add ebx, r12d
+    lea ebx, [r12 + rbx*2]
     add rax, 1
     cmp rax, rbp
     jb SHORT L_L95
 L_L96:
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 L_L97:
     cmp ebx, ecx
     jne SHORT L_L99
@@ -11637,12 +11630,12 @@ L_L99:
     cmp r9, rdi
     jae NEAR PTR L_L115
 L_L114:
-    movzx eax, byte ptr [r9]
-    imul eax, esi
-    sub ebx, eax
-    shl ebx, 1
-    movzx eax, byte ptr [r9 + r8]
-    add ebx, eax
+    mov rax, rbx
+    movzx ebp, byte ptr [r9]
+    imul ebp, esi
+    sub eax, ebp
+    movzx ebp, byte ptr [r9 + r8]
+    lea ebx, [rbp + rax*2]
     lea r9, [r9 + 1]
     jmp SHORT L_L97
     xor eax, eax
@@ -11682,7 +11675,7 @@ L_L91:
     mov r11, rbx
     cmp rcx, r11
     ja NEAR PTR L_L117
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 L_L116:
     mov rsi, rbp
     cmp rsi, rax
@@ -12133,7 +12126,13 @@ L_L142:
     jmp NEAR PTR L_L140
 nvol_memmem_find_entry_sse2 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_memmem_find_raw PROC PUBLIC
     jmp qword ptr [nvol_memmem_find_raw_ptr]
 nvol_memmem_find_raw ENDP
@@ -12620,10 +12619,8 @@ L_L2:
     jae SHORT L_L5
     DB 15, 31, 128, 0, 0, 0, 0
 L_L4:
-    mov rcx, rdi
-    shl rcx, 1
-    movzx ebx, byte ptr [rbp + rax]
-    lea rdi, [rcx + rbx]
+    movzx ecx, byte ptr [rbp + rax]
+    lea rdi, [rcx + rdi*2]
     add rax, 1
     cmp rax, rsi
     jb SHORT L_L4
@@ -12634,7 +12631,7 @@ L_L5:
     sub rax, rbp
     cmp rsi, rax
     ja NEAR PTR L_L7
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 L_L6:
     mov rax, rdi
     and rax, 63
@@ -12708,9 +12705,8 @@ L_L9:
     shl rax, cl
     mov rcx, rdi
     sub rcx, rax
-    shl rcx, 1
     movzx eax, byte ptr [rbp + rsi]
-    lea rdi, [rcx + rax]
+    lea rdi, [rax + rcx*2]
 L_L26:
     lea rbp, [rbp + 1]
     mov rax, r9
@@ -12780,12 +12776,6 @@ L_L11:
     jmp NEAR PTR L_L1
 nvol_teddy_slow ENDP
 
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_teddy_init PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -12864,10 +12854,8 @@ L_L13:
     jae SHORT L_L16
     DB 102, 15, 31, 68, 0, 0
 L_L15:
-    mov r9, rdx
-    shl r9, 1
-    movzx r10d, byte ptr [rcx + r8]
-    lea rdx, [r9 + r10]
+    movzx r9d, byte ptr [rcx + r8]
+    lea rdx, [r9 + rdx*2]
     add r8, 1
     cmp r8, rbp
     jb SHORT L_L15
@@ -12938,7 +12926,7 @@ L_L24:
     xor r8d, r8d
     cmp r8, rbx
     jae NEAR PTR L_L27
-    DB 102, 15, 31, 68, 0, 0
+    DB 15, 31, 64, 0
 L_L26:
     mov rcx, r8
     shl rcx, 4
@@ -13112,13 +13100,7 @@ L_L1:
     ret
 nvol_teddy_init ENDP
 
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_teddy_slim_ssse3_1 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx

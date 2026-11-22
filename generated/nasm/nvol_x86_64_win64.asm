@@ -7604,14 +7604,13 @@ nvol_memmem_rk:
     jae strict short .L5
     db 0xf, 0x1f, 0x0
 .L4:
-    shl esi, 1
     movzx ebx, byte [rax]
-    add esi, ebx
+    lea esi, [rbx + rsi*2]
     add rax, 1
     cmp rax, rdi
     jb strict short .L4
 .L5:
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 .L6:
     cmp esi, r11d
     jne strict short .L8
@@ -7645,12 +7644,12 @@ nvol_memmem_rk:
     cmp r9, r10
     jae strict short .L24
 .L23:
-    movzx eax, byte [r9]
-    imul eax, ecx
-    sub esi, eax
-    shl esi, 1
-    movzx eax, byte [r9 + r8]
-    add esi, eax
+    mov rax, rsi
+    movzx edi, byte [r9]
+    imul edi, ecx
+    sub eax, edi
+    movzx edi, byte [r9 + r8]
+    lea esi, [rdi + rax*2]
     lea r9, [r9 + 1]
     jmp strict short .L6
     xor eax, eax
@@ -7698,8 +7697,7 @@ nvol_memmem_rk:
 .unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_memmem_rk_oneshot
 nvol_memmem_rk_oneshot:
     push rbx
@@ -7724,9 +7722,8 @@ nvol_memmem_rk_oneshot:
     jae strict short .L5
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 .L4:
-    shl r11d, 1
     movzx edi, byte [rax]
-    add r11d, edi
+    lea r11d, [rdi + r11*2]
     cmp rax, rcx
     jbe strict short .L6
     shl esi, 1
@@ -7741,15 +7738,15 @@ nvol_memmem_rk_oneshot:
     lea rdi, [r8 + r10]
     cmp rax, rdi
     jae strict short .L9
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 .L8:
-    shl edx, 1
     movzx ebx, byte [rax]
-    add edx, ebx
+    lea edx, [rbx + rdx*2]
     add rax, 1
     cmp rax, rdi
     jb strict short .L8
 .L9:
+    db 0x90
 .L10:
     cmp edx, r11d
     jne strict short .L12
@@ -7783,12 +7780,12 @@ nvol_memmem_rk_oneshot:
     cmp r8, r9
     jae strict short .L28
 .L27:
-    movzx eax, byte [r8]
-    imul eax, esi
-    sub edx, eax
-    shl edx, 1
-    movzx eax, byte [r8 + r10]
-    add edx, eax
+    mov rax, rdx
+    movzx edi, byte [r8]
+    imul edi, esi
+    sub eax, edi
+    movzx edi, byte [r8 + r10]
+    lea edx, [rdi + rax*2]
     lea r8, [r8 + 1]
     jmp strict short .L10
     xor eax, eax
@@ -7840,7 +7837,7 @@ nvol_memmem_rk_oneshot:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
 global nvol_memmem_suffix_min
 nvol_memmem_suffix_min:
     push rsi
@@ -8043,9 +8040,8 @@ nvol_memmem_init:
     jae strict short .L13
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L12:
-    shl ecx, 1
     movzx esi, byte [r11]
-    add ecx, esi
+    lea ecx, [rsi + rcx*2]
     cmp r11, rax
     jbe strict short .L14
     shl r10d, 1
@@ -8068,7 +8064,7 @@ nvol_memmem_init:
     mov r11, rax
     cmp r11, rdx
     jae strict short .L19
-    db 0x90
+    db 0x66, 0x90
 .L18:
     mov esi, 1
     movzx ecx, byte [r11]
@@ -9925,14 +9921,13 @@ nvol_memmem_find_entry_avx2:
     jae strict short .L15
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L14:
-    shl ebx, 1
     movzx r12d, byte [rax]
-    add ebx, r12d
+    lea ebx, [r12 + rbx*2]
     add rax, 1
     cmp rax, rbp
     jb strict short .L14
 .L15:
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L16:
     cmp ebx, ecx
     jne strict short .L18
@@ -9967,12 +9962,12 @@ nvol_memmem_find_entry_avx2:
     cmp r9, rdi
     jae strict near .L34
 .L33:
-    movzx eax, byte [r9]
-    imul eax, esi
-    sub ebx, eax
-    shl ebx, 1
-    movzx eax, byte [r9 + r8]
-    add ebx, eax
+    mov rax, rbx
+    movzx ebp, byte [r9]
+    imul ebp, esi
+    sub eax, ebp
+    movzx ebp, byte [r9 + r8]
+    lea ebx, [rbp + rax*2]
     lea r9, [r9 + 1]
     jmp strict short .L16
     xor eax, eax
@@ -10007,7 +10002,7 @@ nvol_memmem_find_entry_avx2:
     sub rdx, rax
     cmp r9, rdx
     ja strict short .L40
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 .L39:
     vpcmpeqb xmm2, xmm0, [r9 + rsi]
     vpcmpeqb xmm3, xmm1, [r9 + rbx]
@@ -10410,14 +10405,13 @@ nvol_memmem_find_entry_avx2:
     jae strict short .L154
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L153:
-    shl ebx, 1
     movzx r12d, byte [rax]
-    add ebx, r12d
+    lea ebx, [r12 + rbx*2]
     add rax, 1
     cmp rax, rbp
     jb strict short .L153
 .L154:
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L155:
     cmp ebx, ecx
     jne strict short .L157
@@ -10452,12 +10446,12 @@ nvol_memmem_find_entry_avx2:
     cmp r9, rdi
     jae strict near .L173
 .L172:
-    movzx eax, byte [r9]
-    imul eax, esi
-    sub ebx, eax
-    shl ebx, 1
-    movzx eax, byte [r9 + r8]
-    add ebx, eax
+    mov rax, rbx
+    movzx ebp, byte [r9]
+    imul ebp, esi
+    sub eax, ebp
+    movzx ebp, byte [r9 + r8]
+    lea ebx, [rbp + rax*2]
     lea r9, [r9 + 1]
     jmp strict short .L155
     xor eax, eax
@@ -10506,7 +10500,7 @@ nvol_memmem_find_entry_avx2:
     mov r11, rbx
     cmp rcx, r11
     ja strict near .L175
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x0
 .L174:
     mov r12, rbp
     cmp r12, rsi
@@ -11151,14 +11145,13 @@ nvol_memmem_find_entry_sse2:
     jae strict short .L15
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L14:
-    shl ebx, 1
     movzx r12d, byte [rax]
-    add ebx, r12d
+    lea ebx, [r12 + rbx*2]
     add rax, 1
     cmp rax, rbp
     jb strict short .L14
 .L15:
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L16:
     cmp ebx, ecx
     jne strict short .L18
@@ -11193,12 +11186,12 @@ nvol_memmem_find_entry_sse2:
     cmp r9, rdi
     jae strict near .L34
 .L33:
-    movzx eax, byte [r9]
-    imul eax, esi
-    sub ebx, eax
-    shl ebx, 1
-    movzx eax, byte [r9 + r8]
-    add ebx, eax
+    mov rax, rbx
+    movzx ebp, byte [r9]
+    imul ebp, esi
+    sub eax, ebp
+    movzx ebp, byte [r9 + r8]
+    lea ebx, [rbp + rax*2]
     lea r9, [r9 + 1]
     jmp strict short .L16
     xor eax, eax
@@ -11227,7 +11220,7 @@ nvol_memmem_find_entry_sse2:
     sub rdx, rax
     cmp r9, rdx
     ja strict short .L38
-    db 0xf, 0x1f, 0x0
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 .L37:
     movdqu xmm2, [r9 + rsi]
     pcmpeqb xmm2, xmm0
@@ -11292,6 +11285,7 @@ nvol_memmem_find_entry_sse2:
     sub rbp, rax
     cmp r9, rbp
     ja strict near .L48
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 .L47:
     movdqu xmm2, [r9 + rsi]
     pcmpeqb xmm2, xmm0
@@ -11435,14 +11429,13 @@ nvol_memmem_find_entry_sse2:
     jae strict short .L96
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L95:
-    shl ebx, 1
     movzx r12d, byte [rax]
-    add ebx, r12d
+    lea ebx, [r12 + rbx*2]
     add rax, 1
     cmp rax, rbp
     jb strict short .L95
 .L96:
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L97:
     cmp ebx, ecx
     jne strict short .L99
@@ -11477,12 +11470,12 @@ nvol_memmem_find_entry_sse2:
     cmp r9, rdi
     jae strict near .L115
 .L114:
-    movzx eax, byte [r9]
-    imul eax, esi
-    sub ebx, eax
-    shl ebx, 1
-    movzx eax, byte [r9 + r8]
-    add ebx, eax
+    mov rax, rbx
+    movzx ebp, byte [r9]
+    imul ebp, esi
+    sub eax, ebp
+    movzx ebp, byte [r9 + r8]
+    lea ebx, [rbp + rax*2]
     lea r9, [r9 + 1]
     jmp strict short .L97
     xor eax, eax
@@ -11522,7 +11515,7 @@ nvol_memmem_find_entry_sse2:
     mov r11, rbx
     cmp rcx, r11
     ja strict near .L117
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L116:
     mov rsi, rbp
     cmp rsi, rax
@@ -11973,7 +11966,13 @@ nvol_memmem_find_entry_sse2:
     jmp strict near .L140
 .unwind_end:
 
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 global nvol_memmem_find_raw
 nvol_memmem_find_raw:
     jmp qword [rel nvol_memmem_find_raw_ptr]
@@ -12428,10 +12427,8 @@ nvol_teddy_slow:
     jae strict short .L5
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L4:
-    mov rcx, rdi
-    shl rcx, 1
-    movzx ebx, byte [rbp + rax]
-    lea rdi, [rcx + rbx]
+    movzx ecx, byte [rbp + rax]
+    lea rdi, [rcx + rdi*2]
     add rax, 1
     cmp rax, rsi
     jb strict short .L4
@@ -12442,7 +12439,7 @@ nvol_teddy_slow:
     sub rax, rbp
     cmp rsi, rax
     ja strict near .L7
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 .L6:
     mov rax, rdi
     and rax, 63
@@ -12516,9 +12513,8 @@ nvol_teddy_slow:
     shl rax, cl
     mov rcx, rdi
     sub rcx, rax
-    shl rcx, 1
     movzx eax, byte [rbp + rsi]
-    lea rdi, [rcx + rax]
+    lea rdi, [rax + rcx*2]
 .L26:
     lea rbp, [rbp + 1]
     mov rax, r9
@@ -12588,12 +12584,6 @@ nvol_teddy_slow:
     jmp strict near .L1
 .unwind_end:
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_teddy_init
 nvol_teddy_init:
     push rbx
@@ -12663,10 +12653,8 @@ nvol_teddy_init:
     jae strict short .L16
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 .L15:
-    mov r9, rdx
-    shl r9, 1
-    movzx r10d, byte [rcx + r8]
-    lea rdx, [r9 + r10]
+    movzx r9d, byte [rcx + r8]
+    lea rdx, [r9 + rdx*2]
     add r8, 1
     cmp r8, rbp
     jb strict short .L15
@@ -12737,7 +12725,7 @@ nvol_teddy_init:
     xor r8d, r8d
     cmp r8, rbx
     jae strict near .L27
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
 .L26:
     mov rcx, r8
     shl rcx, 4
@@ -12911,13 +12899,7 @@ nvol_teddy_init:
     ret
 .unwind_end:
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_teddy_slim_ssse3_1
 nvol_teddy_slim_ssse3_1:
     push rbx

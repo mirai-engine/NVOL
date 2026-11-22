@@ -260,6 +260,7 @@ The detail is in "Done".
       | return tails copied (item 17) | memchr 16 B SSE2, count 64 B SSE2 | 13.73 / 15.63 → 15.04 / 16.65 | both 32-aligned: 13.93 → 13.65, 17.04 → 16.98 |
       | return tails copied (item 17) | first_non_ascii 4 KiB AVX2 / SSE2 | 92.4 / 210.3 → 98.5 / 236.5 | both 32-aligned: 108.7 → 109.2, 237.2 → 234.9 |
       | rare regions out of line (item 17) | first_non_ascii 16 B AVX2 | 14.53 → 15.86 | both 32-aligned: 15.99 → 15.98 |
+      | `lea` for `(x << k) + y` (item 17) | memmem 256 B / 4 KiB / 64 B SSE2 | 65.9 / 675 / 35.8 → 73.9 / 763 / 39.0 | both 32-aligned: 70.3 → 71.5, 807 → 779, 36.2 → 37.2 |
 
       In the 64-aligned layout no function body changed, so each of its rows is position by
       construction. The count_parity control shows the trade: at +48 bytes, the SSE2 path gets
@@ -692,6 +693,27 @@ as (16); see Done. What remains is maturity (items 17-18):
 
 ## Done (for reference)
 
+- **`lea` for `(x << k) + y` (item 17).** The Rabin-Karp hash step `(h << 1).wadd(b)` was
+  `shl r9d, 1; add r9d, ebx`, where Clang writes `lea edx, [r11 + rdx*2]`. x86 instruction
+  selection now emits one `lea d, [y + x*2^k]` for `add`/`wadd` of a `shl` by 1-3, in u32 and
+  u64. A 32-bit `lea` keeps the low 32 bits and zeroes the rest, the same as the wrapping
+  pair. 20 sites (memmem's `rk`, `rk_oneshot` and `init`, the entries, Teddy). encode now
+  sizes a 32-bit `lea` without REX.W: `test_lengths_match_gnu_as` caught it, and with jump
+  targets as offsets the wrong length had broken the System V run. Counters, best of 5,
+  HEAD / new / HEAD again:
+
+  | row | instructions | cycles |
+  |---|---|---|
+  | teddy 16 B AVX2 | 412.98 → 393.99 | 98.21 / 94.11 / 98.19 |
+  | teddy 16 B SSSE3 | 412.98 → 393.97 | 97.90 / 94.24 / 98.19 |
+  | memmem 16 B AVX2 | 232.98 → 225.03 | 60.02 / 60.03 / 60.37 |
+  | memmem 16 B SSE2 | 230.96 → 222.95 | 68.15 / 67.76 / 67.93 |
+
+  memmem 64 B-4 KiB SSE2 got worse (+7 to +13 %) on paths that never run the hash. With
+  HEAD and new both regenerated with every loop head 32-aligned they are level or better,
+  so it is placement (logged). The control also shows that memmem 4 KiB SSE2 swings
+  676-807 cycles on placement alone.
+
 - **Rare regions out of line, after allocation (item 17).** Inside a loop, an arm that loops
   or returns itself (a search kernel's candidate check) was laid out in place, so the
   common path jumped over it to the latch every iteration. `regalloc.layout_rare` now moves
@@ -704,7 +726,7 @@ as (16); see Done. What remains is maturity (items 17-18):
 
   | row | cycles HEAD / new / HEAD again |
   |---|---|
-  | memmem 4 KiB SSE2 | 810.20 / **670.15** / 817.90 (GCC 672.5: the SSE2 gap of item 25) |
+  | memmem 4 KiB SSE2 | 810.20 / **670.15** / 817.90 (GCC 672.5; but see the correction below) |
   | pair 16 B / 64 B / 256 B / 4 KiB SSE2 | −10 % / −12 % / −10 % / −12.5 % |
   | byteset 4 KiB AVX2 | 317.68 / 287.65 / 323.51 |
   | memchr3 4 KiB AVX2 | 288.51 / 246.09 / 287.79 |
@@ -717,6 +739,9 @@ as (16); see Done. What remains is maturity (items 17-18):
   loop finds a candidate often, so the region is not rare there, and out of line it costs
   two taken jumps per candidate. Accepted against the SSE2 row's −17 % and the rest.
   Teddy does not move (a predicted taken jump costs little in its loop).
+  **Correction (the next commit's control):** memmem 4 KiB SSE2 alone swings between 676
+  and 807 cycles on placement (same code, loop heads 16- or 32-aligned). So its −17 % here
+  is not shown to be the layout change; that row stays with item 25's position effects.
 
 - **Return tails copied into the jumps to them (item 17).** Every exit of a kernel jumped to
   one shared return (`jmp L1` … `L1: vzeroupper; ret`), where GCC and Clang return in

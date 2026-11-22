@@ -152,7 +152,7 @@ def length(ins) -> int:
         wd = dst.w if isinstance(dst, Reg) else (src.w if isinstance(src, Reg) else dst.w)
         return _legacy(1, a, wd == 64)
     if op == "lea":
-        return _legacy(1, a, True)
+        return _legacy(1, a, a[0].w == 64)          # a 32-bit lea has no REX.W
     if op == "movzx":
         return _legacy(2, a)
     if op == "movsxd":

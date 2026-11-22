@@ -7836,14 +7836,12 @@ L.nvol_memmem_rk:
     {disp8} jae .Lnvol_memmem_rk.L5
     .byte 15, 31, 0
 .Lnvol_memmem_rk.L4:
-    shl $1, %r10d
     movzbl (%rax), %ebx
-    add %ebx, %r10d
+    lea (%rbx,%r10,2), %r10d
     add $1, %rax
     cmp %r11, %rax
     {disp8} jb .Lnvol_memmem_rk.L4
 .Lnvol_memmem_rk.L5:
-    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memmem_rk.L6:
     cmp %r9d, %r10d
     {disp8} jne .Lnvol_memmem_rk.L8
@@ -7851,7 +7849,6 @@ L.nvol_memmem_rk:
     lea 4(%rax), %r11
     cmp %rdx, %r11
     {disp8} ja .Lnvol_memmem_rk.L12
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_rk.L11:
     mov (%rcx,%rax), %r11d
     mov (%rsi,%rax), %ebx
@@ -7878,12 +7875,12 @@ L.nvol_memmem_rk:
     cmp %r8, %rcx
     {disp8} jae .Lnvol_memmem_rk.L24
 .Lnvol_memmem_rk.L23:
-    movzbl (%rcx), %eax
-    imul %edi, %eax
-    sub %eax, %r10d
-    shl $1, %r10d
-    movzbl (%rcx,%rdx), %eax
-    add %eax, %r10d
+    mov %r10, %rax
+    movzbl (%rcx), %r11d
+    imul %edi, %r11d
+    sub %r11d, %eax
+    movzbl (%rcx,%rdx), %r11d
+    lea (%r11,%rax,2), %r10d
     lea 1(%rcx), %rcx
     {disp8} jmp .Lnvol_memmem_rk.L6
     xor %eax, %eax
@@ -7936,7 +7933,8 @@ L.nvol_memmem_rk:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memmem_rk_oneshot
 .type nvol_memmem_rk_oneshot, @function
 nvol_memmem_rk_oneshot:
@@ -7965,9 +7963,8 @@ L.nvol_memmem_rk_oneshot:
     {disp8} jae .Lnvol_memmem_rk_oneshot.L5
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_rk_oneshot.L4:
-    shl $1, %r9d
     movzbl (%rax), %r11d
-    add %r11d, %r9d
+    lea (%r11,%r9,2), %r9d
     cmp %rdi, %rax
     {disp8} jbe .Lnvol_memmem_rk_oneshot.L6
     shl $1, %r10d
@@ -7982,15 +7979,15 @@ L.nvol_memmem_rk_oneshot:
     lea (%rdx,%r8), %r11
     cmp %r11, %rax
     {disp8} jae .Lnvol_memmem_rk_oneshot.L9
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memmem_rk_oneshot.L8:
-    shl $1, %esi
     movzbl (%rax), %ebx
-    add %ebx, %esi
+    lea (%rbx,%rsi,2), %esi
     add $1, %rax
     cmp %r11, %rax
     {disp8} jb .Lnvol_memmem_rk_oneshot.L8
 .Lnvol_memmem_rk_oneshot.L9:
+    .byte 144
 .Lnvol_memmem_rk_oneshot.L10:
     cmp %r9d, %esi
     {disp8} jne .Lnvol_memmem_rk_oneshot.L12
@@ -8024,12 +8021,12 @@ L.nvol_memmem_rk_oneshot:
     cmp %rcx, %rdx
     {disp8} jae .Lnvol_memmem_rk_oneshot.L28
 .Lnvol_memmem_rk_oneshot.L27:
-    movzbl (%rdx), %eax
-    imul %r10d, %eax
-    sub %eax, %esi
-    shl $1, %esi
-    movzbl (%rdx,%r8), %eax
-    add %eax, %esi
+    mov %rsi, %rax
+    movzbl (%rdx), %r11d
+    imul %r10d, %r11d
+    sub %r11d, %eax
+    movzbl (%rdx,%r8), %r11d
+    lea (%r11,%rax,2), %esi
     lea 1(%rdx), %rdx
     {disp8} jmp .Lnvol_memmem_rk_oneshot.L10
     xor %eax, %eax
@@ -8085,7 +8082,7 @@ L.nvol_memmem_rk_oneshot:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memmem_suffix_min
 .type nvol_memmem_suffix_min, @function
 .hidden nvol_memmem_suffix_min
@@ -8302,9 +8299,8 @@ L.nvol_memmem_init:
     {disp8} jae .Lnvol_memmem_init.L13
     .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memmem_init.L12:
-    shl $1, %ecx
     movzbl (%r9), %r10d
-    add %r10d, %ecx
+    lea (%r10,%rcx,2), %ecx
     cmp %rdi, %r9
     {disp8} jbe .Lnvol_memmem_init.L14
     shl $1, %r8d
@@ -8327,6 +8323,7 @@ L.nvol_memmem_init:
     mov %rdi, %r9
     cmp %rsi, %r9
     {disp8} jae .Lnvol_memmem_init.L19
+    .byte 144
 .Lnvol_memmem_init.L18:
     mov $1, %r10d
     movzbl (%r9), %ecx
@@ -10321,14 +10318,13 @@ L.nvol_memmem_find_entry_avx2:
     {disp8} jae .Lnvol_memmem_find_entry_avx2.L15
     .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_find_entry_avx2.L14:
-    shl $1, %r9d
     movzbl (%rbx), %r12d
-    add %r12d, %r9d
+    lea (%r12,%r9,2), %r9d
     add $1, %rbx
     cmp %rbp, %rbx
     {disp8} jb .Lnvol_memmem_find_entry_avx2.L14
 .Lnvol_memmem_find_entry_avx2.L15:
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_avx2.L16:
     cmp %ecx, %r9d
     {disp8} jne .Lnvol_memmem_find_entry_avx2.L18
@@ -10363,12 +10359,12 @@ L.nvol_memmem_find_entry_avx2:
     cmp %r8, %rax
     {disp32} jae .Lnvol_memmem_find_entry_avx2.L34
 .Lnvol_memmem_find_entry_avx2.L33:
-    movzbl (%rax), %ebx
-    imul %edi, %ebx
-    sub %ebx, %r9d
-    shl $1, %r9d
-    movzbl (%rax,%rdx), %ebx
-    add %ebx, %r9d
+    mov %r9, %rbx
+    movzbl (%rax), %ebp
+    imul %edi, %ebp
+    sub %ebp, %ebx
+    movzbl (%rax,%rdx), %ebp
+    lea (%rbp,%rbx,2), %r9d
     lea 1(%rax), %rax
     {disp8} jmp .Lnvol_memmem_find_entry_avx2.L16
     xor %eax, %eax
@@ -10403,7 +10399,7 @@ L.nvol_memmem_find_entry_avx2:
     sub %rcx, %rsi
     cmp %rsi, %rax
     {disp8} ja .Lnvol_memmem_find_entry_avx2.L40
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_avx2.L39:
     vpcmpeqb (%rax,%rdi), %xmm0, %xmm2
     vpcmpeqb (%rax,%r9), %xmm1, %xmm3
@@ -10805,14 +10801,13 @@ L.nvol_memmem_find_entry_avx2:
     cmp %rbp, %rbx
     {disp8} jae .Lnvol_memmem_find_entry_avx2.L154
 .Lnvol_memmem_find_entry_avx2.L153:
-    shl $1, %r9d
     movzbl (%rbx), %r12d
-    add %r12d, %r9d
+    lea (%r12,%r9,2), %r9d
     add $1, %rbx
     cmp %rbp, %rbx
     {disp8} jb .Lnvol_memmem_find_entry_avx2.L153
 .Lnvol_memmem_find_entry_avx2.L154:
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_avx2.L155:
     cmp %ecx, %r9d
     {disp8} jne .Lnvol_memmem_find_entry_avx2.L157
@@ -10847,12 +10842,12 @@ L.nvol_memmem_find_entry_avx2:
     cmp %r8, %rax
     {disp32} jae .Lnvol_memmem_find_entry_avx2.L173
 .Lnvol_memmem_find_entry_avx2.L172:
-    movzbl (%rax), %ebx
-    imul %edi, %ebx
-    sub %ebx, %r9d
-    shl $1, %r9d
-    movzbl (%rax,%rdx), %ebx
-    add %ebx, %r9d
+    mov %r9, %rbx
+    movzbl (%rax), %ebp
+    imul %edi, %ebp
+    sub %ebp, %ebx
+    movzbl (%rax,%rdx), %ebp
+    lea (%rbp,%rbx,2), %r9d
     lea 1(%rax), %rax
     {disp8} jmp .Lnvol_memmem_find_entry_avx2.L155
     xor %eax, %eax
@@ -10905,7 +10900,7 @@ L.nvol_memmem_find_entry_avx2:
     mov 32(%rsp), %r11
     cmp %r11, %rcx
     {disp32} ja .Lnvol_memmem_find_entry_avx2.L175
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_memmem_find_entry_avx2.L174:
     mov %rbx, %rbp
     cmp %rdi, %rbp
@@ -11581,14 +11576,13 @@ L.nvol_memmem_find_entry_sse2:
     {disp8} jae .Lnvol_memmem_find_entry_sse2.L15
     .byte 15, 31, 0
 .Lnvol_memmem_find_entry_sse2.L14:
-    shl $1, %r9d
     movzbl (%rbx), %r12d
-    add %r12d, %r9d
+    lea (%r12,%r9,2), %r9d
     add $1, %rbx
     cmp %rbp, %rbx
     {disp8} jb .Lnvol_memmem_find_entry_sse2.L14
 .Lnvol_memmem_find_entry_sse2.L15:
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_sse2.L16:
     cmp %ecx, %r9d
     {disp8} jne .Lnvol_memmem_find_entry_sse2.L18
@@ -11622,12 +11616,12 @@ L.nvol_memmem_find_entry_sse2:
     cmp %r8, %rax
     {disp32} jae .Lnvol_memmem_find_entry_sse2.L34
 .Lnvol_memmem_find_entry_sse2.L33:
-    movzbl (%rax), %ebx
-    imul %edi, %ebx
-    sub %ebx, %r9d
-    shl $1, %r9d
-    movzbl (%rax,%rdx), %ebx
-    add %ebx, %r9d
+    mov %r9, %rbx
+    movzbl (%rax), %ebp
+    imul %edi, %ebp
+    sub %ebp, %ebx
+    movzbl (%rax,%rdx), %ebp
+    lea (%rbp,%rbx,2), %r9d
     lea 1(%rax), %rax
     {disp8} jmp .Lnvol_memmem_find_entry_sse2.L16
     xor %eax, %eax
@@ -11656,7 +11650,8 @@ L.nvol_memmem_find_entry_sse2:
     sub %rcx, %rsi
     cmp %rsi, %rax
     {disp8} ja .Lnvol_memmem_find_entry_sse2.L38
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_memmem_find_entry_sse2.L37:
     movdqu (%rax,%rdi), %xmm2
     pcmpeqb %xmm0, %xmm2
@@ -11721,6 +11716,7 @@ L.nvol_memmem_find_entry_sse2:
     sub %rcx, %rbx
     cmp %rbx, %rax
     {disp32} ja .Lnvol_memmem_find_entry_sse2.L48
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_sse2.L47:
     movdqu (%rax,%rdi), %xmm2
     pcmpeqb %xmm0, %xmm2
@@ -11865,14 +11861,13 @@ L.nvol_memmem_find_entry_sse2:
     {disp8} jae .Lnvol_memmem_find_entry_sse2.L96
     .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_sse2.L95:
-    shl $1, %r9d
     movzbl (%rbx), %r12d
-    add %r12d, %r9d
+    lea (%r12,%r9,2), %r9d
     add $1, %rbx
     cmp %rbp, %rbx
     {disp8} jb .Lnvol_memmem_find_entry_sse2.L95
 .Lnvol_memmem_find_entry_sse2.L96:
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_sse2.L97:
     cmp %ecx, %r9d
     {disp8} jne .Lnvol_memmem_find_entry_sse2.L99
@@ -11907,12 +11902,12 @@ L.nvol_memmem_find_entry_sse2:
     cmp %r8, %rax
     {disp32} jae .Lnvol_memmem_find_entry_sse2.L115
 .Lnvol_memmem_find_entry_sse2.L114:
-    movzbl (%rax), %ebx
-    imul %edi, %ebx
-    sub %ebx, %r9d
-    shl $1, %r9d
-    movzbl (%rax,%rdx), %ebx
-    add %ebx, %r9d
+    mov %r9, %rbx
+    movzbl (%rax), %ebp
+    imul %edi, %ebp
+    sub %ebp, %ebx
+    movzbl (%rax,%rdx), %ebp
+    lea (%rbp,%rbx,2), %r9d
     lea 1(%rax), %rax
     {disp8} jmp .Lnvol_memmem_find_entry_sse2.L97
     xor %eax, %eax
@@ -11954,7 +11949,7 @@ L.nvol_memmem_find_entry_sse2:
     mov 32(%rsp), %r11
     cmp %r11, %rcx
     {disp32} ja .Lnvol_memmem_find_entry_sse2.L117
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 0
 .Lnvol_memmem_find_entry_sse2.L116:
     mov %rbx, %rdi
     cmp %r13, %rdi
@@ -12413,8 +12408,6 @@ L.nvol_memmem_find_entry_sse2:
 .cfi_endproc
 .size nvol_memmem_find_entry_sse2, .-nvol_memmem_find_entry_sse2
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memmem_find_raw
 .type nvol_memmem_find_raw, @function
 nvol_memmem_find_raw:
@@ -12967,10 +12960,8 @@ L.nvol_teddy_slow:
     {disp8} jae .Lnvol_teddy_slow.L5
     .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slow.L4:
-    mov %r10, %rcx
-    shl $1, %rcx
-    movzbl (%rdx,%rax), %ebx
-    lea (%rcx,%rbx), %r10
+    movzbl (%rdx,%rax), %ecx
+    lea (%rcx,%r10,2), %r10
     add $1, %rax
     cmp %r9, %rax
     {disp8} jb .Lnvol_teddy_slow.L4
@@ -12982,7 +12973,7 @@ L.nvol_teddy_slow:
     sub %rbp, %rax
     cmp %rax, %r9
     {disp32} ja .Lnvol_teddy_slow.L7
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_teddy_slow.L6:
     mov %r10, %rax
     and $63, %rax
@@ -13056,9 +13047,8 @@ L.nvol_teddy_slow:
     shl %cl, %rax
     mov %r10, %rcx
     sub %rax, %rcx
-    shl $1, %rcx
     movzbl (%rbp,%r9), %eax
-    lea (%rcx,%rax), %r10
+    lea (%rax,%rcx,2), %r10
 .Lnvol_teddy_slow.L26:
     lea 1(%rbp), %rbp
     mov %r8, %rax
@@ -13137,12 +13127,7 @@ L.nvol_teddy_slow:
 .size nvol_teddy_slow, .-nvol_teddy_slow
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_teddy_init
 .type nvol_teddy_init, @function
 nvol_teddy_init:
@@ -13226,10 +13211,8 @@ L.nvol_teddy_init:
     {disp8} jae .Lnvol_teddy_init.L16
     .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_teddy_init.L15:
-    mov %rdx, %rdi
-    shl $1, %rdi
-    movzbl (%rcx,%rsi), %r8d
-    lea (%rdi,%r8), %rdx
+    movzbl (%rcx,%rsi), %edi
+    lea (%rdi,%rdx,2), %rdx
     add $1, %rsi
     cmp %r13, %rsi
     {disp8} jb .Lnvol_teddy_init.L15
@@ -13304,7 +13287,7 @@ L.nvol_teddy_init:
     xor %esi, %esi
     cmp %r12, %rsi
     {disp32} jae .Lnvol_teddy_init.L27
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_init.L26:
     mov %rsi, %rcx
     shl $4, %rcx
@@ -13313,10 +13296,10 @@ L.nvol_teddy_init:
     mov $255, %r8d
     xor %ecx, %ecx
     cmp %rsi, %rcx
-    {disp8} jae .Lnvol_teddy_init.L29
+    {disp32} jae .Lnvol_teddy_init.L29
     cmp $255, %r8
     {disp8} jne .Lnvol_teddy_init.L29
-    .byte 102, 144
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_init.L28:
     mov %rcx, %r9
     shl $4, %r9

@@ -336,6 +336,22 @@ class X86Lower(Lower):
         op = e.op
         if op in CC or op in ("land", "lor"):
             return self.bool_value(e)
+        if op in ("add", "wadd") and e.ty is not ir.U8:
+            # (x << k) + y, k in 1..3: one lea [y + x*2^k] (Clang's Rabin-Karp hash step
+            # `lea edx, [r11 + rdx*2]`). A 32-bit lea keeps the low 32 bits and zeroes the
+            # rest: the same as shl + add wrapping in u32
+            for sh, other in ((e.a, e.b), (e.b, e.a)):
+                if isinstance(sh, ir.Bin) and sh.op == "shl" and isinstance(sh.b, ir.Const) \
+                        and 1 <= _const_value(sh.b) <= 3 and sh.ty is e.ty:
+                    x = self.gen(sh.a) if sh is e.a else None
+                    y = self.gen(other)
+                    if x is None:
+                        x = self.gen(sh.a)
+                    d = self.new()
+                    m = Mem(y, x, scale=1 << _const_value(sh.b))
+                    w = 32 if e.ty is ir.U32 else 64
+                    self.emit("lea", [Reg(d, w), m], defs=[d], uses=[y, x])
+                    return d
         if op == "add":
             a = self.gen(e.a)
             s = self.rhs(e.b)
