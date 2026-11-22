@@ -248,6 +248,9 @@ The detail is in "Done".
 ### Phase 5. Unmeasured or with doubtful measurement (may hide something worse)
 
 25. **Cycles with the same instructions, on native Linux with frontend counters**
+    **Where it stands: [the report of 2026-11-22](benchmarks/2026-11-22-cycle-gaps.md)** (the
+    mechanisms established, the open gaps with what is ruled out and what would close each,
+    and items 27-32). What follows are the raw notes it reads.
     (`idq.dsb_uops`, `idq.mite_uops`, `uops_issued`). On an idle machine these remain:
     - memrchr AVX2 at 4 KiB, +23 %: the loop takes 3.7 cycles per iteration against 3.3 for
       Clang;
@@ -490,7 +493,7 @@ The detail is in "Done".
     The JCC erratum, alignment (16, 32 or 64) and the order of the loads are already ruled
     out. The asm serves as the control: it is the same kernel without a compiler.
 26. ~~1.4: "one memchr per line"~~: measured with counters (see Done).
-27. 1.2a: Teddy over short haystacks. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)):
+27. ~~1.2a: Teddy over short haystacks~~ **(closed 2026-11-22, [report](benchmarks/2026-11-22-cycle-gaps.md#4-items-27-28-29-and-32)).** Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)):
     - ~~at 16 B, NVOL is 2× to 40× slower than aho-corasick~~: `nvol_teddy_slow` is now
       aho-corasick's Rabin-Karp (see Done). At 8-18 B it is on par in cycles (−20…+7 %), and
       it is equal or below in instructions in all 24 rows;
@@ -498,7 +501,7 @@ The detail is in "Done".
       `tedbench` was wall-clock noise), −5.0…+11.6 % from 256 B to 64 KiB. In instructions,
       NVOL is below aho in every row from 64 B up, so the Teddy gap in item 17 is the asm's
       and not the Rust's.
-28. 1.6: memchr with 1-15 bytes. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): NVOL has 4 fewer instructions
+28. 1.6: memchr with 1-15 bytes **(cause found; 4-6 B and the SWAR path open: [report](benchmarks/2026-11-22-cycle-gaps.md#4-items-27-28-29-and-32)).** Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): NVOL has 4 fewer instructions
     per call (both scan byte by byte, 5 instructions per byte), but from 3 B up it takes 1-2.5
     more cycles: +4…+19 %, the same in 3 rounds.
     - **Cause: the JCC erratum, in LLVM's layout of this binary.** The byte loop is the same
@@ -517,7 +520,7 @@ The detail is in "Done".
       work; the bench's call or the layout. The counters available do not split it further.
     - The layout belongs to the user's build (a rustc flag), not to the generated code: it
       goes to the toolchain log (item 21). Port memchr's SWAR for the path without SIMD.
-29. 1.5: `first_non_ascii` against `bstr`. Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): −20 % cycles at
+29. ~~1.5: `first_non_ascii` against `bstr`~~ **(closed 2026-11-22, [report](benchmarks/2026-11-22-cycle-gaps.md#4-items-27-28-29-and-32); the "none" semantics stay the maintainer's decision).** Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): −20 % cycles at
     256 B, −43 % from 4 KiB, on par at 64 B, but **+2 cycles at 16 B** (11.0 against 9.0, 3
     rounds), to be closed.
     - **Cause: the call.** bstr compiles `first_non_ascii_byte` with static SSE2 and inlines it
@@ -545,7 +548,7 @@ The detail is in "Done".
       the call and the prefilter setup;
     - Odin on aarch64 needs an `odin` that targets `linux_arm64` in WSL;
     - real hardware (1.7a, 2.12).
-32. **AU21.** ugrep `-c zq` (2-byte memmem). Measured with counters
+32. **AU21.** ugrep `-c zq` (2-byte memmem) **(measured, residual recorded: [report](benchmarks/2026-11-22-cycle-gaps.md#4-items-27-28-29-and-32)).** Measured with counters
     (`harness/ugrep-e2e/counters.sh`, [report](benchmarks/2026-11-21-rust-counters.md)): the whole process gives +0.40, +0.80 and
     +0.68 % cycles in 3 rounds, with 0.2 % fewer instructions. The other queries are within
     ±0.65 %. The +2.8 % of the wall clock was mostly noise.
