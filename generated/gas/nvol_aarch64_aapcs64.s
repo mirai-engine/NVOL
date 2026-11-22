@@ -47,7 +47,7 @@ L.nvol_memchr_scalar:
     ret
 .Lnvol_memchr_scalar.L5:
     mov x0, x1
-    b .Lnvol_memchr_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_memchr_scalar, .-nvol_memchr_scalar
 
@@ -72,7 +72,7 @@ L.nvol_memchr_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_memchr_neon.L1
+    ret
 .Lnvol_memchr_neon.L2:
     and x9, x1, #18446744073709551600
     add x9, x9, #16
@@ -133,7 +133,7 @@ L.nvol_memchr_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr_neon.L1
+    ret
 .Lnvol_memchr_neon.L22:
 .Lnvol_memchr_neon.L20:
     movz w0, #0
@@ -144,21 +144,21 @@ L.nvol_memchr_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr_neon.L1
+    ret
 .Lnvol_memchr_neon.L13:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memchr_neon.L1
+    ret
 .Lnvol_memchr_neon.L15:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #32
-    b .Lnvol_memchr_neon.L1
+    ret
 .Lnvol_memchr_neon.L9:
     shrn v0.8b, v1.8h, #4
     fmov x10, d0
@@ -183,13 +183,13 @@ L.nvol_memchr_neon:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #48
-    b .Lnvol_memchr_neon.L1
+    ret
 .Lnvol_memchr_neon.L19:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memchr_neon, .-nvol_memchr_neon
 
@@ -216,7 +216,7 @@ L.nvol_memchr_raw:
     b.lo .Lnvol_memchr_raw.L4
 .Lnvol_memchr_raw.L5:
     movz w0, #0
-    b .Lnvol_memchr_raw.L1
+    ret
 .Lnvol_memchr_raw.L2:
     sub x10, x2, x1
     dup v0.16b, w9
@@ -230,7 +230,7 @@ L.nvol_memchr_raw:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_memchr_raw.L1
+    ret
 .Lnvol_memchr_raw.L8:
     and x9, x1, #18446744073709551600
     add x9, x9, #16
@@ -288,7 +288,7 @@ L.nvol_memchr_raw:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr_raw.L1
+    ret
 .Lnvol_memchr_raw.L28:
 .Lnvol_memchr_raw.L26:
     movz w0, #0
@@ -296,27 +296,27 @@ L.nvol_memchr_raw:
     ret
 .Lnvol_memchr_raw.L7:
     mov x0, x1
-    b .Lnvol_memchr_raw.L1
+    ret
 .Lnvol_memchr_raw.L17:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr_raw.L1
+    ret
 .Lnvol_memchr_raw.L19:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memchr_raw.L1
+    ret
 .Lnvol_memchr_raw.L21:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #32
-    b .Lnvol_memchr_raw.L1
+    ret
 .Lnvol_memchr_raw.L15:
     shrn v0.8b, v1.8h, #4
     fmov x10, d0
@@ -341,13 +341,13 @@ L.nvol_memchr_raw:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #48
-    b .Lnvol_memchr_raw.L1
+    ret
 .Lnvol_memchr_raw.L25:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr_raw.L1
+    ret
 .cfi_endproc
 .size nvol_memchr_raw, .-nvol_memchr_raw
 
@@ -401,7 +401,7 @@ L.nvol_memrchr_scalar:
     ret
 .Lnvol_memrchr_scalar.L5:
     mov x0, x2
-    b .Lnvol_memrchr_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr_scalar, .-nvol_memrchr_scalar
 
@@ -427,7 +427,7 @@ L.nvol_memrchr_neon:
     lsr x9, x9, #2
     add x9, x2, x9
     sub x0, x9, #16
-    b .Lnvol_memrchr_neon.L1
+    ret
 .Lnvol_memrchr_neon.L2:
     and x9, x2, #18446744073709551600
     cmp x10, #64
@@ -486,7 +486,7 @@ L.nvol_memrchr_neon:
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_memrchr_neon.L1
+    ret
 .Lnvol_memrchr_neon.L22:
 .Lnvol_memrchr_neon.L20:
     movz w0, #0
@@ -498,21 +498,21 @@ L.nvol_memrchr_neon:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #48
-    b .Lnvol_memrchr_neon.L1
+    ret
 .Lnvol_memrchr_neon.L13:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #32
-    b .Lnvol_memrchr_neon.L1
+    ret
 .Lnvol_memrchr_neon.L15:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memrchr_neon.L1
+    ret
 .Lnvol_memrchr_neon.L9:
     shrn v0.8b, v4.8h, #4
     fmov x10, d0
@@ -536,13 +536,13 @@ L.nvol_memrchr_neon:
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr_neon.L1
+    ret
 .Lnvol_memrchr_neon.L19:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr_neon, .-nvol_memrchr_neon
 
@@ -570,7 +570,7 @@ L.nvol_memrchr_raw:
     b.hi .Lnvol_memrchr_raw.L4
 .Lnvol_memrchr_raw.L5:
     movz w0, #0
-    b .Lnvol_memrchr_raw.L1
+    ret
 .Lnvol_memrchr_raw.L2:
     sub x10, x2, x1
     dup v0.16b, w9
@@ -585,7 +585,7 @@ L.nvol_memrchr_raw:
     lsr x9, x9, #2
     add x9, x2, x9
     sub x0, x9, #16
-    b .Lnvol_memrchr_raw.L1
+    ret
 .Lnvol_memrchr_raw.L8:
     and x9, x2, #18446744073709551600
     cmp x10, #64
@@ -641,7 +641,7 @@ L.nvol_memrchr_raw:
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_memrchr_raw.L1
+    ret
 .Lnvol_memrchr_raw.L28:
 .Lnvol_memrchr_raw.L26:
     movz w0, #0
@@ -649,28 +649,28 @@ L.nvol_memrchr_raw:
     ret
 .Lnvol_memrchr_raw.L7:
     mov x0, x2
-    b .Lnvol_memrchr_raw.L1
+    ret
 .Lnvol_memrchr_raw.L17:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #48
-    b .Lnvol_memrchr_raw.L1
+    ret
 .Lnvol_memrchr_raw.L19:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #32
-    b .Lnvol_memrchr_raw.L1
+    ret
 .Lnvol_memrchr_raw.L21:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memrchr_raw.L1
+    ret
 .Lnvol_memrchr_raw.L15:
     shrn v0.8b, v4.8h, #4
     fmov x10, d0
@@ -694,13 +694,13 @@ L.nvol_memrchr_raw:
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr_raw.L1
+    ret
 .Lnvol_memrchr_raw.L25:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr_raw.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr_raw, .-nvol_memrchr_raw
 
@@ -750,7 +750,7 @@ L.nvol_memchr2_scalar:
 .Lnvol_memchr2_scalar.L6:
 .Lnvol_memchr2_scalar.L5:
     mov x0, x2
-    b .Lnvol_memchr2_scalar.L1
+    ret
 .Lnvol_memchr2_scalar.L4:
     add x2, x2, #1
     cmp x2, x3
@@ -785,7 +785,7 @@ L.nvol_memchr2_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x2, x9
-    b .Lnvol_memchr2_neon.L1
+    ret
 .Lnvol_memchr2_neon.L2:
     and x9, x2, #18446744073709551600
     add x9, x9, #16
@@ -846,7 +846,7 @@ L.nvol_memchr2_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr2_neon.L1
+    ret
 .Lnvol_memchr2_neon.L18:
 .Lnvol_memchr2_neon.L16:
     movz w0, #0
@@ -857,7 +857,7 @@ L.nvol_memchr2_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr2_neon.L1
+    ret
 .Lnvol_memchr2_neon.L9:
     shrn v0.8b, v2.8h, #4
     fmov x10, d0
@@ -872,13 +872,13 @@ L.nvol_memchr2_neon:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memchr2_neon.L1
+    ret
 .Lnvol_memchr2_neon.L15:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr2_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memchr2_neon, .-nvol_memchr2_neon
 
@@ -904,14 +904,14 @@ L.nvol_memchr2_raw:
 .Lnvol_memchr2_raw.L8:
 .Lnvol_memchr2_raw.L7:
     mov x0, x2
-    b .Lnvol_memchr2_raw.L1
+    ret
 .Lnvol_memchr2_raw.L6:
     add x2, x2, #1
     cmp x2, x3
     b.lo .Lnvol_memchr2_raw.L4
 .Lnvol_memchr2_raw.L5:
     movz w0, #0
-    b .Lnvol_memchr2_raw.L1
+    ret
 .Lnvol_memchr2_raw.L2:
     sub x11, x3, x2
     dup v0.16b, w9
@@ -928,7 +928,7 @@ L.nvol_memchr2_raw:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x2, x9
-    b .Lnvol_memchr2_raw.L1
+    ret
 .Lnvol_memchr2_raw.L9:
     and x9, x2, #18446744073709551600
     add x9, x9, #16
@@ -991,7 +991,7 @@ L.nvol_memchr2_raw:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr2_raw.L1
+    ret
 .Lnvol_memchr2_raw.L25:
 .Lnvol_memchr2_raw.L23:
     movz w0, #0
@@ -1002,7 +1002,7 @@ L.nvol_memchr2_raw:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr2_raw.L1
+    ret
 .Lnvol_memchr2_raw.L16:
     shrn v0.8b, v2.8h, #4
     fmov x10, d0
@@ -1017,13 +1017,13 @@ L.nvol_memchr2_raw:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memchr2_raw.L1
+    ret
 .Lnvol_memchr2_raw.L22:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr2_raw.L1
+    ret
 .cfi_endproc
 .size nvol_memchr2_raw, .-nvol_memchr2_raw
 
@@ -1071,7 +1071,7 @@ L.nvol_memrchr2_scalar:
 .Lnvol_memrchr2_scalar.L6:
 .Lnvol_memrchr2_scalar.L5:
     mov x0, x3
-    b .Lnvol_memrchr2_scalar.L1
+    ret
 .Lnvol_memrchr2_scalar.L4:
     cmp x3, x2
     b.hi .Lnvol_memrchr2_scalar.L2
@@ -1106,7 +1106,7 @@ L.nvol_memrchr2_neon:
     lsr x9, x9, #2
     add x9, x3, x9
     sub x0, x9, #16
-    b .Lnvol_memrchr2_neon.L1
+    ret
 .Lnvol_memrchr2_neon.L2:
     and x9, x3, #18446744073709551600
     cmp x11, #32
@@ -1165,7 +1165,7 @@ L.nvol_memrchr2_neon:
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x2, x9
-    b .Lnvol_memrchr2_neon.L1
+    ret
 .Lnvol_memrchr2_neon.L18:
 .Lnvol_memrchr2_neon.L16:
     movz w0, #0
@@ -1177,7 +1177,7 @@ L.nvol_memrchr2_neon:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memrchr2_neon.L1
+    ret
 .Lnvol_memrchr2_neon.L9:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
@@ -1191,13 +1191,13 @@ L.nvol_memrchr2_neon:
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr2_neon.L1
+    ret
 .Lnvol_memrchr2_neon.L15:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr2_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr2_neon, .-nvol_memrchr2_neon
 
@@ -1225,13 +1225,13 @@ L.nvol_memrchr2_raw:
 .Lnvol_memrchr2_raw.L8:
 .Lnvol_memrchr2_raw.L7:
     mov x0, x3
-    b .Lnvol_memrchr2_raw.L1
+    ret
 .Lnvol_memrchr2_raw.L6:
     cmp x3, x2
     b.hi .Lnvol_memrchr2_raw.L4
 .Lnvol_memrchr2_raw.L5:
     movz w0, #0
-    b .Lnvol_memrchr2_raw.L1
+    ret
 .Lnvol_memrchr2_raw.L2:
     sub x11, x3, x2
     dup v0.16b, w9
@@ -1249,7 +1249,7 @@ L.nvol_memrchr2_raw:
     lsr x9, x9, #2
     add x9, x3, x9
     sub x0, x9, #16
-    b .Lnvol_memrchr2_raw.L1
+    ret
 .Lnvol_memrchr2_raw.L9:
     and x9, x3, #18446744073709551600
     cmp x11, #32
@@ -1310,7 +1310,7 @@ L.nvol_memrchr2_raw:
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x2, x9
-    b .Lnvol_memrchr2_raw.L1
+    ret
 .Lnvol_memrchr2_raw.L25:
 .Lnvol_memrchr2_raw.L23:
     movz w0, #0
@@ -1322,7 +1322,7 @@ L.nvol_memrchr2_raw:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memrchr2_raw.L1
+    ret
 .Lnvol_memrchr2_raw.L16:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
@@ -1336,13 +1336,13 @@ L.nvol_memrchr2_raw:
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr2_raw.L1
+    ret
 .Lnvol_memrchr2_raw.L22:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr2_raw.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr2_raw, .-nvol_memrchr2_raw
 
@@ -1394,7 +1394,7 @@ L.nvol_memchr3_scalar:
 .Lnvol_memchr3_scalar.L6:
 .Lnvol_memchr3_scalar.L5:
     mov x0, x3
-    b .Lnvol_memchr3_scalar.L1
+    ret
 .Lnvol_memchr3_scalar.L4:
     add x3, x3, #1
     cmp x3, x4
@@ -1433,7 +1433,7 @@ L.nvol_memchr3_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_memchr3_neon.L1
+    ret
 .Lnvol_memchr3_neon.L2:
     and x9, x3, #18446744073709551600
     add x9, x9, #16
@@ -1502,7 +1502,7 @@ L.nvol_memchr3_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr3_neon.L1
+    ret
 .Lnvol_memchr3_neon.L18:
 .Lnvol_memchr3_neon.L16:
     movz w0, #0
@@ -1513,7 +1513,7 @@ L.nvol_memchr3_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr3_neon.L1
+    ret
 .Lnvol_memchr3_neon.L9:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
@@ -1528,13 +1528,13 @@ L.nvol_memchr3_neon:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memchr3_neon.L1
+    ret
 .Lnvol_memchr3_neon.L15:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr3_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memchr3_neon, .-nvol_memchr3_neon
 
@@ -1562,14 +1562,14 @@ L.nvol_memchr3_raw:
 .Lnvol_memchr3_raw.L8:
 .Lnvol_memchr3_raw.L7:
     mov x0, x3
-    b .Lnvol_memchr3_raw.L1
+    ret
 .Lnvol_memchr3_raw.L6:
     add x3, x3, #1
     cmp x3, x4
     b.lo .Lnvol_memchr3_raw.L4
 .Lnvol_memchr3_raw.L5:
     movz w0, #0
-    b .Lnvol_memchr3_raw.L1
+    ret
 .Lnvol_memchr3_raw.L2:
     sub x12, x4, x3
     dup v0.16b, w9
@@ -1589,7 +1589,7 @@ L.nvol_memchr3_raw:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_memchr3_raw.L1
+    ret
 .Lnvol_memchr3_raw.L9:
     and x9, x3, #18446744073709551600
     add x9, x9, #16
@@ -1659,7 +1659,7 @@ L.nvol_memchr3_raw:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr3_raw.L1
+    ret
 .Lnvol_memchr3_raw.L25:
 .Lnvol_memchr3_raw.L23:
     movz w0, #0
@@ -1670,7 +1670,7 @@ L.nvol_memchr3_raw:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr3_raw.L1
+    ret
 .Lnvol_memchr3_raw.L16:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
@@ -1685,13 +1685,13 @@ L.nvol_memchr3_raw:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memchr3_raw.L1
+    ret
 .Lnvol_memchr3_raw.L22:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memchr3_raw.L1
+    ret
 .cfi_endproc
 .size nvol_memchr3_raw, .-nvol_memchr3_raw
 
@@ -1743,7 +1743,7 @@ L.nvol_memrchr3_scalar:
 .Lnvol_memrchr3_scalar.L6:
 .Lnvol_memrchr3_scalar.L5:
     mov x0, x4
-    b .Lnvol_memrchr3_scalar.L1
+    ret
 .Lnvol_memrchr3_scalar.L4:
     cmp x4, x3
     b.hi .Lnvol_memrchr3_scalar.L2
@@ -1782,7 +1782,7 @@ L.nvol_memrchr3_neon:
     lsr x9, x9, #2
     add x9, x4, x9
     sub x0, x9, #16
-    b .Lnvol_memrchr3_neon.L1
+    ret
 .Lnvol_memrchr3_neon.L2:
     and x9, x4, #18446744073709551600
     cmp x12, #32
@@ -1849,7 +1849,7 @@ L.nvol_memrchr3_neon:
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_memrchr3_neon.L1
+    ret
 .Lnvol_memrchr3_neon.L18:
 .Lnvol_memrchr3_neon.L16:
     movz w0, #0
@@ -1861,7 +1861,7 @@ L.nvol_memrchr3_neon:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memrchr3_neon.L1
+    ret
 .Lnvol_memrchr3_neon.L9:
     shrn v0.8b, v4.8h, #4
     fmov x10, d0
@@ -1875,13 +1875,13 @@ L.nvol_memrchr3_neon:
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr3_neon.L1
+    ret
 .Lnvol_memrchr3_neon.L15:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr3_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr3_neon, .-nvol_memrchr3_neon
 
@@ -1911,13 +1911,13 @@ L.nvol_memrchr3_raw:
 .Lnvol_memrchr3_raw.L8:
 .Lnvol_memrchr3_raw.L7:
     mov x0, x4
-    b .Lnvol_memrchr3_raw.L1
+    ret
 .Lnvol_memrchr3_raw.L6:
     cmp x4, x3
     b.hi .Lnvol_memrchr3_raw.L4
 .Lnvol_memrchr3_raw.L5:
     movz w0, #0
-    b .Lnvol_memrchr3_raw.L1
+    ret
 .Lnvol_memrchr3_raw.L2:
     sub x12, x4, x3
     dup v0.16b, w9
@@ -1938,7 +1938,7 @@ L.nvol_memrchr3_raw:
     lsr x9, x9, #2
     add x9, x4, x9
     sub x0, x9, #16
-    b .Lnvol_memrchr3_raw.L1
+    ret
 .Lnvol_memrchr3_raw.L9:
     and x9, x4, #18446744073709551600
     cmp x12, #32
@@ -2006,7 +2006,7 @@ L.nvol_memrchr3_raw:
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_memrchr3_raw.L1
+    ret
 .Lnvol_memrchr3_raw.L25:
 .Lnvol_memrchr3_raw.L23:
     movz w0, #0
@@ -2018,7 +2018,7 @@ L.nvol_memrchr3_raw:
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
-    b .Lnvol_memrchr3_raw.L1
+    ret
 .Lnvol_memrchr3_raw.L16:
     shrn v0.8b, v4.8h, #4
     fmov x10, d0
@@ -2032,13 +2032,13 @@ L.nvol_memrchr3_raw:
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr3_raw.L1
+    ret
 .Lnvol_memrchr3_raw.L22:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memrchr3_raw.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr3_raw, .-nvol_memrchr3_raw
 
@@ -2231,7 +2231,7 @@ L.nvol_count_parity_raw:
     add x11, x11, #1
     cmp x11, x10
     b.lo .Lnvol_count_parity_raw.L4
-    b .Lnvol_count_parity_raw.L1
+    ret
 .Lnvol_count_parity_raw.L2:
     sub x10, x2, x1
     dup v0.16b, w9
@@ -2401,7 +2401,7 @@ L.nvol_count_sad_neon:
     addv b0, v0.8b
     umov w9, v0.b[0]
     add x0, x0, x9
-    b .Lnvol_count_sad_neon.L1
+    ret
 .Lnvol_count_sad_neon.L2:
     movi v1.16b, #0
     sub x9, x2, x1
@@ -2518,7 +2518,7 @@ L.nvol_count_raw:
     add x11, x11, #1
     cmp x11, x10
     b.lo .Lnvol_count_raw.L4
-    b .Lnvol_count_raw.L1
+    ret
 .Lnvol_count_raw.L2:
     sub x10, x2, x1
     dup v0.16b, w9
@@ -2562,7 +2562,7 @@ L.nvol_count_raw:
     addv b0, v0.8b
     umov w9, v0.b[0]
     add x0, x0, x9
-    b .Lnvol_count_raw.L1
+    ret
 .Lnvol_count_raw.L8:
     movi v1.16b, #0
     sub x9, x2, x1
@@ -2688,7 +2688,7 @@ L.nvol_first_non_ascii_scalar:
 .Lnvol_first_non_ascii_scalar.L1:
     ret
 .Lnvol_first_non_ascii_scalar.L5:
-    b .Lnvol_first_non_ascii_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_first_non_ascii_scalar, .-nvol_first_non_ascii_scalar
 
@@ -2712,7 +2712,7 @@ L.nvol_first_non_ascii_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x0, x9
-    b .Lnvol_first_non_ascii_neon.L1
+    ret
 .Lnvol_first_non_ascii_neon.L2:
     and x10, x0, #18446744073709551600
     add x10, x10, #16
@@ -2795,7 +2795,7 @@ L.nvol_first_non_ascii_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_first_non_ascii_neon.L1
+    ret
 .Lnvol_first_non_ascii_neon.L24:
 .Lnvol_first_non_ascii_neon.L22:
     movz w0, #0
@@ -2806,34 +2806,34 @@ L.nvol_first_non_ascii_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_first_non_ascii_neon.L1
+    ret
 .Lnvol_first_non_ascii_neon.L13:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x9, x10, x9
     add x0, x9, #16
-    b .Lnvol_first_non_ascii_neon.L1
+    ret
 .Lnvol_first_non_ascii_neon.L15:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x9, x10, x9
     add x0, x9, #32
-    b .Lnvol_first_non_ascii_neon.L1
+    ret
 .Lnvol_first_non_ascii_neon.L17:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x9, x10, x9
     add x0, x9, #48
-    b .Lnvol_first_non_ascii_neon.L1
+    ret
 .Lnvol_first_non_ascii_neon.L21:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_first_non_ascii_neon.L1
+    ret
 .cfi_endproc
 .size nvol_first_non_ascii_neon, .-nvol_first_non_ascii_neon
 
@@ -2861,7 +2861,7 @@ L.nvol_first_non_ascii_raw:
     b.lo .Lnvol_first_non_ascii_raw.L4
 .Lnvol_first_non_ascii_raw.L5:
     movz w0, #0
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .Lnvol_first_non_ascii_raw.L2:
     sub x9, x1, x0
     ldr q0, [x0]
@@ -2874,7 +2874,7 @@ L.nvol_first_non_ascii_raw:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x0, x9
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .Lnvol_first_non_ascii_raw.L8:
     and x10, x0, #18446744073709551600
     add x10, x10, #16
@@ -2955,47 +2955,47 @@ L.nvol_first_non_ascii_raw:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .Lnvol_first_non_ascii_raw.L30:
 .Lnvol_first_non_ascii_raw.L28:
     movz w0, #0
 .Lnvol_first_non_ascii_raw.L1:
     ret
 .Lnvol_first_non_ascii_raw.L7:
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .Lnvol_first_non_ascii_raw.L17:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .Lnvol_first_non_ascii_raw.L19:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x9, x10, x9
     add x0, x9, #16
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .Lnvol_first_non_ascii_raw.L21:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x9, x10, x9
     add x0, x9, #32
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .Lnvol_first_non_ascii_raw.L23:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x9, x10, x9
     add x0, x9, #48
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .Lnvol_first_non_ascii_raw.L27:
     rbit x9, x11
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_first_non_ascii_raw.L1
+    ret
 .cfi_endproc
 .size nvol_first_non_ascii_raw, .-nvol_first_non_ascii_raw
 
@@ -3054,7 +3054,7 @@ L.nvol_is_equal:
     cmp x10, x11
     b.eq .Lnvol_is_equal.L8
     movz w0, #0
-    b .Lnvol_is_equal.L1
+    ret
 .Lnvol_is_equal.L8:
     add x9, x9, #2
 .Lnvol_is_equal.L6:
@@ -3065,7 +3065,7 @@ L.nvol_is_equal:
     cmp x10, x9
     b.eq .Lnvol_is_equal.L12
     movz w0, #0
-    b .Lnvol_is_equal.L1
+    ret
 .Lnvol_is_equal.L12:
 .Lnvol_is_equal.L10:
     orr w0, wzr, #1
@@ -3073,7 +3073,7 @@ L.nvol_is_equal:
     ret
 .Lnvol_is_equal.L5:
     movz w0, #0
-    b .Lnvol_is_equal.L1
+    ret
 .cfi_endproc
 .size nvol_is_equal, .-nvol_is_equal
 
@@ -3090,7 +3090,7 @@ L.nvol_memmem_rk:
     cmp x9, x10
     b.ls .Lnvol_memmem_rk.L2
     movz w0, #0
-    b .Lnvol_memmem_rk.L1
+    ret
 .Lnvol_memmem_rk.L2:
     ldr x10, [x0, #16]
     ldr x11, [x0, #24]
@@ -3179,10 +3179,10 @@ L.nvol_memmem_rk:
     b .Lnvol_memmem_rk.L10
 .Lnvol_memmem_rk.L9:
     mov x0, x3
-    b .Lnvol_memmem_rk.L1
+    ret
 .Lnvol_memmem_rk.L24:
     movz w0, #0
-    b .Lnvol_memmem_rk.L1
+    ret
 .cfi_endproc
 .size nvol_memmem_rk, .-nvol_memmem_rk
 
@@ -3198,7 +3198,7 @@ L.nvol_memmem_rk_oneshot:
     cmp x9, x10
     b.ls .Lnvol_memmem_rk_oneshot.L2
     movz w0, #0
-    b .Lnvol_memmem_rk_oneshot.L1
+    ret
 .Lnvol_memmem_rk_oneshot.L2:
     movz w10, #0
     orr w11, wzr, #1
@@ -3302,10 +3302,10 @@ L.nvol_memmem_rk_oneshot:
     b .Lnvol_memmem_rk_oneshot.L14
 .Lnvol_memmem_rk_oneshot.L13:
     mov x0, x2
-    b .Lnvol_memmem_rk_oneshot.L1
+    ret
 .Lnvol_memmem_rk_oneshot.L28:
     movz w0, #0
-    b .Lnvol_memmem_rk_oneshot.L1
+    ret
 .cfi_endproc
 .size nvol_memmem_rk_oneshot, .-nvol_memmem_rk_oneshot
 
@@ -3521,7 +3521,7 @@ L.nvol_memmem_init:
     str xzr, [x2, #40]
     str xzr, [x2, #48]
     str xzr, [x2, #56]
-    b .Lnvol_memmem_init.L1
+    ret
 .Lnvol_memmem_init.L16:
     movz w10, #0
     mov x11, x0
@@ -3699,7 +3699,7 @@ L.nvol_memmem_init:
     orr w9, wzr, #1
     str x9, [x2, #48]
     str x11, [x2, #56]
-    b .Lnvol_memmem_init.L1
+    ret
 .Lnvol_memmem_init.L42:
 .Lnvol_memmem_init.L40:
     str xzr, [x2, #48]
@@ -3768,7 +3768,7 @@ L.nvol_memmem_pppre_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memmem_pppre_neon.L1
+    ret
 .Lnvol_memmem_pppre_neon.L8:
 .Lnvol_memmem_pppre_neon.L6:
     movn x0, #0
@@ -3780,7 +3780,7 @@ L.nvol_memmem_pppre_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_memmem_pppre_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memmem_pppre_neon, .-nvol_memmem_pppre_neon
 
@@ -3881,7 +3881,7 @@ L.nvol_memmem_pp_neon:
     cmp x13, x9
     b.hs .Lnvol_memmem_pp_neon.L25
     movz w0, #0
-    b .Lnvol_memmem_pp_neon.L1
+    ret
 .Lnvol_memmem_pp_neon.L25:
     sub x13, x3, x12
     lsl x13, x13, #2
@@ -3955,7 +3955,7 @@ L.nvol_memmem_pp_neon:
     ret
 .Lnvol_memmem_pp_neon.L7:
     movz w0, #0
-    b .Lnvol_memmem_pp_neon.L1
+    ret
 .Lnvol_memmem_pp_neon.L14:
     movz w14, #0
     b .Lnvol_memmem_pp_neon.L10
@@ -3966,10 +3966,10 @@ L.nvol_memmem_pp_neon:
     movz w14, #0
     b .Lnvol_memmem_pp_neon.L10
 .Lnvol_memmem_pp_neon.L9:
-    b .Lnvol_memmem_pp_neon.L1
+    ret
 .Lnvol_memmem_pp_neon.L30:
     movz w0, #0
-    b .Lnvol_memmem_pp_neon.L1
+    ret
 .Lnvol_memmem_pp_neon.L37:
     movz w11, #0
     b .Lnvol_memmem_pp_neon.L33
@@ -3980,7 +3980,7 @@ L.nvol_memmem_pp_neon:
     movz w11, #0
     b .Lnvol_memmem_pp_neon.L33
 .Lnvol_memmem_pp_neon.L32:
-    b .Lnvol_memmem_pp_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memmem_pp_neon, .-nvol_memmem_pp_neon
 
@@ -4030,7 +4030,7 @@ L.nvol_memmem_pp2_neon:
     cmp x13, x9
     b.hs .Lnvol_memmem_pp2_neon.L8
     movz w0, #0
-    b .Lnvol_memmem_pp2_neon.L1
+    ret
 .Lnvol_memmem_pp2_neon.L8:
     sub x9, x3, x12
     lsl x9, x9, #2
@@ -4050,7 +4050,7 @@ L.nvol_memmem_pp2_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x12, x9
-    b .Lnvol_memmem_pp2_neon.L1
+    ret
 .Lnvol_memmem_pp2_neon.L10:
 .Lnvol_memmem_pp2_neon.L6:
     movz w0, #0
@@ -4061,7 +4061,7 @@ L.nvol_memmem_pp2_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_memmem_pp2_neon.L1
+    ret
 .cfi_endproc
 .size nvol_memmem_pp2_neon, .-nvol_memmem_pp2_neon
 
@@ -4361,16 +4361,28 @@ L.nvol_memmem_tw_neon:
     b .Lnvol_memmem_tw_neon.L21
 .Lnvol_memmem_tw_neon.L33:
     movz w0, #0
-    b .Lnvol_memmem_tw_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_tw_neon.L35:
     movz w0, #0
-    b .Lnvol_memmem_tw_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_tw_neon.L51:
     add x0, x3, x8
-    b .Lnvol_memmem_tw_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_tw_neon.L58:
     add x0, x3, x8
-    b .Lnvol_memmem_tw_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .cfi_endproc
 .size nvol_memmem_tw_neon, .-nvol_memmem_tw_neon
 
@@ -4395,11 +4407,17 @@ L.nvol_memmem_find_entry_neon:
     cmp x10, x9
     b.hs .Lnvol_memmem_find_entry_neon.L2
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L2:
     cbnz x9, .Lnvol_memmem_find_entry_neon.L4
     mov x0, x3
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L4:
     cmp x9, #1
     b.ne .Lnvol_memmem_find_entry_neon.L6
@@ -4425,7 +4443,10 @@ L.nvol_memmem_find_entry_neon:
     cmp x9, x10
     b.ls .Lnvol_memmem_find_entry_neon.L12
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L12:
     ldr x10, [x0, #16]
     ldr x11, [x0, #24]
@@ -4435,6 +4456,7 @@ L.nvol_memmem_find_entry_neon:
     add x15, x3, x9
     cmp x14, x15
     b.hs .Lnvol_memmem_find_entry_neon.L15
+    nop
 .Lnvol_memmem_find_entry_neon.L14:
     lsl w0, w13, #1
     ldrb w2, [x14]
@@ -4443,8 +4465,6 @@ L.nvol_memmem_find_entry_neon:
     cmp x14, x15
     b.lo .Lnvol_memmem_find_entry_neon.L14
 .Lnvol_memmem_find_entry_neon.L15:
-    nop
-    nop
 .Lnvol_memmem_find_entry_neon.L16:
     cmp x13, x10
     b.ne .Lnvol_memmem_find_entry_neon.L18
@@ -4499,7 +4519,10 @@ L.nvol_memmem_find_entry_neon:
     add x3, x3, #1
     b .Lnvol_memmem_find_entry_neon.L16
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L10:
     cmp x9, #2
     b.ne .Lnvol_memmem_find_entry_neon.L35
@@ -4517,6 +4540,7 @@ L.nvol_memmem_find_entry_neon:
     sub x12, x4, x12
     cmp x3, x12
     b.hi .Lnvol_memmem_find_entry_neon.L38
+    nop
 .Lnvol_memmem_find_entry_neon.L37:
     ldr q2, [x3, x10]
     cmeq v2.16b, v2.16b, v0.16b
@@ -4538,7 +4562,10 @@ L.nvol_memmem_find_entry_neon:
     cmp x13, x9
     b.hs .Lnvol_memmem_find_entry_neon.L43
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L43:
     sub x9, x3, x12
     lsl x9, x9, #2
@@ -4558,11 +4585,17 @@ L.nvol_memmem_find_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x12, x9
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L45:
 .Lnvol_memmem_find_entry_neon.L41:
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L35:
     ldr x10, [x0]
     ldr x11, [x0, #8]
@@ -4578,7 +4611,6 @@ L.nvol_memmem_find_entry_neon:
     sub x12, x4, x12
     cmp x3, x12
     b.hi .Lnvol_memmem_find_entry_neon.L48
-    nop
     nop
 .Lnvol_memmem_find_entry_neon.L47:
     ldr q2, [x3, x10]
@@ -4652,7 +4684,10 @@ L.nvol_memmem_find_entry_neon:
     cmp x13, x9
     b.hs .Lnvol_memmem_find_entry_neon.L70
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L70:
     sub x13, x3, x12
     lsl x13, x13, #2
@@ -4668,7 +4703,6 @@ L.nvol_memmem_find_entry_neon:
     and x10, x10, #9838263505978427528
     and x10, x10, x13
     cbz x10, .Lnvol_memmem_find_entry_neon.L73
-    nop
 .Lnvol_memmem_find_entry_neon.L72:
     rbit x11, x10
     clz x11, x11
@@ -4722,14 +4756,20 @@ L.nvol_memmem_find_entry_neon:
 .Lnvol_memmem_find_entry_neon.L73:
 .Lnvol_memmem_find_entry_neon.L68:
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L8:
     cmp x10, #16
     b.hs .Lnvol_memmem_find_entry_neon.L91
     cmp x9, x10
     b.ls .Lnvol_memmem_find_entry_neon.L93
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L93:
     ldr x10, [x0, #16]
     ldr x11, [x0, #24]
@@ -4802,7 +4842,10 @@ L.nvol_memmem_find_entry_neon:
     add x3, x3, #1
     b .Lnvol_memmem_find_entry_neon.L97
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L91:
     ldr x11, [x0, #40]
     ldr x12, [x0, #48]
@@ -4826,7 +4869,6 @@ L.nvol_memmem_find_entry_neon:
     add x19, x8, x9
     cmp x19, x10
     b.hi .Lnvol_memmem_find_entry_neon.L117
-    nop
     nop
 .Lnvol_memmem_find_entry_neon.L116:
     cmp x11, x16
@@ -4862,6 +4904,8 @@ L.nvol_memmem_find_entry_neon:
     ldrb w22, [x21]
     cmp x22, x5
     b.eq .Lnvol_memmem_find_entry_neon.L129
+    nop
+    nop
 .Lnvol_memmem_find_entry_neon.L128:
     add x21, x21, #1
     cmp x21, x4
@@ -5075,19 +5119,31 @@ L.nvol_memmem_find_entry_neon:
     b .Lnvol_memmem_find_entry_neon.L20
 .Lnvol_memmem_find_entry_neon.L19:
     mov x0, x3
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L34:
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L40:
     rbit x9, x13
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L52:
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L59:
     movz w14, #0
     b .Lnvol_memmem_find_entry_neon.L55
@@ -5098,10 +5154,16 @@ L.nvol_memmem_find_entry_neon:
     movz w14, #0
     b .Lnvol_memmem_find_entry_neon.L55
 .Lnvol_memmem_find_entry_neon.L54:
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L75:
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L82:
     movz w11, #0
     b .Lnvol_memmem_find_entry_neon.L78
@@ -5112,7 +5174,10 @@ L.nvol_memmem_find_entry_neon:
     movz w11, #0
     b .Lnvol_memmem_find_entry_neon.L78
 .Lnvol_memmem_find_entry_neon.L77:
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L105:
     movz w14, #0
     b .Lnvol_memmem_find_entry_neon.L101
@@ -5124,10 +5189,16 @@ L.nvol_memmem_find_entry_neon:
     b .Lnvol_memmem_find_entry_neon.L101
 .Lnvol_memmem_find_entry_neon.L100:
     mov x0, x3
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L115:
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L139:
     sub x19, x23, x19
     rbit x20, x24
@@ -5144,19 +5215,32 @@ L.nvol_memmem_find_entry_neon:
     b .Lnvol_memmem_find_entry_neon.L135
 .Lnvol_memmem_find_entry_neon.L147:
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L149:
     movz w0, #0
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L165:
     add x0, x3, x8
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .Lnvol_memmem_find_entry_neon.L172:
     add x0, x3, x8
-    b .Lnvol_memmem_find_entry_neon.L1
+    ldp x21, x22, [sp, #16]
+    ldp x23, x24, [sp, #32]
+    ldp x19, x20, [sp], #48
+    ret
 .cfi_endproc
 .size nvol_memmem_find_entry_neon, .-nvol_memmem_find_entry_neon
 
+    nop
     nop
 .globl nvol_memmem_find_raw
 .type nvol_memmem_find_raw, %function
@@ -5180,7 +5264,7 @@ L.nvol_is_equal_ac:
     b.hs .Lnvol_is_equal_ac.L2
     cbnz x2, .Lnvol_is_equal_ac.L4
     orr w0, wzr, #1
-    b .Lnvol_is_equal_ac.L1
+    ret
 .Lnvol_is_equal_ac.L4:
     cmp x2, #1
     b.ne .Lnvol_is_equal_ac.L6
@@ -5188,7 +5272,7 @@ L.nvol_is_equal_ac:
     ldrb w10, [x1]
     cmp x9, x10
     cset w0, eq
-    b .Lnvol_is_equal_ac.L1
+    ret
 .Lnvol_is_equal_ac.L6:
     cmp x2, #2
     b.ne .Lnvol_is_equal_ac.L8
@@ -5196,7 +5280,7 @@ L.nvol_is_equal_ac:
     ldrh w10, [x1]
     cmp x9, x10
     cset w0, eq
-    b .Lnvol_is_equal_ac.L1
+    ret
 .Lnvol_is_equal_ac.L8:
     movz w9, #0
     ldrh w10, [x0]
@@ -5210,7 +5294,7 @@ L.nvol_is_equal_ac:
     orr w9, wzr, #1
 .Lnvol_is_equal_ac.L10:
     mov x0, x9
-    b .Lnvol_is_equal_ac.L1
+    ret
 .Lnvol_is_equal_ac.L2:
     sub x9, x2, #4
     add x9, x0, x9
@@ -5238,7 +5322,7 @@ L.nvol_is_equal_ac:
     ret
 .Lnvol_is_equal_ac.L14:
     movz w0, #0
-    b .Lnvol_is_equal_ac.L1
+    ret
 .cfi_endproc
 .size nvol_is_equal_ac, .-nvol_is_equal_ac
 
@@ -5363,7 +5447,7 @@ L.nvol_teddy_verify64_slim:
     sub x9, x10, x3
     lsl x9, x9, #8
     orr x0, x9, x13
-    b .Lnvol_teddy_verify64_slim.L1
+    ret
 .cfi_endproc
 .size nvol_teddy_verify64_slim, .-nvol_teddy_verify64_slim
 
@@ -5381,7 +5465,7 @@ L.nvol_teddy_slow:
     cmp x10, x9
     b.hs .Lnvol_teddy_slow.L2
     movn x0, #0
-    b .Lnvol_teddy_slow.L1
+    ret
 .Lnvol_teddy_slow.L2:
     movz w10, #0
     movz w11, #0
@@ -5520,7 +5604,7 @@ L.nvol_teddy_slow:
     sub x9, x12, x2
     lsl x9, x9, #8
     orr x0, x9, x14
-    b .Lnvol_teddy_slow.L1
+    ret
 .cfi_endproc
 .size nvol_teddy_slow, .-nvol_teddy_slow
 
@@ -5546,7 +5630,7 @@ L.nvol_teddy_init:
     cbz x9, .Lnvol_teddy_init.L1
     cmp x9, #64
     b.ls .Lnvol_teddy_init.L4
-    b .Lnvol_teddy_init.L1
+    ret
 .Lnvol_teddy_init.L4:
     movn x10, #0
     movz w11, #0
@@ -5566,7 +5650,7 @@ L.nvol_teddy_init:
     b.lo .Lnvol_teddy_init.L7
 .Lnvol_teddy_init.L8:
     cbnz x10, .Lnvol_teddy_init.L11
-    b .Lnvol_teddy_init.L1
+    ret
 .Lnvol_teddy_init.L11:
     movz w11, #0
     cmp x11, x9
@@ -6048,11 +6132,13 @@ L.nvol_teddy_slim_neon_1:
     cmn x10, #1
     b.eq .Lnvol_teddy_slim_neon_1.L77
     mov x0, x10
-    b .Lnvol_teddy_slim_neon_1.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_1.L77:
     add x9, x9, #8
     umov x10, v0.d[1]
     cbz x10, .Lnvol_teddy_slim_neon_1.L81
+    nop
     nop
 .Lnvol_teddy_slim_neon_1.L80:
     rbit x11, x10
@@ -6067,8 +6153,6 @@ L.nvol_teddy_slim_neon_1:
     movz w14, #0
     cmp x14, x13
     b.hs .Lnvol_teddy_slim_neon_1.L83
-    nop
-    nop
 .Lnvol_teddy_slim_neon_1.L82:
     lsl x15, x11, #6
     add x15, x15, x14
@@ -6123,7 +6207,8 @@ L.nvol_teddy_slim_neon_1:
 .Lnvol_teddy_slim_neon_1.L79:
     cmn x0, #1
     b.eq .Lnvol_teddy_slim_neon_1.L100
-    b .Lnvol_teddy_slim_neon_1.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_1.L100:
 .Lnvol_teddy_slim_neon_1.L54:
 .Lnvol_teddy_slim_neon_1.L52:
@@ -6176,7 +6261,8 @@ L.nvol_teddy_slim_neon_1:
     b .Lnvol_teddy_slim_neon_1.L6
 .Lnvol_teddy_slim_neon_1.L28:
     mov x0, x12
-    b .Lnvol_teddy_slim_neon_1.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_1.L40:
     orr w7, wzr, #1
     b .Lnvol_teddy_slim_neon_1.L36
@@ -6222,7 +6308,8 @@ L.nvol_teddy_slim_neon_1:
     b .Lnvol_teddy_slim_neon_1.L29
 .Lnvol_teddy_slim_neon_1.L51:
     mov x0, x11
-    b .Lnvol_teddy_slim_neon_1.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_1.L67:
     orr w5, wzr, #1
     b .Lnvol_teddy_slim_neon_1.L63
@@ -6312,6 +6399,7 @@ L.nvol_teddy_slim_neon_1:
 .cfi_endproc
 .size nvol_teddy_slim_neon_1, .-nvol_teddy_slim_neon_1
 
+    nop
 .globl nvol_teddy_slim_neon_2
 .type nvol_teddy_slim_neon_2, %function
 .hidden nvol_teddy_slim_neon_2
@@ -6591,11 +6679,13 @@ L.nvol_teddy_slim_neon_2:
     cmn x10, #1
     b.eq .Lnvol_teddy_slim_neon_2.L77
     mov x0, x10
-    b .Lnvol_teddy_slim_neon_2.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_2.L77:
     add x9, x9, #8
     umov x10, v1.d[1]
     cbz x10, .Lnvol_teddy_slim_neon_2.L81
+    nop
     nop
 .Lnvol_teddy_slim_neon_2.L80:
     rbit x11, x10
@@ -6610,8 +6700,6 @@ L.nvol_teddy_slim_neon_2:
     movz w14, #0
     cmp x14, x13
     b.hs .Lnvol_teddy_slim_neon_2.L83
-    nop
-    nop
 .Lnvol_teddy_slim_neon_2.L82:
     lsl x15, x11, #6
     add x15, x15, x14
@@ -6666,7 +6754,8 @@ L.nvol_teddy_slim_neon_2:
 .Lnvol_teddy_slim_neon_2.L79:
     cmn x0, #1
     b.eq .Lnvol_teddy_slim_neon_2.L100
-    b .Lnvol_teddy_slim_neon_2.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_2.L100:
 .Lnvol_teddy_slim_neon_2.L54:
 .Lnvol_teddy_slim_neon_2.L52:
@@ -6719,7 +6808,8 @@ L.nvol_teddy_slim_neon_2:
     b .Lnvol_teddy_slim_neon_2.L6
 .Lnvol_teddy_slim_neon_2.L28:
     mov x0, x12
-    b .Lnvol_teddy_slim_neon_2.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_2.L40:
     orr w7, wzr, #1
     b .Lnvol_teddy_slim_neon_2.L36
@@ -6765,7 +6855,8 @@ L.nvol_teddy_slim_neon_2:
     b .Lnvol_teddy_slim_neon_2.L29
 .Lnvol_teddy_slim_neon_2.L51:
     mov x0, x11
-    b .Lnvol_teddy_slim_neon_2.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_2.L67:
     orr w5, wzr, #1
     b .Lnvol_teddy_slim_neon_2.L63
@@ -6855,6 +6946,7 @@ L.nvol_teddy_slim_neon_2:
 .cfi_endproc
 .size nvol_teddy_slim_neon_2, .-nvol_teddy_slim_neon_2
 
+    nop
 .globl nvol_teddy_slim_neon_3
 .type nvol_teddy_slim_neon_3, %function
 .hidden nvol_teddy_slim_neon_3
@@ -7146,11 +7238,13 @@ L.nvol_teddy_slim_neon_3:
     cmn x10, #1
     b.eq .Lnvol_teddy_slim_neon_3.L77
     mov x0, x10
-    b .Lnvol_teddy_slim_neon_3.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_3.L77:
     add x9, x9, #8
     umov x10, v2.d[1]
     cbz x10, .Lnvol_teddy_slim_neon_3.L81
+    nop
     nop
 .Lnvol_teddy_slim_neon_3.L80:
     rbit x11, x10
@@ -7165,8 +7259,6 @@ L.nvol_teddy_slim_neon_3:
     movz w14, #0
     cmp x14, x13
     b.hs .Lnvol_teddy_slim_neon_3.L83
-    nop
-    nop
 .Lnvol_teddy_slim_neon_3.L82:
     lsl x15, x11, #6
     add x15, x15, x14
@@ -7221,7 +7313,8 @@ L.nvol_teddy_slim_neon_3:
 .Lnvol_teddy_slim_neon_3.L79:
     cmn x0, #1
     b.eq .Lnvol_teddy_slim_neon_3.L100
-    b .Lnvol_teddy_slim_neon_3.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_3.L100:
 .Lnvol_teddy_slim_neon_3.L54:
 .Lnvol_teddy_slim_neon_3.L52:
@@ -7274,7 +7367,8 @@ L.nvol_teddy_slim_neon_3:
     b .Lnvol_teddy_slim_neon_3.L6
 .Lnvol_teddy_slim_neon_3.L28:
     mov x0, x12
-    b .Lnvol_teddy_slim_neon_3.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_3.L40:
     orr w7, wzr, #1
     b .Lnvol_teddy_slim_neon_3.L36
@@ -7320,7 +7414,8 @@ L.nvol_teddy_slim_neon_3:
     b .Lnvol_teddy_slim_neon_3.L29
 .Lnvol_teddy_slim_neon_3.L51:
     mov x0, x11
-    b .Lnvol_teddy_slim_neon_3.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_3.L67:
     orr w5, wzr, #1
     b .Lnvol_teddy_slim_neon_3.L63
@@ -7410,6 +7505,7 @@ L.nvol_teddy_slim_neon_3:
 .cfi_endproc
 .size nvol_teddy_slim_neon_3, .-nvol_teddy_slim_neon_3
 
+    nop
 .globl nvol_teddy_slim_neon_4
 .type nvol_teddy_slim_neon_4, %function
 .hidden nvol_teddy_slim_neon_4
@@ -7721,11 +7817,13 @@ L.nvol_teddy_slim_neon_4:
     cmn x10, #1
     b.eq .Lnvol_teddy_slim_neon_4.L77
     mov x0, x10
-    b .Lnvol_teddy_slim_neon_4.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_4.L77:
     add x9, x9, #8
     umov x10, v3.d[1]
     cbz x10, .Lnvol_teddy_slim_neon_4.L81
+    nop
     nop
 .Lnvol_teddy_slim_neon_4.L80:
     rbit x11, x10
@@ -7740,8 +7838,6 @@ L.nvol_teddy_slim_neon_4:
     movz w14, #0
     cmp x14, x13
     b.hs .Lnvol_teddy_slim_neon_4.L83
-    nop
-    nop
 .Lnvol_teddy_slim_neon_4.L82:
     lsl x15, x11, #6
     add x15, x15, x14
@@ -7796,7 +7892,8 @@ L.nvol_teddy_slim_neon_4:
 .Lnvol_teddy_slim_neon_4.L79:
     cmn x0, #1
     b.eq .Lnvol_teddy_slim_neon_4.L100
-    b .Lnvol_teddy_slim_neon_4.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_4.L100:
 .Lnvol_teddy_slim_neon_4.L54:
 .Lnvol_teddy_slim_neon_4.L52:
@@ -7849,7 +7946,8 @@ L.nvol_teddy_slim_neon_4:
     b .Lnvol_teddy_slim_neon_4.L6
 .Lnvol_teddy_slim_neon_4.L28:
     mov x0, x12
-    b .Lnvol_teddy_slim_neon_4.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_4.L40:
     orr w7, wzr, #1
     b .Lnvol_teddy_slim_neon_4.L36
@@ -7895,7 +7993,8 @@ L.nvol_teddy_slim_neon_4:
     b .Lnvol_teddy_slim_neon_4.L29
 .Lnvol_teddy_slim_neon_4.L51:
     mov x0, x11
-    b .Lnvol_teddy_slim_neon_4.L1
+    ldr x19, [sp], #16
+    ret
 .Lnvol_teddy_slim_neon_4.L67:
     orr w5, wzr, #1
     b .Lnvol_teddy_slim_neon_4.L63
@@ -7985,6 +8084,7 @@ L.nvol_teddy_slim_neon_4:
 .cfi_endproc
 .size nvol_teddy_slim_neon_4, .-nvol_teddy_slim_neon_4
 
+    nop
 .globl nvol_teddy_find_raw
 .type nvol_teddy_find_raw, %function
 nvol_teddy_find_raw:
@@ -7993,7 +8093,7 @@ L.nvol_teddy_find_raw:
     ldr x9, [x0]
     cbnz x9, .Lnvol_teddy_find_raw.L2
     movn x0, #0
-    b .Lnvol_teddy_find_raw.L1
+    ret
 .Lnvol_teddy_find_raw.L2:
     sub x9, x3, x2
     ldr x10, [x0, #24]
@@ -8012,11 +8112,10 @@ L.nvol_teddy_find_raw:
     ldrsw x10, [x9, x10, lsl #2]
     add x4, x9, x10
     br x4
-.Lnvol_teddy_find_raw.L1:
-    ret
 .cfi_endproc
 .size nvol_teddy_find_raw, .-nvol_teddy_find_raw
 
+    nop
 .globl nvol_byteset_init
 .type nvol_byteset_init, %function
 nvol_byteset_init:
@@ -8732,7 +8831,7 @@ L.nvol_find_byteset_scalar:
     ret
 .Lnvol_find_byteset_scalar.L5:
     mov x0, x1
-    b .Lnvol_find_byteset_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_scalar, .-nvol_find_byteset_scalar
 
@@ -8770,7 +8869,7 @@ L.nvol_find_not_byteset_scalar:
     ret
 .Lnvol_find_not_byteset_scalar.L5:
     mov x0, x1
-    b .Lnvol_find_not_byteset_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_scalar, .-nvol_find_not_byteset_scalar
 
@@ -8810,7 +8909,7 @@ L.nvol_copy_until_byteset_scalar:
     ret
 .Lnvol_copy_until_byteset_scalar.L5:
     mov x0, x9
-    b .Lnvol_copy_until_byteset_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_scalar, .-nvol_copy_until_byteset_scalar
 
@@ -8830,7 +8929,7 @@ L.nvol_find_byteset_pair_scalar:
     cmp x12, x11
     b.hs .Lnvol_find_byteset_pair_scalar.L2
     movz w0, #0
-    b .Lnvol_find_byteset_pair_scalar.L1
+    ret
 .Lnvol_find_byteset_pair_scalar.L2:
     sub x11, x2, x11
     cmp x1, x11
@@ -8869,7 +8968,7 @@ L.nvol_find_byteset_pair_scalar:
     ret
 .Lnvol_find_byteset_pair_scalar.L9:
     mov x0, x1
-    b .Lnvol_find_byteset_pair_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_scalar, .-nvol_find_byteset_pair_scalar
 
@@ -8890,7 +8989,7 @@ L.nvol_find_byteset_pair_mask_scalar:
     cmp x12, x11
     b.hs .Lnvol_find_byteset_pair_mask_scalar.L2
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_scalar.L1
+    ret
 .Lnvol_find_byteset_pair_mask_scalar.L2:
     sub x11, x2, x11
     cmp x1, x11
@@ -8933,7 +9032,7 @@ L.nvol_find_byteset_pair_mask_scalar:
     orr w9, wzr, #1
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_scalar, .-nvol_find_byteset_pair_mask_scalar
 
@@ -9085,7 +9184,7 @@ L.nvol_find_byteset_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon.L1
+    ret
 .Lnvol_find_byteset_neon.L8:
 .Lnvol_find_byteset_neon.L6:
     movz w0, #0
@@ -9096,7 +9195,7 @@ L.nvol_find_byteset_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon, .-nvol_find_byteset_neon
 
@@ -9147,7 +9246,7 @@ L.nvol_find_byteset_neon_u:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon_u.L1
+    ret
 .Lnvol_find_byteset_neon_u.L8:
 .Lnvol_find_byteset_neon_u.L6:
     movz w0, #0
@@ -9158,7 +9257,7 @@ L.nvol_find_byteset_neon_u:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon_u.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon_u, .-nvol_find_byteset_neon_u
 
@@ -9255,7 +9354,7 @@ L.nvol_find_byteset_pair_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_neon.L1
+    ret
 .Lnvol_find_byteset_pair_neon.L8:
 .Lnvol_find_byteset_pair_neon.L6:
     movz w0, #0
@@ -9266,7 +9365,7 @@ L.nvol_find_byteset_pair_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_neon.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_neon, .-nvol_find_byteset_pair_neon
 
@@ -9333,7 +9432,7 @@ L.nvol_find_byteset_neon_k4:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon_k4.L1
+    ret
 .Lnvol_find_byteset_neon_k4.L8:
 .Lnvol_find_byteset_neon_k4.L6:
     movz w0, #0
@@ -9344,7 +9443,7 @@ L.nvol_find_byteset_neon_k4:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon_k4.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon_k4, .-nvol_find_byteset_neon_k4
 
@@ -9415,7 +9514,7 @@ L.nvol_find_byteset_neon_k5:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon_k5.L1
+    ret
 .Lnvol_find_byteset_neon_k5.L8:
 .Lnvol_find_byteset_neon_k5.L6:
     movz w0, #0
@@ -9426,7 +9525,7 @@ L.nvol_find_byteset_neon_k5:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon_k5.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon_k5, .-nvol_find_byteset_neon_k5
 
@@ -9505,7 +9604,7 @@ L.nvol_find_byteset_neon_k6:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon_k6.L1
+    ret
 .Lnvol_find_byteset_neon_k6.L8:
 .Lnvol_find_byteset_neon_k6.L6:
     movz w0, #0
@@ -9516,7 +9615,7 @@ L.nvol_find_byteset_neon_k6:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon_k6.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon_k6, .-nvol_find_byteset_neon_k6
 
@@ -9585,7 +9684,7 @@ L.nvol_find_not_byteset_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon.L1
+    ret
 .Lnvol_find_not_byteset_neon.L8:
 .Lnvol_find_not_byteset_neon.L6:
     movz w0, #0
@@ -9596,7 +9695,7 @@ L.nvol_find_not_byteset_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon, .-nvol_find_not_byteset_neon
 
@@ -9651,7 +9750,7 @@ L.nvol_find_not_byteset_neon_u:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_u.L1
+    ret
 .Lnvol_find_not_byteset_neon_u.L8:
 .Lnvol_find_not_byteset_neon_u.L6:
     movz w0, #0
@@ -9662,7 +9761,7 @@ L.nvol_find_not_byteset_neon_u:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_u.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_u, .-nvol_find_not_byteset_neon_u
 
@@ -9715,7 +9814,7 @@ L.nvol_find_not_byteset_neon_k1:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_k1.L1
+    ret
 .Lnvol_find_not_byteset_neon_k1.L8:
 .Lnvol_find_not_byteset_neon_k1.L6:
     movz w0, #0
@@ -9726,7 +9825,7 @@ L.nvol_find_not_byteset_neon_k1:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_k1.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_k1, .-nvol_find_not_byteset_neon_k1
 
@@ -9783,7 +9882,7 @@ L.nvol_find_not_byteset_neon_k2:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_k2.L1
+    ret
 .Lnvol_find_not_byteset_neon_k2.L8:
 .Lnvol_find_not_byteset_neon_k2.L6:
     movz w0, #0
@@ -9794,7 +9893,7 @@ L.nvol_find_not_byteset_neon_k2:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_k2.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_k2, .-nvol_find_not_byteset_neon_k2
 
@@ -9859,7 +9958,7 @@ L.nvol_find_not_byteset_neon_k3:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_k3.L1
+    ret
 .Lnvol_find_not_byteset_neon_k3.L8:
 .Lnvol_find_not_byteset_neon_k3.L6:
     movz w0, #0
@@ -9870,7 +9969,7 @@ L.nvol_find_not_byteset_neon_k3:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_k3.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_k3, .-nvol_find_not_byteset_neon_k3
 
@@ -9939,7 +10038,7 @@ L.nvol_find_not_byteset_neon_k4:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_k4.L1
+    ret
 .Lnvol_find_not_byteset_neon_k4.L8:
 .Lnvol_find_not_byteset_neon_k4.L6:
     movz w0, #0
@@ -9950,7 +10049,7 @@ L.nvol_find_not_byteset_neon_k4:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_k4.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_k4, .-nvol_find_not_byteset_neon_k4
 
@@ -10027,7 +10126,7 @@ L.nvol_find_not_byteset_neon_k5:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_k5.L1
+    ret
 .Lnvol_find_not_byteset_neon_k5.L8:
 .Lnvol_find_not_byteset_neon_k5.L6:
     movz w0, #0
@@ -10038,7 +10137,7 @@ L.nvol_find_not_byteset_neon_k5:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_k5.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_k5, .-nvol_find_not_byteset_neon_k5
 
@@ -10119,7 +10218,7 @@ L.nvol_find_not_byteset_neon_k6:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_k6.L1
+    ret
 .Lnvol_find_not_byteset_neon_k6.L8:
 .Lnvol_find_not_byteset_neon_k6.L6:
     movz w0, #0
@@ -10130,7 +10229,7 @@ L.nvol_find_not_byteset_neon_k6:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_k6.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_k6, .-nvol_find_not_byteset_neon_k6
 
@@ -10203,7 +10302,7 @@ L.nvol_copy_until_byteset_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon.L1
+    ret
 .Lnvol_copy_until_byteset_neon.L8:
 .Lnvol_copy_until_byteset_neon.L6:
     mov x0, x2
@@ -10214,7 +10313,7 @@ L.nvol_copy_until_byteset_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon, .-nvol_copy_until_byteset_neon
 
@@ -10273,7 +10372,7 @@ L.nvol_copy_until_byteset_neon_u:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_u.L1
+    ret
 .Lnvol_copy_until_byteset_neon_u.L8:
 .Lnvol_copy_until_byteset_neon_u.L6:
     mov x0, x2
@@ -10284,7 +10383,7 @@ L.nvol_copy_until_byteset_neon_u:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_u.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_u, .-nvol_copy_until_byteset_neon_u
 
@@ -10337,7 +10436,7 @@ L.nvol_copy_until_byteset_neon_k1:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_k1.L1
+    ret
 .Lnvol_copy_until_byteset_neon_k1.L8:
 .Lnvol_copy_until_byteset_neon_k1.L6:
     mov x0, x2
@@ -10348,7 +10447,7 @@ L.nvol_copy_until_byteset_neon_k1:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_k1.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_k1, .-nvol_copy_until_byteset_neon_k1
 
@@ -10405,7 +10504,7 @@ L.nvol_copy_until_byteset_neon_k2:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_k2.L1
+    ret
 .Lnvol_copy_until_byteset_neon_k2.L8:
 .Lnvol_copy_until_byteset_neon_k2.L6:
     mov x0, x2
@@ -10416,7 +10515,7 @@ L.nvol_copy_until_byteset_neon_k2:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_k2.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_k2, .-nvol_copy_until_byteset_neon_k2
 
@@ -10481,7 +10580,7 @@ L.nvol_copy_until_byteset_neon_k3:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_k3.L1
+    ret
 .Lnvol_copy_until_byteset_neon_k3.L8:
 .Lnvol_copy_until_byteset_neon_k3.L6:
     mov x0, x2
@@ -10492,7 +10591,7 @@ L.nvol_copy_until_byteset_neon_k3:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_k3.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_k3, .-nvol_copy_until_byteset_neon_k3
 
@@ -10561,7 +10660,7 @@ L.nvol_copy_until_byteset_neon_k4:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_k4.L1
+    ret
 .Lnvol_copy_until_byteset_neon_k4.L8:
 .Lnvol_copy_until_byteset_neon_k4.L6:
     mov x0, x2
@@ -10572,7 +10671,7 @@ L.nvol_copy_until_byteset_neon_k4:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_k4.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_k4, .-nvol_copy_until_byteset_neon_k4
 
@@ -10649,7 +10748,7 @@ L.nvol_copy_until_byteset_neon_k5:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_k5.L1
+    ret
 .Lnvol_copy_until_byteset_neon_k5.L8:
 .Lnvol_copy_until_byteset_neon_k5.L6:
     mov x0, x2
@@ -10660,7 +10759,7 @@ L.nvol_copy_until_byteset_neon_k5:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_k5.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_k5, .-nvol_copy_until_byteset_neon_k5
 
@@ -10741,7 +10840,7 @@ L.nvol_copy_until_byteset_neon_k6:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_k6.L1
+    ret
 .Lnvol_copy_until_byteset_neon_k6.L8:
 .Lnvol_copy_until_byteset_neon_k6.L6:
     mov x0, x2
@@ -10752,7 +10851,7 @@ L.nvol_copy_until_byteset_neon_k6:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_k6.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_k6, .-nvol_copy_until_byteset_neon_k6
 
@@ -10801,7 +10900,7 @@ L.nvol_find_byteset_neon_r0:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon_r0.L1
+    ret
 .Lnvol_find_byteset_neon_r0.L8:
 .Lnvol_find_byteset_neon_r0.L6:
     movz w0, #0
@@ -10812,7 +10911,7 @@ L.nvol_find_byteset_neon_r0:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon_r0.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon_r0, .-nvol_find_byteset_neon_r0
 
@@ -10865,7 +10964,7 @@ L.nvol_find_not_byteset_neon_r0:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_r0.L1
+    ret
 .Lnvol_find_not_byteset_neon_r0.L8:
 .Lnvol_find_not_byteset_neon_r0.L6:
     movz w0, #0
@@ -10876,7 +10975,7 @@ L.nvol_find_not_byteset_neon_r0:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_r0.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_r0, .-nvol_find_not_byteset_neon_r0
 
@@ -10931,7 +11030,7 @@ L.nvol_copy_until_byteset_neon_r0:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_r0.L1
+    ret
 .Lnvol_copy_until_byteset_neon_r0.L8:
 .Lnvol_copy_until_byteset_neon_r0.L6:
     mov x0, x2
@@ -10942,7 +11041,7 @@ L.nvol_copy_until_byteset_neon_r0:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_r0.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_r0, .-nvol_copy_until_byteset_neon_r0
 
@@ -10999,7 +11098,7 @@ L.nvol_find_byteset_neon_r1:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon_r1.L1
+    ret
 .Lnvol_find_byteset_neon_r1.L8:
 .Lnvol_find_byteset_neon_r1.L6:
     movz w0, #0
@@ -11010,7 +11109,7 @@ L.nvol_find_byteset_neon_r1:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon_r1.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon_r1, .-nvol_find_byteset_neon_r1
 
@@ -11069,7 +11168,7 @@ L.nvol_find_not_byteset_neon_r1:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_r1.L1
+    ret
 .Lnvol_find_not_byteset_neon_r1.L8:
 .Lnvol_find_not_byteset_neon_r1.L6:
     movz w0, #0
@@ -11080,7 +11179,7 @@ L.nvol_find_not_byteset_neon_r1:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_r1.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_r1, .-nvol_find_not_byteset_neon_r1
 
@@ -11139,7 +11238,7 @@ L.nvol_copy_until_byteset_neon_r1:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_r1.L1
+    ret
 .Lnvol_copy_until_byteset_neon_r1.L8:
 .Lnvol_copy_until_byteset_neon_r1.L6:
     mov x0, x2
@@ -11150,7 +11249,7 @@ L.nvol_copy_until_byteset_neon_r1:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_r1.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_r1, .-nvol_copy_until_byteset_neon_r1
 
@@ -11213,7 +11312,7 @@ L.nvol_find_byteset_neon_r2:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon_r2.L1
+    ret
 .Lnvol_find_byteset_neon_r2.L8:
 .Lnvol_find_byteset_neon_r2.L6:
     movz w0, #0
@@ -11224,7 +11323,7 @@ L.nvol_find_byteset_neon_r2:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon_r2.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon_r2, .-nvol_find_byteset_neon_r2
 
@@ -11289,7 +11388,7 @@ L.nvol_find_not_byteset_neon_r2:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_r2.L1
+    ret
 .Lnvol_find_not_byteset_neon_r2.L8:
 .Lnvol_find_not_byteset_neon_r2.L6:
     movz w0, #0
@@ -11300,7 +11399,7 @@ L.nvol_find_not_byteset_neon_r2:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_r2.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_r2, .-nvol_find_not_byteset_neon_r2
 
@@ -11367,7 +11466,7 @@ L.nvol_copy_until_byteset_neon_r2:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_r2.L1
+    ret
 .Lnvol_copy_until_byteset_neon_r2.L8:
 .Lnvol_copy_until_byteset_neon_r2.L6:
     mov x0, x2
@@ -11378,7 +11477,7 @@ L.nvol_copy_until_byteset_neon_r2:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_r2.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_r2, .-nvol_copy_until_byteset_neon_r2
 
@@ -11447,7 +11546,7 @@ L.nvol_find_byteset_neon_r3:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_neon_r3.L1
+    ret
 .Lnvol_find_byteset_neon_r3.L8:
 .Lnvol_find_byteset_neon_r3.L6:
     movz w0, #0
@@ -11458,7 +11557,7 @@ L.nvol_find_byteset_neon_r3:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_neon_r3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_neon_r3, .-nvol_find_byteset_neon_r3
 
@@ -11529,7 +11628,7 @@ L.nvol_find_not_byteset_neon_r3:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_neon_r3.L1
+    ret
 .Lnvol_find_not_byteset_neon_r3.L8:
 .Lnvol_find_not_byteset_neon_r3.L6:
     movz w0, #0
@@ -11540,7 +11639,7 @@ L.nvol_find_not_byteset_neon_r3:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_neon_r3.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_neon_r3, .-nvol_find_not_byteset_neon_r3
 
@@ -11611,7 +11710,7 @@ L.nvol_copy_until_byteset_neon_r3:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_neon_r3.L1
+    ret
 .Lnvol_copy_until_byteset_neon_r3.L8:
 .Lnvol_copy_until_byteset_neon_r3.L6:
     mov x0, x2
@@ -11622,7 +11721,7 @@ L.nvol_copy_until_byteset_neon_r3:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_neon_r3.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_neon_r3, .-nvol_copy_until_byteset_neon_r3
 
@@ -11683,7 +11782,7 @@ L.nvol_find_byteset_pair_neon_k1:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_neon_k1.L1
+    ret
 .Lnvol_find_byteset_pair_neon_k1.L8:
 .Lnvol_find_byteset_pair_neon_k1.L6:
     movz w0, #0
@@ -11694,7 +11793,7 @@ L.nvol_find_byteset_pair_neon_k1:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_neon_k1.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_neon_k1, .-nvol_find_byteset_pair_neon_k1
 
@@ -11767,7 +11866,7 @@ L.nvol_find_byteset_pair_neon_k2:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_neon_k2.L1
+    ret
 .Lnvol_find_byteset_pair_neon_k2.L8:
 .Lnvol_find_byteset_pair_neon_k2.L6:
     movz w0, #0
@@ -11778,7 +11877,7 @@ L.nvol_find_byteset_pair_neon_k2:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_neon_k2.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_neon_k2, .-nvol_find_byteset_pair_neon_k2
 
@@ -11863,7 +11962,7 @@ L.nvol_find_byteset_pair_neon_k3:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_neon_k3.L1
+    ret
 .Lnvol_find_byteset_pair_neon_k3.L8:
 .Lnvol_find_byteset_pair_neon_k3.L6:
     movz w0, #0
@@ -11874,7 +11973,7 @@ L.nvol_find_byteset_pair_neon_k3:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_neon_k3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_neon_k3, .-nvol_find_byteset_pair_neon_k3
 
@@ -11971,7 +12070,7 @@ L.nvol_find_byteset_pair_neon_k4:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_neon_k4.L1
+    ret
 .Lnvol_find_byteset_pair_neon_k4.L8:
 .Lnvol_find_byteset_pair_neon_k4.L6:
     movz w0, #0
@@ -11982,7 +12081,7 @@ L.nvol_find_byteset_pair_neon_k4:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_neon_k4.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_neon_k4, .-nvol_find_byteset_pair_neon_k4
 
@@ -12091,7 +12190,7 @@ L.nvol_find_byteset_pair_neon_k5:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_neon_k5.L1
+    ret
 .Lnvol_find_byteset_pair_neon_k5.L8:
 .Lnvol_find_byteset_pair_neon_k5.L6:
     movz w0, #0
@@ -12102,7 +12201,7 @@ L.nvol_find_byteset_pair_neon_k5:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_neon_k5.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_neon_k5, .-nvol_find_byteset_pair_neon_k5
 
@@ -12223,7 +12322,7 @@ L.nvol_find_byteset_pair_neon_k6:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_neon_k6.L1
+    ret
 .Lnvol_find_byteset_pair_neon_k6.L8:
 .Lnvol_find_byteset_pair_neon_k6.L6:
     movz w0, #0
@@ -12234,7 +12333,7 @@ L.nvol_find_byteset_pair_neon_k6:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_neon_k6.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_neon_k6, .-nvol_find_byteset_pair_neon_k6
 
@@ -12330,7 +12429,7 @@ L.nvol_find_byteset_pair_mask_neon:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_neon.L8:
 .Lnvol_find_byteset_pair_mask_neon.L6:
     movz w0, #0
@@ -12341,7 +12440,7 @@ L.nvol_find_byteset_pair_mask_neon:
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_neon.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_neon, .-nvol_find_byteset_pair_mask_neon
 
@@ -12398,7 +12497,7 @@ L.nvol_find_byteset_pair_mask_neon_k1:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_neon_k1.L1
+    ret
 .Lnvol_find_byteset_pair_mask_neon_k1.L8:
 .Lnvol_find_byteset_pair_mask_neon_k1.L6:
     movz w0, #0
@@ -12409,7 +12508,7 @@ L.nvol_find_byteset_pair_mask_neon_k1:
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_neon_k1.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_neon_k1, .-nvol_find_byteset_pair_mask_neon_k1
 
@@ -12478,7 +12577,7 @@ L.nvol_find_byteset_pair_mask_neon_k2:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_neon_k2.L1
+    ret
 .Lnvol_find_byteset_pair_mask_neon_k2.L8:
 .Lnvol_find_byteset_pair_mask_neon_k2.L6:
     movz w0, #0
@@ -12489,7 +12588,7 @@ L.nvol_find_byteset_pair_mask_neon_k2:
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_neon_k2.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_neon_k2, .-nvol_find_byteset_pair_mask_neon_k2
 
@@ -12570,7 +12669,7 @@ L.nvol_find_byteset_pair_mask_neon_k3:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_neon_k3.L1
+    ret
 .Lnvol_find_byteset_pair_mask_neon_k3.L8:
 .Lnvol_find_byteset_pair_mask_neon_k3.L6:
     movz w0, #0
@@ -12581,7 +12680,7 @@ L.nvol_find_byteset_pair_mask_neon_k3:
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_neon_k3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_neon_k3, .-nvol_find_byteset_pair_mask_neon_k3
 
@@ -12674,7 +12773,7 @@ L.nvol_find_byteset_pair_mask_neon_k4:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_neon_k4.L1
+    ret
 .Lnvol_find_byteset_pair_mask_neon_k4.L8:
 .Lnvol_find_byteset_pair_mask_neon_k4.L6:
     movz w0, #0
@@ -12685,7 +12784,7 @@ L.nvol_find_byteset_pair_mask_neon_k4:
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_neon_k4.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_neon_k4, .-nvol_find_byteset_pair_mask_neon_k4
 
@@ -12790,7 +12889,7 @@ L.nvol_find_byteset_pair_mask_neon_k5:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_neon_k5.L1
+    ret
 .Lnvol_find_byteset_pair_mask_neon_k5.L8:
 .Lnvol_find_byteset_pair_mask_neon_k5.L6:
     movz w0, #0
@@ -12801,7 +12900,7 @@ L.nvol_find_byteset_pair_mask_neon_k5:
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_neon_k5.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_neon_k5, .-nvol_find_byteset_pair_mask_neon_k5
 
@@ -12918,7 +13017,7 @@ L.nvol_find_byteset_pair_mask_neon_k6:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_neon_k6.L1
+    ret
 .Lnvol_find_byteset_pair_mask_neon_k6.L8:
 .Lnvol_find_byteset_pair_mask_neon_k6.L6:
     movz w0, #0
@@ -12929,7 +13028,7 @@ L.nvol_find_byteset_pair_mask_neon_k6:
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_neon_k6.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_neon_k6, .-nvol_find_byteset_pair_mask_neon_k6
 
@@ -14018,7 +14117,7 @@ L.nvol_find_byteset_entry_neon:
     ldr x9, [x0, #48]
     cbnz x9, .Lnvol_find_byteset_entry_neon.L2
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L2:
     ldrb w10, [x0, #56]
     ldrb w1, [x0, #57]
@@ -14066,7 +14165,7 @@ L.nvol_find_byteset_entry_neon:
     b.lo .Lnvol_find_byteset_entry_neon.L12
 .Lnvol_find_byteset_entry_neon.L13:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L10:
     ldrb w11, [x0, #62]
     ldrb w12, [x0, #80]
@@ -14111,11 +14210,11 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L24:
 .Lnvol_find_byteset_entry_neon.L22:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L16:
     cmp x9, #4
     b.ne .Lnvol_find_byteset_entry_neon.L26
@@ -14169,11 +14268,11 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L34:
 .Lnvol_find_byteset_entry_neon.L32:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L26:
     cmp x9, #5
     b.ne .Lnvol_find_byteset_entry_neon.L36
@@ -14235,11 +14334,11 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L44:
 .Lnvol_find_byteset_entry_neon.L42:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L36:
     cmp x9, #6
     b.ne .Lnvol_find_byteset_entry_neon.L46
@@ -14305,11 +14404,11 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L54:
 .Lnvol_find_byteset_entry_neon.L52:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L46:
     cmp x12, #1
     b.ne .Lnvol_find_byteset_entry_neon.L56
@@ -14351,11 +14450,11 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L64:
 .Lnvol_find_byteset_entry_neon.L62:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L56:
     cmp x12, #2
     b.ne .Lnvol_find_byteset_entry_neon.L66
@@ -14403,11 +14502,11 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L74:
 .Lnvol_find_byteset_entry_neon.L72:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L66:
     cmp x12, #3
     b.ne .Lnvol_find_byteset_entry_neon.L76
@@ -14461,11 +14560,11 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L84:
 .Lnvol_find_byteset_entry_neon.L82:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L76:
     cmp x12, #4
     b.ne .Lnvol_find_byteset_entry_neon.L86
@@ -14525,11 +14624,11 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L94:
 .Lnvol_find_byteset_entry_neon.L92:
     movz w0, #0
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L86:
     ldr q0, [x0]
     ldr q1, [x0, #16]
@@ -14587,7 +14686,7 @@ L.nvol_find_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L102:
 .Lnvol_find_byteset_entry_neon.L100:
     movz w0, #0
@@ -14595,61 +14694,61 @@ L.nvol_find_byteset_entry_neon:
     ret
 .Lnvol_find_byteset_entry_neon.L15:
     mov x0, x3
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L21:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L31:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L41:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L51:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L61:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L71:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L81:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L91:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .Lnvol_find_byteset_entry_neon.L99:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
-    b .Lnvol_find_byteset_entry_neon.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_entry_neon, .-nvol_find_byteset_entry_neon
 
@@ -14667,7 +14766,7 @@ L.nvol_find_not_byteset_entry_neon:
     cmp x1, x2
     b.hs .Lnvol_find_not_byteset_entry_neon.L2
     mov x0, x1
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L2:
     sub x10, x2, x1
     cmp x10, #16
@@ -14692,7 +14791,7 @@ L.nvol_find_not_byteset_entry_neon:
     b.lo .Lnvol_find_not_byteset_entry_neon.L6
 .Lnvol_find_not_byteset_entry_neon.L7:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L4:
     ldrb w10, [x0, #62]
     ldrb w11, [x0, #80]
@@ -14739,11 +14838,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L18:
 .Lnvol_find_not_byteset_entry_neon.L16:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L10:
     cmp x9, #1
     b.ne .Lnvol_find_not_byteset_entry_neon.L20
@@ -14785,11 +14884,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L28:
 .Lnvol_find_not_byteset_entry_neon.L26:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L20:
     cmp x9, #2
     b.ne .Lnvol_find_not_byteset_entry_neon.L30
@@ -14839,11 +14938,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L38:
 .Lnvol_find_not_byteset_entry_neon.L36:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L30:
     cmp x9, #3
     b.ne .Lnvol_find_not_byteset_entry_neon.L40
@@ -14897,11 +14996,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L48:
 .Lnvol_find_not_byteset_entry_neon.L46:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L40:
     cmp x9, #4
     b.ne .Lnvol_find_not_byteset_entry_neon.L50
@@ -14963,11 +15062,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L58:
 .Lnvol_find_not_byteset_entry_neon.L56:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L50:
     cmp x9, #5
     b.ne .Lnvol_find_not_byteset_entry_neon.L60
@@ -15033,11 +15132,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L68:
 .Lnvol_find_not_byteset_entry_neon.L66:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L60:
     cmp x9, #6
     b.ne .Lnvol_find_not_byteset_entry_neon.L70
@@ -15111,11 +15210,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L78:
 .Lnvol_find_not_byteset_entry_neon.L76:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L70:
     cmp x11, #1
     b.ne .Lnvol_find_not_byteset_entry_neon.L80
@@ -15159,11 +15258,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L88:
 .Lnvol_find_not_byteset_entry_neon.L86:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L80:
     cmp x11, #2
     b.ne .Lnvol_find_not_byteset_entry_neon.L90
@@ -15213,11 +15312,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L98:
 .Lnvol_find_not_byteset_entry_neon.L96:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L90:
     cmp x11, #3
     b.ne .Lnvol_find_not_byteset_entry_neon.L100
@@ -15275,11 +15374,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L108:
 .Lnvol_find_not_byteset_entry_neon.L106:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L100:
     cmp x11, #4
     b.ne .Lnvol_find_not_byteset_entry_neon.L110
@@ -15341,11 +15440,11 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L118:
 .Lnvol_find_not_byteset_entry_neon.L116:
     movz w0, #0
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L110:
     ldr q0, [x0]
     ldr q1, [x0, #16]
@@ -15405,7 +15504,7 @@ L.nvol_find_not_byteset_entry_neon:
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L126:
 .Lnvol_find_not_byteset_entry_neon.L124:
     movz w0, #0
@@ -15413,79 +15512,79 @@ L.nvol_find_not_byteset_entry_neon:
     ret
 .Lnvol_find_not_byteset_entry_neon.L9:
     mov x0, x1
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L15:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L25:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L35:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L45:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L55:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L65:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L75:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L85:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L95:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L105:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L115:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .Lnvol_find_not_byteset_entry_neon.L123:
     rbit x9, x10
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_not_byteset_entry_neon.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_entry_neon, .-nvol_find_not_byteset_entry_neon
 
@@ -15505,7 +15604,7 @@ L.nvol_find_byteset_pair_entry_neon:
     b.hi .Lnvol_find_byteset_pair_entry_neon.L2
 .Lnvol_find_byteset_pair_entry_neon.L4:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L2:
     sub x11, x11, x10
     cmp x11, #16
@@ -15519,7 +15618,7 @@ L.nvol_find_byteset_pair_entry_neon:
     cmp x12, x11
     b.hs .Lnvol_find_byteset_pair_entry_neon.L7
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L7:
     sub x11, x2, x11
     cmp x1, x11
@@ -15553,7 +15652,7 @@ L.nvol_find_byteset_pair_entry_neon:
     b.ls .Lnvol_find_byteset_pair_entry_neon.L9
 .Lnvol_find_byteset_pair_entry_neon.L10:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L5:
     cmp x9, #1
     b.ne .Lnvol_find_byteset_pair_entry_neon.L15
@@ -15605,11 +15704,11 @@ L.nvol_find_byteset_pair_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L23:
 .Lnvol_find_byteset_pair_entry_neon.L21:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L15:
     cmp x9, #2
     b.ne .Lnvol_find_byteset_pair_entry_neon.L25
@@ -15675,11 +15774,11 @@ L.nvol_find_byteset_pair_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L33:
 .Lnvol_find_byteset_pair_entry_neon.L31:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L25:
     cmp x9, #3
     b.ne .Lnvol_find_byteset_pair_entry_neon.L35
@@ -15757,11 +15856,11 @@ L.nvol_find_byteset_pair_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L43:
 .Lnvol_find_byteset_pair_entry_neon.L41:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L35:
     cmp x9, #4
     b.ne .Lnvol_find_byteset_pair_entry_neon.L45
@@ -15851,11 +15950,11 @@ L.nvol_find_byteset_pair_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L53:
 .Lnvol_find_byteset_pair_entry_neon.L51:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L45:
     cmp x9, #5
     b.ne .Lnvol_find_byteset_pair_entry_neon.L55
@@ -15957,11 +16056,11 @@ L.nvol_find_byteset_pair_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L63:
 .Lnvol_find_byteset_pair_entry_neon.L61:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L55:
     cmp x9, #6
     b.ne .Lnvol_find_byteset_pair_entry_neon.L65
@@ -16075,11 +16174,11 @@ L.nvol_find_byteset_pair_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L73:
 .Lnvol_find_byteset_pair_entry_neon.L71:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L65:
     ldr x9, [x0, #224]
     ldr x10, [x0, #232]
@@ -16165,7 +16264,7 @@ L.nvol_find_byteset_pair_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x11, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L81:
 .Lnvol_find_byteset_pair_entry_neon.L79:
     movz w0, #0
@@ -16173,49 +16272,49 @@ L.nvol_find_byteset_pair_entry_neon:
     ret
 .Lnvol_find_byteset_pair_entry_neon.L14:
     mov x0, x1
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L20:
     rbit x9, x12
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L30:
     rbit x9, x12
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L40:
     rbit x9, x12
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L50:
     rbit x9, x12
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L60:
     rbit x9, x12
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L70:
     rbit x9, x12
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_entry_neon.L78:
     rbit x9, x12
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
-    b .Lnvol_find_byteset_pair_entry_neon.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_entry_neon, .-nvol_find_byteset_pair_entry_neon
 
@@ -16236,7 +16335,7 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     b.hi .Lnvol_find_byteset_pair_mask_entry_neon.L2
 .Lnvol_find_byteset_pair_mask_entry_neon.L4:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L2:
     sub x11, x11, x10
     cmp x11, #16
@@ -16250,7 +16349,7 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     cmp x12, x11
     b.hs .Lnvol_find_byteset_pair_mask_entry_neon.L7
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L7:
     sub x11, x2, x11
     cmp x1, x11
@@ -16284,7 +16383,7 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     b.ls .Lnvol_find_byteset_pair_mask_entry_neon.L9
 .Lnvol_find_byteset_pair_mask_entry_neon.L10:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L5:
     cmp x9, #1
     b.ne .Lnvol_find_byteset_pair_mask_entry_neon.L15
@@ -16335,11 +16434,11 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L23:
 .Lnvol_find_byteset_pair_mask_entry_neon.L21:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L15:
     cmp x9, #2
     b.ne .Lnvol_find_byteset_pair_mask_entry_neon.L25
@@ -16403,11 +16502,11 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L33:
 .Lnvol_find_byteset_pair_mask_entry_neon.L31:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L25:
     cmp x9, #3
     b.ne .Lnvol_find_byteset_pair_mask_entry_neon.L35
@@ -16483,11 +16582,11 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L43:
 .Lnvol_find_byteset_pair_mask_entry_neon.L41:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L35:
     cmp x9, #4
     b.ne .Lnvol_find_byteset_pair_mask_entry_neon.L45
@@ -16575,11 +16674,11 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L53:
 .Lnvol_find_byteset_pair_mask_entry_neon.L51:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L45:
     cmp x9, #5
     b.ne .Lnvol_find_byteset_pair_mask_entry_neon.L55
@@ -16679,11 +16778,11 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L63:
 .Lnvol_find_byteset_pair_mask_entry_neon.L61:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L55:
     cmp x9, #6
     b.ne .Lnvol_find_byteset_pair_mask_entry_neon.L65
@@ -16795,11 +16894,11 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L73:
 .Lnvol_find_byteset_pair_mask_entry_neon.L71:
     movz w0, #0
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L65:
     ldr x9, [x0, #224]
     ldr x10, [x0, #232]
@@ -16885,7 +16984,7 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     str x9, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L81:
 .Lnvol_find_byteset_pair_mask_entry_neon.L79:
     movz w0, #0
@@ -16897,49 +16996,49 @@ L.nvol_find_byteset_pair_mask_entry_neon:
     orr w9, wzr, #1
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L20:
     str x11, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L30:
     str x11, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L40:
     str x11, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L50:
     str x11, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L60:
     str x11, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L70:
     str x11, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .Lnvol_find_byteset_pair_mask_entry_neon.L78:
     str x11, [x3]
     orr w9, wzr, #16
     str x9, [x3, #8]
     mov x0, x1
-    b .Lnvol_find_byteset_pair_mask_entry_neon.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_entry_neon, .-nvol_find_byteset_pair_mask_entry_neon
 
@@ -17965,7 +18064,7 @@ L.nvol_copy_until_byteset_entry_neon:
     b.lo .Lnvol_copy_until_byteset_entry_neon.L4
 .Lnvol_copy_until_byteset_entry_neon.L5:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L2:
     ldrb w10, [x0, #62]
     ldrb w11, [x0, #80]
@@ -18016,11 +18115,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L16:
 .Lnvol_copy_until_byteset_entry_neon.L14:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L8:
     cmp x9, #1
     b.ne .Lnvol_copy_until_byteset_entry_neon.L18
@@ -18066,11 +18165,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L26:
 .Lnvol_copy_until_byteset_entry_neon.L24:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L18:
     cmp x9, #2
     b.ne .Lnvol_copy_until_byteset_entry_neon.L28
@@ -18120,11 +18219,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L36:
 .Lnvol_copy_until_byteset_entry_neon.L34:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L28:
     cmp x9, #3
     b.ne .Lnvol_copy_until_byteset_entry_neon.L38
@@ -18182,11 +18281,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L46:
 .Lnvol_copy_until_byteset_entry_neon.L44:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L38:
     cmp x9, #4
     b.ne .Lnvol_copy_until_byteset_entry_neon.L48
@@ -18248,11 +18347,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L56:
 .Lnvol_copy_until_byteset_entry_neon.L54:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L48:
     cmp x9, #5
     b.ne .Lnvol_copy_until_byteset_entry_neon.L58
@@ -18322,11 +18421,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L66:
 .Lnvol_copy_until_byteset_entry_neon.L64:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L58:
     cmp x9, #6
     b.ne .Lnvol_copy_until_byteset_entry_neon.L68
@@ -18400,11 +18499,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L76:
 .Lnvol_copy_until_byteset_entry_neon.L74:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L68:
     cmp x11, #1
     b.ne .Lnvol_copy_until_byteset_entry_neon.L78
@@ -18452,11 +18551,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L86:
 .Lnvol_copy_until_byteset_entry_neon.L84:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L78:
     cmp x11, #2
     b.ne .Lnvol_copy_until_byteset_entry_neon.L88
@@ -18510,11 +18609,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L96:
 .Lnvol_copy_until_byteset_entry_neon.L94:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L88:
     cmp x11, #3
     b.ne .Lnvol_copy_until_byteset_entry_neon.L98
@@ -18572,11 +18671,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L106:
 .Lnvol_copy_until_byteset_entry_neon.L104:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L98:
     cmp x11, #4
     b.ne .Lnvol_copy_until_byteset_entry_neon.L108
@@ -18642,11 +18741,11 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L116:
 .Lnvol_copy_until_byteset_entry_neon.L114:
     mov x0, x2
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L108:
     ldr q0, [x0]
     ldr q1, [x0, #16]
@@ -18708,7 +18807,7 @@ L.nvol_copy_until_byteset_entry_neon:
     clz x9, x9
     lsr x9, x9, #2
     add x0, x10, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L124:
 .Lnvol_copy_until_byteset_entry_neon.L122:
     mov x0, x2
@@ -18716,79 +18815,79 @@ L.nvol_copy_until_byteset_entry_neon:
     ret
 .Lnvol_copy_until_byteset_entry_neon.L7:
     mov x0, x9
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L13:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L23:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L33:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L43:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L53:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L63:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L73:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L83:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L93:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L103:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L113:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .Lnvol_copy_until_byteset_entry_neon.L121:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
-    b .Lnvol_copy_until_byteset_entry_neon.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_entry_neon, .-nvol_copy_until_byteset_entry_neon
 

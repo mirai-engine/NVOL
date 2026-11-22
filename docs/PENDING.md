@@ -257,6 +257,8 @@ The detail is in "Done".
       | functions 64-aligned (item 25) | byteset 4 / 64 KiB AVX2 | 344.5 / 6041 → 383.8 / 6705 | same code (bodies byte-identical) |
       | functions 64-aligned (item 25) | count 64 KiB AVX2, first_non_ascii 64 B AVX2 | 2547 / 17.1 → 2781 / 19.2 | same code (bodies byte-identical) |
       | count below one SAD block (item 17) | count 64 B AVX2 | 13.4-13.9 → 16.2-16.8 | same code, loop heads 32-aligned: 11.0 |
+      | return tails copied (item 17) | memchr 16 B SSE2, count 64 B SSE2 | 13.73 / 15.63 → 15.04 / 16.65 | both 32-aligned: 13.93 → 13.65, 17.04 → 16.98 |
+      | return tails copied (item 17) | first_non_ascii 4 KiB AVX2 / SSE2 | 92.4 / 210.3 → 98.5 / 236.5 | both 32-aligned: 108.7 → 109.2, 237.2 → 234.9 |
 
       In the 64-aligned layout no function body changed, so each of its rows is position by
       construction. The count_parity control shows the trade: at +48 bytes, the SSE2 path gets
@@ -688,6 +690,25 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **Return tails copied into the jumps to them (item 17).** Every exit of a kernel jumped to
+  one shared return (`jmp L1` … `L1: vzeroupper; ret`), where GCC and Clang return in
+  place. `regalloc.dup_returns` (after the frame and the cold layout, both targets) replaces
+  each `jmp L` to a short return tail (at most 4 instructions ending in `ret`, no label or
+  jump among them) by a copy of the tail. It drops the tail when nothing reaches it any more.
+  The CFI and the Win64 unwinder already handle an epilogue followed by more code. Returns:
+  x86 214 → 1164, aarch64 123 → 558. `.text` 177072 → 176688 bytes (the jumps were as
+  long as the copies, and the dead tails go). Over 104 rows (13 operations × 16 B-4 KiB ×
+  2 paths, best of 5, HEAD / new / HEAD again): geomean −1.56 % (noise −0.25 %), 17 rows
+  better than −5 %, 6 worse than +5 %. The control regenerates HEAD and new with every loop
+  head 32-aligned, the same rule for both:
+  - **placement:** memchr 16 B SSE2, count 64 B SSE2, first_non_ascii 4 KiB (equal or
+    better in the control), logged in the position-loss table; memrchr 4 KiB AVX2 moves by
+    ±8 between runs;
+  - **trade-off:** memrchr 64 B AVX2, +1.5-2 cycles in both layouts with the same µops
+    (56.1). In HEAD's layout the copied `vzeroupper; ret` brings 4 µops through legacy decode
+    (MITE); with aligned loops that goes, but the cycles do not come back. No cause found
+    with the counters WSL gives. Accepted: one row against a net gain.
 
 - **count: no SAD setup below one block (item 17).** `count_sad` cleared its 64-bit
   accumulator and ended with its horizontal sum (`vmovq` / `vpextrq` / two adds) on every

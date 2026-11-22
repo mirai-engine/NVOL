@@ -187,13 +187,13 @@ L.nvol_memchr_scalar:
     ret
 .Lnvol_memchr_scalar.L5:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_memchr_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_memchr_scalar, .-nvol_memchr_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memchr_sse2
 .type nvol_memchr_sse2, @function
 .hidden nvol_memchr_sse2
@@ -213,7 +213,7 @@ L.nvol_memchr_sse2:
     {disp8} je .Lnvol_memchr_sse2.L2
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memchr_sse2.L1
+    ret
 .Lnvol_memchr_sse2.L2:
     and $-16, %rsi
     add $16, %rsi
@@ -222,7 +222,7 @@ L.nvol_memchr_sse2:
     lea -64(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_memchr_sse2.L7
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memchr_sse2.L6:
     movdqa (%rsi), %xmm1
     pcmpeqb %xmm0, %xmm1
@@ -271,7 +271,7 @@ L.nvol_memchr_sse2:
     {disp8} je .Lnvol_memchr_sse2.L22
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_sse2.L1
+    ret
 .Lnvol_memchr_sse2.L22:
 .Lnvol_memchr_sse2.L20:
     xor %eax, %eax
@@ -280,15 +280,15 @@ L.nvol_memchr_sse2:
 .Lnvol_memchr_sse2.L11:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_sse2.L1
+    ret
 .Lnvol_memchr_sse2.L13:
     bsf %eax, %eax
     lea 16(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_sse2.L1
+    ret
 .Lnvol_memchr_sse2.L15:
     bsf %eax, %eax
     lea 32(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_sse2.L1
+    ret
 .Lnvol_memchr_sse2.L9:
     pmovmskb %xmm1, %eax
     test %eax, %eax
@@ -305,16 +305,17 @@ L.nvol_memchr_sse2:
     pmovmskb %xmm4, %eax
     bsf %eax, %eax
     lea 48(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_sse2.L1
+    ret
 .Lnvol_memchr_sse2.L19:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memchr_sse2, .-nvol_memchr_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_memchr_avx2
 .type nvol_memchr_avx2, @function
 .hidden nvol_memchr_avx2
@@ -332,7 +333,8 @@ L.nvol_memchr_avx2:
     {disp8} je .Lnvol_memchr_avx2.L2
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_avx2.L2:
     and $-32, %rsi
     add $32, %rsi
@@ -341,7 +343,7 @@ L.nvol_memchr_avx2:
     lea -128(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_memchr_avx2.L7
-    .byte 15, 31, 0
+    .byte 15, 31, 64, 0
 .Lnvol_memchr_avx2.L6:
     vpcmpeqb (%rsi), %ymm0, %ymm1
     vpcmpeqb 32(%rsi), %ymm0, %ymm2
@@ -382,7 +384,8 @@ L.nvol_memchr_avx2:
     {disp8} je .Lnvol_memchr_avx2.L22
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_avx2.L22:
 .Lnvol_memchr_avx2.L20:
     xor %eax, %eax
@@ -392,15 +395,18 @@ L.nvol_memchr_avx2:
 .Lnvol_memchr_avx2.L11:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_avx2.L13:
     bsf %eax, %eax
     lea 32(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_avx2.L15:
     bsf %eax, %eax
     lea 64(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_avx2.L9:
     vpmovmskb %ymm1, %eax
     test %eax, %eax
@@ -417,11 +423,13 @@ L.nvol_memchr_avx2:
     vpmovmskb %ymm4, %eax
     bsf %eax, %eax
     lea 96(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_avx2.L19:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memchr_avx2, .-nvol_memchr_avx2
 
@@ -429,8 +437,7 @@ L.nvol_memchr_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memchr_entry_avx2
 .type nvol_memchr_entry_avx2, @function
 .hidden nvol_memchr_entry_avx2
@@ -455,7 +462,8 @@ L.nvol_memchr_entry_avx2:
     {disp8} jb .Lnvol_memchr_entry_avx2.L4
 .Lnvol_memchr_entry_avx2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L2:
     cmp $32, %rdi
     {disp32} jae .Lnvol_memchr_entry_avx2.L8
@@ -467,7 +475,8 @@ L.nvol_memchr_entry_avx2:
     {disp8} je .Lnvol_memchr_entry_avx2.L10
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L10:
     and $-16, %rsi
     add $16, %rsi
@@ -476,7 +485,7 @@ L.nvol_memchr_entry_avx2:
     lea -64(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_memchr_entry_avx2.L15
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memchr_entry_avx2.L14:
     vpcmpeqb (%rsi), %xmm0, %xmm1
     vpcmpeqb 16(%rsi), %xmm0, %xmm2
@@ -517,11 +526,13 @@ L.nvol_memchr_entry_avx2:
     {disp8} je .Lnvol_memchr_entry_avx2.L30
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L30:
 .Lnvol_memchr_entry_avx2.L28:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L8:
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %ymm0
@@ -531,7 +542,8 @@ L.nvol_memchr_entry_avx2:
     {disp8} je .Lnvol_memchr_entry_avx2.L32
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L32:
     and $-32, %rsi
     add $32, %rsi
@@ -540,7 +552,7 @@ L.nvol_memchr_entry_avx2:
     lea -128(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_memchr_entry_avx2.L37
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_memchr_entry_avx2.L36:
     vpcmpeqb (%rsi), %ymm0, %ymm1
     vpcmpeqb 32(%rsi), %ymm0, %ymm2
@@ -581,7 +593,8 @@ L.nvol_memchr_entry_avx2:
     {disp8} je .Lnvol_memchr_entry_avx2.L52
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L52:
 .Lnvol_memchr_entry_avx2.L50:
     xor %eax, %eax
@@ -590,19 +603,23 @@ L.nvol_memchr_entry_avx2:
     ret
 .Lnvol_memchr_entry_avx2.L7:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L19:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L21:
     bsf %eax, %eax
     lea 16(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L23:
     bsf %eax, %eax
     lea 32(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L17:
     vpmovmskb %xmm1, %eax
     test %eax, %eax
@@ -619,23 +636,28 @@ L.nvol_memchr_entry_avx2:
     vpmovmskb %xmm4, %eax
     bsf %eax, %eax
     lea 48(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L27:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L41:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L43:
     bsf %eax, %eax
     lea 32(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L45:
     bsf %eax, %eax
     lea 64(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L39:
     vpmovmskb %ymm1, %eax
     test %eax, %eax
@@ -652,16 +674,16 @@ L.nvol_memchr_entry_avx2:
     vpmovmskb %ymm4, %eax
     bsf %eax, %eax
     lea 96(%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr_entry_avx2.L49:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memchr_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memchr_entry_avx2, .-nvol_memchr_entry_avx2
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 15, 31, 64, 0
@@ -689,7 +711,7 @@ L.nvol_memchr_entry_sse2:
     {disp8} jb .Lnvol_memchr_entry_sse2.L4
 .Lnvol_memchr_entry_sse2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .Lnvol_memchr_entry_sse2.L2:
     imul $16843009, %ecx, %eax
     movd %eax, %xmm0
@@ -701,7 +723,7 @@ L.nvol_memchr_entry_sse2:
     {disp8} je .Lnvol_memchr_entry_sse2.L8
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .Lnvol_memchr_entry_sse2.L8:
     and $-16, %rsi
     add $16, %rsi
@@ -759,7 +781,7 @@ L.nvol_memchr_entry_sse2:
     {disp8} je .Lnvol_memchr_entry_sse2.L28
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .Lnvol_memchr_entry_sse2.L28:
 .Lnvol_memchr_entry_sse2.L26:
     xor %eax, %eax
@@ -767,19 +789,19 @@ L.nvol_memchr_entry_sse2:
     ret
 .Lnvol_memchr_entry_sse2.L7:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .Lnvol_memchr_entry_sse2.L17:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .Lnvol_memchr_entry_sse2.L19:
     bsf %eax, %eax
     lea 16(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .Lnvol_memchr_entry_sse2.L21:
     bsf %eax, %eax
     lea 32(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .Lnvol_memchr_entry_sse2.L15:
     pmovmskb %xmm1, %eax
     test %eax, %eax
@@ -796,18 +818,20 @@ L.nvol_memchr_entry_sse2:
     pmovmskb %xmm4, %eax
     bsf %eax, %eax
     lea 48(%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .Lnvol_memchr_entry_sse2.L25:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memchr_entry_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memchr_entry_sse2, .-nvol_memchr_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memchr_raw
 .type nvol_memchr_raw, @function
 nvol_memchr_raw:
@@ -928,13 +952,13 @@ L.nvol_memrchr_scalar:
     ret
 .Lnvol_memrchr_scalar.L5:
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_memrchr_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr_scalar, .-nvol_memrchr_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memrchr_sse2
 .type nvol_memrchr_sse2, @function
 .hidden nvol_memrchr_sse2
@@ -954,7 +978,7 @@ L.nvol_memrchr_sse2:
     {disp8} je .Lnvol_memrchr_sse2.L2
     bsr %eax, %eax
     lea -16(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L2:
     and $-16, %rdx
     cmp $64, %rcx
@@ -965,7 +989,7 @@ L.nvol_memrchr_sse2:
 .Lnvol_memrchr_sse2.L6:
     cmp %rdi, %rdx
     {disp8} jb .Lnvol_memrchr_sse2.L17
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memrchr_sse2.L16:
     lea -64(%rdx), %rdx
     movdqa (%rdx), %xmm1
@@ -1013,7 +1037,7 @@ L.nvol_memrchr_sse2:
     {disp8} je .Lnvol_memrchr_sse2.L32
     bsr %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L32:
 .Lnvol_memrchr_sse2.L30:
     xor %eax, %eax
@@ -1022,17 +1046,17 @@ L.nvol_memrchr_sse2:
 .Lnvol_memrchr_sse2.L11:
     bsr %eax, %eax
     lea 48(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L13:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L15:
     bsr %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L9:
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memrchr_sse2.L7:
     cmp %rdi, %rdx
     {disp32} jb .Lnvol_memrchr_sse2.L6
@@ -1068,20 +1092,20 @@ L.nvol_memrchr_sse2:
     pmovmskb %xmm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_sse2.L1
+    ret
     {disp32} jmp .Lnvol_memrchr_sse2.L6
 .Lnvol_memrchr_sse2.L21:
     bsr %eax, %eax
     lea 48(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L23:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L25:
     bsr %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L19:
     pmovmskb %xmm4, %eax
     test %eax, %eax
@@ -1098,17 +1122,20 @@ L.nvol_memrchr_sse2:
     pmovmskb %xmm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .Lnvol_memrchr_sse2.L29:
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr_sse2, .-nvol_memrchr_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memrchr_avx2
 .type nvol_memrchr_avx2, @function
 .hidden nvol_memrchr_avx2
@@ -1126,7 +1153,8 @@ L.nvol_memrchr_avx2:
     {disp8} je .Lnvol_memrchr_avx2.L2
     bsr %eax, %eax
     lea -32(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L2:
     and $-32, %rdx
     cmp $128, %rcx
@@ -1137,7 +1165,7 @@ L.nvol_memrchr_avx2:
 .Lnvol_memrchr_avx2.L6:
     cmp %rdi, %rdx
     {disp8} jb .Lnvol_memrchr_avx2.L17
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memrchr_avx2.L16:
     lea -128(%rdx), %rdx
     vpcmpeqb (%rdx), %ymm0, %ymm1
@@ -1177,7 +1205,8 @@ L.nvol_memrchr_avx2:
     {disp8} je .Lnvol_memrchr_avx2.L32
     bsr %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L32:
 .Lnvol_memrchr_avx2.L30:
     xor %eax, %eax
@@ -1187,17 +1216,20 @@ L.nvol_memrchr_avx2:
 .Lnvol_memrchr_avx2.L11:
     bsr %eax, %eax
     lea 96(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L13:
     bsr %eax, %eax
     lea 64(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L15:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L9:
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memrchr_avx2.L7:
     cmp %rdi, %rdx
     {disp32} jb .Lnvol_memrchr_avx2.L6
@@ -1227,20 +1259,24 @@ L.nvol_memrchr_avx2:
     vpmovmskb %ymm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr_avx2.L6
 .Lnvol_memrchr_avx2.L21:
     bsr %eax, %eax
     lea 96(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L23:
     bsr %eax, %eax
     lea 64(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L25:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L19:
     vpmovmskb %ymm4, %eax
     test %eax, %eax
@@ -1257,17 +1293,18 @@ L.nvol_memrchr_avx2:
     vpmovmskb %ymm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_avx2.L29:
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memrchr_avx2, .-nvol_memrchr_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_memrchr_entry_avx2
 .type nvol_memrchr_entry_avx2, @function
 .hidden nvol_memrchr_entry_avx2
@@ -1292,7 +1329,8 @@ L.nvol_memrchr_entry_avx2:
     {disp8} ja .Lnvol_memrchr_entry_avx2.L4
 .Lnvol_memrchr_entry_avx2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L2:
     cmp $32, %rdi
     {disp32} jae .Lnvol_memrchr_entry_avx2.L8
@@ -1304,7 +1342,8 @@ L.nvol_memrchr_entry_avx2:
     {disp8} je .Lnvol_memrchr_entry_avx2.L10
     bsr %eax, %eax
     lea -16(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L10:
     and $-16, %rdx
     cmp $64, %rdi
@@ -1315,6 +1354,7 @@ L.nvol_memrchr_entry_avx2:
 .Lnvol_memrchr_entry_avx2.L14:
     cmp %rcx, %rdx
     {disp8} jb .Lnvol_memrchr_entry_avx2.L25
+    .byte 102, 144
 .Lnvol_memrchr_entry_avx2.L24:
     lea -64(%rdx), %rdx
     vpcmpeqb (%rdx), %xmm0, %xmm1
@@ -1354,11 +1394,13 @@ L.nvol_memrchr_entry_avx2:
     {disp8} je .Lnvol_memrchr_entry_avx2.L40
     bsr %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L40:
 .Lnvol_memrchr_entry_avx2.L38:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L8:
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %ymm0
@@ -1368,7 +1410,8 @@ L.nvol_memrchr_entry_avx2:
     {disp8} je .Lnvol_memrchr_entry_avx2.L42
     bsr %eax, %eax
     lea -32(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L42:
     and $-32, %rdx
     cmp $128, %rdi
@@ -1379,8 +1422,7 @@ L.nvol_memrchr_entry_avx2:
 .Lnvol_memrchr_entry_avx2.L46:
     cmp %rcx, %rdx
     {disp8} jb .Lnvol_memrchr_entry_avx2.L57
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memrchr_entry_avx2.L56:
     lea -128(%rdx), %rdx
     vpcmpeqb (%rdx), %ymm0, %ymm1
@@ -1420,7 +1462,8 @@ L.nvol_memrchr_entry_avx2:
     {disp8} je .Lnvol_memrchr_entry_avx2.L72
     bsr %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L72:
 .Lnvol_memrchr_entry_avx2.L70:
     xor %eax, %eax
@@ -1429,21 +1472,25 @@ L.nvol_memrchr_entry_avx2:
     ret
 .Lnvol_memrchr_entry_avx2.L7:
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L19:
     bsr %eax, %eax
     lea 48(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L21:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L23:
     bsr %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L17:
-    .byte 15, 31, 64, 0
+    .byte 102, 144
 .Lnvol_memrchr_entry_avx2.L15:
     cmp %rcx, %rdx
     {disp32} jb .Lnvol_memrchr_entry_avx2.L14
@@ -1473,20 +1520,24 @@ L.nvol_memrchr_entry_avx2:
     vpmovmskb %xmm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr_entry_avx2.L14
 .Lnvol_memrchr_entry_avx2.L29:
     bsr %eax, %eax
     lea 48(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L31:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L33:
     bsr %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L27:
     vpmovmskb %xmm4, %eax
     test %eax, %eax
@@ -1503,25 +1554,30 @@ L.nvol_memrchr_entry_avx2:
     vpmovmskb %xmm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L37:
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L51:
     bsr %eax, %eax
     lea 96(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L53:
     bsr %eax, %eax
     lea 64(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L55:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L49:
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memrchr_entry_avx2.L47:
     cmp %rcx, %rdx
     {disp32} jb .Lnvol_memrchr_entry_avx2.L46
@@ -1551,20 +1607,24 @@ L.nvol_memrchr_entry_avx2:
     vpmovmskb %ymm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr_entry_avx2.L46
 .Lnvol_memrchr_entry_avx2.L61:
     bsr %eax, %eax
     lea 96(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L63:
     bsr %eax, %eax
     lea 64(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L65:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L59:
     vpmovmskb %ymm4, %eax
     test %eax, %eax
@@ -1581,11 +1641,13 @@ L.nvol_memrchr_entry_avx2:
     vpmovmskb %ymm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr_entry_avx2.L69:
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memrchr_entry_avx2, .-nvol_memrchr_entry_avx2
 
@@ -1593,7 +1655,9 @@ L.nvol_memrchr_entry_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr_entry_sse2
 .type nvol_memrchr_entry_sse2, @function
 .hidden nvol_memrchr_entry_sse2
@@ -1618,7 +1682,7 @@ L.nvol_memrchr_entry_sse2:
     {disp8} ja .Lnvol_memrchr_entry_sse2.L4
 .Lnvol_memrchr_entry_sse2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L2:
     imul $16843009, %ecx, %eax
     movd %eax, %xmm0
@@ -1630,7 +1694,7 @@ L.nvol_memrchr_entry_sse2:
     {disp8} je .Lnvol_memrchr_entry_sse2.L8
     bsr %eax, %eax
     lea -16(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L8:
     and $-16, %rdx
     cmp $64, %rdi
@@ -1641,6 +1705,7 @@ L.nvol_memrchr_entry_sse2:
 .Lnvol_memrchr_entry_sse2.L12:
     cmp %rcx, %rdx
     {disp8} jb .Lnvol_memrchr_entry_sse2.L23
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memrchr_entry_sse2.L22:
     lea -64(%rdx), %rdx
     movdqa (%rdx), %xmm1
@@ -1688,7 +1753,7 @@ L.nvol_memrchr_entry_sse2:
     {disp8} je .Lnvol_memrchr_entry_sse2.L38
     bsr %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L38:
 .Lnvol_memrchr_entry_sse2.L36:
     xor %eax, %eax
@@ -1696,21 +1761,21 @@ L.nvol_memrchr_entry_sse2:
     ret
 .Lnvol_memrchr_entry_sse2.L7:
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L17:
     bsr %eax, %eax
     lea 48(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L19:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L21:
     bsr %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L15:
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_memrchr_entry_sse2.L13:
     cmp %rcx, %rdx
     {disp32} jb .Lnvol_memrchr_entry_sse2.L12
@@ -1746,20 +1811,20 @@ L.nvol_memrchr_entry_sse2:
     pmovmskb %xmm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
     {disp32} jmp .Lnvol_memrchr_entry_sse2.L12
 .Lnvol_memrchr_entry_sse2.L27:
     bsr %eax, %eax
     lea 48(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L29:
     bsr %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L31:
     bsr %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L25:
     pmovmskb %xmm4, %eax
     test %eax, %eax
@@ -1776,19 +1841,16 @@ L.nvol_memrchr_entry_sse2:
     pmovmskb %xmm1, %eax
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .Lnvol_memrchr_entry_sse2.L35:
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr_entry_sse2, .-nvol_memrchr_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memrchr_raw
 .type nvol_memrchr_raw, @function
 nvol_memrchr_raw:
@@ -1905,7 +1967,7 @@ L.nvol_memchr2_scalar:
 .Lnvol_memchr2_scalar.L6:
 .Lnvol_memchr2_scalar.L5:
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_memchr2_scalar.L1
+    ret
 .Lnvol_memchr2_scalar.L4:
     add $1, %rdx
     cmp %rcx, %rdx
@@ -1919,7 +1981,7 @@ L.nvol_memchr2_scalar:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 0
 .globl nvol_memchr2_sse2
 .type nvol_memchr2_sse2, @function
 .hidden nvol_memchr2_sse2
@@ -1946,7 +2008,7 @@ L.nvol_memchr2_sse2:
     {disp8} je .Lnvol_memchr2_sse2.L2
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr2_sse2.L1
+    ret
 .Lnvol_memchr2_sse2.L2:
     and $-16, %rdx
     add $16, %rdx
@@ -1955,7 +2017,7 @@ L.nvol_memchr2_sse2:
     lea -32(%rcx), %rsi
     cmp %rsi, %rdx
     {disp8} ja .Lnvol_memchr2_sse2.L7
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memchr2_sse2.L6:
     movdqa (%rdx), %xmm2
     movdqa 16(%rdx), %xmm3
@@ -2009,7 +2071,7 @@ L.nvol_memchr2_sse2:
     {disp8} je .Lnvol_memchr2_sse2.L18
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_sse2.L1
+    ret
 .Lnvol_memchr2_sse2.L18:
 .Lnvol_memchr2_sse2.L16:
     xor %eax, %eax
@@ -2018,7 +2080,7 @@ L.nvol_memchr2_sse2:
 .Lnvol_memchr2_sse2.L11:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_sse2.L1
+    ret
 .Lnvol_memchr2_sse2.L9:
     pmovmskb %xmm4, %eax
     test %eax, %eax
@@ -2027,15 +2089,15 @@ L.nvol_memchr2_sse2:
     pmovmskb %xmm2, %eax
     bsf %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_sse2.L1
+    ret
 .Lnvol_memchr2_sse2.L15:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memchr2_sse2, .-nvol_memchr2_sse2
 
-    .byte 102, 144
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memchr2_avx2
 .type nvol_memchr2_avx2, @function
 .hidden nvol_memchr2_avx2
@@ -2059,7 +2121,8 @@ L.nvol_memchr2_avx2:
     {disp8} je .Lnvol_memchr2_avx2.L2
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_avx2.L2:
     and $-32, %rdx
     add $32, %rdx
@@ -2068,7 +2131,7 @@ L.nvol_memchr2_avx2:
     lea -64(%rcx), %rsi
     cmp %rsi, %rdx
     {disp8} ja .Lnvol_memchr2_avx2.L7
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memchr2_avx2.L6:
     vmovdqa (%rdx), %ymm2
     vmovdqa 32(%rdx), %ymm3
@@ -2117,7 +2180,8 @@ L.nvol_memchr2_avx2:
     {disp8} je .Lnvol_memchr2_avx2.L18
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_avx2.L18:
 .Lnvol_memchr2_avx2.L16:
     xor %eax, %eax
@@ -2127,7 +2191,8 @@ L.nvol_memchr2_avx2:
 .Lnvol_memchr2_avx2.L11:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_avx2.L9:
     vpmovmskb %ymm2, %eax
     test %eax, %eax
@@ -2136,19 +2201,20 @@ L.nvol_memchr2_avx2:
     vpmovmskb %ymm3, %eax
     bsf %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_avx2.L15:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memchr2_avx2, .-nvol_memchr2_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memchr2_entry_avx2
 .type nvol_memchr2_entry_avx2, @function
 .hidden nvol_memchr2_entry_avx2
@@ -2173,14 +2239,16 @@ L.nvol_memchr2_entry_avx2:
 .Lnvol_memchr2_entry_avx2.L8:
 .Lnvol_memchr2_entry_avx2.L7:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L6:
     add $1, %rdx
     cmp %rcx, %rdx
     {disp8} jb .Lnvol_memchr2_entry_avx2.L4
 .Lnvol_memchr2_entry_avx2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L2:
     cmp $32, %r8
     {disp32} jae .Lnvol_memchr2_entry_avx2.L9
@@ -2197,7 +2265,8 @@ L.nvol_memchr2_entry_avx2:
     {disp8} je .Lnvol_memchr2_entry_avx2.L11
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L11:
     and $-16, %rdx
     add $16, %rdx
@@ -2206,7 +2275,7 @@ L.nvol_memchr2_entry_avx2:
     lea -32(%rcx), %rsi
     cmp %rsi, %rdx
     {disp8} ja .Lnvol_memchr2_entry_avx2.L16
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memchr2_entry_avx2.L15:
     vmovdqa (%rdx), %xmm2
     vmovdqa 16(%rdx), %xmm3
@@ -2255,11 +2324,13 @@ L.nvol_memchr2_entry_avx2:
     {disp8} je .Lnvol_memchr2_entry_avx2.L27
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L27:
 .Lnvol_memchr2_entry_avx2.L25:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L9:
     vmovd %edi, %xmm0
     vpbroadcastb %xmm0, %ymm0
@@ -2274,7 +2345,8 @@ L.nvol_memchr2_entry_avx2:
     {disp8} je .Lnvol_memchr2_entry_avx2.L29
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L29:
     and $-32, %rdx
     add $32, %rdx
@@ -2283,7 +2355,7 @@ L.nvol_memchr2_entry_avx2:
     lea -64(%rcx), %rsi
     cmp %rsi, %rdx
     {disp8} ja .Lnvol_memchr2_entry_avx2.L34
-    .byte 102, 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memchr2_entry_avx2.L33:
     vmovdqa (%rdx), %ymm2
     vmovdqa 32(%rdx), %ymm3
@@ -2332,7 +2404,8 @@ L.nvol_memchr2_entry_avx2:
     {disp8} je .Lnvol_memchr2_entry_avx2.L45
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L45:
 .Lnvol_memchr2_entry_avx2.L43:
     xor %eax, %eax
@@ -2342,7 +2415,8 @@ L.nvol_memchr2_entry_avx2:
 .Lnvol_memchr2_entry_avx2.L20:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L18:
     vpmovmskb %xmm2, %eax
     test %eax, %eax
@@ -2351,15 +2425,18 @@ L.nvol_memchr2_entry_avx2:
     vpmovmskb %xmm3, %eax
     bsf %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L24:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L38:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L36:
     vpmovmskb %ymm2, %eax
     test %eax, %eax
@@ -2368,15 +2445,22 @@ L.nvol_memchr2_entry_avx2:
     vpmovmskb %ymm3, %eax
     bsf %eax, %eax
     lea 32(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr2_entry_avx2.L42:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memchr2_entry_avx2, .-nvol_memchr2_entry_avx2
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memchr2_entry_sse2
 .type nvol_memchr2_entry_sse2, @function
 .hidden nvol_memchr2_entry_sse2
@@ -2401,14 +2485,14 @@ L.nvol_memchr2_entry_sse2:
 .Lnvol_memchr2_entry_sse2.L8:
 .Lnvol_memchr2_entry_sse2.L7:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_memchr2_entry_sse2.L1
+    ret
 .Lnvol_memchr2_entry_sse2.L6:
     add $1, %rdx
     cmp %rcx, %rdx
     {disp8} jb .Lnvol_memchr2_entry_sse2.L4
 .Lnvol_memchr2_entry_sse2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr2_entry_sse2.L1
+    ret
 .Lnvol_memchr2_entry_sse2.L2:
     imul $16843009, %edi, %eax
     movd %eax, %xmm0
@@ -2426,7 +2510,7 @@ L.nvol_memchr2_entry_sse2:
     {disp8} je .Lnvol_memchr2_entry_sse2.L9
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr2_entry_sse2.L1
+    ret
 .Lnvol_memchr2_entry_sse2.L9:
     and $-16, %rdx
     add $16, %rdx
@@ -2435,6 +2519,7 @@ L.nvol_memchr2_entry_sse2:
     lea -32(%rcx), %rsi
     cmp %rsi, %rdx
     {disp8} ja .Lnvol_memchr2_entry_sse2.L14
+    .byte 15, 31, 64, 0
 .Lnvol_memchr2_entry_sse2.L13:
     movdqa (%rdx), %xmm2
     movdqa 16(%rdx), %xmm3
@@ -2488,7 +2573,7 @@ L.nvol_memchr2_entry_sse2:
     {disp8} je .Lnvol_memchr2_entry_sse2.L25
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_sse2.L1
+    ret
 .Lnvol_memchr2_entry_sse2.L25:
 .Lnvol_memchr2_entry_sse2.L23:
     xor %eax, %eax
@@ -2497,7 +2582,7 @@ L.nvol_memchr2_entry_sse2:
 .Lnvol_memchr2_entry_sse2.L18:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_sse2.L1
+    ret
 .Lnvol_memchr2_entry_sse2.L16:
     pmovmskb %xmm4, %eax
     test %eax, %eax
@@ -2506,16 +2591,18 @@ L.nvol_memchr2_entry_sse2:
     pmovmskb %xmm2, %eax
     bsf %eax, %eax
     lea 16(%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_sse2.L1
+    ret
 .Lnvol_memchr2_entry_sse2.L22:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr2_entry_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memchr2_entry_sse2, .-nvol_memchr2_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memchr2_raw
 .type nvol_memchr2_raw, @function
 nvol_memchr2_raw:
@@ -2633,7 +2720,7 @@ L.nvol_memrchr2_scalar:
 .Lnvol_memrchr2_scalar.L6:
 .Lnvol_memrchr2_scalar.L5:
     mov %rcx, %rax
-    {disp8} jmp .Lnvol_memrchr2_scalar.L1
+    ret
 .Lnvol_memrchr2_scalar.L4:
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memrchr2_scalar.L2
@@ -2646,7 +2733,7 @@ L.nvol_memrchr2_scalar:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 0
 .globl nvol_memrchr2_sse2
 .type nvol_memrchr2_sse2, @function
 .hidden nvol_memrchr2_sse2
@@ -2673,7 +2760,7 @@ L.nvol_memrchr2_sse2:
     {disp8} je .Lnvol_memrchr2_sse2.L2
     bsr %eax, %eax
     lea -16(%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_sse2.L1
+    ret
 .Lnvol_memrchr2_sse2.L2:
     and $-16, %rcx
     cmp $32, %rdi
@@ -2684,8 +2771,7 @@ L.nvol_memrchr2_sse2:
 .Lnvol_memrchr2_sse2.L6:
     cmp %rsi, %rcx
     {disp8} jb .Lnvol_memrchr2_sse2.L13
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memrchr2_sse2.L12:
     lea -32(%rcx), %rcx
     movdqa (%rcx), %xmm2
@@ -2711,7 +2797,7 @@ L.nvol_memrchr2_sse2:
     lea 16(%rdx), %rsi
     cmp %rsi, %rcx
     {disp8} jb .Lnvol_memrchr2_sse2.L19
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memrchr2_sse2.L18:
     lea -16(%rcx), %rcx
     movdqu (%rcx), %xmm2
@@ -2738,7 +2824,7 @@ L.nvol_memrchr2_sse2:
     {disp8} je .Lnvol_memrchr2_sse2.L24
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_sse2.L1
+    ret
 .Lnvol_memrchr2_sse2.L24:
 .Lnvol_memrchr2_sse2.L22:
     xor %eax, %eax
@@ -2747,8 +2833,9 @@ L.nvol_memrchr2_sse2:
 .Lnvol_memrchr2_sse2.L11:
     bsr %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_sse2.L1
+    ret
 .Lnvol_memrchr2_sse2.L9:
+    .byte 102, 144
 .Lnvol_memrchr2_sse2.L7:
     cmp %rsi, %rcx
     {disp32} jb .Lnvol_memrchr2_sse2.L6
@@ -2775,12 +2862,12 @@ L.nvol_memrchr2_sse2:
     pmovmskb %xmm4, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_sse2.L1
+    ret
     {disp32} jmp .Lnvol_memrchr2_sse2.L6
 .Lnvol_memrchr2_sse2.L17:
     bsr %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_sse2.L1
+    ret
 .Lnvol_memrchr2_sse2.L15:
     pmovmskb %xmm2, %eax
     test %eax, %eax
@@ -2789,15 +2876,16 @@ L.nvol_memrchr2_sse2:
     pmovmskb %xmm4, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_sse2.L1
+    ret
 .Lnvol_memrchr2_sse2.L21:
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr2_sse2, .-nvol_memrchr2_sse2
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memrchr2_avx2
 .type nvol_memrchr2_avx2, @function
 .hidden nvol_memrchr2_avx2
@@ -2821,7 +2909,8 @@ L.nvol_memrchr2_avx2:
     {disp8} je .Lnvol_memrchr2_avx2.L2
     bsr %eax, %eax
     lea -32(%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_avx2.L2:
     and $-32, %rcx
     cmp $64, %rdi
@@ -2832,8 +2921,7 @@ L.nvol_memrchr2_avx2:
 .Lnvol_memrchr2_avx2.L6:
     cmp %rsi, %rcx
     {disp8} jb .Lnvol_memrchr2_avx2.L13
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_memrchr2_avx2.L12:
     lea -64(%rcx), %rcx
     vmovdqa (%rcx), %ymm2
@@ -2881,7 +2969,8 @@ L.nvol_memrchr2_avx2:
     {disp8} je .Lnvol_memrchr2_avx2.L24
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_avx2.L24:
 .Lnvol_memrchr2_avx2.L22:
     xor %eax, %eax
@@ -2891,9 +2980,10 @@ L.nvol_memrchr2_avx2:
 .Lnvol_memrchr2_avx2.L11:
     bsr %eax, %eax
     lea 32(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_avx2.L9:
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .Lnvol_memrchr2_avx2.L7:
     cmp %rsi, %rcx
     {disp32} jb .Lnvol_memrchr2_avx2.L6
@@ -2917,12 +3007,14 @@ L.nvol_memrchr2_avx2:
     vpmovmskb %ymm2, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr2_avx2.L6
 .Lnvol_memrchr2_avx2.L17:
     bsr %eax, %eax
     lea 32(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_avx2.L15:
     vpmovmskb %ymm3, %eax
     test %eax, %eax
@@ -2931,11 +3023,13 @@ L.nvol_memrchr2_avx2:
     vpmovmskb %ymm2, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_avx2.L21:
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memrchr2_avx2, .-nvol_memrchr2_avx2
 
@@ -2943,7 +3037,7 @@ L.nvol_memrchr2_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr2_entry_avx2
 .type nvol_memrchr2_entry_avx2, @function
 .hidden nvol_memrchr2_entry_avx2
@@ -2969,13 +3063,15 @@ L.nvol_memrchr2_entry_avx2:
 .Lnvol_memrchr2_entry_avx2.L8:
 .Lnvol_memrchr2_entry_avx2.L7:
     mov %rcx, %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L6:
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memrchr2_entry_avx2.L4
 .Lnvol_memrchr2_entry_avx2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L2:
     cmp $32, %r8
     {disp32} jae .Lnvol_memrchr2_entry_avx2.L9
@@ -2992,7 +3088,8 @@ L.nvol_memrchr2_entry_avx2:
     {disp8} je .Lnvol_memrchr2_entry_avx2.L11
     bsr %eax, %eax
     lea -16(%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L11:
     and $-16, %rcx
     cmp $32, %r8
@@ -3003,7 +3100,7 @@ L.nvol_memrchr2_entry_avx2:
 .Lnvol_memrchr2_entry_avx2.L15:
     cmp %rsi, %rcx
     {disp8} jb .Lnvol_memrchr2_entry_avx2.L22
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memrchr2_entry_avx2.L21:
     lea -32(%rcx), %rcx
     vmovdqa (%rcx), %xmm2
@@ -3051,11 +3148,13 @@ L.nvol_memrchr2_entry_avx2:
     {disp8} je .Lnvol_memrchr2_entry_avx2.L33
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L33:
 .Lnvol_memrchr2_entry_avx2.L31:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L9:
     vmovd %edi, %xmm0
     vpbroadcastb %xmm0, %ymm0
@@ -3070,7 +3169,8 @@ L.nvol_memrchr2_entry_avx2:
     {disp8} je .Lnvol_memrchr2_entry_avx2.L35
     bsr %eax, %eax
     lea -32(%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L35:
     and $-32, %rcx
     cmp $64, %r8
@@ -3081,7 +3181,7 @@ L.nvol_memrchr2_entry_avx2:
 .Lnvol_memrchr2_entry_avx2.L39:
     cmp %rsi, %rcx
     {disp8} jb .Lnvol_memrchr2_entry_avx2.L46
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memrchr2_entry_avx2.L45:
     lea -64(%rcx), %rcx
     vmovdqa (%rcx), %ymm2
@@ -3129,7 +3229,8 @@ L.nvol_memrchr2_entry_avx2:
     {disp8} je .Lnvol_memrchr2_entry_avx2.L57
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L57:
 .Lnvol_memrchr2_entry_avx2.L55:
     xor %eax, %eax
@@ -3139,9 +3240,10 @@ L.nvol_memrchr2_entry_avx2:
 .Lnvol_memrchr2_entry_avx2.L20:
     bsr %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L18:
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memrchr2_entry_avx2.L16:
     cmp %rsi, %rcx
     {disp32} jb .Lnvol_memrchr2_entry_avx2.L15
@@ -3165,12 +3267,14 @@ L.nvol_memrchr2_entry_avx2:
     vpmovmskb %xmm2, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr2_entry_avx2.L15
 .Lnvol_memrchr2_entry_avx2.L26:
     bsr %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L24:
     vpmovmskb %xmm3, %eax
     test %eax, %eax
@@ -3179,17 +3283,19 @@ L.nvol_memrchr2_entry_avx2:
     vpmovmskb %xmm2, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L30:
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L44:
     bsr %eax, %eax
     lea 32(%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L42:
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memrchr2_entry_avx2.L40:
     cmp %rsi, %rcx
     {disp32} jb .Lnvol_memrchr2_entry_avx2.L39
@@ -3213,12 +3319,14 @@ L.nvol_memrchr2_entry_avx2:
     vpmovmskb %ymm2, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr2_entry_avx2.L39
 .Lnvol_memrchr2_entry_avx2.L50:
     bsr %eax, %eax
     lea 32(%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L48:
     vpmovmskb %ymm3, %eax
     test %eax, %eax
@@ -3227,17 +3335,20 @@ L.nvol_memrchr2_entry_avx2:
     vpmovmskb %ymm2, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr2_entry_avx2.L54:
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memrchr2_entry_avx2, .-nvol_memrchr2_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_memrchr2_entry_sse2
 .type nvol_memrchr2_entry_sse2, @function
 .hidden nvol_memrchr2_entry_sse2
@@ -3263,13 +3374,13 @@ L.nvol_memrchr2_entry_sse2:
 .Lnvol_memrchr2_entry_sse2.L8:
 .Lnvol_memrchr2_entry_sse2.L7:
     mov %rcx, %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
 .Lnvol_memrchr2_entry_sse2.L6:
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memrchr2_entry_sse2.L4
 .Lnvol_memrchr2_entry_sse2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
 .Lnvol_memrchr2_entry_sse2.L2:
     imul $16843009, %edi, %eax
     movd %eax, %xmm0
@@ -3287,7 +3398,7 @@ L.nvol_memrchr2_entry_sse2:
     {disp8} je .Lnvol_memrchr2_entry_sse2.L9
     bsr %eax, %eax
     lea -16(%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
 .Lnvol_memrchr2_entry_sse2.L9:
     and $-16, %rcx
     cmp $32, %r8
@@ -3298,7 +3409,7 @@ L.nvol_memrchr2_entry_sse2:
 .Lnvol_memrchr2_entry_sse2.L13:
     cmp %rsi, %rcx
     {disp8} jb .Lnvol_memrchr2_entry_sse2.L20
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .Lnvol_memrchr2_entry_sse2.L19:
     lea -32(%rcx), %rcx
     movdqa (%rcx), %xmm2
@@ -3351,7 +3462,7 @@ L.nvol_memrchr2_entry_sse2:
     {disp8} je .Lnvol_memrchr2_entry_sse2.L31
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
 .Lnvol_memrchr2_entry_sse2.L31:
 .Lnvol_memrchr2_entry_sse2.L29:
     xor %eax, %eax
@@ -3360,8 +3471,9 @@ L.nvol_memrchr2_entry_sse2:
 .Lnvol_memrchr2_entry_sse2.L18:
     bsr %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
 .Lnvol_memrchr2_entry_sse2.L16:
+    .byte 102, 144
 .Lnvol_memrchr2_entry_sse2.L14:
     cmp %rsi, %rcx
     {disp32} jb .Lnvol_memrchr2_entry_sse2.L13
@@ -3388,12 +3500,12 @@ L.nvol_memrchr2_entry_sse2:
     pmovmskb %xmm4, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
     {disp32} jmp .Lnvol_memrchr2_entry_sse2.L13
 .Lnvol_memrchr2_entry_sse2.L24:
     bsr %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
 .Lnvol_memrchr2_entry_sse2.L22:
     pmovmskb %xmm2, %eax
     test %eax, %eax
@@ -3402,16 +3514,19 @@ L.nvol_memrchr2_entry_sse2:
     pmovmskb %xmm4, %eax
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
 .Lnvol_memrchr2_entry_sse2.L28:
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr2_entry_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr2_entry_sse2, .-nvol_memrchr2_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr2_raw
 .type nvol_memrchr2_raw, @function
 nvol_memrchr2_raw:
@@ -3530,7 +3645,7 @@ L.nvol_memchr3_scalar:
 .Lnvol_memchr3_scalar.L6:
 .Lnvol_memchr3_scalar.L5:
     mov %rcx, %rax
-    {disp8} jmp .Lnvol_memchr3_scalar.L1
+    ret
 .Lnvol_memchr3_scalar.L4:
     add $1, %rcx
     cmp %r8, %rcx
@@ -3543,7 +3658,7 @@ L.nvol_memchr3_scalar:
 .size nvol_memchr3_scalar, .-nvol_memchr3_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memchr3_sse2
 .type nvol_memchr3_sse2, @function
 .hidden nvol_memchr3_sse2
@@ -3577,7 +3692,7 @@ L.nvol_memchr3_sse2:
     {disp8} je .Lnvol_memchr3_sse2.L2
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr3_sse2.L1
+    ret
 .Lnvol_memchr3_sse2.L2:
     and $-16, %rcx
     add $16, %rcx
@@ -3586,7 +3701,7 @@ L.nvol_memchr3_sse2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memchr3_sse2.L7
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_memchr3_sse2.L6:
     movdqa (%rcx), %xmm3
     movdqa 16(%rcx), %xmm4
@@ -3618,7 +3733,7 @@ L.nvol_memchr3_sse2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memchr3_sse2.L13
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_memchr3_sse2.L12:
     movdqu (%rcx), %xmm3
     movdqa %xmm3, %xmm4
@@ -3652,7 +3767,7 @@ L.nvol_memchr3_sse2:
     {disp8} je .Lnvol_memchr3_sse2.L18
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_sse2.L1
+    ret
 .Lnvol_memchr3_sse2.L18:
 .Lnvol_memchr3_sse2.L16:
     xor %eax, %eax
@@ -3661,7 +3776,7 @@ L.nvol_memchr3_sse2:
 .Lnvol_memchr3_sse2.L11:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_sse2.L1
+    ret
 .Lnvol_memchr3_sse2.L9:
     pmovmskb %xmm5, %eax
     test %eax, %eax
@@ -3670,11 +3785,11 @@ L.nvol_memchr3_sse2:
     pmovmskb %xmm3, %eax
     bsf %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_sse2.L1
+    ret
 .Lnvol_memchr3_sse2.L15:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memchr3_sse2, .-nvol_memchr3_sse2
 
@@ -3682,7 +3797,9 @@ L.nvol_memchr3_sse2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memchr3_avx2
 .type nvol_memchr3_avx2, @function
 .hidden nvol_memchr3_avx2
@@ -3711,7 +3828,8 @@ L.nvol_memchr3_avx2:
     {disp8} je .Lnvol_memchr3_avx2.L2
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_avx2.L2:
     and $-32, %rcx
     add $32, %rcx
@@ -3720,7 +3838,7 @@ L.nvol_memchr3_avx2:
     lea -64(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memchr3_avx2.L7
-    .byte 144
+    .byte 102, 144
 .Lnvol_memchr3_avx2.L6:
     vmovdqa (%rcx), %ymm3
     vmovdqa 32(%rcx), %ymm4
@@ -3737,7 +3855,7 @@ L.nvol_memchr3_avx2:
     vpor %ymm4, %ymm3, %ymm5
     vpmovmskb %ymm5, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr3_avx2.L9
+    {disp32} jne .Lnvol_memchr3_avx2.L9
 .Lnvol_memchr3_avx2.L8:
     add $64, %rcx
     cmp %rdx, %rcx
@@ -3747,7 +3865,7 @@ L.nvol_memchr3_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memchr3_avx2.L13
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memchr3_avx2.L12:
     vmovdqu (%rcx), %ymm3
     vpcmpeqb %ymm0, %ymm3, %ymm4
@@ -3777,7 +3895,8 @@ L.nvol_memchr3_avx2:
     {disp8} je .Lnvol_memchr3_avx2.L18
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_avx2.L18:
 .Lnvol_memchr3_avx2.L16:
     xor %eax, %eax
@@ -3787,7 +3906,8 @@ L.nvol_memchr3_avx2:
 .Lnvol_memchr3_avx2.L11:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_avx2.L9:
     vpmovmskb %ymm3, %eax
     test %eax, %eax
@@ -3796,11 +3916,13 @@ L.nvol_memchr3_avx2:
     vpmovmskb %ymm4, %eax
     bsf %eax, %eax
     lea 32(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_avx2.L15:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memchr3_avx2, .-nvol_memchr3_avx2
 
@@ -3808,9 +3930,7 @@ L.nvol_memchr3_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_memchr3_entry_avx2
 .type nvol_memchr3_entry_avx2, @function
 .hidden nvol_memchr3_entry_avx2
@@ -3838,14 +3958,16 @@ L.nvol_memchr3_entry_avx2:
 .Lnvol_memchr3_entry_avx2.L8:
 .Lnvol_memchr3_entry_avx2.L7:
     mov %rcx, %rax
-    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L6:
     add $1, %rcx
     cmp %r8, %rcx
     {disp8} jb .Lnvol_memchr3_entry_avx2.L4
 .Lnvol_memchr3_entry_avx2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L2:
     cmp $32, %r9
     {disp32} jae .Lnvol_memchr3_entry_avx2.L9
@@ -3866,7 +3988,8 @@ L.nvol_memchr3_entry_avx2:
     {disp8} je .Lnvol_memchr3_entry_avx2.L11
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L11:
     and $-16, %rcx
     add $16, %rcx
@@ -3875,7 +3998,7 @@ L.nvol_memchr3_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memchr3_entry_avx2.L16
-    .byte 144
+    .byte 15, 31, 64, 0
 .Lnvol_memchr3_entry_avx2.L15:
     vmovdqa (%rcx), %xmm3
     vmovdqa 16(%rcx), %xmm4
@@ -3932,11 +4055,13 @@ L.nvol_memchr3_entry_avx2:
     {disp8} je .Lnvol_memchr3_entry_avx2.L27
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L27:
 .Lnvol_memchr3_entry_avx2.L25:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L9:
     vmovd %edi, %xmm0
     vpbroadcastb %xmm0, %ymm0
@@ -3955,7 +4080,8 @@ L.nvol_memchr3_entry_avx2:
     {disp8} je .Lnvol_memchr3_entry_avx2.L29
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L29:
     and $-32, %rcx
     add $32, %rcx
@@ -3964,7 +4090,7 @@ L.nvol_memchr3_entry_avx2:
     lea -64(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memchr3_entry_avx2.L34
-    .byte 144
+    .byte 15, 31, 64, 0
 .Lnvol_memchr3_entry_avx2.L33:
     vmovdqa (%rcx), %ymm3
     vmovdqa 32(%rcx), %ymm4
@@ -4021,7 +4147,8 @@ L.nvol_memchr3_entry_avx2:
     {disp8} je .Lnvol_memchr3_entry_avx2.L45
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L45:
 .Lnvol_memchr3_entry_avx2.L43:
     xor %eax, %eax
@@ -4031,7 +4158,8 @@ L.nvol_memchr3_entry_avx2:
 .Lnvol_memchr3_entry_avx2.L20:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L18:
     vpmovmskb %xmm3, %eax
     test %eax, %eax
@@ -4040,15 +4168,18 @@ L.nvol_memchr3_entry_avx2:
     vpmovmskb %xmm4, %eax
     bsf %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L24:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L38:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L36:
     vpmovmskb %ymm3, %eax
     test %eax, %eax
@@ -4057,18 +4188,19 @@ L.nvol_memchr3_entry_avx2:
     vpmovmskb %ymm4, %eax
     bsf %eax, %eax
     lea 32(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memchr3_entry_avx2.L42:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memchr3_entry_avx2, .-nvol_memchr3_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memchr3_entry_sse2
 .type nvol_memchr3_entry_sse2, @function
 .hidden nvol_memchr3_entry_sse2
@@ -4096,14 +4228,14 @@ L.nvol_memchr3_entry_sse2:
 .Lnvol_memchr3_entry_sse2.L8:
 .Lnvol_memchr3_entry_sse2.L7:
     mov %rcx, %rax
-    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+    ret
 .Lnvol_memchr3_entry_sse2.L6:
     add $1, %rcx
     cmp %r8, %rcx
     {disp8} jb .Lnvol_memchr3_entry_sse2.L4
 .Lnvol_memchr3_entry_sse2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+    ret
 .Lnvol_memchr3_entry_sse2.L2:
     imul $16843009, %edi, %eax
     movd %eax, %xmm0
@@ -4127,7 +4259,7 @@ L.nvol_memchr3_entry_sse2:
     {disp8} je .Lnvol_memchr3_entry_sse2.L9
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+    ret
 .Lnvol_memchr3_entry_sse2.L9:
     and $-16, %rcx
     add $16, %rcx
@@ -4136,7 +4268,7 @@ L.nvol_memchr3_entry_sse2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memchr3_entry_sse2.L14
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memchr3_entry_sse2.L13:
     movdqa (%rcx), %xmm3
     movdqa 16(%rcx), %xmm4
@@ -4168,7 +4300,7 @@ L.nvol_memchr3_entry_sse2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_memchr3_entry_sse2.L20
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_memchr3_entry_sse2.L19:
     movdqu (%rcx), %xmm3
     movdqa %xmm3, %xmm4
@@ -4202,7 +4334,7 @@ L.nvol_memchr3_entry_sse2:
     {disp8} je .Lnvol_memchr3_entry_sse2.L25
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
+    ret
 .Lnvol_memchr3_entry_sse2.L25:
 .Lnvol_memchr3_entry_sse2.L23:
     xor %eax, %eax
@@ -4211,7 +4343,7 @@ L.nvol_memchr3_entry_sse2:
 .Lnvol_memchr3_entry_sse2.L18:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
+    ret
 .Lnvol_memchr3_entry_sse2.L16:
     pmovmskb %xmm5, %eax
     test %eax, %eax
@@ -4220,21 +4352,16 @@ L.nvol_memchr3_entry_sse2:
     pmovmskb %xmm3, %eax
     bsf %eax, %eax
     lea 16(%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
+    ret
 .Lnvol_memchr3_entry_sse2.L22:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memchr3_entry_sse2, .-nvol_memchr3_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memchr3_raw
 .type nvol_memchr3_raw, @function
 nvol_memchr3_raw:
@@ -4354,7 +4481,7 @@ L.nvol_memrchr3_scalar:
 .Lnvol_memrchr3_scalar.L6:
 .Lnvol_memrchr3_scalar.L5:
     mov %r8, %rax
-    {disp8} jmp .Lnvol_memrchr3_scalar.L1
+    ret
 .Lnvol_memrchr3_scalar.L4:
     cmp %rcx, %r8
     {disp8} ja .Lnvol_memrchr3_scalar.L2
@@ -4366,7 +4493,7 @@ L.nvol_memrchr3_scalar:
 .size nvol_memrchr3_scalar, .-nvol_memrchr3_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memrchr3_sse2
 .type nvol_memrchr3_sse2, @function
 .hidden nvol_memrchr3_sse2
@@ -4400,7 +4527,7 @@ L.nvol_memrchr3_sse2:
     {disp8} je .Lnvol_memrchr3_sse2.L2
     bsr %eax, %eax
     lea -16(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_sse2.L1
+    ret
 .Lnvol_memrchr3_sse2.L2:
     and $-16, %r8
     cmp $32, %rdi
@@ -4411,7 +4538,7 @@ L.nvol_memrchr3_sse2:
 .Lnvol_memrchr3_sse2.L6:
     cmp %rdx, %r8
     {disp8} jb .Lnvol_memrchr3_sse2.L13
-    .byte 15, 31, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_memrchr3_sse2.L12:
     lea -32(%r8), %r8
     movdqa (%r8), %xmm3
@@ -4476,7 +4603,7 @@ L.nvol_memrchr3_sse2:
     {disp8} je .Lnvol_memrchr3_sse2.L24
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_sse2.L1
+    ret
 .Lnvol_memrchr3_sse2.L24:
 .Lnvol_memrchr3_sse2.L22:
     xor %eax, %eax
@@ -4485,9 +4612,9 @@ L.nvol_memrchr3_sse2:
 .Lnvol_memrchr3_sse2.L11:
     bsr %eax, %eax
     lea 16(%r8,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_sse2.L1
+    ret
 .Lnvol_memrchr3_sse2.L9:
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 144
 .Lnvol_memrchr3_sse2.L7:
     cmp %rdx, %r8
     {disp32} jb .Lnvol_memrchr3_sse2.L6
@@ -4520,12 +4647,12 @@ L.nvol_memrchr3_sse2:
     pmovmskb %xmm5, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_sse2.L1
+    ret
     {disp32} jmp .Lnvol_memrchr3_sse2.L6
 .Lnvol_memrchr3_sse2.L17:
     bsr %eax, %eax
     lea 16(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_sse2.L1
+    ret
 .Lnvol_memrchr3_sse2.L15:
     pmovmskb %xmm3, %eax
     test %eax, %eax
@@ -4534,16 +4661,18 @@ L.nvol_memrchr3_sse2:
     pmovmskb %xmm5, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_sse2.L1
+    ret
 .Lnvol_memrchr3_sse2.L21:
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr3_sse2, .-nvol_memrchr3_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memrchr3_avx2
 .type nvol_memrchr3_avx2, @function
 .hidden nvol_memrchr3_avx2
@@ -4572,7 +4701,8 @@ L.nvol_memrchr3_avx2:
     {disp8} je .Lnvol_memrchr3_avx2.L2
     bsr %eax, %eax
     lea -32(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_avx2.L2:
     and $-32, %r8
     cmp $64, %rdi
@@ -4583,7 +4713,7 @@ L.nvol_memrchr3_avx2:
 .Lnvol_memrchr3_avx2.L6:
     cmp %rdx, %r8
     {disp8} jb .Lnvol_memrchr3_avx2.L13
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memrchr3_avx2.L12:
     lea -64(%r8), %r8
     vmovdqa (%r8), %ymm3
@@ -4639,7 +4769,8 @@ L.nvol_memrchr3_avx2:
     {disp8} je .Lnvol_memrchr3_avx2.L24
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_avx2.L24:
 .Lnvol_memrchr3_avx2.L22:
     xor %eax, %eax
@@ -4649,9 +4780,10 @@ L.nvol_memrchr3_avx2:
 .Lnvol_memrchr3_avx2.L11:
     bsr %eax, %eax
     lea 32(%r8,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_avx2.L9:
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memrchr3_avx2.L7:
     cmp %rdx, %r8
     {disp32} jb .Lnvol_memrchr3_avx2.L6
@@ -4679,12 +4811,14 @@ L.nvol_memrchr3_avx2:
     vpmovmskb %ymm3, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr3_avx2.L6
 .Lnvol_memrchr3_avx2.L17:
     bsr %eax, %eax
     lea 32(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_avx2.L15:
     vpmovmskb %ymm4, %eax
     test %eax, %eax
@@ -4693,18 +4827,19 @@ L.nvol_memrchr3_avx2:
     vpmovmskb %ymm3, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_avx2.L21:
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memrchr3_avx2, .-nvol_memrchr3_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr3_entry_avx2
 .type nvol_memrchr3_entry_avx2, @function
 .hidden nvol_memrchr3_entry_avx2
@@ -4733,13 +4868,15 @@ L.nvol_memrchr3_entry_avx2:
 .Lnvol_memrchr3_entry_avx2.L8:
 .Lnvol_memrchr3_entry_avx2.L7:
     mov %r8, %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L6:
     cmp %rcx, %r8
     {disp8} ja .Lnvol_memrchr3_entry_avx2.L4
 .Lnvol_memrchr3_entry_avx2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L2:
     cmp $32, %r9
     {disp32} jae .Lnvol_memrchr3_entry_avx2.L9
@@ -4760,7 +4897,8 @@ L.nvol_memrchr3_entry_avx2:
     {disp8} je .Lnvol_memrchr3_entry_avx2.L11
     bsr %eax, %eax
     lea -16(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L11:
     and $-16, %r8
     cmp $32, %r9
@@ -4771,7 +4909,7 @@ L.nvol_memrchr3_entry_avx2:
 .Lnvol_memrchr3_entry_avx2.L15:
     cmp %rdx, %r8
     {disp8} jb .Lnvol_memrchr3_entry_avx2.L22
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_memrchr3_entry_avx2.L21:
     lea -32(%r8), %r8
     vmovdqa (%r8), %xmm3
@@ -4827,11 +4965,13 @@ L.nvol_memrchr3_entry_avx2:
     {disp8} je .Lnvol_memrchr3_entry_avx2.L33
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L33:
 .Lnvol_memrchr3_entry_avx2.L31:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L9:
     vmovd %edi, %xmm0
     vpbroadcastb %xmm0, %ymm0
@@ -4850,7 +4990,8 @@ L.nvol_memrchr3_entry_avx2:
     {disp8} je .Lnvol_memrchr3_entry_avx2.L35
     bsr %eax, %eax
     lea -32(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L35:
     and $-32, %r8
     cmp $64, %r9
@@ -4861,7 +5002,7 @@ L.nvol_memrchr3_entry_avx2:
 .Lnvol_memrchr3_entry_avx2.L39:
     cmp %rdx, %r8
     {disp8} jb .Lnvol_memrchr3_entry_avx2.L46
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_memrchr3_entry_avx2.L45:
     lea -64(%r8), %r8
     vmovdqa (%r8), %ymm3
@@ -4917,7 +5058,8 @@ L.nvol_memrchr3_entry_avx2:
     {disp8} je .Lnvol_memrchr3_entry_avx2.L57
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L57:
 .Lnvol_memrchr3_entry_avx2.L55:
     xor %eax, %eax
@@ -4927,9 +5069,9 @@ L.nvol_memrchr3_entry_avx2:
 .Lnvol_memrchr3_entry_avx2.L20:
     bsr %eax, %eax
     lea 16(%r8,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L18:
-    .byte 15, 31, 64, 0
 .Lnvol_memrchr3_entry_avx2.L16:
     cmp %rdx, %r8
     {disp32} jb .Lnvol_memrchr3_entry_avx2.L15
@@ -4957,12 +5099,14 @@ L.nvol_memrchr3_entry_avx2:
     vpmovmskb %xmm3, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr3_entry_avx2.L15
 .Lnvol_memrchr3_entry_avx2.L26:
     bsr %eax, %eax
     lea 16(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L24:
     vpmovmskb %xmm4, %eax
     test %eax, %eax
@@ -4971,17 +5115,20 @@ L.nvol_memrchr3_entry_avx2:
     vpmovmskb %xmm3, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L30:
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L44:
     bsr %eax, %eax
     lea 32(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L42:
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_memrchr3_entry_avx2.L40:
     cmp %rdx, %r8
     {disp32} jb .Lnvol_memrchr3_entry_avx2.L39
@@ -5009,12 +5156,14 @@ L.nvol_memrchr3_entry_avx2:
     vpmovmskb %ymm3, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
     {disp32} jmp .Lnvol_memrchr3_entry_avx2.L39
 .Lnvol_memrchr3_entry_avx2.L50:
     bsr %eax, %eax
     lea 32(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L48:
     vpmovmskb %ymm4, %eax
     test %eax, %eax
@@ -5023,15 +5172,18 @@ L.nvol_memrchr3_entry_avx2:
     vpmovmskb %ymm3, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memrchr3_entry_avx2.L54:
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memrchr3_entry_avx2, .-nvol_memrchr3_entry_avx2
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr3_entry_sse2
 .type nvol_memrchr3_entry_sse2, @function
 .hidden nvol_memrchr3_entry_sse2
@@ -5060,13 +5212,13 @@ L.nvol_memrchr3_entry_sse2:
 .Lnvol_memrchr3_entry_sse2.L8:
 .Lnvol_memrchr3_entry_sse2.L7:
     mov %r8, %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
 .Lnvol_memrchr3_entry_sse2.L6:
     cmp %rcx, %r8
     {disp8} ja .Lnvol_memrchr3_entry_sse2.L4
 .Lnvol_memrchr3_entry_sse2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
 .Lnvol_memrchr3_entry_sse2.L2:
     imul $16843009, %edi, %eax
     movd %eax, %xmm0
@@ -5090,7 +5242,7 @@ L.nvol_memrchr3_entry_sse2:
     {disp8} je .Lnvol_memrchr3_entry_sse2.L9
     bsr %eax, %eax
     lea -16(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
 .Lnvol_memrchr3_entry_sse2.L9:
     and $-16, %r8
     cmp $32, %r9
@@ -5101,7 +5253,6 @@ L.nvol_memrchr3_entry_sse2:
 .Lnvol_memrchr3_entry_sse2.L13:
     cmp %rdx, %r8
     {disp8} jb .Lnvol_memrchr3_entry_sse2.L20
-    .byte 15, 31, 64, 0
 .Lnvol_memrchr3_entry_sse2.L19:
     lea -32(%r8), %r8
     movdqa (%r8), %xmm3
@@ -5166,7 +5317,7 @@ L.nvol_memrchr3_entry_sse2:
     {disp8} je .Lnvol_memrchr3_entry_sse2.L31
     bsr %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
 .Lnvol_memrchr3_entry_sse2.L31:
 .Lnvol_memrchr3_entry_sse2.L29:
     xor %eax, %eax
@@ -5175,9 +5326,9 @@ L.nvol_memrchr3_entry_sse2:
 .Lnvol_memrchr3_entry_sse2.L18:
     bsr %eax, %eax
     lea 16(%r8,%rax), %rax
-    {disp8} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
 .Lnvol_memrchr3_entry_sse2.L16:
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memrchr3_entry_sse2.L14:
     cmp %rdx, %r8
     {disp32} jb .Lnvol_memrchr3_entry_sse2.L13
@@ -5210,12 +5361,12 @@ L.nvol_memrchr3_entry_sse2:
     pmovmskb %xmm5, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
     {disp32} jmp .Lnvol_memrchr3_entry_sse2.L13
 .Lnvol_memrchr3_entry_sse2.L24:
     bsr %eax, %eax
     lea 16(%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
 .Lnvol_memrchr3_entry_sse2.L22:
     pmovmskb %xmm3, %eax
     test %eax, %eax
@@ -5224,16 +5375,20 @@ L.nvol_memrchr3_entry_sse2:
     pmovmskb %xmm5, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
 .Lnvol_memrchr3_entry_sse2.L28:
     bsr %eax, %eax
     lea (%r8,%rax), %rax
-    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memrchr3_entry_sse2, .-nvol_memrchr3_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memrchr3_raw
 .type nvol_memrchr3_raw, @function
 nvol_memrchr3_raw:
@@ -5606,7 +5761,8 @@ L.nvol_count_parity_entry_avx2:
     add $1, %rdx
     cmp %rdi, %rdx
     {disp8} jb .Lnvol_count_parity_entry_avx2.L4
-    {disp32} jmp .Lnvol_count_parity_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_count_parity_entry_avx2.L2:
     cmp $32, %rdi
     {disp32} jae .Lnvol_count_parity_entry_avx2.L8
@@ -5618,7 +5774,7 @@ L.nvol_count_parity_entry_avx2:
     xor %r8d, %r8d
     cmp %rax, %rsi
     {disp8} jae .Lnvol_count_parity_entry_avx2.L11
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_count_parity_entry_avx2.L10:
     movzbl (%rsi), %r9d
     cmp %ecx, %r9d
@@ -5685,7 +5841,8 @@ L.nvol_count_parity_entry_avx2:
     {disp8} jb .Lnvol_count_parity_entry_avx2.L20
 .Lnvol_count_parity_entry_avx2.L21:
     mov %r8, %rax
-    {disp32} jmp .Lnvol_count_parity_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_count_parity_entry_avx2.L8:
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %ymm0
@@ -5695,7 +5852,7 @@ L.nvol_count_parity_entry_avx2:
     xor %r8d, %r8d
     cmp %rax, %rsi
     {disp8} jae .Lnvol_count_parity_entry_avx2.L25
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_count_parity_entry_avx2.L24:
     movzbl (%rsi), %r9d
     cmp %ecx, %r9d
@@ -5798,7 +5955,7 @@ L.nvol_count_parity_entry_sse2:
     add $1, %rdx
     cmp %rdi, %rdx
     {disp8} jb .Lnvol_count_parity_entry_sse2.L4
-    {disp32} jmp .Lnvol_count_parity_entry_sse2.L1
+    ret
 .Lnvol_count_parity_entry_sse2.L2:
     imul $16843009, %ecx, %eax
     movd %eax, %xmm0
@@ -5809,7 +5966,7 @@ L.nvol_count_parity_entry_sse2:
     xor %r8d, %r8d
     cmp %rax, %rsi
     {disp8} jae .Lnvol_count_parity_entry_sse2.L9
-    .byte 102, 144
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_count_parity_entry_sse2.L8:
     movzbl (%rsi), %r9d
     cmp %ecx, %r9d
@@ -6067,13 +6224,14 @@ L.nvol_count_sad_sse2:
     movzbl (%rcx,%rdx), %ecx
     add %ecx, %esi
     lea (%rax,%rsi), %rax
-    {disp32} jmp .Lnvol_count_sad_sse2.L1
+    ret
 .Lnvol_count_sad_sse2.L2:
     pxor %xmm1, %xmm1
     mov %rdx, %rcx
     sub %rsi, %rcx
     cmp $64, %rcx
     {disp8} jb .Lnvol_count_sad_sse2.L9
+    .byte 15, 31, 64, 0
 .Lnvol_count_sad_sse2.L8:
     mov %rdx, %rcx
     sub %rsi, %rcx
@@ -6217,14 +6375,15 @@ L.nvol_count_sad_avx2:
     shr %cl, %rdx
     popcnt %edx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_count_sad_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_count_sad_avx2.L2:
     vpxor %xmm1, %xmm1, %xmm1
     mov %rdx, %rcx
     sub %rsi, %rcx
     cmp $128, %rcx
     {disp8} jb .Lnvol_count_sad_avx2.L9
-    .byte 144
+    .byte 102, 144
 .Lnvol_count_sad_avx2.L8:
     mov %rdx, %rcx
     sub %rsi, %rcx
@@ -6324,7 +6483,8 @@ L.nvol_count_entry_avx2:
     add $1, %rcx
     cmp %r8, %rcx
     {disp8} jb .Lnvol_count_entry_avx2.L4
-    {disp32} jmp .Lnvol_count_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_count_entry_avx2.L2:
     cmp $32, %r8
     {disp32} jae .Lnvol_count_entry_avx2.L8
@@ -6336,7 +6496,7 @@ L.nvol_count_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_count_entry_avx2.L13
-    .byte 102, 144
+    .byte 15, 31, 0
 .Lnvol_count_entry_avx2.L12:
     vpcmpeqb (%rsi), %xmm0, %xmm1
     vpmovmskb %xmm1, %edi
@@ -6358,14 +6518,15 @@ L.nvol_count_entry_avx2:
     shr %cl, %rdx
     popcnt %edx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_count_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_count_entry_avx2.L10:
     vpxor %xmm1, %xmm1, %xmm1
     mov %rdx, %rcx
     sub %rsi, %rcx
     cmp $64, %rcx
     {disp8} jb .Lnvol_count_entry_avx2.L17
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_count_entry_avx2.L16:
     mov %rdx, %rcx
     sub %rsi, %rcx
@@ -6429,7 +6590,8 @@ L.nvol_count_entry_avx2:
     vpextrq $1, %xmm1, %rdx
     lea (%rcx,%rdx), %rcx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_count_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_count_entry_avx2.L8:
     vmovd %edi, %xmm0
     vpbroadcastb %xmm0, %ymm0
@@ -6439,7 +6601,7 @@ L.nvol_count_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_count_entry_avx2.L29
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_count_entry_avx2.L28:
     vpcmpeqb (%rsi), %ymm0, %ymm1
     vpmovmskb %ymm1, %edi
@@ -6461,14 +6623,15 @@ L.nvol_count_entry_avx2:
     shr %cl, %rdx
     popcnt %edx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_count_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_count_entry_avx2.L26:
     vpxor %xmm1, %xmm1, %xmm1
     mov %rdx, %rcx
     sub %rsi, %rcx
     cmp $128, %rcx
     {disp8} jb .Lnvol_count_entry_avx2.L33
-    .byte 144
+    .byte 102, 144
 .Lnvol_count_entry_avx2.L32:
     mov %rdx, %rcx
     sub %rsi, %rcx
@@ -6568,7 +6731,7 @@ L.nvol_count_entry_sse2:
     add $1, %rdx
     cmp %rdi, %rdx
     {disp8} jb .Lnvol_count_entry_sse2.L4
-    {disp32} jmp .Lnvol_count_entry_sse2.L1
+    ret
 .Lnvol_count_entry_sse2.L2:
     imul $16843009, %ecx, %eax
     movd %eax, %xmm0
@@ -6579,6 +6742,7 @@ L.nvol_count_entry_sse2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_count_entry_sse2.L11
+    .byte 15, 31, 64, 0
 .Lnvol_count_entry_sse2.L10:
     movdqu (%rsi), %xmm1
     pcmpeqb %xmm0, %xmm1
@@ -6624,13 +6788,14 @@ L.nvol_count_entry_sse2:
     movzbl (%rcx,%rdx), %ecx
     add %ecx, %esi
     lea (%rax,%rsi), %rax
-    {disp32} jmp .Lnvol_count_entry_sse2.L1
+    ret
 .Lnvol_count_entry_sse2.L8:
     pxor %xmm1, %xmm1
     mov %rdx, %rcx
     sub %rsi, %rcx
     cmp $64, %rcx
     {disp8} jb .Lnvol_count_entry_sse2.L15
+    .byte 15, 31, 64, 0
 .Lnvol_count_entry_sse2.L14:
     mov %rdx, %rcx
     sub %rsi, %rcx
@@ -6846,14 +7011,14 @@ L.nvol_first_non_ascii_scalar:
     ret
 .Lnvol_first_non_ascii_scalar.L5:
     mov %rdi, %rax
-    {disp8} jmp .Lnvol_first_non_ascii_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_first_non_ascii_scalar, .-nvol_first_non_ascii_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 0
 .globl nvol_first_non_ascii_sse2
 .type nvol_first_non_ascii_sse2, @function
 .hidden nvol_first_non_ascii_sse2
@@ -6868,7 +7033,7 @@ L.nvol_first_non_ascii_sse2:
     {disp8} je .Lnvol_first_non_ascii_sse2.L2
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp32} jmp .Lnvol_first_non_ascii_sse2.L1
+    ret
 .Lnvol_first_non_ascii_sse2.L2:
     and $-16, %rdi
     add $16, %rdi
@@ -6877,7 +7042,7 @@ L.nvol_first_non_ascii_sse2:
     lea -64(%rsi), %rcx
     cmp %rcx, %rdi
     {disp8} ja .Lnvol_first_non_ascii_sse2.L7
-    .byte 15, 31, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_first_non_ascii_sse2.L6:
     movdqa (%rdi), %xmm0
     movdqa 16(%rdi), %xmm1
@@ -6936,7 +7101,7 @@ L.nvol_first_non_ascii_sse2:
     {disp8} je .Lnvol_first_non_ascii_sse2.L24
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_sse2.L1
+    ret
 .Lnvol_first_non_ascii_sse2.L24:
 .Lnvol_first_non_ascii_sse2.L22:
     xor %eax, %eax
@@ -6945,33 +7110,26 @@ L.nvol_first_non_ascii_sse2:
 .Lnvol_first_non_ascii_sse2.L11:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_sse2.L1
+    ret
 .Lnvol_first_non_ascii_sse2.L13:
     bsf %eax, %eax
     lea 16(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_sse2.L1
+    ret
 .Lnvol_first_non_ascii_sse2.L15:
     bsf %eax, %eax
     lea 32(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_sse2.L1
+    ret
 .Lnvol_first_non_ascii_sse2.L17:
     bsf %eax, %eax
     lea 48(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_sse2.L1
+    ret
 .Lnvol_first_non_ascii_sse2.L21:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_first_non_ascii_sse2, .-nvol_first_non_ascii_sse2
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_first_non_ascii_avx2
 .type nvol_first_non_ascii_avx2, @function
 .hidden nvol_first_non_ascii_avx2
@@ -6986,7 +7144,8 @@ L.nvol_first_non_ascii_avx2:
     {disp8} je .Lnvol_first_non_ascii_avx2.L2
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp32} jmp .Lnvol_first_non_ascii_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_avx2.L2:
     and $-32, %rdi
     add $32, %rdi
@@ -6995,7 +7154,7 @@ L.nvol_first_non_ascii_avx2:
     lea -128(%rsi), %rcx
     cmp %rcx, %rdi
     {disp8} ja .Lnvol_first_non_ascii_avx2.L7
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_first_non_ascii_avx2.L6:
     vmovdqa (%rdi), %ymm0
     vmovdqa 32(%rdi), %ymm1
@@ -7052,7 +7211,8 @@ L.nvol_first_non_ascii_avx2:
     {disp8} je .Lnvol_first_non_ascii_avx2.L24
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_avx2.L24:
 .Lnvol_first_non_ascii_avx2.L22:
     xor %eax, %eax
@@ -7062,23 +7222,28 @@ L.nvol_first_non_ascii_avx2:
 .Lnvol_first_non_ascii_avx2.L11:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_avx2.L13:
     bsf %eax, %eax
     lea 32(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_avx2.L15:
     bsf %eax, %eax
     lea 64(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_avx2.L17:
     bsf %eax, %eax
     lea 96(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_avx2.L21:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_first_non_ascii_avx2, .-nvol_first_non_ascii_avx2
 
@@ -7086,9 +7251,7 @@ L.nvol_first_non_ascii_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_first_non_ascii_entry_avx2
 .type nvol_first_non_ascii_entry_avx2, @function
 .hidden nvol_first_non_ascii_entry_avx2
@@ -7112,7 +7275,8 @@ L.nvol_first_non_ascii_entry_avx2:
     {disp8} jb .Lnvol_first_non_ascii_entry_avx2.L4
 .Lnvol_first_non_ascii_entry_avx2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L2:
     cmp $32, %rcx
     {disp32} jae .Lnvol_first_non_ascii_entry_avx2.L8
@@ -7122,7 +7286,8 @@ L.nvol_first_non_ascii_entry_avx2:
     {disp8} je .Lnvol_first_non_ascii_entry_avx2.L10
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp32} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L10:
     and $-16, %rdi
     add $16, %rdi
@@ -7131,7 +7296,7 @@ L.nvol_first_non_ascii_entry_avx2:
     lea -64(%rsi), %rcx
     cmp %rcx, %rdi
     {disp8} ja .Lnvol_first_non_ascii_entry_avx2.L15
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_first_non_ascii_entry_avx2.L14:
     vmovdqa (%rdi), %xmm0
     vmovdqa 16(%rdi), %xmm1
@@ -7188,11 +7353,13 @@ L.nvol_first_non_ascii_entry_avx2:
     {disp8} je .Lnvol_first_non_ascii_entry_avx2.L32
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp32} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L32:
 .Lnvol_first_non_ascii_entry_avx2.L30:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L8:
     vmovdqu (%rdi), %ymm0
     vpmovmskb %ymm0, %eax
@@ -7200,7 +7367,8 @@ L.nvol_first_non_ascii_entry_avx2:
     {disp8} je .Lnvol_first_non_ascii_entry_avx2.L34
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp32} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L34:
     and $-32, %rdi
     add $32, %rdi
@@ -7209,7 +7377,6 @@ L.nvol_first_non_ascii_entry_avx2:
     lea -128(%rsi), %rcx
     cmp %rcx, %rdi
     {disp8} ja .Lnvol_first_non_ascii_entry_avx2.L39
-    .byte 15, 31, 68, 0, 0
 .Lnvol_first_non_ascii_entry_avx2.L38:
     vmovdqa (%rdi), %ymm0
     vmovdqa 32(%rdi), %ymm1
@@ -7266,7 +7433,8 @@ L.nvol_first_non_ascii_entry_avx2:
     {disp8} je .Lnvol_first_non_ascii_entry_avx2.L56
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L56:
 .Lnvol_first_non_ascii_entry_avx2.L54:
     xor %eax, %eax
@@ -7275,53 +7443,62 @@ L.nvol_first_non_ascii_entry_avx2:
     ret
 .Lnvol_first_non_ascii_entry_avx2.L7:
     mov %rdi, %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L19:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L21:
     bsf %eax, %eax
     lea 16(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L23:
     bsf %eax, %eax
     lea 32(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L25:
     bsf %eax, %eax
     lea 48(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L29:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L43:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L45:
     bsf %eax, %eax
     lea 32(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L47:
     bsf %eax, %eax
     lea 64(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L49:
     bsf %eax, %eax
     lea 96(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_first_non_ascii_entry_avx2.L53:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_first_non_ascii_entry_avx2, .-nvol_first_non_ascii_entry_avx2
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_first_non_ascii_entry_sse2
 .type nvol_first_non_ascii_entry_sse2, @function
 .hidden nvol_first_non_ascii_entry_sse2
@@ -7345,7 +7522,7 @@ L.nvol_first_non_ascii_entry_sse2:
     {disp8} jb .Lnvol_first_non_ascii_entry_sse2.L4
 .Lnvol_first_non_ascii_entry_sse2.L5:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .Lnvol_first_non_ascii_entry_sse2.L2:
     movdqu (%rdi), %xmm0
     pmovmskb %xmm0, %eax
@@ -7353,7 +7530,7 @@ L.nvol_first_non_ascii_entry_sse2:
     {disp8} je .Lnvol_first_non_ascii_entry_sse2.L8
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp32} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .Lnvol_first_non_ascii_entry_sse2.L8:
     and $-16, %rdi
     add $16, %rdi
@@ -7421,7 +7598,7 @@ L.nvol_first_non_ascii_entry_sse2:
     {disp8} je .Lnvol_first_non_ascii_entry_sse2.L30
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .Lnvol_first_non_ascii_entry_sse2.L30:
 .Lnvol_first_non_ascii_entry_sse2.L28:
     xor %eax, %eax
@@ -7429,31 +7606,33 @@ L.nvol_first_non_ascii_entry_sse2:
     ret
 .Lnvol_first_non_ascii_entry_sse2.L7:
     mov %rdi, %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .Lnvol_first_non_ascii_entry_sse2.L17:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .Lnvol_first_non_ascii_entry_sse2.L19:
     bsf %eax, %eax
     lea 16(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .Lnvol_first_non_ascii_entry_sse2.L21:
     bsf %eax, %eax
     lea 32(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .Lnvol_first_non_ascii_entry_sse2.L23:
     bsf %eax, %eax
     lea 48(%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .Lnvol_first_non_ascii_entry_sse2.L27:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
-    {disp8} jmp .Lnvol_first_non_ascii_entry_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_first_non_ascii_entry_sse2, .-nvol_first_non_ascii_entry_sse2
 
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_first_non_ascii_raw
 .type nvol_first_non_ascii_raw, @function
 nvol_first_non_ascii_raw:
@@ -7580,7 +7759,7 @@ L.nvol_is_equal:
     cmp %r8d, %eax
     {disp8} je .Lnvol_is_equal.L8
     xor %eax, %eax
-    {disp8} jmp .Lnvol_is_equal.L1
+    ret
 .Lnvol_is_equal.L8:
     lea 2(%rcx), %rcx
 .Lnvol_is_equal.L6:
@@ -7591,7 +7770,7 @@ L.nvol_is_equal:
     cmp %ecx, %eax
     {disp8} je .Lnvol_is_equal.L12
     xor %eax, %eax
-    {disp8} jmp .Lnvol_is_equal.L1
+    ret
 .Lnvol_is_equal.L12:
 .Lnvol_is_equal.L10:
     mov $1, %eax
@@ -7599,13 +7778,14 @@ L.nvol_is_equal:
     ret
 .Lnvol_is_equal.L5:
     xor %eax, %eax
-    {disp8} jmp .Lnvol_is_equal.L1
+    ret
 .cfi_endproc
 .size nvol_is_equal, .-nvol_is_equal
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_memmem_rk
 .type nvol_memmem_rk, @function
 .hidden nvol_memmem_rk
@@ -7621,8 +7801,12 @@ L.nvol_memmem_rk:
     cmp %rax, %rdx
     {disp8} jbe .Lnvol_memmem_rk.L2
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memmem_rk.L1
+.cfi_remember_state
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_memmem_rk.L2:
+.cfi_restore_state
     mov 16(%rdi), %r9
     mov 24(%rdi), %rdi
     sub %rdx, %r8
@@ -7631,6 +7815,7 @@ L.nvol_memmem_rk:
     lea (%rcx,%rdx), %r11
     cmp %r11, %rax
     {disp8} jae .Lnvol_memmem_rk.L5
+    .byte 15, 31, 0
 .Lnvol_memmem_rk.L4:
     shl $1, %r10d
     movzbl (%rax), %ebx
@@ -7711,10 +7896,16 @@ L.nvol_memmem_rk:
     {disp8} jmp .Lnvol_memmem_rk.L10
 .Lnvol_memmem_rk.L9:
     mov %rcx, %rax
-    {disp8} jmp .Lnvol_memmem_rk.L1
+.cfi_remember_state
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_memmem_rk.L24:
+.cfi_restore_state
     xor %eax, %eax
-    {disp8} jmp .Lnvol_memmem_rk.L1
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .cfi_endproc
 .size nvol_memmem_rk, .-nvol_memmem_rk
 
@@ -7736,14 +7927,18 @@ L.nvol_memmem_rk_oneshot:
     cmp %rax, %r8
     {disp8} jbe .Lnvol_memmem_rk_oneshot.L2
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memmem_rk_oneshot.L1
+.cfi_remember_state
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_memmem_rk_oneshot.L2:
+.cfi_restore_state
     xor %r9d, %r9d
     mov $1, %r10d
     mov %rdi, %rax
     cmp %rsi, %rax
     {disp8} jae .Lnvol_memmem_rk_oneshot.L5
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_rk_oneshot.L4:
     shl $1, %r9d
     movzbl (%rax), %r11d
@@ -7841,10 +8036,16 @@ L.nvol_memmem_rk_oneshot:
     {disp8} jmp .Lnvol_memmem_rk_oneshot.L14
 .Lnvol_memmem_rk_oneshot.L13:
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_memmem_rk_oneshot.L1
+.cfi_remember_state
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_memmem_rk_oneshot.L28:
+.cfi_restore_state
     xor %eax, %eax
-    {disp8} jmp .Lnvol_memmem_rk_oneshot.L1
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .cfi_endproc
 .size nvol_memmem_rk_oneshot, .-nvol_memmem_rk_oneshot
 
@@ -8359,7 +8560,7 @@ L.nvol_memmem_pppre_sse2:
     sub %rcx, %rsi
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memmem_pppre_sse2.L1
+    ret
 .Lnvol_memmem_pppre_sse2.L8:
 .Lnvol_memmem_pppre_sse2.L6:
     mov $-1, %rax
@@ -8369,7 +8570,7 @@ L.nvol_memmem_pppre_sse2:
     sub %rcx, %rdx
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memmem_pppre_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memmem_pppre_sse2, .-nvol_memmem_pppre_sse2
 
@@ -8379,7 +8580,7 @@ L.nvol_memmem_pppre_sse2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memmem_pppre_avx2
 .type nvol_memmem_pppre_avx2, @function
 .hidden nvol_memmem_pppre_avx2
@@ -8430,7 +8631,8 @@ L.nvol_memmem_pppre_avx2:
     sub %rcx, %rsi
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memmem_pppre_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memmem_pppre_avx2.L8:
 .Lnvol_memmem_pppre_avx2.L6:
     mov $-1, %rax
@@ -8441,12 +8643,13 @@ L.nvol_memmem_pppre_avx2:
     sub %rcx, %rdx
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_memmem_pppre_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memmem_pppre_avx2, .-nvol_memmem_pppre_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memmem_pp_sse2
 .type nvol_memmem_pp_sse2, @function
 .hidden nvol_memmem_pp_sse2
@@ -8560,8 +8763,16 @@ L.nvol_memmem_pp_sse2:
     cmp %rdx, %rax
     {disp8} jae .Lnvol_memmem_pp_sse2.L25
     xor %eax, %eax
-    {disp32} jmp .Lnvol_memmem_pp_sse2.L1
+.cfi_remember_state
+    pop %r12
+.cfi_def_cfa_offset 24
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_memmem_pp_sse2.L25:
+.cfi_restore_state
     sub %r10, %rcx
     mov $4294967295, %eax
     shl %cl, %eax
@@ -8643,8 +8854,16 @@ L.nvol_memmem_pp_sse2:
 .Lnvol_memmem_pp_sse2.L7:
 .cfi_restore_state
     xor %eax, %eax
-    {disp8} jmp .Lnvol_memmem_pp_sse2.L1
+.cfi_remember_state
+    pop %r12
+.cfi_def_cfa_offset 24
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_memmem_pp_sse2.L14:
+.cfi_restore_state
     xor %ebx, %ebx
     {disp32} jmp .Lnvol_memmem_pp_sse2.L10
 .Lnvol_memmem_pp_sse2.L18:
@@ -8654,11 +8873,27 @@ L.nvol_memmem_pp_sse2:
     xor %ebx, %ebx
     {disp32} jmp .Lnvol_memmem_pp_sse2.L10
 .Lnvol_memmem_pp_sse2.L9:
-    {disp8} jmp .Lnvol_memmem_pp_sse2.L1
+.cfi_remember_state
+    pop %r12
+.cfi_def_cfa_offset 24
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_memmem_pp_sse2.L30:
+.cfi_restore_state
     xor %eax, %eax
-    {disp8} jmp .Lnvol_memmem_pp_sse2.L1
+.cfi_remember_state
+    pop %r12
+.cfi_def_cfa_offset 24
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_memmem_pp_sse2.L37:
+.cfi_restore_state
     xor %edi, %edi
     {disp8} jmp .Lnvol_memmem_pp_sse2.L33
 .Lnvol_memmem_pp_sse2.L41:
@@ -8668,7 +8903,13 @@ L.nvol_memmem_pp_sse2:
     xor %edi, %edi
     {disp8} jmp .Lnvol_memmem_pp_sse2.L33
 .Lnvol_memmem_pp_sse2.L32:
-    {disp8} jmp .Lnvol_memmem_pp_sse2.L1
+    pop %r12
+.cfi_def_cfa_offset 24
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .cfi_endproc
 .size nvol_memmem_pp_sse2, .-nvol_memmem_pp_sse2
 
@@ -8677,8 +8918,6 @@ L.nvol_memmem_pp_sse2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
 .globl nvol_memmem_pp2_sse2
 .type nvol_memmem_pp2_sse2, @function
 .hidden nvol_memmem_pp2_sse2
@@ -8728,7 +8967,7 @@ L.nvol_memmem_pp2_sse2:
     cmp %rdx, %r8
     {disp8} jae .Lnvol_memmem_pp2_sse2.L8
     xor %eax, %eax
-    {disp8} jmp .Lnvol_memmem_pp2_sse2.L1
+    ret
 .Lnvol_memmem_pp2_sse2.L8:
     sub %rsi, %rcx
     mov $4294967295, %eax
@@ -8744,7 +8983,7 @@ L.nvol_memmem_pp2_sse2:
     {disp8} je .Lnvol_memmem_pp2_sse2.L10
     bsf %ecx, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memmem_pp2_sse2.L1
+    ret
 .Lnvol_memmem_pp2_sse2.L10:
 .Lnvol_memmem_pp2_sse2.L6:
     xor %eax, %eax
@@ -8753,7 +8992,7 @@ L.nvol_memmem_pp2_sse2:
 .Lnvol_memmem_pp2_sse2.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memmem_pp2_sse2.L1
+    ret
 .cfi_endproc
 .size nvol_memmem_pp2_sse2, .-nvol_memmem_pp2_sse2
 
@@ -8762,7 +9001,7 @@ L.nvol_memmem_pp2_sse2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 64, 0
 .globl nvol_memmem_tw_sse2
 .type nvol_memmem_tw_sse2, @function
 .hidden nvol_memmem_tw_sse2
@@ -9429,7 +9668,8 @@ L.nvol_memmem_pp2_avx2:
     cmp %rdx, %r8
     {disp8} jae .Lnvol_memmem_pp2_avx2.L8
     xor %eax, %eax
-    {disp8} jmp .Lnvol_memmem_pp2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memmem_pp2_avx2.L8:
     sub %rsi, %rcx
     mov $4294967295, %eax
@@ -9443,7 +9683,8 @@ L.nvol_memmem_pp2_avx2:
     {disp8} je .Lnvol_memmem_pp2_avx2.L10
     bsf %ecx, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_memmem_pp2_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_memmem_pp2_avx2.L10:
 .Lnvol_memmem_pp2_avx2.L6:
     xor %eax, %eax
@@ -9453,11 +9694,18 @@ L.nvol_memmem_pp2_avx2:
 .Lnvol_memmem_pp2_avx2.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_memmem_pp2_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_memmem_pp2_avx2, .-nvol_memmem_pp2_avx2
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memmem_tw_avx2
 .type nvol_memmem_tw_avx2, @function
 .hidden nvol_memmem_tw_avx2
@@ -12159,7 +12407,7 @@ L.nvol_is_equal_ac:
     test %rdx, %rdx
     {disp8} jne .Lnvol_is_equal_ac.L4
     mov $1, %eax
-    {disp32} jmp .Lnvol_is_equal_ac.L1
+    ret
 .Lnvol_is_equal_ac.L4:
     cmp $1, %rdx
     {disp8} jne .Lnvol_is_equal_ac.L6
@@ -12168,7 +12416,7 @@ L.nvol_is_equal_ac:
     cmp %rcx, %rax
     sete %al
     movzbl %al, %eax
-    {disp8} jmp .Lnvol_is_equal_ac.L1
+    ret
 .Lnvol_is_equal_ac.L6:
     cmp $2, %rdx
     {disp8} jne .Lnvol_is_equal_ac.L8
@@ -12177,7 +12425,7 @@ L.nvol_is_equal_ac:
     cmp %rcx, %rax
     sete %al
     movzbl %al, %eax
-    {disp8} jmp .Lnvol_is_equal_ac.L1
+    ret
 .Lnvol_is_equal_ac.L8:
     xor %eax, %eax
     movzwl (%rdi), %ecx
@@ -12189,7 +12437,7 @@ L.nvol_is_equal_ac:
     cmp %edx, %ecx
     {disp8} jne .Lnvol_is_equal_ac.L1
     mov $1, %eax
-    {disp8} jmp .Lnvol_is_equal_ac.L1
+    ret
 .Lnvol_is_equal_ac.L2:
     lea -4(%rdx), %rax
     lea (%rdi,%rax), %rcx
@@ -12197,7 +12445,6 @@ L.nvol_is_equal_ac:
     lea (%rsi,%rax), %rdx
     cmp %rcx, %rdi
     {disp8} jae .Lnvol_is_equal_ac.L12
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_is_equal_ac.L11:
     mov (%rdi), %eax
     mov (%rsi), %r8d
@@ -12218,13 +12465,15 @@ L.nvol_is_equal_ac:
     ret
 .Lnvol_is_equal_ac.L14:
     xor %eax, %eax
-    {disp8} jmp .Lnvol_is_equal_ac.L1
+    ret
 .cfi_endproc
 .size nvol_is_equal_ac, .-nvol_is_equal_ac
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_teddy_verify64_slim
 .type nvol_teddy_verify64_slim, @function
 .hidden nvol_teddy_verify64_slim
@@ -26019,7 +26268,7 @@ L.nvol_teddy_find_raw:
     test %rax, %rax
     {disp8} jne .Lnvol_teddy_find_raw.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_teddy_find_raw.L1
+    ret
 .Lnvol_teddy_find_raw.L2:
     mov %rcx, %rax
     sub %rdx, %rax
@@ -26038,8 +26287,6 @@ L.nvol_teddy_find_raw:
     movslq (%r9,%r8,4), %rax
     add %r9, %rax
     jmp *%rax
-.Lnvol_teddy_find_raw.L1:
-    ret
 .cfi_endproc
 .size nvol_teddy_find_raw, .-nvol_teddy_find_raw
 
@@ -26049,7 +26296,7 @@ L.nvol_teddy_find_raw:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_byteset_init
 .type nvol_byteset_init, @function
 nvol_byteset_init:
@@ -26894,7 +27141,7 @@ L.nvol_find_byteset_scalar:
     ret
 .Lnvol_find_byteset_scalar.L5:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_scalar, .-nvol_find_byteset_scalar
 
@@ -26904,7 +27151,7 @@ L.nvol_find_byteset_scalar:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_scalar
 .type nvol_find_not_byteset_scalar, @function
 .hidden nvol_find_not_byteset_scalar
@@ -26937,7 +27184,7 @@ L.nvol_find_not_byteset_scalar:
     ret
 .Lnvol_find_not_byteset_scalar.L5:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_not_byteset_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_scalar, .-nvol_find_not_byteset_scalar
 
@@ -26947,7 +27194,7 @@ L.nvol_find_not_byteset_scalar:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_scalar
 .type nvol_copy_until_byteset_scalar, @function
 .hidden nvol_copy_until_byteset_scalar
@@ -26984,7 +27231,7 @@ L.nvol_copy_until_byteset_scalar:
 .Lnvol_copy_until_byteset_scalar.L1:
     ret
 .Lnvol_copy_until_byteset_scalar.L5:
-    {disp8} jmp .Lnvol_copy_until_byteset_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_scalar, .-nvol_copy_until_byteset_scalar
 
@@ -26992,7 +27239,7 @@ L.nvol_copy_until_byteset_scalar:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_scalar
 .type nvol_find_byteset_pair_scalar, @function
 .hidden nvol_find_byteset_pair_scalar
@@ -27010,12 +27257,12 @@ L.nvol_find_byteset_pair_scalar:
     cmp %r9, %rax
     {disp8} jae .Lnvol_find_byteset_pair_scalar.L2
     xor %eax, %eax
-    {disp8} jmp .Lnvol_find_byteset_pair_scalar.L1
+    ret
 .Lnvol_find_byteset_pair_scalar.L2:
     sub %r9, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_scalar.L5
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_scalar.L4:
     movzbl (%rsi,%rcx), %eax
     mov %rax, %r9
@@ -27052,13 +27299,14 @@ L.nvol_find_byteset_pair_scalar:
     ret
 .Lnvol_find_byteset_pair_scalar.L9:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_scalar, .-nvol_find_byteset_pair_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_mask_scalar
 .type nvol_find_byteset_pair_mask_scalar, @function
 .hidden nvol_find_byteset_pair_mask_scalar
@@ -27076,12 +27324,12 @@ L.nvol_find_byteset_pair_mask_scalar:
     cmp %r10, %rax
     {disp8} jae .Lnvol_find_byteset_pair_mask_scalar.L2
     xor %eax, %eax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_scalar.L1
+    ret
 .Lnvol_find_byteset_pair_mask_scalar.L2:
     sub %r10, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_scalar.L5
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_scalar.L4:
     movzbl (%rsi,%r8), %eax
     mov %rax, %r10
@@ -27120,12 +27368,12 @@ L.nvol_find_byteset_pair_mask_scalar:
     movq $1, (%rcx)
     movq $1, 8(%rcx)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_scalar.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_scalar, .-nvol_find_byteset_pair_mask_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_visit_scalar
 .type nvol_find_byteset_pair_visit_scalar, @function
 .hidden nvol_find_byteset_pair_visit_scalar
@@ -27306,7 +27554,7 @@ L.nvol_find_byteset_ssse3:
     {disp8} je .Lnvol_find_byteset_ssse3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_ssse3.L1
+    ret
 .Lnvol_find_byteset_ssse3.L8:
 .Lnvol_find_byteset_ssse3.L6:
     xor %eax, %eax
@@ -27315,12 +27563,12 @@ L.nvol_find_byteset_ssse3:
 .Lnvol_find_byteset_ssse3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_ssse3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_ssse3, .-nvol_find_byteset_ssse3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_find_byteset_ssse3_u
 .type nvol_find_byteset_ssse3_u, @function
 .hidden nvol_find_byteset_ssse3_u
@@ -27367,7 +27615,7 @@ L.nvol_find_byteset_ssse3_u:
     {disp8} je .Lnvol_find_byteset_ssse3_u.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_ssse3_u.L1
+    ret
 .Lnvol_find_byteset_ssse3_u.L8:
 .Lnvol_find_byteset_ssse3_u.L6:
     xor %eax, %eax
@@ -27376,7 +27624,7 @@ L.nvol_find_byteset_ssse3_u:
 .Lnvol_find_byteset_ssse3_u.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_ssse3_u.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_ssse3_u, .-nvol_find_byteset_ssse3_u
 
@@ -27384,7 +27632,7 @@ L.nvol_find_byteset_ssse3_u:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_ssse3
 .type nvol_find_byteset_pair_ssse3, @function
 .hidden nvol_find_byteset_pair_ssse3
@@ -27487,7 +27735,7 @@ L.nvol_find_byteset_pair_ssse3:
     {disp8} je .Lnvol_find_byteset_pair_ssse3.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3.L1
+    ret
 .Lnvol_find_byteset_pair_ssse3.L8:
 .Lnvol_find_byteset_pair_ssse3.L6:
     xor %eax, %eax
@@ -27496,14 +27744,14 @@ L.nvol_find_byteset_pair_ssse3:
 .Lnvol_find_byteset_pair_ssse3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_ssse3, .-nvol_find_byteset_pair_ssse3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_sse2_k4
 .type nvol_find_byteset_sse2_k4, @function
 .hidden nvol_find_byteset_sse2_k4
@@ -27574,7 +27822,7 @@ L.nvol_find_byteset_sse2_k4:
     {disp8} je .Lnvol_find_byteset_sse2_k4.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_k4.L1
+    ret
 .Lnvol_find_byteset_sse2_k4.L8:
 .Lnvol_find_byteset_sse2_k4.L6:
     xor %eax, %eax
@@ -27583,11 +27831,12 @@ L.nvol_find_byteset_sse2_k4:
 .Lnvol_find_byteset_sse2_k4.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_k4.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_sse2_k4, .-nvol_find_byteset_sse2_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_sse2_k5
 .type nvol_find_byteset_sse2_k5, @function
 .hidden nvol_find_byteset_sse2_k5
@@ -27668,7 +27917,7 @@ L.nvol_find_byteset_sse2_k5:
     {disp8} je .Lnvol_find_byteset_sse2_k5.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_k5.L1
+    ret
 .Lnvol_find_byteset_sse2_k5.L8:
 .Lnvol_find_byteset_sse2_k5.L6:
     xor %eax, %eax
@@ -27677,13 +27926,13 @@ L.nvol_find_byteset_sse2_k5:
 .Lnvol_find_byteset_sse2_k5.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_k5.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_sse2_k5, .-nvol_find_byteset_sse2_k5
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_sse2_k6
 .type nvol_find_byteset_sse2_k6, @function
 .hidden nvol_find_byteset_sse2_k6
@@ -27774,7 +28023,7 @@ L.nvol_find_byteset_sse2_k6:
     {disp8} je .Lnvol_find_byteset_sse2_k6.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_k6.L1
+    ret
 .Lnvol_find_byteset_sse2_k6.L8:
 .Lnvol_find_byteset_sse2_k6.L6:
     xor %eax, %eax
@@ -27783,7 +28032,7 @@ L.nvol_find_byteset_sse2_k6:
 .Lnvol_find_byteset_sse2_k6.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_k6.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_sse2_k6, .-nvol_find_byteset_sse2_k6
 
@@ -27791,7 +28040,7 @@ L.nvol_find_byteset_sse2_k6:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_find_not_byteset_ssse3
 .type nvol_find_not_byteset_ssse3, @function
 .hidden nvol_find_not_byteset_ssse3
@@ -27859,7 +28108,7 @@ L.nvol_find_not_byteset_ssse3:
     {disp8} je .Lnvol_find_not_byteset_ssse3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_ssse3.L1
+    ret
 .Lnvol_find_not_byteset_ssse3.L8:
 .Lnvol_find_not_byteset_ssse3.L6:
     xor %eax, %eax
@@ -27868,17 +28117,10 @@ L.nvol_find_not_byteset_ssse3:
 .Lnvol_find_not_byteset_ssse3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_ssse3.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_ssse3, .-nvol_find_not_byteset_ssse3
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_ssse3_u
 .type nvol_find_not_byteset_ssse3_u, @function
 .hidden nvol_find_not_byteset_ssse3_u
@@ -27927,7 +28169,7 @@ L.nvol_find_not_byteset_ssse3_u:
     {disp8} je .Lnvol_find_not_byteset_ssse3_u.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_ssse3_u.L1
+    ret
 .Lnvol_find_not_byteset_ssse3_u.L8:
 .Lnvol_find_not_byteset_ssse3_u.L6:
     xor %eax, %eax
@@ -27936,14 +28178,15 @@ L.nvol_find_not_byteset_ssse3_u:
 .Lnvol_find_not_byteset_ssse3_u.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_ssse3_u.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_ssse3_u, .-nvol_find_not_byteset_ssse3_u
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_not_byteset_sse2_k1
 .type nvol_find_not_byteset_sse2_k1, @function
 .hidden nvol_find_not_byteset_sse2_k1
@@ -27986,7 +28229,7 @@ L.nvol_find_not_byteset_sse2_k1:
     {disp8} je .Lnvol_find_not_byteset_sse2_k1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k1.L1
+    ret
 .Lnvol_find_not_byteset_sse2_k1.L8:
 .Lnvol_find_not_byteset_sse2_k1.L6:
     xor %eax, %eax
@@ -27995,11 +28238,11 @@ L.nvol_find_not_byteset_sse2_k1:
 .Lnvol_find_not_byteset_sse2_k1.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k1.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_k1, .-nvol_find_not_byteset_sse2_k1
 
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_find_not_byteset_sse2_k2
 .type nvol_find_not_byteset_sse2_k2, @function
 .hidden nvol_find_not_byteset_sse2_k2
@@ -28053,7 +28296,7 @@ L.nvol_find_not_byteset_sse2_k2:
     {disp8} je .Lnvol_find_not_byteset_sse2_k2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k2.L1
+    ret
 .Lnvol_find_not_byteset_sse2_k2.L8:
 .Lnvol_find_not_byteset_sse2_k2.L6:
     xor %eax, %eax
@@ -28062,12 +28305,13 @@ L.nvol_find_not_byteset_sse2_k2:
 .Lnvol_find_not_byteset_sse2_k2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k2.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_k2, .-nvol_find_not_byteset_sse2_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_not_byteset_sse2_k3
 .type nvol_find_not_byteset_sse2_k3, @function
 .hidden nvol_find_not_byteset_sse2_k3
@@ -28132,7 +28376,7 @@ L.nvol_find_not_byteset_sse2_k3:
     {disp8} je .Lnvol_find_not_byteset_sse2_k3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k3.L1
+    ret
 .Lnvol_find_not_byteset_sse2_k3.L8:
 .Lnvol_find_not_byteset_sse2_k3.L6:
     xor %eax, %eax
@@ -28141,14 +28385,14 @@ L.nvol_find_not_byteset_sse2_k3:
 .Lnvol_find_not_byteset_sse2_k3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k3.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_k3, .-nvol_find_not_byteset_sse2_k3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_sse2_k4
 .type nvol_find_not_byteset_sse2_k4, @function
 .hidden nvol_find_not_byteset_sse2_k4
@@ -28222,7 +28466,7 @@ L.nvol_find_not_byteset_sse2_k4:
     {disp8} je .Lnvol_find_not_byteset_sse2_k4.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k4.L1
+    ret
 .Lnvol_find_not_byteset_sse2_k4.L8:
 .Lnvol_find_not_byteset_sse2_k4.L6:
     xor %eax, %eax
@@ -28231,7 +28475,7 @@ L.nvol_find_not_byteset_sse2_k4:
 .Lnvol_find_not_byteset_sse2_k4.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k4.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_k4, .-nvol_find_not_byteset_sse2_k4
 
@@ -28241,7 +28485,7 @@ L.nvol_find_not_byteset_sse2_k4:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_sse2_k5
 .type nvol_find_not_byteset_sse2_k5, @function
 .hidden nvol_find_not_byteset_sse2_k5
@@ -28325,7 +28569,7 @@ L.nvol_find_not_byteset_sse2_k5:
     {disp8} je .Lnvol_find_not_byteset_sse2_k5.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k5.L1
+    ret
 .Lnvol_find_not_byteset_sse2_k5.L8:
 .Lnvol_find_not_byteset_sse2_k5.L6:
     xor %eax, %eax
@@ -28334,11 +28578,12 @@ L.nvol_find_not_byteset_sse2_k5:
 .Lnvol_find_not_byteset_sse2_k5.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k5.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_k5, .-nvol_find_not_byteset_sse2_k5
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_not_byteset_sse2_k6
 .type nvol_find_not_byteset_sse2_k6, @function
 .hidden nvol_find_not_byteset_sse2_k6
@@ -28432,7 +28677,7 @@ L.nvol_find_not_byteset_sse2_k6:
     {disp8} je .Lnvol_find_not_byteset_sse2_k6.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k6.L1
+    ret
 .Lnvol_find_not_byteset_sse2_k6.L8:
 .Lnvol_find_not_byteset_sse2_k6.L6:
     xor %eax, %eax
@@ -28441,12 +28686,12 @@ L.nvol_find_not_byteset_sse2_k6:
 .Lnvol_find_not_byteset_sse2_k6.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_k6.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_k6, .-nvol_find_not_byteset_sse2_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_ssse3
 .type nvol_copy_until_byteset_ssse3, @function
 .hidden nvol_copy_until_byteset_ssse3
@@ -28518,7 +28763,7 @@ L.nvol_copy_until_byteset_ssse3:
     {disp8} je .Lnvol_copy_until_byteset_ssse3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_ssse3.L1
+    ret
 .Lnvol_copy_until_byteset_ssse3.L8:
 .Lnvol_copy_until_byteset_ssse3.L6:
     mov %rdx, %rax
@@ -28527,7 +28772,7 @@ L.nvol_copy_until_byteset_ssse3:
 .Lnvol_copy_until_byteset_ssse3.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_ssse3.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_ssse3, .-nvol_copy_until_byteset_ssse3
 
@@ -28536,7 +28781,7 @@ L.nvol_copy_until_byteset_ssse3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_ssse3_u
 .type nvol_copy_until_byteset_ssse3_u, @function
 .hidden nvol_copy_until_byteset_ssse3_u
@@ -28589,7 +28834,7 @@ L.nvol_copy_until_byteset_ssse3_u:
     {disp8} je .Lnvol_copy_until_byteset_ssse3_u.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_ssse3_u.L1
+    ret
 .Lnvol_copy_until_byteset_ssse3_u.L8:
 .Lnvol_copy_until_byteset_ssse3_u.L6:
     mov %rdx, %rax
@@ -28598,13 +28843,13 @@ L.nvol_copy_until_byteset_ssse3_u:
 .Lnvol_copy_until_byteset_ssse3_u.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_ssse3_u.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_ssse3_u, .-nvol_copy_until_byteset_ssse3_u
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_sse2_k1
 .type nvol_copy_until_byteset_sse2_k1, @function
 .hidden nvol_copy_until_byteset_sse2_k1
@@ -28652,7 +28897,7 @@ L.nvol_copy_until_byteset_sse2_k1:
     {disp8} je .Lnvol_copy_until_byteset_sse2_k1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k1.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_k1.L8:
 .Lnvol_copy_until_byteset_sse2_k1.L6:
     mov %rdx, %rax
@@ -28661,7 +28906,7 @@ L.nvol_copy_until_byteset_sse2_k1:
 .Lnvol_copy_until_byteset_sse2_k1.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k1.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_k1, .-nvol_copy_until_byteset_sse2_k1
 
@@ -28669,7 +28914,7 @@ L.nvol_copy_until_byteset_sse2_k1:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_sse2_k2
 .type nvol_copy_until_byteset_sse2_k2, @function
 .hidden nvol_copy_until_byteset_sse2_k2
@@ -28727,7 +28972,7 @@ L.nvol_copy_until_byteset_sse2_k2:
     {disp8} je .Lnvol_copy_until_byteset_sse2_k2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k2.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_k2.L8:
 .Lnvol_copy_until_byteset_sse2_k2.L6:
     mov %rdx, %rax
@@ -28736,11 +28981,11 @@ L.nvol_copy_until_byteset_sse2_k2:
 .Lnvol_copy_until_byteset_sse2_k2.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k2.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_k2, .-nvol_copy_until_byteset_sse2_k2
 
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_sse2_k3
 .type nvol_copy_until_byteset_sse2_k3, @function
 .hidden nvol_copy_until_byteset_sse2_k3
@@ -28808,7 +29053,7 @@ L.nvol_copy_until_byteset_sse2_k3:
     {disp8} je .Lnvol_copy_until_byteset_sse2_k3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k3.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_k3.L8:
 .Lnvol_copy_until_byteset_sse2_k3.L6:
     mov %rdx, %rax
@@ -28817,13 +29062,13 @@ L.nvol_copy_until_byteset_sse2_k3:
 .Lnvol_copy_until_byteset_sse2_k3.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k3.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_k3, .-nvol_copy_until_byteset_sse2_k3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_copy_until_byteset_sse2_k4
 .type nvol_copy_until_byteset_sse2_k4, @function
 .hidden nvol_copy_until_byteset_sse2_k4
@@ -28901,7 +29146,7 @@ L.nvol_copy_until_byteset_sse2_k4:
     {disp8} je .Lnvol_copy_until_byteset_sse2_k4.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k4.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_k4.L8:
 .Lnvol_copy_until_byteset_sse2_k4.L6:
     mov %rdx, %rax
@@ -28910,7 +29155,7 @@ L.nvol_copy_until_byteset_sse2_k4:
 .Lnvol_copy_until_byteset_sse2_k4.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k4.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_k4, .-nvol_copy_until_byteset_sse2_k4
 
@@ -28918,7 +29163,7 @@ L.nvol_copy_until_byteset_sse2_k4:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_sse2_k5
 .type nvol_copy_until_byteset_sse2_k5, @function
 .hidden nvol_copy_until_byteset_sse2_k5
@@ -29006,7 +29251,7 @@ L.nvol_copy_until_byteset_sse2_k5:
     {disp8} je .Lnvol_copy_until_byteset_sse2_k5.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k5.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_k5.L8:
 .Lnvol_copy_until_byteset_sse2_k5.L6:
     mov %rdx, %rax
@@ -29015,11 +29260,11 @@ L.nvol_copy_until_byteset_sse2_k5:
 .Lnvol_copy_until_byteset_sse2_k5.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k5.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_k5, .-nvol_copy_until_byteset_sse2_k5
 
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_sse2_k6
 .type nvol_copy_until_byteset_sse2_k6, @function
 .hidden nvol_copy_until_byteset_sse2_k6
@@ -29117,7 +29362,7 @@ L.nvol_copy_until_byteset_sse2_k6:
     {disp8} je .Lnvol_copy_until_byteset_sse2_k6.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k6.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_k6.L8:
 .Lnvol_copy_until_byteset_sse2_k6.L6:
     mov %rdx, %rax
@@ -29126,11 +29371,11 @@ L.nvol_copy_until_byteset_sse2_k6:
 .Lnvol_copy_until_byteset_sse2_k6.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_k6.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_k6, .-nvol_copy_until_byteset_sse2_k6
 
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_sse2_r0
 .type nvol_find_byteset_sse2_r0, @function
 .hidden nvol_find_byteset_sse2_r0
@@ -29175,7 +29420,7 @@ L.nvol_find_byteset_sse2_r0:
     {disp8} je .Lnvol_find_byteset_sse2_r0.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_r0.L1
+    ret
 .Lnvol_find_byteset_sse2_r0.L8:
 .Lnvol_find_byteset_sse2_r0.L6:
     xor %eax, %eax
@@ -29184,7 +29429,7 @@ L.nvol_find_byteset_sse2_r0:
 .Lnvol_find_byteset_sse2_r0.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_r0.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_sse2_r0, .-nvol_find_byteset_sse2_r0
 
@@ -29194,7 +29439,7 @@ L.nvol_find_byteset_sse2_r0:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_sse2_r0
 .type nvol_find_not_byteset_sse2_r0, @function
 .hidden nvol_find_not_byteset_sse2_r0
@@ -29241,7 +29486,7 @@ L.nvol_find_not_byteset_sse2_r0:
     {disp8} je .Lnvol_find_not_byteset_sse2_r0.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_r0.L1
+    ret
 .Lnvol_find_not_byteset_sse2_r0.L8:
 .Lnvol_find_not_byteset_sse2_r0.L6:
     xor %eax, %eax
@@ -29250,7 +29495,7 @@ L.nvol_find_not_byteset_sse2_r0:
 .Lnvol_find_not_byteset_sse2_r0.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_r0.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_r0, .-nvol_find_not_byteset_sse2_r0
 
@@ -29259,7 +29504,7 @@ L.nvol_find_not_byteset_sse2_r0:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_sse2_r0
 .type nvol_copy_until_byteset_sse2_r0, @function
 .hidden nvol_copy_until_byteset_sse2_r0
@@ -29311,7 +29556,7 @@ L.nvol_copy_until_byteset_sse2_r0:
     {disp8} je .Lnvol_copy_until_byteset_sse2_r0.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_r0.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_r0.L8:
 .Lnvol_copy_until_byteset_sse2_r0.L6:
     mov %rdx, %rax
@@ -29320,13 +29565,14 @@ L.nvol_copy_until_byteset_sse2_r0:
 .Lnvol_copy_until_byteset_sse2_r0.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_r0.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_r0, .-nvol_copy_until_byteset_sse2_r0
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_sse2_r1
 .type nvol_find_byteset_sse2_r1, @function
 .hidden nvol_find_byteset_sse2_r1
@@ -29379,7 +29625,7 @@ L.nvol_find_byteset_sse2_r1:
     {disp8} je .Lnvol_find_byteset_sse2_r1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_r1.L1
+    ret
 .Lnvol_find_byteset_sse2_r1.L8:
 .Lnvol_find_byteset_sse2_r1.L6:
     xor %eax, %eax
@@ -29388,13 +29634,13 @@ L.nvol_find_byteset_sse2_r1:
 .Lnvol_find_byteset_sse2_r1.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_r1.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_sse2_r1, .-nvol_find_byteset_sse2_r1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_sse2_r1
 .type nvol_find_not_byteset_sse2_r1, @function
 .hidden nvol_find_not_byteset_sse2_r1
@@ -29450,7 +29696,7 @@ L.nvol_find_not_byteset_sse2_r1:
     {disp8} je .Lnvol_find_not_byteset_sse2_r1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_r1.L1
+    ret
 .Lnvol_find_not_byteset_sse2_r1.L8:
 .Lnvol_find_not_byteset_sse2_r1.L6:
     xor %eax, %eax
@@ -29459,11 +29705,12 @@ L.nvol_find_not_byteset_sse2_r1:
 .Lnvol_find_not_byteset_sse2_r1.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_r1.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_r1, .-nvol_find_not_byteset_sse2_r1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_copy_until_byteset_sse2_r1
 .type nvol_copy_until_byteset_sse2_r1, @function
 .hidden nvol_copy_until_byteset_sse2_r1
@@ -29523,7 +29770,7 @@ L.nvol_copy_until_byteset_sse2_r1:
     {disp8} je .Lnvol_copy_until_byteset_sse2_r1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_r1.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_r1.L8:
 .Lnvol_copy_until_byteset_sse2_r1.L6:
     mov %rdx, %rax
@@ -29532,7 +29779,7 @@ L.nvol_copy_until_byteset_sse2_r1:
 .Lnvol_copy_until_byteset_sse2_r1.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_r1.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_r1, .-nvol_copy_until_byteset_sse2_r1
 
@@ -29542,7 +29789,7 @@ L.nvol_copy_until_byteset_sse2_r1:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_sse2_r2
 .type nvol_find_byteset_sse2_r2, @function
 .hidden nvol_find_byteset_sse2_r2
@@ -29605,7 +29852,7 @@ L.nvol_find_byteset_sse2_r2:
     {disp8} je .Lnvol_find_byteset_sse2_r2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_r2.L1
+    ret
 .Lnvol_find_byteset_sse2_r2.L8:
 .Lnvol_find_byteset_sse2_r2.L6:
     xor %eax, %eax
@@ -29614,7 +29861,7 @@ L.nvol_find_byteset_sse2_r2:
 .Lnvol_find_byteset_sse2_r2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_r2.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_sse2_r2, .-nvol_find_byteset_sse2_r2
 
@@ -29622,7 +29869,7 @@ L.nvol_find_byteset_sse2_r2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_not_byteset_sse2_r2
 .type nvol_find_not_byteset_sse2_r2, @function
 .hidden nvol_find_not_byteset_sse2_r2
@@ -29689,7 +29936,7 @@ L.nvol_find_not_byteset_sse2_r2:
     {disp8} je .Lnvol_find_not_byteset_sse2_r2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_r2.L1
+    ret
 .Lnvol_find_not_byteset_sse2_r2.L8:
 .Lnvol_find_not_byteset_sse2_r2.L6:
     xor %eax, %eax
@@ -29698,13 +29945,13 @@ L.nvol_find_not_byteset_sse2_r2:
 .Lnvol_find_not_byteset_sse2_r2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_r2.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_r2, .-nvol_find_not_byteset_sse2_r2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_sse2_r2
 .type nvol_copy_until_byteset_sse2_r2, @function
 .hidden nvol_copy_until_byteset_sse2_r2
@@ -29774,7 +30021,7 @@ L.nvol_copy_until_byteset_sse2_r2:
     {disp8} je .Lnvol_copy_until_byteset_sse2_r2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_r2.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_r2.L8:
 .Lnvol_copy_until_byteset_sse2_r2.L6:
     mov %rdx, %rax
@@ -29783,12 +30030,12 @@ L.nvol_copy_until_byteset_sse2_r2:
 .Lnvol_copy_until_byteset_sse2_r2.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_r2.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_r2, .-nvol_copy_until_byteset_sse2_r2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_sse2_r3
 .type nvol_find_byteset_sse2_r3, @function
 .hidden nvol_find_byteset_sse2_r3
@@ -29861,7 +30108,7 @@ L.nvol_find_byteset_sse2_r3:
     {disp8} je .Lnvol_find_byteset_sse2_r3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_r3.L1
+    ret
 .Lnvol_find_byteset_sse2_r3.L8:
 .Lnvol_find_byteset_sse2_r3.L6:
     xor %eax, %eax
@@ -29870,11 +30117,11 @@ L.nvol_find_byteset_sse2_r3:
 .Lnvol_find_byteset_sse2_r3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_sse2_r3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_sse2_r3, .-nvol_find_byteset_sse2_r3
 
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_find_not_byteset_sse2_r3
 .type nvol_find_not_byteset_sse2_r3, @function
 .hidden nvol_find_not_byteset_sse2_r3
@@ -29950,7 +30197,7 @@ L.nvol_find_not_byteset_sse2_r3:
     {disp8} je .Lnvol_find_not_byteset_sse2_r3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_r3.L1
+    ret
 .Lnvol_find_not_byteset_sse2_r3.L8:
 .Lnvol_find_not_byteset_sse2_r3.L6:
     xor %eax, %eax
@@ -29959,7 +30206,7 @@ L.nvol_find_not_byteset_sse2_r3:
 .Lnvol_find_not_byteset_sse2_r3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse2_r3.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_r3, .-nvol_find_not_byteset_sse2_r3
 
@@ -29968,7 +30215,7 @@ L.nvol_find_not_byteset_sse2_r3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_sse2_r3
 .type nvol_copy_until_byteset_sse2_r3, @function
 .hidden nvol_copy_until_byteset_sse2_r3
@@ -30048,7 +30295,7 @@ L.nvol_copy_until_byteset_sse2_r3:
     {disp8} je .Lnvol_copy_until_byteset_sse2_r3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_r3.L1
+    ret
 .Lnvol_copy_until_byteset_sse2_r3.L8:
 .Lnvol_copy_until_byteset_sse2_r3.L6:
     mov %rdx, %rax
@@ -30057,14 +30304,15 @@ L.nvol_copy_until_byteset_sse2_r3:
 .Lnvol_copy_until_byteset_sse2_r3.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_sse2_r3.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_r3, .-nvol_copy_until_byteset_sse2_r3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_ssse3_k1
 .type nvol_find_byteset_pair_ssse3_k1, @function
 .hidden nvol_find_byteset_pair_ssse3_k1
@@ -30121,7 +30369,7 @@ L.nvol_find_byteset_pair_ssse3_k1:
     {disp8} je .Lnvol_find_byteset_pair_ssse3_k1.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k1.L1
+    ret
 .Lnvol_find_byteset_pair_ssse3_k1.L8:
 .Lnvol_find_byteset_pair_ssse3_k1.L6:
     xor %eax, %eax
@@ -30130,7 +30378,7 @@ L.nvol_find_byteset_pair_ssse3_k1:
 .Lnvol_find_byteset_pair_ssse3_k1.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k1.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_ssse3_k1, .-nvol_find_byteset_pair_ssse3_k1
 
@@ -30140,7 +30388,7 @@ L.nvol_find_byteset_pair_ssse3_k1:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_ssse3_k2
 .type nvol_find_byteset_pair_ssse3_k2, @function
 .hidden nvol_find_byteset_pair_ssse3_k2
@@ -30218,7 +30466,7 @@ L.nvol_find_byteset_pair_ssse3_k2:
     {disp8} je .Lnvol_find_byteset_pair_ssse3_k2.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k2.L1
+    ret
 .Lnvol_find_byteset_pair_ssse3_k2.L8:
 .Lnvol_find_byteset_pair_ssse3_k2.L6:
     xor %eax, %eax
@@ -30227,13 +30475,13 @@ L.nvol_find_byteset_pair_ssse3_k2:
 .Lnvol_find_byteset_pair_ssse3_k2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k2.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_ssse3_k2, .-nvol_find_byteset_pair_ssse3_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_ssse3_k3
 .type nvol_find_byteset_pair_ssse3_k3, @function
 .hidden nvol_find_byteset_pair_ssse3_k3
@@ -30330,7 +30578,7 @@ L.nvol_find_byteset_pair_ssse3_k3:
     {disp8} je .Lnvol_find_byteset_pair_ssse3_k3.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k3.L1
+    ret
 .Lnvol_find_byteset_pair_ssse3_k3.L8:
 .Lnvol_find_byteset_pair_ssse3_k3.L6:
     xor %eax, %eax
@@ -30339,17 +30587,11 @@ L.nvol_find_byteset_pair_ssse3_k3:
 .Lnvol_find_byteset_pair_ssse3_k3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_ssse3_k3, .-nvol_find_byteset_pair_ssse3_k3
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_ssse3_k4
 .type nvol_find_byteset_pair_ssse3_k4, @function
 .hidden nvol_find_byteset_pair_ssse3_k4
@@ -30466,7 +30708,7 @@ L.nvol_find_byteset_pair_ssse3_k4:
     {disp8} je .Lnvol_find_byteset_pair_ssse3_k4.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k4.L1
+    ret
 .Lnvol_find_byteset_pair_ssse3_k4.L8:
 .Lnvol_find_byteset_pair_ssse3_k4.L6:
     xor %eax, %eax
@@ -30475,7 +30717,7 @@ L.nvol_find_byteset_pair_ssse3_k4:
 .Lnvol_find_byteset_pair_ssse3_k4.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k4.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_ssse3_k4, .-nvol_find_byteset_pair_ssse3_k4
 
@@ -30485,7 +30727,7 @@ L.nvol_find_byteset_pair_ssse3_k4:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_ssse3_k5
 .type nvol_find_byteset_pair_ssse3_k5, @function
 .hidden nvol_find_byteset_pair_ssse3_k5
@@ -30622,7 +30864,7 @@ L.nvol_find_byteset_pair_ssse3_k5:
     {disp8} je .Lnvol_find_byteset_pair_ssse3_k5.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k5.L1
+    ret
 .Lnvol_find_byteset_pair_ssse3_k5.L8:
 .Lnvol_find_byteset_pair_ssse3_k5.L6:
     xor %eax, %eax
@@ -30631,13 +30873,13 @@ L.nvol_find_byteset_pair_ssse3_k5:
 .Lnvol_find_byteset_pair_ssse3_k5.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k5.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_ssse3_k5, .-nvol_find_byteset_pair_ssse3_k5
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_ssse3_k6
 .type nvol_find_byteset_pair_ssse3_k6, @function
 .hidden nvol_find_byteset_pair_ssse3_k6
@@ -30795,7 +31037,7 @@ L.nvol_find_byteset_pair_ssse3_k6:
     {disp8} je .Lnvol_find_byteset_pair_ssse3_k6.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k6.L1
+    ret
 .Lnvol_find_byteset_pair_ssse3_k6.L8:
 .Lnvol_find_byteset_pair_ssse3_k6.L6:
     xor %eax, %eax
@@ -30804,7 +31046,7 @@ L.nvol_find_byteset_pair_ssse3_k6:
 .Lnvol_find_byteset_pair_ssse3_k6.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_ssse3_k6.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_ssse3_k6, .-nvol_find_byteset_pair_ssse3_k6
 
@@ -30812,7 +31054,7 @@ L.nvol_find_byteset_pair_ssse3_k6:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_ssse3
 .type nvol_find_byteset_pair_mask_ssse3, @function
 .hidden nvol_find_byteset_pair_mask_ssse3
@@ -30917,7 +31159,7 @@ L.nvol_find_byteset_pair_mask_ssse3:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3.L1
+    ret
 .Lnvol_find_byteset_pair_mask_ssse3.L8:
 .Lnvol_find_byteset_pair_mask_ssse3.L6:
     xor %eax, %eax
@@ -30927,12 +31169,13 @@ L.nvol_find_byteset_pair_mask_ssse3:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3, .-nvol_find_byteset_pair_mask_ssse3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_mask_ssse3_k1
 .type nvol_find_byteset_pair_mask_ssse3_k1, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k1
@@ -30990,7 +31233,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k1:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k1.L1
+    ret
 .Lnvol_find_byteset_pair_mask_ssse3_k1.L8:
 .Lnvol_find_byteset_pair_mask_ssse3_k1.L6:
     xor %eax, %eax
@@ -31000,7 +31243,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k1:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k1.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3_k1, .-nvol_find_byteset_pair_mask_ssse3_k1
 
@@ -31008,7 +31251,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k1:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_ssse3_k2
 .type nvol_find_byteset_pair_mask_ssse3_k2, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k2
@@ -31087,7 +31330,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k2:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k2.L1
+    ret
 .Lnvol_find_byteset_pair_mask_ssse3_k2.L8:
 .Lnvol_find_byteset_pair_mask_ssse3_k2.L6:
     xor %eax, %eax
@@ -31097,12 +31340,12 @@ L.nvol_find_byteset_pair_mask_ssse3_k2:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k2.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3_k2, .-nvol_find_byteset_pair_mask_ssse3_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_mask_ssse3_k3
 .type nvol_find_byteset_pair_mask_ssse3_k3, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k3
@@ -31201,7 +31444,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k3:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k3.L1
+    ret
 .Lnvol_find_byteset_pair_mask_ssse3_k3.L8:
 .Lnvol_find_byteset_pair_mask_ssse3_k3.L6:
     xor %eax, %eax
@@ -31211,7 +31454,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k3:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k3.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3_k3, .-nvol_find_byteset_pair_mask_ssse3_k3
 
@@ -31219,7 +31462,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_mask_ssse3_k4
 .type nvol_find_byteset_pair_mask_ssse3_k4, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k4
@@ -31338,7 +31581,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k4:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k4.L1
+    ret
 .Lnvol_find_byteset_pair_mask_ssse3_k4.L8:
 .Lnvol_find_byteset_pair_mask_ssse3_k4.L6:
     xor %eax, %eax
@@ -31348,7 +31591,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k4:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k4.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3_k4, .-nvol_find_byteset_pair_mask_ssse3_k4
 
@@ -31357,7 +31600,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k4:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_mask_ssse3_k5
 .type nvol_find_byteset_pair_mask_ssse3_k5, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k5
@@ -31496,7 +31739,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k5:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k5.L1
+    ret
 .Lnvol_find_byteset_pair_mask_ssse3_k5.L8:
 .Lnvol_find_byteset_pair_mask_ssse3_k5.L6:
     xor %eax, %eax
@@ -31506,11 +31749,11 @@ L.nvol_find_byteset_pair_mask_ssse3_k5:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k5.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3_k5, .-nvol_find_byteset_pair_mask_ssse3_k5
 
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_ssse3_k6
 .type nvol_find_byteset_pair_mask_ssse3_k6, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k6
@@ -31669,7 +31912,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k6:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k6.L1
+    ret
 .Lnvol_find_byteset_pair_mask_ssse3_k6.L8:
 .Lnvol_find_byteset_pair_mask_ssse3_k6.L6:
     xor %eax, %eax
@@ -31679,13 +31922,14 @@ L.nvol_find_byteset_pair_mask_ssse3_k6:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_ssse3_k6.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3_k6, .-nvol_find_byteset_pair_mask_ssse3_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_visit_ssse3
 .type nvol_find_byteset_pair_visit_ssse3, @function
 .hidden nvol_find_byteset_pair_visit_ssse3
@@ -33203,7 +33447,8 @@ L.nvol_find_byteset_avx2:
     {disp8} je .Lnvol_find_byteset_avx2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2.L8:
 .Lnvol_find_byteset_avx2.L6:
     xor %eax, %eax
@@ -33213,14 +33458,14 @@ L.nvol_find_byteset_avx2:
 .Lnvol_find_byteset_avx2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2, .-nvol_find_byteset_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_avx2_u
 .type nvol_find_byteset_avx2_u, @function
 .hidden nvol_find_byteset_avx2_u
@@ -33263,7 +33508,8 @@ L.nvol_find_byteset_avx2_u:
     {disp8} je .Lnvol_find_byteset_avx2_u.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_u.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2_u.L8:
 .Lnvol_find_byteset_avx2_u.L6:
     xor %eax, %eax
@@ -33273,7 +33519,8 @@ L.nvol_find_byteset_avx2_u:
 .Lnvol_find_byteset_avx2_u.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_u.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2_u, .-nvol_find_byteset_avx2_u
 
@@ -33282,7 +33529,7 @@ L.nvol_find_byteset_avx2_u:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_avx2
 .type nvol_find_byteset_pair_avx2, @function
 .hidden nvol_find_byteset_pair_avx2
@@ -33375,7 +33622,8 @@ L.nvol_find_byteset_pair_avx2:
     {disp8} je .Lnvol_find_byteset_pair_avx2.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_avx2.L8:
 .Lnvol_find_byteset_pair_avx2.L6:
     xor %eax, %eax
@@ -33385,13 +33633,14 @@ L.nvol_find_byteset_pair_avx2:
 .Lnvol_find_byteset_pair_avx2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2, .-nvol_find_byteset_pair_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_find_byteset_avx2_k4
 .type nvol_find_byteset_avx2_k4, @function
 .hidden nvol_find_byteset_avx2_k4
@@ -33452,7 +33701,8 @@ L.nvol_find_byteset_avx2_k4:
     {disp8} je .Lnvol_find_byteset_avx2_k4.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_k4.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2_k4.L8:
 .Lnvol_find_byteset_avx2_k4.L6:
     xor %eax, %eax
@@ -33462,7 +33712,8 @@ L.nvol_find_byteset_avx2_k4:
 .Lnvol_find_byteset_avx2_k4.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_k4.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2_k4, .-nvol_find_byteset_avx2_k4
 
@@ -33471,7 +33722,7 @@ L.nvol_find_byteset_avx2_k4:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_avx2_k5
 .type nvol_find_byteset_avx2_k5, @function
 .hidden nvol_find_byteset_avx2_k5
@@ -33539,7 +33790,8 @@ L.nvol_find_byteset_avx2_k5:
     {disp8} je .Lnvol_find_byteset_avx2_k5.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_k5.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2_k5.L8:
 .Lnvol_find_byteset_avx2_k5.L6:
     xor %eax, %eax
@@ -33549,13 +33801,13 @@ L.nvol_find_byteset_avx2_k5:
 .Lnvol_find_byteset_avx2_k5.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_k5.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2_k5, .-nvol_find_byteset_avx2_k5
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_avx2_k6
 .type nvol_find_byteset_avx2_k6, @function
 .hidden nvol_find_byteset_avx2_k6
@@ -33630,7 +33882,8 @@ L.nvol_find_byteset_avx2_k6:
     {disp8} je .Lnvol_find_byteset_avx2_k6.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_k6.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2_k6.L8:
 .Lnvol_find_byteset_avx2_k6.L6:
     xor %eax, %eax
@@ -33640,7 +33893,8 @@ L.nvol_find_byteset_avx2_k6:
 .Lnvol_find_byteset_avx2_k6.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_k6.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2_k6, .-nvol_find_byteset_avx2_k6
 
@@ -33649,7 +33903,7 @@ L.nvol_find_byteset_avx2_k6:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_find_not_byteset_avx2
 .type nvol_find_not_byteset_avx2, @function
 .hidden nvol_find_not_byteset_avx2
@@ -33712,7 +33966,8 @@ L.nvol_find_not_byteset_avx2:
     {disp8} je .Lnvol_find_not_byteset_avx2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2.L8:
 .Lnvol_find_not_byteset_avx2.L6:
     xor %eax, %eax
@@ -33722,13 +33977,13 @@ L.nvol_find_not_byteset_avx2:
 .Lnvol_find_not_byteset_avx2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2, .-nvol_find_not_byteset_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_find_not_byteset_avx2_u
 .type nvol_find_not_byteset_avx2_u, @function
 .hidden nvol_find_not_byteset_avx2_u
@@ -33774,7 +34029,8 @@ L.nvol_find_not_byteset_avx2_u:
     {disp8} je .Lnvol_find_not_byteset_avx2_u.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_u.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_u.L8:
 .Lnvol_find_not_byteset_avx2_u.L6:
     xor %eax, %eax
@@ -33784,7 +34040,8 @@ L.nvol_find_not_byteset_avx2_u:
 .Lnvol_find_not_byteset_avx2_u.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_u.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_u, .-nvol_find_not_byteset_avx2_u
 
@@ -33792,7 +34049,7 @@ L.nvol_find_not_byteset_avx2_u:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_not_byteset_avx2_k1
 .type nvol_find_not_byteset_avx2_k1, @function
 .hidden nvol_find_not_byteset_avx2_k1
@@ -33833,7 +34090,8 @@ L.nvol_find_not_byteset_avx2_k1:
     {disp8} je .Lnvol_find_not_byteset_avx2_k1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k1.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_k1.L8:
 .Lnvol_find_not_byteset_avx2_k1.L6:
     xor %eax, %eax
@@ -33843,11 +34101,12 @@ L.nvol_find_not_byteset_avx2_k1:
 .Lnvol_find_not_byteset_avx2_k1.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k1.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_k1, .-nvol_find_not_byteset_avx2_k1
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_find_not_byteset_avx2_k2
 .type nvol_find_not_byteset_avx2_k2, @function
 .hidden nvol_find_not_byteset_avx2_k2
@@ -33897,7 +34156,8 @@ L.nvol_find_not_byteset_avx2_k2:
     {disp8} je .Lnvol_find_not_byteset_avx2_k2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_k2.L8:
 .Lnvol_find_not_byteset_avx2_k2.L6:
     xor %eax, %eax
@@ -33907,14 +34167,14 @@ L.nvol_find_not_byteset_avx2_k2:
 .Lnvol_find_not_byteset_avx2_k2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_k2, .-nvol_find_not_byteset_avx2_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_avx2_k3
 .type nvol_find_not_byteset_avx2_k3, @function
 .hidden nvol_find_not_byteset_avx2_k3
@@ -33971,7 +34231,8 @@ L.nvol_find_not_byteset_avx2_k3:
     {disp8} je .Lnvol_find_not_byteset_avx2_k3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k3.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_k3.L8:
 .Lnvol_find_not_byteset_avx2_k3.L6:
     xor %eax, %eax
@@ -33981,11 +34242,12 @@ L.nvol_find_not_byteset_avx2_k3:
 .Lnvol_find_not_byteset_avx2_k3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k3.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_k3, .-nvol_find_not_byteset_avx2_k3
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_find_not_byteset_avx2_k4
 .type nvol_find_not_byteset_avx2_k4, @function
 .hidden nvol_find_not_byteset_avx2_k4
@@ -34049,7 +34311,8 @@ L.nvol_find_not_byteset_avx2_k4:
     {disp8} je .Lnvol_find_not_byteset_avx2_k4.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k4.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_k4.L8:
 .Lnvol_find_not_byteset_avx2_k4.L6:
     xor %eax, %eax
@@ -34059,15 +34322,15 @@ L.nvol_find_not_byteset_avx2_k4:
 .Lnvol_find_not_byteset_avx2_k4.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k4.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_k4, .-nvol_find_not_byteset_avx2_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_not_byteset_avx2_k5
 .type nvol_find_not_byteset_avx2_k5, @function
 .hidden nvol_find_not_byteset_avx2_k5
@@ -34138,7 +34401,8 @@ L.nvol_find_not_byteset_avx2_k5:
     {disp8} je .Lnvol_find_not_byteset_avx2_k5.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k5.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_k5.L8:
 .Lnvol_find_not_byteset_avx2_k5.L6:
     xor %eax, %eax
@@ -34148,12 +34412,12 @@ L.nvol_find_not_byteset_avx2_k5:
 .Lnvol_find_not_byteset_avx2_k5.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k5.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_k5, .-nvol_find_not_byteset_avx2_k5
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_not_byteset_avx2_k6
 .type nvol_find_not_byteset_avx2_k6, @function
 .hidden nvol_find_not_byteset_avx2_k6
@@ -34231,7 +34495,8 @@ L.nvol_find_not_byteset_avx2_k6:
     {disp8} je .Lnvol_find_not_byteset_avx2_k6.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k6.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_k6.L8:
 .Lnvol_find_not_byteset_avx2_k6.L6:
     xor %eax, %eax
@@ -34241,7 +34506,8 @@ L.nvol_find_not_byteset_avx2_k6:
 .Lnvol_find_not_byteset_avx2_k6.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_k6.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_k6, .-nvol_find_not_byteset_avx2_k6
 
@@ -34249,7 +34515,7 @@ L.nvol_find_not_byteset_avx2_k6:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_copy_until_byteset_avx2
 .type nvol_copy_until_byteset_avx2, @function
 .hidden nvol_copy_until_byteset_avx2
@@ -34315,7 +34581,8 @@ L.nvol_copy_until_byteset_avx2:
     {disp8} je .Lnvol_copy_until_byteset_avx2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2.L8:
 .Lnvol_copy_until_byteset_avx2.L6:
     mov %rdx, %rax
@@ -34325,11 +34592,12 @@ L.nvol_copy_until_byteset_avx2:
 .Lnvol_copy_until_byteset_avx2.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2, .-nvol_copy_until_byteset_avx2
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_avx2_u
 .type nvol_copy_until_byteset_avx2_u, @function
 .hidden nvol_copy_until_byteset_avx2_u
@@ -34379,7 +34647,8 @@ L.nvol_copy_until_byteset_avx2_u:
     {disp8} je .Lnvol_copy_until_byteset_avx2_u.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_u.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_u.L8:
 .Lnvol_copy_until_byteset_avx2_u.L6:
     mov %rdx, %rax
@@ -34389,14 +34658,14 @@ L.nvol_copy_until_byteset_avx2_u:
 .Lnvol_copy_until_byteset_avx2_u.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_u.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_u, .-nvol_copy_until_byteset_avx2_u
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_avx2_k1
 .type nvol_copy_until_byteset_avx2_k1, @function
 .hidden nvol_copy_until_byteset_avx2_k1
@@ -34443,7 +34712,8 @@ L.nvol_copy_until_byteset_avx2_k1:
     {disp8} je .Lnvol_copy_until_byteset_avx2_k1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k1.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_k1.L8:
 .Lnvol_copy_until_byteset_avx2_k1.L6:
     mov %rdx, %rax
@@ -34453,7 +34723,8 @@ L.nvol_copy_until_byteset_avx2_k1:
 .Lnvol_copy_until_byteset_avx2_k1.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k1.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k1, .-nvol_copy_until_byteset_avx2_k1
 
@@ -34461,8 +34732,7 @@ L.nvol_copy_until_byteset_avx2_k1:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_avx2_k2
 .type nvol_copy_until_byteset_avx2_k2, @function
 .hidden nvol_copy_until_byteset_avx2_k2
@@ -34516,7 +34786,8 @@ L.nvol_copy_until_byteset_avx2_k2:
     {disp8} je .Lnvol_copy_until_byteset_avx2_k2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_k2.L8:
 .Lnvol_copy_until_byteset_avx2_k2.L6:
     mov %rdx, %rax
@@ -34526,12 +34797,13 @@ L.nvol_copy_until_byteset_avx2_k2:
 .Lnvol_copy_until_byteset_avx2_k2.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k2, .-nvol_copy_until_byteset_avx2_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_copy_until_byteset_avx2_k3
 .type nvol_copy_until_byteset_avx2_k3, @function
 .hidden nvol_copy_until_byteset_avx2_k3
@@ -34593,7 +34865,8 @@ L.nvol_copy_until_byteset_avx2_k3:
     {disp8} je .Lnvol_copy_until_byteset_avx2_k3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k3.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_k3.L8:
 .Lnvol_copy_until_byteset_avx2_k3.L6:
     mov %rdx, %rax
@@ -34603,7 +34876,8 @@ L.nvol_copy_until_byteset_avx2_k3:
 .Lnvol_copy_until_byteset_avx2_k3.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k3.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k3, .-nvol_copy_until_byteset_avx2_k3
 
@@ -34611,8 +34885,7 @@ L.nvol_copy_until_byteset_avx2_k3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_avx2_k4
 .type nvol_copy_until_byteset_avx2_k4, @function
 .hidden nvol_copy_until_byteset_avx2_k4
@@ -34680,7 +34953,8 @@ L.nvol_copy_until_byteset_avx2_k4:
     {disp8} je .Lnvol_copy_until_byteset_avx2_k4.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k4.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_k4.L8:
 .Lnvol_copy_until_byteset_avx2_k4.L6:
     mov %rdx, %rax
@@ -34690,13 +34964,14 @@ L.nvol_copy_until_byteset_avx2_k4:
 .Lnvol_copy_until_byteset_avx2_k4.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k4.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k4, .-nvol_copy_until_byteset_avx2_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_copy_until_byteset_avx2_k5
 .type nvol_copy_until_byteset_avx2_k5, @function
 .hidden nvol_copy_until_byteset_avx2_k5
@@ -34770,7 +35045,8 @@ L.nvol_copy_until_byteset_avx2_k5:
     {disp8} je .Lnvol_copy_until_byteset_avx2_k5.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k5.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_k5.L8:
 .Lnvol_copy_until_byteset_avx2_k5.L6:
     mov %rdx, %rax
@@ -34780,10 +35056,18 @@ L.nvol_copy_until_byteset_avx2_k5:
 .Lnvol_copy_until_byteset_avx2_k5.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k5.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k5, .-nvol_copy_until_byteset_avx2_k5
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_avx2_k6
 .type nvol_copy_until_byteset_avx2_k6, @function
 .hidden nvol_copy_until_byteset_avx2_k6
@@ -34865,7 +35149,8 @@ L.nvol_copy_until_byteset_avx2_k6:
     {disp8} je .Lnvol_copy_until_byteset_avx2_k6.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k6.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_k6.L8:
 .Lnvol_copy_until_byteset_avx2_k6.L6:
     mov %rdx, %rax
@@ -34875,14 +35160,14 @@ L.nvol_copy_until_byteset_avx2_k6:
 .Lnvol_copy_until_byteset_avx2_k6.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_k6.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k6, .-nvol_copy_until_byteset_avx2_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_avx2_r0
 .type nvol_find_byteset_avx2_r0, @function
 .hidden nvol_find_byteset_avx2_r0
@@ -34925,7 +35210,8 @@ L.nvol_find_byteset_avx2_r0:
     {disp8} je .Lnvol_find_byteset_avx2_r0.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_r0.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2_r0.L8:
 .Lnvol_find_byteset_avx2_r0.L6:
     xor %eax, %eax
@@ -34935,7 +35221,8 @@ L.nvol_find_byteset_avx2_r0:
 .Lnvol_find_byteset_avx2_r0.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_r0.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2_r0, .-nvol_find_byteset_avx2_r0
 
@@ -34945,7 +35232,7 @@ L.nvol_find_byteset_avx2_r0:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_not_byteset_avx2_r0
 .type nvol_find_not_byteset_avx2_r0, @function
 .hidden nvol_find_not_byteset_avx2_r0
@@ -34990,7 +35277,8 @@ L.nvol_find_not_byteset_avx2_r0:
     {disp8} je .Lnvol_find_not_byteset_avx2_r0.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_r0.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_r0.L8:
 .Lnvol_find_not_byteset_avx2_r0.L6:
     xor %eax, %eax
@@ -35000,7 +35288,8 @@ L.nvol_find_not_byteset_avx2_r0:
 .Lnvol_find_not_byteset_avx2_r0.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_r0.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_r0, .-nvol_find_not_byteset_avx2_r0
 
@@ -35009,7 +35298,7 @@ L.nvol_find_not_byteset_avx2_r0:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_avx2_r0
 .type nvol_copy_until_byteset_avx2_r0, @function
 .hidden nvol_copy_until_byteset_avx2_r0
@@ -35058,7 +35347,8 @@ L.nvol_copy_until_byteset_avx2_r0:
     {disp8} je .Lnvol_copy_until_byteset_avx2_r0.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_r0.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_r0.L8:
 .Lnvol_copy_until_byteset_avx2_r0.L6:
     mov %rdx, %rax
@@ -35068,7 +35358,8 @@ L.nvol_copy_until_byteset_avx2_r0:
 .Lnvol_copy_until_byteset_avx2_r0.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_r0.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_r0, .-nvol_copy_until_byteset_avx2_r0
 
@@ -35076,7 +35367,6 @@ L.nvol_copy_until_byteset_avx2_r0:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_avx2_r1
 .type nvol_find_byteset_avx2_r1, @function
 .hidden nvol_find_byteset_avx2_r1
@@ -35125,7 +35415,8 @@ L.nvol_find_byteset_avx2_r1:
     {disp8} je .Lnvol_find_byteset_avx2_r1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_r1.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2_r1.L8:
 .Lnvol_find_byteset_avx2_r1.L6:
     xor %eax, %eax
@@ -35135,15 +35426,15 @@ L.nvol_find_byteset_avx2_r1:
 .Lnvol_find_byteset_avx2_r1.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_r1.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2_r1, .-nvol_find_byteset_avx2_r1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_not_byteset_avx2_r1
 .type nvol_find_not_byteset_avx2_r1, @function
 .hidden nvol_find_not_byteset_avx2_r1
@@ -35195,7 +35486,8 @@ L.nvol_find_not_byteset_avx2_r1:
     {disp8} je .Lnvol_find_not_byteset_avx2_r1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_r1.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_r1.L8:
 .Lnvol_find_not_byteset_avx2_r1.L6:
     xor %eax, %eax
@@ -35205,13 +35497,13 @@ L.nvol_find_not_byteset_avx2_r1:
 .Lnvol_find_not_byteset_avx2_r1.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_r1.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_r1, .-nvol_find_not_byteset_avx2_r1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_avx2_r1
 .type nvol_copy_until_byteset_avx2_r1, @function
 .hidden nvol_copy_until_byteset_avx2_r1
@@ -35267,7 +35559,8 @@ L.nvol_copy_until_byteset_avx2_r1:
     {disp8} je .Lnvol_copy_until_byteset_avx2_r1.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_r1.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_r1.L8:
 .Lnvol_copy_until_byteset_avx2_r1.L6:
     mov %rdx, %rax
@@ -35277,11 +35570,12 @@ L.nvol_copy_until_byteset_avx2_r1:
 .Lnvol_copy_until_byteset_avx2_r1.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_r1.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_r1, .-nvol_copy_until_byteset_avx2_r1
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_avx2_r2
 .type nvol_find_byteset_avx2_r2, @function
 .hidden nvol_find_byteset_avx2_r2
@@ -35336,7 +35630,8 @@ L.nvol_find_byteset_avx2_r2:
     {disp8} je .Lnvol_find_byteset_avx2_r2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_r2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2_r2.L8:
 .Lnvol_find_byteset_avx2_r2.L6:
     xor %eax, %eax
@@ -35346,12 +35641,13 @@ L.nvol_find_byteset_avx2_r2:
 .Lnvol_find_byteset_avx2_r2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_r2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2_r2, .-nvol_find_byteset_avx2_r2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_find_not_byteset_avx2_r2
 .type nvol_find_not_byteset_avx2_r2, @function
 .hidden nvol_find_not_byteset_avx2_r2
@@ -35410,7 +35706,8 @@ L.nvol_find_not_byteset_avx2_r2:
     {disp8} je .Lnvol_find_not_byteset_avx2_r2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_r2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_r2.L8:
 .Lnvol_find_not_byteset_avx2_r2.L6:
     xor %eax, %eax
@@ -35420,7 +35717,8 @@ L.nvol_find_not_byteset_avx2_r2:
 .Lnvol_find_not_byteset_avx2_r2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_r2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_r2, .-nvol_find_not_byteset_avx2_r2
 
@@ -35430,7 +35728,7 @@ L.nvol_find_not_byteset_avx2_r2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_avx2_r2
 .type nvol_copy_until_byteset_avx2_r2, @function
 .hidden nvol_copy_until_byteset_avx2_r2
@@ -35494,7 +35792,8 @@ L.nvol_copy_until_byteset_avx2_r2:
     {disp8} je .Lnvol_copy_until_byteset_avx2_r2.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_r2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_r2.L8:
 .Lnvol_copy_until_byteset_avx2_r2.L6:
     mov %rdx, %rax
@@ -35504,7 +35803,8 @@ L.nvol_copy_until_byteset_avx2_r2:
 .Lnvol_copy_until_byteset_avx2_r2.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_r2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_r2, .-nvol_copy_until_byteset_avx2_r2
 
@@ -35512,7 +35812,6 @@ L.nvol_copy_until_byteset_avx2_r2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_avx2_r3
 .type nvol_find_byteset_avx2_r3, @function
 .hidden nvol_find_byteset_avx2_r3
@@ -35575,7 +35874,8 @@ L.nvol_find_byteset_avx2_r3:
     {disp8} je .Lnvol_find_byteset_avx2_r3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_r3.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_avx2_r3.L8:
 .Lnvol_find_byteset_avx2_r3.L6:
     xor %eax, %eax
@@ -35585,7 +35885,8 @@ L.nvol_find_byteset_avx2_r3:
 .Lnvol_find_byteset_avx2_r3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_avx2_r3.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_avx2_r3, .-nvol_find_byteset_avx2_r3
 
@@ -35593,8 +35894,7 @@ L.nvol_find_byteset_avx2_r3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_avx2_r3
 .type nvol_find_not_byteset_avx2_r3, @function
 .hidden nvol_find_not_byteset_avx2_r3
@@ -35660,7 +35960,8 @@ L.nvol_find_not_byteset_avx2_r3:
     {disp8} je .Lnvol_find_not_byteset_avx2_r3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_r3.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_avx2_r3.L8:
 .Lnvol_find_not_byteset_avx2_r3.L6:
     xor %eax, %eax
@@ -35670,14 +35971,14 @@ L.nvol_find_not_byteset_avx2_r3:
 .Lnvol_find_not_byteset_avx2_r3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_avx2_r3.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_r3, .-nvol_find_not_byteset_avx2_r3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_avx2_r3
 .type nvol_copy_until_byteset_avx2_r3, @function
 .hidden nvol_copy_until_byteset_avx2_r3
@@ -35747,7 +36048,8 @@ L.nvol_copy_until_byteset_avx2_r3:
     {disp8} je .Lnvol_copy_until_byteset_avx2_r3.L8
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_r3.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_avx2_r3.L8:
 .Lnvol_copy_until_byteset_avx2_r3.L6:
     mov %rdx, %rax
@@ -35757,12 +36059,13 @@ L.nvol_copy_until_byteset_avx2_r3:
 .Lnvol_copy_until_byteset_avx2_r3.L5:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_avx2_r3.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_r3, .-nvol_copy_until_byteset_avx2_r3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_avx2_k1
 .type nvol_find_byteset_pair_avx2_k1, @function
 .hidden nvol_find_byteset_pair_avx2_k1
@@ -35813,7 +36116,8 @@ L.nvol_find_byteset_pair_avx2_k1:
     {disp8} je .Lnvol_find_byteset_pair_avx2_k1.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k1.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_avx2_k1.L8:
 .Lnvol_find_byteset_pair_avx2_k1.L6:
     xor %eax, %eax
@@ -35823,12 +36127,13 @@ L.nvol_find_byteset_pair_avx2_k1:
 .Lnvol_find_byteset_pair_avx2_k1.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k1.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2_k1, .-nvol_find_byteset_pair_avx2_k1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_avx2_k2
 .type nvol_find_byteset_pair_avx2_k2, @function
 .hidden nvol_find_byteset_pair_avx2_k2
@@ -35897,7 +36202,8 @@ L.nvol_find_byteset_pair_avx2_k2:
     {disp8} je .Lnvol_find_byteset_pair_avx2_k2.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_avx2_k2.L8:
 .Lnvol_find_byteset_pair_avx2_k2.L6:
     xor %eax, %eax
@@ -35907,11 +36213,12 @@ L.nvol_find_byteset_pair_avx2_k2:
 .Lnvol_find_byteset_pair_avx2_k2.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2_k2, .-nvol_find_byteset_pair_avx2_k2
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_avx2_k3
 .type nvol_find_byteset_pair_avx2_k3, @function
 .hidden nvol_find_byteset_pair_avx2_k3
@@ -35994,7 +36301,8 @@ L.nvol_find_byteset_pair_avx2_k3:
     {disp8} je .Lnvol_find_byteset_pair_avx2_k3.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k3.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_avx2_k3.L8:
 .Lnvol_find_byteset_pair_avx2_k3.L6:
     xor %eax, %eax
@@ -36004,11 +36312,11 @@ L.nvol_find_byteset_pair_avx2_k3:
 .Lnvol_find_byteset_pair_avx2_k3.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k3.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2_k3, .-nvol_find_byteset_pair_avx2_k3
 
-    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_avx2_k4
 .type nvol_find_byteset_pair_avx2_k4, @function
 .hidden nvol_find_byteset_pair_avx2_k4
@@ -36105,7 +36413,8 @@ L.nvol_find_byteset_pair_avx2_k4:
     {disp8} je .Lnvol_find_byteset_pair_avx2_k4.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k4.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_avx2_k4.L8:
 .Lnvol_find_byteset_pair_avx2_k4.L6:
     xor %eax, %eax
@@ -36115,7 +36424,8 @@ L.nvol_find_byteset_pair_avx2_k4:
 .Lnvol_find_byteset_pair_avx2_k4.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k4.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2_k4, .-nvol_find_byteset_pair_avx2_k4
 
@@ -36125,7 +36435,6 @@ L.nvol_find_byteset_pair_avx2_k4:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_avx2_k5
 .type nvol_find_byteset_pair_avx2_k5, @function
 .hidden nvol_find_byteset_pair_avx2_k5
@@ -36236,7 +36545,8 @@ L.nvol_find_byteset_pair_avx2_k5:
     {disp8} je .Lnvol_find_byteset_pair_avx2_k5.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k5.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_avx2_k5.L8:
 .Lnvol_find_byteset_pair_avx2_k5.L6:
     xor %eax, %eax
@@ -36246,7 +36556,8 @@ L.nvol_find_byteset_pair_avx2_k5:
 .Lnvol_find_byteset_pair_avx2_k5.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k5.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2_k5, .-nvol_find_byteset_pair_avx2_k5
 
@@ -36256,7 +36567,7 @@ L.nvol_find_byteset_pair_avx2_k5:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_avx2_k6
 .type nvol_find_byteset_pair_avx2_k6, @function
 .hidden nvol_find_byteset_pair_avx2_k6
@@ -36382,7 +36693,8 @@ L.nvol_find_byteset_pair_avx2_k6:
     {disp8} je .Lnvol_find_byteset_pair_avx2_k6.L8
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k6.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_avx2_k6.L8:
 .Lnvol_find_byteset_pair_avx2_k6.L6:
     xor %eax, %eax
@@ -36392,15 +36704,15 @@ L.nvol_find_byteset_pair_avx2_k6:
 .Lnvol_find_byteset_pair_avx2_k6.L5:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_avx2_k6.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2_k6, .-nvol_find_byteset_pair_avx2_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2
 .type nvol_find_byteset_pair_mask_avx2, @function
 .hidden nvol_find_byteset_pair_mask_avx2
@@ -36495,7 +36807,8 @@ L.nvol_find_byteset_pair_mask_avx2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_avx2.L8:
 .Lnvol_find_byteset_pair_mask_avx2.L6:
     xor %eax, %eax
@@ -36506,11 +36819,12 @@ L.nvol_find_byteset_pair_mask_avx2:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2, .-nvol_find_byteset_pair_mask_avx2
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k1
 .type nvol_find_byteset_pair_mask_avx2_k1, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k1
@@ -36563,7 +36877,8 @@ L.nvol_find_byteset_pair_mask_avx2_k1:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k1.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_avx2_k1.L8:
 .Lnvol_find_byteset_pair_mask_avx2_k1.L6:
     xor %eax, %eax
@@ -36574,10 +36889,18 @@ L.nvol_find_byteset_pair_mask_avx2_k1:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k1.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k1, .-nvol_find_byteset_pair_mask_avx2_k1
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k2
 .type nvol_find_byteset_pair_mask_avx2_k2, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k2
@@ -36648,7 +36971,8 @@ L.nvol_find_byteset_pair_mask_avx2_k2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_avx2_k2.L8:
 .Lnvol_find_byteset_pair_mask_avx2_k2.L6:
     xor %eax, %eax
@@ -36659,7 +36983,8 @@ L.nvol_find_byteset_pair_mask_avx2_k2:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k2, .-nvol_find_byteset_pair_mask_avx2_k2
 
@@ -36667,8 +36992,7 @@ L.nvol_find_byteset_pair_mask_avx2_k2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k3
 .type nvol_find_byteset_pair_mask_avx2_k3, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k3
@@ -36753,7 +37077,8 @@ L.nvol_find_byteset_pair_mask_avx2_k3:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k3.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_avx2_k3.L8:
 .Lnvol_find_byteset_pair_mask_avx2_k3.L6:
     xor %eax, %eax
@@ -36764,7 +37089,8 @@ L.nvol_find_byteset_pair_mask_avx2_k3:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k3.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k3, .-nvol_find_byteset_pair_mask_avx2_k3
 
@@ -36773,7 +37099,7 @@ L.nvol_find_byteset_pair_mask_avx2_k3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k4
 .type nvol_find_byteset_pair_mask_avx2_k4, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k4
@@ -36872,7 +37198,8 @@ L.nvol_find_byteset_pair_mask_avx2_k4:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k4.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_avx2_k4.L8:
 .Lnvol_find_byteset_pair_mask_avx2_k4.L6:
     xor %eax, %eax
@@ -36883,7 +37210,8 @@ L.nvol_find_byteset_pair_mask_avx2_k4:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k4.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k4, .-nvol_find_byteset_pair_mask_avx2_k4
 
@@ -36891,7 +37219,7 @@ L.nvol_find_byteset_pair_mask_avx2_k4:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_mask_avx2_k5
 .type nvol_find_byteset_pair_mask_avx2_k5, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k5
@@ -37004,7 +37332,8 @@ L.nvol_find_byteset_pair_mask_avx2_k5:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k5.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_avx2_k5.L8:
 .Lnvol_find_byteset_pair_mask_avx2_k5.L6:
     xor %eax, %eax
@@ -37015,14 +37344,15 @@ L.nvol_find_byteset_pair_mask_avx2_k5:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k5.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k5, .-nvol_find_byteset_pair_mask_avx2_k5
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_mask_avx2_k6
 .type nvol_find_byteset_pair_mask_avx2_k6, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k6
@@ -37149,7 +37479,8 @@ L.nvol_find_byteset_pair_mask_avx2_k6:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k6.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_avx2_k6.L8:
 .Lnvol_find_byteset_pair_mask_avx2_k6.L6:
     xor %eax, %eax
@@ -37160,13 +37491,14 @@ L.nvol_find_byteset_pair_mask_avx2_k6:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_avx2_k6.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k6, .-nvol_find_byteset_pair_mask_avx2_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_visit_avx2
 .type nvol_find_byteset_pair_visit_avx2, @function
 .hidden nvol_find_byteset_pair_visit_avx2
@@ -38559,7 +38891,7 @@ L.nvol_find_not_byteset_sse42:
     cmp $16, %ecx
     {disp8} jae .Lnvol_find_not_byteset_sse42.L8
     lea (%rdi,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse42.L1
+    ret
 .Lnvol_find_not_byteset_sse42.L8:
 .Lnvol_find_not_byteset_sse42.L6:
     xor %eax, %eax
@@ -38567,7 +38899,7 @@ L.nvol_find_not_byteset_sse42:
     ret
 .Lnvol_find_not_byteset_sse42.L5:
     lea (%rsi,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_sse42.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_sse42, .-nvol_find_not_byteset_sse42
 
@@ -38576,7 +38908,7 @@ L.nvol_find_not_byteset_sse42:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_entry_avx2
 .type nvol_find_byteset_entry_avx2, @function
 .hidden nvol_find_byteset_entry_avx2
@@ -38595,8 +38927,15 @@ L.nvol_find_byteset_entry_avx2:
     test %r9, %r9
     {disp8} jne .Lnvol_find_byteset_entry_avx2.L2
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L2:
+.cfi_restore_state
     movzbl 56(%rdi), %r10d
     movzbl 57(%rdi), %esi
     movzbl 58(%rdi), %edx
@@ -38646,7 +38985,7 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} jae .Lnvol_find_byteset_entry_avx2.L10
     cmp %r8, %rcx
     {disp8} jae .Lnvol_find_byteset_entry_avx2.L13
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_entry_avx2.L12:
     movzbl (%rcx), %eax
     mov %rax, %rdx
@@ -38666,8 +39005,15 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} jb .Lnvol_find_byteset_entry_avx2.L12
 .Lnvol_find_byteset_entry_avx2.L13:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L10:
+.cfi_restore_state
     movzbl 62(%rdi), %ebx
     movzbl 80(%rdi), %ebp
     cmp $32, %r11
@@ -38679,7 +39025,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L21
-    .byte 102, 144
+    .byte 144
 .Lnvol_find_byteset_entry_avx2.L20:
     vmovdqu (%rcx), %xmm2
     vpand %xmm1, %xmm2, %xmm3
@@ -38709,12 +39055,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L26
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L26:
 .Lnvol_find_byteset_entry_avx2.L24:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L18:
+.cfi_restore_state
     cmp $4, %r9
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L28
     vmovd %r10d, %xmm0
@@ -38729,7 +39089,8 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L31
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_entry_avx2.L30:
     vmovdqu (%rcx), %xmm4
     vpcmpeqb %xmm0, %xmm4, %xmm5
@@ -38767,12 +39128,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L36
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L36:
 .Lnvol_find_byteset_entry_avx2.L34:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L28:
+.cfi_restore_state
     cmp $5, %r9
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L38
     vmovd %r10d, %xmm0
@@ -38790,7 +39165,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L41
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_entry_avx2.L40:
     vmovdqu (%rcx), %xmm5
     vpcmpeqb %xmm0, %xmm5, %xmm6
@@ -38832,12 +39207,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L46
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L46:
 .Lnvol_find_byteset_entry_avx2.L44:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L38:
+.cfi_restore_state
     cmp $6, %r9
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L48
     vmovd %r10d, %xmm0
@@ -38858,7 +39247,8 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L51
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_entry_avx2.L50:
     vmovdqu (%rcx), %xmm6
     vpcmpeqb %xmm0, %xmm6, %xmm7
@@ -38904,12 +39294,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L56
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L56:
 .Lnvol_find_byteset_entry_avx2.L54:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L48:
+.cfi_restore_state
     cmp $1, %ebp
     {disp8} jne .Lnvol_find_byteset_entry_avx2.L58
     movzbl 81(%rdi), %eax
@@ -38918,7 +39322,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L61
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_entry_avx2.L60:
     vmovdqu (%rcx), %xmm1
     vpminub %xmm0, %xmm1, %xmm2
@@ -38946,12 +39350,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L66
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L66:
 .Lnvol_find_byteset_entry_avx2.L64:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L58:
+.cfi_restore_state
     cmp $2, %ebp
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L68
     movzbl 81(%rdi), %eax
@@ -38963,7 +39381,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L71
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_entry_avx2.L70:
     vmovdqu (%rcx), %xmm2
     vpminub %xmm0, %xmm2, %xmm3
@@ -38995,12 +39413,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L76
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L76:
 .Lnvol_find_byteset_entry_avx2.L74:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L68:
+.cfi_restore_state
     cmp $3, %ebp
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L78
     movzbl 81(%rdi), %eax
@@ -39015,7 +39447,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L81
-    .byte 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_entry_avx2.L80:
     vmovdqu (%rcx), %xmm3
     vpminub %xmm0, %xmm3, %xmm4
@@ -39051,12 +39483,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L86
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L86:
 .Lnvol_find_byteset_entry_avx2.L84:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L78:
+.cfi_restore_state
     cmp $4, %ebp
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L88
     movzbl 81(%rdi), %eax
@@ -39074,7 +39520,8 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L91
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_entry_avx2.L90:
     vmovdqu (%rcx), %xmm4
     vpminub %xmm0, %xmm4, %xmm5
@@ -39114,12 +39561,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L96
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L96:
 .Lnvol_find_byteset_entry_avx2.L94:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L88:
+.cfi_restore_state
     vmovdqu (%rdi), %xmm0
     vmovdqu 16(%rdi), %xmm1
     vmovdqu 32(%rdi), %xmm2
@@ -39128,7 +39589,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L99
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_entry_avx2.L98:
     vmovdqu (%rcx), %xmm5
     vpand %xmm3, %xmm5, %xmm6
@@ -39172,12 +39633,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L104
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L104:
 .Lnvol_find_byteset_entry_avx2.L102:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L16:
+.cfi_restore_state
     test %ebx, %ebx
     {disp32} je .Lnvol_find_byteset_entry_avx2.L106
     vbroadcasti128 64(%rdi), %ymm0
@@ -39185,7 +39660,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L109
-    .byte 15, 31, 0
+    .byte 144
 .Lnvol_find_byteset_entry_avx2.L108:
     vmovdqu (%rcx), %ymm2
     vpand %ymm1, %ymm2, %ymm3
@@ -39215,12 +39690,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L114
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L114:
 .Lnvol_find_byteset_entry_avx2.L112:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L106:
+.cfi_restore_state
     cmp $4, %r9
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L116
     vmovd %r10d, %xmm0
@@ -39235,7 +39724,8 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L119
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_entry_avx2.L118:
     vmovdqu (%rcx), %ymm4
     vpcmpeqb %ymm0, %ymm4, %ymm5
@@ -39273,12 +39763,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L124
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L124:
 .Lnvol_find_byteset_entry_avx2.L122:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L116:
+.cfi_restore_state
     cmp $5, %r9
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L126
     vmovd %r10d, %xmm0
@@ -39296,7 +39800,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L129
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_entry_avx2.L128:
     vmovdqu (%rcx), %ymm5
     vpcmpeqb %ymm0, %ymm5, %ymm6
@@ -39338,12 +39842,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L134
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L134:
 .Lnvol_find_byteset_entry_avx2.L132:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L126:
+.cfi_restore_state
     cmp $6, %r9
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L136
     vmovd %r10d, %xmm0
@@ -39364,7 +39882,8 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L139
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_entry_avx2.L138:
     vmovdqu (%rcx), %ymm6
     vpcmpeqb %ymm0, %ymm6, %ymm7
@@ -39410,12 +39929,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L144
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L144:
 .Lnvol_find_byteset_entry_avx2.L142:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L136:
+.cfi_restore_state
     cmp $1, %ebp
     {disp8} jne .Lnvol_find_byteset_entry_avx2.L146
     movzbl 81(%rdi), %eax
@@ -39424,7 +39957,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L149
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_entry_avx2.L148:
     vmovdqu (%rcx), %ymm1
     vpminub %ymm0, %ymm1, %ymm2
@@ -39452,12 +39985,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L154
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L154:
 .Lnvol_find_byteset_entry_avx2.L152:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L146:
+.cfi_restore_state
     cmp $2, %ebp
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L156
     movzbl 81(%rdi), %eax
@@ -39469,7 +40016,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L159
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_entry_avx2.L158:
     vmovdqu (%rcx), %ymm2
     vpminub %ymm0, %ymm2, %ymm3
@@ -39501,12 +40048,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L164
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L164:
 .Lnvol_find_byteset_entry_avx2.L162:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L156:
+.cfi_restore_state
     cmp $3, %ebp
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L166
     movzbl 81(%rdi), %eax
@@ -39521,7 +40082,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L169
-    .byte 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_entry_avx2.L168:
     vmovdqu (%rcx), %ymm3
     vpminub %ymm0, %ymm3, %ymm4
@@ -39557,12 +40118,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L174
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L174:
 .Lnvol_find_byteset_entry_avx2.L172:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L166:
+.cfi_restore_state
     cmp $4, %ebp
     {disp32} jne .Lnvol_find_byteset_entry_avx2.L176
     movzbl 81(%rdi), %eax
@@ -39580,7 +40155,8 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L179
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_entry_avx2.L178:
     vmovdqu (%rcx), %ymm4
     vpminub %ymm0, %ymm4, %ymm5
@@ -39620,12 +40196,26 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L184
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L184:
 .Lnvol_find_byteset_entry_avx2.L182:
+.cfi_restore_state
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L176:
+.cfi_restore_state
     vbroadcasti128 (%rdi), %ymm0
     vbroadcasti128 16(%rdi), %ymm1
     vbroadcasti128 32(%rdi), %ymm2
@@ -39634,6 +40224,7 @@ L.nvol_find_byteset_entry_avx2:
     lea -32(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_avx2.L187
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_entry_avx2.L186:
     vmovdqu (%rcx), %ymm5
     vpand %ymm3, %ymm5, %ymm6
@@ -39677,9 +40268,16 @@ L.nvol_find_byteset_entry_avx2:
     {disp8} je .Lnvol_find_byteset_entry_avx2.L192
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L192:
 .Lnvol_find_byteset_entry_avx2.L190:
+.cfi_restore_state
     xor %eax, %eax
 .Lnvol_find_byteset_entry_avx2.L1:
     vzeroupper
@@ -39692,89 +40290,217 @@ L.nvol_find_byteset_entry_avx2:
 .Lnvol_find_byteset_entry_avx2.L15:
 .cfi_restore_state
     mov %rcx, %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L23:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L33:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L43:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L53:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L63:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L73:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L83:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L93:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L101:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L111:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L121:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L131:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L141:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L151:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L161:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L171:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L181:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+.cfi_remember_state
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .Lnvol_find_byteset_entry_avx2.L189:
+.cfi_restore_state
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_avx2.L1
+    vzeroupper
+    pop %rbp
+.cfi_def_cfa_offset 16
+    pop %rbx
+.cfi_def_cfa_offset 8
+    ret
 .cfi_endproc
 .size nvol_find_byteset_entry_avx2, .-nvol_find_byteset_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_entry_base
 .type nvol_find_byteset_entry_base, @function
 .hidden nvol_find_byteset_entry_base
@@ -39787,7 +40513,7 @@ L.nvol_find_byteset_entry_base:
     test %r9, %r9
     {disp8} jne .Lnvol_find_byteset_entry_base.L2
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L2:
     movzbl 56(%rdi), %r10d
     movzbl 57(%rdi), %esi
@@ -39817,7 +40543,8 @@ L.nvol_find_byteset_entry_base:
     {disp8} jae .Lnvol_find_byteset_entry_base.L10
     cmp %r8, %rcx
     {disp8} jae .Lnvol_find_byteset_entry_base.L13
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_entry_base.L12:
     movzbl (%rcx), %eax
     mov %rax, %rdx
@@ -39837,7 +40564,7 @@ L.nvol_find_byteset_entry_base:
     {disp8} jb .Lnvol_find_byteset_entry_base.L12
 .Lnvol_find_byteset_entry_base.L13:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L10:
     movzbl 80(%rdi), %r11d
     cmp $4, %r9
@@ -39858,7 +40585,7 @@ L.nvol_find_byteset_entry_base:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_base.L19
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_entry_base.L18:
     movdqu (%rcx), %xmm4
     movdqa %xmm4, %xmm5
@@ -39902,11 +40629,11 @@ L.nvol_find_byteset_entry_base:
     {disp8} je .Lnvol_find_byteset_entry_base.L24
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L24:
 .Lnvol_find_byteset_entry_base.L22:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L16:
     cmp $5, %r9
     {disp32} jne .Lnvol_find_byteset_entry_base.L26
@@ -39980,11 +40707,11 @@ L.nvol_find_byteset_entry_base:
     {disp8} je .Lnvol_find_byteset_entry_base.L34
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L34:
 .Lnvol_find_byteset_entry_base.L32:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L26:
     cmp $6, %r9
     {disp32} jne .Lnvol_find_byteset_entry_base.L36
@@ -40012,7 +40739,6 @@ L.nvol_find_byteset_entry_base:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_base.L39
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_entry_base.L38:
     movdqu (%rcx), %xmm6
     movdqa %xmm6, %xmm7
@@ -40068,14 +40794,14 @@ L.nvol_find_byteset_entry_base:
     {disp8} je .Lnvol_find_byteset_entry_base.L44
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L44:
 .Lnvol_find_byteset_entry_base.L42:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L36:
     cmp $1, %r11d
-    {disp32} jne .Lnvol_find_byteset_entry_base.L46
+    {disp8} jne .Lnvol_find_byteset_entry_base.L46
     movzbl 81(%rdi), %eax
     imul $16843009, %eax, %eax
     movd %eax, %xmm0
@@ -40083,6 +40809,7 @@ L.nvol_find_byteset_entry_base:
     lea -16(%r8), %rdx
     cmp %rdx, %rcx
     {disp8} ja .Lnvol_find_byteset_entry_base.L49
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_entry_base.L48:
     movdqu (%rcx), %xmm1
     movdqa %xmm1, %xmm2
@@ -40112,11 +40839,11 @@ L.nvol_find_byteset_entry_base:
     {disp8} je .Lnvol_find_byteset_entry_base.L54
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L54:
 .Lnvol_find_byteset_entry_base.L52:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L46:
     cmp $2, %r11d
     {disp32} jne .Lnvol_find_byteset_entry_base.L56
@@ -40165,11 +40892,11 @@ L.nvol_find_byteset_entry_base:
     {disp8} je .Lnvol_find_byteset_entry_base.L64
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L64:
 .Lnvol_find_byteset_entry_base.L62:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L56:
     cmp $3, %r11d
     {disp32} jne .Lnvol_find_byteset_entry_base.L66
@@ -40228,11 +40955,11 @@ L.nvol_find_byteset_entry_base:
     {disp8} je .Lnvol_find_byteset_entry_base.L74
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L74:
 .Lnvol_find_byteset_entry_base.L72:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L66:
     cmp $4, %r11d
     {disp32} jne .Lnvol_find_byteset_entry_base.L76
@@ -40301,15 +41028,15 @@ L.nvol_find_byteset_entry_base:
     {disp8} je .Lnvol_find_byteset_entry_base.L84
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L84:
 .Lnvol_find_byteset_entry_base.L82:
     xor %eax, %eax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L76:
     cmp %r8, %rcx
     {disp8} jae .Lnvol_find_byteset_entry_base.L87
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_entry_base.L86:
     movzbl (%rcx), %eax
     mov %rax, %rdx
@@ -40333,41 +41060,42 @@ L.nvol_find_byteset_entry_base:
     ret
 .Lnvol_find_byteset_entry_base.L15:
     mov %rcx, %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L21:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L31:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L41:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L51:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L61:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L71:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L81:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .Lnvol_find_byteset_entry_base.L89:
     mov %rcx, %rax
-    {disp8} jmp .Lnvol_find_byteset_entry_base.L1
+    ret
 .cfi_endproc
 .size nvol_find_byteset_entry_base, .-nvol_find_byteset_entry_base
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
@@ -40386,7 +41114,8 @@ L.nvol_find_not_byteset_entry_avx2:
     cmp %rdx, %rsi
     {disp8} jae .Lnvol_find_not_byteset_entry_avx2.L2
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L2:
     mov %rdx, %rcx
     sub %rsi, %rcx
@@ -40395,6 +41124,7 @@ L.nvol_find_not_byteset_entry_avx2:
     cmp %rdx, %rsi
     {disp8} jae .Lnvol_find_not_byteset_entry_avx2.L7
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_not_byteset_entry_avx2.L6:
     movzbl (%rsi), %eax
     mov %rax, %rcx
@@ -40414,7 +41144,8 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} jb .Lnvol_find_not_byteset_entry_avx2.L6
 .Lnvol_find_not_byteset_entry_avx2.L7:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L4:
     movzbl 62(%rdi), %r9d
     movzbl 80(%rdi), %r10d
@@ -40428,7 +41159,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L15
-    .byte 15, 31, 0
+    .byte 15, 31, 64, 0
 .Lnvol_find_not_byteset_entry_avx2.L14:
     vmovdqu (%rsi), %xmm3
     vpand %xmm1, %xmm3, %xmm4
@@ -40461,11 +41192,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L20
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L20:
 .Lnvol_find_not_byteset_entry_avx2.L18:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L12:
     cmp $1, %r8
     {disp8} jne .Lnvol_find_not_byteset_entry_avx2.L22
@@ -40476,7 +41209,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L25
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L24:
     vpcmpeqb (%rsi), %xmm0, %xmm2
     vpcmpeqb %xmm1, %xmm2, %xmm2
@@ -40503,11 +41236,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L30
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L30:
 .Lnvol_find_not_byteset_entry_avx2.L28:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L22:
     cmp $2, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L32
@@ -40521,7 +41256,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L35
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L34:
     vmovdqu (%rsi), %xmm3
     vpcmpeqb %xmm0, %xmm3, %xmm4
@@ -40554,11 +41289,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L40
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L40:
 .Lnvol_find_not_byteset_entry_avx2.L38:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L32:
     cmp $3, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L42
@@ -40575,7 +41312,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L45
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_find_not_byteset_entry_avx2.L44:
     vmovdqu (%rsi), %xmm4
     vpcmpeqb %xmm0, %xmm4, %xmm5
@@ -40612,11 +41349,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L50
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L50:
 .Lnvol_find_not_byteset_entry_avx2.L48:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L42:
     cmp $4, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L52
@@ -40636,7 +41375,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L55
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L54:
     vmovdqu (%rsi), %xmm5
     vpcmpeqb %xmm0, %xmm5, %xmm6
@@ -40677,11 +41416,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L60
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L60:
 .Lnvol_find_not_byteset_entry_avx2.L58:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L52:
     cmp $5, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L62
@@ -40704,7 +41445,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L65
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L64:
     vmovdqu (%rsi), %xmm6
     vpcmpeqb %xmm0, %xmm6, %xmm7
@@ -40749,11 +41490,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L70
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L70:
 .Lnvol_find_not_byteset_entry_avx2.L68:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L62:
     cmp $6, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L72
@@ -40779,7 +41522,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L75
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L74:
     vmovdqu (%rsi), %xmm7
     vpcmpeqb %xmm0, %xmm7, %xmm8
@@ -40828,11 +41571,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L80
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L80:
 .Lnvol_find_not_byteset_entry_avx2.L78:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L72:
     cmp $1, %r10d
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L82
@@ -40843,7 +41588,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L85
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L84:
     vmovdqu (%rsi), %xmm2
     vpminub %xmm0, %xmm2, %xmm3
@@ -40874,11 +41619,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L90
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L90:
 .Lnvol_find_not_byteset_entry_avx2.L88:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L82:
     cmp $2, %r10d
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L92
@@ -40892,7 +41639,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L95
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L94:
     vmovdqu (%rsi), %xmm3
     vpminub %xmm0, %xmm3, %xmm4
@@ -40927,11 +41674,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L100
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L100:
 .Lnvol_find_not_byteset_entry_avx2.L98:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L92:
     cmp $3, %r10d
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L102
@@ -40948,7 +41697,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L105
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_not_byteset_entry_avx2.L104:
     vmovdqu (%rsi), %xmm4
     vpminub %xmm0, %xmm4, %xmm5
@@ -40987,11 +41736,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L110
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L110:
 .Lnvol_find_not_byteset_entry_avx2.L108:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L102:
     cmp $4, %r10d
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L112
@@ -41011,7 +41762,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L115
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L114:
     vmovdqu (%rsi), %xmm5
     vpminub %xmm0, %xmm5, %xmm6
@@ -41054,11 +41805,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L120
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L120:
 .Lnvol_find_not_byteset_entry_avx2.L118:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L112:
     vmovdqu (%rdi), %xmm0
     vmovdqu 16(%rdi), %xmm1
@@ -41069,7 +41822,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L123
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L122:
     vmovdqu (%rsi), %xmm6
     vpand %xmm3, %xmm6, %xmm7
@@ -41116,11 +41869,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L128
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L128:
 .Lnvol_find_not_byteset_entry_avx2.L126:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L10:
     test %r9d, %r9d
     {disp32} je .Lnvol_find_not_byteset_entry_avx2.L130
@@ -41130,7 +41885,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L133
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L132:
     vmovdqu (%rsi), %ymm3
     vpand %ymm1, %ymm3, %ymm4
@@ -41163,11 +41918,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L138
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L138:
 .Lnvol_find_not_byteset_entry_avx2.L136:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L130:
     cmp $1, %r8
     {disp8} jne .Lnvol_find_not_byteset_entry_avx2.L140
@@ -41178,7 +41935,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L143
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L142:
     vpcmpeqb (%rsi), %ymm0, %ymm2
     vpcmpeqb %ymm1, %ymm2, %ymm2
@@ -41205,11 +41962,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L148
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L148:
 .Lnvol_find_not_byteset_entry_avx2.L146:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L140:
     cmp $2, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L150
@@ -41223,7 +41982,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L153
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L152:
     vmovdqu (%rsi), %ymm3
     vpcmpeqb %ymm0, %ymm3, %ymm4
@@ -41256,11 +42015,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L158
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L158:
 .Lnvol_find_not_byteset_entry_avx2.L156:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L150:
     cmp $3, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L160
@@ -41277,7 +42038,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L163
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_not_byteset_entry_avx2.L162:
     vmovdqu (%rsi), %ymm4
     vpcmpeqb %ymm0, %ymm4, %ymm5
@@ -41314,11 +42075,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L168
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L168:
 .Lnvol_find_not_byteset_entry_avx2.L166:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L160:
     cmp $4, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L170
@@ -41338,7 +42101,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L173
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L172:
     vmovdqu (%rsi), %ymm5
     vpcmpeqb %ymm0, %ymm5, %ymm6
@@ -41379,11 +42142,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L178
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L178:
 .Lnvol_find_not_byteset_entry_avx2.L176:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L170:
     cmp $5, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L180
@@ -41406,7 +42171,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L183
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L182:
     vmovdqu (%rsi), %ymm6
     vpcmpeqb %ymm0, %ymm6, %ymm7
@@ -41451,11 +42216,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L188
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L188:
 .Lnvol_find_not_byteset_entry_avx2.L186:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L180:
     cmp $6, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L190
@@ -41481,7 +42248,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L193
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L192:
     vmovdqu (%rsi), %ymm7
     vpcmpeqb %ymm0, %ymm7, %ymm8
@@ -41530,11 +42297,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L198
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L198:
 .Lnvol_find_not_byteset_entry_avx2.L196:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L190:
     cmp $1, %r10d
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L200
@@ -41545,7 +42314,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L203
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L202:
     vmovdqu (%rsi), %ymm2
     vpminub %ymm0, %ymm2, %ymm3
@@ -41576,11 +42345,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L208
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L208:
 .Lnvol_find_not_byteset_entry_avx2.L206:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L200:
     cmp $2, %r10d
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L210
@@ -41594,7 +42365,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L213
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L212:
     vmovdqu (%rsi), %ymm3
     vpminub %ymm0, %ymm3, %ymm4
@@ -41629,11 +42400,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L218
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L218:
 .Lnvol_find_not_byteset_entry_avx2.L216:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L210:
     cmp $3, %r10d
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L220
@@ -41650,7 +42423,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L223
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_not_byteset_entry_avx2.L222:
     vmovdqu (%rsi), %ymm4
     vpminub %ymm0, %ymm4, %ymm5
@@ -41689,11 +42462,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L228
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L228:
 .Lnvol_find_not_byteset_entry_avx2.L226:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L220:
     cmp $4, %r10d
     {disp32} jne .Lnvol_find_not_byteset_entry_avx2.L230
@@ -41713,7 +42488,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L233
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_not_byteset_entry_avx2.L232:
     vmovdqu (%rsi), %ymm5
     vpminub %ymm0, %ymm5, %ymm6
@@ -41756,11 +42531,13 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L238
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L238:
 .Lnvol_find_not_byteset_entry_avx2.L236:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L230:
     vbroadcasti128 (%rdi), %ymm0
     vbroadcasti128 16(%rdi), %ymm1
@@ -41771,7 +42548,7 @@ L.nvol_find_not_byteset_entry_avx2:
     lea -32(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_avx2.L241
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_find_not_byteset_entry_avx2.L240:
     vmovdqu (%rsi), %ymm6
     vpand %ymm3, %ymm6, %ymm7
@@ -41818,7 +42595,8 @@ L.nvol_find_not_byteset_entry_avx2:
     {disp8} je .Lnvol_find_not_byteset_entry_avx2.L246
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L246:
 .Lnvol_find_not_byteset_entry_avx2.L244:
     xor %eax, %eax
@@ -41827,103 +42605,128 @@ L.nvol_find_not_byteset_entry_avx2:
     ret
 .Lnvol_find_not_byteset_entry_avx2.L9:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L17:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L27:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L37:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L47:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L57:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L67:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L77:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L87:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L97:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L107:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L117:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L125:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L135:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L145:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L155:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L165:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L175:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L185:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L195:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L205:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L215:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L225:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L235:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_not_byteset_entry_avx2.L243:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_entry_avx2, .-nvol_find_not_byteset_entry_avx2
 
@@ -41932,6 +42735,7 @@ L.nvol_find_not_byteset_entry_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_entry_base
 .type nvol_find_not_byteset_entry_base, @function
 .hidden nvol_find_not_byteset_entry_base
@@ -41944,7 +42748,7 @@ L.nvol_find_not_byteset_entry_base:
     cmp %rdx, %rsi
     {disp8} jae .Lnvol_find_not_byteset_entry_base.L2
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L2:
     mov %rdx, %rax
     sub %rsi, %rax
@@ -41952,7 +42756,7 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} jae .Lnvol_find_not_byteset_entry_base.L4
     cmp %rdx, %rsi
     {disp8} jae .Lnvol_find_not_byteset_entry_base.L7
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_not_byteset_entry_base.L6:
     movzbl (%rsi), %eax
     mov %rax, %rcx
@@ -41972,11 +42776,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} jb .Lnvol_find_not_byteset_entry_base.L6
 .Lnvol_find_not_byteset_entry_base.L7:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L4:
     movzbl 80(%rdi), %r9d
     cmp $1, %r8
-    {disp32} jne .Lnvol_find_not_byteset_entry_base.L10
+    {disp8} jne .Lnvol_find_not_byteset_entry_base.L10
     movzbl 56(%rdi), %eax
     imul $16843009, %eax, %eax
     movd %eax, %xmm0
@@ -42014,11 +42818,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L18
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L18:
 .Lnvol_find_not_byteset_entry_base.L16:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L10:
     cmp $2, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L20
@@ -42034,7 +42838,8 @@ L.nvol_find_not_byteset_entry_base:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_base.L23
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_not_byteset_entry_base.L22:
     movdqu (%rsi), %xmm3
     movdqa %xmm3, %xmm4
@@ -42069,11 +42874,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L28
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L28:
 .Lnvol_find_not_byteset_entry_base.L26:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L20:
     cmp $3, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L30
@@ -42134,11 +42939,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L38
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L38:
 .Lnvol_find_not_byteset_entry_base.L36:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L30:
     cmp $4, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L40
@@ -42209,11 +43014,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L48
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L48:
 .Lnvol_find_not_byteset_entry_base.L46:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L40:
     cmp $5, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L50
@@ -42241,7 +43046,7 @@ L.nvol_find_not_byteset_entry_base:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_base.L53
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_not_byteset_entry_base.L52:
     movdqu (%rsi), %xmm6
     movdqa %xmm6, %xmm7
@@ -42294,11 +43099,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L58
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L58:
 .Lnvol_find_not_byteset_entry_base.L56:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L50:
     cmp $6, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L60
@@ -42389,11 +43194,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L68
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L68:
 .Lnvol_find_not_byteset_entry_base.L66:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L60:
     cmp $1, %r9d
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L70
@@ -42438,11 +43243,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L78
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L78:
 .Lnvol_find_not_byteset_entry_base.L76:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L70:
     cmp $2, %r9d
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L80
@@ -42458,8 +43263,7 @@ L.nvol_find_not_byteset_entry_base:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_base.L83
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_find_not_byteset_entry_base.L82:
     movdqu (%rsi), %xmm3
     movdqa %xmm3, %xmm4
@@ -42496,11 +43300,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L88
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L88:
 .Lnvol_find_not_byteset_entry_base.L86:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L80:
     cmp $3, %r9d
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L90
@@ -42563,11 +43367,11 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L98
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L98:
 .Lnvol_find_not_byteset_entry_base.L96:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L90:
     cmp $4, %r9d
     {disp32} jne .Lnvol_find_not_byteset_entry_base.L100
@@ -42640,15 +43444,16 @@ L.nvol_find_not_byteset_entry_base:
     {disp8} je .Lnvol_find_not_byteset_entry_base.L108
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L108:
 .Lnvol_find_not_byteset_entry_base.L106:
     xor %eax, %eax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L100:
     cmp %rdx, %rsi
     {disp8} jae .Lnvol_find_not_byteset_entry_base.L111
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_not_byteset_entry_base.L110:
     movzbl (%rsi), %eax
     mov %rax, %rcx
@@ -42672,59 +43477,57 @@ L.nvol_find_not_byteset_entry_base:
     ret
 .Lnvol_find_not_byteset_entry_base.L9:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L15:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L25:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L35:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L45:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L55:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L65:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L75:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L85:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L95:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L105:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .Lnvol_find_not_byteset_entry_base.L113:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_base.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_entry_base, .-nvol_find_not_byteset_entry_base
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_not_byteset_entry_sse42
 .type nvol_find_not_byteset_entry_sse42, @function
 .hidden nvol_find_not_byteset_entry_sse42
@@ -42737,7 +43540,7 @@ L.nvol_find_not_byteset_entry_sse42:
     cmp %rdx, %rsi
     {disp8} jae .Lnvol_find_not_byteset_entry_sse42.L2
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L2:
     mov %rdx, %rax
     sub %rsi, %rax
@@ -42745,7 +43548,7 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} jae .Lnvol_find_not_byteset_entry_sse42.L4
     cmp %rdx, %rsi
     {disp8} jae .Lnvol_find_not_byteset_entry_sse42.L7
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_not_byteset_entry_sse42.L6:
     movzbl (%rsi), %eax
     mov %rax, %rcx
@@ -42765,7 +43568,7 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} jb .Lnvol_find_not_byteset_entry_sse42.L6
 .Lnvol_find_not_byteset_entry_sse42.L7:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L4:
     movzbl 62(%rdi), %eax
     movzbl 80(%rdi), %r9d
@@ -42777,7 +43580,7 @@ L.nvol_find_not_byteset_entry_sse42:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_sse42.L13
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_not_byteset_entry_sse42.L12:
     movdqu (%rsi), %xmm3
     movdqa %xmm3, %xmm4
@@ -42813,14 +43616,14 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L18
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L18:
 .Lnvol_find_not_byteset_entry_sse42.L16:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L10:
     cmp $1, %r8
-    {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L20
+    {disp8} jne .Lnvol_find_not_byteset_entry_sse42.L20
     movzbl 56(%rdi), %eax
     imul $16843009, %eax, %eax
     movd %eax, %xmm0
@@ -42829,7 +43632,7 @@ L.nvol_find_not_byteset_entry_sse42:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_sse42.L23
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_not_byteset_entry_sse42.L22:
     movdqu (%rsi), %xmm2
     pcmpeqb %xmm0, %xmm2
@@ -42858,11 +43661,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L28
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L28:
 .Lnvol_find_not_byteset_entry_sse42.L26:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L20:
     cmp $2, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L30
@@ -42878,7 +43681,8 @@ L.nvol_find_not_byteset_entry_sse42:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_sse42.L33
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_not_byteset_entry_sse42.L32:
     movdqu (%rsi), %xmm3
     movdqa %xmm3, %xmm4
@@ -42913,11 +43717,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L38
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L38:
 .Lnvol_find_not_byteset_entry_sse42.L36:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L30:
     cmp $3, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L40
@@ -42978,11 +43782,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L48
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L48:
 .Lnvol_find_not_byteset_entry_sse42.L46:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L40:
     cmp $4, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L50
@@ -43053,11 +43857,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L58
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L58:
 .Lnvol_find_not_byteset_entry_sse42.L56:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L50:
     cmp $5, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L60
@@ -43085,7 +43889,7 @@ L.nvol_find_not_byteset_entry_sse42:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_sse42.L63
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_not_byteset_entry_sse42.L62:
     movdqu (%rsi), %xmm6
     movdqa %xmm6, %xmm7
@@ -43138,11 +43942,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L68
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L68:
 .Lnvol_find_not_byteset_entry_sse42.L66:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L60:
     cmp $6, %r8
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L70
@@ -43233,11 +44037,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L78
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L78:
 .Lnvol_find_not_byteset_entry_sse42.L76:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L70:
     cmp $1, %r9d
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L80
@@ -43282,11 +44086,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L88
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L88:
 .Lnvol_find_not_byteset_entry_sse42.L86:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L80:
     cmp $2, %r9d
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L90
@@ -43302,8 +44106,7 @@ L.nvol_find_not_byteset_entry_sse42:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_sse42.L93
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_find_not_byteset_entry_sse42.L92:
     movdqu (%rsi), %xmm3
     movdqa %xmm3, %xmm4
@@ -43340,11 +44143,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L98
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L98:
 .Lnvol_find_not_byteset_entry_sse42.L96:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L90:
     cmp $3, %r9d
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L100
@@ -43407,11 +44210,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L108
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L108:
 .Lnvol_find_not_byteset_entry_sse42.L106:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L100:
     cmp $4, %r9d
     {disp32} jne .Lnvol_find_not_byteset_entry_sse42.L110
@@ -43484,11 +44287,11 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L118
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L118:
 .Lnvol_find_not_byteset_entry_sse42.L116:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L110:
     movzbl 85(%rdi), %eax
     test %eax, %eax
@@ -43497,7 +44300,7 @@ L.nvol_find_not_byteset_entry_sse42:
     lea -16(%rdx), %rdi
     cmp %rdi, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_sse42.L123
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_sse42.L122:
     movdqu (%rsi), %xmm1
     pcmpistri $16, %xmm1, %xmm0
@@ -43517,11 +44320,11 @@ L.nvol_find_not_byteset_entry_sse42:
     cmp $16, %ecx
     {disp8} jae .Lnvol_find_not_byteset_entry_sse42.L128
     lea (%rdi,%rcx), %rax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L128:
 .Lnvol_find_not_byteset_entry_sse42.L126:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L120:
     movdqu (%rdi), %xmm0
     movdqu 16(%rdi), %xmm1
@@ -43532,7 +44335,7 @@ L.nvol_find_not_byteset_entry_sse42:
     lea -16(%rdx), %rcx
     cmp %rcx, %rsi
     {disp8} ja .Lnvol_find_not_byteset_entry_sse42.L131
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_not_byteset_entry_sse42.L130:
     movdqu (%rsi), %xmm6
     movdqa %xmm6, %xmm7
@@ -43584,7 +44387,7 @@ L.nvol_find_not_byteset_entry_sse42:
     {disp8} je .Lnvol_find_not_byteset_entry_sse42.L136
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L136:
 .Lnvol_find_not_byteset_entry_sse42.L134:
     xor %eax, %eax
@@ -43592,65 +44395,64 @@ L.nvol_find_not_byteset_entry_sse42:
     ret
 .Lnvol_find_not_byteset_entry_sse42.L9:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L15:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L25:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L35:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L45:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L55:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L65:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L75:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L85:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L95:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L105:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L115:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L125:
     lea (%rsi,%rcx), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .Lnvol_find_not_byteset_entry_sse42.L133:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_not_byteset_entry_sse42.L1
+    ret
 .cfi_endproc
 .size nvol_find_not_byteset_entry_sse42, .-nvol_find_not_byteset_entry_sse42
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
 .globl nvol_find_byteset_pair_entry_avx2
 .type nvol_find_byteset_pair_entry_avx2, @function
 .hidden nvol_find_byteset_pair_entry_avx2
@@ -43667,7 +44469,8 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L2
 .Lnvol_find_byteset_pair_entry_avx2.L4:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L2:
     sub %rcx, %r9
     cmp $16, %r9
@@ -43683,12 +44486,14 @@ L.nvol_find_byteset_pair_entry_avx2:
     cmp %r9, %rax
     {disp8} jae .Lnvol_find_byteset_pair_entry_avx2.L7
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L7:
     sub %r9, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L10
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_entry_avx2.L9:
     movzbl (%rsi,%rcx), %eax
     mov %rax, %r9
@@ -43721,7 +44526,8 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} jbe .Lnvol_find_byteset_pair_entry_avx2.L9
 .Lnvol_find_byteset_pair_entry_avx2.L10:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L5:
     cmp $32, %r9
     {disp32} jae .Lnvol_find_byteset_pair_entry_avx2.L15
@@ -43742,7 +44548,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L20
-    .byte 15, 31, 0
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_entry_avx2.L19:
     vpcmpeqb (%rsi,%r8), %xmm0, %xmm2
     vpcmpeqb (%rsi,%r9), %xmm1, %xmm3
@@ -43771,11 +44577,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L25
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L25:
 .Lnvol_find_byteset_pair_entry_avx2.L23:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L17:
     cmp $2, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L27
@@ -43800,7 +44608,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L30
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L29:
     vmovdqu (%rsi,%r8), %xmm4
     vpcmpeqb %xmm0, %xmm4, %xmm5
@@ -43841,11 +44649,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L35
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L35:
 .Lnvol_find_byteset_pair_entry_avx2.L33:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L27:
     cmp $3, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L37
@@ -43876,7 +44686,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L40
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_entry_avx2.L39:
     vmovdqu (%rsi,%r8), %xmm6
     vpcmpeqb %xmm0, %xmm6, %xmm7
@@ -43925,11 +44735,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L45
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L45:
 .Lnvol_find_byteset_pair_entry_avx2.L43:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L37:
     cmp $4, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L47
@@ -43966,7 +44778,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L50
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L49:
     vmovdqu (%rsi,%r8), %xmm8
     vpcmpeqb %xmm0, %xmm8, %xmm9
@@ -44023,11 +44835,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L55
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L55:
 .Lnvol_find_byteset_pair_entry_avx2.L53:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L47:
     cmp $5, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L57
@@ -44070,6 +44884,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L60
+    .byte 102, 144
 .Lnvol_find_byteset_pair_entry_avx2.L59:
     vmovdqu (%rsi,%r8), %xmm10
     vpcmpeqb %xmm0, %xmm10, %xmm11
@@ -44134,11 +44949,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L65
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L65:
 .Lnvol_find_byteset_pair_entry_avx2.L63:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L57:
     cmp $6, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L67
@@ -44187,7 +45004,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L70
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_entry_avx2.L69:
     vmovdqu (%rsi,%r8), %xmm12
     vpcmpeqb %xmm0, %xmm12, %xmm13
@@ -44260,11 +45077,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L75
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L75:
 .Lnvol_find_byteset_pair_entry_avx2.L73:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L67:
     mov 224(%rdi), %r8
     mov 232(%rdi), %r9
@@ -44283,6 +45102,8 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L78
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_entry_avx2.L77:
     vmovdqu (%rsi,%r8), %xmm8
     vpand %xmm6, %xmm8, %xmm9
@@ -44351,11 +45172,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L83
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L83:
 .Lnvol_find_byteset_pair_entry_avx2.L81:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L15:
     cmp $1, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L85
@@ -44374,7 +45197,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L88
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_entry_avx2.L87:
     vpcmpeqb (%rsi,%r8), %ymm0, %ymm2
     vpcmpeqb (%rsi,%r9), %ymm1, %ymm3
@@ -44403,11 +45226,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L93
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L93:
 .Lnvol_find_byteset_pair_entry_avx2.L91:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L85:
     cmp $2, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L95
@@ -44432,7 +45257,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L98
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L97:
     vmovdqu (%rsi,%r8), %ymm4
     vpcmpeqb %ymm0, %ymm4, %ymm5
@@ -44473,11 +45298,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L103
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L103:
 .Lnvol_find_byteset_pair_entry_avx2.L101:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L95:
     cmp $3, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L105
@@ -44508,8 +45335,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L108
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_entry_avx2.L107:
     vmovdqu (%rsi,%r8), %ymm6
     vpcmpeqb %ymm0, %ymm6, %ymm7
@@ -44558,11 +45384,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L113
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L113:
 .Lnvol_find_byteset_pair_entry_avx2.L111:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L105:
     cmp $4, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L115
@@ -44599,7 +45427,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L118
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L117:
     vmovdqu (%rsi,%r8), %ymm8
     vpcmpeqb %ymm0, %ymm8, %ymm9
@@ -44656,11 +45484,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L123
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L123:
 .Lnvol_find_byteset_pair_entry_avx2.L121:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L115:
     cmp $5, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L125
@@ -44703,6 +45533,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L128
+    .byte 102, 144
 .Lnvol_find_byteset_pair_entry_avx2.L127:
     vmovdqu (%rsi,%r8), %ymm10
     vpcmpeqb %ymm0, %ymm10, %ymm11
@@ -44767,11 +45598,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L133
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L133:
 .Lnvol_find_byteset_pair_entry_avx2.L131:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L125:
     cmp $6, %r8
     {disp32} jne .Lnvol_find_byteset_pair_entry_avx2.L135
@@ -44820,7 +45653,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L138
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_entry_avx2.L137:
     vmovdqu (%rsi,%r8), %ymm12
     vpcmpeqb %ymm0, %ymm12, %ymm13
@@ -44893,11 +45726,13 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L143
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L143:
 .Lnvol_find_byteset_pair_entry_avx2.L141:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L135:
     mov 224(%rdi), %r8
     mov 232(%rdi), %r9
@@ -44916,8 +45751,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp32} ja .Lnvol_find_byteset_pair_entry_avx2.L146
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_entry_avx2.L145:
     vmovdqu (%rsi,%r8), %ymm8
     vpand %ymm6, %ymm8, %ymm9
@@ -44986,7 +45820,8 @@ L.nvol_find_byteset_pair_entry_avx2:
     {disp8} je .Lnvol_find_byteset_pair_entry_avx2.L151
     bsf %ecx, %eax
     lea (%rdx,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L151:
 .Lnvol_find_byteset_pair_entry_avx2.L149:
     xor %eax, %eax
@@ -44995,63 +45830,78 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 .Lnvol_find_byteset_pair_entry_avx2.L14:
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L22:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L32:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L42:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L52:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L62:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L72:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L80:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L90:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L100:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L110:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L120:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L130:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L140:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_entry_avx2.L148:
     bsf %eax, %eax
     lea (%rsi,%rax), %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_entry_avx2, .-nvol_find_byteset_pair_entry_avx2
 
@@ -45060,7 +45910,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_entry_avx2
 .type nvol_find_byteset_pair_mask_entry_avx2, @function
 .hidden nvol_find_byteset_pair_mask_entry_avx2
@@ -45078,7 +45928,8 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L2
 .Lnvol_find_byteset_pair_mask_entry_avx2.L4:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L2:
     sub %rcx, %r10
     cmp $16, %r10
@@ -45094,12 +45945,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     cmp %r10, %rax
     {disp8} jae .Lnvol_find_byteset_pair_mask_entry_avx2.L7
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L7:
     sub %r10, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L10
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L9:
     movzbl (%rsi,%rcx), %eax
     mov %rax, %r10
@@ -45132,7 +45984,8 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     {disp8} jbe .Lnvol_find_byteset_pair_mask_entry_avx2.L9
 .Lnvol_find_byteset_pair_mask_entry_avx2.L10:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L5:
     cmp $32, %r10
     {disp32} jae .Lnvol_find_byteset_pair_mask_entry_avx2.L15
@@ -45153,7 +46006,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L20
-    .byte 15, 31, 0
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L19:
     vpcmpeqb (%rsi,%r9), %xmm0, %xmm2
     vpcmpeqb (%rsi,%r10), %xmm1, %xmm3
@@ -45183,11 +46036,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L25:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L23:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L17:
     cmp $2, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L27
@@ -45212,6 +46067,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L30
+    .byte 102, 144
 .Lnvol_find_byteset_pair_mask_entry_avx2.L29:
     vmovdqu (%rsi,%r9), %xmm4
     vpcmpeqb %xmm0, %xmm4, %xmm5
@@ -45253,11 +46109,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L35:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L33:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L27:
     cmp $3, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L37
@@ -45288,7 +46146,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L40
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L39:
     vmovdqu (%rsi,%r9), %xmm6
     vpcmpeqb %xmm0, %xmm6, %xmm7
@@ -45338,11 +46196,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L45:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L43:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L37:
     cmp $4, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L47
@@ -45379,7 +46239,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L50
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L49:
     vmovdqu (%rsi,%r9), %xmm8
     vpcmpeqb %xmm0, %xmm8, %xmm9
@@ -45437,11 +46297,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L55:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L53:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L47:
     cmp $5, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L57
@@ -45483,8 +46345,8 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea 16(%rax), %rax
     sub %rax, %rdx
     cmp %rdx, %rsi
-    {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L60
-    .byte 15, 31, 68, 0, 0
+    {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L60
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L59:
     vmovdqu (%rsi,%r9), %xmm10
     vpcmpeqb %xmm0, %xmm10, %xmm11
@@ -45550,11 +46412,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L65:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L63:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L57:
     cmp $6, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L67
@@ -45603,7 +46467,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L70
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L69:
     vmovdqu (%rsi,%r9), %xmm12
     vpcmpeqb %xmm0, %xmm12, %xmm13
@@ -45677,11 +46541,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L75:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L73:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L67:
     mov 224(%rdi), %r9
     mov 232(%rdi), %r10
@@ -45700,7 +46566,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L78
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L77:
     vmovdqu (%rsi,%r9), %xmm8
     vpand %xmm6, %xmm8, %xmm9
@@ -45770,11 +46636,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $16, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L83:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L81:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L15:
     cmp $1, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L85
@@ -45793,7 +46661,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L88
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L87:
     vpcmpeqb (%rsi,%r9), %ymm0, %ymm2
     vpcmpeqb (%rsi,%r10), %ymm1, %ymm3
@@ -45823,11 +46691,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L93:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L91:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L85:
     cmp $2, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L95
@@ -45852,7 +46722,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L98
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .Lnvol_find_byteset_pair_mask_entry_avx2.L97:
     vmovdqu (%rsi,%r9), %ymm4
     vpcmpeqb %ymm0, %ymm4, %ymm5
@@ -45894,11 +46764,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L103:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L101:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L95:
     cmp $3, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L105
@@ -45929,7 +46801,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L108
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L107:
     vmovdqu (%rsi,%r9), %ymm6
     vpcmpeqb %ymm0, %ymm6, %ymm7
@@ -45979,11 +46851,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L113:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L111:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L105:
     cmp $4, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L115
@@ -46020,7 +46894,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L118
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L117:
     vmovdqu (%rsi,%r9), %ymm8
     vpcmpeqb %ymm0, %ymm8, %ymm9
@@ -46078,11 +46952,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L123:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L121:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L115:
     cmp $5, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L125
@@ -46124,8 +47000,8 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea 32(%rax), %rax
     sub %rax, %rdx
     cmp %rdx, %rsi
-    {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L128
-    .byte 15, 31, 68, 0, 0
+    {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L128
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L127:
     vmovdqu (%rsi,%r9), %ymm10
     vpcmpeqb %ymm0, %ymm10, %ymm11
@@ -46191,11 +47067,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L133:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L131:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L125:
     cmp $6, %r9
     {disp32} jne .Lnvol_find_byteset_pair_mask_entry_avx2.L135
@@ -46244,7 +47122,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L138
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L137:
     vmovdqu (%rsi,%r9), %ymm12
     vpcmpeqb %ymm0, %ymm12, %ymm13
@@ -46318,11 +47196,13 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L143:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L141:
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L135:
     mov 224(%rdi), %r9
     mov 232(%rdi), %r10
@@ -46341,7 +47221,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp32} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L146
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L145:
     vmovdqu (%rsi,%r9), %ymm8
     vpand %ymm6, %ymm8, %ymm9
@@ -46411,7 +47291,8 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rcx, (%r8)
     movq $32, 8(%r8)
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L151:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L149:
     xor %eax, %eax
@@ -46422,82 +47303,99 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     movq $1, (%r8)
     movq $1, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L22:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L32:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L42:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L52:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L62:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L72:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp8} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L80:
     mov %rax, (%r8)
     movq $16, 8(%r8)
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L90:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L100:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L110:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L120:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L130:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L140:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_find_byteset_pair_mask_entry_avx2.L148:
     mov %rax, (%r8)
     movq $32, 8(%r8)
     mov %rsi, %rax
-    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_entry_avx2, .-nvol_find_byteset_pair_mask_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_visit_entry_avx2
 .type nvol_find_byteset_pair_visit_entry_avx2, @function
 .hidden nvol_find_byteset_pair_visit_entry_avx2
@@ -48791,7 +49689,8 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} jb .Lnvol_copy_until_byteset_entry_avx2.L4
 .Lnvol_copy_until_byteset_entry_avx2.L5:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L2:
     movzbl 62(%rdi), %r10d
     movzbl 80(%rdi), %r11d
@@ -48805,7 +49704,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L13
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L12:
     vmovdqu (%rcx), %xmm2
     mov %rcx, %rax
@@ -48841,11 +49740,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L18
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L18:
 .Lnvol_copy_until_byteset_entry_avx2.L16:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L10:
     cmp $1, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L20
@@ -48856,7 +49757,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L23
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L22:
     vmovdqu (%rcx), %xmm1
     mov %rcx, %rax
@@ -48888,11 +49789,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L28
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L28:
 .Lnvol_copy_until_byteset_entry_avx2.L26:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L20:
     cmp $2, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L30
@@ -48906,7 +49809,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L33
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_copy_until_byteset_entry_avx2.L32:
     vmovdqu (%rcx), %xmm2
     mov %rcx, %rax
@@ -48942,11 +49845,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L38
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L38:
 .Lnvol_copy_until_byteset_entry_avx2.L36:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L30:
     cmp $3, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L40
@@ -48963,7 +49868,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L43
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L42:
     vmovdqu (%rcx), %xmm3
     mov %rcx, %rax
@@ -49003,11 +49908,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L48
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L48:
 .Lnvol_copy_until_byteset_entry_avx2.L46:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L40:
     cmp $4, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L50
@@ -49027,7 +49934,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L53
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L52:
     vmovdqu (%rcx), %xmm4
     mov %rcx, %rax
@@ -49071,11 +49978,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L58
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L58:
 .Lnvol_copy_until_byteset_entry_avx2.L56:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L50:
     cmp $5, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L60
@@ -49098,8 +50007,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L63
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 64, 0
 .Lnvol_copy_until_byteset_entry_avx2.L62:
     vmovdqu (%rcx), %xmm5
     mov %rcx, %rax
@@ -49147,11 +50055,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L68
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L68:
 .Lnvol_copy_until_byteset_entry_avx2.L66:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L60:
     cmp $6, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L70
@@ -49177,7 +50087,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L73
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L72:
     vmovdqu (%rcx), %xmm6
     mov %rcx, %rax
@@ -49229,11 +50139,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L78
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L78:
 .Lnvol_copy_until_byteset_entry_avx2.L76:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L70:
     cmp $1, %r11d
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L80
@@ -49244,7 +50156,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L83
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .Lnvol_copy_until_byteset_entry_avx2.L82:
     vmovdqu (%rcx), %xmm1
     mov %rcx, %rax
@@ -49278,11 +50190,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L88
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L88:
 .Lnvol_copy_until_byteset_entry_avx2.L86:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L80:
     cmp $2, %r11d
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L90
@@ -49296,7 +50210,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L93
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_copy_until_byteset_entry_avx2.L92:
     vmovdqu (%rcx), %xmm2
     mov %rcx, %rax
@@ -49334,11 +50248,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L98
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L98:
 .Lnvol_copy_until_byteset_entry_avx2.L96:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L90:
     cmp $3, %r11d
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L100
@@ -49355,7 +50271,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L103
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L102:
     vmovdqu (%rcx), %xmm3
     mov %rcx, %rax
@@ -49397,11 +50313,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L108
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L108:
 .Lnvol_copy_until_byteset_entry_avx2.L106:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L100:
     cmp $4, %r11d
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L110
@@ -49421,7 +50339,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L113
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L112:
     vmovdqu (%rcx), %xmm4
     mov %rcx, %rax
@@ -49467,11 +50385,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L118
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L118:
 .Lnvol_copy_until_byteset_entry_avx2.L116:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L110:
     vmovdqu (%rdi), %xmm0
     vmovdqu 16(%rdi), %xmm1
@@ -49482,7 +50402,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L121
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 144
 .Lnvol_copy_until_byteset_entry_avx2.L120:
     vmovdqu (%rcx), %xmm5
     mov %rcx, %rax
@@ -49532,11 +50452,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L126
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L126:
 .Lnvol_copy_until_byteset_entry_avx2.L124:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L8:
     test %r10d, %r10d
     {disp32} je .Lnvol_copy_until_byteset_entry_avx2.L128
@@ -49546,7 +50468,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L131
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L130:
     vmovdqu (%rcx), %ymm2
     mov %rcx, %rax
@@ -49582,11 +50504,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L136
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L136:
 .Lnvol_copy_until_byteset_entry_avx2.L134:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L128:
     cmp $1, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L138
@@ -49597,7 +50521,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L141
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L140:
     vmovdqu (%rcx), %ymm1
     mov %rcx, %rax
@@ -49629,11 +50553,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L146
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L146:
 .Lnvol_copy_until_byteset_entry_avx2.L144:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L138:
     cmp $2, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L148
@@ -49647,7 +50573,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L151
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_copy_until_byteset_entry_avx2.L150:
     vmovdqu (%rcx), %ymm2
     mov %rcx, %rax
@@ -49683,11 +50609,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L156
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L156:
 .Lnvol_copy_until_byteset_entry_avx2.L154:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L148:
     cmp $3, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L158
@@ -49704,7 +50632,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L161
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L160:
     vmovdqu (%rcx), %ymm3
     mov %rcx, %rax
@@ -49744,11 +50672,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L166
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L166:
 .Lnvol_copy_until_byteset_entry_avx2.L164:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L158:
     cmp $4, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L168
@@ -49768,7 +50698,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L171
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 144
 .Lnvol_copy_until_byteset_entry_avx2.L170:
     vmovdqu (%rcx), %ymm4
     mov %rcx, %rax
@@ -49812,11 +50742,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L176
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L176:
 .Lnvol_copy_until_byteset_entry_avx2.L174:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L168:
     cmp $5, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L178
@@ -49839,8 +50771,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L181
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 64, 0
 .Lnvol_copy_until_byteset_entry_avx2.L180:
     vmovdqu (%rcx), %ymm5
     mov %rcx, %rax
@@ -49888,11 +50819,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L186
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L186:
 .Lnvol_copy_until_byteset_entry_avx2.L184:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L178:
     cmp $6, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L188
@@ -49918,7 +50851,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L191
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L190:
     vmovdqu (%rcx), %ymm6
     mov %rcx, %rax
@@ -49970,11 +50903,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L196
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L196:
 .Lnvol_copy_until_byteset_entry_avx2.L194:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L188:
     cmp $1, %r11d
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L198
@@ -49985,7 +50920,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L201
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .Lnvol_copy_until_byteset_entry_avx2.L200:
     vmovdqu (%rcx), %ymm1
     mov %rcx, %rax
@@ -50019,11 +50954,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L206
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L206:
 .Lnvol_copy_until_byteset_entry_avx2.L204:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L198:
     cmp $2, %r11d
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L208
@@ -50037,7 +50974,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L211
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_copy_until_byteset_entry_avx2.L210:
     vmovdqu (%rcx), %ymm2
     mov %rcx, %rax
@@ -50075,11 +51012,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L216
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L216:
 .Lnvol_copy_until_byteset_entry_avx2.L214:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L208:
     cmp $3, %r11d
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L218
@@ -50096,7 +51035,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L221
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L220:
     vmovdqu (%rcx), %ymm3
     mov %rcx, %rax
@@ -50138,11 +51077,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L226
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L226:
 .Lnvol_copy_until_byteset_entry_avx2.L224:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L218:
     cmp $4, %r11d
     {disp32} jne .Lnvol_copy_until_byteset_entry_avx2.L228
@@ -50162,7 +51103,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L231
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L230:
     vmovdqu (%rcx), %ymm4
     mov %rcx, %rax
@@ -50208,11 +51149,13 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L236
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L236:
 .Lnvol_copy_until_byteset_entry_avx2.L234:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L228:
     vbroadcasti128 (%rdi), %ymm0
     vbroadcasti128 16(%rdi), %ymm1
@@ -50223,7 +51166,7 @@ L.nvol_copy_until_byteset_entry_avx2:
     lea -32(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_avx2.L239
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_copy_until_byteset_entry_avx2.L238:
     vmovdqu (%rcx), %ymm5
     mov %rcx, %rax
@@ -50273,7 +51216,8 @@ L.nvol_copy_until_byteset_entry_avx2:
     {disp8} je .Lnvol_copy_until_byteset_entry_avx2.L244
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L244:
 .Lnvol_copy_until_byteset_entry_avx2.L242:
     mov %rdx, %rax
@@ -50281,111 +51225,132 @@ L.nvol_copy_until_byteset_entry_avx2:
     vzeroupper
     ret
 .Lnvol_copy_until_byteset_entry_avx2.L7:
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L15:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L25:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L35:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L45:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L55:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L65:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L75:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L85:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L95:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L105:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L115:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L123:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L133:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L143:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L153:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L163:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L173:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L183:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L193:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L203:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L213:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L223:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L233:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .Lnvol_copy_until_byteset_entry_avx2.L241:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_avx2.L1
+    vzeroupper
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_entry_avx2, .-nvol_copy_until_byteset_entry_avx2
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_entry_base
 .type nvol_copy_until_byteset_entry_base, @function
 .hidden nvol_copy_until_byteset_entry_base
@@ -50425,7 +51390,7 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} jb .Lnvol_copy_until_byteset_entry_base.L4
 .Lnvol_copy_until_byteset_entry_base.L5:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L2:
     movzbl 80(%rdi), %r10d
     cmp $1, %r9
@@ -50438,7 +51403,7 @@ L.nvol_copy_until_byteset_entry_base:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_base.L11
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_base.L10:
     movdqu (%rcx), %xmm1
     mov %rcx, %rax
@@ -50470,11 +51435,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L16
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L16:
 .Lnvol_copy_until_byteset_entry_base.L14:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L8:
     cmp $2, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L18
@@ -50528,11 +51493,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L26
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L26:
 .Lnvol_copy_until_byteset_entry_base.L24:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L18:
     cmp $3, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L28
@@ -50597,11 +51562,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L36
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L36:
 .Lnvol_copy_until_byteset_entry_base.L34:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L28:
     cmp $4, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L38
@@ -50675,11 +51640,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L46
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L46:
 .Lnvol_copy_until_byteset_entry_base.L44:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L38:
     cmp $5, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L48
@@ -50763,11 +51728,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L56
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L56:
 .Lnvol_copy_until_byteset_entry_base.L54:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L48:
     cmp $6, %r9
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L58
@@ -50799,7 +51764,7 @@ L.nvol_copy_until_byteset_entry_base:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_base.L61
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_base.L60:
     movdqu (%rcx), %xmm6
     mov %rcx, %rax
@@ -50861,11 +51826,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L66
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L66:
 .Lnvol_copy_until_byteset_entry_base.L64:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L58:
     cmp $1, %r10d
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L68
@@ -50913,11 +51878,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L76
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L76:
 .Lnvol_copy_until_byteset_entry_base.L74:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L68:
     cmp $2, %r10d
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L78
@@ -50973,11 +51938,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L86
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L86:
 .Lnvol_copy_until_byteset_entry_base.L84:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L78:
     cmp $3, %r10d
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L88
@@ -50997,7 +51962,8 @@ L.nvol_copy_until_byteset_entry_base:
     lea -16(%rdx), %rdi
     cmp %rdi, %rcx
     {disp8} ja .Lnvol_copy_until_byteset_entry_base.L91
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_copy_until_byteset_entry_base.L90:
     movdqu (%rcx), %xmm3
     mov %rcx, %rax
@@ -51043,11 +52009,11 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L96
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L96:
 .Lnvol_copy_until_byteset_entry_base.L94:
     mov %rdx, %rax
-    {disp32} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L88:
     cmp $4, %r10d
     {disp32} jne .Lnvol_copy_until_byteset_entry_base.L98
@@ -51123,16 +52089,16 @@ L.nvol_copy_until_byteset_entry_base:
     {disp8} je .Lnvol_copy_until_byteset_entry_base.L106
     bsf %ecx, %ecx
     lea (%rax,%rcx), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L106:
 .Lnvol_copy_until_byteset_entry_base.L104:
     mov %rdx, %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L98:
     mov %rsi, %rax
     cmp %rdx, %rax
     {disp8} jae .Lnvol_copy_until_byteset_entry_base.L109
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_copy_until_byteset_entry_base.L108:
     movzbl (%rax), %ecx
     mov %rcx, %r9
@@ -51159,53 +52125,53 @@ L.nvol_copy_until_byteset_entry_base:
 .Lnvol_copy_until_byteset_entry_base.L1:
     ret
 .Lnvol_copy_until_byteset_entry_base.L7:
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L13:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L23:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L33:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L43:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L53:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L63:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L73:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L83:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L93:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L103:
     bsf %eax, %eax
     lea (%rcx,%rax), %rax
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .Lnvol_copy_until_byteset_entry_base.L111:
-    {disp8} jmp .Lnvol_copy_until_byteset_entry_base.L1
+    ret
 .cfi_endproc
 .size nvol_copy_until_byteset_entry_base, .-nvol_copy_until_byteset_entry_base
 
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_raw
 .type nvol_copy_until_byteset_raw, @function
 nvol_copy_until_byteset_raw:

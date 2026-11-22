@@ -723,6 +723,66 @@ def allocate(code: list, abi: ABI, T) -> list:
     code = [ins for ins in code if ins.op not in ("rarebegin", "rareend")]
     code, nslots = T.rewrite(code, assign, spilled)
     code = T.peephole(code)
-    return layout_cold(T.frame(code, abi, nslots))
+    return dup_returns(layout_cold(T.frame(code, abi, nslots)))
+
+
+DUP_MAX = 4     # instructions of a return tail worth copying instead of jumping to it
+
+
+def dup_returns(code: list) -> list:
+    """Each `jmp L` to a short return tail (L, then at most DUP_MAX instructions ending in
+    `ret`, with no label or jump among them: the epilogue, `vzeroupper`, `ret`) becomes a copy
+    of that tail, as GCC and Clang lay out their exits: one taken jump less on that path. The
+    tail itself goes when no jump or fall-through reaches it any more. The CFI and the Win64
+    unwinder already handle an epilogue followed by more code (cold regions do that)."""
+    code = list(code)
+    tails = {}
+    for i, ins in enumerate(code):
+        if ins.op != "label":
+            continue
+        body, j = [], i + 1
+        while j < len(code) and code[j].op == "label":
+            j += 1
+        while j < len(code) and len(body) <= DUP_MAX:
+            c = code[j]
+            if c.op == "label" or c.op in CONDJUMPS or c.op in ("jmp", "tailjmp", "tailcall", "call",
+                                                                 "callind", "coldbegin", "coldend"):
+                break
+            body.append(c)
+            if c.op == "ret":
+                break
+            j += 1
+        if body and body[-1].op == "ret" and len(body) <= DUP_MAX:
+            tails[ins.args[0].name] = body
+    if not tails:
+        return code
+    out = []
+    for ins in code:
+        if ins.op == "jmp" and isinstance(ins.args[0], Lab) and ins.args[0].name in tails:
+            out += [Ins(c.op, list(c.args), list(c.defs), list(c.uses), list(c.clobbers), c.hint)
+                    for c in tails[ins.args[0].name]]
+            continue
+        out.append(ins)
+    # drop a tail nothing reaches now: after an unconditional exit, its label unreferenced
+    refs = {a.name for ins in out if ins.op != "label" for a in ins.args if isinstance(a, Lab)}
+    code, out = out, []
+    k = 0
+    while k < len(code):
+        ins = code[k]
+        if ins.op == "label" and ins.args[0].name in tails and ins.args[0].name not in refs \
+                and out and out[-1].op in TERMINATORS:
+            m = k
+            while m < len(code) and code[m].op == "label" and code[m].args[0].name not in refs:
+                m += 1
+            if m < len(code) and code[m].op == "label":
+                out.extend(code[k:m])       # another label in the run is still a target
+                k = m
+                continue
+            n = len(tails[ins.args[0].name])
+            k = m + n
+            continue
+        out.append(ins)
+        k += 1
+    return out
 
 
