@@ -16,11 +16,13 @@ See [docs/RIPGREP_SIMD_INVENTORY.md](docs/RIPGREP_SIMD_INVENTORY.md).
 
 ## Usage
 
-Before each commit, run the full verification (generator, C, C++, Rust, Odin and assembly, native,
-aarch64 under QEMU and System V in WSL). It fails if any step fails:
+Before each commit, run the full verification (generator; C with GCC, Clang and MSVC; C++,
+Rust, Odin and assembly; native, aarch64 under QEMU and System V in WSL). It fails if any step
+fails:
 
 ```sh
 bash harness/verify.sh                       # SKIP="rust-a64 odin-a64" to skip steps on request
+bash harness/verify.sh --changed             # only the steps the uncommitted changes reach
 ```
 
 ```sh
@@ -104,7 +106,10 @@ nvol/oracle.py      executable specification of each API
 nvol/backends/      c.py (C and C++), rust.py, python.py, odin.py, iters.py (memchr_iter), finder.py (memmem), packed.py (Teddy)
 nvol/asm/           lower.py (IR → instructions, with inlining; shared by the targets), x86.py (x86-64 instruction selection, spill code, frame), a64.py (A64 and NEON selection, AAPCS64 frame, branch ranges), regalloc.py (intervals with holes, spill splitting, jump cleanup), abi.py (Win64, System V, AAPCS64), encode.py (x86 lengths, jump sizes), nasm.py, masm.py, gas.py (AT&T), gas_a64.py (aarch64), samebytes.py (every syntax and assembler gives the same code)
 generated/          current generator output
+archive/            implementations no longer used or rejected after measuring, kept readable (nothing builds them)
 harness/verify.sh   full verification (see Usage)
+harness/c           the whole pytest suite with Clang (run-clang.sh); compile_commands.py for indexing generated/
+harness/parity      each language build against NVOL's assembly, with counters (docs/PARITY.md)
 harness/rust        parity tests + benchmark vs memchr
 harness/cpp         smoke test of the C++ header (native and aarch64 under QEMU)
 harness/asm         smoke of generated/{nasm,masm,gas} (gcc and MSVC on Win64; System V in WSL with the whole asm pytest; aarch64 under QEMU: run-a64.sh), counters, a64_static.py

@@ -64,7 +64,11 @@ alone is not enough.
 - A kernel is written once, in the IR. Every backend prints it; no backend gets a hand-written
   version of a kernel.
 - A new primitive needs its semantics in `nvol/primitives.py`, its lowering for every language
-  and for the assembly backend, and its case in `tests/test_prims.py`.
+  and for the assembly backend, and an isolated test against that semantics: a vector
+  primitive gets its case in `tests/test_prims.py`. A scalar one (`load64`,
+  `first_offset64`, ...) is drawn by `tests/test_asm_fuzz.py` for the assembly backend and is
+  reached in each language through the kernels' differential tests, until `test_prims` covers
+  the scalar primitives too (PENDING 2.3).
 - A new kernel needs its oracle in `nvol/oracle.py` and passes `python -m nvol check` against the
   interpreter, which rejects undefined behaviour.
 - The generated code is equal to or better than the implementation it replaces, never worse,

@@ -5,9 +5,10 @@ Each item states **what is missing**, **why it matters** and **how it was found*
 Priority in the tables: **P0** blocks parity with ripgrep, **P1** quality/portability,
 **P2** improvements. The work order is the one in section 0.
 
-Last review: 2026-11-21. The list was regenerated when item 15 (asm optimization) closed,
-and the simdjson phase was added. Item 16 (aarch64 assembly) closed the same day. Items 1-15 keep their numbers; the pending items
-continue from 16.
+Last review: 2026-11-22, after phases 3-5 closed (item 25 stays open on hardware) and the
+read-only audit of that day. The list was regenerated on 2026-11-21, when item 15 (asm
+optimization) closed and the simdjson phase was added. Items 1-15 keep their numbers; the
+pending items continue from 16.
 
 ## 0. Work list
 
@@ -34,11 +35,13 @@ patch it on its own, without waiting for the maintainers of each language. What 
 way goes to the toolchain log (item 21), with a reproducer and NVOL's fix or workaround.
 
 Tools: MSVC 14.51 (`cl`, `ml64`), NASM 2.16 and GNU as 2.42 (MinGW) are installed. WSL
-(Alpine) has `perf`, `valgrind` and QEMU. A minimal WSL Arch Linux (glibc, rust, gcc, clang,
-nasm, perf 7.3.5) is used for ripgrep on Linux and for the frontend counters: its `perf`
-knows `idq.*` and `dsb2mite_*`, while Alpine's does not. Anything missing (Intel SDE, z3, ARM libc++, …) is
-downloaded. WSL does not expose frontend counters, and Windows gives no counters to a user
-program. Sourcetrail indexes C, C++, Rust and Odin; the assembler is worked on without an
+(Alpine) has `perf`, `valgrind` and QEMU. A WSL Arch Linux is used for ripgrep on Linux, the
+parity tool and the frontend counters: glibc, rust, gcc 16, clang 23, LLVM 22 (to build Odin
+from source), odin, NASM 3.02, autotools, and a `perf` that knows `idq.*` and `dsb2mite_*`
+by name (Alpine's `perf` has only the raw codes; WSL's kernel counts them in both). WSL gets
+12 GB of memory and 8 GB of swap (`.wslconfig`; NASM's full test suite needs more than 4 GB).
+Anything missing (Intel SDE, z3, ARM libc++, …) is downloaded. Windows gives no counters to a
+user program, and WSL has no counters that need native Linux (item 25). Sourcetrail indexes C, C++, Rust and Odin; the assembler is worked on without an
 indexer. NEON is measured under QEMU and documented as emulated: it serves to compare variants
 with each other, not as hardware speed.
 
