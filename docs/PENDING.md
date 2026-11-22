@@ -103,9 +103,15 @@ The detail is in "Done".
     - **NASM local labels in the ELF symbol table:** `.L36` after `L.nvol_x:` ends up as the
       local symbol `L.nvol_x.L36`. `perf` and `gdb` attribute samples and backtraces to those
       labels and not to the function; GNU as discards its `.L` labels.
-    - **2-byte VEX:** commutative operations with the ymm8-15 operand in ModRM.rm need a
-      3-byte VEX; swapping the operands makes them fit in 2. `encode.py` knows the lengths,
-      so the lowering or the allocator can choose the order.
+    - ~~**2-byte VEX**~~ **(tried and rejected, 2026-11-21):** commutative operations with
+      the ymm8-15 operand in ModRM.rm need a 3-byte VEX, and swapping the operands makes
+      them fit in 2. A pass after allocation swapped all 325 in the System V library (276
+      `vpcmpeqb`, 39 `vpor`, 10 `vpand`, out of 3497 three-operand register instructions):
+      `.text` 170624 → 170304 bytes (−0.19 %), with the same instructions and µops. Over the
+      120 asm rows, 8 were better than −3 % and 11 worse than +3 %, including byteset AVX2
+      4 KiB +14.2 % and 64 KiB +9.2 % (steady-state loops). By construction everything it
+      changes is layout, so there is no code benefit to isolate, and 0.2 % of size does not
+      pay for the draw. Not taken.
     - **Win64:** xmm6 is saved in memchr ×4, because the loop uses 7 vector registers.
       Compare with GCC and MSVC.
     - **Justified, not changed:** `count_parity` is the faithful port of memchr's `count_raw`.
