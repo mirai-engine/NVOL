@@ -287,6 +287,9 @@ class Lower:
                 self.stmt(ir.If(s.value, nxt.then, nxt.els))
                 k += 2
                 continue
+            if self._select_return(s, nxt):
+                k += 2
+                continue
             run = 1
             while _acc_sub(s) and k + run < len(stmts) and _acc_sub(stmts[k + run])                     and stmts[k + run].var.name == s.var.name:
                 run += 1
@@ -296,6 +299,16 @@ class Lower:
                 continue
             self.stmt(s)
             k += 1
+
+    def _select_return(self, s, nxt) -> bool:
+        """`if a < b: return x` then `return y`, outside loops, with x and y cheap: one select
+        (cmov, csel/csinv) instead of a branch, as GCC and Clang lower the public wrappers'
+        `p == NULL ? -1 : p - start`. Both values are computed; the target picks."""
+        if self.slots or self.ret_to is not None or not hasattr(self, "select")                 or not isinstance(s, ir.If) or s.els or len(s.then) != 1                 or not isinstance(s.then[0], ir.Return) or not isinstance(nxt, ir.Return)                 or s.then[0].value is None or nxt.value is None                 or not (isinstance(s.cond, ir.Bin) and s.cond.op in CC)                 or not (_cheap(s.then[0].value) and _cheap(nxt.value) and _cheap(s.cond)):
+            return False
+        self.ret_value(self.select(s.cond, s.then[0].value, nxt.value))
+        self.emit("jmp", [self.ret_label])
+        return True
 
     def _acc_pairs(self, run: list) -> None:
         """`acc = vsub8(acc, x0); acc = vsub8(acc, x1); ...` (a counting accumulator) as
@@ -547,6 +560,20 @@ def _bit_test(e):
 
 def _is_var(e, v) -> bool:
     return isinstance(e, ir.Var) and e.name == v.name
+
+
+def _cheap(e) -> bool:
+    """A constant, a variable, a cast of one, or a +/-/compare/pointer difference of two:
+    worth computing on both sides of a select."""
+    if isinstance(e, (ir.Const, ir.Var)):
+        return True
+    if isinstance(e, ir.Cast):
+        return _cheap(e.a)
+    if isinstance(e, ir.Bin) and (e.op in ("add", "sub") or e.op in CC):
+        return isinstance(e.a, (ir.Const, ir.Var)) and isinstance(e.b, (ir.Const, ir.Var))
+    if isinstance(e, ir.PtrDiff):
+        return isinstance(e.a, ir.Var) and isinstance(e.b, ir.Var)
+    return False
 
 
 def _pure(e) -> bool:

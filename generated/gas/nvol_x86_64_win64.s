@@ -859,13 +859,11 @@ nvol_memchr:
     mov %rdx, %rsi
     lea (%rsi,%r8), %r8
     call *nvol_memchr_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rsi, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memchr.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memchr.L1
-.Lnvol_memchr.L2:
-    sub %rsi, %rax
-.Lnvol_memchr.L1:
+    cmovne %rcx, %rax
     add $32, %rsp
     pop %rsi
     ret
@@ -873,7 +871,7 @@ nvol_memchr:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_memrchr_scalar
 .def nvol_memrchr_scalar; .scl 2; .type 32; .endef
 nvol_memrchr_scalar:
@@ -1826,13 +1824,11 @@ nvol_memrchr:
     mov %rdx, %rsi
     lea (%rsi,%r8), %r8
     call *nvol_memrchr_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rsi, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memrchr.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memrchr.L1
-.Lnvol_memrchr.L2:
-    sub %rsi, %rax
-.Lnvol_memrchr.L1:
+    cmovne %rcx, %rax
     add $32, %rsp
     pop %rsi
     ret
@@ -1840,7 +1836,7 @@ nvol_memrchr:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_memchr2_scalar
 .def nvol_memchr2_scalar; .scl 2; .type 32; .endef
 nvol_memchr2_scalar:
@@ -2509,13 +2505,11 @@ nvol_memchr2:
     mov %r8, %rsi
     lea (%rsi,%r9), %r9
     call *nvol_memchr2_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rsi, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memchr2.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memchr2.L1
-.Lnvol_memchr2.L2:
-    sub %rsi, %rax
-.Lnvol_memchr2.L1:
+    cmovne %rcx, %rax
     add $32, %rsp
     pop %rsi
     ret
@@ -2523,7 +2517,7 @@ nvol_memchr2:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_memrchr2_scalar
 .def nvol_memrchr2_scalar; .scl 2; .type 32; .endef
 nvol_memrchr2_scalar:
@@ -3359,13 +3353,11 @@ nvol_memrchr2:
     mov %r8, %rsi
     lea (%rsi,%r9), %r9
     call *nvol_memrchr2_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rsi, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memrchr2.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memrchr2.L1
-.Lnvol_memrchr2.L2:
-    sub %rsi, %rax
-.Lnvol_memrchr2.L1:
+    cmovne %rcx, %rax
     add $32, %rsp
     pop %rsi
     ret
@@ -3373,7 +3365,7 @@ nvol_memrchr2:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_memchr3_scalar
 .def nvol_memchr3_scalar; .scl 2; .type 32; .endef
 nvol_memchr3_scalar:
@@ -4169,20 +4161,18 @@ nvol_memchr3:
     lea (%rsi,%rax), %rax
     mov %rax, 32(%rsp)
     call *nvol_memchr3_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rsi, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memchr3.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memchr3.L1
-.Lnvol_memchr3.L2:
-    sub %rsi, %rax
-.Lnvol_memchr3.L1:
+    cmovne %rcx, %rax
     add $48, %rsp
     pop %rsi
     ret
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_memrchr3_scalar
 .def nvol_memrchr3_scalar; .scl 2; .type 32; .endef
 nvol_memrchr3_scalar:
@@ -5172,20 +5162,18 @@ nvol_memrchr3:
     lea (%rsi,%rax), %rax
     mov %rax, 32(%rsp)
     call *nvol_memrchr3_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rsi, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memrchr3.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memrchr3.L1
-.Lnvol_memrchr3.L2:
-    sub %rsi, %rax
-.Lnvol_memrchr3.L1:
+    cmovne %rcx, %rax
     add $48, %rsp
     pop %rsi
     ret
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_count_scalar
 .def nvol_count_scalar; .scl 2; .type 32; .endef
 nvol_count_scalar:
@@ -7055,13 +7043,11 @@ nvol_first_non_ascii:
     mov %rcx, %rsi
     lea (%rsi,%rdx), %rdx
     call *nvol_first_non_ascii_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rsi, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_first_non_ascii.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_first_non_ascii.L1
-.Lnvol_first_non_ascii.L2:
-    sub %rsi, %rax
-.Lnvol_first_non_ascii.L1:
+    cmovne %rcx, %rax
     add $32, %rsp
     pop %rsi
     ret
@@ -7069,7 +7055,7 @@ nvol_first_non_ascii:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 144
 .globl nvol_is_equal
 .def nvol_is_equal; .scl 2; .type 32; .endef
 nvol_is_equal:

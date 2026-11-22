@@ -818,13 +818,11 @@ nvol_memchr:
     mov rsi, rdx
     lea r8, [rsi + r8]
     call qword [rel nvol_memchr_raw_ptr]
+    mov rcx, rax
+    sub rcx, rsi
     test rax, rax
-    jne strict short .L2
     mov rax, -1
-    jmp strict short .L1
-.L2:
-    sub rax, rsi
-.L1:
+    cmovne rax, rcx
     add rsp, 32
     pop rsi
     ret
@@ -832,7 +830,7 @@ nvol_memchr:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0x90
 global nvol_memrchr_scalar
 nvol_memrchr_scalar:
     movzx ecx, cl
@@ -1750,13 +1748,11 @@ nvol_memrchr:
     mov rsi, rdx
     lea r8, [rsi + r8]
     call qword [rel nvol_memrchr_raw_ptr]
+    mov rcx, rax
+    sub rcx, rsi
     test rax, rax
-    jne strict short .L2
     mov rax, -1
-    jmp strict short .L1
-.L2:
-    sub rax, rsi
-.L1:
+    cmovne rax, rcx
     add rsp, 32
     pop rsi
     ret
@@ -1764,7 +1760,7 @@ nvol_memrchr:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0x90
 global nvol_memchr2_scalar
 nvol_memchr2_scalar:
     movzx ecx, cl
@@ -2414,13 +2410,11 @@ nvol_memchr2:
     mov rsi, r8
     lea r9, [rsi + r9]
     call qword [rel nvol_memchr2_raw_ptr]
+    mov rcx, rax
+    sub rcx, rsi
     test rax, rax
-    jne strict short .L2
     mov rax, -1
-    jmp strict short .L1
-.L2:
-    sub rax, rsi
-.L1:
+    cmovne rax, rcx
     add rsp, 32
     pop rsi
     ret
@@ -2428,7 +2422,7 @@ nvol_memchr2:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0x90
 global nvol_memrchr2_scalar
 nvol_memrchr2_scalar:
     movzx ecx, cl
@@ -3245,13 +3239,11 @@ nvol_memrchr2:
     mov rsi, r8
     lea r9, [rsi + r9]
     call qword [rel nvol_memrchr2_raw_ptr]
+    mov rcx, rax
+    sub rcx, rsi
     test rax, rax
-    jne strict short .L2
     mov rax, -1
-    jmp strict short .L1
-.L2:
-    sub rax, rsi
-.L1:
+    cmovne rax, rcx
     add rsp, 32
     pop rsi
     ret
@@ -3259,7 +3251,7 @@ nvol_memrchr2:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0x90
 global nvol_memchr3_scalar
 nvol_memchr3_scalar:
     movzx ecx, cl
@@ -4020,20 +4012,18 @@ nvol_memchr3:
     lea rax, [rsi + rax]
     mov qword [rsp + 32], rax
     call qword [rel nvol_memchr3_raw_ptr]
+    mov rcx, rax
+    sub rcx, rsi
     test rax, rax
-    jne strict short .L2
     mov rax, -1
-    jmp strict short .L1
-.L2:
-    sub rax, rsi
-.L1:
+    cmovne rax, rcx
     add rsp, 48
     pop rsi
     ret
 .unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_memrchr3_scalar
 nvol_memrchr3_scalar:
     movzx ecx, cl
@@ -4988,20 +4978,18 @@ nvol_memrchr3:
     lea rax, [rsi + rax]
     mov qword [rsp + 32], rax
     call qword [rel nvol_memrchr3_raw_ptr]
+    mov rcx, rax
+    sub rcx, rsi
     test rax, rax
-    jne strict short .L2
     mov rax, -1
-    jmp strict short .L1
-.L2:
-    sub rax, rsi
-.L1:
+    cmovne rax, rcx
     add rsp, 48
     pop rsi
     ret
 .unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_count_scalar
 nvol_count_scalar:
     movzx eax, cl
@@ -6817,13 +6805,11 @@ nvol_first_non_ascii:
     mov rsi, rcx
     lea rdx, [rsi + rdx]
     call qword [rel nvol_first_non_ascii_raw_ptr]
+    mov rcx, rax
+    sub rcx, rsi
     test rax, rax
-    jne strict short .L2
     mov rax, -1
-    jmp strict short .L1
-.L2:
-    sub rax, rsi
-.L1:
+    cmovne rax, rcx
     add rsp, 32
     pop rsi
     ret
@@ -6831,7 +6817,7 @@ nvol_first_non_ascii:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0x90
 global nvol_is_equal
 nvol_is_equal:
     xor r9d, r9d

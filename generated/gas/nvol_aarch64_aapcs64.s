@@ -367,18 +367,16 @@ L.nvol_memchr:
     mov x19, x1
     add x2, x19, x2
     bl L.nvol_memchr_raw
-    cbnz x0, .Lnvol_memchr.L2
-    movn x0, #0
-    b .Lnvol_memchr.L1
-.Lnvol_memchr.L2:
-    sub x0, x0, x19
-.Lnvol_memchr.L1:
+    sub x9, x0, x19
+    cmp x0, #0
+    csinv x0, x9, xzr, ne
     ldr x19, [sp, #16]
     ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memchr, .-nvol_memchr
 
+    nop
 .globl nvol_memrchr_scalar
 .type nvol_memrchr_scalar, %function
 .hidden nvol_memrchr_scalar
@@ -723,18 +721,16 @@ L.nvol_memrchr:
     mov x19, x1
     add x2, x19, x2
     bl L.nvol_memrchr_raw
-    cbnz x0, .Lnvol_memrchr.L2
-    movn x0, #0
-    b .Lnvol_memrchr.L1
-.Lnvol_memrchr.L2:
-    sub x0, x0, x19
-.Lnvol_memrchr.L1:
+    sub x9, x0, x19
+    cmp x0, #0
+    csinv x0, x9, xzr, ne
     ldr x19, [sp, #16]
     ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memrchr, .-nvol_memrchr
 
+    nop
 .globl nvol_memchr2_scalar
 .type nvol_memchr2_scalar, %function
 .hidden nvol_memchr2_scalar
@@ -1045,18 +1041,16 @@ L.nvol_memchr2:
     mov x19, x2
     add x3, x19, x3
     bl L.nvol_memchr2_raw
-    cbnz x0, .Lnvol_memchr2.L2
-    movn x0, #0
-    b .Lnvol_memchr2.L1
-.Lnvol_memchr2.L2:
-    sub x0, x0, x19
-.Lnvol_memchr2.L1:
+    sub x9, x0, x19
+    cmp x0, #0
+    csinv x0, x9, xzr, ne
     ldr x19, [sp, #16]
     ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memchr2, .-nvol_memchr2
 
+    nop
 .globl nvol_memrchr2_scalar
 .type nvol_memrchr2_scalar, %function
 .hidden nvol_memrchr2_scalar
@@ -1367,18 +1361,16 @@ L.nvol_memrchr2:
     mov x19, x2
     add x3, x19, x3
     bl L.nvol_memrchr2_raw
-    cbnz x0, .Lnvol_memrchr2.L2
-    movn x0, #0
-    b .Lnvol_memrchr2.L1
-.Lnvol_memrchr2.L2:
-    sub x0, x0, x19
-.Lnvol_memrchr2.L1:
+    sub x9, x0, x19
+    cmp x0, #0
+    csinv x0, x9, xzr, ne
     ldr x19, [sp, #16]
     ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memrchr2, .-nvol_memrchr2
 
+    nop
 .globl nvol_memchr3_scalar
 .type nvol_memchr3_scalar, %function
 .hidden nvol_memchr3_scalar
@@ -1717,18 +1709,16 @@ L.nvol_memchr3:
     mov x19, x3
     add x4, x19, x4
     bl L.nvol_memchr3_raw
-    cbnz x0, .Lnvol_memchr3.L2
-    movn x0, #0
-    b .Lnvol_memchr3.L1
-.Lnvol_memchr3.L2:
-    sub x0, x0, x19
-.Lnvol_memchr3.L1:
+    sub x9, x0, x19
+    cmp x0, #0
+    csinv x0, x9, xzr, ne
     ldr x19, [sp, #16]
     ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memchr3, .-nvol_memchr3
 
+    nop
 .globl nvol_memrchr3_scalar
 .type nvol_memrchr3_scalar, %function
 .hidden nvol_memrchr3_scalar
@@ -2067,18 +2057,16 @@ L.nvol_memrchr3:
     mov x19, x3
     add x4, x19, x4
     bl L.nvol_memrchr3_raw
-    cbnz x0, .Lnvol_memrchr3.L2
-    movn x0, #0
-    b .Lnvol_memrchr3.L1
-.Lnvol_memrchr3.L2:
-    sub x0, x0, x19
-.Lnvol_memrchr3.L1:
+    sub x9, x0, x19
+    cmp x0, #0
+    csinv x0, x9, xzr, ne
     ldr x19, [sp, #16]
     ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memrchr3, .-nvol_memrchr3
 
+    nop
 .globl nvol_count_scalar
 .type nvol_count_scalar, %function
 .hidden nvol_count_scalar
@@ -2940,18 +2928,16 @@ L.nvol_first_non_ascii:
     mov x19, x0
     add x1, x19, x1
     bl L.nvol_first_non_ascii_raw
-    cbnz x0, .Lnvol_first_non_ascii.L2
-    movn x0, #0
-    b .Lnvol_first_non_ascii.L1
-.Lnvol_first_non_ascii.L2:
-    sub x0, x0, x19
-.Lnvol_first_non_ascii.L1:
+    sub x9, x0, x19
+    cmp x0, #0
+    csinv x0, x9, xzr, ne
     ldr x19, [sp, #16]
     ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_first_non_ascii, .-nvol_first_non_ascii
 
+    nop
 .globl nvol_is_equal
 .type nvol_is_equal, %function
 .hidden nvol_is_equal

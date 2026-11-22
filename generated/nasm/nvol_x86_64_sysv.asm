@@ -786,27 +786,25 @@ L.nvol_memchr_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_memchr_raw_ptr]
 
-global nvol_memchr:function 33
+global nvol_memchr:function 36
 nvol_memchr:
 L.nvol_memchr:
     push rbx
     mov rbx, rsi
     lea rdx, [rbx + rdx]
     call qword [rel L.nvol_memchr_raw_ptr]
+    mov rcx, rax
+    sub rcx, rbx
     test rax, rax
-    jne strict short L.nvol_memchr + 28
     mov rax, -1
-    jmp strict short L.nvol_memchr + 31
-; .L2:
-    sub rax, rbx
-; .L1:
+    cmovne rax, rcx
     pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_memrchr_scalar:function hidden 40
 nvol_memrchr_scalar:
 L.nvol_memrchr_scalar:
@@ -1708,27 +1706,25 @@ L.nvol_memrchr_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_memrchr_raw_ptr]
 
-global nvol_memrchr:function 33
+global nvol_memrchr:function 36
 nvol_memrchr:
 L.nvol_memrchr:
     push rbx
     mov rbx, rsi
     lea rdx, [rbx + rdx]
     call qword [rel L.nvol_memrchr_raw_ptr]
+    mov rcx, rax
+    sub rcx, rbx
     test rax, rax
-    jne strict short L.nvol_memrchr + 28
     mov rax, -1
-    jmp strict short L.nvol_memrchr + 31
-; .L2:
-    sub rax, rbx
-; .L1:
+    cmovne rax, rcx
     pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_memchr2_scalar:function hidden 44
 nvol_memchr2_scalar:
 L.nvol_memchr2_scalar:
@@ -2376,27 +2372,25 @@ L.nvol_memchr2_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_memchr2_raw_ptr]
 
-global nvol_memchr2:function 33
+global nvol_memchr2:function 36
 nvol_memchr2:
 L.nvol_memchr2:
     push rbx
     mov rbx, rdx
     lea rcx, [rbx + rcx]
     call qword [rel L.nvol_memchr2_raw_ptr]
+    mov rcx, rax
+    sub rcx, rbx
     test rax, rax
-    jne strict short L.nvol_memchr2 + 28
     mov rax, -1
-    jmp strict short L.nvol_memchr2 + 31
-; .L2:
-    sub rax, rbx
-; .L1:
+    cmovne rax, rcx
     pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_memrchr2_scalar:function hidden 44
 nvol_memrchr2_scalar:
 L.nvol_memrchr2_scalar:
@@ -3213,27 +3207,25 @@ L.nvol_memrchr2_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_memrchr2_raw_ptr]
 
-global nvol_memrchr2:function 33
+global nvol_memrchr2:function 36
 nvol_memrchr2:
 L.nvol_memrchr2:
     push rbx
     mov rbx, rdx
     lea rcx, [rbx + rcx]
     call qword [rel L.nvol_memrchr2_raw_ptr]
+    mov rcx, rax
+    sub rcx, rbx
     test rax, rax
-    jne strict short L.nvol_memrchr2 + 28
     mov rax, -1
-    jmp strict short L.nvol_memrchr2 + 31
-; .L2:
-    sub rax, rbx
-; .L1:
+    cmovne rax, rcx
     pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_memchr3_scalar:function hidden 48
 nvol_memchr3_scalar:
 L.nvol_memchr3_scalar:
@@ -3977,27 +3969,25 @@ L.nvol_memchr3_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_memchr3_raw_ptr]
 
-global nvol_memchr3:function 33
+global nvol_memchr3:function 36
 nvol_memchr3:
 L.nvol_memchr3:
     push rbx
     mov rbx, rcx
     lea r8, [rbx + r8]
     call qword [rel L.nvol_memchr3_raw_ptr]
+    mov rcx, rax
+    sub rcx, rbx
     test rax, rax
-    jne strict short L.nvol_memchr3 + 28
     mov rax, -1
-    jmp strict short L.nvol_memchr3 + 31
-; .L2:
-    sub rax, rbx
-; .L1:
+    cmovne rax, rcx
     pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_memrchr3_scalar:function hidden 49
 nvol_memrchr3_scalar:
 L.nvol_memrchr3_scalar:
@@ -4917,27 +4907,25 @@ L.nvol_memrchr3_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_memrchr3_raw_ptr]
 
-global nvol_memrchr3:function 33
+global nvol_memrchr3:function 36
 nvol_memrchr3:
 L.nvol_memrchr3:
     push rbx
     mov rbx, rcx
     lea r8, [rbx + r8]
     call qword [rel L.nvol_memrchr3_raw_ptr]
+    mov rcx, rax
+    sub rcx, rbx
     test rax, rax
-    jne strict short L.nvol_memrchr3 + 28
     mov rax, -1
-    jmp strict short L.nvol_memrchr3 + 31
-; .L2:
-    sub rax, rbx
-; .L1:
+    cmovne rax, rcx
     pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_count_scalar:function hidden 43
 nvol_count_scalar:
 L.nvol_count_scalar:
@@ -6770,27 +6758,25 @@ L.nvol_first_non_ascii_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_first_non_ascii_raw_ptr]
 
-global nvol_first_non_ascii:function 33
+global nvol_first_non_ascii:function 36
 nvol_first_non_ascii:
 L.nvol_first_non_ascii:
     push rbx
     mov rbx, rdi
     lea rsi, [rbx + rsi]
     call qword [rel L.nvol_first_non_ascii_raw_ptr]
+    mov rcx, rax
+    sub rcx, rbx
     test rax, rax
-    jne strict short L.nvol_first_non_ascii + 28
     mov rax, -1
-    jmp strict short L.nvol_first_non_ascii + 31
-; .L2:
-    sub rax, rbx
-; .L1:
+    cmovne rax, rcx
     pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x90
 global nvol_is_equal:function hidden 103
 nvol_is_equal:
 L.nvol_is_equal:
@@ -49067,8 +49053,8 @@ nvol_cie:
     dd 24
     dd $ - nvol_cie
     dd L.nvol_memchr - $
-    dd 33
-    db 0, 65, 14, 16, 131, 2, 95, 14, 8, 0, 0, 0
+    dd 36
+    db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr_scalar - $
@@ -49107,8 +49093,8 @@ nvol_cie:
     dd 24
     dd $ - nvol_cie
     dd L.nvol_memrchr - $
-    dd 33
-    db 0, 65, 14, 16, 131, 2, 95, 14, 8, 0, 0, 0
+    dd 36
+    db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr2_scalar - $
@@ -49147,8 +49133,8 @@ nvol_cie:
     dd 24
     dd $ - nvol_cie
     dd L.nvol_memchr2 - $
-    dd 33
-    db 0, 65, 14, 16, 131, 2, 95, 14, 8, 0, 0, 0
+    dd 36
+    db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr2_scalar - $
@@ -49187,8 +49173,8 @@ nvol_cie:
     dd 24
     dd $ - nvol_cie
     dd L.nvol_memrchr2 - $
-    dd 33
-    db 0, 65, 14, 16, 131, 2, 95, 14, 8, 0, 0, 0
+    dd 36
+    db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr3_scalar - $
@@ -49227,8 +49213,8 @@ nvol_cie:
     dd 24
     dd $ - nvol_cie
     dd L.nvol_memchr3 - $
-    dd 33
-    db 0, 65, 14, 16, 131, 2, 95, 14, 8, 0, 0, 0
+    dd 36
+    db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr3_scalar - $
@@ -49267,8 +49253,8 @@ nvol_cie:
     dd 24
     dd $ - nvol_cie
     dd L.nvol_memrchr3 - $
-    dd 33
-    db 0, 65, 14, 16, 131, 2, 95, 14, 8, 0, 0, 0
+    dd 36
+    db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_count_scalar - $
@@ -49382,8 +49368,8 @@ nvol_cie:
     dd 24
     dd $ - nvol_cie
     dd L.nvol_first_non_ascii - $
-    dd 33
-    db 0, 65, 14, 16, 131, 2, 95, 14, 8, 0, 0, 0
+    dd 36
+    db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_is_equal - $

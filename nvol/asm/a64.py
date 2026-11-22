@@ -541,6 +541,22 @@ class A64Lower(Lower):
         return d
 
     # ---------------------------------------------------------------- conditions
+    def select(self, e: ir.Bin, x: ir.Expr, y: ir.Expr) -> VReg:
+        """x when the comparison e holds, else y: csel, or csinv against xzr when x is all
+        ones (`p == NULL ? -1 : p - start`, as Clang writes it)."""
+        yv = self.gen(y)
+        ones = isinstance(x, ir.Const) and _const_value(x) == (1 << 64) - 1
+        xv = None if ones else self.gen(x)
+        self.compare(self.gen(e.a), e.b)
+        d = self.new()
+        if ones:
+            self.emit("csinv", [Reg(d, 64), Reg(yv, 64), Reg(XZR, 64), COND[NEG[CC[e.op]]]],
+                      defs=[d], uses=[yv])
+        else:
+            self.emit("csel", [Reg(d, 64), Reg(xv, 64), Reg(yv, 64), COND[CC[e.op]]],
+                      defs=[d], uses=[xv, yv])
+        return d
+
     def branch(self, e: ir.Expr, target: Lab, when: bool) -> None:
         """Jump to target when bool(e) == when; fall through otherwise."""
         if isinstance(e, ir.Bin) and e.op in ("eq", "ne") and e.a.ty is ir.BOOL \

@@ -587,6 +587,32 @@ class X86Lower(Lower):
         return d
 
     # ---------------------------------------------------------------- conditions
+    def select(self, e: ir.Bin, x: ir.Expr, y: ir.Expr) -> VReg:
+        """x when the comparison e holds, else y: y in the result, then cmovCC from x (the
+        compare last, after the values, whose arithmetic sets the flags)."""
+        late = isinstance(x, ir.Const) and _const_value(x) != 0   # a mov imm: flags kept
+        if late:
+            # GCC's form: y aside, the compare, then x straight into the result (the compared
+            # value is dead by then, so the result can take its register) and cmov from y
+            t = self.gen(y)
+        else:
+            d = self.copy(self.gen(y))
+            t = self.gen(x)
+        a = self.gen(e.a)
+        s = self.rhs(e.b)
+        w = _cmp_width(e, s)
+        if isinstance(s, Imm) and s.v == 0 and e.op in ("eq", "ne"):
+            self.emit("test", [Reg(a, w), Reg(a, w)], uses=[a])
+        else:
+            self.emit("cmp", [Reg(a, w), Reg(s.r, w) if isinstance(s, Reg) else s],
+                      uses=[a] + regs_in(s))
+        if late:
+            d = self.const(_const_value(x))      # (not zero: a mov, never the xor)
+            self.emit("cmov" + NEG[CC[e.op]], [Reg(d, 64), Reg(t, 64)], defs=[d], uses=[d, t])
+        else:
+            self.emit("cmov" + CC[e.op], [Reg(d, 64), Reg(t, 64)], defs=[d], uses=[d, t])
+        return d
+
     def branch(self, e: ir.Expr, target: Lab, when: bool) -> None:
         """Jump to target when bool(e) == when; fall through otherwise."""
         if isinstance(e, ir.Bin) and e.op in ("eq", "ne") and e.a.ty is ir.BOOL                 and isinstance(e.b, ir.Const):

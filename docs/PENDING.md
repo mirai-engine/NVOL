@@ -129,7 +129,7 @@ The detail is in "Done".
       item 31). Seen in `nvol_memchr` (16 against 12 instructions):
       - ~~the save as `sub sp` + `stp` instead of a pre-indexed `stp x29, x30, [sp, #-32]!`~~:
         the first save and its load now take the `sub`/`add sp` in their writeback (see Done);
-      - a branch where Clang uses `cmp` + `csinv`;
+      - ~~a branch where Clang uses `cmp` + `csinv`~~: a select now (see Done);
       - ~~a copy not coalesced while its source is live (`mov x19, x1` … `mov x1, x19`)~~:
         `regalloc.copy_back` removes the copy back, on both targets (see Done);
       - ~~`and w0, w0, #255` that the callee repeats~~: a parameter only passed on is no
@@ -670,6 +670,29 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **A select instead of a branch for `return c ? x : y` (item 17).** The public index
+  wrappers end in `if p == NULL: return NONE; return p - start`. Lower now recognizes an `If`
+  whose only statement returns, followed by a `Return`, outside loops, with cheap values
+  (constants, variables, a +/- or pointer difference of two) and a plain comparison. It
+  computes both values and asks the target for a select:
+  - aarch64: `csel`, or `csinv d, y, xzr, cc` when x is all ones: `sub x9, x0, x19;
+    cmp x0, #0; csinv x0, x9, xzr, ne`, Clang's code exactly;
+  - x86: `cmovCC`. When x is a non-zero constant, GCC's order: y aside, the compare, then the
+    constant straight into the result (a `mov`, which keeps the flags), then `cmovne` from y.
+    `nvol_memchr` is now GCC's code exactly.
+
+  7 wrappers on each target (memchr family, `first_non_ascii`). aarch64 static count,
+  together with the extension change before it: every wrapper 11 instructions against
+  Clang's 12; total 8029 → 8008 (+12.5 % → +12.2 % against Clang). x86 counters (best of 7,
+  HEAD / new / HEAD again): one more instruction per call (both values computed), and about
+  one cycle less on most rows, e.g. memchr 16 B AVX2 17.01 / 15.77 / 17.07, memchr 0 B
+  10.77 / 9.90 / 10.91, first_non_ascii 16 B SSE2 17.56 / 16.05 / 17.47.
+  **Trade-off:** memchr2 and memchr3 64 B AVX2 are about one cycle worse (15.4-16.0 → 16.2-16.8,
+  17.6-17.8 → 18.8-19.2, three rounds). The control moves the wrapper 0, 16, 32 and 48 bytes
+  into its line, and the rows do not change (16.4-16.9, 18.6-19.3). So it is the code: the
+  `cmov` puts the select's latency on the result, which a predicted branch hides. Accepted:
+  the iterators call the raw functions, which have no select, so only a single call pays it.
 
 - **A narrow parameter that is only passed on is not zero-extended (item 17).** Every value
   lives zero-extended, so a function extends its u8/bool/u32 parameters at entry (the ABI

@@ -130,6 +130,8 @@ class Printer:
             return [f"    ldp {self.operand(a[0])}, {self.operand(a[1])}, {self.mem(a[2], ins.hint)}"]
         if op in ("add", "sub") and isinstance(a[2], Imm) and a[2].v >= 4096:
             return [f"    {op} {self.operand(a[0])}, {self.operand(a[1])}, #{a[2].v >> 12}, lsl #12"]
+        if op == "csinv":
+            return [f"    csinv {self.operand(a[0])}, {self.operand(a[1])}, {self.operand(a[2])}, {a[3]}"]
         if op == "csel":
             return [f"    csel {self.operand(a[0])}, {self.operand(a[1])}, {self.operand(a[2])}, {a[3]}"]
         if op == "cset":

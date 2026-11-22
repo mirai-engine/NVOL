@@ -889,13 +889,11 @@ L.nvol_memchr:
     mov %rsi, %rbx
     lea (%rbx,%rdx), %rdx
     call *L.nvol_memchr_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rbx, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memchr.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memchr.L1
-.Lnvol_memchr.L2:
-    sub %rbx, %rax
-.Lnvol_memchr.L1:
+    cmovne %rcx, %rax
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
@@ -905,7 +903,7 @@ L.nvol_memchr:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_memrchr_scalar
 .type nvol_memrchr_scalar, @function
 .hidden nvol_memrchr_scalar
@@ -1872,13 +1870,11 @@ L.nvol_memrchr:
     mov %rsi, %rbx
     lea (%rbx,%rdx), %rdx
     call *L.nvol_memrchr_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rbx, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memrchr.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memrchr.L1
-.Lnvol_memrchr.L2:
-    sub %rbx, %rax
-.Lnvol_memrchr.L1:
+    cmovne %rcx, %rax
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
@@ -1888,7 +1884,7 @@ L.nvol_memrchr:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_memchr2_scalar
 .type nvol_memchr2_scalar, @function
 .hidden nvol_memchr2_scalar
@@ -2601,13 +2597,11 @@ L.nvol_memchr2:
     mov %rdx, %rbx
     lea (%rbx,%rcx), %rcx
     call *L.nvol_memchr2_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rbx, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memchr2.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memchr2.L1
-.Lnvol_memchr2.L2:
-    sub %rbx, %rax
-.Lnvol_memchr2.L1:
+    cmovne %rcx, %rax
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
@@ -2617,7 +2611,7 @@ L.nvol_memchr2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_memrchr2_scalar
 .type nvol_memrchr2_scalar, @function
 .hidden nvol_memrchr2_scalar
@@ -3499,13 +3493,11 @@ L.nvol_memrchr2:
     mov %rdx, %rbx
     lea (%rbx,%rcx), %rcx
     call *L.nvol_memrchr2_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rbx, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memrchr2.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memrchr2.L1
-.Lnvol_memrchr2.L2:
-    sub %rbx, %rax
-.Lnvol_memrchr2.L1:
+    cmovne %rcx, %rax
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
@@ -3515,7 +3507,7 @@ L.nvol_memrchr2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_memchr3_scalar
 .type nvol_memchr3_scalar, @function
 .hidden nvol_memchr3_scalar
@@ -4324,13 +4316,11 @@ L.nvol_memchr3:
     mov %rcx, %rbx
     lea (%rbx,%r8), %r8
     call *L.nvol_memchr3_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rbx, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memchr3.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memchr3.L1
-.Lnvol_memchr3.L2:
-    sub %rbx, %rax
-.Lnvol_memchr3.L1:
+    cmovne %rcx, %rax
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
@@ -4340,7 +4330,7 @@ L.nvol_memchr3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_memrchr3_scalar
 .type nvol_memrchr3_scalar, @function
 .hidden nvol_memrchr3_scalar
@@ -5325,13 +5315,11 @@ L.nvol_memrchr3:
     mov %rcx, %rbx
     lea (%rbx,%r8), %r8
     call *L.nvol_memrchr3_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rbx, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_memrchr3.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_memrchr3.L1
-.Lnvol_memrchr3.L2:
-    sub %rbx, %rax
-.Lnvol_memrchr3.L1:
+    cmovne %rcx, %rax
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
@@ -5341,7 +5329,7 @@ L.nvol_memrchr3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_count_scalar
 .type nvol_count_scalar, @function
 .hidden nvol_count_scalar
@@ -7350,13 +7338,11 @@ L.nvol_first_non_ascii:
     mov %rdi, %rbx
     lea (%rbx,%rsi), %rsi
     call *L.nvol_first_non_ascii_raw_ptr(%rip)
+    mov %rax, %rcx
+    sub %rbx, %rcx
     test %rax, %rax
-    {disp8} jne .Lnvol_first_non_ascii.L2
     mov $-1, %rax
-    {disp8} jmp .Lnvol_first_non_ascii.L1
-.Lnvol_first_non_ascii.L2:
-    sub %rbx, %rax
-.Lnvol_first_non_ascii.L1:
+    cmovne %rcx, %rax
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
@@ -7366,7 +7352,7 @@ L.nvol_first_non_ascii:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_is_equal
 .type nvol_is_equal, @function
 .hidden nvol_is_equal
