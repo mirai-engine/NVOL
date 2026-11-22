@@ -117,7 +117,7 @@ SSSE3 = ISA(
 SSE42 = ISA(
     name="sse42", bytes=16, arch="x86_64",
     vec_type={"c": "__m128i", "rust": "__m128i"},
-    target={"c": "sse4.2", "rust": "sse4.2"},
+    target={"c": "sse4.2", "rust": "sse4.2,popcnt"},
     lower={**SSSE3.lower,
            # pcmpistri: _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ANY | _SIDD_LEAST_SIGNIFICANT | _SIDD_NEGATIVE_POLARITY
            ("c", "skip_set16"): "((uint32_t)_mm_cmpistri({0}, {1}, 0x10))",
@@ -127,7 +127,7 @@ SSE42 = ISA(
 AVX2 = ISA(
     name="avx2", bytes=32, arch="x86_64",
     vec_type={"c": "__m256i", "rust": "__m256i"},
-    target={"c": "avx2", "rust": "avx2"},
+    target={"c": "avx2", "rust": "avx2,popcnt"},
     lower={
         ("c", "splat"): "_mm256_set1_epi8((char){0})",
         ("c", "vzero"): "_mm256_setzero_si256()",

@@ -189,12 +189,13 @@ The detail is in "Done".
 
 ### Phase 4. The languages against the internal reference
 
-19. **Parity tool:** per kernel and per backend (C with GCC, Clang and MSVC; C++; Rust;
+19. ~~**Parity tool:**~~ (done 2026-11-22: `harness/parity/parity.sh`; see Done) per kernel and per backend (C with GCC, Clang and MSVC; C++; Rust;
     Odin), against the asm. It compares the instructions of the disassembled kernel, and the
     instructions and cycles per call with counters in WSL, with the same sizes as the
     benches. The output is a regenerable table: `harness/parity`, with a report in
     `docs/benchmarks`.
-20. **Parity log** (`docs/PARITY.md`): each row that does not match carries its cause, seen in
+20. ~~**Parity log**~~ (started 2026-11-22: `docs/PARITY.md`, first table and causes P1-P8; P1 fixed in the
+    generator, P4 goes on with item 25, P5-P7 are open rows read under item 22) (`docs/PARITY.md`): each row that does not match carries its cause, seen in
     the asm or in the counters, and whether it is accepted, fixed in the generator or reported.
     A row without an explained cause is treated as an open pending item.
 21. **Toolchain log** (`docs/TOOLCHAINS.md`): each problem in a compiler, a dependency or a
@@ -720,6 +721,27 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **Parity: the bit count in the C and Rust kernels (item 20, P1).** The first parity run
+  (`harness/parity`, item 19) put gcc count_parity 4 KiB SSE2 at 2298 cycles against the asm's
+  793, and rust count_parity 4 KiB AVX2 at +112 %. Two causes. `target("avx2")` and
+  `target_feature(enable = "avx2")` do not enable POPCNT, so the AVX2 kernels counted bits in
+  software. And on SSE2, GCC's `__builtin_popcount` is a call to libgcc's `__popcountdi2`.
+  Now the AVX2 and SSE4.2 targets add `popcnt` (every such CPU has it; the dispatch and the
+  asm already assume it). The C counts with the SWAR idiom, which gcc 16 and clang 23 turn
+  into `popcnt` in a popcnt-target function (and in what is inlined there) and keep inline
+  elsewhere; checked in a two-function test. After: gcc count_parity 4 KiB SSE2 1102
+  (+39 %, the SWAR count, P8), rust count_parity 4 KiB AVX2 −8 %, gcc count 16 B AVX2 +6 %.
+  A byte table, as the asm does it, was tried first. It was better for Clang on SSE2, but it
+  stays a table when the SSE2 kernel is inlined into the AVX2 entry (gcc count 16 B AVX2
+  +55 % cycles).
+
+- **The parity tool (item 19).** `harness/parity/parity.sh`: seven builds (asm, gcc, clang,
+  g++, clang++, Rust with LTO, Odin `-o:speed`) over `bench.c`'s operations, sizes and inputs,
+  per call with `perf stat`, in WSL Arch (gcc 16, clang 23.1.5, odin dev-2026-10). Rust and
+  Odin have twins of `bench.c` (`harness/rust/src/bin/parbench.rs`,
+  `harness/odin/parbench`). C++ compiles `bench.c` itself over `nvol::raw`
+  (`harness/parity/bench_cpp.cpp`). The table is in `docs/PARITY.md`.
 
 - **`lea` for `(x << k) + y` (item 17).** The Rabin-Karp hash step `(h << 1).wadd(b)` was
   `shl r9d, 1; add r9d, ebx`, where Clang writes `lea edx, [r11 + rdx*2]`. x86 instruction

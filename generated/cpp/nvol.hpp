@@ -47,10 +47,20 @@ __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((uint32_
 #  define NVOL_MEMCPY __builtin_memcpy
 #  define nvol_ctz32(x) ((uint32_t)__builtin_ctz(x))
 #  define nvol_clz32(x) ((uint32_t)__builtin_clz(x))
-#  define nvol_popcnt32(x) ((uint32_t)__builtin_popcount(x))
 #  define nvol_ctz64(x) ((uint32_t)__builtin_ctzll(x))
 #  define nvol_clz64(x) ((uint32_t)__builtin_clzll(x))
-#  define nvol_popcnt64(x) ((uint32_t)__builtin_popcountll(x))
+/* the bit count as the SWAR idiom, not __builtin_popcount: GCC and Clang turn it into POPCNT in
+   a function whose target has it (AVX2, SSE4.2, and what is inlined there) and keep it inline
+   elsewhere, where GCC's builtin is a call to libgcc's __popcountdi2 (parity, PENDING item 20) */
+inline NVOL_FORCE_INLINE NVOL_UNUSED uint32_t nvol_popcnt32(uint32_t x) {
+    x = x - ((x >> 1) & 0x55555555u); x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
+    return (((x + (x >> 4)) & 0x0F0F0F0Fu) * 0x01010101u) >> 24;
+}
+inline NVOL_FORCE_INLINE NVOL_UNUSED uint32_t nvol_popcnt64(uint64_t x) {
+    x = x - ((x >> 1) & 0x5555555555555555ull);
+    x = (x & 0x3333333333333333ull) + ((x >> 2) & 0x3333333333333333ull);
+    return (uint32_t)((((x + (x >> 4)) & 0x0F0F0F0F0F0F0F0Full) * 0x0101010101010101ull) >> 56);
+}
 #endif
 inline NVOL_UNUSED uint32_t nvol_load16u(const uint8_t *p) { uint16_t v; NVOL_MEMCPY(&v, p, 2); return v; }
 inline NVOL_UNUSED uint32_t nvol_load32u(const uint8_t *p) { uint32_t v; NVOL_MEMCPY(&v, p, 4); return v; }
@@ -77,9 +87,11 @@ inline int nvol_cpu_avx2_detect(void) {
 inline int nvol_cpu_ssse3_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 9) & 1; }
 inline int nvol_cpu_sse42_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 20) & 1; }
 #else
-#  define NVOL_TARGET_AVX2 __attribute__((target("avx2")))
+/* every CPU with AVX2 or SSE4.2 has POPCNT (the dispatch does not check it, nor does the asm):
+   without the feature, the bit count in those kernels stays a software count */
+#  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt")))
 #  define NVOL_TARGET_SSSE3 __attribute__((target("ssse3")))
-#  define NVOL_TARGET_SSE4_2 __attribute__((target("sse4.2")))
+#  define NVOL_TARGET_SSE4_2 __attribute__((target("sse4.2,popcnt")))
 inline int nvol_cpu_avx2_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 inline int nvol_cpu_ssse3_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 inline int nvol_cpu_sse42_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
