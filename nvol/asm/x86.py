@@ -228,7 +228,28 @@ class X86Lower(Lower):
     def tail_call(self, e) -> bool:
         """`return f(...)` with f out of line, of the same return type, and every argument in a
         register: the epilogue and a jump to f, which returns to our caller (what GCC does at
-        -O2): no call, no return through this function."""
+        -O2): no call, no return through this function. Through a function table, `jmp rax`
+        (volatile in both ABIs, and never an argument register)."""
+        if isinstance(e, ir.CallTable) and self.mod:
+            g = self.mod.fn(self.mod.fn_tables[e.table][0])
+            if g.ret is not self.f.ret or len(e.args) > len(self.abi.args):
+                return False
+            i = self.gen(e.idx)        # the interpreter's order: the index, then the arguments
+            vals = [self.gen(a) for a in e.args]
+            base = self.new()
+            self.emit("lea", [Reg(base, 64), Mem(sym=f"nvol_fntbl_{e.table}")], defs=[base])
+            uses = []
+            for k, v in enumerate(vals):
+                r = PHYS[self.abi.args[k]]
+                self.mov(r, v)
+                uses.append(r)
+            # the target computed straight into rax (no copy)
+            self.emit("movsxd", [Reg(RAX, 64), Mem(base, i, scale=4, w=32)], defs=[RAX], uses=[base, i])
+            self.emit("add", [Reg(RAX, 64), Reg(base, 64)], defs=[RAX], uses=[RAX, base])
+            if self.vex:
+                self.emit("vzeroupper", [])
+            self.emit("tailcall", [Reg(RAX, 64)], uses=uses + [RAX])
+            return True
         if not isinstance(e, ir.Call) or not self.mod:
             return False
         g = self.mod.fn(e.fn)

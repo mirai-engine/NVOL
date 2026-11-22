@@ -24544,43 +24544,42 @@ L.nvol_teddy_fat_avx2_4:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0x90
-global nvol_teddy_find_raw:function 84
+global nvol_teddy_find_raw:function 71
 nvol_teddy_find_raw:
 L.nvol_teddy_find_raw:
-    sub rsp, 8
     mov rax, qword [rdi]
     test rax, rax
-    jne strict short L.nvol_teddy_find_raw + 21
+    jne strict short L.nvol_teddy_find_raw + 17
     mov rax, -1
-    jmp strict short L.nvol_teddy_find_raw + 79
+    jmp strict short L.nvol_teddy_find_raw + 70
 ; .L2:
     mov rax, rcx
     sub rax, rdx
     mov r8, qword [rdi + 24]
     cmp rax, r8
-    jae strict short L.nvol_teddy_find_raw + 45
-    add rsp, 8
+    jae strict short L.nvol_teddy_find_raw + 37
     jmp strict near L.nvol_teddy_slow
 ; .L4:
     mov r8, qword [rdi + 40]
     mov r9, qword [rdi + 56]
     cmp rax, r9
-    jae strict short L.nvol_teddy_find_raw + 62
+    jae strict short L.nvol_teddy_find_raw + 54
     mov r8, qword [rdi + 48]
 ; .L6:
-    lea rax, [rel nvol_fntbl_teddy]
-    movsxd r8, dword [rax + r8*4]
-    add r8, rax
-    call r8
+    lea r9, [rel nvol_fntbl_teddy]
+    movsxd rax, dword [r9 + r8*4]
+    add rax, r9
+    jmp rax
 ; .L1:
-    add rsp, 8
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x0
 global nvol_byteset_init:function 711
 nvol_byteset_init:
 L.nvol_byteset_init:
@@ -49545,11 +49544,11 @@ nvol_cie:
     dd L.nvol_teddy_fat_avx2_4 - $
     dd 4780
     db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 11, 3, 118, 13, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
-    dd 28
+    dd 16
     dd $ - nvol_cie
     dd L.nvol_teddy_find_raw - $
-    dd 84
-    db 0, 68, 14, 16, 96, 10, 68, 14, 8, 69, 11, 102, 14, 8, 0, 0
+    dd 71
+    db 0, 0, 0, 0
     dd 56
     dd $ - nvol_cie
     dd L.nvol_byteset_init - $
@@ -50240,8 +50239,8 @@ nvol_cie:
     dd L.nvol_find_byteset_pair_mask_raw - $
     dd 6
     db 0, 0, 0, 0
-    dd 72
+    dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_mask_raw_resolve - $
     dd 64
-    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 102, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0, 0, 0, 0, 0
+    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 102, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0

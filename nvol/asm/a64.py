@@ -490,7 +490,28 @@ class A64Lower(Lower):
 
     # ---------------------------------------------------------------- calls
     def tail_call(self, e) -> bool:
-        """`return f(...)` with f out of line, of the same return type: the epilogue and `b f`."""
+        """`return f(...)` with f out of line, of the same return type: the epilogue and `b f`.
+        Through a function table, `br`: the target in the first argument register the call
+        leaves free (Clang's choice too; never callee-saved, which the epilogue reloads)."""
+        if isinstance(e, ir.CallTable) and self.mod:
+            g = self.mod.fn(self.mod.fn_tables[e.table][0])
+            if g.ret is not self.f.ret or len(e.args) >= len(self.abi.args):
+                return False
+            i = self.gen(e.idx)        # the interpreter's order: the index, then the arguments
+            vals = [self.gen(a) for a in e.args]
+            base = self.sym_addr(f"nvol_fntbl_{e.table}")
+            off = self.new()
+            self.emit("ldrsw", [Reg(off, 64), Mem(base, i, scale=4, w=32)], defs=[off], uses=[base, i])
+            fn = self.op3("add", base, Reg(off, 64))
+            uses = []
+            for k, v in enumerate(vals):
+                r = PHYS[self.abi.args[k]]
+                self.mov(r, v)
+                uses.append(r)
+            t = PHYS[self.abi.args[len(vals)]]
+            self.mov(t, fn)
+            self.emit("tailcall", [Reg(t, 64)], uses=uses + [t])
+            return True
         if not isinstance(e, ir.Call) or not self.mod:
             return False
         g = self.mod.fn(e.fn)

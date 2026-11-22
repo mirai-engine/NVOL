@@ -671,6 +671,25 @@ as (16); see Done. What remains is maturity (items 17-18):
 
 ## Done (for reference)
 
+- **A tail call through a function table (item 17).** Teddy's dispatch,
+  `return CallTable(...)`, was a call: `blr x9` on aarch64 and `call r8` on x86, with a
+  frame kept only for that call (`stp x29, x30` / `sub rsp, 8`) and a return trip back
+  through `nvol_teddy_find_raw`. `tail_call` now takes a `CallTable` too. The epilogue runs,
+  then `br` / `jmp` to the target, kept in a register that is never callee-saved: on
+  aarch64 the first argument register the call leaves free (`br x4`, Clang's code); on x86
+  `rax`, computed into it directly (`movsxd rax, ...; add rax, r9; jmp rax`). The function is
+  frameless now on all three ABIs, so Win64 has no epilogue for its unwinder to recognize.
+  Counters, best of 7, HEAD / new / HEAD again:
+
+  | teddy | instructions | cycles |
+  |---|---|---|
+  | 16 B AVX2 | 415.09 → 412.95 | 99.02 / 97.94 / 99.14 |
+  | 64 B AVX2 | 141.00 → 138.06 | 37.12 / 35.99 / 37.05 |
+  | 64 B SSSE3 | 233.00 → 230.04 | 57.00 / 55.86 / 56.90 |
+  | 256 B AVX2 | 302.63 → 299.79 | 95.80 / 94.31 / 97.20 |
+
+  −3 instructions and about −1.1 cycles per call on every row.
+
 - **A select instead of a branch for `return c ? x : y` (item 17).** The public index
   wrappers end in `if p == NULL: return NONE; return p - start`. Lower now recognizes an `If`
   whose only statement returns, followed by a `Return`, outside loops, with cheap values

@@ -25818,8 +25818,6 @@ L.nvol_teddy_fat_avx2_4:
 nvol_teddy_find_raw:
 L.nvol_teddy_find_raw:
 .cfi_startproc
-    sub $8, %rsp
-.cfi_def_cfa_offset 16
     mov (%rdi), %rax
     test %rax, %rax
     {disp8} jne .Lnvol_teddy_find_raw.L2
@@ -25831,25 +25829,19 @@ L.nvol_teddy_find_raw:
     mov 24(%rdi), %r8
     cmp %r8, %rax
     {disp8} jae .Lnvol_teddy_find_raw.L4
-.cfi_remember_state
-    add $8, %rsp
-.cfi_def_cfa_offset 8
     {disp32} jmp L.nvol_teddy_slow
 .Lnvol_teddy_find_raw.L4:
-.cfi_restore_state
     mov 40(%rdi), %r8
     mov 56(%rdi), %r9
     cmp %r9, %rax
     {disp8} jae .Lnvol_teddy_find_raw.L6
     mov 48(%rdi), %r8
 .Lnvol_teddy_find_raw.L6:
-    lea nvol_fntbl_teddy(%rip), %rax
-    movslq (%rax,%r8,4), %r8
-    add %rax, %r8
-    call *%r8
+    lea nvol_fntbl_teddy(%rip), %r9
+    movslq (%r9,%r8,4), %rax
+    add %r9, %rax
+    jmp *%rax
 .Lnvol_teddy_find_raw.L1:
-    add $8, %rsp
-.cfi_def_cfa_offset 8
     ret
 .cfi_endproc
 .size nvol_teddy_find_raw, .-nvol_teddy_find_raw
@@ -25858,7 +25850,9 @@ L.nvol_teddy_find_raw:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_byteset_init
 .type nvol_byteset_init, @function
 nvol_byteset_init:

@@ -25223,10 +25223,7 @@ nvol_teddy_fat_avx2_4 ENDP
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 144
-nvol_teddy_find_raw PROC PUBLIC FRAME
-    sub rsp, 40
-    .ALLOCSTACK 40
-    .ENDPROLOG
+nvol_teddy_find_raw PROC PUBLIC
     mov rax, qword ptr [rcx]
     test rax, rax
     jne SHORT L_L2
@@ -25238,7 +25235,6 @@ L_L2:
     mov r10, qword ptr [rcx + 24]
     cmp rax, r10
     jae SHORT L_L4
-    add rsp, 40
     jmp NEAR PTR nvol_teddy_slow
 L_L4:
     mov r10, qword ptr [rcx + 40]
@@ -25247,12 +25243,11 @@ L_L4:
     jae SHORT L_L6
     mov r10, qword ptr [rcx + 48]
 L_L6:
-    lea rax, [nvol_fntbl_teddy]
-    movsxd r10, dword ptr [rax + r10*4]
-    add r10, rax
-    call r10
+    lea r11, [nvol_fntbl_teddy]
+    movsxd rax, dword ptr [r11 + r10*4]
+    add rax, r11
+    jmp rax
 L_L1:
-    add rsp, 40
     ret
 nvol_teddy_find_raw ENDP
 
@@ -25260,7 +25255,9 @@ nvol_teddy_find_raw ENDP
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_byteset_init PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx

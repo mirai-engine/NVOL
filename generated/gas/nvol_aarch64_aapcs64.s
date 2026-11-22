@@ -7903,10 +7903,6 @@ L.nvol_teddy_slim_neon_4:
 nvol_teddy_find_raw:
 L.nvol_teddy_find_raw:
 .cfi_startproc
-    stp x29, x30, [sp, #-16]!
-.cfi_def_cfa_offset 16
-.cfi_offset 29, -16
-.cfi_offset 30, -8
     ldr x9, [x0]
     cbnz x9, .Lnvol_teddy_find_raw.L2
     movn x0, #0
@@ -7916,7 +7912,6 @@ L.nvol_teddy_find_raw:
     ldr x10, [x0, #24]
     cmp x9, x10
     b.hs .Lnvol_teddy_find_raw.L4
-    ldp x29, x30, [sp], #16
     b L.nvol_teddy_slow
 .Lnvol_teddy_find_raw.L4:
     ldr x10, [x0, #40]
@@ -7928,15 +7923,13 @@ L.nvol_teddy_find_raw:
     adrp x9, nvol_fntbl_teddy
     add x9, x9, :lo12:nvol_fntbl_teddy
     ldrsw x10, [x9, x10, lsl #2]
-    add x9, x9, x10
-    blr x9
+    add x4, x9, x10
+    br x4
 .Lnvol_teddy_find_raw.L1:
-    ldp x29, x30, [sp], #16
     ret
 .cfi_endproc
 .size nvol_teddy_find_raw, .-nvol_teddy_find_raw
 
-    nop
 .globl nvol_byteset_init
 .type nvol_byteset_init, %function
 nvol_byteset_init:

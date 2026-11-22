@@ -25461,10 +25461,6 @@ nvol_teddy_fat_avx2_4:
 .globl nvol_teddy_find_raw
 .def nvol_teddy_find_raw; .scl 2; .type 32; .endef
 nvol_teddy_find_raw:
-.seh_proc nvol_teddy_find_raw
-    sub $40, %rsp
-.seh_stackalloc 40
-.seh_endprologue
     mov (%rcx), %rax
     test %rax, %rax
     {disp8} jne .Lnvol_teddy_find_raw.L2
@@ -25476,7 +25472,6 @@ nvol_teddy_find_raw:
     mov 24(%rcx), %r10
     cmp %r10, %rax
     {disp8} jae .Lnvol_teddy_find_raw.L4
-    add $40, %rsp
     {disp32} jmp nvol_teddy_slow
 .Lnvol_teddy_find_raw.L4:
     mov 40(%rcx), %r10
@@ -25485,20 +25480,20 @@ nvol_teddy_find_raw:
     {disp8} jae .Lnvol_teddy_find_raw.L6
     mov 48(%rcx), %r10
 .Lnvol_teddy_find_raw.L6:
-    lea nvol_fntbl_teddy(%rip), %rax
-    movslq (%rax,%r10,4), %r10
-    add %rax, %r10
-    call *%r10
+    lea nvol_fntbl_teddy(%rip), %r11
+    movslq (%r11,%r10,4), %rax
+    add %r11, %rax
+    jmp *%rax
 .Lnvol_teddy_find_raw.L1:
-    add $40, %rsp
     ret
-.seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_byteset_init
 .def nvol_byteset_init; .scl 2; .type 32; .endef
 nvol_byteset_init:

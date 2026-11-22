@@ -24844,7 +24844,6 @@ nvol_teddy_fat_avx2_4:
     db 0x66, 0x90
 global nvol_teddy_find_raw
 nvol_teddy_find_raw:
-    sub rsp, 40
     mov rax, qword [rcx]
     test rax, rax
     jne strict short .L2
@@ -24856,7 +24855,6 @@ nvol_teddy_find_raw:
     mov r10, qword [rcx + 24]
     cmp rax, r10
     jae strict short .L4
-    add rsp, 40
     jmp strict near nvol_teddy_slow
 .L4:
     mov r10, qword [rcx + 40]
@@ -24865,20 +24863,20 @@ nvol_teddy_find_raw:
     jae strict short .L6
     mov r10, qword [rcx + 48]
 .L6:
-    lea rax, [rel nvol_fntbl_teddy]
-    movsxd r10, dword [rax + r10*4]
-    add r10, rax
-    call r10
+    lea r11, [rel nvol_fntbl_teddy]
+    movsxd rax, dword [r11 + r10*4]
+    add rax, r11
+    jmp rax
 .L1:
-    add rsp, 40
     ret
-.unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x0
 global nvol_byteset_init
 nvol_byteset_init:
     push rbx
@@ -50059,9 +50057,6 @@ align 4, db 0
 nvol_unwind_nvol_teddy_fat_avx2_4:
     db 1, 109, 30, 0, 109, 248, 95, 0, 100, 232, 94, 0, 91, 216, 93, 0, 82, 200, 92, 0, 73, 184, 91, 0, 64, 168, 90, 0, 55, 152, 89, 0, 46, 136, 88, 0, 37, 120, 87, 0, 28, 104, 86, 0, 19, 1, 193, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
 align 4, db 0
-nvol_unwind_nvol_teddy_find_raw:
-    db 1, 4, 1, 0, 4, 66, 0, 0
-align 4, db 0
 nvol_unwind_nvol_byteset_init:
     db 1, 10, 7, 0, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48, 0, 0
 align 4, db 0
@@ -50409,7 +50404,6 @@ section .pdata rdata align=4
     dd nvol_teddy_fat_avx2_3 wrt ..imagebase, nvol_teddy_fat_avx2_3.unwind_end wrt ..imagebase, nvol_unwind_nvol_teddy_fat_avx2_3 wrt ..imagebase
     dd nvol_teddy_slim_avx2_4 wrt ..imagebase, nvol_teddy_slim_avx2_4.unwind_end wrt ..imagebase, nvol_unwind_nvol_teddy_slim_avx2_4 wrt ..imagebase
     dd nvol_teddy_fat_avx2_4 wrt ..imagebase, nvol_teddy_fat_avx2_4.unwind_end wrt ..imagebase, nvol_unwind_nvol_teddy_fat_avx2_4 wrt ..imagebase
-    dd nvol_teddy_find_raw wrt ..imagebase, nvol_teddy_find_raw.unwind_end wrt ..imagebase, nvol_unwind_nvol_teddy_find_raw wrt ..imagebase
     dd nvol_byteset_init wrt ..imagebase, nvol_byteset_init.unwind_end wrt ..imagebase, nvol_unwind_nvol_byteset_init wrt ..imagebase
     dd nvol_byteset_pair_init wrt ..imagebase, nvol_byteset_pair_init.unwind_end wrt ..imagebase, nvol_unwind_nvol_byteset_pair_init wrt ..imagebase
     dd nvol_copy_until_byteset_scalar wrt ..imagebase, nvol_copy_until_byteset_scalar.unwind_end wrt ..imagebase, nvol_unwind_nvol_copy_until_byteset_scalar wrt ..imagebase
