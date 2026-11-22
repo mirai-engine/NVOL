@@ -198,7 +198,9 @@ The detail is in "Done".
     generator, P4 goes on with item 25, P5-P7 are open rows read under item 22) (`docs/PARITY.md`): each row that does not match carries its cause, seen in
     the asm or in the counters, and whether it is accepted, fixed in the generator or reported.
     A row without an explained cause is treated as an open pending item.
-21. **Toolchain log** (`docs/TOOLCHAINS.md`): each problem in a compiler, a dependency or a
+21. ~~**Toolchain log**~~ (done 2026-11-22: `docs/TOOLCHAINS.md`, T1-T14; T9 does not reproduce on
+    NASM 3.01/3.02, the sweep is there; T3 has a draft for the Odin issue, filing it is the
+    maintainer's decision) (`docs/TOOLCHAINS.md`): each problem in a compiler, a dependency or a
     build that NVOL found, with the minimal reproducer, the version, NVOL's workaround and
     whether it was reported upstream. It starts with what has already been seen:
     - LLVM 20: the `or` of masks folded to `i1`, and LSR with two induction variables (Odin);
