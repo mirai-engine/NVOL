@@ -358,9 +358,8 @@ L.nvol_memchr_raw:
 nvol_memchr:
 L.nvol_memchr:
 .cfi_startproc
-    sub sp, sp, #32
+    stp x29, x30, [sp, #-32]!
 .cfi_def_cfa_offset 32
-    stp x29, x30, [sp]
 .cfi_offset 29, -32
 .cfi_offset 30, -24
     str x19, [sp, #16]
@@ -375,13 +374,14 @@ L.nvol_memchr:
 .Lnvol_memchr.L2:
     sub x0, x0, x19
 .Lnvol_memchr.L1:
-    ldp x29, x30, [sp]
     ldr x19, [sp, #16]
-    add sp, sp, #32
+    ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memchr, .-nvol_memchr
 
+    nop
+    nop
     nop
 .globl nvol_memrchr_scalar
 .type nvol_memrchr_scalar, %function
@@ -718,9 +718,8 @@ L.nvol_memrchr_raw:
 nvol_memrchr:
 L.nvol_memrchr:
 .cfi_startproc
-    sub sp, sp, #32
+    stp x29, x30, [sp, #-32]!
 .cfi_def_cfa_offset 32
-    stp x29, x30, [sp]
 .cfi_offset 29, -32
 .cfi_offset 30, -24
     str x19, [sp, #16]
@@ -735,13 +734,14 @@ L.nvol_memrchr:
 .Lnvol_memrchr.L2:
     sub x0, x0, x19
 .Lnvol_memrchr.L1:
-    ldp x29, x30, [sp]
     ldr x19, [sp, #16]
-    add sp, sp, #32
+    ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memrchr, .-nvol_memrchr
 
+    nop
+    nop
     nop
 .globl nvol_memchr2_scalar
 .type nvol_memchr2_scalar, %function
@@ -1044,9 +1044,8 @@ L.nvol_memchr2_raw:
 nvol_memchr2:
 L.nvol_memchr2:
 .cfi_startproc
-    sub sp, sp, #32
+    stp x29, x30, [sp, #-32]!
 .cfi_def_cfa_offset 32
-    stp x29, x30, [sp]
 .cfi_offset 29, -32
 .cfi_offset 30, -24
     str x19, [sp, #16]
@@ -1062,13 +1061,14 @@ L.nvol_memchr2:
 .Lnvol_memchr2.L2:
     sub x0, x0, x19
 .Lnvol_memchr2.L1:
-    ldp x29, x30, [sp]
     ldr x19, [sp, #16]
-    add sp, sp, #32
+    ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memchr2, .-nvol_memchr2
 
+    nop
+    nop
 .globl nvol_memrchr2_scalar
 .type nvol_memrchr2_scalar, %function
 .hidden nvol_memrchr2_scalar
@@ -1370,9 +1370,8 @@ L.nvol_memrchr2_raw:
 nvol_memrchr2:
 L.nvol_memrchr2:
 .cfi_startproc
-    sub sp, sp, #32
+    stp x29, x30, [sp, #-32]!
 .cfi_def_cfa_offset 32
-    stp x29, x30, [sp]
 .cfi_offset 29, -32
 .cfi_offset 30, -24
     str x19, [sp, #16]
@@ -1388,13 +1387,14 @@ L.nvol_memrchr2:
 .Lnvol_memrchr2.L2:
     sub x0, x0, x19
 .Lnvol_memrchr2.L1:
-    ldp x29, x30, [sp]
     ldr x19, [sp, #16]
-    add sp, sp, #32
+    ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memrchr2, .-nvol_memrchr2
 
+    nop
+    nop
 .globl nvol_memchr3_scalar
 .type nvol_memchr3_scalar, %function
 .hidden nvol_memchr3_scalar
@@ -1724,9 +1724,8 @@ L.nvol_memchr3_raw:
 nvol_memchr3:
 L.nvol_memchr3:
 .cfi_startproc
-    sub sp, sp, #32
+    stp x29, x30, [sp, #-32]!
 .cfi_def_cfa_offset 32
-    stp x29, x30, [sp]
 .cfi_offset 29, -32
 .cfi_offset 30, -24
     str x19, [sp, #16]
@@ -1743,15 +1742,12 @@ L.nvol_memchr3:
 .Lnvol_memchr3.L2:
     sub x0, x0, x19
 .Lnvol_memchr3.L1:
-    ldp x29, x30, [sp]
     ldr x19, [sp, #16]
-    add sp, sp, #32
+    ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memchr3, .-nvol_memchr3
 
-    nop
-    nop
     nop
 .globl nvol_memrchr3_scalar
 .type nvol_memrchr3_scalar, %function
@@ -2082,9 +2078,8 @@ L.nvol_memrchr3_raw:
 nvol_memrchr3:
 L.nvol_memrchr3:
 .cfi_startproc
-    sub sp, sp, #32
+    stp x29, x30, [sp, #-32]!
 .cfi_def_cfa_offset 32
-    stp x29, x30, [sp]
 .cfi_offset 29, -32
 .cfi_offset 30, -24
     str x19, [sp, #16]
@@ -2101,15 +2096,12 @@ L.nvol_memrchr3:
 .Lnvol_memrchr3.L2:
     sub x0, x0, x19
 .Lnvol_memrchr3.L1:
-    ldp x29, x30, [sp]
     ldr x19, [sp, #16]
-    add sp, sp, #32
+    ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_memrchr3, .-nvol_memrchr3
 
-    nop
-    nop
     nop
 .globl nvol_count_scalar
 .type nvol_count_scalar, %function
@@ -2963,9 +2955,8 @@ L.nvol_first_non_ascii_raw:
 nvol_first_non_ascii:
 L.nvol_first_non_ascii:
 .cfi_startproc
-    sub sp, sp, #32
+    stp x29, x30, [sp, #-32]!
 .cfi_def_cfa_offset 32
-    stp x29, x30, [sp]
 .cfi_offset 29, -32
 .cfi_offset 30, -24
     str x19, [sp, #16]
@@ -2979,15 +2970,12 @@ L.nvol_first_non_ascii:
 .Lnvol_first_non_ascii.L2:
     sub x0, x0, x19
 .Lnvol_first_non_ascii.L1:
-    ldp x29, x30, [sp]
     ldr x19, [sp, #16]
-    add sp, sp, #32
+    ldp x29, x30, [sp], #32
     ret
 .cfi_endproc
 .size nvol_first_non_ascii, .-nvol_first_non_ascii
 
-    nop
-    nop
 .globl nvol_is_equal
 .type nvol_is_equal, %function
 .hidden nvol_is_equal
@@ -4037,9 +4025,8 @@ L.nvol_memmem_pp2_neon:
 nvol_memmem_tw_neon:
 L.nvol_memmem_tw_neon:
 .cfi_startproc
-    sub sp, sp, #48
+    stp x19, x20, [sp, #-48]!
 .cfi_def_cfa_offset 48
-    stp x19, x20, [sp]
 .cfi_offset 19, -48
 .cfi_offset 20, -40
     stp x21, x22, [sp, #16]
@@ -4072,6 +4059,7 @@ L.nvol_memmem_tw_neon:
     add x19, x8, x9
     cmp x19, x10
     b.hi .Lnvol_memmem_tw_neon.L3
+    nop
 .Lnvol_memmem_tw_neon.L2:
     cmp x11, x16
     csel x19, x11, x16, hs
@@ -4304,10 +4292,9 @@ L.nvol_memmem_tw_neon:
 .Lnvol_memmem_tw_neon.L3:
     movz w0, #0
 .Lnvol_memmem_tw_neon.L1:
-    ldp x19, x20, [sp]
     ldp x21, x22, [sp, #16]
     ldp x23, x24, [sp, #32]
-    add sp, sp, #48
+    ldp x19, x20, [sp], #48
     ret
 .Lnvol_memmem_tw_neon.L25:
     sub x19, x23, x19
@@ -4338,18 +4325,14 @@ L.nvol_memmem_tw_neon:
 .cfi_endproc
 .size nvol_memmem_tw_neon, .-nvol_memmem_tw_neon
 
-    nop
-    nop
-    nop
 .globl nvol_memmem_find_entry_neon
 .type nvol_memmem_find_entry_neon, %function
 .hidden nvol_memmem_find_entry_neon
 nvol_memmem_find_entry_neon:
 L.nvol_memmem_find_entry_neon:
 .cfi_startproc
-    sub sp, sp, #48
+    stp x19, x20, [sp, #-48]!
 .cfi_def_cfa_offset 48
-    stp x19, x20, [sp]
 .cfi_offset 19, -48
 .cfi_offset 20, -40
     stp x21, x22, [sp, #16]
@@ -4374,10 +4357,9 @@ L.nvol_memmem_find_entry_neon:
     ldrb w0, [x1]
     mov x1, x3
     mov x2, x4
-    ldp x19, x20, [sp]
     ldp x21, x22, [sp, #16]
     ldp x23, x24, [sp, #32]
-    add sp, sp, #48
+    ldp x19, x20, [sp], #48
     b L.nvol_memchr_raw
 .Lnvol_memmem_find_entry_neon.L6:
     cmp x9, #32
@@ -4404,8 +4386,6 @@ L.nvol_memmem_find_entry_neon:
     add x15, x3, x9
     cmp x14, x15
     b.hs .Lnvol_memmem_find_entry_neon.L15
-    nop
-    nop
 .Lnvol_memmem_find_entry_neon.L14:
     lsl w0, w13, #1
     ldrb w2, [x14]
@@ -5031,10 +5011,9 @@ L.nvol_memmem_find_entry_neon:
 .Lnvol_memmem_find_entry_neon.L117:
     movz w0, #0
 .Lnvol_memmem_find_entry_neon.L1:
-    ldp x19, x20, [sp]
     ldp x21, x22, [sp, #16]
     ldp x23, x24, [sp, #32]
-    add sp, sp, #48
+    ldp x19, x20, [sp], #48
     ret
 .Lnvol_memmem_find_entry_neon.L24:
     movz w14, #0
@@ -5129,6 +5108,7 @@ L.nvol_memmem_find_entry_neon:
 .cfi_endproc
 .size nvol_memmem_find_entry_neon, .-nvol_memmem_find_entry_neon
 
+    nop
 .globl nvol_memmem_find_raw
 .type nvol_memmem_find_raw, %function
 nvol_memmem_find_raw:
@@ -5766,9 +5746,8 @@ L.nvol_teddy_init:
 nvol_teddy_slim_neon_1:
 L.nvol_teddy_slim_neon_1:
 .cfi_startproc
-    sub sp, sp, #16
+    str x19, [sp, #-16]!
 .cfi_def_cfa_offset 16
-    str x19, [sp]
 .cfi_offset 19, -16
     ldr q0, [x0, #64]
     ldr q1, [x0, #96]
@@ -5777,7 +5756,6 @@ L.nvol_teddy_slim_neon_1:
     sub x10, x3, #16
     cmp x9, x10
     b.hi .Lnvol_teddy_slim_neon_1.L3
-    nop
 .Lnvol_teddy_slim_neon_1.L2:
     ldr q3, [x9]
     and v4.16b, v3.16b, v2.16b
@@ -5791,8 +5769,6 @@ L.nvol_teddy_slim_neon_1:
     mov x11, x9
     umov x12, v3.d[0]
     cbz x12, .Lnvol_teddy_slim_neon_1.L8
-    nop
-    nop
 .Lnvol_teddy_slim_neon_1.L7:
     rbit x13, x12
     clz x13, x13
@@ -6104,8 +6080,7 @@ L.nvol_teddy_slim_neon_1:
 .Lnvol_teddy_slim_neon_1.L52:
     movn x0, #0
 .Lnvol_teddy_slim_neon_1.L1:
-    ldr x19, [sp]
-    add sp, sp, #16
+    ldr x19, [sp], #16
     ret
 .Lnvol_teddy_slim_neon_1.L17:
     orr w7, wzr, #1
@@ -6288,18 +6263,14 @@ L.nvol_teddy_slim_neon_1:
 .cfi_endproc
 .size nvol_teddy_slim_neon_1, .-nvol_teddy_slim_neon_1
 
-    nop
-    nop
-    nop
 .globl nvol_teddy_slim_neon_2
 .type nvol_teddy_slim_neon_2, %function
 .hidden nvol_teddy_slim_neon_2
 nvol_teddy_slim_neon_2:
 L.nvol_teddy_slim_neon_2:
 .cfi_startproc
-    sub sp, sp, #16
+    str x19, [sp, #-16]!
 .cfi_def_cfa_offset 16
-    str x19, [sp]
 .cfi_offset 19, -16
     ldr q0, [x0, #64]
     ldr q1, [x0, #128]
@@ -6312,7 +6283,6 @@ L.nvol_teddy_slim_neon_2:
     sub x10, x3, #16
     cmp x9, x10
     b.hi .Lnvol_teddy_slim_neon_2.L3
-    nop
 .Lnvol_teddy_slim_neon_2.L2:
     ldr q7, [x9]
     and v16.16b, v7.16b, v4.16b
@@ -6332,6 +6302,8 @@ L.nvol_teddy_slim_neon_2:
     sub x11, x9, #1
     umov x12, v7.d[0]
     cbz x12, .Lnvol_teddy_slim_neon_2.L8
+    nop
+    nop
 .Lnvol_teddy_slim_neon_2.L7:
     rbit x13, x12
     clz x13, x13
@@ -6651,8 +6623,7 @@ L.nvol_teddy_slim_neon_2:
 .Lnvol_teddy_slim_neon_2.L52:
     movn x0, #0
 .Lnvol_teddy_slim_neon_2.L1:
-    ldr x19, [sp]
-    add sp, sp, #16
+    ldr x19, [sp], #16
     ret
 .Lnvol_teddy_slim_neon_2.L17:
     orr w7, wzr, #1
@@ -6835,18 +6806,14 @@ L.nvol_teddy_slim_neon_2:
 .cfi_endproc
 .size nvol_teddy_slim_neon_2, .-nvol_teddy_slim_neon_2
 
-    nop
-    nop
-    nop
 .globl nvol_teddy_slim_neon_3
 .type nvol_teddy_slim_neon_3, %function
 .hidden nvol_teddy_slim_neon_3
 nvol_teddy_slim_neon_3:
 L.nvol_teddy_slim_neon_3:
 .cfi_startproc
-    sub sp, sp, #16
+    str x19, [sp, #-16]!
 .cfi_def_cfa_offset 16
-    str x19, [sp]
 .cfi_offset 19, -16
     ldr q0, [x0, #64]
     ldr q1, [x0, #128]
@@ -6862,6 +6829,7 @@ L.nvol_teddy_slim_neon_3:
     sub x10, x3, #16
     cmp x9, x10
     b.hi .Lnvol_teddy_slim_neon_3.L3
+    nop
 .Lnvol_teddy_slim_neon_3.L2:
     ldr q18, [x9]
     and v19.16b, v18.16b, v6.16b
@@ -7210,8 +7178,7 @@ L.nvol_teddy_slim_neon_3:
 .Lnvol_teddy_slim_neon_3.L52:
     movn x0, #0
 .Lnvol_teddy_slim_neon_3.L1:
-    ldr x19, [sp]
-    add sp, sp, #16
+    ldr x19, [sp], #16
     ret
 .Lnvol_teddy_slim_neon_3.L17:
     orr w7, wzr, #1
@@ -7394,18 +7361,14 @@ L.nvol_teddy_slim_neon_3:
 .cfi_endproc
 .size nvol_teddy_slim_neon_3, .-nvol_teddy_slim_neon_3
 
-    nop
-    nop
-    nop
 .globl nvol_teddy_slim_neon_4
 .type nvol_teddy_slim_neon_4, %function
 .hidden nvol_teddy_slim_neon_4
 nvol_teddy_slim_neon_4:
 L.nvol_teddy_slim_neon_4:
 .cfi_startproc
-    sub sp, sp, #16
+    str x19, [sp, #-16]!
 .cfi_def_cfa_offset 16
-    str x19, [sp]
 .cfi_offset 19, -16
     ldr q0, [x0, #64]
     ldr q1, [x0, #128]
@@ -7424,6 +7387,7 @@ L.nvol_teddy_slim_neon_4:
     sub x10, x3, #16
     cmp x9, x10
     b.hi .Lnvol_teddy_slim_neon_4.L3
+    nop
     nop
 .Lnvol_teddy_slim_neon_4.L2:
     ldr q21, [x9]
@@ -7789,8 +7753,7 @@ L.nvol_teddy_slim_neon_4:
 .Lnvol_teddy_slim_neon_4.L52:
     movn x0, #0
 .Lnvol_teddy_slim_neon_4.L1:
-    ldr x19, [sp]
-    add sp, sp, #16
+    ldr x19, [sp], #16
     ret
 .Lnvol_teddy_slim_neon_4.L17:
     orr w7, wzr, #1
@@ -7973,17 +7936,13 @@ L.nvol_teddy_slim_neon_4:
 .cfi_endproc
 .size nvol_teddy_slim_neon_4, .-nvol_teddy_slim_neon_4
 
-    nop
-    nop
-    nop
 .globl nvol_teddy_find_raw
 .type nvol_teddy_find_raw, %function
 nvol_teddy_find_raw:
 L.nvol_teddy_find_raw:
 .cfi_startproc
-    sub sp, sp, #16
+    stp x29, x30, [sp, #-16]!
 .cfi_def_cfa_offset 16
-    stp x29, x30, [sp]
 .cfi_offset 29, -16
 .cfi_offset 30, -8
     ldr x9, [x0]
@@ -7995,8 +7954,7 @@ L.nvol_teddy_find_raw:
     ldr x10, [x0, #24]
     cmp x9, x10
     b.hs .Lnvol_teddy_find_raw.L4
-    ldp x29, x30, [sp]
-    add sp, sp, #16
+    ldp x29, x30, [sp], #16
     b L.nvol_teddy_slow
 .Lnvol_teddy_find_raw.L4:
     ldr x10, [x0, #40]
@@ -8011,13 +7969,11 @@ L.nvol_teddy_find_raw:
     add x9, x9, x10
     blr x9
 .Lnvol_teddy_find_raw.L1:
-    ldp x29, x30, [sp]
-    add sp, sp, #16
+    ldp x29, x30, [sp], #16
     ret
 .cfi_endproc
 .size nvol_teddy_find_raw, .-nvol_teddy_find_raw
 
-    nop
     nop
 .globl nvol_byteset_init
 .type nvol_byteset_init, %function
@@ -8947,9 +8903,8 @@ L.nvol_find_byteset_pair_mask_scalar:
 nvol_find_byteset_pair_visit_scalar:
 L.nvol_find_byteset_pair_visit_scalar:
 .cfi_startproc
-    sub sp, sp, #64
+    stp x29, x30, [sp, #-64]!
 .cfi_def_cfa_offset 64
-    stp x29, x30, [sp]
 .cfi_offset 29, -64
 .cfi_offset 30, -56
     stp x19, x20, [sp, #16]
@@ -8978,7 +8933,6 @@ L.nvol_find_byteset_pair_visit_scalar:
     mov x24, x1
     cmp x24, x23
     b.hi .Lnvol_find_byteset_pair_visit_scalar.L5
-    nop
 .Lnvol_find_byteset_pair_visit_scalar.L4:
     ldrb w9, [x24, x21]
     lsr x10, x9, #7
@@ -9018,11 +8972,10 @@ L.nvol_find_byteset_pair_visit_scalar:
 .Lnvol_find_byteset_pair_visit_scalar.L5:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_scalar.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldp x23, x24, [sp, #48]
-    add sp, sp, #64
+    ldp x29, x30, [sp], #64
     ret
 .Lnvol_find_byteset_pair_visit_scalar.L11:
     mov x0, x24
@@ -9030,7 +8983,6 @@ L.nvol_find_byteset_pair_visit_scalar:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_scalar, .-nvol_find_byteset_pair_visit_scalar
 
-    nop
 .globl nvol_find_byteset_neon
 .type nvol_find_byteset_neon, %function
 .hidden nvol_find_byteset_neon
@@ -12945,9 +12897,8 @@ L.nvol_find_byteset_pair_mask_neon_k6:
 nvol_find_byteset_pair_visit_neon:
 L.nvol_find_byteset_pair_visit_neon:
 .cfi_startproc
-    sub sp, sp, #192
+    stp x29, x30, [sp, #-192]!
 .cfi_def_cfa_offset 192
-    stp x29, x30, [sp]
 .cfi_offset 29, -192
 .cfi_offset 30, -184
     stp x19, x20, [sp, #16]
@@ -12984,6 +12935,7 @@ L.nvol_find_byteset_pair_visit_neon:
     mov x23, x1
     cmp x23, x22
     b.hi .Lnvol_find_byteset_pair_visit_neon.L3
+    nop
     nop
 .Lnvol_find_byteset_pair_visit_neon.L2:
     ldr q0, [x23, x20]
@@ -13089,11 +13041,10 @@ L.nvol_find_byteset_pair_visit_neon:
 .Lnvol_find_byteset_pair_visit_neon.L8:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_neon.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldr x23, [sp, #48]
-    add sp, sp, #192
+    ldp x29, x30, [sp], #192
     ret
 .Lnvol_find_byteset_pair_visit_neon.L7:
     mov x0, x23
@@ -13101,15 +13052,15 @@ L.nvol_find_byteset_pair_visit_neon:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_neon, .-nvol_find_byteset_pair_visit_neon
 
+    nop
 .globl nvol_find_byteset_pair_visit_neon_k1
 .type nvol_find_byteset_pair_visit_neon_k1, %function
 .hidden nvol_find_byteset_pair_visit_neon_k1
 nvol_find_byteset_pair_visit_neon_k1:
 L.nvol_find_byteset_pair_visit_neon_k1:
 .cfi_startproc
-    sub sp, sp, #96
+    stp x29, x30, [sp, #-96]!
 .cfi_def_cfa_offset 96
-    stp x29, x30, [sp]
 .cfi_offset 29, -96
 .cfi_offset 30, -88
     stp x19, x20, [sp, #16]
@@ -13136,7 +13087,6 @@ L.nvol_find_byteset_pair_visit_neon_k1:
     mov x23, x1
     cmp x23, x22
     b.hi .Lnvol_find_byteset_pair_visit_neon_k1.L3
-    nop
 .Lnvol_find_byteset_pair_visit_neon_k1.L2:
     ldr q0, [x23, x20]
     ldr q31, [sp, #64]
@@ -13195,11 +13145,10 @@ L.nvol_find_byteset_pair_visit_neon_k1:
 .Lnvol_find_byteset_pair_visit_neon_k1.L8:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_neon_k1.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldr x23, [sp, #48]
-    add sp, sp, #96
+    ldp x29, x30, [sp], #96
     ret
 .Lnvol_find_byteset_pair_visit_neon_k1.L7:
     mov x0, x23
@@ -13207,15 +13156,17 @@ L.nvol_find_byteset_pair_visit_neon_k1:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_neon_k1, .-nvol_find_byteset_pair_visit_neon_k1
 
+    nop
+    nop
+    nop
 .globl nvol_find_byteset_pair_visit_neon_k2
 .type nvol_find_byteset_pair_visit_neon_k2, %function
 .hidden nvol_find_byteset_pair_visit_neon_k2
 nvol_find_byteset_pair_visit_neon_k2:
 L.nvol_find_byteset_pair_visit_neon_k2:
 .cfi_startproc
-    sub sp, sp, #128
+    stp x29, x30, [sp, #-128]!
 .cfi_def_cfa_offset 128
-    stp x29, x30, [sp]
 .cfi_offset 29, -128
 .cfi_offset 30, -120
     stp x19, x20, [sp, #16]
@@ -13248,6 +13199,7 @@ L.nvol_find_byteset_pair_visit_neon_k2:
     mov x23, x1
     cmp x23, x22
     b.hi .Lnvol_find_byteset_pair_visit_neon_k2.L3
+    nop
     nop
 .Lnvol_find_byteset_pair_visit_neon_k2.L2:
     ldr q0, [x23, x20]
@@ -13319,11 +13271,10 @@ L.nvol_find_byteset_pair_visit_neon_k2:
 .Lnvol_find_byteset_pair_visit_neon_k2.L8:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_neon_k2.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldr x23, [sp, #48]
-    add sp, sp, #128
+    ldp x29, x30, [sp], #128
     ret
 .Lnvol_find_byteset_pair_visit_neon_k2.L7:
     mov x0, x23
@@ -13333,15 +13284,15 @@ L.nvol_find_byteset_pair_visit_neon_k2:
 
     nop
     nop
+    nop
 .globl nvol_find_byteset_pair_visit_neon_k3
 .type nvol_find_byteset_pair_visit_neon_k3, %function
 .hidden nvol_find_byteset_pair_visit_neon_k3
 nvol_find_byteset_pair_visit_neon_k3:
 L.nvol_find_byteset_pair_visit_neon_k3:
 .cfi_startproc
-    sub sp, sp, #160
+    stp x29, x30, [sp, #-160]!
 .cfi_def_cfa_offset 160
-    stp x29, x30, [sp]
 .cfi_offset 29, -160
 .cfi_offset 30, -152
     stp x19, x20, [sp, #16]
@@ -13380,7 +13331,6 @@ L.nvol_find_byteset_pair_visit_neon_k3:
     mov x23, x1
     cmp x23, x22
     b.hi .Lnvol_find_byteset_pair_visit_neon_k3.L3
-    nop
 .Lnvol_find_byteset_pair_visit_neon_k3.L2:
     ldr q0, [x23, x20]
     ldr q31, [sp, #64]
@@ -13463,11 +13413,10 @@ L.nvol_find_byteset_pair_visit_neon_k3:
 .Lnvol_find_byteset_pair_visit_neon_k3.L8:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_neon_k3.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldr x23, [sp, #48]
-    add sp, sp, #160
+    ldp x29, x30, [sp], #160
     ret
 .Lnvol_find_byteset_pair_visit_neon_k3.L7:
     mov x0, x23
@@ -13475,15 +13424,17 @@ L.nvol_find_byteset_pair_visit_neon_k3:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_neon_k3, .-nvol_find_byteset_pair_visit_neon_k3
 
+    nop
+    nop
+    nop
 .globl nvol_find_byteset_pair_visit_neon_k4
 .type nvol_find_byteset_pair_visit_neon_k4, %function
 .hidden nvol_find_byteset_pair_visit_neon_k4
 nvol_find_byteset_pair_visit_neon_k4:
 L.nvol_find_byteset_pair_visit_neon_k4:
 .cfi_startproc
-    sub sp, sp, #192
+    stp x29, x30, [sp, #-192]!
 .cfi_def_cfa_offset 192
-    stp x29, x30, [sp]
 .cfi_offset 29, -192
 .cfi_offset 30, -184
     stp x19, x20, [sp, #16]
@@ -13528,6 +13479,7 @@ L.nvol_find_byteset_pair_visit_neon_k4:
     mov x23, x1
     cmp x23, x22
     b.hi .Lnvol_find_byteset_pair_visit_neon_k4.L3
+    nop
     nop
 .Lnvol_find_byteset_pair_visit_neon_k4.L2:
     ldr q0, [x23, x20]
@@ -13623,11 +13575,10 @@ L.nvol_find_byteset_pair_visit_neon_k4:
 .Lnvol_find_byteset_pair_visit_neon_k4.L8:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_neon_k4.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldr x23, [sp, #48]
-    add sp, sp, #192
+    ldp x29, x30, [sp], #192
     ret
 .Lnvol_find_byteset_pair_visit_neon_k4.L7:
     mov x0, x23
@@ -13637,15 +13588,15 @@ L.nvol_find_byteset_pair_visit_neon_k4:
 
     nop
     nop
+    nop
 .globl nvol_find_byteset_pair_visit_neon_k5
 .type nvol_find_byteset_pair_visit_neon_k5, %function
 .hidden nvol_find_byteset_pair_visit_neon_k5
 nvol_find_byteset_pair_visit_neon_k5:
 L.nvol_find_byteset_pair_visit_neon_k5:
 .cfi_startproc
-    sub sp, sp, #224
+    stp x29, x30, [sp, #-224]!
 .cfi_def_cfa_offset 224
-    stp x29, x30, [sp]
 .cfi_offset 29, -224
 .cfi_offset 30, -216
     stp x19, x20, [sp, #16]
@@ -13696,7 +13647,6 @@ L.nvol_find_byteset_pair_visit_neon_k5:
     mov x23, x1
     cmp x23, x22
     b.hi .Lnvol_find_byteset_pair_visit_neon_k5.L3
-    nop
 .Lnvol_find_byteset_pair_visit_neon_k5.L2:
     ldr q0, [x23, x20]
     ldr q31, [sp, #64]
@@ -13803,11 +13753,10 @@ L.nvol_find_byteset_pair_visit_neon_k5:
 .Lnvol_find_byteset_pair_visit_neon_k5.L8:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_neon_k5.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldr x23, [sp, #48]
-    add sp, sp, #224
+    ldp x29, x30, [sp], #224
     ret
 .Lnvol_find_byteset_pair_visit_neon_k5.L7:
     mov x0, x23
@@ -13815,15 +13764,17 @@ L.nvol_find_byteset_pair_visit_neon_k5:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_neon_k5, .-nvol_find_byteset_pair_visit_neon_k5
 
+    nop
+    nop
+    nop
 .globl nvol_find_byteset_pair_visit_neon_k6
 .type nvol_find_byteset_pair_visit_neon_k6, %function
 .hidden nvol_find_byteset_pair_visit_neon_k6
 nvol_find_byteset_pair_visit_neon_k6:
 L.nvol_find_byteset_pair_visit_neon_k6:
 .cfi_startproc
-    sub sp, sp, #256
+    stp x29, x30, [sp, #-256]!
 .cfi_def_cfa_offset 256
-    stp x29, x30, [sp]
 .cfi_offset 29, -256
 .cfi_offset 30, -248
     stp x19, x20, [sp, #16]
@@ -13880,6 +13831,7 @@ L.nvol_find_byteset_pair_visit_neon_k6:
     mov x23, x1
     cmp x23, x22
     b.hi .Lnvol_find_byteset_pair_visit_neon_k6.L3
+    nop
     nop
 .Lnvol_find_byteset_pair_visit_neon_k6.L2:
     ldr q0, [x23, x20]
@@ -13999,11 +13951,10 @@ L.nvol_find_byteset_pair_visit_neon_k6:
 .Lnvol_find_byteset_pair_visit_neon_k6.L8:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_neon_k6.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldr x23, [sp, #48]
-    add sp, sp, #256
+    ldp x29, x30, [sp], #256
     ret
 .Lnvol_find_byteset_pair_visit_neon_k6.L7:
     mov x0, x23
@@ -14011,6 +13962,7 @@ L.nvol_find_byteset_pair_visit_neon_k6:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_neon_k6, .-nvol_find_byteset_pair_visit_neon_k6
 
+    nop
     nop
     nop
 .globl nvol_find_byteset_entry_neon

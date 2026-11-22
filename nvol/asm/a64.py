@@ -890,6 +890,16 @@ def frame(code: list, abi: ABI, nslots: int) -> list:
         epi.append(Ins("ldr", [Reg(r, 64), Mem(SP, disp=off, w=64)]))
     if size:
         epi.append(Ins("add", [Reg(SP, 64), Reg(SP, 64), Imm(size)]))
+    # The first save at [sp] takes the `sub sp` in its writeback (`stp x29, x30, [sp, #-32]!`),
+    # and its load the `add sp` (`ldp x29, x30, [sp], #32`), as Clang does: the pair form
+    # reaches -512..504 bytes, the single str/ldr -256..255.
+    first = pro[2] if size and pairs else None
+    if first is not None and first.args[0].disp == 0 and size <= (504 if first.op == "stp" else 255):
+        load = next(i for i in epi if i.op in ("ldp", "ldr") and i.args[-1].disp == 0)
+        pro[0:3] = [Ins(first.op, [Mem(SP, disp=-size, w=64)] + first.args[1:], hint="pre"),
+                    pro[1]]
+        epi.remove(load)
+        epi[-1] = Ins(load.op, load.args[:-1] + [Mem(SP, disp=size, w=64)], hint="post")
     out = pro
     for ins in body:
         if ins.op in ("ret", "tailcall"):     # a tail call leaves through the epilogue too

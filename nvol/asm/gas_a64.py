@@ -64,8 +64,12 @@ class Printer:
     def sym(self, name: str) -> str:
         return f"L.{name}" if name in self.globals else name
 
-    def mem(self, m: Mem) -> str:
+    def mem(self, m: Mem, index: str = None) -> str:
         b = reg(m.base, 64)
+        if index == "pre":               # writeback before the access: [sp, #-32]!
+            return f"[{b}, #{m.disp}]!"
+        if index == "post":              # writeback after it: [sp], #32
+            return f"[{b}], #{m.disp}"
         if m.index is not None:
             sh = {1: "", 2: ", lsl #1", 4: ", lsl #2", 8: ", lsl #3"}[m.scale]
             return f"[{b}, {reg(m.index, 64)}{sh}]"
@@ -117,13 +121,13 @@ class Printer:
             d, s = self.operand(a[0]), self.sym(a[1].sym)
             return [f"    adrp {d}, {s}", f"    add {d}, {d}, :lo12:{s}"]
         if op in ("str", "strb", "strh"):
-            return [f"    {_mem_op(op, a[0])} {self.operand(a[1])}, {self.mem(a[0])}"]
+            return [f"    {op if ins.hint else _mem_op(op, a[0])} {self.operand(a[1])}, {self.mem(a[0], ins.hint)}"]
         if op in ("ldr", "ldrb", "ldrh", "ldrsw"):
-            return [f"    {_mem_op(op, a[1])} {self.operand(a[0])}, {self.mem(a[1])}"]
+            return [f"    {op if ins.hint else _mem_op(op, a[1])} {self.operand(a[0])}, {self.mem(a[1], ins.hint)}"]
         if op == "stp":
-            return [f"    stp {self.operand(a[1])}, {self.operand(a[2])}, {self.mem(a[0])}"]
+            return [f"    stp {self.operand(a[1])}, {self.operand(a[2])}, {self.mem(a[0], ins.hint)}"]
         if op == "ldp":
-            return [f"    ldp {self.operand(a[0])}, {self.operand(a[1])}, {self.mem(a[2])}"]
+            return [f"    ldp {self.operand(a[0])}, {self.operand(a[1])}, {self.mem(a[2], ins.hint)}"]
         if op in ("add", "sub") and isinstance(a[2], Imm) and a[2].v >= 4096:
             return [f"    {op} {self.operand(a[0])}, {self.operand(a[1])}, #{a[2].v >> 12}, lsl #12"]
         if op == "csel":
@@ -180,7 +184,8 @@ class Printer:
 
 
 def _mem_op(op: str, m: Mem) -> str:
-    """ldur/stur when the offset is negative or not a multiple of the access size."""
+    """ldur/stur when the offset is negative or not a multiple of the access size (a pre- or
+    post-indexed access stays ldr/str: the unscaled forms have no writeback)."""
     if m.index is None and m.disp:
         size = max(1, m.w // 8) if m.w else 8
         if m.disp < 0 or m.disp % size:

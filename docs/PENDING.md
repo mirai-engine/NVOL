@@ -127,7 +127,8 @@ The detail is in "Done".
     - **aarch64 (item 16): +12.1 % static instructions against Clang -O2** over the 31 public
       functions ([report](benchmarks/2026-11-21-a64-static.md); only static, cycles wait for
       item 31). Seen in `nvol_memchr` (16 against 12 instructions):
-      - the save as `sub sp` + `stp` instead of a pre-indexed `stp x29, x30, [sp, #-32]!`;
+      - ~~the save as `sub sp` + `stp` instead of a pre-indexed `stp x29, x30, [sp, #-32]!`~~:
+        the first save and its load now take the `sub`/`add sp` in their writeback (see Done);
       - a branch where Clang uses `cmp` + `csinv`;
       - ~~a copy not coalesced while its source is live (`mov x19, x1` … `mov x1, x19`)~~:
         `regalloc.copy_back` removes the copy back, on both targets (see Done);
@@ -668,6 +669,16 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **aarch64: the frame in the first save's writeback (item 17).** `a64.frame` opened with
+  `sub sp, sp, #N` + `stp x29, x30, [sp]` and closed with `ldp` + `add sp`. Now, when the
+  first save sits at `[sp]` and N fits (the pair form reaches -512..504, the single `str`
+  -256..255), the save is pre-indexed and its load post-indexed, as Clang does:
+  `stp x29, x30, [sp, #-32]!` … `ldp x29, x30, [sp], #32`. The CFI steps are unchanged. A
+  pre/post-indexed access stays `str`/`ldr` (the unscaled `stur` has no writeback; GNU as
+  refused it). 22 of the 23 frames fold. Static count against Clang -O2 (`a64_static.py`, same
+  Clang output): 8051 → 8029 (+12.8 % → +12.5 %); every wrapper −2 (`nvol_memchr` 15 → 13,
+  Clang 12; `nvol_first_non_ascii` 14 → 12, equal to Clang), memmem −5, Teddy −3.
 
 - **NASM's ELF output without local-label symbols (item 17).** NASM writes every label into
   the ELF symbol table, and has no option to keep one out (`equ` and `..@` labels are written
