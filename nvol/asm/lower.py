@@ -181,6 +181,42 @@ class Lower:
         return not (g.ifunc or g.noinline or g.public or "_entry_" in g.name
                     or g.name in self.targets)
 
+    def forwarded_only(self, p) -> bool:
+        """Whether every read of parameter p passes it on unchanged, as the argument of a
+        called (not inlined) function's parameter of p's type. Such a callee zero-extends that
+        argument itself (run), so p's own extension at entry is dead: the wrapper `nvol_memchr`
+        hands its needle to `nvol_memchr_raw` and extended it twice."""
+        total = ir._uses(self.f.body, {}).get(p.name, 0)
+        fwd = 0
+
+        def ex(e):
+            nonlocal fwd
+            if isinstance(e, ir.Call) and self.mod:
+                g = self.mod.fn(e.fn)
+                if g is not None and not self.inlinable(g):
+                    fwd += sum(1 for a, q in zip(e.args, g.params)
+                               if isinstance(a, ir.Var) and a.name == p.name and q.ty is p.ty)
+            for c in ir._expr_children(e):
+                ex(c)
+
+        def st(stmts):
+            for s in stmts:
+                if isinstance(s, (ir.Let, ir.Assign)):
+                    ex(s.value)
+                elif isinstance(s, ir.While):
+                    ex(s.cond); st(s.body)
+                    if s.exit_first is not None:
+                        ex(s.exit_first)
+                elif isinstance(s, ir.If):
+                    ex(s.cond); st(s.then); st(s.els or [])
+                elif isinstance(s, ir.Return):
+                    if s.value is not None:
+                        ex(s.value)
+                elif isinstance(s, (ir.Store8, ir.Store64, ir.StoreVec)):
+                    ex(s.ptr); ex(s.value)
+        st(self.f.body)
+        return total > 0 and fwd == total
+
     def call(self, e: ir.Call) -> VReg:
         g = self.mod.fn(e.fn) if self.mod else None
         if g is None:

@@ -886,7 +886,6 @@ L.nvol_memchr:
     push %rbx
 .cfi_def_cfa_offset 16
 .cfi_offset %rbx, -16
-    movzbl %dil, %edi
     mov %rsi, %rbx
     lea (%rbx,%rdx), %rdx
     call *L.nvol_memchr_raw_ptr(%rip)
@@ -906,6 +905,7 @@ L.nvol_memchr:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr_scalar
 .type nvol_memrchr_scalar, @function
 .hidden nvol_memrchr_scalar
@@ -1869,7 +1869,6 @@ L.nvol_memrchr:
     push %rbx
 .cfi_def_cfa_offset 16
 .cfi_offset %rbx, -16
-    movzbl %dil, %edi
     mov %rsi, %rbx
     lea (%rbx,%rdx), %rdx
     call *L.nvol_memrchr_raw_ptr(%rip)
@@ -1889,6 +1888,7 @@ L.nvol_memrchr:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memchr2_scalar
 .type nvol_memchr2_scalar, @function
 .hidden nvol_memchr2_scalar
@@ -2598,8 +2598,6 @@ L.nvol_memchr2:
     push %rbx
 .cfi_def_cfa_offset 16
 .cfi_offset %rbx, -16
-    movzbl %dil, %edi
-    movzbl %sil, %esi
     mov %rdx, %rbx
     lea (%rbx,%rcx), %rcx
     call *L.nvol_memchr2_raw_ptr(%rip)
@@ -2618,7 +2616,8 @@ L.nvol_memchr2:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr2_scalar
 .type nvol_memrchr2_scalar, @function
 .hidden nvol_memrchr2_scalar
@@ -3497,8 +3496,6 @@ L.nvol_memrchr2:
     push %rbx
 .cfi_def_cfa_offset 16
 .cfi_offset %rbx, -16
-    movzbl %dil, %edi
-    movzbl %sil, %esi
     mov %rdx, %rbx
     lea (%rbx,%rcx), %rcx
     call *L.nvol_memrchr2_raw_ptr(%rip)
@@ -3517,7 +3514,8 @@ L.nvol_memrchr2:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memchr3_scalar
 .type nvol_memchr3_scalar, @function
 .hidden nvol_memchr3_scalar
@@ -4323,9 +4321,6 @@ L.nvol_memchr3:
     push %rbx
 .cfi_def_cfa_offset 16
 .cfi_offset %rbx, -16
-    movzbl %dil, %edi
-    movzbl %sil, %esi
-    movzbl %dl, %edx
     mov %rcx, %rbx
     lea (%rbx,%r8), %r8
     call *L.nvol_memchr3_raw_ptr(%rip)
@@ -4344,7 +4339,8 @@ L.nvol_memchr3:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr3_scalar
 .type nvol_memrchr3_scalar, @function
 .hidden nvol_memrchr3_scalar
@@ -5326,9 +5322,6 @@ L.nvol_memrchr3:
     push %rbx
 .cfi_def_cfa_offset 16
 .cfi_offset %rbx, -16
-    movzbl %dil, %edi
-    movzbl %sil, %esi
-    movzbl %dl, %edx
     mov %rcx, %rbx
     lea (%rbx,%r8), %r8
     call *L.nvol_memrchr3_raw_ptr(%rip)
@@ -5347,7 +5340,8 @@ L.nvol_memrchr3:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_count_scalar
 .type nvol_count_scalar, @function
 .hidden nvol_count_scalar
@@ -6009,7 +6003,6 @@ L.nvol_count_parity_raw_resolve:
 nvol_count_parity:
 L.nvol_count_parity:
 .cfi_startproc
-    movzbl %dil, %edi
     lea (%rsi,%rdx), %rdx
     jmp *L.nvol_count_parity_raw_ptr(%rip)
     ret
@@ -6021,7 +6014,7 @@ L.nvol_count_parity:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_count_sad_sse2
 .type nvol_count_sad_sse2, @function
 .hidden nvol_count_sad_sse2
@@ -6633,7 +6626,6 @@ L.nvol_count_raw_resolve:
 nvol_count:
 L.nvol_count:
 .cfi_startproc
-    movzbl %dil, %edi
     lea (%rsi,%rdx), %rdx
     jmp *L.nvol_count_raw_ptr(%rip)
     ret
@@ -6645,7 +6637,7 @@ L.nvol_count:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_first_non_ascii_scalar
 .type nvol_first_non_ascii_scalar, @function
 .hidden nvol_first_non_ascii_scalar

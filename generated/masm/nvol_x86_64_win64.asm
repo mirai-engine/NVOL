@@ -835,7 +835,6 @@ nvol_memchr PROC PUBLIC FRAME
     sub rsp, 32
     .ALLOCSTACK 32
     .ENDPROLOG
-    movzx ecx, cl
     mov rsi, rdx
     lea r8, [rsi + r8]
     call qword ptr [nvol_memchr_raw_ptr]
@@ -853,7 +852,7 @@ nvol_memchr ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 15, 31, 68, 0, 0
 nvol_memrchr_scalar PROC PUBLIC
     movzx ecx, cl
     cmp r8, rdx
@@ -1783,7 +1782,6 @@ nvol_memrchr PROC PUBLIC FRAME
     sub rsp, 32
     .ALLOCSTACK 32
     .ENDPROLOG
-    movzx ecx, cl
     mov rsi, rdx
     lea r8, [rsi + r8]
     call qword ptr [nvol_memrchr_raw_ptr]
@@ -1801,7 +1799,7 @@ nvol_memrchr ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 15, 31, 68, 0, 0
 nvol_memchr2_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -2455,8 +2453,6 @@ nvol_memchr2 PROC PUBLIC FRAME
     sub rsp, 32
     .ALLOCSTACK 32
     .ENDPROLOG
-    movzx ecx, cl
-    movzx edx, dl
     mov rsi, r8
     lea r9, [rsi + r9]
     call qword ptr [nvol_memchr2_raw_ptr]
@@ -2473,7 +2469,8 @@ L_L1:
 nvol_memchr2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_memrchr2_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -3294,8 +3291,6 @@ nvol_memrchr2 PROC PUBLIC FRAME
     sub rsp, 32
     .ALLOCSTACK 32
     .ENDPROLOG
-    movzx ecx, cl
-    movzx edx, dl
     mov rsi, r8
     lea r9, [rsi + r9]
     call qword ptr [nvol_memrchr2_raw_ptr]
@@ -3312,7 +3307,8 @@ L_L1:
 nvol_memrchr2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_memchr3_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -4083,9 +4079,6 @@ nvol_memchr3 PROC PUBLIC FRAME
     sub rsp, 48
     .ALLOCSTACK 48
     .ENDPROLOG
-    movzx ecx, cl
-    movzx edx, dl
-    movzx r8d, r8b
     mov rsi, r9
     mov rax, qword ptr [rsp + 96]
     lea rax, [rsi + rax]
@@ -4103,7 +4096,8 @@ L_L1:
     ret
 nvol_memchr3 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memrchr3_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -5068,9 +5062,6 @@ nvol_memrchr3 PROC PUBLIC FRAME
     sub rsp, 48
     .ALLOCSTACK 48
     .ENDPROLOG
-    movzx ecx, cl
-    movzx edx, dl
-    movzx r8d, r8b
     mov rsi, r9
     mov rax, qword ptr [rsp + 96]
     lea rax, [rsi + rax]
@@ -5088,7 +5079,8 @@ L_L1:
     ret
 nvol_memrchr3 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_count_scalar PROC PUBLIC
     movzx eax, cl
     sub r8, rdx
@@ -5698,7 +5690,6 @@ nvol_count_parity_raw_resolve ENDP
 
     DB 15, 31, 64, 0
 nvol_count_parity PROC PUBLIC
-    movzx ecx, cl
     lea r8, [rdx + r8]
     jmp qword ptr [nvol_count_parity_raw_ptr]
     ret
@@ -5709,7 +5700,7 @@ nvol_count_parity ENDP
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_count_sad_sse2 PROC PUBLIC
     movzx eax, cl
     imul eax, eax, 16843009
@@ -6261,7 +6252,6 @@ nvol_count_raw_resolve ENDP
 
     DB 15, 31, 64, 0
 nvol_count PROC PUBLIC
-    movzx ecx, cl
     lea r8, [rdx + r8]
     jmp qword ptr [nvol_count_raw_ptr]
     ret
@@ -6272,7 +6262,7 @@ nvol_count ENDP
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_first_non_ascii_scalar PROC PUBLIC
     cmp rcx, rdx
     jae SHORT L_L3

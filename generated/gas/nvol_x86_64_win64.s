@@ -856,7 +856,6 @@ nvol_memchr:
     sub $32, %rsp
 .seh_stackalloc 32
 .seh_endprologue
-    movzbl %cl, %ecx
     mov %rdx, %rsi
     lea (%rsi,%r8), %r8
     call *nvol_memchr_raw_ptr(%rip)
@@ -874,7 +873,7 @@ nvol_memchr:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memrchr_scalar
 .def nvol_memrchr_scalar; .scl 2; .type 32; .endef
 nvol_memrchr_scalar:
@@ -1824,7 +1823,6 @@ nvol_memrchr:
     sub $32, %rsp
 .seh_stackalloc 32
 .seh_endprologue
-    movzbl %cl, %ecx
     mov %rdx, %rsi
     lea (%rsi,%r8), %r8
     call *nvol_memrchr_raw_ptr(%rip)
@@ -1842,7 +1840,7 @@ nvol_memrchr:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memchr2_scalar
 .def nvol_memchr2_scalar; .scl 2; .type 32; .endef
 nvol_memchr2_scalar:
@@ -2508,8 +2506,6 @@ nvol_memchr2:
     sub $32, %rsp
 .seh_stackalloc 32
 .seh_endprologue
-    movzbl %cl, %ecx
-    movzbl %dl, %edx
     mov %r8, %rsi
     lea (%rsi,%r9), %r9
     call *nvol_memchr2_raw_ptr(%rip)
@@ -2526,7 +2522,8 @@ nvol_memchr2:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memrchr2_scalar
 .def nvol_memrchr2_scalar; .scl 2; .type 32; .endef
 nvol_memrchr2_scalar:
@@ -3359,8 +3356,6 @@ nvol_memrchr2:
     sub $32, %rsp
 .seh_stackalloc 32
 .seh_endprologue
-    movzbl %cl, %ecx
-    movzbl %dl, %edx
     mov %r8, %rsi
     lea (%rsi,%r9), %r9
     call *nvol_memrchr2_raw_ptr(%rip)
@@ -3377,7 +3372,8 @@ nvol_memrchr2:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memchr3_scalar
 .def nvol_memchr3_scalar; .scl 2; .type 32; .endef
 nvol_memchr3_scalar:
@@ -4168,9 +4164,6 @@ nvol_memchr3:
     sub $48, %rsp
 .seh_stackalloc 48
 .seh_endprologue
-    movzbl %cl, %ecx
-    movzbl %dl, %edx
-    movzbl %r8b, %r8d
     mov %r9, %rsi
     mov 96(%rsp), %rax
     lea (%rsi,%rax), %rax
@@ -4188,7 +4181,8 @@ nvol_memchr3:
     ret
 .seh_endproc
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr3_scalar
 .def nvol_memrchr3_scalar; .scl 2; .type 32; .endef
 nvol_memrchr3_scalar:
@@ -5173,9 +5167,6 @@ nvol_memrchr3:
     sub $48, %rsp
 .seh_stackalloc 48
 .seh_endprologue
-    movzbl %cl, %ecx
-    movzbl %dl, %edx
-    movzbl %r8b, %r8d
     mov %r9, %rsi
     mov 96(%rsp), %rax
     lea (%rsi,%rax), %rax
@@ -5193,7 +5184,8 @@ nvol_memrchr3:
     ret
 .seh_endproc
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_count_scalar
 .def nvol_count_scalar; .scl 2; .type 32; .endef
 nvol_count_scalar:
@@ -5818,7 +5810,6 @@ nvol_count_parity_raw_resolve:
 .globl nvol_count_parity
 .def nvol_count_parity; .scl 2; .type 32; .endef
 nvol_count_parity:
-    movzbl %cl, %ecx
     lea (%rdx,%r8), %r8
     jmp *nvol_count_parity_raw_ptr(%rip)
     ret
@@ -5828,7 +5819,7 @@ nvol_count_parity:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_count_sad_sse2
 .def nvol_count_sad_sse2; .scl 2; .type 32; .endef
 nvol_count_sad_sse2:
@@ -6390,7 +6381,6 @@ nvol_count_raw_resolve:
 .globl nvol_count
 .def nvol_count; .scl 2; .type 32; .endef
 nvol_count:
-    movzbl %cl, %ecx
     lea (%rdx,%r8), %r8
     jmp *nvol_count_raw_ptr(%rip)
     ret
@@ -6400,7 +6390,7 @@ nvol_count:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_first_non_ascii_scalar
 .def nvol_first_non_ascii_scalar; .scl 2; .type 32; .endef
 nvol_first_non_ascii_scalar:

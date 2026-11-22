@@ -364,7 +364,6 @@ L.nvol_memchr:
 .cfi_offset 30, -24
     str x19, [sp, #16]
 .cfi_offset 19, -16
-    and w0, w0, #255
     mov x19, x1
     add x2, x19, x2
     bl L.nvol_memchr_raw
@@ -380,9 +379,6 @@ L.nvol_memchr:
 .cfi_endproc
 .size nvol_memchr, .-nvol_memchr
 
-    nop
-    nop
-    nop
 .globl nvol_memrchr_scalar
 .type nvol_memrchr_scalar, %function
 .hidden nvol_memrchr_scalar
@@ -724,7 +720,6 @@ L.nvol_memrchr:
 .cfi_offset 30, -24
     str x19, [sp, #16]
 .cfi_offset 19, -16
-    and w0, w0, #255
     mov x19, x1
     add x2, x19, x2
     bl L.nvol_memrchr_raw
@@ -740,9 +735,6 @@ L.nvol_memrchr:
 .cfi_endproc
 .size nvol_memrchr, .-nvol_memrchr
 
-    nop
-    nop
-    nop
 .globl nvol_memchr2_scalar
 .type nvol_memchr2_scalar, %function
 .hidden nvol_memchr2_scalar
@@ -1050,8 +1042,6 @@ L.nvol_memchr2:
 .cfi_offset 30, -24
     str x19, [sp, #16]
 .cfi_offset 19, -16
-    and w0, w0, #255
-    and w1, w1, #255
     mov x19, x2
     add x3, x19, x3
     bl L.nvol_memchr2_raw
@@ -1067,8 +1057,6 @@ L.nvol_memchr2:
 .cfi_endproc
 .size nvol_memchr2, .-nvol_memchr2
 
-    nop
-    nop
 .globl nvol_memrchr2_scalar
 .type nvol_memrchr2_scalar, %function
 .hidden nvol_memrchr2_scalar
@@ -1376,8 +1364,6 @@ L.nvol_memrchr2:
 .cfi_offset 30, -24
     str x19, [sp, #16]
 .cfi_offset 19, -16
-    and w0, w0, #255
-    and w1, w1, #255
     mov x19, x2
     add x3, x19, x3
     bl L.nvol_memrchr2_raw
@@ -1393,8 +1379,6 @@ L.nvol_memrchr2:
 .cfi_endproc
 .size nvol_memrchr2, .-nvol_memrchr2
 
-    nop
-    nop
 .globl nvol_memchr3_scalar
 .type nvol_memchr3_scalar, %function
 .hidden nvol_memchr3_scalar
@@ -1730,9 +1714,6 @@ L.nvol_memchr3:
 .cfi_offset 30, -24
     str x19, [sp, #16]
 .cfi_offset 19, -16
-    and w0, w0, #255
-    and w1, w1, #255
-    and w2, w2, #255
     mov x19, x3
     add x4, x19, x4
     bl L.nvol_memchr3_raw
@@ -1748,7 +1729,6 @@ L.nvol_memchr3:
 .cfi_endproc
 .size nvol_memchr3, .-nvol_memchr3
 
-    nop
 .globl nvol_memrchr3_scalar
 .type nvol_memrchr3_scalar, %function
 .hidden nvol_memrchr3_scalar
@@ -2084,9 +2064,6 @@ L.nvol_memrchr3:
 .cfi_offset 30, -24
     str x19, [sp, #16]
 .cfi_offset 19, -16
-    and w0, w0, #255
-    and w1, w1, #255
-    and w2, w2, #255
     mov x19, x3
     add x4, x19, x4
     bl L.nvol_memrchr3_raw
@@ -2102,7 +2079,6 @@ L.nvol_memrchr3:
 .cfi_endproc
 .size nvol_memrchr3, .-nvol_memrchr3
 
-    nop
 .globl nvol_count_scalar
 .type nvol_count_scalar, %function
 .hidden nvol_count_scalar
@@ -2382,13 +2358,13 @@ L.nvol_count_parity_raw:
 nvol_count_parity:
 L.nvol_count_parity:
 .cfi_startproc
-    and w0, w0, #255
     add x2, x1, x2
     b L.nvol_count_parity_raw
     ret
 .cfi_endproc
 .size nvol_count_parity, .-nvol_count_parity
 
+    nop
 .globl nvol_count_sad_neon
 .type nvol_count_sad_neon, %function
 .hidden nvol_count_sad_neon
@@ -2607,13 +2583,13 @@ L.nvol_count_raw:
 nvol_count:
 L.nvol_count:
 .cfi_startproc
-    and w0, w0, #255
     add x2, x1, x2
     b L.nvol_count_raw
     ret
 .cfi_endproc
 .size nvol_count, .-nvol_count
 
+    nop
 .globl nvol_first_non_ascii_scalar
 .type nvol_first_non_ascii_scalar, %function
 .hidden nvol_first_non_ascii_scalar

@@ -671,7 +671,10 @@ class X86Lower(Lower):
             r = self.abi.arg_reg(i)
             src = Reg(r, 64) if r is not None else Mem(arg=i, w=64)
             # the C ABI leaves the upper bits of a narrow argument undefined: zero-extend
-            if p.ty is ir.U8 or p.ty is ir.BOOL:
+            # (unless it is only passed on to a callee that extends it)
+            if p.ty in (ir.U8, ir.BOOL, ir.U32) and self.forwarded_only(p):
+                self.emit("mov", [Reg(d, 64), src], defs=[d], uses=regs_in(src))
+            elif p.ty is ir.U8 or p.ty is ir.BOOL:
                 src = Reg(r, 8) if r is not None else Mem(arg=i, w=8)
                 self.emit("movzx", [Reg(d, 32), src], defs=[d], uses=regs_in(src))
             elif p.ty is ir.U32:

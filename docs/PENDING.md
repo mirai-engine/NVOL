@@ -132,7 +132,8 @@ The detail is in "Done".
       - a branch where Clang uses `cmp` + `csinv`;
       - ~~a copy not coalesced while its source is live (`mov x19, x1` … `mov x1, x19`)~~:
         `regalloc.copy_back` removes the copy back, on both targets (see Done);
-      - `and w0, w0, #255` that the callee repeats.
+      - ~~`and w0, w0, #255` that the callee repeats~~: a parameter only passed on is no
+        longer extended (see Done).
 
       The byteset family (+25…+53 %), memmem (+34 %) and Teddy (+36 %) need their loops
       compared by hand.
@@ -669,6 +670,27 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **A narrow parameter that is only passed on is not zero-extended (item 17).** Every value
+  lives zero-extended, so a function extends its u8/bool/u32 parameters at entry (the ABI
+  leaves the upper bits undefined). The public wrappers (`nvol_memchr` …) only hand their
+  needles to the raw function, whose own entry extends them again: `and w0, w0, #255` on
+  aarch64, `movzx edi, dil` on x86, twice per call. `Lower.forwarded_only` now skips the
+  extension when every read of the parameter is an argument of a called (not inlined)
+  function, at a parameter of the same type. Removed: 14 in the System V library and the
+  matching ones in Win64 and aarch64. The ABI test (garbage in the upper bits through the
+  trampoline) catches a seeded `forwarded_only = True`: 9 failures. Counters (best of 7,
+  WSL; HEAD, then a second copy of HEAD as the noise control):
+
+  | row | instructions | cycles (HEAD / new / HEAD again) |
+  |---|---|---|
+  | memchr 16 B AVX2 | 47.98 → 46.99 | 17.03 / 17.48 / 16.46 |
+  | memchr2 16 B AVX2 | 56.08 → 54.00 | 16.54 / 15.80 / 15.95 |
+  | memchr3 16 B AVX2 | 62.97 → 59.95 | 19.14 / 18.97 / 18.19 |
+  | memchr3 64 B AVX2 | 78.04 → 74.91 | 19.03 / 17.93 / 18.12 |
+
+  One instruction per needle and call; the cycles stay inside the noise control's spread on
+  every row (24 rows: memchr, memrchr, memchr2/3, count, first_non_ascii at 16 and 64 B).
 
 - **aarch64: the frame in the first save's writeback (item 17).** `a64.frame` opened with
   `sub sp, sp, #N` + `stp x29, x30, [sp]` and closed with `ldp` + `add sp`. Now, when the

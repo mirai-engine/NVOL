@@ -626,7 +626,10 @@ class A64Lower(Lower):
             self.vars[p.name] = d
             r = self.abi.arg_reg(i)
             # AAPCS64 leaves the upper bits of a narrow argument unspecified: zero-extend
-            if p.ty is ir.U8 or p.ty is ir.BOOL:
+            # (unless it is only passed on to a callee that extends it)
+            if p.ty in (ir.U8, ir.BOOL, ir.U32) and self.forwarded_only(p):
+                self.emit("mov", [Reg(d, 64), Reg(r, 64)], defs=[d], uses=[r])
+            elif p.ty is ir.U8 or p.ty is ir.BOOL:
                 self.emit("and", [Reg(d, 32), Reg(r, 32), Imm(0xFF)], defs=[d], uses=[r])
             elif p.ty is ir.U32:
                 self.emit("mov", [Reg(d, 32), Reg(r, 32)], defs=[d], uses=[r])
