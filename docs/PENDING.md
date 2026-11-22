@@ -669,8 +669,8 @@ Since item 10 each new kernel also ships in asm, and a new primitive needs its a
 
 ### Aside
 
-**For later:** 1.2c, the Teddy variant that aho-corasick does not reach either (Fat Teddy with
-a 1-byte mask): it stays documented and will be fixed later.
+**Settled:** 1.2c (the unreachable Fat Teddy with a 1-byte mask stays in place, unused, by the
+maintainer's decision).
 
 **Blocked by hardware or by third parties:** 2.12 (AMD, real ARM, native glibc, and native
 Linux for the frontend counters of item 25), 2.1b (reporting to Odin: the repo owner's
@@ -690,7 +690,7 @@ as little-endian). The detail of both is in Done.
 | 1.1e | P2 | **Documented edge differences in `memmem`** | (a) `PrefilterState` uses `usize` instead of a saturated `u32`: it only differs with more than 4 GiB skipped in one call (item 39). (b) and (c) are closed with no action (see Done). |
 | 1.2a | P2 | **Teddy `find_iter` over ~64 B haystacks** | With few bytes, the remainders of < 16 + m - 1 bytes fall to the slow path (`nvol_teddy_slow`, direct search) instead of aho-corasick's multi-pattern Rabin-Karp. It gives the same result; in `tedbench` it swung between −6 % and +27 % between runs (the +27.1 % is in `2026-11-18-teddy-i5-7400-windows.md`; the −6 % run was not saved in any report). Measure the slow path separately and, if needed, port the 64-bucket RK. |
 | 1.2b | P2 | **Teddy `MatchKind::LeftmostLongest`** | Only LeftmostFirst exists, which is what `regex-automata` uses. LeftmostLongest changes the order of the patterns (by length) at construction. |
-| 1.2c | P2 | **Fat Teddy with a 1-byte mask: unreachable (for later)** | Fat requires > 32 patterns, and mask 1 with > 16 patterns is rejected, the same as in aho-corasick: `nvol_teddy_fat_avx2_1` is generated but never chosen. It is aho-corasick's problematic variant: the selection rule makes a variant exist with no path that reaches it. It stays to be fixed later (decide whether to remove it, or whether to allow mask 1 with Fat for 17-64 one-byte patterns, and measure it). |
+| 1.2c | P2 | ~~**Fat Teddy with a 1-byte mask: unreachable**~~ **(left in place by decision, 2026-11-22)** | Fat requires > 32 patterns, and mask 1 with > 16 patterns is rejected, the same as in aho-corasick: `nvol_teddy_fat_avx2_1` is generated but never chosen. The maintainer's decision: it stays in the tree, unused, listed in [archive/](../archive/README.md) as code kept in place (implementations are archived, not deleted: CONTRIBUTING). Removing it was measured first: `.text` 189808 → 185392 bytes (−4416), Teddy and memmem rows within noise. Allowing mask 1 with Fat for 17-64 one-byte patterns is not taken: build would return a searcher where aho-corasick returns none, which breaks a stated parity point. |
 | 1.5 | P1 | **`first_non_ascii` without a benchmark against `bstr`** | It is tested but not measured; add `bstr = "=1.13.0"` to the harness. Also, bstr returns `len` when there are no non-ASCII bytes and NVOL returns `NONE`: documented; decide whether each language's wrapper should imitate bstr. |
 | 1.6 | P1 | **Byte-by-byte fallback below 16 bytes** | memchr uses SWAR (one `usize` at a time) in `arch/all/memchr.rs`. The 16 B benchmarks already put us on par or better, but 1-15 B still needs measuring, and SWAR needs porting for platforms without SIMD. |
 | 1.7a | P1 | **NEON: performance unmeasured on real hardware** | Result parity is tested on aarch64 under QEMU (`harness/run-aarch64.sh`), but QEMU cannot measure speed. `bench`, `membench` and `tedbench` still need to run on an ARM64 machine (Apple M*, Graviton, Raspberry Pi 5, Windows on ARM). |

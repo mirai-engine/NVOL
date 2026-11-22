@@ -70,6 +70,11 @@ alone is not enough.
 - The generated code is equal to or better than the implementation it replaces, never worse,
   except for a limit of the target language. A row that is worse is a bug, or a documented
   deviation with its cause.
+- Implementations are archived, not deleted. An implementation that is replaced, rejected
+  after measuring, or no longer reached is never removed outright. It moves to
+  [archive/](archive/README.md), where nothing imports, builds or tests it, or it stays in
+  place unreachable and is listed there. Either way it stays readable, with what it did and
+  why it left.
 - Code adapted from another project gets its entry in
   [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) in the same change: the project, its
   license, the copyright holder as its repository states it, and where it lives here.
