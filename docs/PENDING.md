@@ -100,9 +100,8 @@ The detail is in "Done".
     - **Teddy:** +6/+10 % instructions from 64 B to 64 KiB. (At 16 B, 3452 → 415
       instructions with the Rabin-Karp, item 27.) It was the
       slow path `nvol_teddy_slow` (see 1.2a, item 27).
-    - **NASM local labels in the ELF symbol table:** `.L36` after `L.nvol_x:` ends up as the
-      local symbol `L.nvol_x.L36`. `perf` and `gdb` attribute samples and backtraces to those
-      labels and not to the function; GNU as discards its `.L` labels.
+    - ~~**NASM local labels in the ELF symbol table**~~ (`L.nvol_x.L36`, which perf charged
+      samples to): jump targets are now offsets from the alias (see Done).
     - ~~**2-byte VEX**~~ **(tried and rejected, 2026-11-21):** commutative operations with
       the ymm8-15 operand in ModRM.rm need a 3-byte VEX, and swapping the operands makes
       them fit in 2. A pass after allocation swapped all 325 in the System V library (276
@@ -660,6 +659,19 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **NASM's ELF output without local-label symbols (item 17).** NASM writes every label into
+  the ELF symbol table, and has no option to keep one out (`equ` and `..@` labels are written
+  too). A `.L36` after `L.nvol_x:` became the local symbol `L.nvol_x.L36`, and so did the
+  `.cfi_end` end labels: 6134 local symbols. perf charged a function's samples to them:
+  memmem 4 KiB AVX2 showed 59 % in `L.nvol_memmem_find_entry_avx2.L105` and 20 % in `.L108`.
+  Now, in ELF only, the printer writes a jump target as the function's alias plus its offset
+  (`jae strict short L.nvol_memchr_sse2 + 227`), from encode's own lengths. The label stays
+  as a comment. The function's `size` and the FDE's range are numbers from `code_size`.
+  NASM resolves the expression in its own section, so the object is the same: `.text`,
+  `.eh_frame`, `.rodata` and `.data` byte-identical, 540 relocations before and after, and
+  6134 → 275 local symbols (the `L.name` aliases, the CIE, the tables). perf now gives
+  82.8 % to `nvol_memmem_find_entry_avx2`. COFF (Win64) is unchanged.
 
 - **`first_non_ascii` inline for 16-31 bytes in Rust (item 29), accepted with a trade-off.**
   The Rust wrapper (`nvol/backends/rust.py`) checks 16-31 bytes on x86_64 with inline SSE2

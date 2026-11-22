@@ -76,11 +76,11 @@ def disassemble(obj: str, objdump: str = "objdump", intel: bool = True):
         m = _FN.match(line)
         if m:
             name = m.group(1)
-            # the end labels of NASM's unwind tables: what follows is not the function
-            if name.endswith((".cfi_end", ".unwind_end")):
+            # the end label of NASM's Win64 unwind range: what follows is not the function
+            if name.endswith(".unwind_end"):
                 cur = None
                 continue
-            # a local label NASM leaves as a symbol (fn.L2) or the ELF alias (L.fn): same function
+            # a local label NASM leaves as a symbol in COFF (fn.L2) or the ELF alias (L.fn)
             if "." in name:
                 continue
             cur = funcs.setdefault(name, [])

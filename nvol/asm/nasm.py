@@ -37,8 +37,11 @@ class Printer:
         self.globals = set(globals_)
 
     def sym(self, name: str, call: bool = False) -> str:
-        if self.fmt != "elf64" or name.startswith("."):
+        if self.fmt != "elf64":
             return name
+        if name.startswith("."):         # a label of the function being printed (see function)
+            off = self.offsets[name]
+            return f"L.{self.fn} + {off}" if off else f"L.{self.fn}"
         if name in self.globals:
             return f"L.{name}"
         if call and name.startswith("nvol_cpu_"):
@@ -72,8 +75,8 @@ class Printer:
         out = []
         if self.fmt == "elf64":
             vis = "" if public or export_all else " hidden"
-            # the size (from the alias to the end label): profilers attribute samples by it
-            size = f" (L.{name}.cfi_end - {name})" if kind == "function" else ""
+            # the size: profilers attribute samples by it
+            size = f" {self.size}" if kind == "function" else ""
             out.append(f"global {name}:{kind}{vis}{size}")
             out += [f"{name}:", f"L.{name}:"]
         else:
@@ -81,10 +84,22 @@ class Printer:
         return out
 
     def function(self, name: str, code: list, public: bool, export_all: bool = False) -> list:
+        self.size = encode.code_size(code)
         out = self.label(name, "function", public, export_all)
+        if self.fmt == "elf64":
+            # NASM writes every label into the ELF symbol table (a `.L36` as the local symbol
+            # `L.name.L36`), and perf and gdb then charge the function's samples to its labels.
+            # So in ELF a jump target is the alias plus its offset, from encode's own lengths
+            # (no symbol, no relocation, the same bytes), and the label stays as a comment.
+            self.offsets, off = {}, 0
+            for ins in code:
+                if ins.op == "label":
+                    self.offsets[ins.args[0].name] = off
+                off += encode.length(ins)
+            self.fn = name
         for ins in code:
             if ins.op == "label":
-                out.append(f"{ins.args[0].name}:")
+                out.append(f"; {ins.args[0].name}:" if self.fmt == "elf64" else f"{ins.args[0].name}:")
                 continue
             if ins.op == "endprolog":    # the unwind tables are written after the code
                 continue
@@ -104,8 +119,6 @@ class Printer:
             out.append(f"    {op} {args}".rstrip())
         if self.fmt == "win64" and encode.unwind(code):
             out.append(".unwind_end:")
-        if self.fmt == "elf64":
-            out.append(".cfi_end:")      # the FDE's address range ends here
         return out
 
 
@@ -185,7 +198,7 @@ def _eh_frame(functions: list) -> list:
         pad = n - (4 + 4 + 4 + 1 + len(prog))
         # one field per line: in a `dd` with several values `$` is the start of the line
         out += [f"    dd {n}", "    dd $ - nvol_cie", f"    dd L.{name} - $",
-                f"    dd L.{name}.cfi_end - L.{name}",
+                f"    dd {encode.code_size(code)}",
                 "    db " + ", ".join(str(b) for b in bytes([0]) + prog + bytes(pad))]
     return out
 
