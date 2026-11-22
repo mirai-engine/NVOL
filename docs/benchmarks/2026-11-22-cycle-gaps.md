@@ -80,18 +80,27 @@ recorded trade-off: −12…−18 % at 4 KiB, about 3 % at 256-512 B.
 | gap | measured | ruled out | what would close it |
 |---|---|---|---|
 | **memrchr 16-64 KiB** (both paths): asm 5607-5710 against GCC 4796-4925 cycles at 64 KiB SSE2, 504-525 against 445-468 at 16 KiB AVX2, same instructions | 3× the RS-full stalls (`resource_stalls.rs`: 1044 against 365 cycles per call in SSE2) | memory (the same L1 replacements, L2 reads and prefetches); the loads' order; GCC's folded-load operand form (worse: 6062-6101); the JCC erratum; 16/32/64 alignment | the port-level dispatch of the loop (`uops_dispatched_port.*`, 4 per run) against GCC's, and a hand-edited asm in GCC's exact schedule |
-| **memmem SSE2 4 KiB**: 676-807 cycles on placement alone; GCC 660-710 | the same instructions (2916/2918), branches (527) and mispredictions (1.0/1.2); 3.3 against 2.8 cycles per 16-byte iteration in the slow layout | the frontend (MITE ≈ 0); the loads' order; `tzcnt` | a layout where the packed-pair loop sits inside one 32-byte window by construction: the µop counts per window that `encode.py` can give (2.1) |
-| **byteset AVX2 4-64 KiB**: +11…+18 % with the same instructions (also in Rust and Odin, PARITY P11) | all µops from the DSB | the JCC erratum | the same window-aware layout |
+| **memmem SSE2 4 KiB**: 676-807 cycles on placement alone; GCC 660-710 | the same instructions (2916/2918), branches (527) and mispredictions (1.0/1.2); 3.3 against 2.8 cycles per 16-byte iteration in the slow layout | the frontend (MITE ≈ 0); the loads' order; `tzcnt` | a layout where the packed-pair loop sits inside one 32-byte window by construction; a window-aware pad was tried and rejected (below) |
+| **byteset AVX2 4-64 KiB**: +11…+18 % with the same instructions (also in Rust and Odin, PARITY P11) | all µops from the DSB | the JCC erratum; a window-aware pad (below) | a model that predicts the slow layout |
 | **memchr 4-6 B in Rust** (item 28): 16.0 / 17.1 / 14.1 cycles at 4 / 5 / 6 B against 12.5 / 14.9 / 14.5 for the crate, JCC-safe build | fewer µops issued than the crate (45/48/51 against 48/51/54), no MITE, no mispredictions, no recovery cycles, no resource stalls | the JCC erratum (that build is mitigated) | not visible to the counters WSL gives: a native machine, or the SWAR path for 1-15 B (below), which removes the byte loop |
 | **rapidjson `pretty`** (14b): +0.0 / +0.8 / +1.5 % cycles in 3 rounds | within the row's own ±1 % spread; DSB +3 %, MITE −6 %, switch penalty −11 % | — | nothing to close at this resolution; kept with its spread recorded |
 | **PARITY P4 / P11**: the languages' rows with the same instructions and +13…+41 % cycles | the same instruction stream | the JCC erratum (2.4) | as above: placement in each compiler's layout, which NVOL does not control |
 
-**One mechanism behind most of the open rows.** Except memrchr's RS stalls and memchr 4-6 B,
-every open row is placement in the µop cache: a loop or an entry split across 32-byte windows.
-The generator knows every instruction's length (`encode.py`), so it could count µops per
-window and pad a hot loop so that it never straddles one. That is the one fix that would turn
-these draws into a rule. It is not built yet. The rule must hold on every row, and a draw
-that wins on half of them is what was rejected twice before (2.3).
+**One mechanism behind most of the open rows, and the rule that was tried for it.** Except
+memrchr's RS stalls and memchr 4-6 B, every open row looked like placement in the µop cache:
+a loop or an entry split across 32-byte windows. The generator knows every instruction's
+length (`encode.py`), so a window-aware pad was built and measured on the full matrix.
+
+The pad gave each innermost loop the fewest 32-byte windows and the fewest jumps on a window
+boundary. It was rejected in both variants: geomean **+0.99 %** and **+0.84 %** against an A/A
+of −0.3 %. Each variant won about as many rows as it lost (−12…−19 % on some, up to +43 % on
+others), the same lottery as 2.3.
+
+Its worst row says why. count_parity 64 B AVX2 went from 85 to 122 cycles. It issued the same
+µops from the same sources, with no mispredictions, while memory-stall cycles rose from 4 to 28
+per call. A model of windows and boundary jumps does not see that cost. So these rows stay
+accepted placement until some model predicts the slow layout before it is measured. The
+numbers are in PENDING item 25, "A window-aware loop-head pad, tried and rejected".
 
 ## 4. Items 27, 28, 29 and 32
 

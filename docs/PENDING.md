@@ -361,6 +361,28 @@ The detail is in "Done".
       of 6 µops per window). That needs the µop counts per window that
       `encode.py` can give.
 
+    - **A window-aware loop-head pad, tried and rejected (2026-11-22).** Each innermost loop
+      (the align, its head label, up to the last back edge) got the pad in 0-31 bytes that
+      minimizes (32-byte windows the loop touches, jumps in it that cross or end on a 32-byte
+      boundary, a fused `cmp`/`test` counted with its jump). HEAD's pad was kept unless the
+      key improved. The rule changed ~350 loops and grew `.text` by 1.2-2.4 %. Full matrix (13
+      kernels × 4 sizes × 2 paths, best of 5, sysv NASM in WSL Arch, with an A/A copy of HEAD):
+
+      | variant | geomean cycles | A/A | worst rows | best rows |
+      |---|---|---|---|---|
+      | smallest pad with the best key (may undo HEAD's 16-alignment) | **+0.99 %** | −0.32 % | count_parity 64/256 B AVX2 +43/+44 %, byteset_not 64 B +20 %, first_non_ascii 64 B +11-12 %, byteset 4 KiB AVX2 +12 % | memrchr 4 KiB AVX2 −18 %, count 64 B AVX2 −18 %, memmem 16 B SSE2 −12 % |
+      | only padding added on top of HEAD's pad | **+0.84 %** | −0.37 % | count_parity 64/256 B AVX2 +42 %, byteset 4 KiB AVX2 +16 %, memchr 256 B SSE2 +10 %, first_non_ascii 64/256 B +11 % | count 64 B AVX2 −19 %, byteset 64/256 B AVX2 −14/−12 %, memchr 4 KiB AVX2 −12 % |
+
+      It is the same lottery as the two rejected loop rules (2.3 of the
+      [report](benchmarks/2026-11-22-cycle-gaps.md)): each variant wins about as many rows as it
+      loses. The worst row is not even the frontend. count_parity 64 B AVX2 is 85 → 122 cycles per
+      call, with the same µops issued (175), the same DSB and MITE µops, mispredictions ≈ 0, the
+      same machine clears, store-forward blocks and 4K aliasing. What grows is
+      `cycle_activity.stalls_mem_any`, 4.0 → 27.7 cycles per call. The kernel's constants are in
+      `.rodata`, which did not move. A model that counts windows and boundary jumps cannot see
+      that, so the loop rows stay accepted placement (item 25) until a model predicts the slow
+      layout before it is measured.
+
     - **The loop rows are not the frontend.** `harness/asm/frontend.sh` (4 raw events per
       run, asm against GCC and Clang): in memrchr 4 KiB AVX2, byteset 4-64 KiB AVX2, pair
       4-64 KiB AVX2 and memmem 4-64 KiB SSE2, the three builds take every µop from the DSB
