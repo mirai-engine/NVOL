@@ -370,7 +370,21 @@ class X86Lower(Lower):
                 self.emit("sub", [Reg(d, 64), s], defs=[d], uses=[d] + regs_in(s))
             return d
         if op in ("and", "or", "xor"):
+            # a u32 constant operand in a 32-bit instruction (its imm32 is the whole value; the
+            # write zero-extends), and x ^ all-ones as `not`: SWAR masks such as 0x80808080 or
+            # !x need no register then
+            w = 32 if e.ty is ir.U32 else 64
+            full = (1 << w) - 1
             d = self.copy(self.gen(e.a))
+            if isinstance(e.b, ir.Const) and e.ty in (ir.U32, ir.U64, ir.USIZE):
+                v = _const_value(e.b) & full
+                if op == "xor" and v == full:
+                    self.emit("not", [Reg(d, w)], defs=[d], uses=[d])
+                    return d
+                if w == 32:
+                    s = Imm(v - (1 << 32) if v >= 1 << 31 else v)
+                    self.emit(op, [Reg(d, 32), s], defs=[d], uses=[d])
+                    return d
             s = self.rhs(e.b)
             self.emit(op, [Reg(d, 64), s], defs=[d], uses=[d] + regs_in(s))
             return d

@@ -57,6 +57,7 @@ def _cases() -> list:
             out.append(Ins("mov", [_g(reg), Imm(v)]))
         out.append(Ins("mov", [Mem(R[reg], disp=8, w=64), Imm(-5)]))
         out.append(Ins("test", [_g(reg), _g(reg)]))
+        out += [Ins("not", [_g(reg)]), Ins("not", [_g(reg, 32)])]
     for op in ("shl", "shr"):
         for reg in ("rax", "r9"):
             out += [Ins(op, [_g(reg), Imm(1)]), Ins(op, [_g(reg), Imm(5)]),

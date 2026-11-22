@@ -166,6 +166,8 @@ def length(ins) -> int:
         if len(a) == 3:
             return _legacy(1, a[:2], a[0].w == 64, imm=1 if _imm8(a[2].v, a[0].w) else 4)
         return _legacy(2, a, a[0].w == 64)
+    if op == "not":                                 # F7 /2
+        return _legacy(1, a, a[0].w == 64)
     if op in ("bsf", "bsr", "bt") or op.startswith("cmov"):
         return _legacy(2, a, a[0].w == 64)
     if op == "popcnt":
