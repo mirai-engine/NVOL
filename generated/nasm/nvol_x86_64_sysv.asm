@@ -6499,7 +6499,7 @@ L.nvol_first_non_ascii_scalar:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x0
-global nvol_first_non_ascii_sse2:function hidden 256
+global nvol_first_non_ascii_sse2:function hidden 261
 nvol_first_non_ascii_sse2:
 L.nvol_first_non_ascii_sse2:
     mov rcx, rsi
@@ -6515,10 +6515,10 @@ L.nvol_first_non_ascii_sse2:
     and rdi, -16
     add rdi, 16
     cmp rcx, 64
-    jb strict short L.nvol_first_non_ascii_sse2 + 144
+    jb strict short L.nvol_first_non_ascii_sse2 + 112
     lea rcx, [rsi - 64]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_sse2 + 144
+    ja strict short L.nvol_first_non_ascii_sse2 + 112
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L6:
     movdqa xmm0, [rdi]
@@ -6532,23 +6532,7 @@ L.nvol_first_non_ascii_sse2:
     por xmm4, xmm5
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_first_non_ascii_sse2 + 135
-    pmovmskb eax, xmm0
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_sse2 + 213
-; .L10:
-    pmovmskb eax, xmm1
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_sse2 + 221
-; .L12:
-    pmovmskb eax, xmm2
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_sse2 + 230
-; .L14:
-    pmovmskb eax, xmm3
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_sse2 + 239
-; .L16:
+    jne strict short L.nvol_first_non_ascii_sse2 + 224
 ; .L8:
     add rdi, 64
     cmp rdi, rcx
@@ -6557,25 +6541,25 @@ L.nvol_first_non_ascii_sse2:
 ; .L4:
     lea rcx, [rsi - 16]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_sse2 + 181
+    ja strict short L.nvol_first_non_ascii_sse2 + 149
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L18:
     movdqu xmm0, [rdi]
     pmovmskb eax, xmm0
     test eax, eax
-    jne strict short L.nvol_first_non_ascii_sse2 + 248
+    jne strict short L.nvol_first_non_ascii_sse2 + 216
 ; .L20:
     add rdi, 16
     cmp rdi, rcx
-    jbe strict short L.nvol_first_non_ascii_sse2 + 160
+    jbe strict short L.nvol_first_non_ascii_sse2 + 128
 ; .L19:
     cmp rdi, rsi
-    jae strict short L.nvol_first_non_ascii_sse2 + 210
+    jae strict short L.nvol_first_non_ascii_sse2 + 178
     lea rdi, [rsi - 16]
     movdqu xmm0, [rdi]
     pmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_first_non_ascii_sse2 + 210
+    je strict short L.nvol_first_non_ascii_sse2 + 178
     bsf eax, eax
     lea rax, [rdi + rax]
     ret
@@ -6604,8 +6588,33 @@ L.nvol_first_non_ascii_sse2:
     bsf eax, eax
     lea rax, [rdi + rax]
     ret
+; .Lrare1:
+    pmovmskb eax, xmm0
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_sse2 + 181
+; .L10:
+    pmovmskb eax, xmm1
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_sse2 + 189
+; .L12:
+    pmovmskb eax, xmm2
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_sse2 + 198
+; .L14:
+    pmovmskb eax, xmm3
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_sse2 + 207
+; .L16:
+    jmp strict near L.nvol_first_non_ascii_sse2 + 103
 
-global nvol_first_non_ascii_avx2:function hidden 277
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_first_non_ascii_avx2:function hidden 282
 nvol_first_non_ascii_avx2:
 L.nvol_first_non_ascii_avx2:
     mov rcx, rsi
@@ -6622,10 +6631,10 @@ L.nvol_first_non_ascii_avx2:
     and rdi, -32
     add rdi, 32
     cmp rcx, 128
-    jb strict short L.nvol_first_non_ascii_avx2 + 144
+    jb strict short L.nvol_first_non_ascii_avx2 + 116
     lea rcx, [rsi - 128]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_avx2 + 144
+    ja strict short L.nvol_first_non_ascii_avx2 + 116
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L6:
     vmovdqa ymm0, [rdi]
@@ -6637,23 +6646,7 @@ L.nvol_first_non_ascii_avx2:
     vpor ymm4, ymm4, ymm5
     vpmovmskb eax, ymm4
     test eax, eax
-    je strict short L.nvol_first_non_ascii_avx2 + 135
-    vpmovmskb eax, ymm0
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_avx2 + 219
-; .L10:
-    vpmovmskb eax, ymm1
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_avx2 + 230
-; .L12:
-    vpmovmskb eax, ymm2
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_avx2 + 242
-; .L14:
-    vpmovmskb eax, ymm3
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_avx2 + 254
-; .L16:
+    jne strict near L.nvol_first_non_ascii_avx2 + 245
 ; .L8:
     sub rdi, -128
     cmp rdi, rcx
@@ -6662,25 +6655,25 @@ L.nvol_first_non_ascii_avx2:
 ; .L4:
     lea rcx, [rsi - 32]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_avx2 + 181
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    ja strict short L.nvol_first_non_ascii_avx2 + 149
+    db 0xf, 0x1f, 0x0
 ; .L18:
     vmovdqu ymm0, [rdi]
     vpmovmskb eax, ymm0
     test eax, eax
-    jne strict short L.nvol_first_non_ascii_avx2 + 266
+    jne strict short L.nvol_first_non_ascii_avx2 + 234
 ; .L20:
     add rdi, 32
     cmp rdi, rcx
-    jbe strict short L.nvol_first_non_ascii_avx2 + 160
+    jbe strict short L.nvol_first_non_ascii_avx2 + 128
 ; .L19:
     cmp rdi, rsi
-    jae strict short L.nvol_first_non_ascii_avx2 + 213
+    jae strict short L.nvol_first_non_ascii_avx2 + 181
     lea rdi, [rsi - 32]
     vmovdqu ymm0, [rdi]
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_first_non_ascii_avx2 + 213
+    je strict short L.nvol_first_non_ascii_avx2 + 181
     bsf eax, eax
     lea rax, [rdi + rax]
     vzeroupper
@@ -6716,13 +6709,31 @@ L.nvol_first_non_ascii_avx2:
     lea rax, [rdi + rax]
     vzeroupper
     ret
+; .Lrare1:
+    vpmovmskb eax, ymm0
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_avx2 + 187
+; .L10:
+    vpmovmskb eax, ymm1
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_avx2 + 198
+; .L12:
+    vpmovmskb eax, ymm2
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_avx2 + 210
+; .L14:
+    vpmovmskb eax, ymm3
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_avx2 + 222
+; .L16:
+    jmp strict near L.nvol_first_non_ascii_avx2 + 107
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-global nvol_first_non_ascii_entry_avx2:function hidden 634
+    db 0x66, 0x90
+global nvol_first_non_ascii_entry_avx2:function hidden 612
 nvol_first_non_ascii_entry_avx2:
 L.nvol_first_non_ascii_entry_avx2:
     mov rcx, rsi
@@ -6735,7 +6746,7 @@ L.nvol_first_non_ascii_entry_avx2:
 ; .L4:
     movzx eax, byte [rdi]
     cmp eax, 128
-    jae strict near L.nvol_first_non_ascii_entry_avx2 + 511
+    jae strict near L.nvol_first_non_ascii_entry_avx2 + 415
 ; .L6:
     add rdi, 1
     cmp rdi, rsi
@@ -6746,7 +6757,7 @@ L.nvol_first_non_ascii_entry_avx2:
     ret
 ; .L2:
     cmp rcx, 32
-    jae strict near L.nvol_first_non_ascii_entry_avx2 + 287
+    jae strict near L.nvol_first_non_ascii_entry_avx2 + 239
     vmovdqu xmm0, [rdi]
     vpmovmskb eax, xmm0
     test eax, eax
@@ -6759,10 +6770,10 @@ L.nvol_first_non_ascii_entry_avx2:
     and rdi, -16
     add rdi, 16
     cmp rcx, 64
-    jb strict short L.nvol_first_non_ascii_entry_avx2 + 208
+    jb strict short L.nvol_first_non_ascii_entry_avx2 + 164
     lea rcx, [rsi - 64]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_entry_avx2 + 208
+    ja strict short L.nvol_first_non_ascii_entry_avx2 + 164
     db 0xf, 0x1f, 0x0
 ; .L14:
     vmovdqa xmm0, [rdi]
@@ -6774,23 +6785,7 @@ L.nvol_first_non_ascii_entry_avx2:
     vpor xmm4, xmm4, xmm5
     vpmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_first_non_ascii_entry_avx2 + 199
-    vpmovmskb eax, xmm0
-    test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 518
-; .L18:
-    vpmovmskb eax, xmm1
-    test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 529
-; .L20:
-    vpmovmskb eax, xmm2
-    test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 541
-; .L22:
-    vpmovmskb eax, xmm3
-    test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 553
-; .L24:
+    jne strict near L.nvol_first_non_ascii_entry_avx2 + 538
 ; .L16:
     add rdi, 64
     cmp rdi, rcx
@@ -6799,25 +6794,25 @@ L.nvol_first_non_ascii_entry_avx2:
 ; .L12:
     lea rcx, [rsi - 16]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_entry_avx2 + 249
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    ja strict short L.nvol_first_non_ascii_entry_avx2 + 201
+    db 0xf, 0x1f, 0x0
 ; .L26:
     vmovdqu xmm0, [rdi]
     vpmovmskb eax, xmm0
     test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 565
+    jne strict near L.nvol_first_non_ascii_entry_avx2 + 469
 ; .L28:
     add rdi, 16
     cmp rdi, rcx
-    jbe strict short L.nvol_first_non_ascii_entry_avx2 + 224
+    jbe strict short L.nvol_first_non_ascii_entry_avx2 + 176
 ; .L27:
     cmp rdi, rsi
-    jae strict short L.nvol_first_non_ascii_entry_avx2 + 281
+    jae strict short L.nvol_first_non_ascii_entry_avx2 + 233
     lea rdi, [rsi - 16]
     vmovdqu xmm0, [rdi]
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_first_non_ascii_entry_avx2 + 281
+    je strict short L.nvol_first_non_ascii_entry_avx2 + 233
     bsf eax, eax
     lea rax, [rdi + rax]
     vzeroupper
@@ -6831,7 +6826,7 @@ L.nvol_first_non_ascii_entry_avx2:
     vmovdqu ymm0, [rdi]
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_first_non_ascii_entry_avx2 + 310
+    je strict short L.nvol_first_non_ascii_entry_avx2 + 262
     bsf eax, eax
     lea rax, [rdi + rax]
     vzeroupper
@@ -6840,10 +6835,10 @@ L.nvol_first_non_ascii_entry_avx2:
     and rdi, -32
     add rdi, 32
     cmp rcx, 128
-    jb strict short L.nvol_first_non_ascii_entry_avx2 + 432
+    jb strict short L.nvol_first_non_ascii_entry_avx2 + 340
     lea rcx, [rsi - 128]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_entry_avx2 + 432
+    ja strict short L.nvol_first_non_ascii_entry_avx2 + 340
 ; .L38:
     vmovdqa ymm0, [rdi]
     vmovdqa ymm1, [rdi + 32]
@@ -6854,50 +6849,34 @@ L.nvol_first_non_ascii_entry_avx2:
     vpor ymm4, ymm4, ymm5
     vpmovmskb eax, ymm4
     test eax, eax
-    je strict short L.nvol_first_non_ascii_entry_avx2 + 423
-    vpmovmskb eax, ymm0
-    test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 576
-; .L42:
-    vpmovmskb eax, ymm1
-    test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 587
-; .L44:
-    vpmovmskb eax, ymm2
-    test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 599
-; .L46:
-    vpmovmskb eax, ymm3
-    test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 611
-; .L48:
+    jne strict near L.nvol_first_non_ascii_entry_avx2 + 575
 ; .L40:
     sub rdi, -128
     cmp rdi, rcx
-    jbe strict short L.nvol_first_non_ascii_entry_avx2 + 336
+    jbe strict short L.nvol_first_non_ascii_entry_avx2 + 288
 ; .L39:
 ; .L36:
     lea rcx, [rsi - 32]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_entry_avx2 + 473
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    ja strict short L.nvol_first_non_ascii_entry_avx2 + 377
+    db 0xf, 0x1f, 0x0
 ; .L50:
     vmovdqu ymm0, [rdi]
     vpmovmskb eax, ymm0
     test eax, eax
-    jne strict near L.nvol_first_non_ascii_entry_avx2 + 623
+    jne strict near L.nvol_first_non_ascii_entry_avx2 + 527
 ; .L52:
     add rdi, 32
     cmp rdi, rcx
-    jbe strict short L.nvol_first_non_ascii_entry_avx2 + 448
+    jbe strict short L.nvol_first_non_ascii_entry_avx2 + 352
 ; .L51:
     cmp rdi, rsi
-    jae strict short L.nvol_first_non_ascii_entry_avx2 + 505
+    jae strict short L.nvol_first_non_ascii_entry_avx2 + 409
     lea rdi, [rsi - 32]
     vmovdqu ymm0, [rdi]
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_first_non_ascii_entry_avx2 + 505
+    je strict short L.nvol_first_non_ascii_entry_avx2 + 409
     bsf eax, eax
     lea rax, [rdi + rax]
     vzeroupper
@@ -6962,9 +6941,48 @@ L.nvol_first_non_ascii_entry_avx2:
     lea rax, [rdi + rax]
     vzeroupper
     ret
+; .Lrare1:
+    vpmovmskb eax, xmm0
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_avx2 + 422
+; .L18:
+    vpmovmskb eax, xmm1
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_avx2 + 433
+; .L20:
+    vpmovmskb eax, xmm2
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_avx2 + 445
+; .L22:
+    vpmovmskb eax, xmm3
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_avx2 + 457
+; .L24:
+    jmp strict near L.nvol_first_non_ascii_entry_avx2 + 155
+; .Lrare2:
+    vpmovmskb eax, ymm0
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_avx2 + 480
+; .L42:
+    vpmovmskb eax, ymm1
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_avx2 + 491
+; .L44:
+    vpmovmskb eax, ymm2
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_avx2 + 503
+; .L46:
+    vpmovmskb eax, ymm3
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_avx2 + 515
+; .L48:
+    jmp strict near L.nvol_first_non_ascii_entry_avx2 + 331
 
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-global nvol_first_non_ascii_entry_sse2:function hidden 300
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+global nvol_first_non_ascii_entry_sse2:function hidden 305
 nvol_first_non_ascii_entry_sse2:
 L.nvol_first_non_ascii_entry_sse2:
     mov rcx, rsi
@@ -6977,7 +6995,7 @@ L.nvol_first_non_ascii_entry_sse2:
 ; .L4:
     movzx eax, byte [rdi]
     cmp eax, 128
-    jae strict near L.nvol_first_non_ascii_entry_sse2 + 253
+    jae strict near L.nvol_first_non_ascii_entry_sse2 + 221
 ; .L6:
     add rdi, 1
     cmp rdi, rsi
@@ -6997,10 +7015,10 @@ L.nvol_first_non_ascii_entry_sse2:
     and rdi, -16
     add rdi, 16
     cmp rcx, 64
-    jb strict short L.nvol_first_non_ascii_entry_sse2 + 184
+    jb strict short L.nvol_first_non_ascii_entry_sse2 + 152
     lea rcx, [rsi - 64]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_entry_sse2 + 184
+    ja strict short L.nvol_first_non_ascii_entry_sse2 + 152
     db 0xf, 0x1f, 0x0
 ; .L12:
     movdqa xmm0, [rdi]
@@ -7014,23 +7032,7 @@ L.nvol_first_non_ascii_entry_sse2:
     por xmm4, xmm5
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_first_non_ascii_entry_sse2 + 175
-    pmovmskb eax, xmm0
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_entry_sse2 + 257
-; .L16:
-    pmovmskb eax, xmm1
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_entry_sse2 + 265
-; .L18:
-    pmovmskb eax, xmm2
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_entry_sse2 + 274
-; .L20:
-    pmovmskb eax, xmm3
-    test eax, eax
-    jne strict short L.nvol_first_non_ascii_entry_sse2 + 283
-; .L22:
+    jne strict short L.nvol_first_non_ascii_entry_sse2 + 268
 ; .L14:
     add rdi, 64
     cmp rdi, rcx
@@ -7039,25 +7041,25 @@ L.nvol_first_non_ascii_entry_sse2:
 ; .L10:
     lea rcx, [rsi - 16]
     cmp rdi, rcx
-    ja strict short L.nvol_first_non_ascii_entry_sse2 + 221
+    ja strict short L.nvol_first_non_ascii_entry_sse2 + 189
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L24:
     movdqu xmm0, [rdi]
     pmovmskb eax, xmm0
     test eax, eax
-    jne strict short L.nvol_first_non_ascii_entry_sse2 + 292
+    jne strict short L.nvol_first_non_ascii_entry_sse2 + 260
 ; .L26:
     add rdi, 16
     cmp rdi, rcx
-    jbe strict short L.nvol_first_non_ascii_entry_sse2 + 200
+    jbe strict short L.nvol_first_non_ascii_entry_sse2 + 168
 ; .L25:
     cmp rdi, rsi
-    jae strict short L.nvol_first_non_ascii_entry_sse2 + 250
+    jae strict short L.nvol_first_non_ascii_entry_sse2 + 218
     lea rdi, [rsi - 16]
     movdqu xmm0, [rdi]
     pmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_first_non_ascii_entry_sse2 + 250
+    je strict short L.nvol_first_non_ascii_entry_sse2 + 218
     bsf eax, eax
     lea rax, [rdi + rax]
     ret
@@ -7089,10 +7091,27 @@ L.nvol_first_non_ascii_entry_sse2:
     bsf eax, eax
     lea rax, [rdi + rax]
     ret
+; .Lrare1:
+    pmovmskb eax, xmm0
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_sse2 + 225
+; .L16:
+    pmovmskb eax, xmm1
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_sse2 + 233
+; .L18:
+    pmovmskb eax, xmm2
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_sse2 + 242
+; .L20:
+    pmovmskb eax, xmm3
+    test eax, eax
+    jne strict short L.nvol_first_non_ascii_entry_sse2 + 251
+; .L22:
+    jmp strict near L.nvol_first_non_ascii_entry_sse2 + 143
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_first_non_ascii_raw:function 6
 nvol_first_non_ascii_raw:
 L.nvol_first_non_ascii_raw:
@@ -7205,7 +7224,7 @@ L.nvol_is_equal:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-global nvol_memmem_rk:function hidden 234
+global nvol_memmem_rk:function hidden 235
 nvol_memmem_rk:
 L.nvol_memmem_rk:
     push rbx
@@ -7238,7 +7257,7 @@ L.nvol_memmem_rk:
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L6:
     cmp r10d, r9d
-    jne strict short L.nvol_memmem_rk + 176
+    jne strict short L.nvol_memmem_rk + 144
     xor eax, eax
     lea r11, [rax + 4]
     cmp r11, rdx
@@ -7248,7 +7267,7 @@ L.nvol_memmem_rk:
     mov r11d, dword [rcx + rax]
     mov ebx, dword [rsi + rax]
     cmp r11d, ebx
-    jne strict short L.nvol_memmem_rk + 213
+    jne strict short L.nvol_memmem_rk + 178
 ; .L13:
     lea rax, [rax + 4]
     lea r11, [rax + 4]
@@ -7257,29 +7276,18 @@ L.nvol_memmem_rk:
 ; .L12:
     lea r11, [rax + 2]
     cmp r11, rdx
-    ja strict short L.nvol_memmem_rk + 148
-    movzx r11d, word [rcx + rax]
-    movzx ebx, word [rsi + rax]
-    cmp r11d, ebx
-    jne strict short L.nvol_memmem_rk + 217
-; .L17:
-    lea rax, [rax + 2]
+    jbe strict short L.nvol_memmem_rk + 199
 ; .L15:
     cmp rax, rdx
-    jae strict short L.nvol_memmem_rk + 167
-    movzx r11d, byte [rcx + rax]
-    movzx eax, byte [rsi + rax]
-    cmp r11d, eax
-    jne strict short L.nvol_memmem_rk + 221
-; .L21:
+    jb strict short L.nvol_memmem_rk + 219
 ; .L19:
     mov eax, 1
 ; .L10:
     test eax, eax
-    jne strict short L.nvol_memmem_rk + 225
+    jne strict short L.nvol_memmem_rk + 190
 ; .L8:
     cmp rcx, r8
-    jae strict short L.nvol_memmem_rk + 230
+    jae strict short L.nvol_memmem_rk + 195
 ; .L23:
     movzx eax, byte [rcx]
     imul eax, edi
@@ -7288,20 +7296,20 @@ L.nvol_memmem_rk:
     movzx eax, byte [rcx + rdx]
     add r10d, eax
     lea rcx, [rcx + 1]
-    jmp strict near L.nvol_memmem_rk + 72
+    jmp strict short L.nvol_memmem_rk + 72
     xor eax, eax
 ; .L1:
     pop rbx
     ret
 ; .L14:
     xor eax, eax
-    jmp strict short L.nvol_memmem_rk + 172
+    jmp strict short L.nvol_memmem_rk + 140
 ; .L18:
     xor eax, eax
-    jmp strict short L.nvol_memmem_rk + 172
+    jmp strict short L.nvol_memmem_rk + 140
 ; .L22:
     xor eax, eax
-    jmp strict short L.nvol_memmem_rk + 172
+    jmp strict short L.nvol_memmem_rk + 140
 ; .L9:
     mov rax, rcx
     pop rbx
@@ -7310,11 +7318,26 @@ L.nvol_memmem_rk:
     xor eax, eax
     pop rbx
     ret
+; .Lrare1:
+    movzx r11d, word [rcx + rax]
+    movzx ebx, word [rsi + rax]
+    cmp r11d, ebx
+    jne strict short L.nvol_memmem_rk + 182
+; .L17:
+    lea rax, [rax + 2]
+    jmp strict short L.nvol_memmem_rk + 130
+; .Lrare2:
+    movzx r11d, byte [rcx + rax]
+    movzx eax, byte [rsi + rax]
+    cmp r11d, eax
+    jne strict short L.nvol_memmem_rk + 186
+; .L21:
+    jmp strict short L.nvol_memmem_rk + 135
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
-global nvol_memmem_rk_oneshot:function 262
+    db 0xf, 0x1f, 0x0
+global nvol_memmem_rk_oneshot:function 266
 nvol_memmem_rk_oneshot:
 L.nvol_memmem_rk_oneshot:
     push rbx
@@ -7363,7 +7386,7 @@ L.nvol_memmem_rk_oneshot:
 ; .L9:
 ; .L10:
     cmp esi, r9d
-    jne strict short L.nvol_memmem_rk_oneshot + 208
+    jne strict short L.nvol_memmem_rk_oneshot + 176
     xor eax, eax
     lea r11, [rax + 4]
     cmp r11, r8
@@ -7372,7 +7395,7 @@ L.nvol_memmem_rk_oneshot:
     mov r11d, dword [rdx + rax]
     mov ebx, dword [rdi + rax]
     cmp r11d, ebx
-    jne strict short L.nvol_memmem_rk_oneshot + 241
+    jne strict short L.nvol_memmem_rk_oneshot + 209
 ; .L17:
     lea rax, [rax + 4]
     lea r11, [rax + 4]
@@ -7381,29 +7404,18 @@ L.nvol_memmem_rk_oneshot:
 ; .L16:
     lea r11, [rax + 2]
     cmp r11, r8
-    ja strict short L.nvol_memmem_rk_oneshot + 180
-    movzx r11d, word [rdx + rax]
-    movzx ebx, word [rdi + rax]
-    cmp r11d, ebx
-    jne strict short L.nvol_memmem_rk_oneshot + 245
-; .L21:
-    lea rax, [rax + 2]
+    jbe strict short L.nvol_memmem_rk_oneshot + 230
 ; .L19:
     cmp rax, r8
-    jae strict short L.nvol_memmem_rk_oneshot + 199
-    movzx r11d, byte [rdx + rax]
-    movzx eax, byte [rdi + rax]
-    cmp r11d, eax
-    jne strict short L.nvol_memmem_rk_oneshot + 249
-; .L25:
+    jb strict short L.nvol_memmem_rk_oneshot + 250
 ; .L23:
     mov eax, 1
 ; .L14:
     test eax, eax
-    jne strict short L.nvol_memmem_rk_oneshot + 253
+    jne strict short L.nvol_memmem_rk_oneshot + 221
 ; .L12:
     cmp rdx, rcx
-    jae strict short L.nvol_memmem_rk_oneshot + 258
+    jae strict short L.nvol_memmem_rk_oneshot + 226
 ; .L27:
     movzx eax, byte [rdx]
     imul eax, r10d
@@ -7419,13 +7431,13 @@ L.nvol_memmem_rk_oneshot:
     ret
 ; .L18:
     xor eax, eax
-    jmp strict short L.nvol_memmem_rk_oneshot + 204
+    jmp strict short L.nvol_memmem_rk_oneshot + 172
 ; .L22:
     xor eax, eax
-    jmp strict short L.nvol_memmem_rk_oneshot + 204
+    jmp strict short L.nvol_memmem_rk_oneshot + 172
 ; .L26:
     xor eax, eax
-    jmp strict short L.nvol_memmem_rk_oneshot + 204
+    jmp strict short L.nvol_memmem_rk_oneshot + 172
 ; .L13:
     mov rax, rdx
     pop rbx
@@ -7434,6 +7446,21 @@ L.nvol_memmem_rk_oneshot:
     xor eax, eax
     pop rbx
     ret
+; .Lrare1:
+    movzx r11d, word [rdx + rax]
+    movzx ebx, word [rdi + rax]
+    cmp r11d, ebx
+    jne strict short L.nvol_memmem_rk_oneshot + 213
+; .L21:
+    lea rax, [rax + 2]
+    jmp strict short L.nvol_memmem_rk_oneshot + 162
+; .Lrare2:
+    movzx r11d, byte [rdx + rax]
+    movzx eax, byte [rdi + rax]
+    cmp r11d, eax
+    jne strict short L.nvol_memmem_rk_oneshot + 217
+; .L25:
+    jmp strict short L.nvol_memmem_rk_oneshot + 167
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
@@ -7441,7 +7468,6 @@ L.nvol_memmem_rk_oneshot:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
 global nvol_memmem_suffix_min:function hidden 135
 nvol_memmem_suffix_min:
 L.nvol_memmem_suffix_min:
@@ -7998,7 +8024,7 @@ L.nvol_memmem_pppre_avx2:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x40, 0x0
-global nvol_memmem_pp_sse2:function hidden 595
+global nvol_memmem_pp_sse2:function hidden 613
 nvol_memmem_pp_sse2:
 L.nvol_memmem_pp_sse2:
     push rbx
@@ -8025,7 +8051,7 @@ L.nvol_memmem_pp_sse2:
     mov r10, r8
     sub r10, rax
     cmp rcx, r10
-    ja strict near L.nvol_memmem_pp_sse2 + 305
+    ja strict near L.nvol_memmem_pp_sse2 + 271
     db 0xf, 0x1f, 0x40, 0x0
 ; .L2:
     movdqu xmm2, [rcx + r9]
@@ -8035,7 +8061,7 @@ L.nvol_memmem_pp_sse2:
     pand xmm2, xmm3
     pmovmskb r11d, xmm2
     test r11d, r11d
-    je strict near L.nvol_memmem_pp_sse2 + 292
+    je strict near L.nvol_memmem_pp_sse2 + 258
     db 0xf, 0x1f, 0x0
 ; .L4:
     bsf eax, r11d
@@ -8043,7 +8069,7 @@ L.nvol_memmem_pp_sse2:
     mov rbx, r8
     sub rbx, rax
     cmp rbx, rdx
-    jb strict near L.nvol_memmem_pp_sse2 + 538
+    jb strict near L.nvol_memmem_pp_sse2 + 473
 ; .L6:
     xor ebx, ebx
     lea rbp, [rbx + 4]
@@ -8054,7 +8080,7 @@ L.nvol_memmem_pp_sse2:
     mov ebp, dword [rsi + rbx]
     mov r12d, dword [rax + rbx]
     cmp ebp, r12d
-    jne strict near L.nvol_memmem_pp_sse2 + 545
+    jne strict near L.nvol_memmem_pp_sse2 + 480
 ; .L13:
     lea rbx, [rbx + 4]
     lea rbp, [rbx + 4]
@@ -8063,44 +8089,33 @@ L.nvol_memmem_pp_sse2:
 ; .L12:
     lea rbp, [rbx + 2]
     cmp rbp, rdx
-    ja strict short L.nvol_memmem_pp_sse2 + 236
-    movzx ebp, word [rsi + rbx]
-    movzx r12d, word [rax + rbx]
-    cmp ebp, r12d
-    jne strict near L.nvol_memmem_pp_sse2 + 552
-; .L17:
-    lea rbx, [rbx + 2]
+    jbe strict near L.nvol_memmem_pp_sse2 + 530
 ; .L15:
     cmp rbx, rdx
-    jae strict short L.nvol_memmem_pp_sse2 + 257
-    movzx ebp, byte [rsi + rbx]
-    movzx ebx, byte [rax + rbx]
-    cmp ebp, ebx
-    jne strict near L.nvol_memmem_pp_sse2 + 559
-; .L21:
+    jb strict near L.nvol_memmem_pp_sse2 + 553
 ; .L19:
     mov ebx, 1
 ; .L10:
     test ebx, ebx
-    jne strict near L.nvol_memmem_pp_sse2 + 566
+    jne strict near L.nvol_memmem_pp_sse2 + 501
 ; .L8:
     mov rax, r11
     lea rbx, [r11 - 1]
     and rax, rbx
     mov r11, rax
     test r11d, r11d
-    jne strict near L.nvol_memmem_pp_sse2 + 136
+    jne strict short L.nvol_memmem_pp_sse2 + 136
 ; .L5:
     add rcx, 16
     cmp rcx, r10
     jbe strict near L.nvol_memmem_pp_sse2 + 96
 ; .L3:
     cmp rcx, r8
-    jae strict near L.nvol_memmem_pp_sse2 + 531
+    jae strict near L.nvol_memmem_pp_sse2 + 466
     mov rax, r8
     sub rax, rcx
     cmp rax, rdx
-    jae strict short L.nvol_memmem_pp_sse2 + 332
+    jae strict short L.nvol_memmem_pp_sse2 + 298
     xor eax, eax
     pop r12
     pop rbp
@@ -8118,61 +8133,50 @@ L.nvol_memmem_pp_sse2:
     pmovmskb ecx, xmm2
     and rcx, rax
     test ecx, ecx
-    je strict near L.nvol_memmem_pp_sse2 + 531
-    db 0xf, 0x1f, 0x0
+    je strict short L.nvol_memmem_pp_sse2 + 466
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L27:
     bsf eax, ecx
     lea rax, [r10 + rax]
     mov rdi, r8
     sub rdi, rax
     cmp rdi, rdx
-    jb strict near L.nvol_memmem_pp_sse2 + 571
+    jb strict near L.nvol_memmem_pp_sse2 + 506
 ; .L29:
     xor edi, edi
     lea r9, [rdi + 4]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_pp_sse2 + 454
+    ja strict short L.nvol_memmem_pp_sse2 + 418
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L34:
     mov r9d, dword [rsi + rdi]
     mov r11d, dword [rax + rdi]
     cmp r9d, r11d
-    jne strict near L.nvol_memmem_pp_sse2 + 578
+    jne strict short L.nvol_memmem_pp_sse2 + 513
 ; .L36:
     lea rdi, [rdi + 4]
     lea r9, [rdi + 4]
     cmp r9, rdx
-    jbe strict short L.nvol_memmem_pp_sse2 + 424
+    jbe strict short L.nvol_memmem_pp_sse2 + 392
 ; .L35:
     lea r9, [rdi + 2]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_pp_sse2 + 482
-    movzx r9d, word [rsi + rdi]
-    movzx r11d, word [rax + rdi]
-    cmp r9d, r11d
-    jne strict short L.nvol_memmem_pp_sse2 + 582
-; .L40:
-    lea rdi, [rdi + 2]
+    jbe strict near L.nvol_memmem_pp_sse2 + 570
 ; .L38:
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_pp_sse2 + 501
-    movzx r9d, byte [rsi + rdi]
-    movzx edi, byte [rax + rdi]
-    cmp r9d, edi
-    jne strict short L.nvol_memmem_pp_sse2 + 586
-; .L44:
+    jb strict near L.nvol_memmem_pp_sse2 + 594
 ; .L42:
     mov edi, 1
 ; .L33:
     test edi, edi
-    jne strict short L.nvol_memmem_pp_sse2 + 590
+    jne strict short L.nvol_memmem_pp_sse2 + 525
 ; .L31:
     mov rax, rcx
     lea rdi, [rcx - 1]
     and rax, rdi
     mov rcx, rax
     test ecx, ecx
-    jne strict near L.nvol_memmem_pp_sse2 + 384
+    jne strict short L.nvol_memmem_pp_sse2 + 352
 ; .L28:
 ; .L23:
     xor eax, eax
@@ -8189,13 +8193,13 @@ L.nvol_memmem_pp_sse2:
     ret
 ; .L14:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_pp_sse2 + 262
+    jmp strict near L.nvol_memmem_pp_sse2 + 232
 ; .L18:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_pp_sse2 + 262
+    jmp strict near L.nvol_memmem_pp_sse2 + 232
 ; .L22:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_pp_sse2 + 262
+    jmp strict near L.nvol_memmem_pp_sse2 + 232
 ; .L9:
     pop r12
     pop rbp
@@ -8209,21 +8213,49 @@ L.nvol_memmem_pp_sse2:
     ret
 ; .L37:
     xor edi, edi
-    jmp strict short L.nvol_memmem_pp_sse2 + 506
+    jmp strict short L.nvol_memmem_pp_sse2 + 445
 ; .L41:
     xor edi, edi
-    jmp strict short L.nvol_memmem_pp_sse2 + 506
+    jmp strict short L.nvol_memmem_pp_sse2 + 445
 ; .L45:
     xor edi, edi
-    jmp strict short L.nvol_memmem_pp_sse2 + 506
+    jmp strict short L.nvol_memmem_pp_sse2 + 445
 ; .L32:
     pop r12
     pop rbp
     pop rbx
     ret
+; .Lrare1:
+    movzx ebp, word [rsi + rbx]
+    movzx r12d, word [rax + rbx]
+    cmp ebp, r12d
+    jne strict short L.nvol_memmem_pp_sse2 + 487
+; .L17:
+    lea rbx, [rbx + 2]
+    jmp strict near L.nvol_memmem_pp_sse2 + 218
+; .Lrare2:
+    movzx ebp, byte [rsi + rbx]
+    movzx ebx, byte [rax + rbx]
+    cmp ebp, ebx
+    jne strict short L.nvol_memmem_pp_sse2 + 494
+; .L21:
+    jmp strict near L.nvol_memmem_pp_sse2 + 227
+; .Lrare3:
+    movzx r9d, word [rsi + rdi]
+    movzx r11d, word [rax + rdi]
+    cmp r9d, r11d
+    jne strict short L.nvol_memmem_pp_sse2 + 517
+; .L40:
+    lea rdi, [rdi + 2]
+    jmp strict near L.nvol_memmem_pp_sse2 + 431
+; .Lrare4:
+    movzx r9d, byte [rsi + rdi]
+    movzx edi, byte [rax + rdi]
+    cmp r9d, edi
+    jne strict short L.nvol_memmem_pp_sse2 + 521
+; .L44:
+    jmp strict near L.nvol_memmem_pp_sse2 + 440
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
@@ -8306,7 +8338,7 @@ L.nvol_memmem_pp2_sse2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x40, 0x0
-global nvol_memmem_tw_sse2:function hidden 1267
+global nvol_memmem_tw_sse2:function hidden 1280
 nvol_memmem_tw_sse2:
 L.nvol_memmem_tw_sse2:
     push rbx
@@ -8354,7 +8386,7 @@ L.nvol_memmem_tw_sse2:
     lea rcx, [r14 + rdx]
     mov r11, [rsp + 64]
     cmp rcx, r11
-    ja strict near L.nvol_memmem_tw_sse2 + 1181
+    ja strict near L.nvol_memmem_tw_sse2 + 1149
     db 0xf, 0x1f, 0x40, 0x0
 ; .L2:
     mov rdi, rbp
@@ -8382,7 +8414,7 @@ L.nvol_memmem_tw_sse2:
 ; .L7:
 ; .L4:
     test ecx, ecx
-    je strict near L.nvol_memmem_tw_sse2 + 846
+    je strict near L.nvol_memmem_tw_sse2 + 806
     mov rax, qword [rsp + 160]
     mov rcx, qword [rsp]
     mov rbx, qword [rsp + 32]
@@ -8415,7 +8447,7 @@ L.nvol_memmem_tw_sse2:
 ; .L16:
 ; .L15:
     cmp r8, rbx
-    jae strict near L.nvol_memmem_tw_sse2 + 749
+    jae strict near L.nvol_memmem_tw_sse2 + 709
     mov rax, qword [rsp + 128]
     mov r11, [rsp + 320]
     sub r8, r11
@@ -8423,10 +8455,10 @@ L.nvol_memmem_tw_sse2:
     jb strict short L.nvol_memmem_tw_sse2 + 437
     mov rdi, r8
     sub rdi, rax
-    jmp strict near L.nvol_memmem_tw_sse2 + 749
+    jmp strict near L.nvol_memmem_tw_sse2 + 709
 ; .L19:
     xor edi, edi
-    jmp strict near L.nvol_memmem_tw_sse2 + 749
+    jmp strict near L.nvol_memmem_tw_sse2 + 709
 ; .L12:
     mov rax, rdx
     mov r11, qword [rcx]
@@ -8475,43 +8507,33 @@ L.nvol_memmem_tw_sse2:
     pand xmm2, xmm3
     pmovmskb edi, xmm2
     test edi, edi
-    jne strict near L.nvol_memmem_tw_sse2 + 1201
+    jne strict near L.nvol_memmem_tw_sse2 + 1169
 ; .L24:
     add rcx, 16
     cmp rcx, rax
     jbe strict short L.nvol_memmem_tw_sse2 + 640
 ; .L23:
     cmp rcx, rbx
-    jae strict short L.nvol_memmem_tw_sse2 + 742
-    mov r11, [rsp + 384]
-    movdqu xmm2, [rax + r11]
-    pcmpeqb xmm2, xmm0
-    movdqu xmm0, [rax + r8]
-    pcmpeqb xmm0, xmm1
-    pand xmm2, xmm0
-    pmovmskb ecx, xmm2
-    test ecx, ecx
-    jne strict near L.nvol_memmem_tw_sse2 + 1224
-; .L28:
+    jb strict near L.nvol_memmem_tw_sse2 + 1235
 ; .L26:
     mov rdi, -1
 ; .L21:
 ; .L13:
     add r15, 1
     cmp rdi, -1
-    jne strict short L.nvol_memmem_tw_sse2 + 789
+    jne strict short L.nvol_memmem_tw_sse2 + 749
     mov r11, [rsp + 224]
     mov r10, [rsp + 288]
     lea r11, [r11 + r10]
     mov [rsp + 224], r11
-    jmp strict short L.nvol_memmem_tw_sse2 + 809
+    jmp strict short L.nvol_memmem_tw_sse2 + 769
 ; .L30:
     mov r11, [rsp + 224]
     lea r11, [r11 + rdi]
     mov [rsp + 224], r11
 ; .L31:
     cmp rdi, -1
-    je strict near L.nvol_memmem_tw_sse2 + 1247
+    je strict near L.nvol_memmem_tw_sse2 + 1215
 ; .L32:
     lea r14, [r14 + rdi]
     xor eax, eax
@@ -8519,7 +8541,7 @@ L.nvol_memmem_tw_sse2:
     lea rcx, [r14 + rdx]
     mov r11, [rsp + 64]
     cmp rcx, r11
-    ja strict near L.nvol_memmem_tw_sse2 + 1251
+    ja strict near L.nvol_memmem_tw_sse2 + 1219
 ; .L34:
 ; .L10:
     xor r8d, r8d
@@ -8534,85 +8556,85 @@ L.nvol_memmem_tw_sse2:
     setne cl
     movzx ecx, cl
     cmp r8d, ecx
-    jne strict short L.nvol_memmem_tw_sse2 + 908
+    jne strict short L.nvol_memmem_tw_sse2 + 868
     lea r14, [r14 + rdx]
     xor eax, eax
-    jmp strict near L.nvol_memmem_tw_sse2 + 1163
+    jmp strict near L.nvol_memmem_tw_sse2 + 1131
 ; .L36:
     test r12d, r12d
-    jne strict short L.nvol_memmem_tw_sse2 + 916
+    jne strict short L.nvol_memmem_tw_sse2 + 876
     mov rdi, rbp
 ; .L38:
     lea rcx, [r9 + r14]
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_tw_sse2 + 971
+    jae strict short L.nvol_memmem_tw_sse2 + 939
     movzx ecx, byte [rsi + rdi]
     lea r8, [r14 + rdi]
     movzx r8d, byte [r9 + r8]
     cmp ecx, r8d
-    jne strict short L.nvol_memmem_tw_sse2 + 971
-    db 0x90
+    jne strict short L.nvol_memmem_tw_sse2 + 939
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L40:
     add rdi, 1
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_tw_sse2 + 971
+    jae strict short L.nvol_memmem_tw_sse2 + 939
     movzx ecx, byte [rsi + rdi]
     lea r8, [r14 + rdi]
     movzx r8d, byte [r9 + r8]
     cmp ecx, r8d
-    je strict short L.nvol_memmem_tw_sse2 + 944
+    je strict short L.nvol_memmem_tw_sse2 + 912
 ; .L42:
 ; .L41:
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_tw_sse2 + 994
+    jae strict short L.nvol_memmem_tw_sse2 + 962
     sub rdi, rbp
     lea rax, [r14 + rdi]
     lea r14, [rax + 1]
     xor eax, eax
-    jmp strict near L.nvol_memmem_tw_sse2 + 1163
+    jmp strict near L.nvol_memmem_tw_sse2 + 1131
 ; .L43:
     test r12d, r12d
-    je strict short L.nvol_memmem_tw_sse2 + 1097
+    je strict short L.nvol_memmem_tw_sse2 + 1065
     mov rcx, rbp
     lea rdi, [r9 + r14]
     cmp rcx, rax
-    jbe strict short L.nvol_memmem_tw_sse2 + 1059
+    jbe strict short L.nvol_memmem_tw_sse2 + 1027
     movzx edi, byte [rsi + rcx]
     lea r8, [r14 + rcx]
     movzx r8d, byte [r9 + r8]
     cmp edi, r8d
-    jne strict short L.nvol_memmem_tw_sse2 + 1059
+    jne strict short L.nvol_memmem_tw_sse2 + 1027
     db 0xf, 0x1f, 0x0
 ; .L47:
     add rcx, -1
     cmp rcx, rax
-    jbe strict short L.nvol_memmem_tw_sse2 + 1059
+    jbe strict short L.nvol_memmem_tw_sse2 + 1027
     movzx edi, byte [rsi + rcx]
     lea r8, [r14 + rcx]
     movzx r8d, byte [r9 + r8]
     cmp edi, r8d
-    je strict short L.nvol_memmem_tw_sse2 + 1032
+    je strict short L.nvol_memmem_tw_sse2 + 1000
 ; .L49:
 ; .L48:
     cmp rcx, rax
-    ja strict short L.nvol_memmem_tw_sse2 + 1085
+    ja strict short L.nvol_memmem_tw_sse2 + 1053
     movzx ecx, byte [rsi + rax]
     lea rax, [r14 + rax]
     movzx eax, byte [r9 + rax]
     cmp ecx, eax
-    je strict near L.nvol_memmem_tw_sse2 + 1255
+    je strict near L.nvol_memmem_tw_sse2 + 1223
 ; .L50:
     lea r14, [r14 + r13]
     mov rax, rdx
     sub rax, r13
-    jmp strict short L.nvol_memmem_tw_sse2 + 1163
+    jmp strict short L.nvol_memmem_tw_sse2 + 1131
 ; .L45:
     mov ecx, 1
     mov rdi, rbp
     test ecx, ecx
-    je strict short L.nvol_memmem_tw_sse2 + 1155
+    je strict short L.nvol_memmem_tw_sse2 + 1123
     cmp rdi, 0
-    jbe strict short L.nvol_memmem_tw_sse2 + 1155
+    jbe strict short L.nvol_memmem_tw_sse2 + 1123
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L52:
     lea rdi, [rdi - 1]
@@ -8620,17 +8642,17 @@ L.nvol_memmem_tw_sse2:
     lea rbx, [r14 + rdi]
     movzx ebx, byte [r9 + rbx]
     cmp r8d, ebx
-    je strict short L.nvol_memmem_tw_sse2 + 1145
+    je strict short L.nvol_memmem_tw_sse2 + 1113
     xor ecx, ecx
 ; .L54:
     test ecx, ecx
-    je strict short L.nvol_memmem_tw_sse2 + 1155
+    je strict short L.nvol_memmem_tw_sse2 + 1123
     cmp rdi, 0
-    ja strict short L.nvol_memmem_tw_sse2 + 1120
+    ja strict short L.nvol_memmem_tw_sse2 + 1088
 ; .L56:
 ; .L53:
     test ecx, ecx
-    jne strict short L.nvol_memmem_tw_sse2 + 1261
+    jne strict short L.nvol_memmem_tw_sse2 + 1229
 ; .L57:
     lea r14, [r14 + r13]
 ; .L46:
@@ -8656,29 +8678,39 @@ L.nvol_memmem_tw_sse2:
     sub rcx, r11
     bsf eax, edi
     lea rdi, [rcx + rax]
-    jmp strict near L.nvol_memmem_tw_sse2 + 749
+    jmp strict near L.nvol_memmem_tw_sse2 + 709
 ; .L29:
     mov r11, [rsp + 320]
     sub rax, r11
     bsf ecx, ecx
     lea rdi, [rax + rcx]
-    jmp strict near L.nvol_memmem_tw_sse2 + 749
+    jmp strict near L.nvol_memmem_tw_sse2 + 709
 ; .L33:
     xor eax, eax
-    jmp strict short L.nvol_memmem_tw_sse2 + 1183
+    jmp strict short L.nvol_memmem_tw_sse2 + 1151
 ; .L35:
     xor eax, eax
-    jmp strict short L.nvol_memmem_tw_sse2 + 1183
+    jmp strict short L.nvol_memmem_tw_sse2 + 1151
 ; .L51:
     lea rax, [r9 + r14]
-    jmp strict short L.nvol_memmem_tw_sse2 + 1183
+    jmp strict short L.nvol_memmem_tw_sse2 + 1151
 ; .L58:
     lea rax, [r9 + r14]
-    jmp strict short L.nvol_memmem_tw_sse2 + 1183
+    jmp strict short L.nvol_memmem_tw_sse2 + 1151
+; .Lrare1:
+    mov r11, [rsp + 384]
+    movdqu xmm2, [rax + r11]
+    pcmpeqb xmm2, xmm0
+    movdqu xmm0, [rax + r8]
+    pcmpeqb xmm0, xmm1
+    pand xmm2, xmm0
+    pmovmskb ecx, xmm2
+    test ecx, ecx
+    jne strict short L.nvol_memmem_tw_sse2 + 1192
+; .L28:
+    jmp strict near L.nvol_memmem_tw_sse2 + 702
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
-global nvol_memmem_pp_avx2:function hidden 554
+global nvol_memmem_pp_avx2:function hidden 564
 nvol_memmem_pp_avx2:
 L.nvol_memmem_pp_avx2:
     push rbx
@@ -8703,14 +8735,14 @@ L.nvol_memmem_pp_avx2:
     mov r10, r8
     sub r10, rax
     cmp rcx, r10
-    ja strict near L.nvol_memmem_pp_avx2 + 281
+    ja strict near L.nvol_memmem_pp_avx2 + 247
 ; .L2:
     vpcmpeqb ymm2, ymm0, [rcx + r9]
     vpcmpeqb ymm3, ymm1, [rcx + rdi]
     vpand ymm2, ymm2, ymm3
     vpmovmskb r11d, ymm2
     test r11d, r11d
-    je strict near L.nvol_memmem_pp_avx2 + 268
+    je strict near L.nvol_memmem_pp_avx2 + 234
     db 0xf, 0x1f, 0x40, 0x0
 ; .L4:
     bsf eax, r11d
@@ -8718,7 +8750,7 @@ L.nvol_memmem_pp_avx2:
     mov rbx, r8
     sub rbx, rax
     cmp rbx, rdx
-    jb strict near L.nvol_memmem_pp_avx2 + 509
+    jb strict near L.nvol_memmem_pp_avx2 + 436
 ; .L6:
     xor ebx, ebx
     lea rbp, [rbx + 4]
@@ -8729,7 +8761,7 @@ L.nvol_memmem_pp_avx2:
     mov ebp, dword [rsi + rbx]
     mov r12d, dword [rax + rbx]
     cmp ebp, r12d
-    jne strict near L.nvol_memmem_pp_avx2 + 513
+    jne strict near L.nvol_memmem_pp_avx2 + 440
 ; .L13:
     lea rbx, [rbx + 4]
     lea rbp, [rbx + 4]
@@ -8738,46 +8770,35 @@ L.nvol_memmem_pp_avx2:
 ; .L12:
     lea rbp, [rbx + 2]
     cmp rbp, rdx
-    ja strict short L.nvol_memmem_pp_avx2 + 212
-    movzx ebp, word [rsi + rbx]
-    movzx r12d, word [rax + rbx]
-    cmp ebp, r12d
-    jne strict near L.nvol_memmem_pp_avx2 + 520
-; .L17:
-    lea rbx, [rbx + 2]
+    jbe strict near L.nvol_memmem_pp_avx2 + 481
 ; .L15:
     cmp rbx, rdx
-    jae strict short L.nvol_memmem_pp_avx2 + 233
-    movzx ebp, byte [rsi + rbx]
-    movzx ebx, byte [rax + rbx]
-    cmp ebp, ebx
-    jne strict near L.nvol_memmem_pp_avx2 + 527
-; .L21:
+    jb strict near L.nvol_memmem_pp_avx2 + 504
 ; .L19:
     mov ebx, 1
 ; .L10:
     test ebx, ebx
-    jne strict near L.nvol_memmem_pp_avx2 + 534
+    jne strict near L.nvol_memmem_pp_avx2 + 461
 ; .L8:
     mov rax, r11
     lea rbx, [r11 - 1]
     and rax, rbx
     mov r11, rax
     test r11d, r11d
-    jne strict near L.nvol_memmem_pp_avx2 + 112
+    jne strict short L.nvol_memmem_pp_avx2 + 112
 ; .L5:
     add rcx, 32
     cmp rcx, r10
     jbe strict near L.nvol_memmem_pp_avx2 + 80
 ; .L3:
     cmp rcx, r8
-    jae strict near L.nvol_memmem_pp_avx2 + 499
+    jae strict near L.nvol_memmem_pp_avx2 + 426
     mov rax, r8
     sub rax, rcx
     cmp rax, rdx
-    jae strict short L.nvol_memmem_pp_avx2 + 308
+    jae strict short L.nvol_memmem_pp_avx2 + 274
     xor eax, eax
-    jmp strict near L.nvol_memmem_pp_avx2 + 501
+    jmp strict near L.nvol_memmem_pp_avx2 + 428
 ; .L25:
     sub rcx, r10
     mov eax, 4294967295
@@ -8788,61 +8809,50 @@ L.nvol_memmem_pp_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict near L.nvol_memmem_pp_avx2 + 499
-    db 0xf, 0x1f, 0x0
+    je strict short L.nvol_memmem_pp_avx2 + 426
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L27:
     bsf eax, ecx
     lea rax, [r10 + rax]
     mov rdi, r8
     sub rdi, rax
     cmp rdi, rdx
-    jb strict near L.nvol_memmem_pp_avx2 + 536
+    jb strict short L.nvol_memmem_pp_avx2 + 463
 ; .L29:
     xor edi, edi
     lea r9, [rdi + 4]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_pp_avx2 + 422
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    ja strict short L.nvol_memmem_pp_avx2 + 378
+    db 0xf, 0x1f, 0x0
 ; .L34:
     mov r9d, dword [rsi + rdi]
     mov r11d, dword [rax + rdi]
     cmp r9d, r11d
-    jne strict near L.nvol_memmem_pp_avx2 + 540
+    jne strict short L.nvol_memmem_pp_avx2 + 467
 ; .L36:
     lea rdi, [rdi + 4]
     lea r9, [rdi + 4]
     cmp r9, rdx
-    jbe strict short L.nvol_memmem_pp_avx2 + 392
+    jbe strict short L.nvol_memmem_pp_avx2 + 352
 ; .L35:
     lea r9, [rdi + 2]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_pp_avx2 + 450
-    movzx r9d, word [rsi + rdi]
-    movzx r11d, word [rax + rdi]
-    cmp r9d, r11d
-    jne strict short L.nvol_memmem_pp_avx2 + 544
-; .L40:
-    lea rdi, [rdi + 2]
+    jbe strict near L.nvol_memmem_pp_avx2 + 521
 ; .L38:
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_pp_avx2 + 469
-    movzx r9d, byte [rsi + rdi]
-    movzx edi, byte [rax + rdi]
-    cmp r9d, edi
-    jne strict short L.nvol_memmem_pp_avx2 + 548
-; .L44:
+    jb strict near L.nvol_memmem_pp_avx2 + 545
 ; .L42:
     mov edi, 1
 ; .L33:
     test edi, edi
-    jne strict short L.nvol_memmem_pp_avx2 + 552
+    jne strict short L.nvol_memmem_pp_avx2 + 479
 ; .L31:
     mov rax, rcx
     lea rdi, [rcx - 1]
     and rax, rdi
     mov rcx, rax
     test ecx, ecx
-    jne strict near L.nvol_memmem_pp_avx2 + 352
+    jne strict short L.nvol_memmem_pp_avx2 + 320
 ; .L28:
 ; .L23:
     xor eax, eax
@@ -8854,36 +8864,65 @@ L.nvol_memmem_pp_avx2:
     ret
 ; .L7:
     xor eax, eax
-    jmp strict short L.nvol_memmem_pp_avx2 + 501
+    jmp strict short L.nvol_memmem_pp_avx2 + 428
 ; .L14:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_pp_avx2 + 238
+    jmp strict near L.nvol_memmem_pp_avx2 + 208
 ; .L18:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_pp_avx2 + 238
+    jmp strict near L.nvol_memmem_pp_avx2 + 208
 ; .L22:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_pp_avx2 + 238
+    jmp strict near L.nvol_memmem_pp_avx2 + 208
 ; .L9:
-    jmp strict short L.nvol_memmem_pp_avx2 + 501
+    jmp strict short L.nvol_memmem_pp_avx2 + 428
 ; .L30:
     xor eax, eax
-    jmp strict short L.nvol_memmem_pp_avx2 + 501
+    jmp strict short L.nvol_memmem_pp_avx2 + 428
 ; .L37:
     xor edi, edi
-    jmp strict short L.nvol_memmem_pp_avx2 + 474
+    jmp strict short L.nvol_memmem_pp_avx2 + 405
 ; .L41:
     xor edi, edi
-    jmp strict short L.nvol_memmem_pp_avx2 + 474
+    jmp strict short L.nvol_memmem_pp_avx2 + 405
 ; .L45:
     xor edi, edi
-    jmp strict short L.nvol_memmem_pp_avx2 + 474
+    jmp strict short L.nvol_memmem_pp_avx2 + 405
 ; .L32:
-    jmp strict short L.nvol_memmem_pp_avx2 + 501
+    jmp strict short L.nvol_memmem_pp_avx2 + 428
+; .Lrare1:
+    movzx ebp, word [rsi + rbx]
+    movzx r12d, word [rax + rbx]
+    cmp ebp, r12d
+    jne strict short L.nvol_memmem_pp_avx2 + 447
+; .L17:
+    lea rbx, [rbx + 2]
+    jmp strict near L.nvol_memmem_pp_avx2 + 194
+; .Lrare2:
+    movzx ebp, byte [rsi + rbx]
+    movzx ebx, byte [rax + rbx]
+    cmp ebp, ebx
+    jne strict short L.nvol_memmem_pp_avx2 + 454
+; .L21:
+    jmp strict near L.nvol_memmem_pp_avx2 + 203
+; .Lrare3:
+    movzx r9d, word [rsi + rdi]
+    movzx r11d, word [rax + rdi]
+    cmp r9d, r11d
+    jne strict short L.nvol_memmem_pp_avx2 + 471
+; .L40:
+    lea rdi, [rdi + 2]
+    jmp strict near L.nvol_memmem_pp_avx2 + 391
+; .Lrare4:
+    movzx r9d, byte [rsi + rdi]
+    movzx edi, byte [rax + rdi]
+    cmp r9d, edi
+    jne strict short L.nvol_memmem_pp_avx2 + 475
+; .L44:
+    jmp strict near L.nvol_memmem_pp_avx2 + 400
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0xf, 0x1f, 0x0
 global nvol_memmem_pp2_avx2:function hidden 195
 nvol_memmem_pp2_avx2:
 L.nvol_memmem_pp2_avx2:
@@ -8962,7 +9001,7 @@ L.nvol_memmem_pp2_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-global nvol_memmem_tw_avx2:function hidden 1553
+global nvol_memmem_tw_avx2:function hidden 1563
 nvol_memmem_tw_avx2:
 L.nvol_memmem_tw_avx2:
     push rbx
@@ -9019,7 +9058,7 @@ L.nvol_memmem_tw_avx2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 64]
     cmp rcx, r11
-    ja strict near L.nvol_memmem_tw_avx2 + 1433
+    ja strict near L.nvol_memmem_tw_avx2 + 1369
     db 0x90
 ; .L2:
     mov rdi, rbp
@@ -9047,7 +9086,7 @@ L.nvol_memmem_tw_avx2:
 ; .L7:
 ; .L4:
     test ecx, ecx
-    je strict near L.nvol_memmem_tw_avx2 + 1084
+    je strict near L.nvol_memmem_tw_avx2 + 1020
     mov rcx, qword [rsp + 160]
     mov rdi, qword [rsp]
     mov rbx, qword [rsp + 32]
@@ -9080,7 +9119,7 @@ L.nvol_memmem_tw_avx2:
 ; .L16:
 ; .L15:
     cmp r14, rbx
-    jae strict near L.nvol_memmem_tw_avx2 + 986
+    jae strict near L.nvol_memmem_tw_avx2 + 922
     mov rcx, qword [rsp + 128]
     mov r11, [rsp + 352]
     sub r14, r11
@@ -9088,15 +9127,15 @@ L.nvol_memmem_tw_avx2:
     jb strict short L.nvol_memmem_tw_avx2 + 469
     mov r8, r14
     sub r8, rcx
-    jmp strict near L.nvol_memmem_tw_avx2 + 986
+    jmp strict near L.nvol_memmem_tw_avx2 + 922
 ; .L19:
     xor r8d, r8d
-    jmp strict near L.nvol_memmem_tw_avx2 + 986
+    jmp strict near L.nvol_memmem_tw_avx2 + 922
 ; .L12:
     mov r11, [rsp + 320]
     mov r10, [rsp + 224]
     cmp r11, r10
-    jae strict near L.nvol_memmem_tw_avx2 + 781
+    jae strict near L.nvol_memmem_tw_avx2 + 749
     mov rcx, rdx
     mov r11, qword [rdi]
     mov [rsp + 416], r11
@@ -9137,7 +9176,7 @@ L.nvol_memmem_tw_avx2:
     vpand xmm2, xmm2, xmm3
     vpmovmskb r8d, xmm2
     test r8d, r8d
-    jne strict near L.nvol_memmem_tw_avx2 + 1456
+    jne strict near L.nvol_memmem_tw_avx2 + 1392
 ; .L26:
     add rdi, 16
     cmp rdi, rcx
@@ -9145,19 +9184,11 @@ L.nvol_memmem_tw_avx2:
 ; .L25:
     mov r11, [rsp + 32]
     cmp rdi, r11
-    jae strict short L.nvol_memmem_tw_avx2 + 764
-    mov r11, [rsp + 416]
-    vpcmpeqb xmm0, xmm0, [rcx + r11]
-    vpcmpeqb xmm1, xmm1, [rcx + r14]
-    vpand xmm0, xmm0, xmm1
-    vpmovmskb edi, xmm0
-    test edi, edi
-    jne strict near L.nvol_memmem_tw_avx2 + 1472
-; .L30:
+    jb strict near L.nvol_memmem_tw_avx2 + 1489
 ; .L28:
     mov r8, -1
-    jmp strict near L.nvol_memmem_tw_avx2 + 986
-    jmp strict near L.nvol_memmem_tw_avx2 + 986
+    jmp strict near L.nvol_memmem_tw_avx2 + 922
+    jmp strict near L.nvol_memmem_tw_avx2 + 922
 ; .L21:
     mov rcx, rdx
     mov r11, qword [rdi]
@@ -9180,7 +9211,7 @@ L.nvol_memmem_tw_avx2:
     sub r14, rcx
     mov rcx, qword [rsp + 352]
     cmp rcx, r14
-    ja strict short L.nvol_memmem_tw_avx2 + 933
+    ja strict short L.nvol_memmem_tw_avx2 + 901
     mov rbx, qword [rsp + 352]
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L33:
@@ -9190,23 +9221,15 @@ L.nvol_memmem_tw_avx2:
     vpand ymm2, ymm2, ymm3
     vpmovmskb edi, ymm2
     test edi, edi
-    jne strict near L.nvol_memmem_tw_avx2 + 1495
+    jne strict near L.nvol_memmem_tw_avx2 + 1431
 ; .L35:
     add rcx, 32
     cmp rcx, r14
-    jbe strict short L.nvol_memmem_tw_avx2 + 888
+    jbe strict short L.nvol_memmem_tw_avx2 + 856
 ; .L34:
     mov r11, [rsp + 32]
     cmp rcx, r11
-    jae strict short L.nvol_memmem_tw_avx2 + 979
-    mov r11, [rsp + 608]
-    vpcmpeqb ymm0, ymm0, [r14 + r11]
-    vpcmpeqb ymm1, ymm1, [r14 + r8]
-    vpand ymm0, ymm0, ymm1
-    vpmovmskb ecx, ymm0
-    test ecx, ecx
-    jne strict near L.nvol_memmem_tw_avx2 + 1510
-; .L39:
+    jb strict near L.nvol_memmem_tw_avx2 + 1526
 ; .L37:
     mov r8, -1
 ; .L32:
@@ -9214,19 +9237,19 @@ L.nvol_memmem_tw_avx2:
 ; .L13:
     add rax, 1
     cmp r8, -1
-    jne strict short L.nvol_memmem_tw_avx2 + 1026
+    jne strict short L.nvol_memmem_tw_avx2 + 962
     mov r11, [rsp + 256]
     mov r10, [rsp + 320]
     lea r11, [r11 + r10]
     mov [rsp + 256], r11
-    jmp strict short L.nvol_memmem_tw_avx2 + 1046
+    jmp strict short L.nvol_memmem_tw_avx2 + 982
 ; .L41:
     mov r11, [rsp + 256]
     lea r11, [r11 + r8]
     mov [rsp + 256], r11
 ; .L42:
     cmp r8, -1
-    je strict near L.nvol_memmem_tw_avx2 + 1533
+    je strict near L.nvol_memmem_tw_avx2 + 1469
 ; .L43:
     lea r15, [r15 + r8]
     xor r14d, r14d
@@ -9234,7 +9257,7 @@ L.nvol_memmem_tw_avx2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 64]
     cmp rcx, r11
-    ja strict near L.nvol_memmem_tw_avx2 + 1537
+    ja strict near L.nvol_memmem_tw_avx2 + 1473
 ; .L45:
 ; .L10:
     xor r8d, r8d
@@ -9249,86 +9272,86 @@ L.nvol_memmem_tw_avx2:
     setne cl
     movzx ecx, cl
     cmp r8d, ecx
-    jne strict short L.nvol_memmem_tw_avx2 + 1147
+    jne strict short L.nvol_memmem_tw_avx2 + 1083
     lea r15, [r15 + rdx]
     xor r14d, r14d
-    jmp strict near L.nvol_memmem_tw_avx2 + 1415
+    jmp strict near L.nvol_memmem_tw_avx2 + 1351
 ; .L47:
     test r12d, r12d
-    jne strict short L.nvol_memmem_tw_avx2 + 1155
+    jne strict short L.nvol_memmem_tw_avx2 + 1091
     mov rdi, rbp
 ; .L49:
     lea rcx, [r9 + r15]
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_tw_avx2 + 1211
+    jae strict short L.nvol_memmem_tw_avx2 + 1147
     movzx ecx, byte [rsi + rdi]
     lea r8, [r15 + rdi]
     movzx r8d, byte [r9 + r8]
     cmp ecx, r8d
-    jne strict short L.nvol_memmem_tw_avx2 + 1211
+    jne strict short L.nvol_memmem_tw_avx2 + 1147
     db 0x66, 0x90
 ; .L51:
     add rdi, 1
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_tw_avx2 + 1211
+    jae strict short L.nvol_memmem_tw_avx2 + 1147
     movzx ecx, byte [rsi + rdi]
     lea r8, [r15 + rdi]
     movzx r8d, byte [r9 + r8]
     cmp ecx, r8d
-    je strict short L.nvol_memmem_tw_avx2 + 1184
+    je strict short L.nvol_memmem_tw_avx2 + 1120
 ; .L53:
 ; .L52:
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_tw_avx2 + 1235
+    jae strict short L.nvol_memmem_tw_avx2 + 1171
     sub rdi, rbp
     lea rcx, [r15 + rdi]
     lea r15, [rcx + 1]
     xor r14d, r14d
-    jmp strict near L.nvol_memmem_tw_avx2 + 1415
+    jmp strict near L.nvol_memmem_tw_avx2 + 1351
 ; .L54:
     test r12d, r12d
-    je strict short L.nvol_memmem_tw_avx2 + 1346
+    je strict short L.nvol_memmem_tw_avx2 + 1282
     mov rcx, rbp
     lea rdi, [r9 + r15]
     cmp rcx, r14
-    jbe strict short L.nvol_memmem_tw_avx2 + 1307
+    jbe strict short L.nvol_memmem_tw_avx2 + 1243
     movzx edi, byte [rsi + rcx]
     lea r8, [r15 + rcx]
     movzx r8d, byte [r9 + r8]
     cmp edi, r8d
-    jne strict short L.nvol_memmem_tw_avx2 + 1307
+    jne strict short L.nvol_memmem_tw_avx2 + 1243
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L58:
     add rcx, -1
     cmp rcx, r14
-    jbe strict short L.nvol_memmem_tw_avx2 + 1307
+    jbe strict short L.nvol_memmem_tw_avx2 + 1243
     movzx edi, byte [rsi + rcx]
     lea r8, [r15 + rcx]
     movzx r8d, byte [r9 + r8]
     cmp edi, r8d
-    je strict short L.nvol_memmem_tw_avx2 + 1280
+    je strict short L.nvol_memmem_tw_avx2 + 1216
 ; .L60:
 ; .L59:
     cmp rcx, r14
-    ja strict short L.nvol_memmem_tw_avx2 + 1334
+    ja strict short L.nvol_memmem_tw_avx2 + 1270
     movzx ecx, byte [rsi + r14]
     lea rdi, [r15 + r14]
     movzx edi, byte [r9 + rdi]
     cmp ecx, edi
-    je strict near L.nvol_memmem_tw_avx2 + 1541
+    je strict near L.nvol_memmem_tw_avx2 + 1477
 ; .L61:
     lea r15, [r15 + r13]
     mov r14, rdx
     sub r14, r13
-    jmp strict short L.nvol_memmem_tw_avx2 + 1415
+    jmp strict short L.nvol_memmem_tw_avx2 + 1351
 ; .L56:
     mov ecx, 1
     mov rdi, rbp
     test ecx, ecx
-    je strict short L.nvol_memmem_tw_avx2 + 1403
+    je strict short L.nvol_memmem_tw_avx2 + 1339
     cmp rdi, 0
-    jbe strict short L.nvol_memmem_tw_avx2 + 1403
+    jbe strict short L.nvol_memmem_tw_avx2 + 1339
     db 0xf, 0x1f, 0x40, 0x0
 ; .L63:
     lea rdi, [rdi - 1]
@@ -9336,17 +9359,17 @@ L.nvol_memmem_tw_avx2:
     lea rbx, [r15 + rdi]
     movzx ebx, byte [r9 + rbx]
     cmp r8d, ebx
-    je strict short L.nvol_memmem_tw_avx2 + 1393
+    je strict short L.nvol_memmem_tw_avx2 + 1329
     xor ecx, ecx
 ; .L65:
     test ecx, ecx
-    je strict short L.nvol_memmem_tw_avx2 + 1403
+    je strict short L.nvol_memmem_tw_avx2 + 1339
     cmp rdi, 0
-    ja strict short L.nvol_memmem_tw_avx2 + 1368
+    ja strict short L.nvol_memmem_tw_avx2 + 1304
 ; .L67:
 ; .L64:
     test ecx, ecx
-    jne strict near L.nvol_memmem_tw_avx2 + 1547
+    jne strict near L.nvol_memmem_tw_avx2 + 1483
 ; .L68:
     lea r15, [r15 + r13]
 ; .L57:
@@ -9372,44 +9395,63 @@ L.nvol_memmem_tw_avx2:
     sub rdi, rbx
     bsf ecx, r8d
     lea r8, [rdi + rcx]
-    jmp strict near L.nvol_memmem_tw_avx2 + 986
+    jmp strict near L.nvol_memmem_tw_avx2 + 922
 ; .L31:
     mov r11, [rsp + 352]
     sub rcx, r11
     bsf edi, edi
     lea r8, [rcx + rdi]
-    jmp strict near L.nvol_memmem_tw_avx2 + 986
+    jmp strict near L.nvol_memmem_tw_avx2 + 922
 ; .L36:
     sub rcx, rbx
     bsf edi, edi
     lea r8, [rcx + rdi]
-    jmp strict near L.nvol_memmem_tw_avx2 + 986
+    jmp strict near L.nvol_memmem_tw_avx2 + 922
 ; .L40:
     mov r11, [rsp + 352]
     sub r14, r11
     bsf ecx, ecx
     lea r8, [r14 + rcx]
-    jmp strict near L.nvol_memmem_tw_avx2 + 986
+    jmp strict near L.nvol_memmem_tw_avx2 + 922
 ; .L44:
     xor eax, eax
-    jmp strict short L.nvol_memmem_tw_avx2 + 1435
+    jmp strict short L.nvol_memmem_tw_avx2 + 1371
 ; .L46:
     xor eax, eax
-    jmp strict short L.nvol_memmem_tw_avx2 + 1435
+    jmp strict short L.nvol_memmem_tw_avx2 + 1371
 ; .L62:
     lea rax, [r9 + r15]
-    jmp strict short L.nvol_memmem_tw_avx2 + 1435
+    jmp strict short L.nvol_memmem_tw_avx2 + 1371
 ; .L69:
     lea rax, [r9 + r15]
-    jmp strict short L.nvol_memmem_tw_avx2 + 1435
+    jmp strict short L.nvol_memmem_tw_avx2 + 1371
+; .Lrare1:
+    mov r11, [rsp + 416]
+    vpcmpeqb xmm0, xmm0, [rcx + r11]
+    vpcmpeqb xmm1, xmm1, [rcx + r14]
+    vpand xmm0, xmm0, xmm1
+    vpmovmskb edi, xmm0
+    test edi, edi
+    jne strict short L.nvol_memmem_tw_avx2 + 1408
+; .L30:
+    jmp strict near L.nvol_memmem_tw_avx2 + 732
+; .Lrare2:
+    mov r11, [rsp + 608]
+    vpcmpeqb ymm0, ymm0, [r14 + r11]
+    vpcmpeqb ymm1, ymm1, [r14 + r8]
+    vpand ymm0, ymm0, ymm1
+    vpmovmskb ecx, ymm0
+    test ecx, ecx
+    jne strict short L.nvol_memmem_tw_avx2 + 1446
+; .L39:
+    jmp strict near L.nvol_memmem_tw_avx2 + 915
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
-global nvol_memmem_find_entry_avx2:function hidden 3863
+    db 0x90
+global nvol_memmem_find_entry_avx2:function hidden 3947
 nvol_memmem_find_entry_avx2:
 L.nvol_memmem_find_entry_avx2:
     push rbx
@@ -9427,12 +9469,12 @@ L.nvol_memmem_find_entry_avx2:
     cmp r9, rdx
     jae strict short L.nvol_memmem_find_entry_avx2 + 45
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L2:
     mov r13, rdi
     test rdx, rdx
     jne strict short L.nvol_memmem_find_entry_avx2 + 58
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L4:
     cmp rdx, 1
     jne strict short L.nvol_memmem_find_entry_avx2 + 98
@@ -9450,7 +9492,7 @@ L.nvol_memmem_find_entry_avx2:
     jmp strict near L.nvol_memchr_entry_avx2
 ; .L6:
     cmp rdx, 32
-    ja strict near L.nvol_memmem_find_entry_avx2 + 1868
+    ja strict near L.nvol_memmem_find_entry_avx2 + 1664
     mov rcx, qword [r13]
     mov rdi, qword [r13 + 8]
     mov rbx, rdx
@@ -9461,11 +9503,11 @@ L.nvol_memmem_find_entry_avx2:
     cmp rbx, rbp
     cmovb rbx, rbp
     cmp r9, rbx
-    jae strict near L.nvol_memmem_find_entry_avx2 + 378
+    jae strict near L.nvol_memmem_find_entry_avx2 + 345
     cmp rdx, r9
     jbe strict short L.nvol_memmem_find_entry_avx2 + 161
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L12:
     mov rcx, qword [r13 + 16]
     mov rdi, qword [r13 + 24]
@@ -9487,7 +9529,7 @@ L.nvol_memmem_find_entry_avx2:
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L16:
     cmp r9d, ecx
-    jne strict short L.nvol_memmem_find_entry_avx2 + 334
+    jne strict short L.nvol_memmem_find_entry_avx2 + 304
     xor ebx, ebx
     lea rbp, [rbx + 4]
     cmp rbp, rdx
@@ -9497,7 +9539,7 @@ L.nvol_memmem_find_entry_avx2:
     mov ebp, dword [rax + rbx]
     mov r12d, dword [rsi + rbx]
     cmp ebp, r12d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3536
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3232
 ; .L23:
     lea rbx, [rbx + 4]
     lea rbp, [rbx + 4]
@@ -9506,29 +9548,18 @@ L.nvol_memmem_find_entry_avx2:
 ; .L22:
     lea rbp, [rbx + 2]
     cmp rbp, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 300
-    movzx ebp, word [rax + rbx]
-    movzx r12d, word [rsi + rbx]
-    cmp ebp, r12d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3543
-; .L27:
-    lea rbx, [rbx + 2]
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 3559
 ; .L25:
     cmp rbx, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 321
-    movzx ebp, byte [rax + rbx]
-    movzx ebx, byte [rsi + rbx]
-    cmp ebp, ebx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3550
-; .L31:
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3586
 ; .L29:
     mov ebx, 1
 ; .L20:
     test ebx, ebx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3557
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3253
 ; .L18:
     cmp rax, r8
-    jae strict near L.nvol_memmem_find_entry_avx2 + 3559
+    jae strict near L.nvol_memmem_find_entry_avx2 + 3255
 ; .L33:
     movzx ebx, byte [rax]
     imul ebx, edi
@@ -9537,9 +9568,9 @@ L.nvol_memmem_find_entry_avx2:
     movzx ebx, byte [rax + rdx]
     add r9d, ebx
     lea rax, [rax + 1]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 216
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 216
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L10:
     mov rbx, rdx
     cmp rcx, rdi
@@ -9548,9 +9579,9 @@ L.nvol_memmem_find_entry_avx2:
     cmp rbx, rcx
     cmovb rbx, rcx
     cmp r9, rbx
-    jae strict near L.nvol_memmem_find_entry_avx2 + 1140
+    jae strict near L.nvol_memmem_find_entry_avx2 + 1024
     cmp rdx, 2
-    jne strict near L.nvol_memmem_find_entry_avx2 + 610
+    jne strict near L.nvol_memmem_find_entry_avx2 + 578
     mov rdi, qword [r13]
     mov r9, qword [r13 + 8]
     movzx ecx, byte [rsi + rdi]
@@ -9569,27 +9600,27 @@ L.nvol_memmem_find_entry_avx2:
     mov rsi, r8
     sub rsi, rcx
     cmp rax, rsi
-    ja strict short L.nvol_memmem_find_entry_avx2 + 532
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    ja strict short L.nvol_memmem_find_entry_avx2 + 500
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L39:
     vpcmpeqb xmm2, xmm0, [rax + rdi]
     vpcmpeqb xmm3, xmm1, [rax + r9]
     vpand xmm2, xmm2, xmm3
     vpmovmskb ecx, xmm2
     test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3563
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3259
 ; .L41:
     add rax, 16
     cmp rax, rsi
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 496
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 464
 ; .L40:
     cmp rax, r8
-    jae strict short L.nvol_memmem_find_entry_avx2 + 603
+    jae strict short L.nvol_memmem_find_entry_avx2 + 571
     sub r8, rax
     cmp r8, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 552
+    jae strict short L.nvol_memmem_find_entry_avx2 + 520
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L45:
     sub rax, rsi
     mov edx, 4294967295
@@ -9601,14 +9632,14 @@ L.nvol_memmem_find_entry_avx2:
     vpmovmskb eax, xmm0
     and rax, rdx
     test eax, eax
-    je strict short L.nvol_memmem_find_entry_avx2 + 603
+    je strict short L.nvol_memmem_find_entry_avx2 + 571
     bsf eax, eax
     lea rax, [rsi + rax]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L47:
 ; .L43:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L37:
     mov rdi, qword [r13]
     mov r9, qword [r13 + 8]
@@ -9628,7 +9659,7 @@ L.nvol_memmem_find_entry_avx2:
     mov rbx, r8
     sub rbx, rcx
     cmp rax, rbx
-    ja strict near L.nvol_memmem_find_entry_avx2 + 902
+    ja strict near L.nvol_memmem_find_entry_avx2 + 829
     db 0xf, 0x1f, 0x40, 0x0
 ; .L49:
     vpcmpeqb xmm2, xmm0, [rax + rdi]
@@ -9636,7 +9667,7 @@ L.nvol_memmem_find_entry_avx2:
     vpand xmm2, xmm2, xmm3
     vpmovmskb ecx, xmm2
     test ecx, ecx
-    je strict near L.nvol_memmem_find_entry_avx2 + 889
+    je strict near L.nvol_memmem_find_entry_avx2 + 816
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L51:
     bsf ebp, ecx
@@ -9644,66 +9675,55 @@ L.nvol_memmem_find_entry_avx2:
     mov r12, r8
     sub r12, rbp
     cmp r12, rdx
-    jb strict near L.nvol_memmem_find_entry_avx2 + 3572
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3268
 ; .L53:
     xor r12d, r12d
     lea r13, [r12 + 4]
     cmp r13, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 793
+    ja strict short L.nvol_memmem_find_entry_avx2 + 761
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L58:
     mov r13d, dword [rsi + r12]
     mov r14d, dword [rbp + r12]
     cmp r13d, r14d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3576
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3272
 ; .L60:
     lea r12, [r12 + 4]
     lea r13, [r12 + 4]
     cmp r13, rdx
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 760
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 728
 ; .L59:
     lea r13, [r12 + 2]
     cmp r13, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 828
-    movzx r13d, word [rsi + r12]
-    movzx r14d, word [rbp + r12]
-    cmp r13d, r14d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3584
-; .L64:
-    lea r12, [r12 + 2]
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 3607
 ; .L62:
     cmp r12, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 853
-    movzx r13d, byte [rsi + r12]
-    movzx r12d, byte [rbp + r12]
-    cmp r13d, r12d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3592
-; .L68:
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3637
 ; .L66:
     mov r12d, 1
 ; .L57:
     test r12d, r12d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3600
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3296
 ; .L55:
     mov rbp, rcx
     lea r12, [rcx - 1]
     and rbp, r12
     mov rcx, rbp
     test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 720
+    jne strict short L.nvol_memmem_find_entry_avx2 + 688
 ; .L52:
     add rax, 16
     cmp rax, rbx
-    jbe strict near L.nvol_memmem_find_entry_avx2 + 688
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 656
 ; .L50:
     cmp rax, r8
-    jae strict near L.nvol_memmem_find_entry_avx2 + 1133
+    jae strict near L.nvol_memmem_find_entry_avx2 + 1017
     mov rcx, r8
     sub rcx, rax
     cmp rcx, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 929
+    jae strict short L.nvol_memmem_find_entry_avx2 + 856
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L72:
     sub rax, rbx
     mov ebp, 4294967295
@@ -9715,68 +9735,57 @@ L.nvol_memmem_find_entry_avx2:
     vpmovmskb eax, xmm0
     and rax, rbp
     test eax, eax
-    je strict near L.nvol_memmem_find_entry_avx2 + 1133
-    db 0xf, 0x1f, 0x40, 0x0
+    je strict short L.nvol_memmem_find_entry_avx2 + 1017
+    db 0x90
 ; .L74:
     bsf ecx, eax
     lea rcx, [rbx + rcx]
     mov rdi, r8
     sub rdi, rcx
     cmp rdi, rdx
-    jb strict near L.nvol_memmem_find_entry_avx2 + 3605
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3301
 ; .L76:
     xor edi, edi
     lea r9, [rdi + 4]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 1045
+    ja strict short L.nvol_memmem_find_entry_avx2 + 965
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L81:
     mov r9d, dword [rsi + rdi]
     mov ebp, dword [rcx + rdi]
     cmp r9d, ebp
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3609
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3305
 ; .L83:
     lea rdi, [rdi + 4]
     lea r9, [rdi + 4]
     cmp r9, rdx
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 1016
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 936
 ; .L82:
     lea r9, [rdi + 2]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 1076
-    movzx r9d, word [rsi + rdi]
-    movzx ebp, word [rcx + rdi]
-    cmp r9d, ebp
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3616
-; .L87:
-    lea rdi, [rdi + 2]
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 3662
 ; .L85:
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 1099
-    movzx r9d, byte [rsi + rdi]
-    movzx edi, byte [rcx + rdi]
-    cmp r9d, edi
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3623
-; .L91:
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3689
 ; .L89:
     mov edi, 1
 ; .L80:
     test edi, edi
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3630
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3326
 ; .L78:
     mov rcx, rax
     lea rdi, [rax - 1]
     and rcx, rdi
     mov rax, rcx
     test eax, eax
-    jne strict near L.nvol_memmem_find_entry_avx2 + 976
+    jne strict short L.nvol_memmem_find_entry_avx2 + 896
 ; .L75:
 ; .L70:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L35:
     cmp rdx, 2
-    jne strict near L.nvol_memmem_find_entry_avx2 + 1338
+    jne strict near L.nvol_memmem_find_entry_avx2 + 1218
     mov rdi, qword [r13]
     mov r9, qword [r13 + 8]
     movzx ecx, byte [rsi + rdi]
@@ -9795,27 +9804,26 @@ L.nvol_memmem_find_entry_avx2:
     mov rsi, r8
     sub rsi, rcx
     cmp rax, rsi
-    ja strict short L.nvol_memmem_find_entry_avx2 + 1260
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_memmem_find_entry_avx2 + 1140
 ; .L95:
     vpcmpeqb ymm2, ymm0, [rax + rdi]
     vpcmpeqb ymm3, ymm1, [rax + r9]
     vpand ymm2, ymm2, ymm3
     vpmovmskb ecx, ymm2
     test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3635
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3331
 ; .L97:
     add rax, 32
     cmp rax, rsi
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 1224
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 1104
 ; .L96:
     cmp rax, r8
-    jae strict short L.nvol_memmem_find_entry_avx2 + 1331
+    jae strict short L.nvol_memmem_find_entry_avx2 + 1211
     sub r8, rax
     cmp r8, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 1280
+    jae strict short L.nvol_memmem_find_entry_avx2 + 1160
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L101:
     sub rax, rsi
     mov edx, 4294967295
@@ -9827,14 +9835,14 @@ L.nvol_memmem_find_entry_avx2:
     vpmovmskb eax, ymm0
     and rax, rdx
     test eax, eax
-    je strict short L.nvol_memmem_find_entry_avx2 + 1331
+    je strict short L.nvol_memmem_find_entry_avx2 + 1211
     bsf eax, eax
     lea rax, [rsi + rax]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L103:
 ; .L99:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L93:
     mov rdi, qword [r13]
     mov r9, qword [r13 + 8]
@@ -9854,7 +9862,7 @@ L.nvol_memmem_find_entry_avx2:
     mov rbx, r8
     sub rbx, rcx
     cmp rax, rbx
-    ja strict near L.nvol_memmem_find_entry_avx2 + 1630
+    ja strict near L.nvol_memmem_find_entry_avx2 + 1469
     db 0xf, 0x1f, 0x40, 0x0
 ; .L105:
     vpcmpeqb ymm2, ymm0, [rax + rdi]
@@ -9862,7 +9870,7 @@ L.nvol_memmem_find_entry_avx2:
     vpand ymm2, ymm2, ymm3
     vpmovmskb ecx, ymm2
     test ecx, ecx
-    je strict near L.nvol_memmem_find_entry_avx2 + 1617
+    je strict near L.nvol_memmem_find_entry_avx2 + 1456
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L107:
     bsf ebp, ecx
@@ -9870,66 +9878,55 @@ L.nvol_memmem_find_entry_avx2:
     mov r12, r8
     sub r12, rbp
     cmp r12, rdx
-    jb strict near L.nvol_memmem_find_entry_avx2 + 3647
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3343
 ; .L109:
     xor r12d, r12d
     lea r13, [r12 + 4]
     cmp r13, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 1521
+    ja strict short L.nvol_memmem_find_entry_avx2 + 1401
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L114:
     mov r13d, dword [rsi + r12]
     mov r14d, dword [rbp + r12]
     cmp r13d, r14d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3654
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3350
 ; .L116:
     lea r12, [r12 + 4]
     lea r13, [r12 + 4]
     cmp r13, rdx
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 1488
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 1368
 ; .L115:
     lea r13, [r12 + 2]
     cmp r13, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 1556
-    movzx r13d, word [rsi + r12]
-    movzx r14d, word [rbp + r12]
-    cmp r13d, r14d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3662
-; .L120:
-    lea r12, [r12 + 2]
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 3712
 ; .L118:
     cmp r12, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 1581
-    movzx r13d, byte [rsi + r12]
-    movzx r12d, byte [rbp + r12]
-    cmp r13d, r12d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3670
-; .L124:
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3742
 ; .L122:
     mov r12d, 1
 ; .L113:
     test r12d, r12d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3678
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3374
 ; .L111:
     mov rbp, rcx
     lea r12, [rcx - 1]
     and rbp, r12
     mov rcx, rbp
     test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 1448
+    jne strict short L.nvol_memmem_find_entry_avx2 + 1328
 ; .L108:
     add rax, 32
     cmp rax, rbx
-    jbe strict near L.nvol_memmem_find_entry_avx2 + 1416
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 1296
 ; .L106:
     cmp rax, r8
-    jae strict near L.nvol_memmem_find_entry_avx2 + 1861
+    jae strict near L.nvol_memmem_find_entry_avx2 + 1657
     mov rcx, r8
     sub rcx, rax
     cmp rcx, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 1657
+    jae strict short L.nvol_memmem_find_entry_avx2 + 1496
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L128:
     sub rax, rbx
     mov ebp, 4294967295
@@ -9941,72 +9938,61 @@ L.nvol_memmem_find_entry_avx2:
     vpmovmskb eax, ymm0
     and rax, rbp
     test eax, eax
-    je strict near L.nvol_memmem_find_entry_avx2 + 1861
-    db 0xf, 0x1f, 0x40, 0x0
+    je strict short L.nvol_memmem_find_entry_avx2 + 1657
+    db 0x90
 ; .L130:
     bsf ecx, eax
     lea rcx, [rbx + rcx]
     mov rdi, r8
     sub rdi, rcx
     cmp rdi, rdx
-    jb strict near L.nvol_memmem_find_entry_avx2 + 3686
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3382
 ; .L132:
     xor edi, edi
     lea r9, [rdi + 4]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 1773
+    ja strict short L.nvol_memmem_find_entry_avx2 + 1605
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L137:
     mov r9d, dword [rsi + rdi]
     mov ebp, dword [rcx + rdi]
     cmp r9d, ebp
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3693
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3389
 ; .L139:
     lea rdi, [rdi + 4]
     lea r9, [rdi + 4]
     cmp r9, rdx
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 1744
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 1576
 ; .L138:
     lea r9, [rdi + 2]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 1804
-    movzx r9d, word [rsi + rdi]
-    movzx ebp, word [rcx + rdi]
-    cmp r9d, ebp
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3700
-; .L143:
-    lea rdi, [rdi + 2]
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 3767
 ; .L141:
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 1827
-    movzx r9d, byte [rsi + rdi]
-    movzx edi, byte [rcx + rdi]
-    cmp r9d, edi
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3707
-; .L147:
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3794
 ; .L145:
     mov edi, 1
 ; .L136:
     test edi, edi
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3714
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3410
 ; .L134:
     mov rcx, rax
     lea rdi, [rax - 1]
     and rcx, rdi
     mov rax, rcx
     test eax, eax
-    jne strict near L.nvol_memmem_find_entry_avx2 + 1704
+    jne strict short L.nvol_memmem_find_entry_avx2 + 1536
 ; .L131:
 ; .L126:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L8:
     cmp r9, 16
-    jae strict near L.nvol_memmem_find_entry_avx2 + 2106
+    jae strict near L.nvol_memmem_find_entry_avx2 + 1865
     cmp rdx, r9
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 1890
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 1686
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L151:
     mov rcx, qword [r13 + 16]
     mov rdi, qword [r13 + 24]
@@ -10015,61 +10001,49 @@ L.nvol_memmem_find_entry_avx2:
     mov rbx, rax
     lea rbp, [rax + rdx]
     cmp rbx, rbp
-    jae strict short L.nvol_memmem_find_entry_avx2 + 1939
-    db 0xf, 0x1f, 0x40, 0x0
+    jae strict short L.nvol_memmem_find_entry_avx2 + 1731
 ; .L153:
     shl r9d, 1
     movzx r12d, byte [rbx]
     add r9d, r12d
     add rbx, 1
     cmp rbx, rbp
-    jb strict short L.nvol_memmem_find_entry_avx2 + 1920
+    jb strict short L.nvol_memmem_find_entry_avx2 + 1712
 ; .L154:
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L155:
     cmp r9d, ecx
-    jne strict short L.nvol_memmem_find_entry_avx2 + 2062
+    jne strict short L.nvol_memmem_find_entry_avx2 + 1824
     xor ebx, ebx
     lea rbp, [rbx + 4]
     cmp rbp, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 1997
+    ja strict short L.nvol_memmem_find_entry_avx2 + 1789
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L160:
     mov ebp, dword [rax + rbx]
     mov r12d, dword [rsi + rbx]
     cmp ebp, r12d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3722
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3418
 ; .L162:
     lea rbx, [rbx + 4]
     lea rbp, [rbx + 4]
     cmp rbp, rdx
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 1968
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 1760
 ; .L161:
     lea rbp, [rbx + 2]
     cmp rbp, rdx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 2028
-    movzx ebp, word [rax + rbx]
-    movzx r12d, word [rsi + rbx]
-    cmp ebp, r12d
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3729
-; .L166:
-    lea rbx, [rbx + 2]
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 3817
 ; .L164:
     cmp rbx, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 2049
-    movzx ebp, byte [rax + rbx]
-    movzx ebx, byte [rsi + rbx]
-    cmp ebp, ebx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3736
-; .L170:
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3844
 ; .L168:
     mov ebx, 1
 ; .L159:
     test ebx, ebx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3743
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3439
 ; .L157:
     cmp rax, r8
-    jae strict near L.nvol_memmem_find_entry_avx2 + 3748
+    jae strict near L.nvol_memmem_find_entry_avx2 + 3444
 ; .L172:
     movzx ebx, byte [rax]
     imul ebx, edi
@@ -10078,9 +10052,9 @@ L.nvol_memmem_find_entry_avx2:
     movzx ebx, byte [rax + rdx]
     add r9d, ebx
     lea rax, [rax + 1]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1944
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 1736
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L149:
     mov qword [rsp + 32], r9
     mov rbx, qword [r13 + 40]
@@ -10128,35 +10102,35 @@ L.nvol_memmem_find_entry_avx2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    ja strict near L.nvol_memmem_find_entry_avx2 + 3513
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict near L.nvol_memmem_find_entry_avx2 + 3209
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L174:
     mov rbp, rbx
     cmp rbp, rdi
     cmovb rbp, rdi
     xor ecx, ecx
     test r13, r13
-    je strict short L.nvol_memmem_find_entry_avx2 + 2393
+    je strict short L.nvol_memmem_find_entry_avx2 + 2153
     lea r14, [r13 - 1]
     cmp r14, 50
-    jae strict short L.nvol_memmem_find_entry_avx2 + 2362
+    jae strict short L.nvol_memmem_find_entry_avx2 + 2122
     mov ecx, 1
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 2393
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 2153
 ; .L178:
     lea r14, [r13 - 1]
     shl r14, 3
     mov r11, [rsp + 352]
     cmp r11, r14
-    jb strict short L.nvol_memmem_find_entry_avx2 + 2390
+    jb strict short L.nvol_memmem_find_entry_avx2 + 2150
     mov ecx, 1
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 2393
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 2153
 ; .L180:
     xor r13d, r13d
 ; .L181:
 ; .L179:
 ; .L176:
     test ecx, ecx
-    je strict near L.nvol_memmem_find_entry_avx2 + 3165
+    je strict near L.nvol_memmem_find_entry_avx2 + 2861
     mov rcx, qword [rsp + 160]
     mov rdi, qword [rsp]
     mov r9, qword [rsp + 128]
@@ -10169,43 +10143,43 @@ L.nvol_memmem_find_entry_avx2:
     mov r11, [rsp + 416]
     mov r10, [rsp + 192]
     cmp r11, r10
-    jae strict short L.nvol_memmem_find_entry_avx2 + 2572
+    jae strict short L.nvol_memmem_find_entry_avx2 + 2332
     mov r14, qword [rsp + 448]
     cmp r14, r8
-    jae strict short L.nvol_memmem_find_entry_avx2 + 2529
+    jae strict short L.nvol_memmem_find_entry_avx2 + 2289
     movzx r11d, byte [r14]
     mov [rsp + 480], r11
     cmp r11d, ecx
-    je strict short L.nvol_memmem_find_entry_avx2 + 2529
+    je strict short L.nvol_memmem_find_entry_avx2 + 2289
     mov rdi, rcx
     db 0x66, 0x90
 ; .L186:
     add r14, 1
     cmp r14, r8
-    jae strict short L.nvol_memmem_find_entry_avx2 + 2529
+    jae strict short L.nvol_memmem_find_entry_avx2 + 2289
     movzx ecx, byte [r14]
     cmp ecx, edi
-    jne strict short L.nvol_memmem_find_entry_avx2 + 2512
+    jne strict short L.nvol_memmem_find_entry_avx2 + 2272
 ; .L188:
 ; .L187:
     cmp r14, r8
-    jae strict near L.nvol_memmem_find_entry_avx2 + 3068
+    jae strict near L.nvol_memmem_find_entry_avx2 + 2764
     mov r11, [rsp + 448]
     sub r14, r11
     cmp r14, r9
-    jb strict short L.nvol_memmem_find_entry_avx2 + 2565
+    jb strict short L.nvol_memmem_find_entry_avx2 + 2325
     mov rbp, r14
     sub rbp, r9
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3068
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2764
 ; .L191:
     xor ebp, ebp
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3068
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2764
 ; .L184:
     mov r9, qword [rsp + 448]
     mov r11, [rsp + 416]
     mov r10, [rsp + 288]
     cmp r11, r10
-    jae strict near L.nvol_memmem_find_entry_avx2 + 2871
+    jae strict near L.nvol_memmem_find_entry_avx2 + 2599
     mov rcx, rdx
     mov r11, qword [rdi]
     mov [rsp + 512], r11
@@ -10236,7 +10210,7 @@ L.nvol_memmem_find_entry_avx2:
     sub rcx, r11
     mov rdi, r9
     cmp rdi, rcx
-    ja strict short L.nvol_memmem_find_entry_avx2 + 2813
+    ja strict short L.nvol_memmem_find_entry_avx2 + 2573
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L196:
@@ -10246,26 +10220,18 @@ L.nvol_memmem_find_entry_avx2:
     vpand xmm2, xmm2, xmm3
     vpmovmskb ebp, xmm2
     test ebp, ebp
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3755
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3451
 ; .L198:
     add rdi, 16
     cmp rdi, rcx
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 2768
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 2528
 ; .L197:
     cmp rdi, r8
-    jae strict short L.nvol_memmem_find_entry_avx2 + 2854
-    mov r11, [rsp + 512]
-    vpcmpeqb xmm0, xmm0, [rcx + r11]
-    vpcmpeqb xmm1, xmm1, [rcx + r14]
-    vpand xmm0, xmm0, xmm1
-    vpmovmskb edi, xmm0
-    test edi, edi
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3770
-; .L202:
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3865
 ; .L200:
     mov rbp, -1
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3068
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3068
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2764
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2764
 ; .L193:
     mov rcx, rdx
     mov r11, qword [rdi]
@@ -10288,7 +10254,7 @@ L.nvol_memmem_find_entry_avx2:
     sub r14, rcx
     mov rcx, qword [rsp + 448]
     cmp rcx, r14
-    ja strict short L.nvol_memmem_find_entry_avx2 + 3020
+    ja strict short L.nvol_memmem_find_entry_avx2 + 2748
     mov r9, qword [rsp + 448]
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L205:
@@ -10298,22 +10264,14 @@ L.nvol_memmem_find_entry_avx2:
     vpand ymm2, ymm2, ymm3
     vpmovmskb edi, ymm2
     test edi, edi
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3793
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3489
 ; .L207:
     add rcx, 32
     cmp rcx, r14
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 2976
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 2704
 ; .L206:
     cmp rcx, r8
-    jae strict short L.nvol_memmem_find_entry_avx2 + 3061
-    mov r11, [rsp + 704]
-    vpcmpeqb ymm0, ymm0, [r14 + r11]
-    vpcmpeqb ymm1, ymm1, [r14 + rbp]
-    vpand ymm0, ymm0, ymm1
-    vpmovmskb ecx, ymm0
-    test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3808
-; .L211:
+    jb strict near L.nvol_memmem_find_entry_avx2 + 3906
 ; .L209:
     mov rbp, -1
 ; .L204:
@@ -10321,19 +10279,19 @@ L.nvol_memmem_find_entry_avx2:
 ; .L185:
     add r13, 1
     cmp rbp, -1
-    jne strict short L.nvol_memmem_find_entry_avx2 + 3108
+    jne strict short L.nvol_memmem_find_entry_avx2 + 2804
     mov r11, [rsp + 352]
     mov r10, [rsp + 416]
     lea r11, [r11 + r10]
     mov [rsp + 352], r11
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3128
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 2824
 ; .L213:
     mov r11, [rsp + 352]
     lea r11, [r11 + rbp]
     mov [rsp + 352], r11
 ; .L214:
     cmp rbp, -1
-    je strict near L.nvol_memmem_find_entry_avx2 + 3831
+    je strict near L.nvol_memmem_find_entry_avx2 + 3527
 ; .L215:
     lea r15, [r15 + rbp]
     xor edi, edi
@@ -10341,7 +10299,7 @@ L.nvol_memmem_find_entry_avx2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    ja strict near L.nvol_memmem_find_entry_avx2 + 3838
+    ja strict near L.nvol_memmem_find_entry_avx2 + 3534
 ; .L217:
 ; .L182:
     xor r14d, r14d
@@ -10356,86 +10314,86 @@ L.nvol_memmem_find_entry_avx2:
     setne cl
     movzx ecx, cl
     cmp r14d, ecx
-    jne strict short L.nvol_memmem_find_entry_avx2 + 3226
+    jne strict short L.nvol_memmem_find_entry_avx2 + 2922
     lea r15, [r15 + rdx]
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3495
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3191
 ; .L219:
     mov r14, qword [rsp + 64]
     test r14d, r14d
-    jne strict short L.nvol_memmem_find_entry_avx2 + 3239
+    jne strict short L.nvol_memmem_find_entry_avx2 + 2935
     mov rbp, rbx
 ; .L221:
     lea rcx, [rax + r15]
     cmp rbp, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 3299
+    jae strict short L.nvol_memmem_find_entry_avx2 + 2995
     movzx ecx, byte [rsi + rbp]
     lea r9, [r15 + rbp]
     movzx r9d, byte [rax + r9]
     cmp ecx, r9d
-    jne strict short L.nvol_memmem_find_entry_avx2 + 3299
+    jne strict short L.nvol_memmem_find_entry_avx2 + 2995
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L223:
     add rbp, 1
     cmp rbp, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 3299
+    jae strict short L.nvol_memmem_find_entry_avx2 + 2995
     movzx ecx, byte [rsi + rbp]
     lea r9, [r15 + rbp]
     movzx r9d, byte [rax + r9]
     cmp ecx, r9d
-    je strict short L.nvol_memmem_find_entry_avx2 + 3272
+    je strict short L.nvol_memmem_find_entry_avx2 + 2968
 ; .L225:
 ; .L224:
     cmp rbp, rdx
-    jae strict short L.nvol_memmem_find_entry_avx2 + 3322
+    jae strict short L.nvol_memmem_find_entry_avx2 + 3018
     sub rbp, rbx
     lea rcx, [r15 + rbp]
     lea r15, [rcx + 1]
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3495
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3191
 ; .L226:
     test r14d, r14d
-    je strict short L.nvol_memmem_find_entry_avx2 + 3424
+    je strict short L.nvol_memmem_find_entry_avx2 + 3120
     mov rcx, rbx
     lea r9, [rax + r15]
     cmp rcx, rdi
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 3387
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 3083
     movzx r9d, byte [rsi + rcx]
     lea rbp, [r15 + rcx]
     movzx ebp, byte [rax + rbp]
     cmp r9d, ebp
-    jne strict short L.nvol_memmem_find_entry_avx2 + 3387
+    jne strict short L.nvol_memmem_find_entry_avx2 + 3083
     db 0xf, 0x1f, 0x0
 ; .L230:
     add rcx, -1
     cmp rcx, rdi
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 3387
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 3083
     movzx r9d, byte [rsi + rcx]
     lea rbp, [r15 + rcx]
     movzx ebp, byte [rax + rbp]
     cmp r9d, ebp
-    je strict short L.nvol_memmem_find_entry_avx2 + 3360
+    je strict short L.nvol_memmem_find_entry_avx2 + 3056
 ; .L232:
 ; .L231:
     cmp rcx, rdi
-    ja strict short L.nvol_memmem_find_entry_avx2 + 3412
+    ja strict short L.nvol_memmem_find_entry_avx2 + 3108
     movzx ecx, byte [rsi + rdi]
     lea rdi, [r15 + rdi]
     movzx edi, byte [rax + rdi]
     cmp ecx, edi
-    je strict near L.nvol_memmem_find_entry_avx2 + 3845
+    je strict near L.nvol_memmem_find_entry_avx2 + 3541
 ; .L233:
     lea r15, [r15 + r12]
     mov rdi, rdx
     sub rdi, r12
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3495
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 3191
 ; .L228:
     mov ecx, 1
     mov r9, rbx
     test ecx, ecx
-    je strict short L.nvol_memmem_find_entry_avx2 + 3483
+    je strict short L.nvol_memmem_find_entry_avx2 + 3179
     cmp r9, 0
-    jbe strict short L.nvol_memmem_find_entry_avx2 + 3483
+    jbe strict short L.nvol_memmem_find_entry_avx2 + 3179
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L235:
     lea r9, [r9 - 1]
@@ -10443,17 +10401,17 @@ L.nvol_memmem_find_entry_avx2:
     lea r14, [r15 + r9]
     movzx r14d, byte [rax + r14]
     cmp ebp, r14d
-    je strict short L.nvol_memmem_find_entry_avx2 + 3473
+    je strict short L.nvol_memmem_find_entry_avx2 + 3169
     xor ecx, ecx
 ; .L237:
     test ecx, ecx
-    je strict short L.nvol_memmem_find_entry_avx2 + 3483
+    je strict short L.nvol_memmem_find_entry_avx2 + 3179
     cmp r9, 0
-    ja strict short L.nvol_memmem_find_entry_avx2 + 3448
+    ja strict short L.nvol_memmem_find_entry_avx2 + 3144
 ; .L239:
 ; .L236:
     test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_avx2 + 3854
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3550
 ; .L240:
     lea r15, [r15 + r12]
 ; .L229:
@@ -10462,7 +10420,7 @@ L.nvol_memmem_find_entry_avx2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    jbe strict near L.nvol_memmem_find_entry_avx2 + 2328
+    jbe strict near L.nvol_memmem_find_entry_avx2 + 2088
 ; .L175:
     xor eax, eax
 ; .L1:
@@ -10477,141 +10435,249 @@ L.nvol_memmem_find_entry_avx2:
     ret
 ; .L24:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 326
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 296
 ; .L28:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 326
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 296
 ; .L32:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 326
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 296
 ; .L19:
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 3211
 ; .L34:
     xor eax, eax
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 3211
 ; .L42:
     bsf ecx, ecx
     lea rax, [rax + rcx]
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 3211
 ; .L54:
     xor eax, eax
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 3211
 ; .L61:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 859
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 790
 ; .L65:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 859
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 790
 ; .L69:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 859
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 790
 ; .L56:
     mov rax, rbp
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 3211
 ; .L77:
     xor eax, eax
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 3211
 ; .L84:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1104
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 992
 ; .L88:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1104
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 992
 ; .L92:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1104
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 992
 ; .L79:
     mov rax, rcx
-    jmp strict short L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict short L.nvol_memmem_find_entry_avx2 + 3211
 ; .L98:
     bsf ecx, ecx
     lea rax, [rax + rcx]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L110:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L117:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1587
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1430
 ; .L121:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1587
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1430
 ; .L125:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1587
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1430
 ; .L112:
     mov rax, rbp
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L133:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L140:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1832
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1632
 ; .L144:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1832
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1632
 ; .L148:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 1832
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1632
 ; .L135:
     mov rax, rcx
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L163:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 2054
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1816
 ; .L167:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 2054
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1816
 ; .L171:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 2054
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1816
 ; .L158:
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L173:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L199:
     sub rdi, r9
     bsf ecx, ebp
     lea rbp, [rdi + rcx]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3068
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2764
 ; .L203:
     mov r11, [rsp + 448]
     sub rcx, r11
     bsf edi, edi
     lea rbp, [rcx + rdi]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3068
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2764
 ; .L208:
     sub rcx, r9
     bsf edi, edi
     lea rbp, [rcx + rdi]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3068
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2764
 ; .L212:
     mov r11, [rsp + 448]
     sub r14, r11
     bsf ecx, ecx
     lea rbp, [r14 + rcx]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3068
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2764
 ; .L216:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L218:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L234:
     lea rax, [rax + r15]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
 ; .L241:
     lea rax, [rax + r15]
-    jmp strict near L.nvol_memmem_find_entry_avx2 + 3515
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 3211
+; .Lrare1:
+    movzx ebp, word [rax + rbx]
+    movzx r12d, word [rsi + rbx]
+    cmp ebp, r12d
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3239
+; .L27:
+    lea rbx, [rbx + 2]
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 282
+; .Lrare2:
+    movzx ebp, byte [rax + rbx]
+    movzx ebx, byte [rsi + rbx]
+    cmp ebp, ebx
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3246
+; .L31:
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 291
+; .Lrare3:
+    movzx r13d, word [rsi + r12]
+    movzx r14d, word [rbp + r12]
+    cmp r13d, r14d
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3280
+; .L64:
+    lea r12, [r12 + 2]
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 775
+; .Lrare4:
+    movzx r13d, byte [rsi + r12]
+    movzx r12d, byte [rbp + r12]
+    cmp r13d, r12d
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3288
+; .L68:
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 784
+; .Lrare5:
+    movzx r9d, word [rsi + rdi]
+    movzx ebp, word [rcx + rdi]
+    cmp r9d, ebp
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3312
+; .L87:
+    lea rdi, [rdi + 2]
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 978
+; .Lrare6:
+    movzx r9d, byte [rsi + rdi]
+    movzx edi, byte [rcx + rdi]
+    cmp r9d, edi
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3319
+; .L91:
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 987
+; .Lrare7:
+    movzx r13d, word [rsi + r12]
+    movzx r14d, word [rbp + r12]
+    cmp r13d, r14d
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3358
+; .L120:
+    lea r12, [r12 + 2]
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1415
+; .Lrare8:
+    movzx r13d, byte [rsi + r12]
+    movzx r12d, byte [rbp + r12]
+    cmp r13d, r12d
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3366
+; .L124:
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1424
+; .Lrare9:
+    movzx r9d, word [rsi + rdi]
+    movzx ebp, word [rcx + rdi]
+    cmp r9d, ebp
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3396
+; .L143:
+    lea rdi, [rdi + 2]
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1618
+; .Lrare10:
+    movzx r9d, byte [rsi + rdi]
+    movzx edi, byte [rcx + rdi]
+    cmp r9d, edi
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3403
+; .L147:
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1627
+; .Lrare11:
+    movzx ebp, word [rax + rbx]
+    movzx r12d, word [rsi + rbx]
+    cmp ebp, r12d
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3425
+; .L166:
+    lea rbx, [rbx + 2]
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1802
+; .Lrare12:
+    movzx ebp, byte [rax + rbx]
+    movzx ebx, byte [rsi + rbx]
+    cmp ebp, ebx
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3432
+; .L170:
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 1811
+; .Lrare13:
+    mov r11, [rsp + 512]
+    vpcmpeqb xmm0, xmm0, [rcx + r11]
+    vpcmpeqb xmm1, xmm1, [rcx + r14]
+    vpand xmm0, xmm0, xmm1
+    vpmovmskb edi, xmm0
+    test edi, edi
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3466
+; .L202:
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2582
+; .Lrare14:
+    mov r11, [rsp + 704]
+    vpcmpeqb ymm0, ymm0, [r14 + r11]
+    vpcmpeqb ymm1, ymm1, [r14 + rbp]
+    vpand ymm0, ymm0, ymm1
+    vpmovmskb ecx, ymm0
+    test ecx, ecx
+    jne strict near L.nvol_memmem_find_entry_avx2 + 3504
+; .L211:
+    jmp strict near L.nvol_memmem_find_entry_avx2 + 2757
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-global nvol_memmem_find_entry_sse2:function hidden 2790
+    db 0xf, 0x1f, 0x0
+global nvol_memmem_find_entry_sse2:function hidden 2864
 nvol_memmem_find_entry_sse2:
 L.nvol_memmem_find_entry_sse2:
     push rbx
@@ -10629,12 +10695,12 @@ L.nvol_memmem_find_entry_sse2:
     cmp r9, rdx
     jae strict short L.nvol_memmem_find_entry_sse2 + 45
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L2:
     mov rbp, rdi
     test rdx, rdx
     jne strict short L.nvol_memmem_find_entry_sse2 + 58
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L4:
     cmp rdx, 1
     jne strict short L.nvol_memmem_find_entry_sse2 + 95
@@ -10651,7 +10717,7 @@ L.nvol_memmem_find_entry_sse2:
     jmp strict near L.nvol_memchr_entry_sse2
 ; .L6:
     cmp rdx, 32
-    ja strict near L.nvol_memmem_find_entry_sse2 + 1156
+    ja strict near L.nvol_memmem_find_entry_sse2 + 1032
     mov rcx, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rbx, rdx
@@ -10661,11 +10727,11 @@ L.nvol_memmem_find_entry_sse2:
     cmp rbx, rcx
     cmovb rbx, rcx
     cmp r9, rbx
-    jae strict near L.nvol_memmem_find_entry_sse2 + 362
+    jae strict near L.nvol_memmem_find_entry_sse2 + 329
     cmp rdx, r9
     jbe strict short L.nvol_memmem_find_entry_sse2 + 155
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L12:
     mov rcx, qword [rbp + 16]
     mov rdi, qword [rbp + 24]
@@ -10687,7 +10753,7 @@ L.nvol_memmem_find_entry_sse2:
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L16:
     cmp r9d, ecx
-    jne strict short L.nvol_memmem_find_entry_sse2 + 318
+    jne strict short L.nvol_memmem_find_entry_sse2 + 288
     xor ebx, ebx
     lea rbp, [rbx + 4]
     cmp rbp, rdx
@@ -10696,7 +10762,7 @@ L.nvol_memmem_find_entry_sse2:
     mov ebp, dword [rax + rbx]
     mov r12d, dword [rsi + rbx]
     cmp ebp, r12d
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2580
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2404
 ; .L23:
     lea rbx, [rbx + 4]
     lea rbp, [rbx + 4]
@@ -10705,29 +10771,18 @@ L.nvol_memmem_find_entry_sse2:
 ; .L22:
     lea rbp, [rbx + 2]
     cmp rbp, rdx
-    ja strict short L.nvol_memmem_find_entry_sse2 + 284
-    movzx ebp, word [rax + rbx]
-    movzx r12d, word [rsi + rbx]
-    cmp ebp, r12d
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2587
-; .L27:
-    lea rbx, [rbx + 2]
+    jbe strict near L.nvol_memmem_find_entry_sse2 + 2614
 ; .L25:
     cmp rbx, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 305
-    movzx ebp, byte [rax + rbx]
-    movzx ebx, byte [rsi + rbx]
-    cmp ebp, ebx
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2594
-; .L31:
+    jb strict near L.nvol_memmem_find_entry_sse2 + 2641
 ; .L29:
     mov ebx, 1
 ; .L20:
     test ebx, ebx
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2601
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2425
 ; .L18:
     cmp rax, r8
-    jae strict near L.nvol_memmem_find_entry_sse2 + 2603
+    jae strict near L.nvol_memmem_find_entry_sse2 + 2427
 ; .L33:
     movzx ebx, byte [rax]
     imul ebx, edi
@@ -10736,12 +10791,12 @@ L.nvol_memmem_find_entry_sse2:
     movzx ebx, byte [rax + rdx]
     add r9d, ebx
     lea rax, [rax + 1]
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 208
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 208
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L10:
     cmp rdx, 2
-    jne strict near L.nvol_memmem_find_entry_sse2 + 594
+    jne strict near L.nvol_memmem_find_entry_sse2 + 554
     mov rdi, qword [rbp]
     mov r9, qword [rbp + 8]
     movzx ecx, byte [rsi + rdi]
@@ -10762,9 +10817,8 @@ L.nvol_memmem_find_entry_sse2:
     mov rsi, r8
     sub rsi, rcx
     cmp rax, rsi
-    ja strict short L.nvol_memmem_find_entry_sse2 + 508
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    ja strict short L.nvol_memmem_find_entry_sse2 + 468
+    db 0xf, 0x1f, 0x0
 ; .L37:
     movdqu xmm2, [rax + rdi]
     pcmpeqb xmm2, xmm0
@@ -10773,19 +10827,19 @@ L.nvol_memmem_find_entry_sse2:
     pand xmm2, xmm3
     pmovmskb ecx, xmm2
     test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2607
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2431
 ; .L39:
     add rax, 16
     cmp rax, rsi
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 464
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 424
 ; .L38:
     cmp rax, r8
-    jae strict short L.nvol_memmem_find_entry_sse2 + 587
+    jae strict short L.nvol_memmem_find_entry_sse2 + 547
     sub r8, rax
     cmp r8, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 528
+    jae strict short L.nvol_memmem_find_entry_sse2 + 488
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L43:
     sub rax, rsi
     mov edx, 4294967295
@@ -10799,14 +10853,14 @@ L.nvol_memmem_find_entry_sse2:
     pmovmskb eax, xmm2
     and rax, rdx
     test eax, eax
-    je strict short L.nvol_memmem_find_entry_sse2 + 587
+    je strict short L.nvol_memmem_find_entry_sse2 + 547
     bsf eax, eax
     lea rax, [rsi + rax]
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L45:
 ; .L41:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L35:
     mov rdi, qword [rbp]
     mov r9, qword [rbp + 8]
@@ -10828,8 +10882,7 @@ L.nvol_memmem_find_entry_sse2:
     mov rbx, r8
     sub rbx, rcx
     cmp rax, rbx
-    ja strict near L.nvol_memmem_find_entry_sse2 + 910
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    ja strict near L.nvol_memmem_find_entry_sse2 + 821
 ; .L47:
     movdqu xmm2, [rax + rdi]
     pcmpeqb xmm2, xmm0
@@ -10838,7 +10891,7 @@ L.nvol_memmem_find_entry_sse2:
     pand xmm2, xmm3
     pmovmskb ecx, xmm2
     test ecx, ecx
-    je strict near L.nvol_memmem_find_entry_sse2 + 897
+    je strict near L.nvol_memmem_find_entry_sse2 + 808
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L49:
     bsf ebp, ecx
@@ -10846,66 +10899,55 @@ L.nvol_memmem_find_entry_sse2:
     mov r12, r8
     sub r12, rbp
     cmp r12, rdx
-    jb strict near L.nvol_memmem_find_entry_sse2 + 2616
+    jb strict near L.nvol_memmem_find_entry_sse2 + 2440
 ; .L51:
     xor r12d, r12d
     lea r13, [r12 + 4]
     cmp r13, rdx
-    ja strict short L.nvol_memmem_find_entry_sse2 + 801
+    ja strict short L.nvol_memmem_find_entry_sse2 + 753
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L56:
     mov r13d, dword [rsi + r12]
     mov r14d, dword [rbp + r12]
     cmp r13d, r14d
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2620
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2444
 ; .L58:
     lea r12, [r12 + 4]
     lea r13, [r12 + 4]
     cmp r13, rdx
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 768
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 720
 ; .L57:
     lea r13, [r12 + 2]
     cmp r13, rdx
-    ja strict short L.nvol_memmem_find_entry_sse2 + 836
-    movzx r13d, word [rsi + r12]
-    movzx r14d, word [rbp + r12]
-    cmp r13d, r14d
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2628
-; .L62:
-    lea r12, [r12 + 2]
+    jbe strict near L.nvol_memmem_find_entry_sse2 + 2662
 ; .L60:
     cmp r12, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 861
-    movzx r13d, byte [rsi + r12]
-    movzx r12d, byte [rbp + r12]
-    cmp r13d, r12d
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2636
-; .L66:
+    jb strict near L.nvol_memmem_find_entry_sse2 + 2692
 ; .L64:
     mov r12d, 1
 ; .L55:
     test r12d, r12d
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2644
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2468
 ; .L53:
     mov rbp, rcx
     lea r12, [rcx - 1]
     and rbp, r12
     mov rcx, rbp
     test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_sse2 + 728
+    jne strict short L.nvol_memmem_find_entry_sse2 + 680
 ; .L50:
     add rax, 16
     cmp rax, rbx
-    jbe strict near L.nvol_memmem_find_entry_sse2 + 688
+    jbe strict near L.nvol_memmem_find_entry_sse2 + 640
 ; .L48:
     cmp rax, r8
-    jae strict near L.nvol_memmem_find_entry_sse2 + 1149
+    jae strict near L.nvol_memmem_find_entry_sse2 + 1025
     mov rcx, r8
     sub rcx, rax
     cmp rcx, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 937
+    jae strict short L.nvol_memmem_find_entry_sse2 + 848
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L70:
     sub rax, rbx
     mov ebp, 4294967295
@@ -10919,72 +10961,61 @@ L.nvol_memmem_find_entry_sse2:
     pmovmskb eax, xmm2
     and rax, rbp
     test eax, eax
-    je strict near L.nvol_memmem_find_entry_sse2 + 1149
-    db 0xf, 0x1f, 0x40, 0x0
+    je strict near L.nvol_memmem_find_entry_sse2 + 1025
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L72:
     bsf ecx, eax
     lea rcx, [rbx + rcx]
     mov rdi, r8
     sub rdi, rcx
     cmp rdi, rdx
-    jb strict near L.nvol_memmem_find_entry_sse2 + 2649
+    jb strict near L.nvol_memmem_find_entry_sse2 + 2473
 ; .L74:
     xor edi, edi
     lea r9, [rdi + 4]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_find_entry_sse2 + 1061
+    ja strict short L.nvol_memmem_find_entry_sse2 + 973
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L79:
     mov r9d, dword [rsi + rdi]
     mov ebp, dword [rcx + rdi]
     cmp r9d, ebp
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2653
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2477
 ; .L81:
     lea rdi, [rdi + 4]
     lea r9, [rdi + 4]
     cmp r9, rdx
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 1032
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 944
 ; .L80:
     lea r9, [rdi + 2]
     cmp r9, rdx
-    ja strict short L.nvol_memmem_find_entry_sse2 + 1092
-    movzx r9d, word [rsi + rdi]
-    movzx ebp, word [rcx + rdi]
-    cmp r9d, ebp
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2660
-; .L85:
-    lea rdi, [rdi + 2]
+    jbe strict near L.nvol_memmem_find_entry_sse2 + 2717
 ; .L83:
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 1115
-    movzx r9d, byte [rsi + rdi]
-    movzx edi, byte [rcx + rdi]
-    cmp r9d, edi
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2667
-; .L89:
+    jb strict near L.nvol_memmem_find_entry_sse2 + 2744
 ; .L87:
     mov edi, 1
 ; .L78:
     test edi, edi
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2674
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2498
 ; .L76:
     mov rcx, rax
     lea rdi, [rax - 1]
     and rcx, rdi
     mov rax, rcx
     test eax, eax
-    jne strict near L.nvol_memmem_find_entry_sse2 + 992
+    jne strict short L.nvol_memmem_find_entry_sse2 + 904
 ; .L73:
 ; .L68:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L8:
     cmp r9, 16
-    jae strict near L.nvol_memmem_find_entry_sse2 + 1386
+    jae strict near L.nvol_memmem_find_entry_sse2 + 1241
     cmp rdx, r9
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 1178
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 1054
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L93:
     mov rcx, qword [rbp + 16]
     mov rdi, qword [rbp + 24]
@@ -10993,60 +11024,50 @@ L.nvol_memmem_find_entry_sse2:
     mov rbx, rax
     lea rbp, [rax + rdx]
     cmp rbx, rbp
-    jae strict short L.nvol_memmem_find_entry_sse2 + 1227
-    db 0xf, 0x1f, 0x40, 0x0
+    jae strict short L.nvol_memmem_find_entry_sse2 + 1107
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L95:
     shl r9d, 1
     movzx r12d, byte [rbx]
     add r9d, r12d
     add rbx, 1
     cmp rbx, rbp
-    jb strict short L.nvol_memmem_find_entry_sse2 + 1208
+    jb strict short L.nvol_memmem_find_entry_sse2 + 1088
 ; .L96:
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L97:
     cmp r9d, ecx
-    jne strict short L.nvol_memmem_find_entry_sse2 + 1342
+    jne strict short L.nvol_memmem_find_entry_sse2 + 1200
     xor ebx, ebx
     lea rbp, [rbx + 4]
     cmp rbp, rdx
-    ja strict short L.nvol_memmem_find_entry_sse2 + 1277
+    ja strict short L.nvol_memmem_find_entry_sse2 + 1165
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L102:
     mov ebp, dword [rax + rbx]
     mov r12d, dword [rsi + rbx]
     cmp ebp, r12d
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2679
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2503
 ; .L104:
     lea rbx, [rbx + 4]
     lea rbp, [rbx + 4]
     cmp rbp, rdx
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 1248
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 1136
 ; .L103:
     lea rbp, [rbx + 2]
     cmp rbp, rdx
-    ja strict short L.nvol_memmem_find_entry_sse2 + 1308
-    movzx ebp, word [rax + rbx]
-    movzx r12d, word [rsi + rbx]
-    cmp ebp, r12d
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2686
-; .L108:
-    lea rbx, [rbx + 2]
+    jbe strict near L.nvol_memmem_find_entry_sse2 + 2767
 ; .L106:
     cmp rbx, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 1329
-    movzx ebp, byte [rax + rbx]
-    movzx ebx, byte [rsi + rbx]
-    cmp ebp, ebx
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2693
-; .L112:
+    jb strict near L.nvol_memmem_find_entry_sse2 + 2794
 ; .L110:
     mov ebx, 1
 ; .L101:
     test ebx, ebx
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2700
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2524
 ; .L99:
     cmp rax, r8
-    jae strict near L.nvol_memmem_find_entry_sse2 + 2705
+    jae strict near L.nvol_memmem_find_entry_sse2 + 2529
 ; .L114:
     movzx ebx, byte [rax]
     imul ebx, edi
@@ -11055,9 +11076,9 @@ L.nvol_memmem_find_entry_sse2:
     movzx ebx, byte [rax + rdx]
     add r9d, ebx
     lea rax, [rax + 1]
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 1232
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 1112
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L91:
     mov qword [rsp + 32], r9
     mov rbx, qword [rbp + 40]
@@ -11094,35 +11115,35 @@ L.nvol_memmem_find_entry_sse2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    ja strict near L.nvol_memmem_find_entry_sse2 + 2560
-    db 0xf, 0x1f, 0x0
+    ja strict near L.nvol_memmem_find_entry_sse2 + 2384
+    db 0xf, 0x1f, 0x40, 0x0
 ; .L116:
     mov rdi, rbx
     cmp rdi, r13
     cmovb rdi, r13
     xor ecx, ecx
     test r14, r14
-    je strict short L.nvol_memmem_find_entry_sse2 + 1617
+    je strict short L.nvol_memmem_find_entry_sse2 + 1473
     lea rbp, [r14 - 1]
     cmp rbp, 50
-    jae strict short L.nvol_memmem_find_entry_sse2 + 1586
+    jae strict short L.nvol_memmem_find_entry_sse2 + 1442
     mov ecx, 1
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 1617
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 1473
 ; .L120:
     lea rbp, [r14 - 1]
     shl rbp, 3
     mov r11, [rsp + 224]
     cmp r11, rbp
-    jb strict short L.nvol_memmem_find_entry_sse2 + 1614
+    jb strict short L.nvol_memmem_find_entry_sse2 + 1470
     mov ecx, 1
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 1617
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 1473
 ; .L122:
     xor r14d, r14d
 ; .L123:
 ; .L121:
 ; .L118:
     test ecx, ecx
-    je strict near L.nvol_memmem_find_entry_sse2 + 2202
+    je strict near L.nvol_memmem_find_entry_sse2 + 2018
     mov rcx, qword [rsp + 160]
     mov rdi, qword [rsp]
     mov r9, qword [rsp + 32]
@@ -11135,38 +11156,38 @@ L.nvol_memmem_find_entry_sse2:
     mov r11, [rsp + 288]
     mov r10, [rsp + 192]
     cmp r11, r10
-    jae strict short L.nvol_memmem_find_entry_sse2 + 1805
+    jae strict short L.nvol_memmem_find_entry_sse2 + 1661
     mov r13, qword [rsp + 320]
     cmp r13, r8
-    jae strict short L.nvol_memmem_find_entry_sse2 + 1754
+    jae strict short L.nvol_memmem_find_entry_sse2 + 1610
     movzx r11d, byte [r13]
     mov [rsp + 352], r11
     cmp r11d, ecx
-    je strict short L.nvol_memmem_find_entry_sse2 + 1754
+    je strict short L.nvol_memmem_find_entry_sse2 + 1610
     mov rdi, rcx
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L128:
     add r13, 1
     cmp r13, r8
-    jae strict short L.nvol_memmem_find_entry_sse2 + 1754
+    jae strict short L.nvol_memmem_find_entry_sse2 + 1610
     movzx ecx, byte [r13]
     cmp ecx, edi
-    jne strict short L.nvol_memmem_find_entry_sse2 + 1736
+    jne strict short L.nvol_memmem_find_entry_sse2 + 1592
 ; .L130:
 ; .L129:
     cmp r13, r8
-    jae strict near L.nvol_memmem_find_entry_sse2 + 2109
+    jae strict near L.nvol_memmem_find_entry_sse2 + 1925
     mov rcx, qword [rsp + 128]
     mov r11, [rsp + 320]
     sub r13, r11
     cmp r13, rcx
-    jb strict short L.nvol_memmem_find_entry_sse2 + 1798
+    jb strict short L.nvol_memmem_find_entry_sse2 + 1654
     mov rbp, r13
     sub rbp, rcx
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2109
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1925
 ; .L133:
     xor ebp, ebp
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2109
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1925
 ; .L126:
     mov rcx, rdx
     mov r11, qword [rdi]
@@ -11204,7 +11225,7 @@ L.nvol_memmem_find_entry_sse2:
     sub rcx, r11
     mov rdi, qword [rsp + 320]
     cmp rdi, rcx
-    ja strict short L.nvol_memmem_find_entry_sse2 + 2053
+    ja strict short L.nvol_memmem_find_entry_sse2 + 1909
     db 0x90
 ; .L136:
     mov r11, [rsp + 384]
@@ -11215,50 +11236,40 @@ L.nvol_memmem_find_entry_sse2:
     pand xmm2, xmm3
     pmovmskb ebp, xmm2
     test ebp, ebp
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2712
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2536
 ; .L138:
     add rdi, 16
     cmp rdi, rcx
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 2000
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 1856
 ; .L137:
     cmp rdi, r8
-    jae strict short L.nvol_memmem_find_entry_sse2 + 2102
-    mov r11, [rsp + 384]
-    movdqu xmm2, [rcx + r11]
-    pcmpeqb xmm2, xmm0
-    movdqu xmm0, [rcx + r13]
-    pcmpeqb xmm0, xmm1
-    pand xmm2, xmm0
-    pmovmskb edi, xmm2
-    test edi, edi
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2735
-; .L142:
+    jb strict near L.nvol_memmem_find_entry_sse2 + 2815
 ; .L140:
     mov rbp, -1
 ; .L135:
 ; .L127:
     add r14, 1
     cmp rbp, -1
-    jne strict short L.nvol_memmem_find_entry_sse2 + 2149
+    jne strict short L.nvol_memmem_find_entry_sse2 + 1965
     mov r11, [rsp + 224]
     mov r10, [rsp + 288]
     lea r11, [r11 + r10]
     mov [rsp + 224], r11
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2169
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 1985
 ; .L144:
     mov r11, [rsp + 224]
     lea r11, [r11 + rbp]
     mov [rsp + 224], r11
 ; .L145:
     cmp rbp, -1
-    je strict near L.nvol_memmem_find_entry_sse2 + 2758
+    je strict near L.nvol_memmem_find_entry_sse2 + 2582
 ; .L146:
     lea r15, [r15 + rbp]
     xor r13d, r13d
     mov rdi, rbx
     lea rcx, [r15 + rdx]
     cmp rcx, r9
-    ja strict near L.nvol_memmem_find_entry_sse2 + 2765
+    ja strict near L.nvol_memmem_find_entry_sse2 + 2589
 ; .L148:
 ; .L124:
     xor r11d, r11d
@@ -11275,86 +11286,87 @@ L.nvol_memmem_find_entry_sse2:
     movzx ecx, cl
     mov r11, [rsp + 640]
     cmp r11d, ecx
-    jne strict short L.nvol_memmem_find_entry_sse2 + 2280
+    jne strict short L.nvol_memmem_find_entry_sse2 + 2096
     lea r15, [r15 + rdx]
     xor r13d, r13d
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2542
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2366
 ; .L150:
     mov r9, qword [rsp + 64]
     test r9d, r9d
-    jne strict short L.nvol_memmem_find_entry_sse2 + 2293
+    jne strict short L.nvol_memmem_find_entry_sse2 + 2109
     mov rdi, rbx
 ; .L152:
     lea rcx, [rax + r15]
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 2345
+    jae strict short L.nvol_memmem_find_entry_sse2 + 2169
     movzx ecx, byte [rsi + rdi]
     lea rbp, [r15 + rdi]
     movzx ebp, byte [rax + rbp]
     cmp ecx, ebp
-    jne strict short L.nvol_memmem_find_entry_sse2 + 2345
-    db 0x66, 0x90
+    jne strict short L.nvol_memmem_find_entry_sse2 + 2169
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 ; .L154:
     add rdi, 1
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 2345
+    jae strict short L.nvol_memmem_find_entry_sse2 + 2169
     movzx ecx, byte [rsi + rdi]
     lea rbp, [r15 + rdi]
     movzx ebp, byte [rax + rbp]
     cmp ecx, ebp
-    je strict short L.nvol_memmem_find_entry_sse2 + 2320
+    je strict short L.nvol_memmem_find_entry_sse2 + 2144
 ; .L156:
 ; .L155:
     cmp rdi, rdx
-    jae strict short L.nvol_memmem_find_entry_sse2 + 2369
+    jae strict short L.nvol_memmem_find_entry_sse2 + 2193
     sub rdi, rbx
     lea rcx, [r15 + rdi]
     lea r15, [rcx + 1]
     xor r13d, r13d
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2542
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2366
 ; .L157:
     test r9d, r9d
-    je strict short L.nvol_memmem_find_entry_sse2 + 2471
+    je strict short L.nvol_memmem_find_entry_sse2 + 2295
     mov rcx, rbx
     lea rdi, [rax + r15]
     cmp rcx, r13
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 2433
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 2257
     movzx edi, byte [rsi + rcx]
     lea rbp, [r15 + rcx]
     movzx ebp, byte [rax + rbp]
     cmp edi, ebp
-    jne strict short L.nvol_memmem_find_entry_sse2 + 2433
+    jne strict short L.nvol_memmem_find_entry_sse2 + 2257
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L161:
     add rcx, -1
     cmp rcx, r13
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 2433
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 2257
     movzx edi, byte [rsi + rcx]
     lea rbp, [r15 + rcx]
     movzx ebp, byte [rax + rbp]
     cmp edi, ebp
-    je strict short L.nvol_memmem_find_entry_sse2 + 2408
+    je strict short L.nvol_memmem_find_entry_sse2 + 2232
 ; .L163:
 ; .L162:
     cmp rcx, r13
-    ja strict short L.nvol_memmem_find_entry_sse2 + 2459
+    ja strict short L.nvol_memmem_find_entry_sse2 + 2283
     movzx ecx, byte [rsi + r13]
     lea rdi, [r15 + r13]
     movzx edi, byte [rax + rdi]
     cmp ecx, edi
-    je strict near L.nvol_memmem_find_entry_sse2 + 2772
+    je strict near L.nvol_memmem_find_entry_sse2 + 2596
 ; .L164:
     lea r15, [r15 + r12]
     mov r13, rdx
     sub r13, r12
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2542
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 2366
 ; .L159:
     mov ecx, 1
     mov rdi, rbx
     test ecx, ecx
-    je strict short L.nvol_memmem_find_entry_sse2 + 2530
+    je strict short L.nvol_memmem_find_entry_sse2 + 2354
     cmp rdi, 0
-    jbe strict short L.nvol_memmem_find_entry_sse2 + 2530
+    jbe strict short L.nvol_memmem_find_entry_sse2 + 2354
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L166:
     lea rdi, [rdi - 1]
@@ -11362,17 +11374,17 @@ L.nvol_memmem_find_entry_sse2:
     lea r9, [r15 + rdi]
     movzx r9d, byte [rax + r9]
     cmp ebp, r9d
-    je strict short L.nvol_memmem_find_entry_sse2 + 2520
+    je strict short L.nvol_memmem_find_entry_sse2 + 2344
     xor ecx, ecx
 ; .L168:
     test ecx, ecx
-    je strict short L.nvol_memmem_find_entry_sse2 + 2530
+    je strict short L.nvol_memmem_find_entry_sse2 + 2354
     cmp rdi, 0
-    ja strict short L.nvol_memmem_find_entry_sse2 + 2496
+    ja strict short L.nvol_memmem_find_entry_sse2 + 2320
 ; .L170:
 ; .L167:
     test ecx, ecx
-    jne strict near L.nvol_memmem_find_entry_sse2 + 2781
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2605
 ; .L171:
     lea r15, [r15 + r12]
 ; .L160:
@@ -11381,7 +11393,7 @@ L.nvol_memmem_find_entry_sse2:
     lea rcx, [r15 + rdx]
     mov r11, [rsp + 32]
     cmp rcx, r11
-    jbe strict near L.nvol_memmem_find_entry_sse2 + 1552
+    jbe strict near L.nvol_memmem_find_entry_sse2 + 1408
 ; .L117:
     xor eax, eax
 ; .L1:
@@ -11395,94 +11407,165 @@ L.nvol_memmem_find_entry_sse2:
     ret
 ; .L24:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 310
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 280
 ; .L28:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 310
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 280
 ; .L32:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 310
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 280
 ; .L19:
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 2386
 ; .L34:
     xor eax, eax
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 2386
 ; .L40:
     bsf ecx, ecx
     lea rax, [rax + rcx]
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 2386
 ; .L52:
     xor eax, eax
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 2386
 ; .L59:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 867
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 782
 ; .L63:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 867
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 782
 ; .L67:
     xor r12d, r12d
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 867
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 782
 ; .L54:
     mov rax, rbp
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 2386
 ; .L75:
     xor eax, eax
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 2386
 ; .L82:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 1120
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1000
 ; .L86:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 1120
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1000
 ; .L90:
     xor edi, edi
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 1120
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1000
 ; .L77:
     mov rax, rcx
-    jmp strict short L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict short L.nvol_memmem_find_entry_sse2 + 2386
 ; .L105:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 1334
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1192
 ; .L109:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 1334
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1192
 ; .L113:
     xor ebx, ebx
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 1334
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1192
 ; .L100:
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L115:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L139:
     mov r11, [rsp + 320]
     sub rdi, r11
     bsf ecx, ebp
     lea rbp, [rdi + rcx]
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2109
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1925
 ; .L143:
     mov r11, [rsp + 320]
     sub rcx, r11
     bsf edi, edi
     lea rbp, [rcx + rdi]
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2109
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1925
 ; .L147:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L149:
     xor eax, eax
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L165:
     lea rax, [rax + r15]
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
 ; .L172:
     lea rax, [rax + r15]
-    jmp strict near L.nvol_memmem_find_entry_sse2 + 2562
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 2386
+; .Lrare1:
+    movzx ebp, word [rax + rbx]
+    movzx r12d, word [rsi + rbx]
+    cmp ebp, r12d
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2411
+; .L27:
+    lea rbx, [rbx + 2]
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 266
+; .Lrare2:
+    movzx ebp, byte [rax + rbx]
+    movzx ebx, byte [rsi + rbx]
+    cmp ebp, ebx
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2418
+; .L31:
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 275
+; .Lrare3:
+    movzx r13d, word [rsi + r12]
+    movzx r14d, word [rbp + r12]
+    cmp r13d, r14d
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2452
+; .L62:
+    lea r12, [r12 + 2]
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 767
+; .Lrare4:
+    movzx r13d, byte [rsi + r12]
+    movzx r12d, byte [rbp + r12]
+    cmp r13d, r12d
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2460
+; .L66:
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 776
+; .Lrare5:
+    movzx r9d, word [rsi + rdi]
+    movzx ebp, word [rcx + rdi]
+    cmp r9d, ebp
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2484
+; .L85:
+    lea rdi, [rdi + 2]
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 986
+; .Lrare6:
+    movzx r9d, byte [rsi + rdi]
+    movzx edi, byte [rcx + rdi]
+    cmp r9d, edi
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2491
+; .L89:
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 995
+; .Lrare7:
+    movzx ebp, word [rax + rbx]
+    movzx r12d, word [rsi + rbx]
+    cmp ebp, r12d
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2510
+; .L108:
+    lea rbx, [rbx + 2]
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1178
+; .Lrare8:
+    movzx ebp, byte [rax + rbx]
+    movzx ebx, byte [rsi + rbx]
+    cmp ebp, ebx
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2517
+; .L112:
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1187
+; .Lrare9:
+    mov r11, [rsp + 384]
+    movdqu xmm2, [rcx + r11]
+    pcmpeqb xmm2, xmm0
+    movdqu xmm0, [rcx + r13]
+    pcmpeqb xmm0, xmm1
+    pand xmm2, xmm0
+    pmovmskb edi, xmm2
+    test edi, edi
+    jne strict near L.nvol_memmem_find_entry_sse2 + 2559
+; .L142:
+    jmp strict near L.nvol_memmem_find_entry_sse2 + 1918
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_memmem_find_raw:function 6
 nvol_memmem_find_raw:
 L.nvol_memmem_find_raw:
@@ -12421,7 +12504,7 @@ L.nvol_teddy_init:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x0
-global nvol_teddy_slim_ssse3_1:function hidden 2335
+global nvol_teddy_slim_ssse3_1:function hidden 2327
 nvol_teddy_slim_ssse3_1:
 L.nvol_teddy_slim_ssse3_1:
     push rbx
@@ -12439,8 +12522,8 @@ L.nvol_teddy_slim_ssse3_1:
     lea r11, [rcx - 16]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_slim_ssse3_1 + 868
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_teddy_slim_ssse3_1 + 153
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     movdqu xmm3, [r8]
     movdqa xmm4, xmm3
@@ -12457,15 +12540,431 @@ L.nvol_teddy_slim_ssse3_1:
     pcmpeqb xmm4, xmm3
     pmovmskb eax, xmm4
     cmp eax, 65535
-    je strict near L.nvol_teddy_slim_ssse3_1 + 850
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1615
+; .L4:
+    lea r8, [r8 + 16]
+    mov r11, [rsp + 32]
+    cmp r8, r11
+    jbe strict short L.nvol_teddy_slim_ssse3_1 + 64
+; .L3:
+    cmp r8, rcx
+    jae strict near L.nvol_teddy_slim_ssse3_1 + 941
+    lea r8, [rcx - 16]
+    movdqu xmm3, [r8]
+    movdqa xmm4, xmm3
+    pand xmm4, xmm2
+    psrlw xmm3, 4
+    pand xmm3, [rel NVOL_K1]
+    pshufb xmm0, xmm4
+    pshufb xmm1, xmm3
+    pand xmm0, xmm1
+    pxor xmm1, xmm1
+    movdqa xmm2, xmm0
+    pcmpeqb xmm2, xmm1
+    pmovmskb eax, xmm2
+    cmp eax, 65535
+    je strict near L.nvol_teddy_slim_ssse3_1 + 941
+    mov qword [rsp + 384], r8
+    movq rax, xmm0
+    mov qword [rsp + 416], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_slim_ssse3_1 + 556
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L57:
+    mov r11, [rsp + 416]
+    bsf rdx, r11
+    mov r9, qword [rsp + 416]
+    mov r11, [rsp + 416]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 416], r9
+    mov r9, rdx
+    shr r9, 3
+    mov r11, [rsp + 384]
+    lea r9, [r11 + r9]
+    and rdx, 7
+    movzx r11d, byte [rdi + rdx + 320]
+    mov [rsp + 448], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_ssse3_1 + 539
+    db 0x66, 0x90
+; .L59:
+    mov r12, rdx
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_ssse3_1 + 518
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_ssse3_1 + 1348
+; .L64:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov r8, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_ssse3_1 + 492
+    db 0x66, 0x90
+; .L73:
+    mov eax, dword [r13]
+    mov ebx, dword [r8]
+    cmp eax, ebx
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1424
+; .L75:
+    lea r13, [r13 + 4]
+    add r8, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_ssse3_1 + 464
+; .L74:
+    mov eax, dword [r15]
+    mov r8d, dword [r14]
+    cmp rax, r8
+    sete r14b
+    movzx r14d, r14b
+; .L63:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1432
+; .L61:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 448]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_ssse3_1 + 368
+; .L60:
+    mov r11, [rsp + 416]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 272
+; .L58:
+    mov r9, -1
+; .L56:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_ssse3_1 + 577
+    mov rax, r9
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 948
+; .L77:
+    mov r11, [rsp + 384]
+    lea r10, [r11 + 8]
+    mov [rsp + 512], r10
+    movdqa xmm1, xmm0
+    punpckhqdq xmm1, xmm0
+    movq rdx, xmm1
+    mov qword [rsp + 544], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_ssse3_1 + 923
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L80:
+    mov r11, [rsp + 544]
+    bsf r8, r11
+    mov r9, qword [rsp + 544]
+    mov r11, [rsp + 544]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 544], r9
+    mov r9, r8
+    shr r9, 3
+    mov r11, [rsp + 512]
+    lea r9, [r11 + r9]
+    and r8, 7
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 576], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_ssse3_1 + 906
+    db 0x66, 0x90
+; .L82:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_ssse3_1 + 885
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_ssse3_1 + 1512
+; .L87:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_ssse3_1 + 859
+    db 0x66, 0x90
+; .L96:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1588
+; .L98:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_ssse3_1 + 832
+; .L97:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L86:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1596
+; .L84:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 576]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_ssse3_1 + 736
+; .L83:
+    mov r11, [rsp + 544]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 640
+; .L81:
+    mov r9, -1
+; .L79:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_ssse3_1 + 941
+    mov rax, r9
+    jmp strict short L.nvol_teddy_slim_ssse3_1 + 948
+; .L100:
+; .L54:
+; .L52:
+    mov rax, -1
+; .L1:
+    add rsp, 648
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1889
+; .L19:
+    movzx eax, byte [rbx]
+    movzx edx, byte [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1889
+; .L21:
+    movzx eax, word [rbx]
+    movzx edx, word [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1889
+; .L15:
+    test rdx, rdx
+    je strict short L.nvol_teddy_slim_ssse3_1 + 966
+; .L16:
+    cmp rdx, 1
+    je strict short L.nvol_teddy_slim_ssse3_1 + 976
+; .L18:
+    cmp rdx, 2
+    je strict short L.nvol_teddy_slim_ssse3_1 + 998
+; .L20:
+    xor eax, eax
+    movzx edx, word [rbx]
+    movzx r11d, word [r12]
+    mov [rsp + 192], r11
+    cmp edx, r11d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1889
+    movzx edx, byte [rbx + 2]
+    movzx ebx, byte [r12 + 2]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1889
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1889
+; .L26:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1889
+; .L12:
+    mov r11, [rsp]
+    sub r12, r11
+    shl r12, 8
+    or r12, r15
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1939
+; .L28:
+    mov rax, r12
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 948
+; .L40:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 2258
+; .L42:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 2258
+; .L44:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 2258
+; .L38:
+    test r15, r15
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1126
+; .L39:
+    cmp r15, 1
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1136
+; .L41:
+    cmp r15, 2
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1158
+; .L43:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 352], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 2258
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 2258
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 2258
+; .L49:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 2258
+; .L35:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 2312
+; .L51:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 948
+; .L67:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 509
+; .L69:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 509
+; .L71:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 509
+; .L65:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1287
+; .L66:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1298
+; .L68:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1323
+; .L70:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 480], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 509
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 509
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 509
+; .L76:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 509
+; .L62:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 563
+; .L90:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 876
+; .L92:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 876
+; .L94:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 876
+; .L88:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1451
+; .L89:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1462
+; .L91:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_ssse3_1 + 1487
+; .L93:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 608], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 876
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 876
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 876
+; .L99:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 876
+; .L85:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 930
+; .Lrare1:
     mov qword [rsp + 64], r8
     movq rax, xmm5
     mov qword [rsp + 96], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_1 + 460
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    je strict near L.nvol_teddy_slim_ssse3_1 + 1932
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L7:
     mov r11, [rsp + 96]
     bsf rbp, r11
@@ -12486,7 +12985,7 @@ L.nvol_teddy_slim_ssse3_1:
     xor r14d, r14d
     mov r11, r10
     cmp r14, r11
-    jae strict near L.nvol_teddy_slim_ssse3_1 + 446
+    jae strict near L.nvol_teddy_slim_ssse3_1 + 1918
     db 0x66, 0x90
 ; .L9:
     mov r15, qword [rsp + 128]
@@ -12503,9 +13002,9 @@ L.nvol_teddy_slim_ssse3_1:
     mov rax, rcx
     sub rax, r12
     cmp rdx, rax
-    ja strict short L.nvol_teddy_slim_ssse3_1 + 425
+    ja strict short L.nvol_teddy_slim_ssse3_1 + 1897
     cmp rdx, 4
-    jb strict near L.nvol_teddy_slim_ssse3_1 + 1740
+    jb strict near L.nvol_teddy_slim_ssse3_1 + 1020
 ; .L14:
     lea rax, [rdx - 4]
     lea rax, [rbx + rax]
@@ -12513,18 +13012,18 @@ L.nvol_teddy_slim_ssse3_1:
     lea rdx, [r12 + rdx]
     mov r9, r12
     cmp rbx, rax
-    jae strict short L.nvol_teddy_slim_ssse3_1 + 404
+    jae strict short L.nvol_teddy_slim_ssse3_1 + 1876
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L23:
     mov r13d, dword [rbx]
     mov ebp, dword [r9]
     cmp r13d, ebp
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1812
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1092
 ; .L25:
     lea rbx, [rbx + 4]
     add r9, 4
     cmp rbx, rax
-    jb strict short L.nvol_teddy_slim_ssse3_1 + 376
+    jb strict short L.nvol_teddy_slim_ssse3_1 + 1848
 ; .L24:
     mov eax, dword [rax]
     mov edx, dword [rdx]
@@ -12533,21 +13032,21 @@ L.nvol_teddy_slim_ssse3_1:
     movzx eax, al
 ; .L13:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1819
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1099
 ; .L11:
     lea r14, [r14 + 1]
     mov r11, [rsp + 160]
     cmp r14, r11
-    jb strict near L.nvol_teddy_slim_ssse3_1 + 272
+    jb strict near L.nvol_teddy_slim_ssse3_1 + 1744
 ; .L10:
     mov r11, [rsp + 96]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 176
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1648
 ; .L8:
     mov r12, -1
 ; .L6:
     cmp r12, -1
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1838
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1118
 ; .L27:
     mov r11, [rsp + 64]
     lea r10, [r11 + 8]
@@ -12558,7 +13057,7 @@ L.nvol_teddy_slim_ssse3_1:
     mov qword [rsp + 256], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_1 + 833
+    je strict near L.nvol_teddy_slim_ssse3_1 + 2305
     db 0x90
 ; .L30:
     mov r11, [rsp + 256]
@@ -12580,7 +13079,7 @@ L.nvol_teddy_slim_ssse3_1:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_slim_ssse3_1 + 816
+    jae strict near L.nvol_teddy_slim_ssse3_1 + 2288
     db 0xf, 0x1f, 0x0
 ; .L32:
     mov r13, qword [rsp + 288]
@@ -12597,9 +13096,9 @@ L.nvol_teddy_slim_ssse3_1:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_slim_ssse3_1 + 794
+    ja strict short L.nvol_teddy_slim_ssse3_1 + 2266
     cmp r15, 4
-    jb strict near L.nvol_teddy_slim_ssse3_1 + 1900
+    jb strict near L.nvol_teddy_slim_ssse3_1 + 1180
 ; .L37:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -12607,18 +13106,18 @@ L.nvol_teddy_slim_ssse3_1:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_slim_ssse3_1 + 772
+    jae strict short L.nvol_teddy_slim_ssse3_1 + 2244
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L46:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1973
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1253
 ; .L48:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_slim_ssse3_1 + 744
+    jb strict short L.nvol_teddy_slim_ssse3_1 + 2216
 ; .L47:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -12627,444 +13126,29 @@ L.nvol_teddy_slim_ssse3_1:
     movzx eax, al
 ; .L36:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1980
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1260
 ; .L34:
     lea r12, [r12 + 1]
     mov r11, [rsp + 320]
     cmp r12, r11
-    jb strict near L.nvol_teddy_slim_ssse3_1 + 640
+    jb strict near L.nvol_teddy_slim_ssse3_1 + 2112
 ; .L33:
     mov r11, [rsp + 256]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 528
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 2000
 ; .L31:
     mov rbx, -1
 ; .L29:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1999
+    jne strict near L.nvol_teddy_slim_ssse3_1 + 1279
 ; .L50:
-; .L4:
-    lea r8, [r8 + 16]
-    mov r11, [rsp + 32]
-    cmp r8, r11
-    jbe strict near L.nvol_teddy_slim_ssse3_1 + 64
-; .L3:
-    cmp r8, rcx
-    jae strict near L.nvol_teddy_slim_ssse3_1 + 1661
-    lea r8, [rcx - 16]
-    movdqu xmm3, [r8]
-    movdqa xmm4, xmm3
-    pand xmm4, xmm2
-    psrlw xmm3, 4
-    pand xmm3, [rel NVOL_K1]
-    pshufb xmm0, xmm4
-    pshufb xmm1, xmm3
-    pand xmm0, xmm1
-    pxor xmm1, xmm1
-    movdqa xmm2, xmm0
-    pcmpeqb xmm2, xmm1
-    pmovmskb eax, xmm2
-    cmp eax, 65535
-    je strict near L.nvol_teddy_slim_ssse3_1 + 1661
-    mov qword [rsp + 384], r8
-    movq rax, xmm0
-    mov qword [rsp + 416], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_1 + 1276
-    db 0xf, 0x1f, 0x0
-; .L57:
-    mov r11, [rsp + 416]
-    bsf rdx, r11
-    mov r9, qword [rsp + 416]
-    mov r11, [rsp + 416]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 416], r9
-    mov r9, rdx
-    shr r9, 3
-    mov r11, [rsp + 384]
-    lea r9, [r11 + r9]
-    and rdx, 7
-    movzx r11d, byte [rdi + rdx + 320]
-    mov [rsp + 448], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_ssse3_1 + 1259
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L59:
-    mov r12, rdx
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_ssse3_1 + 1238
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_ssse3_1 + 2068
-; .L64:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov r8, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_ssse3_1 + 1212
-    db 0x66, 0x90
-; .L73:
-    mov eax, dword [r13]
-    mov ebx, dword [r8]
-    cmp eax, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 2144
-; .L75:
-    lea r13, [r13 + 4]
-    add r8, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_ssse3_1 + 1184
-; .L74:
-    mov eax, dword [r15]
-    mov r8d, dword [r14]
-    cmp rax, r8
-    sete r14b
-    movzx r14d, r14b
-; .L63:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 2152
-; .L61:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 448]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_ssse3_1 + 1088
-; .L60:
-    mov r11, [rsp + 416]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 984
-; .L58:
-    mov r9, -1
-; .L56:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_ssse3_1 + 1297
-    mov rax, r9
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1668
-; .L77:
-    mov r11, [rsp + 384]
-    lea r10, [r11 + 8]
-    mov [rsp + 512], r10
-    movdqa xmm1, xmm0
-    punpckhqdq xmm1, xmm0
-    movq rdx, xmm1
-    mov qword [rsp + 544], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_1 + 1643
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L80:
-    mov r11, [rsp + 544]
-    bsf r8, r11
-    mov r9, qword [rsp + 544]
-    mov r11, [rsp + 544]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 544], r9
-    mov r9, r8
-    shr r9, 3
-    mov r11, [rsp + 512]
-    lea r9, [r11 + r9]
-    and r8, 7
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 576], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_ssse3_1 + 1626
-    db 0x66, 0x90
-; .L82:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_ssse3_1 + 1605
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_ssse3_1 + 2232
-; .L87:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_ssse3_1 + 1579
-    db 0x66, 0x90
-; .L96:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 2308
-; .L98:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_ssse3_1 + 1552
-; .L97:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L86:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 2316
-; .L84:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 576]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_ssse3_1 + 1456
-; .L83:
-    mov r11, [rsp + 544]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1360
-; .L81:
-    mov r9, -1
-; .L79:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_ssse3_1 + 1661
-    mov rax, r9
-    jmp strict short L.nvol_teddy_slim_ssse3_1 + 1668
-; .L100:
-; .L54:
-; .L52:
-    mov rax, -1
-; .L1:
-    add rsp, 648
-    pop r15
-    pop r14
-    pop r13
-    pop r12
-    pop rbp
-    pop rbx
-    ret
-; .L17:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 417
-; .L19:
-    movzx eax, byte [rbx]
-    movzx edx, byte [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 417
-; .L21:
-    movzx eax, word [rbx]
-    movzx edx, word [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 417
-; .L15:
-    test rdx, rdx
-    je strict short L.nvol_teddy_slim_ssse3_1 + 1686
-; .L16:
-    cmp rdx, 1
-    je strict short L.nvol_teddy_slim_ssse3_1 + 1696
-; .L18:
-    cmp rdx, 2
-    je strict short L.nvol_teddy_slim_ssse3_1 + 1718
-; .L20:
-    xor eax, eax
-    movzx edx, word [rbx]
-    movzx r11d, word [r12]
-    mov [rsp + 192], r11
-    cmp edx, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 417
-    movzx edx, byte [rbx + 2]
-    movzx ebx, byte [r12 + 2]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 417
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 417
-; .L26:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 417
-; .L12:
-    mov r11, [rsp]
-    sub r12, r11
-    shl r12, 8
-    or r12, r15
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 467
-; .L28:
-    mov rax, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1668
-; .L40:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 786
-; .L42:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 786
-; .L44:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 786
-; .L38:
-    test r15, r15
-    je strict short L.nvol_teddy_slim_ssse3_1 + 1846
-; .L39:
-    cmp r15, 1
-    je strict short L.nvol_teddy_slim_ssse3_1 + 1856
-; .L41:
-    cmp r15, 2
-    je strict short L.nvol_teddy_slim_ssse3_1 + 1878
-; .L43:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 352], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 786
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 786
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 786
-; .L49:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 786
-; .L35:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 840
-; .L51:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1668
-; .L67:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1229
-; .L69:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1229
-; .L71:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1229
-; .L65:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_ssse3_1 + 2007
-; .L66:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_ssse3_1 + 2018
-; .L68:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_ssse3_1 + 2043
-; .L70:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 480], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1229
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1229
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1229
-; .L76:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1229
-; .L62:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1283
-; .L90:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1596
-; .L92:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1596
-; .L94:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1596
-; .L88:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_ssse3_1 + 2171
-; .L89:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_ssse3_1 + 2182
-; .L91:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_ssse3_1 + 2207
-; .L93:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 608], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1596
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_1 + 1596
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1596
-; .L99:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1596
-; .L85:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_1 + 1650
+    jmp strict near L.nvol_teddy_slim_ssse3_1 + 139
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_teddy_slim_ssse3_2:function hidden 2479
 nvol_teddy_slim_ssse3_2:
 L.nvol_teddy_slim_ssse3_2:
@@ -13088,7 +13172,7 @@ L.nvol_teddy_slim_ssse3_2:
     lea r11, [rcx - 16]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_slim_ssse3_2 + 972
+    ja strict near L.nvol_teddy_slim_ssse3_2 + 248
     db 0xf, 0x1f, 0x40, 0x0
 ; .L2:
     movdqu xmm7, [r8]
@@ -13115,193 +13199,7 @@ L.nvol_teddy_slim_ssse3_2:
     pcmpeqb xmm9, xmm8
     pmovmskb eax, xmm9
     cmp eax, 65535
-    je strict near L.nvol_teddy_slim_ssse3_2 + 954
-    lea r11, [r8 - 1]
-    mov [rsp + 64], r11
-    movq rax, xmm7
-    mov qword [rsp + 96], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_2 + 556
-    db 0xf, 0x1f, 0x0
-; .L7:
-    mov r11, [rsp + 96]
-    bsf rbp, r11
-    mov r12, qword [rsp + 96]
-    mov r11, [rsp + 96]
-    lea r13, [r11 - 1]
-    and r12, r13
-    mov qword [rsp + 96], r12
-    mov r12, rbp
-    shr r12, 3
-    mov r11, [rsp + 64]
-    lea r12, [r11 + r12]
-    mov r11, rbp
-    and r11, 7
-    mov [rsp + 128], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 160], r10
-    xor r14d, r14d
-    mov r11, r10
-    cmp r14, r11
-    jae strict near L.nvol_teddy_slim_ssse3_2 + 542
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L9:
-    mov r15, qword [rsp + 128]
-    shl r15, 6
-    lea r15, [r15 + r14]
-    movzx r15d, byte [rdi + r15 + 336]
-    mov rbx, r15
-    shl rbx, 4
-    mov rbx, qword [rsi + rbx + 8]
-    lea rbx, [rsi + rbx]
-    mov rdx, r15
-    shl rdx, 4
-    mov rdx, qword [rsi + rdx + 16]
-    mov rax, rcx
-    sub rax, r12
-    cmp rdx, rax
-    ja strict short L.nvol_teddy_slim_ssse3_2 + 521
-    cmp rdx, 4
-    jb strict near L.nvol_teddy_slim_ssse3_2 + 1884
-; .L14:
-    lea rax, [rdx - 4]
-    lea rax, [rbx + rax]
-    lea rdx, [rdx - 4]
-    lea rdx, [r12 + rdx]
-    mov r9, r12
-    cmp rbx, rax
-    jae strict short L.nvol_teddy_slim_ssse3_2 + 500
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L23:
-    mov r13d, dword [rbx]
-    mov ebp, dword [r9]
-    cmp r13d, ebp
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1956
-; .L25:
-    lea rbx, [rbx + 4]
-    add r9, 4
-    cmp rbx, rax
-    jb strict short L.nvol_teddy_slim_ssse3_2 + 472
-; .L24:
-    mov eax, dword [rax]
-    mov edx, dword [rdx]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L13:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1963
-; .L11:
-    lea r14, [r14 + 1]
-    mov r11, [rsp + 160]
-    cmp r14, r11
-    jb strict near L.nvol_teddy_slim_ssse3_2 + 368
-; .L10:
-    mov r11, [rsp + 96]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 264
-; .L8:
-    mov r12, -1
-; .L6:
-    cmp r12, -1
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1982
-; .L27:
-    mov r11, [rsp + 64]
-    lea r10, [r11 + 8]
-    mov [rsp + 224], r10
-    movdqa xmm8, xmm7
-    punpckhqdq xmm8, xmm7
-    movq rdx, xmm8
-    mov qword [rsp + 256], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_2 + 937
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L30:
-    mov r11, [rsp + 256]
-    bsf r9, r11
-    mov rbx, qword [rsp + 256]
-    mov r11, [rsp + 256]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 256], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 224]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 288], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 320], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_ssse3_2 + 920
-    db 0xf, 0x1f, 0x0
-; .L32:
-    mov r13, qword [rsp + 288]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_ssse3_2 + 898
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_ssse3_2 + 2044
-; .L37:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_ssse3_2 + 876
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L46:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 2117
-; .L48:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_ssse3_2 + 848
-; .L47:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L36:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 2124
-; .L34:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 320]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_ssse3_2 + 744
-; .L33:
-    mov r11, [rsp + 256]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 632
-; .L31:
-    mov rbx, -1
-; .L29:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 2143
-; .L50:
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1759
 ; .L4:
     lea r8, [r8 + 16]
     mov r11, [rsp + 32]
@@ -13309,7 +13207,7 @@ L.nvol_teddy_slim_ssse3_2:
     jbe strict near L.nvol_teddy_slim_ssse3_2 + 96
 ; .L3:
     cmp r8, rcx
-    jae strict near L.nvol_teddy_slim_ssse3_2 + 1805
+    jae strict near L.nvol_teddy_slim_ssse3_2 + 1085
     lea r8, [rcx - 16]
     movdqa xmm6, xmm5
     movdqu xmm5, [r8]
@@ -13332,15 +13230,15 @@ L.nvol_teddy_slim_ssse3_2:
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     cmp eax, 65535
-    je strict near L.nvol_teddy_slim_ssse3_2 + 1805
+    je strict near L.nvol_teddy_slim_ssse3_2 + 1085
     lea r11, [r8 - 1]
     mov [rsp + 384], r11
     movq rax, xmm2
     mov qword [rsp + 416], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_2 + 1419
-    db 0xf, 0x1f, 0x0
+    je strict near L.nvol_teddy_slim_ssse3_2 + 699
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L57:
     mov r11, [rsp + 416]
     bsf r8, r11
@@ -13358,7 +13256,7 @@ L.nvol_teddy_slim_ssse3_2:
     mov [rsp + 448], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_ssse3_2 + 1402
+    jae strict near L.nvol_teddy_slim_ssse3_2 + 682
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L59:
@@ -13376,9 +13274,9 @@ L.nvol_teddy_slim_ssse3_2:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_ssse3_2 + 1381
+    ja strict short L.nvol_teddy_slim_ssse3_2 + 661
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_ssse3_2 + 2212
+    jb strict near L.nvol_teddy_slim_ssse3_2 + 1492
 ; .L64:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -13386,18 +13284,18 @@ L.nvol_teddy_slim_ssse3_2:
     lea r14, [r9 + r14]
     mov rdx, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_ssse3_2 + 1355
+    jae strict short L.nvol_teddy_slim_ssse3_2 + 635
     db 0x66, 0x90
 ; .L73:
     mov eax, dword [r13]
     mov ebx, dword [rdx]
     cmp eax, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 2288
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1568
 ; .L75:
     lea r13, [r13 + 4]
     add rdx, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_ssse3_2 + 1328
+    jb strict short L.nvol_teddy_slim_ssse3_2 + 608
 ; .L74:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -13406,23 +13304,23 @@ L.nvol_teddy_slim_ssse3_2:
     movzx r14d, r14b
 ; .L63:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 2296
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1576
 ; .L61:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 448]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_ssse3_2 + 1232
+    jb strict near L.nvol_teddy_slim_ssse3_2 + 512
 ; .L60:
     mov r11, [rsp + 416]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1128
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 408
 ; .L58:
     mov r9, -1
 ; .L56:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_ssse3_2 + 1440
+    je strict short L.nvol_teddy_slim_ssse3_2 + 720
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1812
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1092
 ; .L77:
     mov r11, [rsp + 384]
     lea r10, [r11 + 8]
@@ -13433,7 +13331,7 @@ L.nvol_teddy_slim_ssse3_2:
     mov qword [rsp + 544], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_2 + 1787
+    je strict near L.nvol_teddy_slim_ssse3_2 + 1067
     db 0xf, 0x1f, 0x0
 ; .L80:
     mov r11, [rsp + 544]
@@ -13452,7 +13350,7 @@ L.nvol_teddy_slim_ssse3_2:
     mov [rsp + 576], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_ssse3_2 + 1770
+    jae strict near L.nvol_teddy_slim_ssse3_2 + 1050
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L82:
@@ -13470,9 +13368,9 @@ L.nvol_teddy_slim_ssse3_2:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_ssse3_2 + 1749
+    ja strict short L.nvol_teddy_slim_ssse3_2 + 1029
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_ssse3_2 + 2376
+    jb strict near L.nvol_teddy_slim_ssse3_2 + 1656
 ; .L87:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -13480,18 +13378,18 @@ L.nvol_teddy_slim_ssse3_2:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_ssse3_2 + 1723
+    jae strict short L.nvol_teddy_slim_ssse3_2 + 1003
     db 0x66, 0x90
 ; .L96:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 2452
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1732
 ; .L98:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_ssse3_2 + 1696
+    jb strict short L.nvol_teddy_slim_ssse3_2 + 976
 ; .L97:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -13500,23 +13398,23 @@ L.nvol_teddy_slim_ssse3_2:
     movzx r14d, r14b
 ; .L86:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 2460
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1740
 ; .L84:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 576]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_ssse3_2 + 1600
+    jb strict near L.nvol_teddy_slim_ssse3_2 + 880
 ; .L83:
     mov r11, [rsp + 544]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1496
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 776
 ; .L81:
     mov r9, -1
 ; .L79:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_ssse3_2 + 1805
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1085
     mov rax, r9
-    jmp strict short L.nvol_teddy_slim_ssse3_2 + 1812
+    jmp strict short L.nvol_teddy_slim_ssse3_2 + 1092
 ; .L100:
 ; .L54:
 ; .L52:
@@ -13532,206 +13430,393 @@ L.nvol_teddy_slim_ssse3_2:
     ret
 ; .L17:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 513
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2033
 ; .L19:
     movzx eax, byte [rbx]
     movzx edx, byte [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 513
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2033
 ; .L21:
     movzx eax, word [rbx]
     movzx edx, word [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 513
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2033
 ; .L15:
     test rdx, rdx
-    je strict short L.nvol_teddy_slim_ssse3_2 + 1830
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1110
 ; .L16:
     cmp rdx, 1
-    je strict short L.nvol_teddy_slim_ssse3_2 + 1840
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1120
 ; .L18:
     cmp rdx, 2
-    je strict short L.nvol_teddy_slim_ssse3_2 + 1862
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1142
 ; .L20:
     xor eax, eax
     movzx edx, word [rbx]
     movzx r11d, word [r12]
     mov [rsp + 192], r11
     cmp edx, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 513
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 2033
     movzx edx, byte [rbx + 2]
     movzx ebx, byte [r12 + 2]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 513
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 2033
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 513
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2033
 ; .L26:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 513
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2033
 ; .L12:
     mov r11, [rsp]
     sub r12, r11
     shl r12, 8
     or r12, r15
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 563
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2083
 ; .L28:
     mov rax, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1812
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1092
 ; .L40:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 890
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2410
 ; .L42:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 890
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2410
 ; .L44:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 890
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2410
 ; .L38:
     test r15, r15
-    je strict short L.nvol_teddy_slim_ssse3_2 + 1990
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1270
 ; .L39:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_ssse3_2 + 2000
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1280
 ; .L41:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_ssse3_2 + 2022
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1302
 ; .L43:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 352], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 890
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 2410
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 890
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 2410
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 890
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2410
 ; .L49:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 890
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2410
 ; .L35:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 944
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 2464
 ; .L51:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1812
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1092
 ; .L67:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1372
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 652
 ; .L69:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1372
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 652
 ; .L71:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1372
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 652
 ; .L65:
     test r14, r14
-    je strict short L.nvol_teddy_slim_ssse3_2 + 2151
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1431
 ; .L66:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_ssse3_2 + 2162
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1442
 ; .L68:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_ssse3_2 + 2187
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1467
 ; .L70:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 480], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1372
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 652
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1372
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 652
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1372
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 652
 ; .L76:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1372
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 652
 ; .L62:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1426
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 706
 ; .L90:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1740
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1020
 ; .L92:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1740
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1020
 ; .L94:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1740
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1020
 ; .L88:
     test r14, r14
-    je strict short L.nvol_teddy_slim_ssse3_2 + 2315
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1595
 ; .L89:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_ssse3_2 + 2326
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1606
 ; .L91:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_ssse3_2 + 2351
+    je strict short L.nvol_teddy_slim_ssse3_2 + 1631
 ; .L93:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 608], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1740
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1020
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_2 + 1740
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1020
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1740
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1020
 ; .L99:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1740
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1020
 ; .L85:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1794
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 1074
+; .Lrare1:
+    lea r11, [r8 - 1]
+    mov [rsp + 64], r11
+    movq rax, xmm7
+    mov qword [rsp + 96], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_slim_ssse3_2 + 2076
+    db 0x66, 0x90
+; .L7:
+    mov r11, [rsp + 96]
+    bsf rbp, r11
+    mov r12, qword [rsp + 96]
+    mov r11, [rsp + 96]
+    lea r13, [r11 - 1]
+    and r12, r13
+    mov qword [rsp + 96], r12
+    mov r12, rbp
+    shr r12, 3
+    mov r11, [rsp + 64]
+    lea r12, [r11 + r12]
+    mov r11, rbp
+    and r11, 7
+    mov [rsp + 128], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 160], r10
+    xor r14d, r14d
+    mov r11, r10
+    cmp r14, r11
+    jae strict near L.nvol_teddy_slim_ssse3_2 + 2062
+    db 0x66, 0x90
+; .L9:
+    mov r15, qword [rsp + 128]
+    shl r15, 6
+    lea r15, [r15 + r14]
+    movzx r15d, byte [rdi + r15 + 336]
+    mov rbx, r15
+    shl rbx, 4
+    mov rbx, qword [rsi + rbx + 8]
+    lea rbx, [rsi + rbx]
+    mov rdx, r15
+    shl rdx, 4
+    mov rdx, qword [rsi + rdx + 16]
+    mov rax, rcx
+    sub rax, r12
+    cmp rdx, rax
+    ja strict short L.nvol_teddy_slim_ssse3_2 + 2041
+    cmp rdx, 4
+    jb strict near L.nvol_teddy_slim_ssse3_2 + 1164
+; .L14:
+    lea rax, [rdx - 4]
+    lea rax, [rbx + rax]
+    lea rdx, [rdx - 4]
+    lea rdx, [r12 + rdx]
+    mov r9, r12
+    cmp rbx, rax
+    jae strict short L.nvol_teddy_slim_ssse3_2 + 2020
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov r13d, dword [rbx]
+    mov ebp, dword [r9]
+    cmp r13d, ebp
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1236
+; .L25:
+    lea rbx, [rbx + 4]
+    add r9, 4
+    cmp rbx, rax
+    jb strict short L.nvol_teddy_slim_ssse3_2 + 1992
+; .L24:
+    mov eax, dword [rax]
+    mov edx, dword [rdx]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L13:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1243
+; .L11:
+    lea r14, [r14 + 1]
+    mov r11, [rsp + 160]
+    cmp r14, r11
+    jb strict near L.nvol_teddy_slim_ssse3_2 + 1888
+; .L10:
+    mov r11, [rsp + 96]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1792
+; .L8:
+    mov r12, -1
+; .L6:
+    cmp r12, -1
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1262
+; .L27:
+    mov r11, [rsp + 64]
+    lea r10, [r11 + 8]
+    mov [rsp + 224], r10
+    movdqa xmm8, xmm7
+    punpckhqdq xmm8, xmm7
+    movq rdx, xmm8
+    mov qword [rsp + 256], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_ssse3_2 + 2457
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L30:
+    mov r11, [rsp + 256]
+    bsf r9, r11
+    mov rbx, qword [rsp + 256]
+    mov r11, [rsp + 256]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 256], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 224]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 288], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 320], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_ssse3_2 + 2440
+    db 0xf, 0x1f, 0x0
+; .L32:
+    mov r13, qword [rsp + 288]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_ssse3_2 + 2418
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_ssse3_2 + 1324
+; .L37:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_ssse3_2 + 2396
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1397
+; .L48:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_ssse3_2 + 2368
+; .L47:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L36:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1404
+; .L34:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 320]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_ssse3_2 + 2264
+; .L33:
+    mov r11, [rsp + 256]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 2152
+; .L31:
+    mov rbx, -1
+; .L29:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_ssse3_2 + 1423
+; .L50:
+    jmp strict near L.nvol_teddy_slim_ssse3_2 + 230
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_teddy_slim_ssse3_3:function hidden 2607
+global nvol_teddy_slim_ssse3_3:function hidden 2591
 nvol_teddy_slim_ssse3_3:
 L.nvol_teddy_slim_ssse3_3:
     push rbx
@@ -13757,7 +13842,7 @@ L.nvol_teddy_slim_ssse3_3:
     lea r11, [rcx - 16]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_slim_ssse3_3 + 1052
+    ja strict near L.nvol_teddy_slim_ssse3_3 + 324
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L2:
     movdqu xmm10, [r8]
@@ -13793,193 +13878,7 @@ L.nvol_teddy_slim_ssse3_3:
     pcmpeqb xmm12, xmm11
     pmovmskb eax, xmm12
     cmp eax, 65535
-    je strict near L.nvol_teddy_slim_ssse3_3 + 1034
-    lea r11, [r8 - 2]
-    mov [rsp + 64], r11
-    movq rax, xmm10
-    mov qword [rsp + 96], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_3 + 636
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L7:
-    mov r11, [rsp + 96]
-    bsf rbp, r11
-    mov r12, qword [rsp + 96]
-    mov r11, [rsp + 96]
-    lea r13, [r11 - 1]
-    and r12, r13
-    mov qword [rsp + 96], r12
-    mov r12, rbp
-    shr r12, 3
-    mov r11, [rsp + 64]
-    lea r12, [r11 + r12]
-    mov r11, rbp
-    and r11, 7
-    mov [rsp + 128], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 160], r10
-    xor r14d, r14d
-    mov r11, r10
-    cmp r14, r11
-    jae strict near L.nvol_teddy_slim_ssse3_3 + 622
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L9:
-    mov r15, qword [rsp + 128]
-    shl r15, 6
-    lea r15, [r15 + r14]
-    movzx r15d, byte [rdi + r15 + 336]
-    mov rbx, r15
-    shl rbx, 4
-    mov rbx, qword [rsi + rbx + 8]
-    lea rbx, [rsi + rbx]
-    mov rdx, r15
-    shl rdx, 4
-    mov rdx, qword [rsi + rdx + 16]
-    mov rax, rcx
-    sub rax, r12
-    cmp rdx, rax
-    ja strict short L.nvol_teddy_slim_ssse3_3 + 601
-    cmp rdx, 4
-    jb strict near L.nvol_teddy_slim_ssse3_3 + 2012
-; .L14:
-    lea rax, [rdx - 4]
-    lea rax, [rbx + rax]
-    lea rdx, [rdx - 4]
-    lea rdx, [r12 + rdx]
-    mov r9, r12
-    cmp rbx, rax
-    jae strict short L.nvol_teddy_slim_ssse3_3 + 580
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L23:
-    mov r13d, dword [rbx]
-    mov ebp, dword [r9]
-    cmp r13d, ebp
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2084
-; .L25:
-    lea rbx, [rbx + 4]
-    add r9, 4
-    cmp rbx, rax
-    jb strict short L.nvol_teddy_slim_ssse3_3 + 552
-; .L24:
-    mov eax, dword [rax]
-    mov edx, dword [rdx]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L13:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2091
-; .L11:
-    lea r14, [r14 + 1]
-    mov r11, [rsp + 160]
-    cmp r14, r11
-    jb strict near L.nvol_teddy_slim_ssse3_3 + 448
-; .L10:
-    mov r11, [rsp + 96]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 344
-; .L8:
-    mov r12, -1
-; .L6:
-    cmp r12, -1
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2110
-; .L27:
-    mov r11, [rsp + 64]
-    lea r10, [r11 + 8]
-    mov [rsp + 224], r10
-    movdqa xmm11, xmm10
-    punpckhqdq xmm11, xmm10
-    movq rdx, xmm11
-    mov qword [rsp + 256], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_3 + 1017
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L30:
-    mov r11, [rsp + 256]
-    bsf r9, r11
-    mov rbx, qword [rsp + 256]
-    mov r11, [rsp + 256]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 256], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 224]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 288], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 320], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_ssse3_3 + 1000
-    db 0xf, 0x1f, 0x0
-; .L32:
-    mov r13, qword [rsp + 288]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_ssse3_3 + 978
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_ssse3_3 + 2172
-; .L37:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_ssse3_3 + 956
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L46:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2245
-; .L48:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_ssse3_3 + 928
-; .L47:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L36:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2252
-; .L34:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 320]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_ssse3_3 + 824
-; .L33:
-    mov r11, [rsp + 256]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 712
-; .L31:
-    mov rbx, -1
-; .L29:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2271
-; .L50:
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1871
 ; .L4:
     lea r8, [r8 + 16]
     mov r11, [rsp + 32]
@@ -13987,7 +13886,7 @@ L.nvol_teddy_slim_ssse3_3:
     jbe strict near L.nvol_teddy_slim_ssse3_3 + 120
 ; .L3:
     cmp r8, rcx
-    jae strict near L.nvol_teddy_slim_ssse3_3 + 1933
+    jae strict near L.nvol_teddy_slim_ssse3_3 + 1197
     lea r8, [rcx - 16]
     movdqa xmm8, xmm7
     movdqa xmm9, xmm7
@@ -14018,14 +13917,14 @@ L.nvol_teddy_slim_ssse3_3:
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     cmp eax, 65535
-    je strict near L.nvol_teddy_slim_ssse3_3 + 1933
+    je strict near L.nvol_teddy_slim_ssse3_3 + 1197
     lea r11, [r8 - 2]
     mov [rsp + 384], r11
     movq rax, xmm3
     mov qword [rsp + 416], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_3 + 1547
+    je strict near L.nvol_teddy_slim_ssse3_3 + 811
     db 0xf, 0x1f, 0x40, 0x0
 ; .L57:
     mov r11, [rsp + 416]
@@ -14044,9 +13943,8 @@ L.nvol_teddy_slim_ssse3_3:
     mov [rsp + 448], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_ssse3_3 + 1530
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    jae strict near L.nvol_teddy_slim_ssse3_3 + 794
+    db 0x66, 0x90
 ; .L59:
     mov r12, r8
     shl r12, 6
@@ -14062,9 +13960,9 @@ L.nvol_teddy_slim_ssse3_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_ssse3_3 + 1509
+    ja strict short L.nvol_teddy_slim_ssse3_3 + 773
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_ssse3_3 + 2340
+    jb strict near L.nvol_teddy_slim_ssse3_3 + 1604
 ; .L64:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -14072,18 +13970,18 @@ L.nvol_teddy_slim_ssse3_3:
     lea r14, [r9 + r14]
     mov rdx, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_ssse3_3 + 1483
+    jae strict short L.nvol_teddy_slim_ssse3_3 + 747
     db 0x66, 0x90
 ; .L73:
     mov eax, dword [r13]
     mov ebx, dword [rdx]
     cmp eax, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2416
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1680
 ; .L75:
     lea r13, [r13 + 4]
     add rdx, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_ssse3_3 + 1456
+    jb strict short L.nvol_teddy_slim_ssse3_3 + 720
 ; .L74:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -14092,23 +13990,23 @@ L.nvol_teddy_slim_ssse3_3:
     movzx r14d, r14b
 ; .L63:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2424
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1688
 ; .L61:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 448]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_ssse3_3 + 1360
+    jb strict near L.nvol_teddy_slim_ssse3_3 + 624
 ; .L60:
     mov r11, [rsp + 416]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 1256
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 528
 ; .L58:
     mov r9, -1
 ; .L56:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_ssse3_3 + 1568
+    je strict short L.nvol_teddy_slim_ssse3_3 + 832
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1940
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1204
 ; .L77:
     mov r11, [rsp + 384]
     lea r10, [r11 + 8]
@@ -14119,7 +14017,7 @@ L.nvol_teddy_slim_ssse3_3:
     mov qword [rsp + 544], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_3 + 1915
+    je strict near L.nvol_teddy_slim_ssse3_3 + 1179
     db 0xf, 0x1f, 0x0
 ; .L80:
     mov r11, [rsp + 544]
@@ -14138,7 +14036,7 @@ L.nvol_teddy_slim_ssse3_3:
     mov [rsp + 576], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_ssse3_3 + 1898
+    jae strict near L.nvol_teddy_slim_ssse3_3 + 1162
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L82:
@@ -14156,9 +14054,9 @@ L.nvol_teddy_slim_ssse3_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_ssse3_3 + 1877
+    ja strict short L.nvol_teddy_slim_ssse3_3 + 1141
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_ssse3_3 + 2504
+    jb strict near L.nvol_teddy_slim_ssse3_3 + 1768
 ; .L87:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -14166,18 +14064,18 @@ L.nvol_teddy_slim_ssse3_3:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_ssse3_3 + 1851
+    jae strict short L.nvol_teddy_slim_ssse3_3 + 1115
     db 0x66, 0x90
 ; .L96:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2580
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1844
 ; .L98:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_ssse3_3 + 1824
+    jb strict short L.nvol_teddy_slim_ssse3_3 + 1088
 ; .L97:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -14186,23 +14084,23 @@ L.nvol_teddy_slim_ssse3_3:
     movzx r14d, r14b
 ; .L86:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 2588
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1852
 ; .L84:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 576]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_ssse3_3 + 1728
+    jb strict near L.nvol_teddy_slim_ssse3_3 + 992
 ; .L83:
     mov r11, [rsp + 544]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 1624
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 888
 ; .L81:
     mov r9, -1
 ; .L79:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_ssse3_3 + 1933
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1197
     mov rax, r9
-    jmp strict short L.nvol_teddy_slim_ssse3_3 + 1940
+    jmp strict short L.nvol_teddy_slim_ssse3_3 + 1204
 ; .L100:
 ; .L54:
 ; .L52:
@@ -14218,206 +14116,395 @@ L.nvol_teddy_slim_ssse3_3:
     ret
 ; .L17:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 593
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2145
 ; .L19:
     movzx eax, byte [rbx]
     movzx edx, byte [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 593
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2145
 ; .L21:
     movzx eax, word [rbx]
     movzx edx, word [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 593
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2145
 ; .L15:
     test rdx, rdx
-    je strict short L.nvol_teddy_slim_ssse3_3 + 1958
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1222
 ; .L16:
     cmp rdx, 1
-    je strict short L.nvol_teddy_slim_ssse3_3 + 1968
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1232
 ; .L18:
     cmp rdx, 2
-    je strict short L.nvol_teddy_slim_ssse3_3 + 1990
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1254
 ; .L20:
     xor eax, eax
     movzx edx, word [rbx]
     movzx r11d, word [r12]
     mov [rsp + 192], r11
     cmp edx, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 593
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 2145
     movzx edx, byte [rbx + 2]
     movzx ebx, byte [r12 + 2]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 593
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 2145
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 593
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2145
 ; .L26:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 593
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2145
 ; .L12:
     mov r11, [rsp]
     sub r12, r11
     shl r12, 8
     or r12, r15
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 643
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2195
 ; .L28:
     mov rax, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1940
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1204
 ; .L40:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 970
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2522
 ; .L42:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 970
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2522
 ; .L44:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 970
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2522
 ; .L38:
     test r15, r15
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2118
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1382
 ; .L39:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2128
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1392
 ; .L41:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2150
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1414
 ; .L43:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 352], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 970
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 2522
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 970
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 2522
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 970
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2522
 ; .L49:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 970
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2522
 ; .L35:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1024
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 2576
 ; .L51:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1940
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1204
 ; .L67:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1500
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 764
 ; .L69:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1500
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 764
 ; .L71:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1500
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 764
 ; .L65:
     test r14, r14
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2279
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1543
 ; .L66:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2290
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1554
 ; .L68:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2315
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1579
 ; .L70:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 480], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 1500
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 764
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 1500
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 764
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1500
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 764
 ; .L76:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1500
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 764
 ; .L62:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1554
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 818
 ; .L90:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1868
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1132
 ; .L92:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1868
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1132
 ; .L94:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1868
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1132
 ; .L88:
     test r14, r14
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2443
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1707
 ; .L89:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2454
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1718
 ; .L91:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_ssse3_3 + 2479
+    je strict short L.nvol_teddy_slim_ssse3_3 + 1743
 ; .L93:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 608], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 1868
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1132
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_3 + 1868
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1132
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1868
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1132
 ; .L99:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1868
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1132
 ; .L85:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1922
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 1186
+; .Lrare1:
+    lea r11, [r8 - 2]
+    mov [rsp + 64], r11
+    movq rax, xmm10
+    mov qword [rsp + 96], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_slim_ssse3_3 + 2188
+    db 0x66, 0x90
+; .L7:
+    mov r11, [rsp + 96]
+    bsf rbp, r11
+    mov r12, qword [rsp + 96]
+    mov r11, [rsp + 96]
+    lea r13, [r11 - 1]
+    and r12, r13
+    mov qword [rsp + 96], r12
+    mov r12, rbp
+    shr r12, 3
+    mov r11, [rsp + 64]
+    lea r12, [r11 + r12]
+    mov r11, rbp
+    and r11, 7
+    mov [rsp + 128], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 160], r10
+    xor r14d, r14d
+    mov r11, r10
+    cmp r14, r11
+    jae strict near L.nvol_teddy_slim_ssse3_3 + 2174
+    db 0x66, 0x90
+; .L9:
+    mov r15, qword [rsp + 128]
+    shl r15, 6
+    lea r15, [r15 + r14]
+    movzx r15d, byte [rdi + r15 + 336]
+    mov rbx, r15
+    shl rbx, 4
+    mov rbx, qword [rsi + rbx + 8]
+    lea rbx, [rsi + rbx]
+    mov rdx, r15
+    shl rdx, 4
+    mov rdx, qword [rsi + rdx + 16]
+    mov rax, rcx
+    sub rax, r12
+    cmp rdx, rax
+    ja strict short L.nvol_teddy_slim_ssse3_3 + 2153
+    cmp rdx, 4
+    jb strict near L.nvol_teddy_slim_ssse3_3 + 1276
+; .L14:
+    lea rax, [rdx - 4]
+    lea rax, [rbx + rax]
+    lea rdx, [rdx - 4]
+    lea rdx, [r12 + rdx]
+    mov r9, r12
+    cmp rbx, rax
+    jae strict short L.nvol_teddy_slim_ssse3_3 + 2132
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov r13d, dword [rbx]
+    mov ebp, dword [r9]
+    cmp r13d, ebp
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1348
+; .L25:
+    lea rbx, [rbx + 4]
+    add r9, 4
+    cmp rbx, rax
+    jb strict short L.nvol_teddy_slim_ssse3_3 + 2104
+; .L24:
+    mov eax, dword [rax]
+    mov edx, dword [rdx]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L13:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1355
+; .L11:
+    lea r14, [r14 + 1]
+    mov r11, [rsp + 160]
+    cmp r14, r11
+    jb strict near L.nvol_teddy_slim_ssse3_3 + 2000
+; .L10:
+    mov r11, [rsp + 96]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1904
+; .L8:
+    mov r12, -1
+; .L6:
+    cmp r12, -1
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1374
+; .L27:
+    mov r11, [rsp + 64]
+    lea r10, [r11 + 8]
+    mov [rsp + 224], r10
+    movdqa xmm11, xmm10
+    punpckhqdq xmm11, xmm10
+    movq rdx, xmm11
+    mov qword [rsp + 256], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_ssse3_3 + 2569
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L30:
+    mov r11, [rsp + 256]
+    bsf r9, r11
+    mov rbx, qword [rsp + 256]
+    mov r11, [rsp + 256]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 256], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 224]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 288], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 320], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_ssse3_3 + 2552
+    db 0xf, 0x1f, 0x0
+; .L32:
+    mov r13, qword [rsp + 288]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_ssse3_3 + 2530
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_ssse3_3 + 1436
+; .L37:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_ssse3_3 + 2508
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1509
+; .L48:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_ssse3_3 + 2480
+; .L47:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L36:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1516
+; .L34:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 320]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_ssse3_3 + 2376
+; .L33:
+    mov r11, [rsp + 256]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 2264
+; .L31:
+    mov rbx, -1
+; .L29:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_ssse3_3 + 1535
+; .L50:
+    jmp strict near L.nvol_teddy_slim_ssse3_3 + 306
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_teddy_slim_ssse3_4:function hidden 2815
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_teddy_slim_ssse3_4:function hidden 2807
 nvol_teddy_slim_ssse3_4:
 L.nvol_teddy_slim_ssse3_4:
     push rbx
@@ -14451,7 +14538,7 @@ L.nvol_teddy_slim_ssse3_4:
     lea r11, [rcx - 16]
     mov [rsp + 192], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_slim_ssse3_4 + 1191
+    ja strict near L.nvol_teddy_slim_ssse3_4 + 447
     db 0x66, 0x90
 ; .L2:
     movdqu xmm13, [r8]
@@ -14496,192 +14583,7 @@ L.nvol_teddy_slim_ssse3_4:
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     cmp eax, 65535
-    je strict near L.nvol_teddy_slim_ssse3_4 + 1170
-    lea r11, [r8 - 3]
-    mov [rsp + 224], r11
-    movq rax, xmm13
-    mov qword [rsp + 256], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_4 + 767
-    db 0x90
-; .L7:
-    mov r11, [rsp + 256]
-    bsf rbp, r11
-    mov r12, qword [rsp + 256]
-    mov r11, [rsp + 256]
-    lea r13, [r11 - 1]
-    and r12, r13
-    mov qword [rsp + 256], r12
-    mov r12, rbp
-    shr r12, 3
-    mov r11, [rsp + 224]
-    lea r12, [r11 + r12]
-    mov r11, rbp
-    and r11, 7
-    mov [rsp + 288], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 320], r10
-    xor r14d, r14d
-    mov r11, r10
-    cmp r14, r11
-    jae strict near L.nvol_teddy_slim_ssse3_4 + 750
-    db 0xf, 0x1f, 0x0
-; .L9:
-    mov r15, qword [rsp + 288]
-    shl r15, 6
-    lea r15, [r15 + r14]
-    movzx r15d, byte [rdi + r15 + 336]
-    mov rbx, r15
-    shl rbx, 4
-    mov rbx, qword [rsi + rbx + 8]
-    lea rbx, [rsi + rbx]
-    mov rdx, r15
-    shl rdx, 4
-    mov rdx, qword [rsi + rdx + 16]
-    mov rax, rcx
-    sub rax, r12
-    cmp rdx, rax
-    ja strict short L.nvol_teddy_slim_ssse3_4 + 729
-    cmp rdx, 4
-    jb strict near L.nvol_teddy_slim_ssse3_4 + 2220
-; .L14:
-    lea rax, [rdx - 4]
-    lea rax, [rbx + rax]
-    lea rdx, [rdx - 4]
-    lea rdx, [r12 + rdx]
-    mov r9, r12
-    cmp rbx, rax
-    jae strict short L.nvol_teddy_slim_ssse3_4 + 708
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L23:
-    mov r13d, dword [rbx]
-    mov ebp, dword [r9]
-    cmp r13d, ebp
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2292
-; .L25:
-    lea rbx, [rbx + 4]
-    add r9, 4
-    cmp rbx, rax
-    jb strict short L.nvol_teddy_slim_ssse3_4 + 680
-; .L24:
-    mov eax, dword [rax]
-    mov edx, dword [rdx]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L13:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2299
-; .L11:
-    lea r14, [r14 + 1]
-    mov r11, [rsp + 320]
-    cmp r14, r11
-    jb strict near L.nvol_teddy_slim_ssse3_4 + 576
-; .L10:
-    mov r11, [rsp + 256]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 464
-; .L8:
-    mov r12, -1
-; .L6:
-    cmp r12, -1
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2318
-; .L27:
-    mov r11, [rsp + 224]
-    lea r10, [r11 + 8]
-    mov [rsp + 384], r10
-    movdqa xmm0, xmm13
-    punpckhqdq xmm0, xmm13
-    movq rdx, xmm0
-    mov qword [rsp + 416], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_4 + 1153
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-; .L30:
-    mov r11, [rsp + 416]
-    bsf r9, r11
-    mov rbx, qword [rsp + 416]
-    mov r11, [rsp + 416]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 416], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 384]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 448], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 480], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_ssse3_4 + 1136
-    db 0xf, 0x1f, 0x0
-; .L32:
-    mov r13, qword [rsp + 448]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_ssse3_4 + 1114
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_ssse3_4 + 2380
-; .L37:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_ssse3_4 + 1092
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L46:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2453
-; .L48:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_ssse3_4 + 1064
-; .L47:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L36:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2460
-; .L34:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 480]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_ssse3_4 + 960
-; .L33:
-    mov r11, [rsp + 416]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 848
-; .L31:
-    mov rbx, -1
-; .L29:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2479
-; .L50:
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2063
 ; .L4:
     lea r8, [r8 + 16]
     mov r11, [rsp + 192]
@@ -14689,7 +14591,7 @@ L.nvol_teddy_slim_ssse3_4:
     jbe strict near L.nvol_teddy_slim_ssse3_4 + 192
 ; .L3:
     cmp r8, rcx
-    jae strict near L.nvol_teddy_slim_ssse3_4 + 2141
+    jae strict near L.nvol_teddy_slim_ssse3_4 + 1389
     movdqu xmm12, [rsp + 160]
     lea r8, [rcx - 16]
     movdqa xmm10, xmm12
@@ -14732,14 +14634,14 @@ L.nvol_teddy_slim_ssse3_4:
     pcmpeqb xmm2, xmm1
     pmovmskb eax, xmm2
     cmp eax, 65535
-    je strict near L.nvol_teddy_slim_ssse3_4 + 2141
+    je strict near L.nvol_teddy_slim_ssse3_4 + 1389
     lea r11, [r8 - 3]
     mov [rsp + 544], r11
     movq rax, xmm0
     mov qword [rsp + 576], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_4 + 1755
+    je strict near L.nvol_teddy_slim_ssse3_4 + 1003
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L57:
     mov r11, [rsp + 576]
@@ -14758,9 +14660,8 @@ L.nvol_teddy_slim_ssse3_4:
     mov [rsp + 608], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_ssse3_4 + 1738
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    jae strict near L.nvol_teddy_slim_ssse3_4 + 986
+    db 0x66, 0x90
 ; .L59:
     mov r12, r8
     shl r12, 6
@@ -14776,9 +14677,9 @@ L.nvol_teddy_slim_ssse3_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_ssse3_4 + 1717
+    ja strict short L.nvol_teddy_slim_ssse3_4 + 965
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_ssse3_4 + 2548
+    jb strict near L.nvol_teddy_slim_ssse3_4 + 1796
 ; .L64:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -14786,18 +14687,18 @@ L.nvol_teddy_slim_ssse3_4:
     lea r14, [r9 + r14]
     mov rdx, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_ssse3_4 + 1691
+    jae strict short L.nvol_teddy_slim_ssse3_4 + 939
     db 0x66, 0x90
 ; .L73:
     mov eax, dword [r13]
     mov ebx, dword [rdx]
     cmp eax, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2624
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1872
 ; .L75:
     lea r13, [r13 + 4]
     add rdx, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_ssse3_4 + 1664
+    jb strict short L.nvol_teddy_slim_ssse3_4 + 912
 ; .L74:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -14806,23 +14707,23 @@ L.nvol_teddy_slim_ssse3_4:
     movzx r14d, r14b
 ; .L63:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2632
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1880
 ; .L61:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 608]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_ssse3_4 + 1568
+    jb strict near L.nvol_teddy_slim_ssse3_4 + 816
 ; .L60:
     mov r11, [rsp + 576]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 1464
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 720
 ; .L58:
     mov r9, -1
 ; .L56:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_ssse3_4 + 1776
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1024
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2148
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1396
 ; .L77:
     mov r11, [rsp + 544]
     lea r10, [r11 + 8]
@@ -14833,7 +14734,7 @@ L.nvol_teddy_slim_ssse3_4:
     mov qword [rsp + 704], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_ssse3_4 + 2123
+    je strict near L.nvol_teddy_slim_ssse3_4 + 1371
     db 0xf, 0x1f, 0x0
 ; .L80:
     mov r11, [rsp + 704]
@@ -14852,7 +14753,7 @@ L.nvol_teddy_slim_ssse3_4:
     mov [rsp + 736], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_ssse3_4 + 2106
+    jae strict near L.nvol_teddy_slim_ssse3_4 + 1354
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L82:
@@ -14870,9 +14771,9 @@ L.nvol_teddy_slim_ssse3_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_ssse3_4 + 2085
+    ja strict short L.nvol_teddy_slim_ssse3_4 + 1333
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_ssse3_4 + 2712
+    jb strict near L.nvol_teddy_slim_ssse3_4 + 1960
 ; .L87:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -14880,18 +14781,18 @@ L.nvol_teddy_slim_ssse3_4:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_ssse3_4 + 2059
+    jae strict short L.nvol_teddy_slim_ssse3_4 + 1307
     db 0x66, 0x90
 ; .L96:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2788
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2036
 ; .L98:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_ssse3_4 + 2032
+    jb strict short L.nvol_teddy_slim_ssse3_4 + 1280
 ; .L97:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -14900,23 +14801,23 @@ L.nvol_teddy_slim_ssse3_4:
     movzx r14d, r14b
 ; .L86:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2796
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2044
 ; .L84:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 736]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_ssse3_4 + 1936
+    jb strict near L.nvol_teddy_slim_ssse3_4 + 1184
 ; .L83:
     mov r11, [rsp + 704]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 1832
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1080
 ; .L81:
     mov r9, -1
 ; .L79:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2141
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1389
     mov rax, r9
-    jmp strict short L.nvol_teddy_slim_ssse3_4 + 2148
+    jmp strict short L.nvol_teddy_slim_ssse3_4 + 1396
 ; .L100:
 ; .L54:
 ; .L52:
@@ -14932,205 +14833,392 @@ L.nvol_teddy_slim_ssse3_4:
     ret
 ; .L17:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 721
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2361
 ; .L19:
     movzx eax, byte [rbx]
     movzx edx, byte [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 721
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2361
 ; .L21:
     movzx eax, word [rbx]
     movzx edx, word [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 721
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2361
 ; .L15:
     test rdx, rdx
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2166
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1414
 ; .L16:
     cmp rdx, 1
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2176
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1424
 ; .L18:
     cmp rdx, 2
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2198
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1446
 ; .L20:
     xor eax, eax
     movzx edx, word [rbx]
     movzx r11d, word [r12]
     mov [rsp + 352], r11
     cmp edx, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 721
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2361
     movzx edx, byte [rbx + 2]
     movzx ebx, byte [r12 + 2]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 721
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2361
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 721
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2361
 ; .L26:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 721
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2361
 ; .L12:
     mov r11, [rsp]
     sub r12, r11
     shl r12, 8
     or r12, r15
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 774
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2414
 ; .L28:
     mov rax, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2148
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1396
 ; .L40:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1106
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2738
 ; .L42:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1106
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2738
 ; .L44:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1106
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2738
 ; .L38:
     test r15, r15
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2326
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1574
 ; .L39:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2336
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1584
 ; .L41:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2358
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1606
 ; .L43:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 512], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 1106
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2738
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 1106
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2738
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1106
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2738
 ; .L49:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1106
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2738
 ; .L35:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1160
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2792
 ; .L51:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2148
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1396
 ; .L67:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1708
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 956
 ; .L69:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1708
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 956
 ; .L71:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1708
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 956
 ; .L65:
     test r14, r14
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2487
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1735
 ; .L66:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2498
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1746
 ; .L68:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2523
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1771
 ; .L70:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 640], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 1708
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 956
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 1708
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 956
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1708
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 956
 ; .L76:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1708
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 956
 ; .L62:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1762
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1010
 ; .L90:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2076
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1324
 ; .L92:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2076
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1324
 ; .L94:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2076
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1324
 ; .L88:
     test r14, r14
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2651
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1899
 ; .L89:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2662
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1910
 ; .L91:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_ssse3_4 + 2687
+    je strict short L.nvol_teddy_slim_ssse3_4 + 1935
 ; .L93:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 768], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2076
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1324
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_ssse3_4 + 2076
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1324
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2076
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1324
 ; .L99:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2076
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1324
 ; .L85:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_ssse3_4 + 2130
-
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 1378
+; .Lrare1:
+    lea r11, [r8 - 3]
+    mov [rsp + 224], r11
+    movq rax, xmm13
+    mov qword [rsp + 256], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_slim_ssse3_4 + 2407
+    db 0xf, 0x1f, 0x40, 0x0
+; .L7:
+    mov r11, [rsp + 256]
+    bsf rbp, r11
+    mov r12, qword [rsp + 256]
+    mov r11, [rsp + 256]
+    lea r13, [r11 - 1]
+    and r12, r13
+    mov qword [rsp + 256], r12
+    mov r12, rbp
+    shr r12, 3
+    mov r11, [rsp + 224]
+    lea r12, [r11 + r12]
+    mov r11, rbp
+    and r11, 7
+    mov [rsp + 288], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 320], r10
+    xor r14d, r14d
+    mov r11, r10
+    cmp r14, r11
+    jae strict near L.nvol_teddy_slim_ssse3_4 + 2390
+    db 0xf, 0x1f, 0x0
+; .L9:
+    mov r15, qword [rsp + 288]
+    shl r15, 6
+    lea r15, [r15 + r14]
+    movzx r15d, byte [rdi + r15 + 336]
+    mov rbx, r15
+    shl rbx, 4
+    mov rbx, qword [rsi + rbx + 8]
+    lea rbx, [rsi + rbx]
+    mov rdx, r15
+    shl rdx, 4
+    mov rdx, qword [rsi + rdx + 16]
+    mov rax, rcx
+    sub rax, r12
+    cmp rdx, rax
+    ja strict short L.nvol_teddy_slim_ssse3_4 + 2369
+    cmp rdx, 4
+    jb strict near L.nvol_teddy_slim_ssse3_4 + 1468
+; .L14:
+    lea rax, [rdx - 4]
+    lea rax, [rbx + rax]
+    lea rdx, [rdx - 4]
+    lea rdx, [r12 + rdx]
+    mov r9, r12
+    cmp rbx, rax
+    jae strict short L.nvol_teddy_slim_ssse3_4 + 2348
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov r13d, dword [rbx]
+    mov ebp, dword [r9]
+    cmp r13d, ebp
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1540
+; .L25:
+    lea rbx, [rbx + 4]
+    add r9, 4
+    cmp rbx, rax
+    jb strict short L.nvol_teddy_slim_ssse3_4 + 2320
+; .L24:
+    mov eax, dword [rax]
+    mov edx, dword [rdx]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L13:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1547
+; .L11:
+    lea r14, [r14 + 1]
+    mov r11, [rsp + 320]
+    cmp r14, r11
+    jb strict near L.nvol_teddy_slim_ssse3_4 + 2216
+; .L10:
+    mov r11, [rsp + 256]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2104
+; .L8:
+    mov r12, -1
+; .L6:
+    cmp r12, -1
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1566
+; .L27:
+    mov r11, [rsp + 224]
+    lea r10, [r11 + 8]
+    mov [rsp + 384], r10
+    movdqa xmm0, xmm13
+    punpckhqdq xmm0, xmm13
+    movq rdx, xmm0
+    mov qword [rsp + 416], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_ssse3_4 + 2785
     db 0x90
-global nvol_teddy_slim_avx2_1:function hidden 4412
+; .L30:
+    mov r11, [rsp + 416]
+    bsf r9, r11
+    mov rbx, qword [rsp + 416]
+    mov r11, [rsp + 416]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 416], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 384]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 448], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 480], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_ssse3_4 + 2768
+    db 0xf, 0x1f, 0x0
+; .L32:
+    mov r13, qword [rsp + 448]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_ssse3_4 + 2746
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_ssse3_4 + 1628
+; .L37:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_ssse3_4 + 2724
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1701
+; .L48:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_ssse3_4 + 2696
+; .L47:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L36:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1708
+; .L34:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 480]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_ssse3_4 + 2592
+; .L33:
+    mov r11, [rsp + 416]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 2480
+; .L31:
+    mov rbx, -1
+; .L29:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_ssse3_4 + 1727
+; .L50:
+    jmp strict near L.nvol_teddy_slim_ssse3_4 + 426
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_teddy_slim_avx2_1:function hidden 4407
 nvol_teddy_slim_avx2_1:
 L.nvol_teddy_slim_avx2_1:
     push rbx
@@ -15148,8 +15236,8 @@ L.nvol_teddy_slim_avx2_1:
     lea r11, [rcx - 32]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_slim_avx2_1 + 1588
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_teddy_slim_avx2_1 + 125
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     vmovdqu ymm3, [r8]
     vpand ymm4, ymm3, ymm2
@@ -15159,14 +15247,808 @@ L.nvol_teddy_slim_avx2_1:
     vpshufb ymm3, ymm1, ymm3
     vpand ymm3, ymm4, ymm3
     vptest ymm3, ymm3
-    je strict near L.nvol_teddy_slim_avx2_1 + 1570
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2940
+; .L4:
+    lea r8, [r8 + 32]
+    mov r11, [rsp + 32]
+    cmp r8, r11
+    jbe strict short L.nvol_teddy_slim_avx2_1 + 64
+; .L3:
+    cmp r8, rcx
+    jae strict near L.nvol_teddy_slim_avx2_1 + 1613
+    lea r8, [rcx - 32]
+    vmovdqu ymm3, [r8]
+    vpand ymm2, ymm3, ymm2
+    vpsrlw ymm3, ymm3, 4
+    vpand ymm3, ymm3, [rel NVOL_K3]
+    vpshufb ymm0, ymm0, ymm2
+    vpshufb ymm1, ymm1, ymm3
+    vpand ymm0, ymm0, ymm1
+    vptest ymm0, ymm0
+    je strict near L.nvol_teddy_slim_avx2_1 + 1613
+    mov qword [rsp + 704], r8
+    vmovq rax, xmm0
+    mov qword [rsp + 736], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_1 + 508
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L103:
+    mov r11, [rsp + 736]
+    bsf rdx, r11
+    mov r9, qword [rsp + 736]
+    mov r11, [rsp + 736]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 736], r9
+    mov r9, rdx
+    shr r9, 3
+    mov r11, [rsp + 704]
+    lea r9, [r11 + r9]
+    and rdx, 7
+    movzx r11d, byte [rdi + rdx + 320]
+    mov [rsp + 768], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_avx2_1 + 491
+    db 0x66, 0x90
+; .L105:
+    mov r12, rdx
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_avx2_1 + 470
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_avx2_1 + 2345
+; .L110:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov r8, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_avx2_1 + 444
+    db 0x66, 0x90
+; .L119:
+    mov eax, dword [r13]
+    mov ebx, dword [r8]
+    cmp eax, ebx
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2421
+; .L121:
+    lea r13, [r13 + 4]
+    add r8, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_avx2_1 + 416
+; .L120:
+    mov eax, dword [r15]
+    mov r8d, dword [r14]
+    cmp rax, r8
+    sete r14b
+    movzx r14d, r14b
+; .L109:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2429
+; .L107:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 768]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_avx2_1 + 320
+; .L106:
+    mov r11, [rsp + 736]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_1 + 224
+; .L104:
+    mov r9, -1
+; .L102:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_avx2_1 + 529
+    mov rax, r9
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1620
+; .L123:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 8]
+    mov [rsp + 832], r10
+    vpextrq rdx, xmm0, 1
+    mov qword [rsp + 864], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_1 + 859
+    db 0x90
+; .L126:
+    mov r11, [rsp + 864]
+    bsf r8, r11
+    mov r9, qword [rsp + 864]
+    mov r11, [rsp + 864]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 864], r9
+    mov r9, r8
+    shr r9, 3
+    mov r11, [rsp + 832]
+    lea r9, [r11 + r9]
+    and r8, 7
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 896], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_avx2_1 + 842
+    db 0x66, 0x90
+; .L128:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_avx2_1 + 821
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_avx2_1 + 2509
+; .L133:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_avx2_1 + 795
+    db 0x66, 0x90
+; .L142:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2585
+; .L144:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_avx2_1 + 768
+; .L143:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L132:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2593
+; .L130:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 896]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_avx2_1 + 672
+; .L129:
+    mov r11, [rsp + 864]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_1 + 576
+; .L127:
+    mov r9, -1
+; .L125:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_avx2_1 + 880
+    mov rax, r9
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1620
+; .L146:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 16]
+    mov [rsp + 960], r10
+    vextracti128 xmm1, ymm0, 1
+    vmovq rdx, xmm1
+    mov qword [rsp + 992], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_1 + 1227
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L149:
+    mov r11, [rsp + 992]
+    bsf r8, r11
+    mov r9, qword [rsp + 992]
+    mov r11, [rsp + 992]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 992], r9
+    mov r9, r8
+    shr r9, 3
+    mov r11, [rsp + 960]
+    lea r9, [r11 + r9]
+    and r8, 7
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 1024], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_avx2_1 + 1210
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L151:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_avx2_1 + 1189
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_avx2_1 + 2673
+; .L156:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_avx2_1 + 1163
+    db 0x66, 0x90
+; .L165:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2749
+; .L167:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_avx2_1 + 1136
+; .L166:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L155:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2757
+; .L153:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 1024]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_avx2_1 + 1040
+; .L152:
+    mov r11, [rsp + 992]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_1 + 936
+; .L150:
+    mov r9, -1
+; .L148:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_avx2_1 + 1248
+    mov rax, r9
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1620
+; .L169:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 24]
+    mov [rsp + 1088], r10
+    vextracti128 xmm0, ymm0, 1
+    vpextrq rdx, xmm0, 1
+    mov qword [rsp + 1120], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_1 + 1595
+    db 0xf, 0x1f, 0x40, 0x0
+; .L172:
+    mov r11, [rsp + 1120]
+    bsf r8, r11
+    mov r9, qword [rsp + 1120]
+    mov r11, [rsp + 1120]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 1120], r9
+    mov r9, r8
+    shr r9, 3
+    mov r11, [rsp + 1088]
+    lea r9, [r11 + r9]
+    and r8, 7
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 1152], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_avx2_1 + 1578
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L174:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_avx2_1 + 1557
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_avx2_1 + 2837
+; .L179:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_avx2_1 + 1531
+    db 0x66, 0x90
+; .L188:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2913
+; .L190:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_avx2_1 + 1504
+; .L189:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L178:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2921
+; .L176:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 1152]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_avx2_1 + 1408
+; .L175:
+    mov r11, [rsp + 1120]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1304
+; .L173:
+    mov r9, -1
+; .L171:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_avx2_1 + 1613
+    mov rax, r9
+    jmp strict short L.nvol_teddy_slim_avx2_1 + 1620
+; .L192:
+; .L100:
+; .L98:
+    mov rax, -1
+; .L1:
+    vzeroupper
+    add rsp, 1224
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3217
+; .L19:
+    movzx eax, byte [rbx]
+    movzx edx, byte [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3217
+; .L21:
+    movzx eax, word [rbx]
+    movzx edx, word [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3217
+; .L15:
+    test rax, rax
+    je strict short L.nvol_teddy_slim_avx2_1 + 1641
+; .L16:
+    cmp rax, 1
+    je strict short L.nvol_teddy_slim_avx2_1 + 1651
+; .L18:
+    cmp rax, 2
+    je strict short L.nvol_teddy_slim_avx2_1 + 1673
+; .L20:
+    xor eax, eax
+    movzx edx, word [rbx]
+    movzx r11d, word [r12]
+    mov [rsp + 192], r11
+    cmp edx, r11d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 3217
+    movzx edx, byte [rbx + 2]
+    movzx ebx, byte [r12 + 2]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_avx2_1 + 3217
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3217
+; .L26:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3217
+; .L12:
+    mov r11, [rsp]
+    sub r12, r11
+    shl r12, 8
+    or r12, r15
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3267
+; .L28:
+    mov rax, r12
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1620
+; .L40:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3586
+; .L42:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3586
+; .L44:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3586
+; .L38:
+    test r15, r15
+    je strict short L.nvol_teddy_slim_avx2_1 + 1801
+; .L39:
+    cmp r15, 1
+    je strict short L.nvol_teddy_slim_avx2_1 + 1811
+; .L41:
+    cmp r15, 2
+    je strict short L.nvol_teddy_slim_avx2_1 + 1833
+; .L43:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 352], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 3586
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 3586
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3586
+; .L49:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3586
+; .L35:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3640
+; .L51:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1620
+; .L63:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3962
+; .L65:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3962
+; .L67:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3962
+; .L61:
+    test r15, r15
+    je strict short L.nvol_teddy_slim_avx2_1 + 1962
+; .L62:
+    cmp r15, 1
+    je strict short L.nvol_teddy_slim_avx2_1 + 1972
+; .L64:
+    cmp r15, 2
+    je strict short L.nvol_teddy_slim_avx2_1 + 1994
+; .L66:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 512], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 3962
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 3962
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3962
+; .L72:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 3962
+; .L58:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 4016
+; .L74:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1620
+; .L86:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 4338
+; .L88:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 4338
+; .L90:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 4338
+; .L84:
+    test r15, r15
+    je strict short L.nvol_teddy_slim_avx2_1 + 2123
+; .L85:
+    cmp r15, 1
+    je strict short L.nvol_teddy_slim_avx2_1 + 2133
+; .L87:
+    cmp r15, 2
+    je strict short L.nvol_teddy_slim_avx2_1 + 2155
+; .L89:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 672], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 4338
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 4338
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 4338
+; .L95:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 4338
+; .L81:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 4392
+; .L97:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1620
+; .L113:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 461
+; .L115:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 461
+; .L117:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 461
+; .L111:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_avx2_1 + 2284
+; .L112:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_avx2_1 + 2295
+; .L114:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_avx2_1 + 2320
+; .L116:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 800], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 461
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 461
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 461
+; .L122:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 461
+; .L108:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 515
+; .L136:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 812
+; .L138:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 812
+; .L140:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 812
+; .L134:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_avx2_1 + 2448
+; .L135:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_avx2_1 + 2459
+; .L137:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_avx2_1 + 2484
+; .L139:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 928], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 812
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 812
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 812
+; .L145:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 812
+; .L131:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 866
+; .L159:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1180
+; .L161:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1180
+; .L163:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1180
+; .L157:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_avx2_1 + 2612
+; .L158:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_avx2_1 + 2623
+; .L160:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_avx2_1 + 2648
+; .L162:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 1056], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1180
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1180
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1180
+; .L168:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1180
+; .L154:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1234
+; .L182:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1548
+; .L184:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1548
+; .L186:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1548
+; .L180:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_avx2_1 + 2776
+; .L181:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_avx2_1 + 2787
+; .L183:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_avx2_1 + 2812
+; .L185:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 1184], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1548
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1548
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1548
+; .L191:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1548
+; .L177:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 1602
+; .Lrare1:
     mov qword [rsp + 64], r8
     vmovq rax, xmm3
     mov qword [rsp + 96], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_1 + 428
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    je strict near L.nvol_teddy_slim_avx2_1 + 3260
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L7:
     mov r11, [rsp + 96]
     bsf rbp, r11
@@ -15187,7 +16069,7 @@ L.nvol_teddy_slim_avx2_1:
     xor r14d, r14d
     mov r11, r10
     cmp r14, r11
-    jae strict near L.nvol_teddy_slim_avx2_1 + 414
+    jae strict near L.nvol_teddy_slim_avx2_1 + 3246
     db 0x66, 0x90
 ; .L9:
     mov r15, qword [rsp + 128]
@@ -15204,9 +16086,9 @@ L.nvol_teddy_slim_avx2_1:
     mov rdx, rcx
     sub rdx, r12
     cmp rax, rdx
-    ja strict short L.nvol_teddy_slim_avx2_1 + 393
+    ja strict short L.nvol_teddy_slim_avx2_1 + 3225
     cmp rax, 4
-    jb strict near L.nvol_teddy_slim_avx2_1 + 3167
+    jb strict near L.nvol_teddy_slim_avx2_1 + 1695
 ; .L14:
     lea rdx, [rax - 4]
     lea rdx, [rbx + rdx]
@@ -15214,18 +16096,18 @@ L.nvol_teddy_slim_avx2_1:
     lea rax, [r12 + rax]
     mov r9, r12
     cmp rbx, rdx
-    jae strict short L.nvol_teddy_slim_avx2_1 + 372
+    jae strict short L.nvol_teddy_slim_avx2_1 + 3204
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L23:
     mov r13d, dword [rbx]
     mov ebp, dword [r9]
     cmp r13d, ebp
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3239
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1767
 ; .L25:
     lea rbx, [rbx + 4]
     add r9, 4
     cmp rbx, rdx
-    jb strict short L.nvol_teddy_slim_avx2_1 + 344
+    jb strict short L.nvol_teddy_slim_avx2_1 + 3176
 ; .L24:
     mov edx, dword [rdx]
     mov eax, dword [rax]
@@ -15234,21 +16116,21 @@ L.nvol_teddy_slim_avx2_1:
     movzx eax, al
 ; .L13:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3246
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1774
 ; .L11:
     lea r14, [r14 + 1]
     mov r11, [rsp + 160]
     cmp r14, r11
-    jb strict near L.nvol_teddy_slim_avx2_1 + 240
+    jb strict near L.nvol_teddy_slim_avx2_1 + 3072
 ; .L10:
     mov r11, [rsp + 96]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_1 + 144
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2976
 ; .L8:
     mov r12, -1
 ; .L6:
     cmp r12, -1
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3265
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1793
 ; .L27:
     mov r11, [rsp + 64]
     lea r10, [r11 + 8]
@@ -15257,7 +16139,7 @@ L.nvol_teddy_slim_avx2_1:
     mov qword [rsp + 256], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_1 + 801
+    je strict near L.nvol_teddy_slim_avx2_1 + 3633
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L30:
     mov r11, [rsp + 256]
@@ -15279,7 +16161,7 @@ L.nvol_teddy_slim_avx2_1:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_1 + 784
+    jae strict near L.nvol_teddy_slim_avx2_1 + 3616
     db 0xf, 0x1f, 0x0
 ; .L32:
     mov r13, qword [rsp + 288]
@@ -15296,9 +16178,9 @@ L.nvol_teddy_slim_avx2_1:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_1 + 762
+    ja strict short L.nvol_teddy_slim_avx2_1 + 3594
     cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_1 + 3327
+    jb strict near L.nvol_teddy_slim_avx2_1 + 1855
 ; .L37:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -15306,18 +16188,18 @@ L.nvol_teddy_slim_avx2_1:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_1 + 740
+    jae strict short L.nvol_teddy_slim_avx2_1 + 3572
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L46:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3400
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1928
 ; .L48:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_1 + 712
+    jb strict short L.nvol_teddy_slim_avx2_1 + 3544
 ; .L47:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -15326,21 +16208,21 @@ L.nvol_teddy_slim_avx2_1:
     movzx eax, al
 ; .L36:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3407
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1935
 ; .L34:
     lea r12, [r12 + 1]
     mov r11, [rsp + 320]
     cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_1 + 608
+    jb strict near L.nvol_teddy_slim_avx2_1 + 3440
 ; .L33:
     mov r11, [rsp + 256]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_1 + 496
+    jne strict near L.nvol_teddy_slim_avx2_1 + 3328
 ; .L31:
     mov rbx, -1
 ; .L29:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3426
+    jne strict near L.nvol_teddy_slim_avx2_1 + 1954
 ; .L50:
     mov r11, [rsp + 64]
     lea r10, [r11 + 16]
@@ -15350,7 +16232,7 @@ L.nvol_teddy_slim_avx2_1:
     mov qword [rsp + 416], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_1 + 1177
+    je strict near L.nvol_teddy_slim_avx2_1 + 4009
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L53:
     mov r11, [rsp + 416]
@@ -15372,7 +16254,7 @@ L.nvol_teddy_slim_avx2_1:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_1 + 1160
+    jae strict near L.nvol_teddy_slim_avx2_1 + 3992
     db 0xf, 0x1f, 0x0
 ; .L55:
     mov r13, qword [rsp + 448]
@@ -15389,9 +16271,9 @@ L.nvol_teddy_slim_avx2_1:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_1 + 1138
+    ja strict short L.nvol_teddy_slim_avx2_1 + 3970
     cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_1 + 3488
+    jb strict near L.nvol_teddy_slim_avx2_1 + 2016
 ; .L60:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -15399,18 +16281,18 @@ L.nvol_teddy_slim_avx2_1:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_1 + 1116
+    jae strict short L.nvol_teddy_slim_avx2_1 + 3948
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L69:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3561
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2089
 ; .L71:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_1 + 1088
+    jb strict short L.nvol_teddy_slim_avx2_1 + 3920
 ; .L70:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -15419,21 +16301,21 @@ L.nvol_teddy_slim_avx2_1:
     movzx eax, al
 ; .L59:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3568
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2096
 ; .L57:
     lea r12, [r12 + 1]
     mov r11, [rsp + 480]
     cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_1 + 984
+    jb strict near L.nvol_teddy_slim_avx2_1 + 3816
 ; .L56:
     mov r11, [rsp + 416]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_1 + 872
+    jne strict near L.nvol_teddy_slim_avx2_1 + 3704
 ; .L54:
     mov rbx, -1
 ; .L52:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3587
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2115
 ; .L73:
     mov r11, [rsp + 64]
     lea r10, [r11 + 24]
@@ -15443,7 +16325,7 @@ L.nvol_teddy_slim_avx2_1:
     mov qword [rsp + 576], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_1 + 1553
+    je strict near L.nvol_teddy_slim_avx2_1 + 4385
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L76:
     mov r11, [rsp + 576]
@@ -15465,7 +16347,7 @@ L.nvol_teddy_slim_avx2_1:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_1 + 1536
+    jae strict near L.nvol_teddy_slim_avx2_1 + 4368
     db 0xf, 0x1f, 0x0
 ; .L78:
     mov r13, qword [rsp + 608]
@@ -15482,9 +16364,9 @@ L.nvol_teddy_slim_avx2_1:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_1 + 1514
+    ja strict short L.nvol_teddy_slim_avx2_1 + 4346
     cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_1 + 3649
+    jb strict near L.nvol_teddy_slim_avx2_1 + 2177
 ; .L83:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -15492,18 +16374,18 @@ L.nvol_teddy_slim_avx2_1:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_1 + 1492
+    jae strict short L.nvol_teddy_slim_avx2_1 + 4324
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L92:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3722
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2250
 ; .L94:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_1 + 1464
+    jb strict short L.nvol_teddy_slim_avx2_1 + 4296
 ; .L93:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -15512,819 +16394,26 @@ L.nvol_teddy_slim_avx2_1:
     movzx eax, al
 ; .L82:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3729
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2257
 ; .L80:
     lea r12, [r12 + 1]
     mov r11, [rsp + 640]
     cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_1 + 1360
+    jb strict near L.nvol_teddy_slim_avx2_1 + 4192
 ; .L79:
     mov r11, [rsp + 576]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_1 + 1248
+    jne strict near L.nvol_teddy_slim_avx2_1 + 4080
 ; .L77:
     mov rbx, -1
 ; .L75:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3748
+    jne strict near L.nvol_teddy_slim_avx2_1 + 2276
 ; .L96:
-; .L4:
-    lea r8, [r8 + 32]
-    mov r11, [rsp + 32]
-    cmp r8, r11
-    jbe strict near L.nvol_teddy_slim_avx2_1 + 64
-; .L3:
-    cmp r8, rcx
-    jae strict near L.nvol_teddy_slim_avx2_1 + 3085
-    lea r8, [rcx - 32]
-    vmovdqu ymm3, [r8]
-    vpand ymm2, ymm3, ymm2
-    vpsrlw ymm3, ymm3, 4
-    vpand ymm3, ymm3, [rel NVOL_K3]
-    vpshufb ymm0, ymm0, ymm2
-    vpshufb ymm1, ymm1, ymm3
-    vpand ymm0, ymm0, ymm1
-    vptest ymm0, ymm0
-    je strict near L.nvol_teddy_slim_avx2_1 + 3085
-    mov qword [rsp + 704], r8
-    vmovq rax, xmm0
-    mov qword [rsp + 736], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_1 + 1980
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L103:
-    mov r11, [rsp + 736]
-    bsf rdx, r11
-    mov r9, qword [rsp + 736]
-    mov r11, [rsp + 736]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 736], r9
-    mov r9, rdx
-    shr r9, 3
-    mov r11, [rsp + 704]
-    lea r9, [r11 + r9]
-    and rdx, 7
-    movzx r11d, byte [rdi + rdx + 320]
-    mov [rsp + 768], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_1 + 1963
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L105:
-    mov r12, rdx
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_1 + 1942
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_1 + 3817
-; .L110:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov r8, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_1 + 1916
-    db 0x66, 0x90
-; .L119:
-    mov eax, dword [r13]
-    mov ebx, dword [r8]
-    cmp eax, ebx
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3893
-; .L121:
-    lea r13, [r13 + 4]
-    add r8, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_1 + 1888
-; .L120:
-    mov eax, dword [r15]
-    mov r8d, dword [r14]
-    cmp rax, r8
-    sete r14b
-    movzx r14d, r14b
-; .L109:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3901
-; .L107:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 768]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_1 + 1792
-; .L106:
-    mov r11, [rsp + 736]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_1 + 1688
-; .L104:
-    mov r9, -1
-; .L102:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_1 + 2001
-    mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3092
-; .L123:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 8]
-    mov [rsp + 832], r10
-    vpextrq rdx, xmm0, 1
-    mov qword [rsp + 864], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_1 + 2331
-    db 0x90
-; .L126:
-    mov r11, [rsp + 864]
-    bsf r8, r11
-    mov r9, qword [rsp + 864]
-    mov r11, [rsp + 864]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 864], r9
-    mov r9, r8
-    shr r9, 3
-    mov r11, [rsp + 832]
-    lea r9, [r11 + r9]
-    and r8, 7
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 896], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_1 + 2314
-    db 0x66, 0x90
-; .L128:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_1 + 2293
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_1 + 3981
-; .L133:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_1 + 2267
-    db 0x66, 0x90
-; .L142:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_1 + 4057
-; .L144:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_1 + 2240
-; .L143:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L132:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 4065
-; .L130:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 896]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_1 + 2144
-; .L129:
-    mov r11, [rsp + 864]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_1 + 2048
-; .L127:
-    mov r9, -1
-; .L125:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_1 + 2352
-    mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3092
-; .L146:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 16]
-    mov [rsp + 960], r10
-    vextracti128 xmm1, ymm0, 1
-    vmovq rdx, xmm1
-    mov qword [rsp + 992], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_1 + 2699
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L149:
-    mov r11, [rsp + 992]
-    bsf r8, r11
-    mov r9, qword [rsp + 992]
-    mov r11, [rsp + 992]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 992], r9
-    mov r9, r8
-    shr r9, 3
-    mov r11, [rsp + 960]
-    lea r9, [r11 + r9]
-    and r8, 7
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 1024], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_1 + 2682
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L151:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_1 + 2661
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_1 + 4145
-; .L156:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_1 + 2635
-    db 0x66, 0x90
-; .L165:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_1 + 4221
-; .L167:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_1 + 2608
-; .L166:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L155:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 4229
-; .L153:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 1024]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_1 + 2512
-; .L152:
-    mov r11, [rsp + 992]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_1 + 2408
-; .L150:
-    mov r9, -1
-; .L148:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_1 + 2720
-    mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3092
-; .L169:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 24]
-    mov [rsp + 1088], r10
-    vextracti128 xmm0, ymm0, 1
-    vpextrq rdx, xmm0, 1
-    mov qword [rsp + 1120], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_1 + 3067
-    db 0xf, 0x1f, 0x40, 0x0
-; .L172:
-    mov r11, [rsp + 1120]
-    bsf r8, r11
-    mov r9, qword [rsp + 1120]
-    mov r11, [rsp + 1120]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 1120], r9
-    mov r9, r8
-    shr r9, 3
-    mov r11, [rsp + 1088]
-    lea r9, [r11 + r9]
-    and r8, 7
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 1152], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_1 + 3050
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L174:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_1 + 3029
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_1 + 4309
-; .L179:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_1 + 3003
-    db 0x66, 0x90
-; .L188:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_1 + 4385
-; .L190:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_1 + 2976
-; .L189:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L178:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 4393
-; .L176:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 1152]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_1 + 2880
-; .L175:
-    mov r11, [rsp + 1120]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_1 + 2776
-; .L173:
-    mov r9, -1
-; .L171:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_1 + 3085
-    mov rax, r9
-    jmp strict short L.nvol_teddy_slim_avx2_1 + 3092
-; .L192:
-; .L100:
-; .L98:
-    mov rax, -1
-; .L1:
-    vzeroupper
-    add rsp, 1224
-    pop r15
-    pop r14
-    pop r13
-    pop r12
-    pop rbp
-    pop rbx
-    ret
-; .L17:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 385
-; .L19:
-    movzx eax, byte [rbx]
-    movzx edx, byte [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 385
-; .L21:
-    movzx eax, word [rbx]
-    movzx edx, word [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 385
-; .L15:
-    test rax, rax
-    je strict short L.nvol_teddy_slim_avx2_1 + 3113
-; .L16:
-    cmp rax, 1
-    je strict short L.nvol_teddy_slim_avx2_1 + 3123
-; .L18:
-    cmp rax, 2
-    je strict short L.nvol_teddy_slim_avx2_1 + 3145
-; .L20:
-    xor eax, eax
-    movzx edx, word [rbx]
-    movzx r11d, word [r12]
-    mov [rsp + 192], r11
-    cmp edx, r11d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 385
-    movzx edx, byte [rbx + 2]
-    movzx ebx, byte [r12 + 2]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_1 + 385
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 385
-; .L26:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 385
-; .L12:
-    mov r11, [rsp]
-    sub r12, r11
-    shl r12, 8
-    or r12, r15
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 435
-; .L28:
-    mov rax, r12
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3092
-; .L40:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 754
-; .L42:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 754
-; .L44:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 754
-; .L38:
-    test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_1 + 3273
-; .L39:
-    cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_1 + 3283
-; .L41:
-    cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_1 + 3305
-; .L43:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 352], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 754
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 754
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 754
-; .L49:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 754
-; .L35:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 808
-; .L51:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3092
-; .L63:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1130
-; .L65:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1130
-; .L67:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1130
-; .L61:
-    test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_1 + 3434
-; .L62:
-    cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_1 + 3444
-; .L64:
-    cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_1 + 3466
-; .L66:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 512], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 1130
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 1130
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1130
-; .L72:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1130
-; .L58:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1184
-; .L74:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3092
-; .L86:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1506
-; .L88:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1506
-; .L90:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1506
-; .L84:
-    test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_1 + 3595
-; .L85:
-    cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_1 + 3605
-; .L87:
-    cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_1 + 3627
-; .L89:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 672], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 1506
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 1506
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1506
-; .L95:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1506
-; .L81:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1560
-; .L97:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3092
-; .L113:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1933
-; .L115:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1933
-; .L117:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1933
-; .L111:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_1 + 3756
-; .L112:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_1 + 3767
-; .L114:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_1 + 3792
-; .L116:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 800], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 1933
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 1933
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1933
-; .L122:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1933
-; .L108:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 1987
-; .L136:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2284
-; .L138:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2284
-; .L140:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2284
-; .L134:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_1 + 3920
-; .L135:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_1 + 3931
-; .L137:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_1 + 3956
-; .L139:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 928], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 2284
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 2284
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2284
-; .L145:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2284
-; .L131:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2338
-; .L159:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2652
-; .L161:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2652
-; .L163:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2652
-; .L157:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_1 + 4084
-; .L158:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_1 + 4095
-; .L160:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_1 + 4120
-; .L162:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 1056], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 2652
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 2652
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2652
-; .L168:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2652
-; .L154:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 2706
-; .L182:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3020
-; .L184:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3020
-; .L186:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3020
-; .L180:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_1 + 4248
-; .L181:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_1 + 4259
-; .L183:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_1 + 4284
-; .L185:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 1184], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3020
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_1 + 3020
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3020
-; .L191:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3020
-; .L177:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_1 + 3074
+    jmp strict near L.nvol_teddy_slim_avx2_1 + 111
 
-    db 0xf, 0x1f, 0x40, 0x0
-global nvol_teddy_fat_avx2_1:function hidden 4380
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_teddy_fat_avx2_1:function hidden 4391
 nvol_teddy_fat_avx2_1:
 L.nvol_teddy_fat_avx2_1:
     push rbx
@@ -16342,8 +16431,8 @@ L.nvol_teddy_fat_avx2_1:
     lea r11, [rcx - 16]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_fat_avx2_1 + 1588
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_teddy_fat_avx2_1 + 125
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     vbroadcasti128 ymm3, oword [r8]
     vpand ymm4, ymm3, ymm2
@@ -16353,7 +16442,800 @@ L.nvol_teddy_fat_avx2_1:
     vpshufb ymm3, ymm1, ymm3
     vpand ymm3, ymm4, ymm3
     vptest ymm3, ymm3
-    je strict near L.nvol_teddy_fat_avx2_1 + 1570
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2924
+; .L4:
+    lea r8, [r8 + 16]
+    mov r11, [rsp + 32]
+    cmp r8, r11
+    jbe strict short L.nvol_teddy_fat_avx2_1 + 64
+; .L3:
+    cmp r8, rcx
+    jae strict near L.nvol_teddy_fat_avx2_1 + 1597
+    lea r8, [rcx - 16]
+    vbroadcasti128 ymm3, oword [r8]
+    vpand ymm2, ymm3, ymm2
+    vpsrlw ymm3, ymm3, 4
+    vpand ymm3, ymm3, [rel NVOL_K3]
+    vpshufb ymm0, ymm0, ymm2
+    vpshufb ymm1, ymm1, ymm3
+    vpand ymm0, ymm0, ymm1
+    vptest ymm0, ymm0
+    je strict near L.nvol_teddy_fat_avx2_1 + 1597
+    mov qword [rsp + 704], r8
+    vpermq ymm1, ymm0, 78
+    vpunpcklbw ymm2, ymm0, ymm1
+    vpunpckhbw ymm0, ymm0, ymm1
+    vmovq rax, xmm2
+    mov qword [rsp + 736], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_1 + 524
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L103:
+    mov r11, [rsp + 736]
+    bsf rdx, r11
+    mov r9, qword [rsp + 736]
+    mov r11, [rsp + 736]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 736], r9
+    mov r9, rdx
+    shr r9, 4
+    mov r11, [rsp + 704]
+    lea r9, [r11 + r9]
+    and rdx, 15
+    movzx r11d, byte [rdi + rdx + 320]
+    mov [rsp + 768], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_fat_avx2_1 + 507
+    db 0x66, 0x90
+; .L105:
+    mov r12, rdx
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_fat_avx2_1 + 486
+    cmp r14, 4
+    jb strict near L.nvol_teddy_fat_avx2_1 + 2329
+; .L110:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov r8, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_fat_avx2_1 + 460
+    db 0x66, 0x90
+; .L119:
+    mov eax, dword [r13]
+    mov ebx, dword [r8]
+    cmp eax, ebx
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2405
+; .L121:
+    lea r13, [r13 + 4]
+    add r8, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_fat_avx2_1 + 432
+; .L120:
+    mov eax, dword [r15]
+    mov r8d, dword [r14]
+    cmp rax, r8
+    sete r14b
+    movzx r14d, r14b
+; .L109:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2413
+; .L107:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 768]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_fat_avx2_1 + 336
+; .L106:
+    mov r11, [rsp + 736]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_1 + 240
+; .L104:
+    mov r9, -1
+; .L102:
+    cmp r9, -1
+    je strict short L.nvol_teddy_fat_avx2_1 + 545
+    mov rax, r9
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1604
+; .L123:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 4]
+    mov [rsp + 832], r10
+    vpextrq rdx, xmm2, 1
+    mov qword [rsp + 864], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_1 + 875
+    db 0x90
+; .L126:
+    mov r11, [rsp + 864]
+    bsf r8, r11
+    mov r9, qword [rsp + 864]
+    mov r11, [rsp + 864]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 864], r9
+    mov r9, r8
+    shr r9, 4
+    mov r11, [rsp + 832]
+    lea r9, [r11 + r9]
+    and r8, 15
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 896], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_fat_avx2_1 + 858
+    db 0x66, 0x90
+; .L128:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_fat_avx2_1 + 837
+    cmp r14, 4
+    jb strict near L.nvol_teddy_fat_avx2_1 + 2493
+; .L133:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_fat_avx2_1 + 811
+    db 0x66, 0x90
+; .L142:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2569
+; .L144:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_fat_avx2_1 + 784
+; .L143:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L132:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2577
+; .L130:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 896]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_fat_avx2_1 + 688
+; .L129:
+    mov r11, [rsp + 864]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_1 + 592
+; .L127:
+    mov r9, -1
+; .L125:
+    cmp r9, -1
+    je strict short L.nvol_teddy_fat_avx2_1 + 896
+    mov rax, r9
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1604
+; .L146:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 8]
+    mov [rsp + 960], r10
+    vmovq rdx, xmm0
+    mov qword [rsp + 992], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_1 + 1227
+    db 0xf, 0x1f, 0x0
+; .L149:
+    mov r11, [rsp + 992]
+    bsf r8, r11
+    mov r9, qword [rsp + 992]
+    mov r11, [rsp + 992]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 992], r9
+    mov r9, r8
+    shr r9, 4
+    mov r11, [rsp + 960]
+    lea r9, [r11 + r9]
+    and r8, 15
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 1024], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_fat_avx2_1 + 1210
+    db 0x66, 0x90
+; .L151:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_fat_avx2_1 + 1189
+    cmp r14, 4
+    jb strict near L.nvol_teddy_fat_avx2_1 + 2657
+; .L156:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_fat_avx2_1 + 1163
+    db 0x66, 0x90
+; .L165:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2733
+; .L167:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_fat_avx2_1 + 1136
+; .L166:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L155:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2741
+; .L153:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 1024]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_fat_avx2_1 + 1040
+; .L152:
+    mov r11, [rsp + 992]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_1 + 944
+; .L150:
+    mov r9, -1
+; .L148:
+    cmp r9, -1
+    je strict short L.nvol_teddy_fat_avx2_1 + 1248
+    mov rax, r9
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1604
+; .L169:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 12]
+    mov [rsp + 1088], r10
+    vpextrq rdx, xmm0, 1
+    mov qword [rsp + 1120], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_1 + 1579
+    db 0x66, 0x90
+; .L172:
+    mov r11, [rsp + 1120]
+    bsf r8, r11
+    mov r9, qword [rsp + 1120]
+    mov r11, [rsp + 1120]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 1120], r9
+    mov r9, r8
+    shr r9, 4
+    mov r11, [rsp + 1088]
+    lea r9, [r11 + r9]
+    and r8, 15
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 1152], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_fat_avx2_1 + 1562
+    db 0x66, 0x90
+; .L174:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_fat_avx2_1 + 1541
+    cmp r14, 4
+    jb strict near L.nvol_teddy_fat_avx2_1 + 2821
+; .L179:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_fat_avx2_1 + 1515
+    db 0x66, 0x90
+; .L188:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2897
+; .L190:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_fat_avx2_1 + 1488
+; .L189:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L178:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2905
+; .L176:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 1152]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_fat_avx2_1 + 1392
+; .L175:
+    mov r11, [rsp + 1120]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1296
+; .L173:
+    mov r9, -1
+; .L171:
+    cmp r9, -1
+    je strict short L.nvol_teddy_fat_avx2_1 + 1597
+    mov rax, r9
+    jmp strict short L.nvol_teddy_fat_avx2_1 + 1604
+; .L192:
+; .L100:
+; .L98:
+    mov rax, -1
+; .L1:
+    vzeroupper
+    add rsp, 1224
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3217
+; .L19:
+    movzx eax, byte [rbx]
+    movzx edx, byte [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3217
+; .L21:
+    movzx eax, word [rbx]
+    movzx edx, word [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3217
+; .L15:
+    test rax, rax
+    je strict short L.nvol_teddy_fat_avx2_1 + 1625
+; .L16:
+    cmp rax, 1
+    je strict short L.nvol_teddy_fat_avx2_1 + 1635
+; .L18:
+    cmp rax, 2
+    je strict short L.nvol_teddy_fat_avx2_1 + 1657
+; .L20:
+    xor eax, eax
+    movzx edx, word [rbx]
+    movzx r11d, word [r12]
+    mov [rsp + 192], r11
+    cmp edx, r11d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 3217
+    movzx edx, byte [rbx + 2]
+    movzx ebx, byte [r12 + 2]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_fat_avx2_1 + 3217
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3217
+; .L26:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3217
+; .L12:
+    mov r11, [rsp]
+    sub r12, r11
+    shl r12, 8
+    or r12, r15
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3267
+; .L28:
+    mov rax, r12
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1604
+; .L40:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3586
+; .L42:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3586
+; .L44:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3586
+; .L38:
+    test r15, r15
+    je strict short L.nvol_teddy_fat_avx2_1 + 1785
+; .L39:
+    cmp r15, 1
+    je strict short L.nvol_teddy_fat_avx2_1 + 1795
+; .L41:
+    cmp r15, 2
+    je strict short L.nvol_teddy_fat_avx2_1 + 1817
+; .L43:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 352], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 3586
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 3586
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3586
+; .L49:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3586
+; .L35:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3640
+; .L51:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1604
+; .L63:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3954
+; .L65:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3954
+; .L67:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3954
+; .L61:
+    test r15, r15
+    je strict short L.nvol_teddy_fat_avx2_1 + 1946
+; .L62:
+    cmp r15, 1
+    je strict short L.nvol_teddy_fat_avx2_1 + 1956
+; .L64:
+    cmp r15, 2
+    je strict short L.nvol_teddy_fat_avx2_1 + 1978
+; .L66:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 512], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 3954
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 3954
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3954
+; .L72:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 3954
+; .L58:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 4008
+; .L74:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1604
+; .L86:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 4322
+; .L88:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 4322
+; .L90:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 4322
+; .L84:
+    test r15, r15
+    je strict short L.nvol_teddy_fat_avx2_1 + 2107
+; .L85:
+    cmp r15, 1
+    je strict short L.nvol_teddy_fat_avx2_1 + 2117
+; .L87:
+    cmp r15, 2
+    je strict short L.nvol_teddy_fat_avx2_1 + 2139
+; .L89:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 672], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 4322
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 4322
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 4322
+; .L95:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 4322
+; .L81:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 4376
+; .L97:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1604
+; .L113:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 477
+; .L115:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 477
+; .L117:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 477
+; .L111:
+    test r14, r14
+    je strict short L.nvol_teddy_fat_avx2_1 + 2268
+; .L112:
+    cmp r14, 1
+    je strict short L.nvol_teddy_fat_avx2_1 + 2279
+; .L114:
+    cmp r14, 2
+    je strict short L.nvol_teddy_fat_avx2_1 + 2304
+; .L116:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 800], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 477
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 477
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 477
+; .L122:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 477
+; .L108:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 531
+; .L136:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 828
+; .L138:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 828
+; .L140:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 828
+; .L134:
+    test r14, r14
+    je strict short L.nvol_teddy_fat_avx2_1 + 2432
+; .L135:
+    cmp r14, 1
+    je strict short L.nvol_teddy_fat_avx2_1 + 2443
+; .L137:
+    cmp r14, 2
+    je strict short L.nvol_teddy_fat_avx2_1 + 2468
+; .L139:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 928], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 828
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 828
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 828
+; .L145:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 828
+; .L131:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 882
+; .L159:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1180
+; .L161:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1180
+; .L163:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1180
+; .L157:
+    test r14, r14
+    je strict short L.nvol_teddy_fat_avx2_1 + 2596
+; .L158:
+    cmp r14, 1
+    je strict short L.nvol_teddy_fat_avx2_1 + 2607
+; .L160:
+    cmp r14, 2
+    je strict short L.nvol_teddy_fat_avx2_1 + 2632
+; .L162:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 1056], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1180
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1180
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1180
+; .L168:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1180
+; .L154:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1234
+; .L182:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1532
+; .L184:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1532
+; .L186:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1532
+; .L180:
+    test r14, r14
+    je strict short L.nvol_teddy_fat_avx2_1 + 2760
+; .L181:
+    cmp r14, 1
+    je strict short L.nvol_teddy_fat_avx2_1 + 2771
+; .L183:
+    cmp r14, 2
+    je strict short L.nvol_teddy_fat_avx2_1 + 2796
+; .L185:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 1184], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1532
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1532
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1532
+; .L191:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1532
+; .L177:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 1586
+; .Lrare1:
     mov qword [rsp + 64], r8
     vpermq ymm4, ymm3, 78
     vpunpcklbw ymm5, ymm3, ymm4
@@ -16362,8 +17244,8 @@ L.nvol_teddy_fat_avx2_1:
     mov qword [rsp + 96], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_1 + 444
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    je strict near L.nvol_teddy_fat_avx2_1 + 3260
+    db 0xf, 0x1f, 0x0
 ; .L7:
     mov r11, [rsp + 96]
     bsf rbp, r11
@@ -16384,8 +17266,9 @@ L.nvol_teddy_fat_avx2_1:
     xor r14d, r14d
     mov r11, r10
     cmp r14, r11
-    jae strict near L.nvol_teddy_fat_avx2_1 + 430
-    db 0x66, 0x90
+    jae strict near L.nvol_teddy_fat_avx2_1 + 3246
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 ; .L9:
     mov r15, qword [rsp + 128]
     shl r15, 6
@@ -16401,9 +17284,9 @@ L.nvol_teddy_fat_avx2_1:
     mov rdx, rcx
     sub rdx, r12
     cmp rax, rdx
-    ja strict short L.nvol_teddy_fat_avx2_1 + 409
+    ja strict short L.nvol_teddy_fat_avx2_1 + 3225
     cmp rax, 4
-    jb strict near L.nvol_teddy_fat_avx2_1 + 3135
+    jb strict near L.nvol_teddy_fat_avx2_1 + 1679
 ; .L14:
     lea rdx, [rax - 4]
     lea rdx, [rbx + rdx]
@@ -16411,18 +17294,18 @@ L.nvol_teddy_fat_avx2_1:
     lea rax, [r12 + rax]
     mov r9, r12
     cmp rbx, rdx
-    jae strict short L.nvol_teddy_fat_avx2_1 + 388
+    jae strict short L.nvol_teddy_fat_avx2_1 + 3204
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L23:
     mov r13d, dword [rbx]
     mov ebp, dword [r9]
     cmp r13d, ebp
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3207
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1751
 ; .L25:
     lea rbx, [rbx + 4]
     add r9, 4
     cmp rbx, rdx
-    jb strict short L.nvol_teddy_fat_avx2_1 + 360
+    jb strict short L.nvol_teddy_fat_avx2_1 + 3176
 ; .L24:
     mov edx, dword [rdx]
     mov eax, dword [rax]
@@ -16431,21 +17314,21 @@ L.nvol_teddy_fat_avx2_1:
     movzx eax, al
 ; .L13:
     test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3214
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1758
 ; .L11:
     lea r14, [r14 + 1]
     mov r11, [rsp + 160]
     cmp r14, r11
-    jb strict near L.nvol_teddy_fat_avx2_1 + 256
+    jb strict near L.nvol_teddy_fat_avx2_1 + 3072
 ; .L10:
     mov r11, [rsp + 96]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_1 + 160
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2968
 ; .L8:
     mov r12, -1
 ; .L6:
     cmp r12, -1
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3233
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1777
 ; .L27:
     mov r11, [rsp + 64]
     lea r10, [r11 + 4]
@@ -16454,7 +17337,7 @@ L.nvol_teddy_fat_avx2_1:
     mov qword [rsp + 256], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_1 + 817
+    je strict near L.nvol_teddy_fat_avx2_1 + 3633
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L30:
     mov r11, [rsp + 256]
@@ -16476,7 +17359,7 @@ L.nvol_teddy_fat_avx2_1:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_1 + 800
+    jae strict near L.nvol_teddy_fat_avx2_1 + 3616
     db 0xf, 0x1f, 0x0
 ; .L32:
     mov r13, qword [rsp + 288]
@@ -16493,9 +17376,9 @@ L.nvol_teddy_fat_avx2_1:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_1 + 778
+    ja strict short L.nvol_teddy_fat_avx2_1 + 3594
     cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_1 + 3295
+    jb strict near L.nvol_teddy_fat_avx2_1 + 1839
 ; .L37:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -16503,18 +17386,18 @@ L.nvol_teddy_fat_avx2_1:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_1 + 756
+    jae strict short L.nvol_teddy_fat_avx2_1 + 3572
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L46:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3368
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1912
 ; .L48:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_1 + 728
+    jb strict short L.nvol_teddy_fat_avx2_1 + 3544
 ; .L47:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -16523,21 +17406,21 @@ L.nvol_teddy_fat_avx2_1:
     movzx eax, al
 ; .L36:
     test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3375
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1919
 ; .L34:
     lea r12, [r12 + 1]
     mov r11, [rsp + 320]
     cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_1 + 624
+    jb strict near L.nvol_teddy_fat_avx2_1 + 3440
 ; .L33:
     mov r11, [rsp + 256]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_1 + 512
+    jne strict near L.nvol_teddy_fat_avx2_1 + 3328
 ; .L31:
     mov rbx, -1
 ; .L29:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3394
+    jne strict near L.nvol_teddy_fat_avx2_1 + 1938
 ; .L50:
     mov r11, [rsp + 64]
     lea r10, [r11 + 8]
@@ -16546,7 +17429,7 @@ L.nvol_teddy_fat_avx2_1:
     mov qword [rsp + 416], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_1 + 1185
+    je strict near L.nvol_teddy_fat_avx2_1 + 4001
     db 0xf, 0x1f, 0x40, 0x0
 ; .L53:
     mov r11, [rsp + 416]
@@ -16568,7 +17451,7 @@ L.nvol_teddy_fat_avx2_1:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_1 + 1168
+    jae strict near L.nvol_teddy_fat_avx2_1 + 3984
     db 0xf, 0x1f, 0x0
 ; .L55:
     mov r13, qword [rsp + 448]
@@ -16585,9 +17468,9 @@ L.nvol_teddy_fat_avx2_1:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_1 + 1146
+    ja strict short L.nvol_teddy_fat_avx2_1 + 3962
     cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_1 + 3456
+    jb strict near L.nvol_teddy_fat_avx2_1 + 2000
 ; .L60:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -16595,18 +17478,18 @@ L.nvol_teddy_fat_avx2_1:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_1 + 1124
+    jae strict short L.nvol_teddy_fat_avx2_1 + 3940
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L69:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3529
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2073
 ; .L71:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_1 + 1096
+    jb strict short L.nvol_teddy_fat_avx2_1 + 3912
 ; .L70:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -16615,21 +17498,21 @@ L.nvol_teddy_fat_avx2_1:
     movzx eax, al
 ; .L59:
     test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3536
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2080
 ; .L57:
     lea r12, [r12 + 1]
     mov r11, [rsp + 480]
     cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_1 + 992
+    jb strict near L.nvol_teddy_fat_avx2_1 + 3808
 ; .L56:
     mov r11, [rsp + 416]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_1 + 880
+    jne strict near L.nvol_teddy_fat_avx2_1 + 3696
 ; .L54:
     mov rbx, -1
 ; .L52:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3555
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2099
 ; .L73:
     mov r11, [rsp + 64]
     lea r10, [r11 + 12]
@@ -16638,7 +17521,7 @@ L.nvol_teddy_fat_avx2_1:
     mov qword [rsp + 576], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_1 + 1553
+    je strict near L.nvol_teddy_fat_avx2_1 + 4369
     db 0xf, 0x1f, 0x0
 ; .L76:
     mov r11, [rsp + 576]
@@ -16660,7 +17543,7 @@ L.nvol_teddy_fat_avx2_1:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_1 + 1536
+    jae strict near L.nvol_teddy_fat_avx2_1 + 4352
     db 0xf, 0x1f, 0x0
 ; .L78:
     mov r13, qword [rsp + 608]
@@ -16677,9 +17560,9 @@ L.nvol_teddy_fat_avx2_1:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_1 + 1514
+    ja strict short L.nvol_teddy_fat_avx2_1 + 4330
     cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_1 + 3617
+    jb strict near L.nvol_teddy_fat_avx2_1 + 2161
 ; .L83:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -16687,18 +17570,18 @@ L.nvol_teddy_fat_avx2_1:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_1 + 1492
+    jae strict short L.nvol_teddy_fat_avx2_1 + 4308
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L92:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3690
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2234
 ; .L94:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_1 + 1464
+    jb strict short L.nvol_teddy_fat_avx2_1 + 4280
 ; .L93:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -16707,820 +17590,28 @@ L.nvol_teddy_fat_avx2_1:
     movzx eax, al
 ; .L82:
     test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3697
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2241
 ; .L80:
     lea r12, [r12 + 1]
     mov r11, [rsp + 640]
     cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_1 + 1360
+    jb strict near L.nvol_teddy_fat_avx2_1 + 4176
 ; .L79:
     mov r11, [rsp + 576]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_1 + 1248
+    jne strict near L.nvol_teddy_fat_avx2_1 + 4064
 ; .L77:
     mov rbx, -1
 ; .L75:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3716
+    jne strict near L.nvol_teddy_fat_avx2_1 + 2260
 ; .L96:
-; .L4:
-    lea r8, [r8 + 16]
-    mov r11, [rsp + 32]
-    cmp r8, r11
-    jbe strict near L.nvol_teddy_fat_avx2_1 + 64
-; .L3:
-    cmp r8, rcx
-    jae strict near L.nvol_teddy_fat_avx2_1 + 3053
-    lea r8, [rcx - 16]
-    vbroadcasti128 ymm3, oword [r8]
-    vpand ymm2, ymm3, ymm2
-    vpsrlw ymm3, ymm3, 4
-    vpand ymm3, ymm3, [rel NVOL_K3]
-    vpshufb ymm0, ymm0, ymm2
-    vpshufb ymm1, ymm1, ymm3
-    vpand ymm0, ymm0, ymm1
-    vptest ymm0, ymm0
-    je strict near L.nvol_teddy_fat_avx2_1 + 3053
-    mov qword [rsp + 704], r8
-    vpermq ymm1, ymm0, 78
-    vpunpcklbw ymm2, ymm0, ymm1
-    vpunpckhbw ymm0, ymm0, ymm1
-    vmovq rax, xmm2
-    mov qword [rsp + 736], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_1 + 1980
-    db 0x90
-; .L103:
-    mov r11, [rsp + 736]
-    bsf rdx, r11
-    mov r9, qword [rsp + 736]
-    mov r11, [rsp + 736]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 736], r9
-    mov r9, rdx
-    shr r9, 4
-    mov r11, [rsp + 704]
-    lea r9, [r11 + r9]
-    and rdx, 15
-    movzx r11d, byte [rdi + rdx + 320]
-    mov [rsp + 768], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_1 + 1963
-    db 0x66, 0x90
-; .L105:
-    mov r12, rdx
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_1 + 1942
-    cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_1 + 3785
-; .L110:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov r8, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_1 + 1916
-    db 0x66, 0x90
-; .L119:
-    mov eax, dword [r13]
-    mov ebx, dword [r8]
-    cmp eax, ebx
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3861
-; .L121:
-    lea r13, [r13 + 4]
-    add r8, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_1 + 1888
-; .L120:
-    mov eax, dword [r15]
-    mov r8d, dword [r14]
-    cmp rax, r8
-    sete r14b
-    movzx r14d, r14b
-; .L109:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 3869
-; .L107:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 768]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_1 + 1792
-; .L106:
-    mov r11, [rsp + 736]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_1 + 1696
-; .L104:
-    mov r9, -1
-; .L102:
-    cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_1 + 2001
-    mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 3060
-; .L123:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 4]
-    mov [rsp + 832], r10
-    vpextrq rdx, xmm2, 1
-    mov qword [rsp + 864], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_1 + 2331
-    db 0x90
-; .L126:
-    mov r11, [rsp + 864]
-    bsf r8, r11
-    mov r9, qword [rsp + 864]
-    mov r11, [rsp + 864]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 864], r9
-    mov r9, r8
-    shr r9, 4
-    mov r11, [rsp + 832]
-    lea r9, [r11 + r9]
-    and r8, 15
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 896], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_1 + 2314
-    db 0x66, 0x90
-; .L128:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_1 + 2293
-    cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_1 + 3949
-; .L133:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_1 + 2267
-    db 0x66, 0x90
-; .L142:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_1 + 4025
-; .L144:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_1 + 2240
-; .L143:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L132:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 4033
-; .L130:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 896]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_1 + 2144
-; .L129:
-    mov r11, [rsp + 864]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2048
-; .L127:
-    mov r9, -1
-; .L125:
-    cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_1 + 2352
-    mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 3060
-; .L146:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 8]
-    mov [rsp + 960], r10
-    vmovq rdx, xmm0
-    mov qword [rsp + 992], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_1 + 2683
-    db 0xf, 0x1f, 0x0
-; .L149:
-    mov r11, [rsp + 992]
-    bsf r8, r11
-    mov r9, qword [rsp + 992]
-    mov r11, [rsp + 992]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 992], r9
-    mov r9, r8
-    shr r9, 4
-    mov r11, [rsp + 960]
-    lea r9, [r11 + r9]
-    and r8, 15
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 1024], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_1 + 2666
-    db 0x66, 0x90
-; .L151:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_1 + 2645
-    cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_1 + 4113
-; .L156:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_1 + 2619
-    db 0x66, 0x90
-; .L165:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_1 + 4189
-; .L167:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_1 + 2592
-; .L166:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L155:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 4197
-; .L153:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 1024]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_1 + 2496
-; .L152:
-    mov r11, [rsp + 992]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2400
-; .L150:
-    mov r9, -1
-; .L148:
-    cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_1 + 2704
-    mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 3060
-; .L169:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 12]
-    mov [rsp + 1088], r10
-    vpextrq rdx, xmm0, 1
-    mov qword [rsp + 1120], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_1 + 3035
-    db 0x66, 0x90
-; .L172:
-    mov r11, [rsp + 1120]
-    bsf r8, r11
-    mov r9, qword [rsp + 1120]
-    mov r11, [rsp + 1120]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 1120], r9
-    mov r9, r8
-    shr r9, 4
-    mov r11, [rsp + 1088]
-    lea r9, [r11 + r9]
-    and r8, 15
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 1152], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_1 + 3018
-    db 0x66, 0x90
-; .L174:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_1 + 2997
-    cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_1 + 4277
-; .L179:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_1 + 2971
-    db 0x66, 0x90
-; .L188:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_1 + 4353
-; .L190:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_1 + 2944
-; .L189:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L178:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 4361
-; .L176:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 1152]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_1 + 2848
-; .L175:
-    mov r11, [rsp + 1120]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2752
-; .L173:
-    mov r9, -1
-; .L171:
-    cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_1 + 3053
-    mov rax, r9
-    jmp strict short L.nvol_teddy_fat_avx2_1 + 3060
-; .L192:
-; .L100:
-; .L98:
-    mov rax, -1
-; .L1:
-    vzeroupper
-    add rsp, 1224
-    pop r15
-    pop r14
-    pop r13
-    pop r12
-    pop rbp
-    pop rbx
-    ret
-; .L17:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 401
-; .L19:
-    movzx eax, byte [rbx]
-    movzx edx, byte [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 401
-; .L21:
-    movzx eax, word [rbx]
-    movzx edx, word [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 401
-; .L15:
-    test rax, rax
-    je strict short L.nvol_teddy_fat_avx2_1 + 3081
-; .L16:
-    cmp rax, 1
-    je strict short L.nvol_teddy_fat_avx2_1 + 3091
-; .L18:
-    cmp rax, 2
-    je strict short L.nvol_teddy_fat_avx2_1 + 3113
-; .L20:
-    xor eax, eax
-    movzx edx, word [rbx]
-    movzx r11d, word [r12]
-    mov [rsp + 192], r11
-    cmp edx, r11d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 401
-    movzx edx, byte [rbx + 2]
-    movzx ebx, byte [r12 + 2]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_1 + 401
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 401
-; .L26:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 401
-; .L12:
-    mov r11, [rsp]
-    sub r12, r11
-    shl r12, 8
-    or r12, r15
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 451
-; .L28:
-    mov rax, r12
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 3060
-; .L40:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 770
-; .L42:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 770
-; .L44:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 770
-; .L38:
-    test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_1 + 3241
-; .L39:
-    cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_1 + 3251
-; .L41:
-    cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_1 + 3273
-; .L43:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 352], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 770
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 770
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 770
-; .L49:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 770
-; .L35:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 824
-; .L51:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 3060
-; .L63:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1138
-; .L65:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1138
-; .L67:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1138
-; .L61:
-    test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_1 + 3402
-; .L62:
-    cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_1 + 3412
-; .L64:
-    cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_1 + 3434
-; .L66:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 512], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 1138
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 1138
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1138
-; .L72:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1138
-; .L58:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1192
-; .L74:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 3060
-; .L86:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1506
-; .L88:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1506
-; .L90:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1506
-; .L84:
-    test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_1 + 3563
-; .L85:
-    cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_1 + 3573
-; .L87:
-    cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_1 + 3595
-; .L89:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 672], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 1506
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 1506
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1506
-; .L95:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1506
-; .L81:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1560
-; .L97:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 3060
-; .L113:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1933
-; .L115:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1933
-; .L117:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1933
-; .L111:
-    test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_1 + 3724
-; .L112:
-    cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_1 + 3735
-; .L114:
-    cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_1 + 3760
-; .L116:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 800], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 1933
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 1933
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1933
-; .L122:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1933
-; .L108:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 1987
-; .L136:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2284
-; .L138:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2284
-; .L140:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2284
-; .L134:
-    test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_1 + 3888
-; .L135:
-    cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_1 + 3899
-; .L137:
-    cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_1 + 3924
-; .L139:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 928], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2284
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2284
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2284
-; .L145:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2284
-; .L131:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2338
-; .L159:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2636
-; .L161:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2636
-; .L163:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2636
-; .L157:
-    test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_1 + 4052
-; .L158:
-    cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_1 + 4063
-; .L160:
-    cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_1 + 4088
-; .L162:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 1056], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2636
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2636
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2636
-; .L168:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2636
-; .L154:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2690
-; .L182:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2988
-; .L184:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2988
-; .L186:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2988
-; .L180:
-    test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_1 + 4216
-; .L181:
-    cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_1 + 4227
-; .L183:
-    cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_1 + 4252
-; .L185:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 1184], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2988
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_1 + 2988
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2988
-; .L191:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 2988
-; .L177:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_1 + 3042
+    jmp strict near L.nvol_teddy_fat_avx2_1 + 111
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_teddy_slim_avx2_2:function hidden 4524
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+global nvol_teddy_slim_avx2_2:function hidden 4519
 nvol_teddy_slim_avx2_2:
 L.nvol_teddy_slim_avx2_2:
     push rbx
@@ -17543,8 +17634,8 @@ L.nvol_teddy_slim_avx2_2:
     lea r11, [rcx - 32]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_slim_avx2_2 + 1668
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_teddy_slim_avx2_2 + 192
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     vmovdqu ymm7, [r8]
     vpand ymm8, ymm7, ymm4
@@ -17561,15 +17652,818 @@ L.nvol_teddy_slim_avx2_2:
     vpand ymm7, ymm8, ymm7
     db 0xc5, 0x7d, 0x7f, 0xce    ; vmovdqa ymm6, ymm9
     vptest ymm7, ymm7
-    je strict near L.nvol_teddy_slim_avx2_2 + 1650
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3052
+; .L4:
+    lea r8, [r8 + 32]
+    mov r11, [rsp + 32]
+    cmp r8, r11
+    jbe strict short L.nvol_teddy_slim_avx2_2 + 96
+; .L3:
+    cmp r8, rcx
+    jae strict near L.nvol_teddy_slim_avx2_2 + 1725
+    lea r8, [rcx - 32]
+    vmovdqa ymm6, ymm5
+    vmovdqu ymm5, [r8]
+    vpand ymm4, ymm5, ymm4
+    vpsrlw ymm5, ymm5, 4
+    vpand ymm5, ymm5, [rel NVOL_K3]
+    vpshufb ymm0, ymm0, ymm4
+    vpshufb ymm2, ymm2, ymm5
+    vpand ymm0, ymm0, ymm2
+    vpshufb ymm1, ymm1, ymm4
+    vpshufb ymm2, ymm3, ymm5
+    vpand ymm1, ymm1, ymm2
+    vperm2i128 ymm2, ymm6, ymm0, 33
+    vpalignr ymm2, ymm0, ymm2, 15
+    vpand ymm1, ymm2, ymm1
+    vmovdqa ymm6, ymm0
+    vptest ymm1, ymm1
+    je strict near L.nvol_teddy_slim_avx2_2 + 1725
+    lea r11, [r8 - 1]
+    mov [rsp + 704], r11
+    vmovq rax, xmm1
+    mov qword [rsp + 736], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_2 + 619
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L103:
+    mov r11, [rsp + 736]
+    bsf r8, r11
+    mov r9, qword [rsp + 736]
+    mov r11, [rsp + 736]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 736], r9
+    mov r9, r8
+    shr r9, 3
+    mov r11, [rsp + 704]
+    lea r9, [r11 + r9]
+    and r8, 7
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 768], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_avx2_2 + 602
+    db 0x66, 0x90
+; .L105:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_avx2_2 + 581
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_avx2_2 + 2457
+; .L110:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rdx, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_avx2_2 + 555
+    db 0x66, 0x90
+; .L119:
+    mov eax, dword [r13]
+    mov ebx, dword [rdx]
+    cmp eax, ebx
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2533
+; .L121:
+    lea r13, [r13 + 4]
+    add rdx, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_avx2_2 + 528
+; .L120:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L109:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2541
+; .L107:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 768]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_avx2_2 + 432
+; .L106:
+    mov r11, [rsp + 736]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_2 + 336
+; .L104:
+    mov r9, -1
+; .L102:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_avx2_2 + 640
+    mov rax, r9
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1732
+; .L123:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 8]
+    mov [rsp + 832], r10
+    vpextrq rdx, xmm1, 1
+    mov qword [rsp + 864], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_2 + 971
+    db 0x66, 0x90
+; .L126:
+    mov r11, [rsp + 864]
+    bsf r8, r11
+    mov r9, qword [rsp + 864]
+    mov r11, [rsp + 864]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 864], r9
+    mov r9, r8
+    shr r9, 3
+    mov r11, [rsp + 832]
+    lea r9, [r11 + r9]
+    and r8, 7
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 896], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_avx2_2 + 954
+    db 0x66, 0x90
+; .L128:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_avx2_2 + 933
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_avx2_2 + 2621
+; .L133:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_avx2_2 + 907
+    db 0x66, 0x90
+; .L142:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2697
+; .L144:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_avx2_2 + 880
+; .L143:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L132:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2705
+; .L130:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 896]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_avx2_2 + 784
+; .L129:
+    mov r11, [rsp + 864]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_2 + 688
+; .L127:
+    mov r9, -1
+; .L125:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_avx2_2 + 992
+    mov rax, r9
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1732
+; .L146:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 16]
+    mov [rsp + 960], r10
+    vextracti128 xmm0, ymm1, 1
+    vmovq rdx, xmm0
+    mov qword [rsp + 992], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_2 + 1339
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L149:
+    mov r11, [rsp + 992]
+    bsf r8, r11
+    mov r9, qword [rsp + 992]
+    mov r11, [rsp + 992]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 992], r9
+    mov r9, r8
+    shr r9, 3
+    mov r11, [rsp + 960]
+    lea r9, [r11 + r9]
+    and r8, 7
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 1024], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_avx2_2 + 1322
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L151:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_avx2_2 + 1301
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_avx2_2 + 2785
+; .L156:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_avx2_2 + 1275
+    db 0x66, 0x90
+; .L165:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2861
+; .L167:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_avx2_2 + 1248
+; .L166:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L155:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2869
+; .L153:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 1024]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_avx2_2 + 1152
+; .L152:
+    mov r11, [rsp + 992]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1048
+; .L150:
+    mov r9, -1
+; .L148:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_avx2_2 + 1360
+    mov rax, r9
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1732
+; .L169:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 24]
+    mov [rsp + 1088], r10
+    vextracti128 xmm0, ymm1, 1
+    vpextrq rdx, xmm0, 1
+    mov qword [rsp + 1120], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_2 + 1707
+    db 0xf, 0x1f, 0x40, 0x0
+; .L172:
+    mov r11, [rsp + 1120]
+    bsf r8, r11
+    mov r9, qword [rsp + 1120]
+    mov r11, [rsp + 1120]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 1120], r9
+    mov r9, r8
+    shr r9, 3
+    mov r11, [rsp + 1088]
+    lea r9, [r11 + r9]
+    and r8, 7
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 1152], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_slim_avx2_2 + 1690
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L174:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_slim_avx2_2 + 1669
+    cmp r14, 4
+    jb strict near L.nvol_teddy_slim_avx2_2 + 2949
+; .L179:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_slim_avx2_2 + 1643
+    db 0x66, 0x90
+; .L188:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3025
+; .L190:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_slim_avx2_2 + 1616
+; .L189:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L178:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3033
+; .L176:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 1152]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_slim_avx2_2 + 1520
+; .L175:
+    mov r11, [rsp + 1120]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1416
+; .L173:
+    mov r9, -1
+; .L171:
+    cmp r9, -1
+    je strict short L.nvol_teddy_slim_avx2_2 + 1725
+    mov rax, r9
+    jmp strict short L.nvol_teddy_slim_avx2_2 + 1732
+; .L192:
+; .L100:
+; .L98:
+    mov rax, -1
+; .L1:
+    vzeroupper
+    add rsp, 1224
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3329
+; .L19:
+    movzx eax, byte [rbx]
+    movzx edx, byte [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3329
+; .L21:
+    movzx eax, word [rbx]
+    movzx edx, word [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3329
+; .L15:
+    test rax, rax
+    je strict short L.nvol_teddy_slim_avx2_2 + 1753
+; .L16:
+    cmp rax, 1
+    je strict short L.nvol_teddy_slim_avx2_2 + 1763
+; .L18:
+    cmp rax, 2
+    je strict short L.nvol_teddy_slim_avx2_2 + 1785
+; .L20:
+    xor eax, eax
+    movzx edx, word [rbx]
+    movzx r11d, word [r12]
+    mov [rsp + 192], r11
+    cmp edx, r11d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3329
+    movzx edx, byte [rbx + 2]
+    movzx ebx, byte [r12 + 2]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3329
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3329
+; .L26:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3329
+; .L12:
+    mov r11, [rsp]
+    sub r12, r11
+    shl r12, 8
+    or r12, r15
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3379
+; .L28:
+    mov rax, r12
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1732
+; .L40:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3698
+; .L42:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3698
+; .L44:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3698
+; .L38:
+    test r15, r15
+    je strict short L.nvol_teddy_slim_avx2_2 + 1913
+; .L39:
+    cmp r15, 1
+    je strict short L.nvol_teddy_slim_avx2_2 + 1923
+; .L41:
+    cmp r15, 2
+    je strict short L.nvol_teddy_slim_avx2_2 + 1945
+; .L43:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 352], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3698
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3698
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3698
+; .L49:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3698
+; .L35:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 3752
+; .L51:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1732
+; .L63:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4074
+; .L65:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4074
+; .L67:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4074
+; .L61:
+    test r15, r15
+    je strict short L.nvol_teddy_slim_avx2_2 + 2074
+; .L62:
+    cmp r15, 1
+    je strict short L.nvol_teddy_slim_avx2_2 + 2084
+; .L64:
+    cmp r15, 2
+    je strict short L.nvol_teddy_slim_avx2_2 + 2106
+; .L66:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 512], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 4074
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 4074
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4074
+; .L72:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4074
+; .L58:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4128
+; .L74:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1732
+; .L86:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4450
+; .L88:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4450
+; .L90:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4450
+; .L84:
+    test r15, r15
+    je strict short L.nvol_teddy_slim_avx2_2 + 2235
+; .L85:
+    cmp r15, 1
+    je strict short L.nvol_teddy_slim_avx2_2 + 2245
+; .L87:
+    cmp r15, 2
+    je strict short L.nvol_teddy_slim_avx2_2 + 2267
+; .L89:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 672], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 4450
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 4450
+    mov eax, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4450
+; .L95:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4450
+; .L81:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 4504
+; .L97:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1732
+; .L113:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 572
+; .L115:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 572
+; .L117:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 572
+; .L111:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_avx2_2 + 2396
+; .L112:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_avx2_2 + 2407
+; .L114:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_avx2_2 + 2432
+; .L116:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 800], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 572
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 572
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 572
+; .L122:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 572
+; .L108:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 626
+; .L136:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 924
+; .L138:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 924
+; .L140:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 924
+; .L134:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_avx2_2 + 2560
+; .L135:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_avx2_2 + 2571
+; .L137:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_avx2_2 + 2596
+; .L139:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 928], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 924
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 924
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 924
+; .L145:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 924
+; .L131:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 978
+; .L159:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1292
+; .L161:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1292
+; .L163:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1292
+; .L157:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_avx2_2 + 2724
+; .L158:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_avx2_2 + 2735
+; .L160:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_avx2_2 + 2760
+; .L162:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 1056], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1292
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1292
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1292
+; .L168:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1292
+; .L154:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1346
+; .L182:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1660
+; .L184:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1660
+; .L186:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1660
+; .L180:
+    test r14, r14
+    je strict short L.nvol_teddy_slim_avx2_2 + 2888
+; .L181:
+    cmp r14, 1
+    je strict short L.nvol_teddy_slim_avx2_2 + 2899
+; .L183:
+    cmp r14, 2
+    je strict short L.nvol_teddy_slim_avx2_2 + 2924
+; .L185:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 1184], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1660
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1660
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1660
+; .L191:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1660
+; .L177:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 1714
+; .Lrare1:
     lea r11, [r8 - 1]
     mov [rsp + 64], r11
     vmovq rax, xmm7
     mov qword [rsp + 96], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_2 + 508
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    je strict near L.nvol_teddy_slim_avx2_2 + 3372
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L7:
     mov r11, [rsp + 96]
     bsf rbp, r11
@@ -17590,9 +18484,8 @@ L.nvol_teddy_slim_avx2_2:
     xor r14d, r14d
     mov r11, r10
     cmp r14, r11
-    jae strict near L.nvol_teddy_slim_avx2_2 + 494
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    jae strict near L.nvol_teddy_slim_avx2_2 + 3358
+    db 0x66, 0x90
 ; .L9:
     mov r15, qword [rsp + 128]
     shl r15, 6
@@ -17608,9 +18501,9 @@ L.nvol_teddy_slim_avx2_2:
     mov rdx, rcx
     sub rdx, r12
     cmp rax, rdx
-    ja strict short L.nvol_teddy_slim_avx2_2 + 473
+    ja strict short L.nvol_teddy_slim_avx2_2 + 3337
     cmp rax, 4
-    jb strict near L.nvol_teddy_slim_avx2_2 + 3279
+    jb strict near L.nvol_teddy_slim_avx2_2 + 1807
 ; .L14:
     lea rdx, [rax - 4]
     lea rdx, [rbx + rdx]
@@ -17618,18 +18511,18 @@ L.nvol_teddy_slim_avx2_2:
     lea rax, [r12 + rax]
     mov r9, r12
     cmp rbx, rdx
-    jae strict short L.nvol_teddy_slim_avx2_2 + 452
+    jae strict short L.nvol_teddy_slim_avx2_2 + 3316
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L23:
     mov r13d, dword [rbx]
     mov ebp, dword [r9]
     cmp r13d, ebp
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3351
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1879
 ; .L25:
     lea rbx, [rbx + 4]
     add r9, 4
     cmp rbx, rdx
-    jb strict short L.nvol_teddy_slim_avx2_2 + 424
+    jb strict short L.nvol_teddy_slim_avx2_2 + 3288
 ; .L24:
     mov edx, dword [rdx]
     mov eax, dword [rax]
@@ -17638,21 +18531,21 @@ L.nvol_teddy_slim_avx2_2:
     movzx eax, al
 ; .L13:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3358
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1886
 ; .L11:
     lea r14, [r14 + 1]
     mov r11, [rsp + 160]
     cmp r14, r11
-    jb strict near L.nvol_teddy_slim_avx2_2 + 320
+    jb strict near L.nvol_teddy_slim_avx2_2 + 3184
 ; .L10:
     mov r11, [rsp + 96]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_2 + 216
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3088
 ; .L8:
     mov r12, -1
 ; .L6:
     cmp r12, -1
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3377
+    jne strict near L.nvol_teddy_slim_avx2_2 + 1905
 ; .L27:
     mov r11, [rsp + 64]
     lea r10, [r11 + 8]
@@ -17661,7 +18554,7 @@ L.nvol_teddy_slim_avx2_2:
     mov qword [rsp + 256], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_2 + 881
+    je strict near L.nvol_teddy_slim_avx2_2 + 3745
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L30:
     mov r11, [rsp + 256]
@@ -17683,7 +18576,7 @@ L.nvol_teddy_slim_avx2_2:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_2 + 864
+    jae strict near L.nvol_teddy_slim_avx2_2 + 3728
     db 0xf, 0x1f, 0x0
 ; .L32:
     mov r13, qword [rsp + 288]
@@ -17700,9 +18593,9 @@ L.nvol_teddy_slim_avx2_2:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_2 + 842
+    ja strict short L.nvol_teddy_slim_avx2_2 + 3706
     cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_2 + 3439
+    jb strict near L.nvol_teddy_slim_avx2_2 + 1967
 ; .L37:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -17710,18 +18603,18 @@ L.nvol_teddy_slim_avx2_2:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_2 + 820
+    jae strict short L.nvol_teddy_slim_avx2_2 + 3684
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L46:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3512
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2040
 ; .L48:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_2 + 792
+    jb strict short L.nvol_teddy_slim_avx2_2 + 3656
 ; .L47:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -17730,21 +18623,21 @@ L.nvol_teddy_slim_avx2_2:
     movzx eax, al
 ; .L36:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3519
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2047
 ; .L34:
     lea r12, [r12 + 1]
     mov r11, [rsp + 320]
     cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_2 + 688
+    jb strict near L.nvol_teddy_slim_avx2_2 + 3552
 ; .L33:
     mov r11, [rsp + 256]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_2 + 576
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3440
 ; .L31:
     mov rbx, -1
 ; .L29:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3538
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2066
 ; .L50:
     mov r11, [rsp + 64]
     lea r10, [r11 + 16]
@@ -17754,7 +18647,7 @@ L.nvol_teddy_slim_avx2_2:
     mov qword [rsp + 416], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_2 + 1257
+    je strict near L.nvol_teddy_slim_avx2_2 + 4121
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L53:
     mov r11, [rsp + 416]
@@ -17776,7 +18669,7 @@ L.nvol_teddy_slim_avx2_2:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_2 + 1240
+    jae strict near L.nvol_teddy_slim_avx2_2 + 4104
     db 0xf, 0x1f, 0x0
 ; .L55:
     mov r13, qword [rsp + 448]
@@ -17793,9 +18686,9 @@ L.nvol_teddy_slim_avx2_2:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_2 + 1218
+    ja strict short L.nvol_teddy_slim_avx2_2 + 4082
     cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_2 + 3600
+    jb strict near L.nvol_teddy_slim_avx2_2 + 2128
 ; .L60:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -17803,18 +18696,18 @@ L.nvol_teddy_slim_avx2_2:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_2 + 1196
+    jae strict short L.nvol_teddy_slim_avx2_2 + 4060
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L69:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3673
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2201
 ; .L71:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_2 + 1168
+    jb strict short L.nvol_teddy_slim_avx2_2 + 4032
 ; .L70:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -17823,21 +18716,21 @@ L.nvol_teddy_slim_avx2_2:
     movzx eax, al
 ; .L59:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3680
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2208
 ; .L57:
     lea r12, [r12 + 1]
     mov r11, [rsp + 480]
     cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_2 + 1064
+    jb strict near L.nvol_teddy_slim_avx2_2 + 3928
 ; .L56:
     mov r11, [rsp + 416]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_2 + 952
+    jne strict near L.nvol_teddy_slim_avx2_2 + 3816
 ; .L54:
     mov rbx, -1
 ; .L52:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3699
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2227
 ; .L73:
     mov r11, [rsp + 64]
     lea r10, [r11 + 24]
@@ -17847,7 +18740,7 @@ L.nvol_teddy_slim_avx2_2:
     mov qword [rsp + 576], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_2 + 1633
+    je strict near L.nvol_teddy_slim_avx2_2 + 4497
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L76:
     mov r11, [rsp + 576]
@@ -17869,7 +18762,7 @@ L.nvol_teddy_slim_avx2_2:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_2 + 1616
+    jae strict near L.nvol_teddy_slim_avx2_2 + 4480
     db 0xf, 0x1f, 0x0
 ; .L78:
     mov r13, qword [rsp + 608]
@@ -17886,9 +18779,9 @@ L.nvol_teddy_slim_avx2_2:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_2 + 1594
+    ja strict short L.nvol_teddy_slim_avx2_2 + 4458
     cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_2 + 3761
+    jb strict near L.nvol_teddy_slim_avx2_2 + 2289
 ; .L83:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -17896,18 +18789,18 @@ L.nvol_teddy_slim_avx2_2:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_2 + 1572
+    jae strict short L.nvol_teddy_slim_avx2_2 + 4436
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L92:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3834
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2362
 ; .L94:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_2 + 1544
+    jb strict short L.nvol_teddy_slim_avx2_2 + 4408
 ; .L93:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -17916,829 +18809,28 @@ L.nvol_teddy_slim_avx2_2:
     movzx eax, al
 ; .L82:
     test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3841
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2369
 ; .L80:
     lea r12, [r12 + 1]
     mov r11, [rsp + 640]
     cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_2 + 1440
+    jb strict near L.nvol_teddy_slim_avx2_2 + 4304
 ; .L79:
     mov r11, [rsp + 576]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_2 + 1328
+    jne strict near L.nvol_teddy_slim_avx2_2 + 4192
 ; .L77:
     mov rbx, -1
 ; .L75:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3860
+    jne strict near L.nvol_teddy_slim_avx2_2 + 2388
 ; .L96:
-; .L4:
-    lea r8, [r8 + 32]
-    mov r11, [rsp + 32]
-    cmp r8, r11
-    jbe strict near L.nvol_teddy_slim_avx2_2 + 96
-; .L3:
-    cmp r8, rcx
-    jae strict near L.nvol_teddy_slim_avx2_2 + 3197
-    lea r8, [rcx - 32]
-    vmovdqa ymm6, ymm5
-    vmovdqu ymm5, [r8]
-    vpand ymm4, ymm5, ymm4
-    vpsrlw ymm5, ymm5, 4
-    vpand ymm5, ymm5, [rel NVOL_K3]
-    vpshufb ymm0, ymm0, ymm4
-    vpshufb ymm2, ymm2, ymm5
-    vpand ymm0, ymm0, ymm2
-    vpshufb ymm1, ymm1, ymm4
-    vpshufb ymm2, ymm3, ymm5
-    vpand ymm1, ymm1, ymm2
-    vperm2i128 ymm2, ymm6, ymm0, 33
-    vpalignr ymm2, ymm0, ymm2, 15
-    vpand ymm1, ymm2, ymm1
-    vmovdqa ymm6, ymm0
-    vptest ymm1, ymm1
-    je strict near L.nvol_teddy_slim_avx2_2 + 3197
-    lea r11, [r8 - 1]
-    mov [rsp + 704], r11
-    vmovq rax, xmm1
-    mov qword [rsp + 736], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_2 + 2091
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L103:
-    mov r11, [rsp + 736]
-    bsf r8, r11
-    mov r9, qword [rsp + 736]
-    mov r11, [rsp + 736]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 736], r9
-    mov r9, r8
-    shr r9, 3
-    mov r11, [rsp + 704]
-    lea r9, [r11 + r9]
-    and r8, 7
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 768], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_2 + 2074
-    db 0x66, 0x90
-; .L105:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_2 + 2053
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_2 + 3929
-; .L110:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rdx, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_2 + 2027
-    db 0x66, 0x90
-; .L119:
-    mov eax, dword [r13]
-    mov ebx, dword [rdx]
-    cmp eax, ebx
-    jne strict near L.nvol_teddy_slim_avx2_2 + 4005
-; .L121:
-    lea r13, [r13 + 4]
-    add rdx, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_2 + 2000
-; .L120:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L109:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 4013
-; .L107:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 768]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_2 + 1904
-; .L106:
-    mov r11, [rsp + 736]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_2 + 1808
-; .L104:
-    mov r9, -1
-; .L102:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_2 + 2112
-    mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3204
-; .L123:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 8]
-    mov [rsp + 832], r10
-    vpextrq rdx, xmm1, 1
-    mov qword [rsp + 864], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_2 + 2443
-    db 0x66, 0x90
-; .L126:
-    mov r11, [rsp + 864]
-    bsf r8, r11
-    mov r9, qword [rsp + 864]
-    mov r11, [rsp + 864]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 864], r9
-    mov r9, r8
-    shr r9, 3
-    mov r11, [rsp + 832]
-    lea r9, [r11 + r9]
-    and r8, 7
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 896], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_2 + 2426
-    db 0x66, 0x90
-; .L128:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_2 + 2405
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_2 + 4093
-; .L133:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_2 + 2379
-    db 0x66, 0x90
-; .L142:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_2 + 4169
-; .L144:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_2 + 2352
-; .L143:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L132:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 4177
-; .L130:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 896]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_2 + 2256
-; .L129:
-    mov r11, [rsp + 864]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2160
-; .L127:
-    mov r9, -1
-; .L125:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_2 + 2464
-    mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3204
-; .L146:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 16]
-    mov [rsp + 960], r10
-    vextracti128 xmm0, ymm1, 1
-    vmovq rdx, xmm0
-    mov qword [rsp + 992], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_2 + 2811
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L149:
-    mov r11, [rsp + 992]
-    bsf r8, r11
-    mov r9, qword [rsp + 992]
-    mov r11, [rsp + 992]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 992], r9
-    mov r9, r8
-    shr r9, 3
-    mov r11, [rsp + 960]
-    lea r9, [r11 + r9]
-    and r8, 7
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 1024], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_2 + 2794
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L151:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_2 + 2773
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_2 + 4257
-; .L156:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_2 + 2747
-    db 0x66, 0x90
-; .L165:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_2 + 4333
-; .L167:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_2 + 2720
-; .L166:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L155:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 4341
-; .L153:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 1024]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_2 + 2624
-; .L152:
-    mov r11, [rsp + 992]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2520
-; .L150:
-    mov r9, -1
-; .L148:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_2 + 2832
-    mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3204
-; .L169:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 24]
-    mov [rsp + 1088], r10
-    vextracti128 xmm0, ymm1, 1
-    vpextrq rdx, xmm0, 1
-    mov qword [rsp + 1120], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_2 + 3179
-    db 0xf, 0x1f, 0x40, 0x0
-; .L172:
-    mov r11, [rsp + 1120]
-    bsf r8, r11
-    mov r9, qword [rsp + 1120]
-    mov r11, [rsp + 1120]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 1120], r9
-    mov r9, r8
-    shr r9, 3
-    mov r11, [rsp + 1088]
-    lea r9, [r11 + r9]
-    and r8, 7
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 1152], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_2 + 3162
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L174:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_2 + 3141
-    cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_2 + 4421
-; .L179:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_2 + 3115
-    db 0x66, 0x90
-; .L188:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_2 + 4497
-; .L190:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_2 + 3088
-; .L189:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L178:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 4505
-; .L176:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 1152]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_2 + 2992
-; .L175:
-    mov r11, [rsp + 1120]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2888
-; .L173:
-    mov r9, -1
-; .L171:
-    cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_2 + 3197
-    mov rax, r9
-    jmp strict short L.nvol_teddy_slim_avx2_2 + 3204
-; .L192:
-; .L100:
-; .L98:
-    mov rax, -1
-; .L1:
-    vzeroupper
-    add rsp, 1224
-    pop r15
-    pop r14
-    pop r13
-    pop r12
-    pop rbp
-    pop rbx
-    ret
-; .L17:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 465
-; .L19:
-    movzx eax, byte [rbx]
-    movzx edx, byte [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 465
-; .L21:
-    movzx eax, word [rbx]
-    movzx edx, word [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 465
-; .L15:
-    test rax, rax
-    je strict short L.nvol_teddy_slim_avx2_2 + 3225
-; .L16:
-    cmp rax, 1
-    je strict short L.nvol_teddy_slim_avx2_2 + 3235
-; .L18:
-    cmp rax, 2
-    je strict short L.nvol_teddy_slim_avx2_2 + 3257
-; .L20:
-    xor eax, eax
-    movzx edx, word [rbx]
-    movzx r11d, word [r12]
-    mov [rsp + 192], r11
-    cmp edx, r11d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 465
-    movzx edx, byte [rbx + 2]
-    movzx ebx, byte [r12 + 2]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_2 + 465
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 465
-; .L26:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 465
-; .L12:
-    mov r11, [rsp]
-    sub r12, r11
-    shl r12, 8
-    or r12, r15
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 515
-; .L28:
-    mov rax, r12
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3204
-; .L40:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 834
-; .L42:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 834
-; .L44:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 834
-; .L38:
-    test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_2 + 3385
-; .L39:
-    cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_2 + 3395
-; .L41:
-    cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_2 + 3417
-; .L43:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 352], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 834
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 834
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 834
-; .L49:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 834
-; .L35:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 888
-; .L51:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3204
-; .L63:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1210
-; .L65:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1210
-; .L67:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1210
-; .L61:
-    test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_2 + 3546
-; .L62:
-    cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_2 + 3556
-; .L64:
-    cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_2 + 3578
-; .L66:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 512], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 1210
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 1210
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1210
-; .L72:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1210
-; .L58:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1264
-; .L74:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3204
-; .L86:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1586
-; .L88:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1586
-; .L90:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1586
-; .L84:
-    test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_2 + 3707
-; .L85:
-    cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_2 + 3717
-; .L87:
-    cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_2 + 3739
-; .L89:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 672], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 1586
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 1586
-    mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1586
-; .L95:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1586
-; .L81:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 1640
-; .L97:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3204
-; .L113:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2044
-; .L115:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2044
-; .L117:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2044
-; .L111:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_2 + 3868
-; .L112:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_2 + 3879
-; .L114:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_2 + 3904
-; .L116:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 800], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2044
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2044
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2044
-; .L122:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2044
-; .L108:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2098
-; .L136:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2396
-; .L138:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2396
-; .L140:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2396
-; .L134:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_2 + 4032
-; .L135:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_2 + 4043
-; .L137:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_2 + 4068
-; .L139:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 928], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2396
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2396
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2396
-; .L145:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2396
-; .L131:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2450
-; .L159:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2764
-; .L161:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2764
-; .L163:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2764
-; .L157:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_2 + 4196
-; .L158:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_2 + 4207
-; .L160:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_2 + 4232
-; .L162:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 1056], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2764
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 2764
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2764
-; .L168:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2764
-; .L154:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 2818
-; .L182:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3132
-; .L184:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3132
-; .L186:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3132
-; .L180:
-    test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_2 + 4360
-; .L181:
-    cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_2 + 4371
-; .L183:
-    cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_2 + 4396
-; .L185:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 1184], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3132
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_2 + 3132
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3132
-; .L191:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3132
-; .L177:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_2 + 3186
+    jmp strict near L.nvol_teddy_slim_avx2_2 + 178
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
-global nvol_teddy_fat_avx2_2:function hidden 4492
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+global nvol_teddy_fat_avx2_2:function hidden 4487
 nvol_teddy_fat_avx2_2:
 L.nvol_teddy_fat_avx2_2:
     push rbx
@@ -18761,8 +18853,8 @@ L.nvol_teddy_fat_avx2_2:
     lea r11, [rcx - 16]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_fat_avx2_2 + 1652
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_teddy_fat_avx2_2 + 186
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     vbroadcasti128 ymm7, oword [r8]
     vpand ymm8, ymm7, ymm4
@@ -18778,7 +18870,808 @@ L.nvol_teddy_fat_avx2_2:
     vpand ymm7, ymm8, ymm7
     db 0xc5, 0x7d, 0x7f, 0xce    ; vmovdqa ymm6, ymm9
     vptest ymm7, ymm7
-    je strict near L.nvol_teddy_fat_avx2_2 + 1634
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3020
+; .L4:
+    lea r8, [r8 + 16]
+    mov r11, [rsp + 32]
+    cmp r8, r11
+    jbe strict short L.nvol_teddy_fat_avx2_2 + 96
+; .L3:
+    cmp r8, rcx
+    jae strict near L.nvol_teddy_fat_avx2_2 + 1693
+    lea r8, [rcx - 16]
+    vmovdqa ymm6, ymm5
+    vbroadcasti128 ymm5, oword [r8]
+    vpand ymm4, ymm5, ymm4
+    vpsrlw ymm5, ymm5, 4
+    vpand ymm5, ymm5, [rel NVOL_K3]
+    vpshufb ymm0, ymm0, ymm4
+    vpshufb ymm2, ymm2, ymm5
+    vpand ymm0, ymm0, ymm2
+    vpshufb ymm1, ymm1, ymm4
+    vpshufb ymm2, ymm3, ymm5
+    vpand ymm1, ymm1, ymm2
+    vpalignr ymm2, ymm0, ymm6, 15
+    vpand ymm1, ymm2, ymm1
+    vmovdqa ymm6, ymm0
+    vptest ymm1, ymm1
+    je strict near L.nvol_teddy_fat_avx2_2 + 1693
+    lea r11, [r8 - 1]
+    mov [rsp + 704], r11
+    vpermq ymm0, ymm1, 78
+    vpunpcklbw ymm2, ymm1, ymm0
+    vpunpckhbw ymm0, ymm1, ymm0
+    vmovq rax, xmm2
+    mov qword [rsp + 736], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_2 + 619
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L103:
+    mov r11, [rsp + 736]
+    bsf r8, r11
+    mov r9, qword [rsp + 736]
+    mov r11, [rsp + 736]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 736], r9
+    mov r9, r8
+    shr r9, 4
+    mov r11, [rsp + 704]
+    lea r9, [r11 + r9]
+    and r8, 15
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 768], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_fat_avx2_2 + 602
+    db 0x66, 0x90
+; .L105:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_fat_avx2_2 + 581
+    cmp r14, 4
+    jb strict near L.nvol_teddy_fat_avx2_2 + 2425
+; .L110:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rdx, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_fat_avx2_2 + 555
+    db 0x66, 0x90
+; .L119:
+    mov eax, dword [r13]
+    mov ebx, dword [rdx]
+    cmp eax, ebx
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2501
+; .L121:
+    lea r13, [r13 + 4]
+    add rdx, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_fat_avx2_2 + 528
+; .L120:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L109:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2509
+; .L107:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 768]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_fat_avx2_2 + 432
+; .L106:
+    mov r11, [rsp + 736]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_2 + 336
+; .L104:
+    mov r9, -1
+; .L102:
+    cmp r9, -1
+    je strict short L.nvol_teddy_fat_avx2_2 + 640
+    mov rax, r9
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1700
+; .L123:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 4]
+    mov [rsp + 832], r10
+    vpextrq rdx, xmm2, 1
+    mov qword [rsp + 864], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_2 + 971
+    db 0x66, 0x90
+; .L126:
+    mov r11, [rsp + 864]
+    bsf r8, r11
+    mov r9, qword [rsp + 864]
+    mov r11, [rsp + 864]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 864], r9
+    mov r9, r8
+    shr r9, 4
+    mov r11, [rsp + 832]
+    lea r9, [r11 + r9]
+    and r8, 15
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 896], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_fat_avx2_2 + 954
+    db 0x66, 0x90
+; .L128:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_fat_avx2_2 + 933
+    cmp r14, 4
+    jb strict near L.nvol_teddy_fat_avx2_2 + 2589
+; .L133:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_fat_avx2_2 + 907
+    db 0x66, 0x90
+; .L142:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2665
+; .L144:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_fat_avx2_2 + 880
+; .L143:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L132:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2673
+; .L130:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 896]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_fat_avx2_2 + 784
+; .L129:
+    mov r11, [rsp + 864]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_2 + 688
+; .L127:
+    mov r9, -1
+; .L125:
+    cmp r9, -1
+    je strict short L.nvol_teddy_fat_avx2_2 + 992
+    mov rax, r9
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1700
+; .L146:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 8]
+    mov [rsp + 960], r10
+    vmovq rdx, xmm0
+    mov qword [rsp + 992], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_2 + 1323
+    db 0xf, 0x1f, 0x0
+; .L149:
+    mov r11, [rsp + 992]
+    bsf r8, r11
+    mov r9, qword [rsp + 992]
+    mov r11, [rsp + 992]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 992], r9
+    mov r9, r8
+    shr r9, 4
+    mov r11, [rsp + 960]
+    lea r9, [r11 + r9]
+    and r8, 15
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 1024], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_fat_avx2_2 + 1306
+    db 0x66, 0x90
+; .L151:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_fat_avx2_2 + 1285
+    cmp r14, 4
+    jb strict near L.nvol_teddy_fat_avx2_2 + 2753
+; .L156:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_fat_avx2_2 + 1259
+    db 0x66, 0x90
+; .L165:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2829
+; .L167:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_fat_avx2_2 + 1232
+; .L166:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L155:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2837
+; .L153:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 1024]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_fat_avx2_2 + 1136
+; .L152:
+    mov r11, [rsp + 992]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1040
+; .L150:
+    mov r9, -1
+; .L148:
+    cmp r9, -1
+    je strict short L.nvol_teddy_fat_avx2_2 + 1344
+    mov rax, r9
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1700
+; .L169:
+    mov r11, [rsp + 704]
+    lea r10, [r11 + 12]
+    mov [rsp + 1088], r10
+    vpextrq rdx, xmm0, 1
+    mov qword [rsp + 1120], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_2 + 1675
+    db 0x66, 0x90
+; .L172:
+    mov r11, [rsp + 1120]
+    bsf r8, r11
+    mov r9, qword [rsp + 1120]
+    mov r11, [rsp + 1120]
+    lea rbx, [r11 - 1]
+    and r9, rbx
+    mov qword [rsp + 1120], r9
+    mov r9, r8
+    shr r9, 4
+    mov r11, [rsp + 1088]
+    lea r9, [r11 + r9]
+    and r8, 15
+    movzx r11d, byte [rdi + r8 + 320]
+    mov [rsp + 1152], r11
+    xor ebp, ebp
+    cmp rbp, r11
+    jae strict near L.nvol_teddy_fat_avx2_2 + 1658
+    db 0x66, 0x90
+; .L174:
+    mov r12, r8
+    shl r12, 6
+    lea r12, [r12 + rbp]
+    movzx r12d, byte [rdi + r12 + 336]
+    mov r13, r12
+    shl r13, 4
+    mov r13, qword [rsi + r13 + 8]
+    lea r13, [rsi + r13]
+    mov r14, r12
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 16]
+    mov r15, rcx
+    sub r15, r9
+    cmp r14, r15
+    ja strict short L.nvol_teddy_fat_avx2_2 + 1637
+    cmp r14, 4
+    jb strict near L.nvol_teddy_fat_avx2_2 + 2917
+; .L179:
+    lea r15, [r14 - 4]
+    lea r15, [r13 + r15]
+    lea r14, [r14 - 4]
+    lea r14, [r9 + r14]
+    mov rax, r9
+    cmp r13, r15
+    jae strict short L.nvol_teddy_fat_avx2_2 + 1611
+    db 0x66, 0x90
+; .L188:
+    mov edx, dword [r13]
+    mov ebx, dword [rax]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2993
+; .L190:
+    lea r13, [r13 + 4]
+    add rax, 4
+    cmp r13, r15
+    jb strict short L.nvol_teddy_fat_avx2_2 + 1584
+; .L189:
+    mov eax, dword [r15]
+    mov edx, dword [r14]
+    cmp rax, rdx
+    sete r14b
+    movzx r14d, r14b
+; .L178:
+    test r14d, r14d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3001
+; .L176:
+    lea rbp, [rbp + 1]
+    mov r11, [rsp + 1152]
+    cmp rbp, r11
+    jb strict near L.nvol_teddy_fat_avx2_2 + 1488
+; .L175:
+    mov r11, [rsp + 1120]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1392
+; .L173:
+    mov r9, -1
+; .L171:
+    cmp r9, -1
+    je strict short L.nvol_teddy_fat_avx2_2 + 1693
+    mov rax, r9
+    jmp strict short L.nvol_teddy_fat_avx2_2 + 1700
+; .L192:
+; .L100:
+; .L98:
+    mov rax, -1
+; .L1:
+    vzeroupper
+    add rsp, 1224
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3313
+; .L19:
+    movzx eax, byte [rbx]
+    movzx edx, byte [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3313
+; .L21:
+    movzx eax, word [rbx]
+    movzx edx, word [r12]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3313
+; .L15:
+    test rax, rax
+    je strict short L.nvol_teddy_fat_avx2_2 + 1721
+; .L16:
+    cmp rax, 1
+    je strict short L.nvol_teddy_fat_avx2_2 + 1731
+; .L18:
+    cmp rax, 2
+    je strict short L.nvol_teddy_fat_avx2_2 + 1753
+; .L20:
+    xor eax, eax
+    movzx edx, word [rbx]
+    movzx r11d, word [r12]
+    mov [rsp + 192], r11
+    cmp edx, r11d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3313
+    movzx edx, byte [rbx + 2]
+    movzx ebx, byte [r12 + 2]
+    cmp edx, ebx
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3313
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3313
+; .L26:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3313
+; .L12:
+    mov r11, [rsp]
+    sub r12, r11
+    shl r12, 8
+    or r12, r15
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3363
+; .L28:
+    mov rax, r12
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1700
+; .L40:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3682
+; .L42:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3682
+; .L44:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3682
+; .L38:
+    test r15, r15
+    je strict short L.nvol_teddy_fat_avx2_2 + 1881
+; .L39:
+    cmp r15, 1
+    je strict short L.nvol_teddy_fat_avx2_2 + 1891
+; .L41:
+    cmp r15, 2
+    je strict short L.nvol_teddy_fat_avx2_2 + 1913
+; .L43:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 352], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3682
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3682
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3682
+; .L49:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3682
+; .L35:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 3736
+; .L51:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1700
+; .L63:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4050
+; .L65:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4050
+; .L67:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4050
+; .L61:
+    test r15, r15
+    je strict short L.nvol_teddy_fat_avx2_2 + 2042
+; .L62:
+    cmp r15, 1
+    je strict short L.nvol_teddy_fat_avx2_2 + 2052
+; .L64:
+    cmp r15, 2
+    je strict short L.nvol_teddy_fat_avx2_2 + 2074
+; .L66:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 512], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 4050
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 4050
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4050
+; .L72:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4050
+; .L58:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4104
+; .L74:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1700
+; .L86:
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4418
+; .L88:
+    movzx eax, byte [r14]
+    movzx r14d, byte [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4418
+; .L90:
+    movzx eax, word [r14]
+    movzx r14d, word [rbx]
+    cmp rax, r14
+    sete al
+    movzx eax, al
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4418
+; .L84:
+    test r15, r15
+    je strict short L.nvol_teddy_fat_avx2_2 + 2203
+; .L85:
+    cmp r15, 1
+    je strict short L.nvol_teddy_fat_avx2_2 + 2213
+; .L87:
+    cmp r15, 2
+    je strict short L.nvol_teddy_fat_avx2_2 + 2235
+; .L89:
+    xor eax, eax
+    movzx r15d, word [r14]
+    movzx r11d, word [rbx]
+    mov [rsp + 672], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 4418
+    movzx r14d, byte [r14 + 2]
+    movzx r15d, byte [rbx + 2]
+    cmp r14d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 4418
+    mov eax, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4418
+; .L95:
+    xor eax, eax
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4418
+; .L81:
+    mov r11, [rsp]
+    sub rbx, r11
+    shl rbx, 8
+    or rbx, r13
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 4472
+; .L97:
+    mov rax, rbx
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1700
+; .L113:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 572
+; .L115:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 572
+; .L117:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 572
+; .L111:
+    test r14, r14
+    je strict short L.nvol_teddy_fat_avx2_2 + 2364
+; .L112:
+    cmp r14, 1
+    je strict short L.nvol_teddy_fat_avx2_2 + 2375
+; .L114:
+    cmp r14, 2
+    je strict short L.nvol_teddy_fat_avx2_2 + 2400
+; .L116:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 800], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 572
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 572
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 572
+; .L122:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 572
+; .L108:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 626
+; .L136:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 924
+; .L138:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 924
+; .L140:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 924
+; .L134:
+    test r14, r14
+    je strict short L.nvol_teddy_fat_avx2_2 + 2528
+; .L135:
+    cmp r14, 1
+    je strict short L.nvol_teddy_fat_avx2_2 + 2539
+; .L137:
+    cmp r14, 2
+    je strict short L.nvol_teddy_fat_avx2_2 + 2564
+; .L139:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 928], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 924
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 924
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 924
+; .L145:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 924
+; .L131:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 978
+; .L159:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1276
+; .L161:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1276
+; .L163:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1276
+; .L157:
+    test r14, r14
+    je strict short L.nvol_teddy_fat_avx2_2 + 2692
+; .L158:
+    cmp r14, 1
+    je strict short L.nvol_teddy_fat_avx2_2 + 2703
+; .L160:
+    cmp r14, 2
+    je strict short L.nvol_teddy_fat_avx2_2 + 2728
+; .L162:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 1056], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1276
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1276
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1276
+; .L168:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1276
+; .L154:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1330
+; .L182:
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1628
+; .L184:
+    movzx r13d, byte [r13]
+    movzx r14d, byte [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1628
+; .L186:
+    movzx r13d, word [r13]
+    movzx r14d, word [r9]
+    cmp r13, r14
+    sete r14b
+    movzx r14d, r14b
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1628
+; .L180:
+    test r14, r14
+    je strict short L.nvol_teddy_fat_avx2_2 + 2856
+; .L181:
+    cmp r14, 1
+    je strict short L.nvol_teddy_fat_avx2_2 + 2867
+; .L183:
+    cmp r14, 2
+    je strict short L.nvol_teddy_fat_avx2_2 + 2892
+; .L185:
+    xor r14d, r14d
+    movzx r15d, word [r13]
+    movzx r11d, word [r9]
+    mov [rsp + 1184], r11
+    cmp r15d, r11d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1628
+    movzx r13d, byte [r13 + 2]
+    movzx r15d, byte [r9 + 2]
+    cmp r13d, r15d
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1628
+    mov r14d, 1
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1628
+; .L191:
+    xor r14d, r14d
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1628
+; .L177:
+    mov r11, [rsp]
+    sub r9, r11
+    shl r9, 8
+    or r9, r12
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 1682
+; .Lrare1:
     lea r11, [r8 - 1]
     mov [rsp + 64], r11
     vpermq ymm8, ymm7, 78
@@ -18788,7 +19681,7 @@ L.nvol_teddy_fat_avx2_2:
     mov qword [rsp + 96], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_2 + 508
+    je strict near L.nvol_teddy_fat_avx2_2 + 3356
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L7:
     mov r11, [rsp + 96]
@@ -18810,7 +19703,7 @@ L.nvol_teddy_fat_avx2_2:
     xor r14d, r14d
     mov r11, r10
     cmp r14, r11
-    jae strict near L.nvol_teddy_fat_avx2_2 + 494
+    jae strict near L.nvol_teddy_fat_avx2_2 + 3342
     db 0x66, 0x90
 ; .L9:
     mov r15, qword [rsp + 128]
@@ -18827,9 +19720,9 @@ L.nvol_teddy_fat_avx2_2:
     mov rdx, rcx
     sub rdx, r12
     cmp rax, rdx
-    ja strict short L.nvol_teddy_fat_avx2_2 + 473
+    ja strict short L.nvol_teddy_fat_avx2_2 + 3321
     cmp rax, 4
-    jb strict near L.nvol_teddy_fat_avx2_2 + 3247
+    jb strict near L.nvol_teddy_fat_avx2_2 + 1775
 ; .L14:
     lea rdx, [rax - 4]
     lea rdx, [rbx + rdx]
@@ -18837,18 +19730,18 @@ L.nvol_teddy_fat_avx2_2:
     lea rax, [r12 + rax]
     mov r9, r12
     cmp rbx, rdx
-    jae strict short L.nvol_teddy_fat_avx2_2 + 452
+    jae strict short L.nvol_teddy_fat_avx2_2 + 3300
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L23:
     mov r13d, dword [rbx]
     mov ebp, dword [r9]
     cmp r13d, ebp
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3319
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1847
 ; .L25:
     lea rbx, [rbx + 4]
     add r9, 4
     cmp rbx, rdx
-    jb strict short L.nvol_teddy_fat_avx2_2 + 424
+    jb strict short L.nvol_teddy_fat_avx2_2 + 3272
 ; .L24:
     mov edx, dword [rdx]
     mov eax, dword [rax]
@@ -18857,21 +19750,21 @@ L.nvol_teddy_fat_avx2_2:
     movzx eax, al
 ; .L13:
     test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3326
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1854
 ; .L11:
     lea r14, [r14 + 1]
     mov r11, [rsp + 160]
     cmp r14, r11
-    jb strict near L.nvol_teddy_fat_avx2_2 + 320
+    jb strict near L.nvol_teddy_fat_avx2_2 + 3168
 ; .L10:
     mov r11, [rsp + 96]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_2 + 224
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3072
 ; .L8:
     mov r12, -1
 ; .L6:
     cmp r12, -1
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3345
+    jne strict near L.nvol_teddy_fat_avx2_2 + 1873
 ; .L27:
     mov r11, [rsp + 64]
     lea r10, [r11 + 4]
@@ -18880,7 +19773,7 @@ L.nvol_teddy_fat_avx2_2:
     mov qword [rsp + 256], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_2 + 881
+    je strict near L.nvol_teddy_fat_avx2_2 + 3729
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L30:
     mov r11, [rsp + 256]
@@ -18902,7 +19795,7 @@ L.nvol_teddy_fat_avx2_2:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_2 + 864
+    jae strict near L.nvol_teddy_fat_avx2_2 + 3712
     db 0xf, 0x1f, 0x0
 ; .L32:
     mov r13, qword [rsp + 288]
@@ -18919,9 +19812,9 @@ L.nvol_teddy_fat_avx2_2:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_2 + 842
+    ja strict short L.nvol_teddy_fat_avx2_2 + 3690
     cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_2 + 3407
+    jb strict near L.nvol_teddy_fat_avx2_2 + 1935
 ; .L37:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -18929,18 +19822,18 @@ L.nvol_teddy_fat_avx2_2:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_2 + 820
+    jae strict short L.nvol_teddy_fat_avx2_2 + 3668
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L46:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3480
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2008
 ; .L48:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_2 + 792
+    jb strict short L.nvol_teddy_fat_avx2_2 + 3640
 ; .L47:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -18949,21 +19842,21 @@ L.nvol_teddy_fat_avx2_2:
     movzx eax, al
 ; .L36:
     test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3487
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2015
 ; .L34:
     lea r12, [r12 + 1]
     mov r11, [rsp + 320]
     cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_2 + 688
+    jb strict near L.nvol_teddy_fat_avx2_2 + 3536
 ; .L33:
     mov r11, [rsp + 256]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_2 + 576
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3424
 ; .L31:
     mov rbx, -1
 ; .L29:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3506
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2034
 ; .L50:
     mov r11, [rsp + 64]
     lea r10, [r11 + 8]
@@ -18972,7 +19865,7 @@ L.nvol_teddy_fat_avx2_2:
     mov qword [rsp + 416], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_2 + 1249
+    je strict near L.nvol_teddy_fat_avx2_2 + 4097
     db 0xf, 0x1f, 0x40, 0x0
 ; .L53:
     mov r11, [rsp + 416]
@@ -18994,7 +19887,7 @@ L.nvol_teddy_fat_avx2_2:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_2 + 1232
+    jae strict near L.nvol_teddy_fat_avx2_2 + 4080
     db 0xf, 0x1f, 0x0
 ; .L55:
     mov r13, qword [rsp + 448]
@@ -19011,9 +19904,9 @@ L.nvol_teddy_fat_avx2_2:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_2 + 1210
+    ja strict short L.nvol_teddy_fat_avx2_2 + 4058
     cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_2 + 3568
+    jb strict near L.nvol_teddy_fat_avx2_2 + 2096
 ; .L60:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -19021,18 +19914,18 @@ L.nvol_teddy_fat_avx2_2:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_2 + 1188
+    jae strict short L.nvol_teddy_fat_avx2_2 + 4036
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L69:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3641
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2169
 ; .L71:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_2 + 1160
+    jb strict short L.nvol_teddy_fat_avx2_2 + 4008
 ; .L70:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -19041,21 +19934,21 @@ L.nvol_teddy_fat_avx2_2:
     movzx eax, al
 ; .L59:
     test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3648
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2176
 ; .L57:
     lea r12, [r12 + 1]
     mov r11, [rsp + 480]
     cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_2 + 1056
+    jb strict near L.nvol_teddy_fat_avx2_2 + 3904
 ; .L56:
     mov r11, [rsp + 416]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_2 + 944
+    jne strict near L.nvol_teddy_fat_avx2_2 + 3792
 ; .L54:
     mov rbx, -1
 ; .L52:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3667
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2195
 ; .L73:
     mov r11, [rsp + 64]
     lea r10, [r11 + 12]
@@ -19064,7 +19957,7 @@ L.nvol_teddy_fat_avx2_2:
     mov qword [rsp + 576], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_2 + 1617
+    je strict near L.nvol_teddy_fat_avx2_2 + 4465
     db 0xf, 0x1f, 0x0
 ; .L76:
     mov r11, [rsp + 576]
@@ -19086,7 +19979,7 @@ L.nvol_teddy_fat_avx2_2:
     xor r12d, r12d
     mov r11, r10
     cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_2 + 1600
+    jae strict near L.nvol_teddy_fat_avx2_2 + 4448
     db 0xf, 0x1f, 0x0
 ; .L78:
     mov r13, qword [rsp + 608]
@@ -19103,9 +19996,9 @@ L.nvol_teddy_fat_avx2_2:
     mov rax, rcx
     sub rax, rbx
     cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_2 + 1578
+    ja strict short L.nvol_teddy_fat_avx2_2 + 4426
     cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_2 + 3729
+    jb strict near L.nvol_teddy_fat_avx2_2 + 2257
 ; .L83:
     lea rax, [r15 - 4]
     lea rax, [r14 + rax]
@@ -19113,18 +20006,18 @@ L.nvol_teddy_fat_avx2_2:
     lea r15, [rbx + r15]
     mov rdx, rbx
     cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_2 + 1556
+    jae strict short L.nvol_teddy_fat_avx2_2 + 4404
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L92:
     mov ebp, dword [r14]
     mov r9d, dword [rdx]
     cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3802
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2330
 ; .L94:
     lea r14, [r14 + 4]
     add rdx, 4
     cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_2 + 1528
+    jb strict short L.nvol_teddy_fat_avx2_2 + 4376
 ; .L93:
     mov eax, dword [rax]
     mov edx, dword [r15]
@@ -19133,831 +20026,32 @@ L.nvol_teddy_fat_avx2_2:
     movzx eax, al
 ; .L82:
     test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3809
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2337
 ; .L80:
     lea r12, [r12 + 1]
     mov r11, [rsp + 640]
     cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_2 + 1424
+    jb strict near L.nvol_teddy_fat_avx2_2 + 4272
 ; .L79:
     mov r11, [rsp + 576]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_2 + 1312
+    jne strict near L.nvol_teddy_fat_avx2_2 + 4160
 ; .L77:
     mov rbx, -1
 ; .L75:
     cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3828
+    jne strict near L.nvol_teddy_fat_avx2_2 + 2356
 ; .L96:
-; .L4:
-    lea r8, [r8 + 16]
-    mov r11, [rsp + 32]
-    cmp r8, r11
-    jbe strict near L.nvol_teddy_fat_avx2_2 + 96
-; .L3:
-    cmp r8, rcx
-    jae strict near L.nvol_teddy_fat_avx2_2 + 3165
-    lea r8, [rcx - 16]
-    vmovdqa ymm6, ymm5
-    vbroadcasti128 ymm5, oword [r8]
-    vpand ymm4, ymm5, ymm4
-    vpsrlw ymm5, ymm5, 4
-    vpand ymm5, ymm5, [rel NVOL_K3]
-    vpshufb ymm0, ymm0, ymm4
-    vpshufb ymm2, ymm2, ymm5
-    vpand ymm0, ymm0, ymm2
-    vpshufb ymm1, ymm1, ymm4
-    vpshufb ymm2, ymm3, ymm5
-    vpand ymm1, ymm1, ymm2
-    vpalignr ymm2, ymm0, ymm6, 15
-    vpand ymm1, ymm2, ymm1
-    vmovdqa ymm6, ymm0
-    vptest ymm1, ymm1
-    je strict near L.nvol_teddy_fat_avx2_2 + 3165
-    lea r11, [r8 - 1]
-    mov [rsp + 704], r11
-    vpermq ymm0, ymm1, 78
-    vpunpcklbw ymm2, ymm1, ymm0
-    vpunpckhbw ymm0, ymm1, ymm0
-    vmovq rax, xmm2
-    mov qword [rsp + 736], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_2 + 2091
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L103:
-    mov r11, [rsp + 736]
-    bsf r8, r11
-    mov r9, qword [rsp + 736]
-    mov r11, [rsp + 736]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 736], r9
-    mov r9, r8
-    shr r9, 4
-    mov r11, [rsp + 704]
-    lea r9, [r11 + r9]
-    and r8, 15
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 768], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_2 + 2074
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L105:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_2 + 2053
-    cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_2 + 3897
-; .L110:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rdx, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_2 + 2027
-    db 0x66, 0x90
-; .L119:
-    mov eax, dword [r13]
-    mov ebx, dword [rdx]
-    cmp eax, ebx
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3973
-; .L121:
-    lea r13, [r13 + 4]
-    add rdx, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_2 + 2000
-; .L120:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L109:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3981
-; .L107:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 768]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_2 + 1904
-; .L106:
-    mov r11, [rsp + 736]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_2 + 1800
-; .L104:
-    mov r9, -1
-; .L102:
-    cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_2 + 2112
-    mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3172
-; .L123:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 4]
-    mov [rsp + 832], r10
-    vpextrq rdx, xmm2, 1
-    mov qword [rsp + 864], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_2 + 2443
-    db 0x66, 0x90
-; .L126:
-    mov r11, [rsp + 864]
-    bsf r8, r11
-    mov r9, qword [rsp + 864]
-    mov r11, [rsp + 864]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 864], r9
-    mov r9, r8
-    shr r9, 4
-    mov r11, [rsp + 832]
-    lea r9, [r11 + r9]
-    and r8, 15
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 896], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_2 + 2426
-    db 0x66, 0x90
-; .L128:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_2 + 2405
-    cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_2 + 4061
-; .L133:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_2 + 2379
-    db 0x66, 0x90
-; .L142:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_2 + 4137
-; .L144:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_2 + 2352
-; .L143:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L132:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 4145
-; .L130:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 896]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_2 + 2256
-; .L129:
-    mov r11, [rsp + 864]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2160
-; .L127:
-    mov r9, -1
-; .L125:
-    cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_2 + 2464
-    mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3172
-; .L146:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 8]
-    mov [rsp + 960], r10
-    vmovq rdx, xmm0
-    mov qword [rsp + 992], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_2 + 2795
-    db 0xf, 0x1f, 0x0
-; .L149:
-    mov r11, [rsp + 992]
-    bsf r8, r11
-    mov r9, qword [rsp + 992]
-    mov r11, [rsp + 992]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 992], r9
-    mov r9, r8
-    shr r9, 4
-    mov r11, [rsp + 960]
-    lea r9, [r11 + r9]
-    and r8, 15
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 1024], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_2 + 2778
-    db 0x66, 0x90
-; .L151:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_2 + 2757
-    cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_2 + 4225
-; .L156:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_2 + 2731
-    db 0x66, 0x90
-; .L165:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_2 + 4301
-; .L167:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_2 + 2704
-; .L166:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L155:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 4309
-; .L153:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 1024]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_2 + 2608
-; .L152:
-    mov r11, [rsp + 992]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2512
-; .L150:
-    mov r9, -1
-; .L148:
-    cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_2 + 2816
-    mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3172
-; .L169:
-    mov r11, [rsp + 704]
-    lea r10, [r11 + 12]
-    mov [rsp + 1088], r10
-    vpextrq rdx, xmm0, 1
-    mov qword [rsp + 1120], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_2 + 3147
-    db 0x66, 0x90
-; .L172:
-    mov r11, [rsp + 1120]
-    bsf r8, r11
-    mov r9, qword [rsp + 1120]
-    mov r11, [rsp + 1120]
-    lea rbx, [r11 - 1]
-    and r9, rbx
-    mov qword [rsp + 1120], r9
-    mov r9, r8
-    shr r9, 4
-    mov r11, [rsp + 1088]
-    lea r9, [r11 + r9]
-    and r8, 15
-    movzx r11d, byte [rdi + r8 + 320]
-    mov [rsp + 1152], r11
-    xor ebp, ebp
-    cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_2 + 3130
-    db 0x66, 0x90
-; .L174:
-    mov r12, r8
-    shl r12, 6
-    lea r12, [r12 + rbp]
-    movzx r12d, byte [rdi + r12 + 336]
-    mov r13, r12
-    shl r13, 4
-    mov r13, qword [rsi + r13 + 8]
-    lea r13, [rsi + r13]
-    mov r14, r12
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 16]
-    mov r15, rcx
-    sub r15, r9
-    cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_2 + 3109
-    cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_2 + 4389
-; .L179:
-    lea r15, [r14 - 4]
-    lea r15, [r13 + r15]
-    lea r14, [r14 - 4]
-    lea r14, [r9 + r14]
-    mov rax, r9
-    cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_2 + 3083
-    db 0x66, 0x90
-; .L188:
-    mov edx, dword [r13]
-    mov ebx, dword [rax]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_2 + 4465
-; .L190:
-    lea r13, [r13 + 4]
-    add rax, 4
-    cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_2 + 3056
-; .L189:
-    mov eax, dword [r15]
-    mov edx, dword [r14]
-    cmp rax, rdx
-    sete r14b
-    movzx r14d, r14b
-; .L178:
-    test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 4473
-; .L176:
-    lea rbp, [rbp + 1]
-    mov r11, [rsp + 1152]
-    cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_2 + 2960
-; .L175:
-    mov r11, [rsp + 1120]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2864
-; .L173:
-    mov r9, -1
-; .L171:
-    cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_2 + 3165
-    mov rax, r9
-    jmp strict short L.nvol_teddy_fat_avx2_2 + 3172
-; .L192:
-; .L100:
-; .L98:
-    mov rax, -1
-; .L1:
-    vzeroupper
-    add rsp, 1224
-    pop r15
-    pop r14
-    pop r13
-    pop r12
-    pop rbp
-    pop rbx
-    ret
-; .L17:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 465
-; .L19:
-    movzx eax, byte [rbx]
-    movzx edx, byte [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 465
-; .L21:
-    movzx eax, word [rbx]
-    movzx edx, word [r12]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 465
-; .L15:
-    test rax, rax
-    je strict short L.nvol_teddy_fat_avx2_2 + 3193
-; .L16:
-    cmp rax, 1
-    je strict short L.nvol_teddy_fat_avx2_2 + 3203
-; .L18:
-    cmp rax, 2
-    je strict short L.nvol_teddy_fat_avx2_2 + 3225
-; .L20:
-    xor eax, eax
-    movzx edx, word [rbx]
-    movzx r11d, word [r12]
-    mov [rsp + 192], r11
-    cmp edx, r11d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 465
-    movzx edx, byte [rbx + 2]
-    movzx ebx, byte [r12 + 2]
-    cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_2 + 465
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 465
-; .L26:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 465
-; .L12:
-    mov r11, [rsp]
-    sub r12, r11
-    shl r12, 8
-    or r12, r15
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 515
-; .L28:
-    mov rax, r12
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3172
-; .L40:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 834
-; .L42:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 834
-; .L44:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 834
-; .L38:
-    test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_2 + 3353
-; .L39:
-    cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_2 + 3363
-; .L41:
-    cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_2 + 3385
-; .L43:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 352], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 834
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 834
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 834
-; .L49:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 834
-; .L35:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 888
-; .L51:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3172
-; .L63:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1202
-; .L65:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1202
-; .L67:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1202
-; .L61:
-    test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_2 + 3514
-; .L62:
-    cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_2 + 3524
-; .L64:
-    cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_2 + 3546
-; .L66:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 512], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 1202
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 1202
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1202
-; .L72:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1202
-; .L58:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1256
-; .L74:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3172
-; .L86:
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1570
-; .L88:
-    movzx eax, byte [r14]
-    movzx r14d, byte [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1570
-; .L90:
-    movzx eax, word [r14]
-    movzx r14d, word [rbx]
-    cmp rax, r14
-    sete al
-    movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1570
-; .L84:
-    test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_2 + 3675
-; .L85:
-    cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_2 + 3685
-; .L87:
-    cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_2 + 3707
-; .L89:
-    xor eax, eax
-    movzx r15d, word [r14]
-    movzx r11d, word [rbx]
-    mov [rsp + 672], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 1570
-    movzx r14d, byte [r14 + 2]
-    movzx r15d, byte [rbx + 2]
-    cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 1570
-    mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1570
-; .L95:
-    xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1570
-; .L81:
-    mov r11, [rsp]
-    sub rbx, r11
-    shl rbx, 8
-    or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 1624
-; .L97:
-    mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3172
-; .L113:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2044
-; .L115:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2044
-; .L117:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2044
-; .L111:
-    test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_2 + 3836
-; .L112:
-    cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_2 + 3847
-; .L114:
-    cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_2 + 3872
-; .L116:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 800], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2044
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2044
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2044
-; .L122:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2044
-; .L108:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2098
-; .L136:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2396
-; .L138:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2396
-; .L140:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2396
-; .L134:
-    test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_2 + 4000
-; .L135:
-    cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_2 + 4011
-; .L137:
-    cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_2 + 4036
-; .L139:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 928], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2396
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2396
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2396
-; .L145:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2396
-; .L131:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2450
-; .L159:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2748
-; .L161:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2748
-; .L163:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2748
-; .L157:
-    test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_2 + 4164
-; .L158:
-    cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_2 + 4175
-; .L160:
-    cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_2 + 4200
-; .L162:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 1056], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2748
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 2748
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2748
-; .L168:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2748
-; .L154:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 2802
-; .L182:
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3100
-; .L184:
-    movzx r13d, byte [r13]
-    movzx r14d, byte [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3100
-; .L186:
-    movzx r13d, word [r13]
-    movzx r14d, word [r9]
-    cmp r13, r14
-    sete r14b
-    movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3100
-; .L180:
-    test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_2 + 4328
-; .L181:
-    cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_2 + 4339
-; .L183:
-    cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_2 + 4364
-; .L185:
-    xor r14d, r14d
-    movzx r15d, word [r13]
-    movzx r11d, word [r9]
-    mov [rsp + 1184], r11
-    cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3100
-    movzx r13d, byte [r13 + 2]
-    movzx r15d, byte [r9 + 2]
-    cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_2 + 3100
-    mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3100
-; .L191:
-    xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3100
-; .L177:
-    mov r11, [rsp]
-    sub r9, r11
-    shl r9, 8
-    or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_2 + 3154
+    jmp strict near L.nvol_teddy_fat_avx2_2 + 172
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-global nvol_teddy_slim_avx2_3:function hidden 4620
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x0
+global nvol_teddy_slim_avx2_3:function hidden 4615
 nvol_teddy_slim_avx2_3:
 L.nvol_teddy_slim_avx2_3:
     push rbx
@@ -19983,7 +20077,7 @@ L.nvol_teddy_slim_avx2_3:
     lea r11, [rcx - 32]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_slim_avx2_3 + 1716
+    ja strict near L.nvol_teddy_slim_avx2_3 + 253
 ; .L2:
     vmovdqu ymm10, [r8]
     vpand ymm11, ymm10, ymm6
@@ -20007,376 +20101,7 @@ L.nvol_teddy_slim_avx2_3:
     vmovdqa ymm8, ymm12
     vmovdqa ymm9, ymm13
     vptest ymm10, ymm10
-    je strict near L.nvol_teddy_slim_avx2_3 + 1698
-    lea r11, [r8 - 2]
-    mov [rsp + 64], r11
-    vmovq rax, xmm10
-    mov qword [rsp + 96], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_3 + 556
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L7:
-    mov r11, [rsp + 96]
-    bsf rbp, r11
-    mov r12, qword [rsp + 96]
-    mov r11, [rsp + 96]
-    lea r13, [r11 - 1]
-    and r12, r13
-    mov qword [rsp + 96], r12
-    mov r12, rbp
-    shr r12, 3
-    mov r11, [rsp + 64]
-    lea r12, [r11 + r12]
-    mov r11, rbp
-    and r11, 7
-    mov [rsp + 128], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 160], r10
-    xor r14d, r14d
-    mov r11, r10
-    cmp r14, r11
-    jae strict near L.nvol_teddy_slim_avx2_3 + 542
-    db 0x66, 0x90
-; .L9:
-    mov r15, qword [rsp + 128]
-    shl r15, 6
-    lea r15, [r15 + r14]
-    movzx r15d, byte [rdi + r15 + 336]
-    mov rbx, r15
-    shl rbx, 4
-    mov rbx, qword [rsi + rbx + 8]
-    lea rbx, [rsi + rbx]
-    mov rax, r15
-    shl rax, 4
-    mov rax, qword [rsi + rax + 16]
-    mov rdx, rcx
-    sub rdx, r12
-    cmp rax, rdx
-    ja strict short L.nvol_teddy_slim_avx2_3 + 521
-    cmp rax, 4
-    jb strict near L.nvol_teddy_slim_avx2_3 + 3375
-; .L14:
-    lea rdx, [rax - 4]
-    lea rdx, [rbx + rdx]
-    lea rax, [rax - 4]
-    lea rax, [r12 + rax]
-    mov r9, r12
-    cmp rbx, rdx
-    jae strict short L.nvol_teddy_slim_avx2_3 + 500
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L23:
-    mov r13d, dword [rbx]
-    mov ebp, dword [r9]
-    cmp r13d, ebp
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3447
-; .L25:
-    lea rbx, [rbx + 4]
-    add r9, 4
-    cmp rbx, rdx
-    jb strict short L.nvol_teddy_slim_avx2_3 + 472
-; .L24:
-    mov edx, dword [rdx]
-    mov eax, dword [rax]
-    cmp rdx, rax
-    sete al
-    movzx eax, al
-; .L13:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3454
-; .L11:
-    lea r14, [r14 + 1]
-    mov r11, [rsp + 160]
-    cmp r14, r11
-    jb strict near L.nvol_teddy_slim_avx2_3 + 368
-; .L10:
-    mov r11, [rsp + 96]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_3 + 272
-; .L8:
-    mov r12, -1
-; .L6:
-    cmp r12, -1
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3473
-; .L27:
-    mov r11, [rsp + 64]
-    lea r10, [r11 + 8]
-    mov [rsp + 224], r10
-    vpextrq rdx, xmm10, 1
-    mov qword [rsp + 256], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_3 + 929
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-; .L30:
-    mov r11, [rsp + 256]
-    bsf r9, r11
-    mov rbx, qword [rsp + 256]
-    mov r11, [rsp + 256]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 256], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 224]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 288], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 320], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_3 + 912
-    db 0xf, 0x1f, 0x0
-; .L32:
-    mov r13, qword [rsp + 288]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_3 + 890
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_3 + 3535
-; .L37:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_3 + 868
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L46:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3608
-; .L48:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_3 + 840
-; .L47:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L36:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3615
-; .L34:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 320]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_3 + 736
-; .L33:
-    mov r11, [rsp + 256]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_3 + 624
-; .L31:
-    mov rbx, -1
-; .L29:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3634
-; .L50:
-    mov r11, [rsp + 64]
-    lea r10, [r11 + 16]
-    mov [rsp + 384], r10
-    vextracti128 xmm11, ymm10, 1
-    vmovq rdx, xmm11
-    mov qword [rsp + 416], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_3 + 1305
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L53:
-    mov r11, [rsp + 416]
-    bsf r9, r11
-    mov rbx, qword [rsp + 416]
-    mov r11, [rsp + 416]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 416], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 384]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 448], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 480], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_3 + 1288
-    db 0xf, 0x1f, 0x0
-; .L55:
-    mov r13, qword [rsp + 448]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_3 + 1266
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_3 + 3696
-; .L60:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_3 + 1244
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L69:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3769
-; .L71:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_3 + 1216
-; .L70:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L59:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3776
-; .L57:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 480]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_3 + 1112
-; .L56:
-    mov r11, [rsp + 416]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_3 + 1000
-; .L54:
-    mov rbx, -1
-; .L52:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3795
-; .L73:
-    mov r11, [rsp + 64]
-    lea r10, [r11 + 24]
-    mov [rsp + 544], r10
-    vextracti128 xmm10, ymm10, 1
-    vpextrq rdx, xmm10, 1
-    mov qword [rsp + 576], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_3 + 1681
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L76:
-    mov r11, [rsp + 576]
-    bsf r9, r11
-    mov rbx, qword [rsp + 576]
-    mov r11, [rsp + 576]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 576], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 544]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 608], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 640], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_3 + 1664
-    db 0xf, 0x1f, 0x0
-; .L78:
-    mov r13, qword [rsp + 608]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_3 + 1642
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_3 + 3857
-; .L83:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_3 + 1620
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L92:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3930
-; .L94:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_3 + 1592
-; .L93:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L82:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3937
-; .L80:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 640]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_3 + 1488
-; .L79:
-    mov r11, [rsp + 576]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_3 + 1376
-; .L77:
-    mov rbx, -1
-; .L75:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3956
-; .L96:
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3148
 ; .L4:
     lea r8, [r8 + 32]
     mov r11, [rsp + 32]
@@ -20384,7 +20109,7 @@ L.nvol_teddy_slim_avx2_3:
     jbe strict near L.nvol_teddy_slim_avx2_3 + 112
 ; .L3:
     cmp r8, rcx
-    jae strict near L.nvol_teddy_slim_avx2_3 + 3293
+    jae strict near L.nvol_teddy_slim_avx2_3 + 1821
     lea r8, [rcx - 32]
     vmovdqa ymm8, ymm7
     vmovdqa ymm9, ymm7
@@ -20410,15 +20135,15 @@ L.nvol_teddy_slim_avx2_3:
     vmovdqa ymm8, ymm0
     vmovdqa ymm9, ymm1
     vptest ymm2, ymm2
-    je strict near L.nvol_teddy_slim_avx2_3 + 3293
+    je strict near L.nvol_teddy_slim_avx2_3 + 1821
     lea r11, [r8 - 2]
     mov [rsp + 704], r11
     vmovq rax, xmm2
     mov qword [rsp + 736], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_3 + 2187
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    je strict near L.nvol_teddy_slim_avx2_3 + 715
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L103:
     mov r11, [rsp + 736]
     bsf r8, r11
@@ -20436,9 +20161,8 @@ L.nvol_teddy_slim_avx2_3:
     mov [rsp + 768], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_3 + 2170
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    jae strict near L.nvol_teddy_slim_avx2_3 + 698
+    db 0x66, 0x90
 ; .L105:
     mov r12, r8
     shl r12, 6
@@ -20454,9 +20178,9 @@ L.nvol_teddy_slim_avx2_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_3 + 2149
+    ja strict short L.nvol_teddy_slim_avx2_3 + 677
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_3 + 4025
+    jb strict near L.nvol_teddy_slim_avx2_3 + 2553
 ; .L110:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -20464,18 +20188,18 @@ L.nvol_teddy_slim_avx2_3:
     lea r14, [r9 + r14]
     mov rdx, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_3 + 2123
+    jae strict short L.nvol_teddy_slim_avx2_3 + 651
     db 0x66, 0x90
 ; .L119:
     mov eax, dword [r13]
     mov ebx, dword [rdx]
     cmp eax, ebx
-    jne strict near L.nvol_teddy_slim_avx2_3 + 4101
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2629
 ; .L121:
     lea r13, [r13 + 4]
     add rdx, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_3 + 2096
+    jb strict short L.nvol_teddy_slim_avx2_3 + 624
 ; .L120:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -20484,23 +20208,23 @@ L.nvol_teddy_slim_avx2_3:
     movzx r14d, r14b
 ; .L109:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 4109
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2637
 ; .L107:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 768]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_3 + 2000
+    jb strict near L.nvol_teddy_slim_avx2_3 + 528
 ; .L106:
     mov r11, [rsp + 736]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_3 + 1896
+    jne strict near L.nvol_teddy_slim_avx2_3 + 432
 ; .L104:
     mov r9, -1
 ; .L102:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_3 + 2208
+    je strict short L.nvol_teddy_slim_avx2_3 + 736
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3300
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1828
 ; .L123:
     mov r11, [rsp + 704]
     lea r10, [r11 + 8]
@@ -20509,7 +20233,7 @@ L.nvol_teddy_slim_avx2_3:
     mov qword [rsp + 864], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_3 + 2539
+    je strict near L.nvol_teddy_slim_avx2_3 + 1067
     db 0x66, 0x90
 ; .L126:
     mov r11, [rsp + 864]
@@ -20528,7 +20252,7 @@ L.nvol_teddy_slim_avx2_3:
     mov [rsp + 896], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_3 + 2522
+    jae strict near L.nvol_teddy_slim_avx2_3 + 1050
     db 0x66, 0x90
 ; .L128:
     mov r12, r8
@@ -20545,9 +20269,9 @@ L.nvol_teddy_slim_avx2_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_3 + 2501
+    ja strict short L.nvol_teddy_slim_avx2_3 + 1029
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_3 + 4189
+    jb strict near L.nvol_teddy_slim_avx2_3 + 2717
 ; .L133:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -20555,18 +20279,18 @@ L.nvol_teddy_slim_avx2_3:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_3 + 2475
+    jae strict short L.nvol_teddy_slim_avx2_3 + 1003
     db 0x66, 0x90
 ; .L142:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_3 + 4265
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2793
 ; .L144:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_3 + 2448
+    jb strict short L.nvol_teddy_slim_avx2_3 + 976
 ; .L143:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -20575,23 +20299,23 @@ L.nvol_teddy_slim_avx2_3:
     movzx r14d, r14b
 ; .L132:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 4273
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2801
 ; .L130:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 896]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_3 + 2352
+    jb strict near L.nvol_teddy_slim_avx2_3 + 880
 ; .L129:
     mov r11, [rsp + 864]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2256
+    jne strict near L.nvol_teddy_slim_avx2_3 + 784
 ; .L127:
     mov r9, -1
 ; .L125:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_3 + 2560
+    je strict short L.nvol_teddy_slim_avx2_3 + 1088
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3300
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1828
 ; .L146:
     mov r11, [rsp + 704]
     lea r10, [r11 + 16]
@@ -20601,7 +20325,7 @@ L.nvol_teddy_slim_avx2_3:
     mov qword [rsp + 992], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_3 + 2907
+    je strict near L.nvol_teddy_slim_avx2_3 + 1435
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L149:
     mov r11, [rsp + 992]
@@ -20620,7 +20344,7 @@ L.nvol_teddy_slim_avx2_3:
     mov [rsp + 1024], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_3 + 2890
+    jae strict near L.nvol_teddy_slim_avx2_3 + 1418
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L151:
@@ -20638,9 +20362,9 @@ L.nvol_teddy_slim_avx2_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_3 + 2869
+    ja strict short L.nvol_teddy_slim_avx2_3 + 1397
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_3 + 4353
+    jb strict near L.nvol_teddy_slim_avx2_3 + 2881
 ; .L156:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -20648,18 +20372,18 @@ L.nvol_teddy_slim_avx2_3:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_3 + 2843
+    jae strict short L.nvol_teddy_slim_avx2_3 + 1371
     db 0x66, 0x90
 ; .L165:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_3 + 4429
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2957
 ; .L167:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_3 + 2816
+    jb strict short L.nvol_teddy_slim_avx2_3 + 1344
 ; .L166:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -20668,23 +20392,23 @@ L.nvol_teddy_slim_avx2_3:
     movzx r14d, r14b
 ; .L155:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 4437
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2965
 ; .L153:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1024]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_3 + 2720
+    jb strict near L.nvol_teddy_slim_avx2_3 + 1248
 ; .L152:
     mov r11, [rsp + 992]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2616
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1144
 ; .L150:
     mov r9, -1
 ; .L148:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_3 + 2928
+    je strict short L.nvol_teddy_slim_avx2_3 + 1456
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3300
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1828
 ; .L169:
     mov r11, [rsp + 704]
     lea r10, [r11 + 24]
@@ -20694,7 +20418,7 @@ L.nvol_teddy_slim_avx2_3:
     mov qword [rsp + 1120], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_3 + 3275
+    je strict near L.nvol_teddy_slim_avx2_3 + 1803
     db 0xf, 0x1f, 0x40, 0x0
 ; .L172:
     mov r11, [rsp + 1120]
@@ -20713,7 +20437,7 @@ L.nvol_teddy_slim_avx2_3:
     mov [rsp + 1152], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_3 + 3258
+    jae strict near L.nvol_teddy_slim_avx2_3 + 1786
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L174:
@@ -20731,9 +20455,9 @@ L.nvol_teddy_slim_avx2_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_3 + 3237
+    ja strict short L.nvol_teddy_slim_avx2_3 + 1765
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_3 + 4517
+    jb strict near L.nvol_teddy_slim_avx2_3 + 3045
 ; .L179:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -20741,18 +20465,18 @@ L.nvol_teddy_slim_avx2_3:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_3 + 3211
+    jae strict short L.nvol_teddy_slim_avx2_3 + 1739
     db 0x66, 0x90
 ; .L188:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_3 + 4593
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3121
 ; .L190:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_3 + 3184
+    jb strict short L.nvol_teddy_slim_avx2_3 + 1712
 ; .L189:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -20761,23 +20485,23 @@ L.nvol_teddy_slim_avx2_3:
     movzx r14d, r14b
 ; .L178:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 4601
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3129
 ; .L176:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1152]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_3 + 3088
+    jb strict near L.nvol_teddy_slim_avx2_3 + 1616
 ; .L175:
     mov r11, [rsp + 1120]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2984
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1512
 ; .L173:
     mov r9, -1
 ; .L171:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_3 + 3293
+    je strict short L.nvol_teddy_slim_avx2_3 + 1821
     mov rax, r9
-    jmp strict short L.nvol_teddy_slim_avx2_3 + 3300
+    jmp strict short L.nvol_teddy_slim_avx2_3 + 1828
 ; .L192:
 ; .L100:
 ; .L98:
@@ -20794,408 +20518,780 @@ L.nvol_teddy_slim_avx2_3:
     ret
 ; .L17:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 513
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3425
 ; .L19:
     movzx eax, byte [rbx]
     movzx edx, byte [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 513
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3425
 ; .L21:
     movzx eax, word [rbx]
     movzx edx, word [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 513
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3425
 ; .L15:
     test rax, rax
-    je strict short L.nvol_teddy_slim_avx2_3 + 3321
+    je strict short L.nvol_teddy_slim_avx2_3 + 1849
 ; .L16:
     cmp rax, 1
-    je strict short L.nvol_teddy_slim_avx2_3 + 3331
+    je strict short L.nvol_teddy_slim_avx2_3 + 1859
 ; .L18:
     cmp rax, 2
-    je strict short L.nvol_teddy_slim_avx2_3 + 3353
+    je strict short L.nvol_teddy_slim_avx2_3 + 1881
 ; .L20:
     xor eax, eax
     movzx edx, word [rbx]
     movzx r11d, word [r12]
     mov [rsp + 192], r11
     cmp edx, r11d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 513
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3425
     movzx edx, byte [rbx + 2]
     movzx ebx, byte [r12 + 2]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_3 + 513
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3425
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 513
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3425
 ; .L26:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 513
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3425
 ; .L12:
     mov r11, [rsp]
     sub r12, r11
     shl r12, 8
     or r12, r15
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 563
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3475
 ; .L28:
     mov rax, r12
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3300
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1828
 ; .L40:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 882
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3794
 ; .L42:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 882
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3794
 ; .L44:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 882
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3794
 ; .L38:
     test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_3 + 3481
+    je strict short L.nvol_teddy_slim_avx2_3 + 2009
 ; .L39:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_3 + 3491
+    je strict short L.nvol_teddy_slim_avx2_3 + 2019
 ; .L41:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_3 + 3513
+    je strict short L.nvol_teddy_slim_avx2_3 + 2041
 ; .L43:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 352], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 882
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3794
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 882
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3794
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 882
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3794
 ; .L49:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 882
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3794
 ; .L35:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 936
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 3848
 ; .L51:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3300
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1828
 ; .L63:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1258
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4170
 ; .L65:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1258
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4170
 ; .L67:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1258
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4170
 ; .L61:
     test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_3 + 3642
+    je strict short L.nvol_teddy_slim_avx2_3 + 2170
 ; .L62:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_3 + 3652
+    je strict short L.nvol_teddy_slim_avx2_3 + 2180
 ; .L64:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_3 + 3674
+    je strict short L.nvol_teddy_slim_avx2_3 + 2202
 ; .L66:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 512], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 1258
+    jne strict near L.nvol_teddy_slim_avx2_3 + 4170
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 1258
+    jne strict near L.nvol_teddy_slim_avx2_3 + 4170
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1258
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4170
 ; .L72:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1258
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4170
 ; .L58:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1312
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4224
 ; .L74:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3300
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1828
 ; .L86:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1634
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4546
 ; .L88:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1634
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4546
 ; .L90:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1634
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4546
 ; .L84:
     test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_3 + 3803
+    je strict short L.nvol_teddy_slim_avx2_3 + 2331
 ; .L85:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_3 + 3813
+    je strict short L.nvol_teddy_slim_avx2_3 + 2341
 ; .L87:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_3 + 3835
+    je strict short L.nvol_teddy_slim_avx2_3 + 2363
 ; .L89:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 672], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 1634
+    jne strict near L.nvol_teddy_slim_avx2_3 + 4546
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 1634
+    jne strict near L.nvol_teddy_slim_avx2_3 + 4546
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1634
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4546
 ; .L95:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1634
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4546
 ; .L81:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 1688
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 4600
 ; .L97:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3300
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1828
 ; .L113:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2140
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 668
 ; .L115:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2140
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 668
 ; .L117:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2140
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 668
 ; .L111:
     test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_3 + 3964
+    je strict short L.nvol_teddy_slim_avx2_3 + 2492
 ; .L112:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_3 + 3975
+    je strict short L.nvol_teddy_slim_avx2_3 + 2503
 ; .L114:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_3 + 4000
+    je strict short L.nvol_teddy_slim_avx2_3 + 2528
 ; .L116:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 800], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2140
+    jne strict near L.nvol_teddy_slim_avx2_3 + 668
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2140
+    jne strict near L.nvol_teddy_slim_avx2_3 + 668
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2140
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 668
 ; .L122:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2140
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 668
 ; .L108:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2194
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 722
 ; .L136:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2492
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1020
 ; .L138:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2492
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1020
 ; .L140:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2492
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1020
 ; .L134:
     test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_3 + 4128
+    je strict short L.nvol_teddy_slim_avx2_3 + 2656
 ; .L135:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_3 + 4139
+    je strict short L.nvol_teddy_slim_avx2_3 + 2667
 ; .L137:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_3 + 4164
+    je strict short L.nvol_teddy_slim_avx2_3 + 2692
 ; .L139:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 928], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2492
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1020
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2492
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1020
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2492
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1020
 ; .L145:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2492
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1020
 ; .L131:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2546
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1074
 ; .L159:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2860
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1388
 ; .L161:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2860
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1388
 ; .L163:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2860
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1388
 ; .L157:
     test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_3 + 4292
+    je strict short L.nvol_teddy_slim_avx2_3 + 2820
 ; .L158:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_3 + 4303
+    je strict short L.nvol_teddy_slim_avx2_3 + 2831
 ; .L160:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_3 + 4328
+    je strict short L.nvol_teddy_slim_avx2_3 + 2856
 ; .L162:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1056], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2860
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1388
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 2860
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1388
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2860
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1388
 ; .L168:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2860
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1388
 ; .L154:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 2914
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1442
 ; .L182:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3228
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1756
 ; .L184:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3228
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1756
 ; .L186:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3228
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1756
 ; .L180:
     test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_3 + 4456
+    je strict short L.nvol_teddy_slim_avx2_3 + 2984
 ; .L181:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_3 + 4467
+    je strict short L.nvol_teddy_slim_avx2_3 + 2995
 ; .L183:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_3 + 4492
+    je strict short L.nvol_teddy_slim_avx2_3 + 3020
 ; .L185:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1184], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3228
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1756
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_3 + 3228
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1756
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3228
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1756
 ; .L191:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3228
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1756
 ; .L177:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_3 + 3282
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 1810
+; .Lrare1:
+    lea r11, [r8 - 2]
+    mov [rsp + 64], r11
+    vmovq rax, xmm10
+    mov qword [rsp + 96], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_3 + 3468
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L7:
+    mov r11, [rsp + 96]
+    bsf rbp, r11
+    mov r12, qword [rsp + 96]
+    mov r11, [rsp + 96]
+    lea r13, [r11 - 1]
+    and r12, r13
+    mov qword [rsp + 96], r12
+    mov r12, rbp
+    shr r12, 3
+    mov r11, [rsp + 64]
+    lea r12, [r11 + r12]
+    mov r11, rbp
+    and r11, 7
+    mov [rsp + 128], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 160], r10
+    xor r14d, r14d
+    mov r11, r10
+    cmp r14, r11
+    jae strict near L.nvol_teddy_slim_avx2_3 + 3454
+    db 0x66, 0x90
+; .L9:
+    mov r15, qword [rsp + 128]
+    shl r15, 6
+    lea r15, [r15 + r14]
+    movzx r15d, byte [rdi + r15 + 336]
+    mov rbx, r15
+    shl rbx, 4
+    mov rbx, qword [rsi + rbx + 8]
+    lea rbx, [rsi + rbx]
+    mov rax, r15
+    shl rax, 4
+    mov rax, qword [rsi + rax + 16]
+    mov rdx, rcx
+    sub rdx, r12
+    cmp rax, rdx
+    ja strict short L.nvol_teddy_slim_avx2_3 + 3433
+    cmp rax, 4
+    jb strict near L.nvol_teddy_slim_avx2_3 + 1903
+; .L14:
+    lea rdx, [rax - 4]
+    lea rdx, [rbx + rdx]
+    lea rax, [rax - 4]
+    lea rax, [r12 + rax]
+    mov r9, r12
+    cmp rbx, rdx
+    jae strict short L.nvol_teddy_slim_avx2_3 + 3412
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov r13d, dword [rbx]
+    mov ebp, dword [r9]
+    cmp r13d, ebp
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1975
+; .L25:
+    lea rbx, [rbx + 4]
+    add r9, 4
+    cmp rbx, rdx
+    jb strict short L.nvol_teddy_slim_avx2_3 + 3384
+; .L24:
+    mov edx, dword [rdx]
+    mov eax, dword [rax]
+    cmp rdx, rax
+    sete al
+    movzx eax, al
+; .L13:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_avx2_3 + 1982
+; .L11:
+    lea r14, [r14 + 1]
+    mov r11, [rsp + 160]
+    cmp r14, r11
+    jb strict near L.nvol_teddy_slim_avx2_3 + 3280
+; .L10:
+    mov r11, [rsp + 96]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3184
+; .L8:
+    mov r12, -1
+; .L6:
+    cmp r12, -1
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2001
+; .L27:
+    mov r11, [rsp + 64]
+    lea r10, [r11 + 8]
+    mov [rsp + 224], r10
+    vpextrq rdx, xmm10, 1
+    mov qword [rsp + 256], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_3 + 3841
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L30:
+    mov r11, [rsp + 256]
+    bsf r9, r11
+    mov rbx, qword [rsp + 256]
+    mov r11, [rsp + 256]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 256], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 224]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 288], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 320], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_avx2_3 + 3824
+    db 0xf, 0x1f, 0x0
+; .L32:
+    mov r13, qword [rsp + 288]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_avx2_3 + 3802
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_avx2_3 + 2063
+; .L37:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_avx2_3 + 3780
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2136
+; .L48:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_avx2_3 + 3752
+; .L47:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L36:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2143
+; .L34:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 320]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_avx2_3 + 3648
+; .L33:
+    mov r11, [rsp + 256]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3536
+; .L31:
+    mov rbx, -1
+; .L29:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2162
+; .L50:
+    mov r11, [rsp + 64]
+    lea r10, [r11 + 16]
+    mov [rsp + 384], r10
+    vextracti128 xmm11, ymm10, 1
+    vmovq rdx, xmm11
+    mov qword [rsp + 416], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_3 + 4217
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L53:
+    mov r11, [rsp + 416]
+    bsf r9, r11
+    mov rbx, qword [rsp + 416]
+    mov r11, [rsp + 416]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 416], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 384]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 448], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 480], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_avx2_3 + 4200
+    db 0xf, 0x1f, 0x0
+; .L55:
+    mov r13, qword [rsp + 448]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_avx2_3 + 4178
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_avx2_3 + 2224
+; .L60:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_avx2_3 + 4156
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L69:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2297
+; .L71:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_avx2_3 + 4128
+; .L70:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L59:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2304
+; .L57:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 480]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_avx2_3 + 4024
+; .L56:
+    mov r11, [rsp + 416]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_3 + 3912
+; .L54:
+    mov rbx, -1
+; .L52:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2323
+; .L73:
+    mov r11, [rsp + 64]
+    lea r10, [r11 + 24]
+    mov [rsp + 544], r10
+    vextracti128 xmm10, ymm10, 1
+    vpextrq rdx, xmm10, 1
+    mov qword [rsp + 576], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_3 + 4593
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L76:
+    mov r11, [rsp + 576]
+    bsf r9, r11
+    mov rbx, qword [rsp + 576]
+    mov r11, [rsp + 576]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 576], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 544]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 608], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 640], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_avx2_3 + 4576
+    db 0xf, 0x1f, 0x0
+; .L78:
+    mov r13, qword [rsp + 608]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_avx2_3 + 4554
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_avx2_3 + 2385
+; .L83:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_avx2_3 + 4532
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L92:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2458
+; .L94:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_avx2_3 + 4504
+; .L93:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L82:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2465
+; .L80:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 640]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_avx2_3 + 4400
+; .L79:
+    mov r11, [rsp + 576]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_3 + 4288
+; .L77:
+    mov rbx, -1
+; .L75:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_avx2_3 + 2484
+; .L96:
+    jmp strict near L.nvol_teddy_slim_avx2_3 + 235
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-global nvol_teddy_fat_avx2_3:function hidden 4572
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x0
+global nvol_teddy_fat_avx2_3:function hidden 4567
 nvol_teddy_fat_avx2_3:
 L.nvol_teddy_fat_avx2_3:
     push rbx
@@ -21221,7 +21317,7 @@ L.nvol_teddy_fat_avx2_3:
     lea r11, [rcx - 16]
     mov [rsp + 32], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_fat_avx2_3 + 1700
+    ja strict near L.nvol_teddy_fat_avx2_3 + 237
 ; .L2:
     vbroadcasti128 ymm10, oword [r8]
     vpand ymm11, ymm10, ymm6
@@ -21243,385 +21339,15 @@ L.nvol_teddy_fat_avx2_3:
     vmovdqa ymm8, ymm12
     vmovdqa ymm9, ymm13
     vptest ymm10, ymm10
-    je strict near L.nvol_teddy_fat_avx2_3 + 1682
-    lea r11, [r8 - 2]
-    mov [rsp + 64], r11
-    vpermq ymm11, ymm10, 78
-    vpunpcklbw ymm12, ymm10, ymm11
-    vpunpckhbw ymm10, ymm10, ymm11
-    vmovq rax, xmm12
-    mov qword [rsp + 96], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_3 + 556
-    db 0x66, 0x90
-; .L7:
-    mov r11, [rsp + 96]
-    bsf rbp, r11
-    mov r12, qword [rsp + 96]
-    mov r11, [rsp + 96]
-    lea r13, [r11 - 1]
-    and r12, r13
-    mov qword [rsp + 96], r12
-    mov r12, rbp
-    shr r12, 4
-    mov r11, [rsp + 64]
-    lea r12, [r11 + r12]
-    mov r11, rbp
-    and r11, 15
-    mov [rsp + 128], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 160], r10
-    xor r14d, r14d
-    mov r11, r10
-    cmp r14, r11
-    jae strict near L.nvol_teddy_fat_avx2_3 + 542
-    db 0x66, 0x90
-; .L9:
-    mov r15, qword [rsp + 128]
-    shl r15, 6
-    lea r15, [r15 + r14]
-    movzx r15d, byte [rdi + r15 + 336]
-    mov rbx, r15
-    shl rbx, 4
-    mov rbx, qword [rsi + rbx + 8]
-    lea rbx, [rsi + rbx]
-    mov rax, r15
-    shl rax, 4
-    mov rax, qword [rsi + rax + 16]
-    mov rdx, rcx
-    sub rdx, r12
-    cmp rax, rdx
-    ja strict short L.nvol_teddy_fat_avx2_3 + 521
-    cmp rax, 4
-    jb strict near L.nvol_teddy_fat_avx2_3 + 3327
-; .L14:
-    lea rdx, [rax - 4]
-    lea rdx, [rbx + rdx]
-    lea rax, [rax - 4]
-    lea rax, [r12 + rax]
-    mov r9, r12
-    cmp rbx, rdx
-    jae strict short L.nvol_teddy_fat_avx2_3 + 500
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L23:
-    mov r13d, dword [rbx]
-    mov ebp, dword [r9]
-    cmp r13d, ebp
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3399
-; .L25:
-    lea rbx, [rbx + 4]
-    add r9, 4
-    cmp rbx, rdx
-    jb strict short L.nvol_teddy_fat_avx2_3 + 472
-; .L24:
-    mov edx, dword [rdx]
-    mov eax, dword [rax]
-    cmp rdx, rax
-    sete al
-    movzx eax, al
-; .L13:
-    test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3406
-; .L11:
-    lea r14, [r14 + 1]
-    mov r11, [rsp + 160]
-    cmp r14, r11
-    jb strict near L.nvol_teddy_fat_avx2_3 + 368
-; .L10:
-    mov r11, [rsp + 96]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_3 + 272
-; .L8:
-    mov r12, -1
-; .L6:
-    cmp r12, -1
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3425
-; .L27:
-    mov r11, [rsp + 64]
-    lea r10, [r11 + 4]
-    mov [rsp + 224], r10
-    vpextrq rdx, xmm12, 1
-    mov qword [rsp + 256], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_3 + 929
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-; .L30:
-    mov r11, [rsp + 256]
-    bsf r9, r11
-    mov rbx, qword [rsp + 256]
-    mov r11, [rsp + 256]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 256], rbx
-    mov rbx, r9
-    shr rbx, 4
-    mov r11, [rsp + 224]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 15
-    mov [rsp + 288], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 320], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_3 + 912
-    db 0xf, 0x1f, 0x0
-; .L32:
-    mov r13, qword [rsp + 288]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_3 + 890
-    cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_3 + 3487
-; .L37:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_3 + 868
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L46:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3560
-; .L48:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_3 + 840
-; .L47:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L36:
-    test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3567
-; .L34:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 320]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_3 + 736
-; .L33:
-    mov r11, [rsp + 256]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_3 + 624
-; .L31:
-    mov rbx, -1
-; .L29:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3586
-; .L50:
-    mov r11, [rsp + 64]
-    lea r10, [r11 + 8]
-    mov [rsp + 384], r10
-    vmovq rdx, xmm10
-    mov qword [rsp + 416], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_3 + 1297
-    db 0xf, 0x1f, 0x40, 0x0
-; .L53:
-    mov r11, [rsp + 416]
-    bsf r9, r11
-    mov rbx, qword [rsp + 416]
-    mov r11, [rsp + 416]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 416], rbx
-    mov rbx, r9
-    shr rbx, 4
-    mov r11, [rsp + 384]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 15
-    mov [rsp + 448], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 480], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_3 + 1280
-    db 0xf, 0x1f, 0x0
-; .L55:
-    mov r13, qword [rsp + 448]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_3 + 1258
-    cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_3 + 3648
-; .L60:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_3 + 1236
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L69:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3721
-; .L71:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_3 + 1208
-; .L70:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L59:
-    test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3728
-; .L57:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 480]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_3 + 1104
-; .L56:
-    mov r11, [rsp + 416]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_3 + 992
-; .L54:
-    mov rbx, -1
-; .L52:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3747
-; .L73:
-    mov r11, [rsp + 64]
-    lea r10, [r11 + 12]
-    mov [rsp + 544], r10
-    vpextrq rdx, xmm10, 1
-    mov qword [rsp + 576], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_3 + 1665
-    db 0xf, 0x1f, 0x0
-; .L76:
-    mov r11, [rsp + 576]
-    bsf r9, r11
-    mov rbx, qword [rsp + 576]
-    mov r11, [rsp + 576]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 576], rbx
-    mov rbx, r9
-    shr rbx, 4
-    mov r11, [rsp + 544]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 15
-    mov [rsp + 608], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 640], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_3 + 1648
-    db 0xf, 0x1f, 0x0
-; .L78:
-    mov r13, qword [rsp + 608]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_3 + 1626
-    cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_3 + 3809
-; .L83:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_3 + 1604
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L92:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3882
-; .L94:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_3 + 1576
-; .L93:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L82:
-    test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3889
-; .L80:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 640]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_3 + 1472
-; .L79:
-    mov r11, [rsp + 576]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_3 + 1360
-; .L77:
-    mov rbx, -1
-; .L75:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3908
-; .L96:
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3100
 ; .L4:
     lea r8, [r8 + 16]
     mov r11, [rsp + 32]
     cmp r8, r11
-    jbe strict near L.nvol_teddy_fat_avx2_3 + 112
+    jbe strict short L.nvol_teddy_fat_avx2_3 + 112
 ; .L3:
     cmp r8, rcx
-    jae strict near L.nvol_teddy_fat_avx2_3 + 3245
+    jae strict near L.nvol_teddy_fat_avx2_3 + 1773
     lea r8, [rcx - 16]
     vmovdqa ymm8, ymm7
     vmovdqa ymm9, ymm7
@@ -21645,7 +21371,7 @@ L.nvol_teddy_fat_avx2_3:
     vmovdqa ymm8, ymm0
     vmovdqa ymm9, ymm1
     vptest ymm2, ymm2
-    je strict near L.nvol_teddy_fat_avx2_3 + 3245
+    je strict near L.nvol_teddy_fat_avx2_3 + 1773
     lea r11, [r8 - 2]
     mov [rsp + 704], r11
     vpermq ymm0, ymm2, 78
@@ -21655,8 +21381,8 @@ L.nvol_teddy_fat_avx2_3:
     mov qword [rsp + 736], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_3 + 2171
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    je strict near L.nvol_teddy_fat_avx2_3 + 699
+    db 0xf, 0x1f, 0x40, 0x0
 ; .L103:
     mov r11, [rsp + 736]
     bsf r8, r11
@@ -21674,9 +21400,8 @@ L.nvol_teddy_fat_avx2_3:
     mov [rsp + 768], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_3 + 2154
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    jae strict near L.nvol_teddy_fat_avx2_3 + 682
+    db 0x66, 0x90
 ; .L105:
     mov r12, r8
     shl r12, 6
@@ -21692,9 +21417,9 @@ L.nvol_teddy_fat_avx2_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_3 + 2133
+    ja strict short L.nvol_teddy_fat_avx2_3 + 661
     cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_3 + 3977
+    jb strict near L.nvol_teddy_fat_avx2_3 + 2505
 ; .L110:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -21702,18 +21427,18 @@ L.nvol_teddy_fat_avx2_3:
     lea r14, [r9 + r14]
     mov rdx, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_3 + 2107
+    jae strict short L.nvol_teddy_fat_avx2_3 + 635
     db 0x66, 0x90
 ; .L119:
     mov eax, dword [r13]
     mov ebx, dword [rdx]
     cmp eax, ebx
-    jne strict near L.nvol_teddy_fat_avx2_3 + 4053
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2581
 ; .L121:
     lea r13, [r13 + 4]
     add rdx, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_3 + 2080
+    jb strict short L.nvol_teddy_fat_avx2_3 + 608
 ; .L120:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -21722,23 +21447,23 @@ L.nvol_teddy_fat_avx2_3:
     movzx r14d, r14b
 ; .L109:
     test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 4061
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2589
 ; .L107:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 768]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_3 + 1984
+    jb strict near L.nvol_teddy_fat_avx2_3 + 512
 ; .L106:
     mov r11, [rsp + 736]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_3 + 1880
+    jne strict near L.nvol_teddy_fat_avx2_3 + 416
 ; .L104:
     mov r9, -1
 ; .L102:
     cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_3 + 2192
+    je strict short L.nvol_teddy_fat_avx2_3 + 720
     mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3252
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1780
 ; .L123:
     mov r11, [rsp + 704]
     lea r10, [r11 + 4]
@@ -21747,7 +21472,7 @@ L.nvol_teddy_fat_avx2_3:
     mov qword [rsp + 864], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_3 + 2523
+    je strict near L.nvol_teddy_fat_avx2_3 + 1051
     db 0x66, 0x90
 ; .L126:
     mov r11, [rsp + 864]
@@ -21766,7 +21491,7 @@ L.nvol_teddy_fat_avx2_3:
     mov [rsp + 896], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_3 + 2506
+    jae strict near L.nvol_teddy_fat_avx2_3 + 1034
     db 0x66, 0x90
 ; .L128:
     mov r12, r8
@@ -21783,9 +21508,9 @@ L.nvol_teddy_fat_avx2_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_3 + 2485
+    ja strict short L.nvol_teddy_fat_avx2_3 + 1013
     cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_3 + 4141
+    jb strict near L.nvol_teddy_fat_avx2_3 + 2669
 ; .L133:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -21793,18 +21518,18 @@ L.nvol_teddy_fat_avx2_3:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_3 + 2459
+    jae strict short L.nvol_teddy_fat_avx2_3 + 987
     db 0x66, 0x90
 ; .L142:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_3 + 4217
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2745
 ; .L144:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_3 + 2432
+    jb strict short L.nvol_teddy_fat_avx2_3 + 960
 ; .L143:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -21813,23 +21538,23 @@ L.nvol_teddy_fat_avx2_3:
     movzx r14d, r14b
 ; .L132:
     test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 4225
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2753
 ; .L130:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 896]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_3 + 2336
+    jb strict near L.nvol_teddy_fat_avx2_3 + 864
 ; .L129:
     mov r11, [rsp + 864]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2240
+    jne strict near L.nvol_teddy_fat_avx2_3 + 768
 ; .L127:
     mov r9, -1
 ; .L125:
     cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_3 + 2544
+    je strict short L.nvol_teddy_fat_avx2_3 + 1072
     mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3252
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1780
 ; .L146:
     mov r11, [rsp + 704]
     lea r10, [r11 + 8]
@@ -21838,7 +21563,7 @@ L.nvol_teddy_fat_avx2_3:
     mov qword [rsp + 992], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_3 + 2875
+    je strict near L.nvol_teddy_fat_avx2_3 + 1403
     db 0xf, 0x1f, 0x0
 ; .L149:
     mov r11, [rsp + 992]
@@ -21857,7 +21582,7 @@ L.nvol_teddy_fat_avx2_3:
     mov [rsp + 1024], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_3 + 2858
+    jae strict near L.nvol_teddy_fat_avx2_3 + 1386
     db 0x66, 0x90
 ; .L151:
     mov r12, r8
@@ -21874,9 +21599,9 @@ L.nvol_teddy_fat_avx2_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_3 + 2837
+    ja strict short L.nvol_teddy_fat_avx2_3 + 1365
     cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_3 + 4305
+    jb strict near L.nvol_teddy_fat_avx2_3 + 2833
 ; .L156:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -21884,18 +21609,18 @@ L.nvol_teddy_fat_avx2_3:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_3 + 2811
+    jae strict short L.nvol_teddy_fat_avx2_3 + 1339
     db 0x66, 0x90
 ; .L165:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_3 + 4381
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2909
 ; .L167:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_3 + 2784
+    jb strict short L.nvol_teddy_fat_avx2_3 + 1312
 ; .L166:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -21904,23 +21629,23 @@ L.nvol_teddy_fat_avx2_3:
     movzx r14d, r14b
 ; .L155:
     test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 4389
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2917
 ; .L153:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1024]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_3 + 2688
+    jb strict near L.nvol_teddy_fat_avx2_3 + 1216
 ; .L152:
     mov r11, [rsp + 992]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2592
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1120
 ; .L150:
     mov r9, -1
 ; .L148:
     cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_3 + 2896
+    je strict short L.nvol_teddy_fat_avx2_3 + 1424
     mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3252
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1780
 ; .L169:
     mov r11, [rsp + 704]
     lea r10, [r11 + 12]
@@ -21929,7 +21654,7 @@ L.nvol_teddy_fat_avx2_3:
     mov qword [rsp + 1120], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_3 + 3227
+    je strict near L.nvol_teddy_fat_avx2_3 + 1755
     db 0x66, 0x90
 ; .L172:
     mov r11, [rsp + 1120]
@@ -21948,7 +21673,7 @@ L.nvol_teddy_fat_avx2_3:
     mov [rsp + 1152], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_3 + 3210
+    jae strict near L.nvol_teddy_fat_avx2_3 + 1738
     db 0x66, 0x90
 ; .L174:
     mov r12, r8
@@ -21965,9 +21690,9 @@ L.nvol_teddy_fat_avx2_3:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_3 + 3189
+    ja strict short L.nvol_teddy_fat_avx2_3 + 1717
     cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_3 + 4469
+    jb strict near L.nvol_teddy_fat_avx2_3 + 2997
 ; .L179:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -21975,18 +21700,18 @@ L.nvol_teddy_fat_avx2_3:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_3 + 3163
+    jae strict short L.nvol_teddy_fat_avx2_3 + 1691
     db 0x66, 0x90
 ; .L188:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_3 + 4545
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3073
 ; .L190:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_3 + 3136
+    jb strict short L.nvol_teddy_fat_avx2_3 + 1664
 ; .L189:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -21995,23 +21720,23 @@ L.nvol_teddy_fat_avx2_3:
     movzx r14d, r14b
 ; .L178:
     test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 4553
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3081
 ; .L176:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1152]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_3 + 3040
+    jb strict near L.nvol_teddy_fat_avx2_3 + 1568
 ; .L175:
     mov r11, [rsp + 1120]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2944
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1472
 ; .L173:
     mov r9, -1
 ; .L171:
     cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_3 + 3245
+    je strict short L.nvol_teddy_fat_avx2_3 + 1773
     mov rax, r9
-    jmp strict short L.nvol_teddy_fat_avx2_3 + 3252
+    jmp strict short L.nvol_teddy_fat_avx2_3 + 1780
 ; .L192:
 ; .L100:
 ; .L98:
@@ -22028,406 +21753,779 @@ L.nvol_teddy_fat_avx2_3:
     ret
 ; .L17:
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 513
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3393
 ; .L19:
     movzx eax, byte [rbx]
     movzx edx, byte [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 513
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3393
 ; .L21:
     movzx eax, word [rbx]
     movzx edx, word [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 513
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3393
 ; .L15:
     test rax, rax
-    je strict short L.nvol_teddy_fat_avx2_3 + 3273
+    je strict short L.nvol_teddy_fat_avx2_3 + 1801
 ; .L16:
     cmp rax, 1
-    je strict short L.nvol_teddy_fat_avx2_3 + 3283
+    je strict short L.nvol_teddy_fat_avx2_3 + 1811
 ; .L18:
     cmp rax, 2
-    je strict short L.nvol_teddy_fat_avx2_3 + 3305
+    je strict short L.nvol_teddy_fat_avx2_3 + 1833
 ; .L20:
     xor eax, eax
     movzx edx, word [rbx]
     movzx r11d, word [r12]
     mov [rsp + 192], r11
     cmp edx, r11d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 513
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3393
     movzx edx, byte [rbx + 2]
     movzx ebx, byte [r12 + 2]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_3 + 513
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3393
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 513
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3393
 ; .L26:
     xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 513
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3393
 ; .L12:
     mov r11, [rsp]
     sub r12, r11
     shl r12, 8
     or r12, r15
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 563
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3443
 ; .L28:
     mov rax, r12
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3252
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1780
 ; .L40:
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 882
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3762
 ; .L42:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 882
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3762
 ; .L44:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 882
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3762
 ; .L38:
     test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_3 + 3433
+    je strict short L.nvol_teddy_fat_avx2_3 + 1961
 ; .L39:
     cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_3 + 3443
+    je strict short L.nvol_teddy_fat_avx2_3 + 1971
 ; .L41:
     cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_3 + 3465
+    je strict short L.nvol_teddy_fat_avx2_3 + 1993
 ; .L43:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 352], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 882
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3762
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 882
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3762
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 882
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3762
 ; .L49:
     xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 882
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3762
 ; .L35:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 936
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 3816
 ; .L51:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3252
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1780
 ; .L63:
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1250
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4130
 ; .L65:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1250
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4130
 ; .L67:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1250
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4130
 ; .L61:
     test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_3 + 3594
+    je strict short L.nvol_teddy_fat_avx2_3 + 2122
 ; .L62:
     cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_3 + 3604
+    je strict short L.nvol_teddy_fat_avx2_3 + 2132
 ; .L64:
     cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_3 + 3626
+    je strict short L.nvol_teddy_fat_avx2_3 + 2154
 ; .L66:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 512], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 1250
+    jne strict near L.nvol_teddy_fat_avx2_3 + 4130
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 1250
+    jne strict near L.nvol_teddy_fat_avx2_3 + 4130
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1250
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4130
 ; .L72:
     xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1250
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4130
 ; .L58:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1304
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4184
 ; .L74:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3252
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1780
 ; .L86:
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1618
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4498
 ; .L88:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1618
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4498
 ; .L90:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1618
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4498
 ; .L84:
     test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_3 + 3755
+    je strict short L.nvol_teddy_fat_avx2_3 + 2283
 ; .L85:
     cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_3 + 3765
+    je strict short L.nvol_teddy_fat_avx2_3 + 2293
 ; .L87:
     cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_3 + 3787
+    je strict short L.nvol_teddy_fat_avx2_3 + 2315
 ; .L89:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 672], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 1618
+    jne strict near L.nvol_teddy_fat_avx2_3 + 4498
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 1618
+    jne strict near L.nvol_teddy_fat_avx2_3 + 4498
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1618
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4498
 ; .L95:
     xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1618
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4498
 ; .L81:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 1672
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 4552
 ; .L97:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3252
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1780
 ; .L113:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2124
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 652
 ; .L115:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2124
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 652
 ; .L117:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2124
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 652
 ; .L111:
     test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_3 + 3916
+    je strict short L.nvol_teddy_fat_avx2_3 + 2444
 ; .L112:
     cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_3 + 3927
+    je strict short L.nvol_teddy_fat_avx2_3 + 2455
 ; .L114:
     cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_3 + 3952
+    je strict short L.nvol_teddy_fat_avx2_3 + 2480
 ; .L116:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 800], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2124
+    jne strict near L.nvol_teddy_fat_avx2_3 + 652
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2124
+    jne strict near L.nvol_teddy_fat_avx2_3 + 652
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2124
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 652
 ; .L122:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2124
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 652
 ; .L108:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2178
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 706
 ; .L136:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2476
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1004
 ; .L138:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2476
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1004
 ; .L140:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2476
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1004
 ; .L134:
     test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_3 + 4080
+    je strict short L.nvol_teddy_fat_avx2_3 + 2608
 ; .L135:
     cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_3 + 4091
+    je strict short L.nvol_teddy_fat_avx2_3 + 2619
 ; .L137:
     cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_3 + 4116
+    je strict short L.nvol_teddy_fat_avx2_3 + 2644
 ; .L139:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 928], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2476
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1004
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2476
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1004
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2476
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1004
 ; .L145:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2476
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1004
 ; .L131:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2530
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1058
 ; .L159:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2828
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1356
 ; .L161:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2828
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1356
 ; .L163:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2828
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1356
 ; .L157:
     test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_3 + 4244
+    je strict short L.nvol_teddy_fat_avx2_3 + 2772
 ; .L158:
     cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_3 + 4255
+    je strict short L.nvol_teddy_fat_avx2_3 + 2783
 ; .L160:
     cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_3 + 4280
+    je strict short L.nvol_teddy_fat_avx2_3 + 2808
 ; .L162:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1056], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2828
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1356
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 2828
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1356
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2828
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1356
 ; .L168:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2828
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1356
 ; .L154:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 2882
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1410
 ; .L182:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3180
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1708
 ; .L184:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3180
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1708
 ; .L186:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3180
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1708
 ; .L180:
     test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_3 + 4408
+    je strict short L.nvol_teddy_fat_avx2_3 + 2936
 ; .L181:
     cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_3 + 4419
+    je strict short L.nvol_teddy_fat_avx2_3 + 2947
 ; .L183:
     cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_3 + 4444
+    je strict short L.nvol_teddy_fat_avx2_3 + 2972
 ; .L185:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1184], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3180
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1708
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_3 + 3180
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1708
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3180
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1708
 ; .L191:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3180
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1708
 ; .L177:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_3 + 3234
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 1762
+; .Lrare1:
+    lea r11, [r8 - 2]
+    mov [rsp + 64], r11
+    vpermq ymm11, ymm10, 78
+    vpunpcklbw ymm12, ymm10, ymm11
+    vpunpckhbw ymm10, ymm10, ymm11
+    vmovq rax, xmm12
+    mov qword [rsp + 96], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_3 + 3436
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L7:
+    mov r11, [rsp + 96]
+    bsf rbp, r11
+    mov r12, qword [rsp + 96]
+    mov r11, [rsp + 96]
+    lea r13, [r11 - 1]
+    and r12, r13
+    mov qword [rsp + 96], r12
+    mov r12, rbp
+    shr r12, 4
+    mov r11, [rsp + 64]
+    lea r12, [r11 + r12]
+    mov r11, rbp
+    and r11, 15
+    mov [rsp + 128], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 160], r10
+    xor r14d, r14d
+    mov r11, r10
+    cmp r14, r11
+    jae strict near L.nvol_teddy_fat_avx2_3 + 3422
+    db 0x66, 0x90
+; .L9:
+    mov r15, qword [rsp + 128]
+    shl r15, 6
+    lea r15, [r15 + r14]
+    movzx r15d, byte [rdi + r15 + 336]
+    mov rbx, r15
+    shl rbx, 4
+    mov rbx, qword [rsi + rbx + 8]
+    lea rbx, [rsi + rbx]
+    mov rax, r15
+    shl rax, 4
+    mov rax, qword [rsi + rax + 16]
+    mov rdx, rcx
+    sub rdx, r12
+    cmp rax, rdx
+    ja strict short L.nvol_teddy_fat_avx2_3 + 3401
+    cmp rax, 4
+    jb strict near L.nvol_teddy_fat_avx2_3 + 1855
+; .L14:
+    lea rdx, [rax - 4]
+    lea rdx, [rbx + rdx]
+    lea rax, [rax - 4]
+    lea rax, [r12 + rax]
+    mov r9, r12
+    cmp rbx, rdx
+    jae strict short L.nvol_teddy_fat_avx2_3 + 3380
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov r13d, dword [rbx]
+    mov ebp, dword [r9]
+    cmp r13d, ebp
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1927
+; .L25:
+    lea rbx, [rbx + 4]
+    add r9, 4
+    cmp rbx, rdx
+    jb strict short L.nvol_teddy_fat_avx2_3 + 3352
+; .L24:
+    mov edx, dword [rdx]
+    mov eax, dword [rax]
+    cmp rdx, rax
+    sete al
+    movzx eax, al
+; .L13:
+    test eax, eax
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1934
+; .L11:
+    lea r14, [r14 + 1]
+    mov r11, [rsp + 160]
+    cmp r14, r11
+    jb strict near L.nvol_teddy_fat_avx2_3 + 3248
+; .L10:
+    mov r11, [rsp + 96]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3152
+; .L8:
+    mov r12, -1
+; .L6:
+    cmp r12, -1
+    jne strict near L.nvol_teddy_fat_avx2_3 + 1953
+; .L27:
+    mov r11, [rsp + 64]
+    lea r10, [r11 + 4]
+    mov [rsp + 224], r10
+    vpextrq rdx, xmm12, 1
+    mov qword [rsp + 256], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_3 + 3809
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L30:
+    mov r11, [rsp + 256]
+    bsf r9, r11
+    mov rbx, qword [rsp + 256]
+    mov r11, [rsp + 256]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 256], rbx
+    mov rbx, r9
+    shr rbx, 4
+    mov r11, [rsp + 224]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 15
+    mov [rsp + 288], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 320], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_fat_avx2_3 + 3792
+    db 0xf, 0x1f, 0x0
+; .L32:
+    mov r13, qword [rsp + 288]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_fat_avx2_3 + 3770
+    cmp r15, 4
+    jb strict near L.nvol_teddy_fat_avx2_3 + 2015
+; .L37:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_fat_avx2_3 + 3748
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2088
+; .L48:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_fat_avx2_3 + 3720
+; .L47:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L36:
+    test eax, eax
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2095
+; .L34:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 320]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_fat_avx2_3 + 3616
+; .L33:
+    mov r11, [rsp + 256]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3504
+; .L31:
+    mov rbx, -1
+; .L29:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2114
+; .L50:
+    mov r11, [rsp + 64]
+    lea r10, [r11 + 8]
+    mov [rsp + 384], r10
+    vmovq rdx, xmm10
+    mov qword [rsp + 416], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_3 + 4177
+    db 0xf, 0x1f, 0x40, 0x0
+; .L53:
+    mov r11, [rsp + 416]
+    bsf r9, r11
+    mov rbx, qword [rsp + 416]
+    mov r11, [rsp + 416]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 416], rbx
+    mov rbx, r9
+    shr rbx, 4
+    mov r11, [rsp + 384]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 15
+    mov [rsp + 448], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 480], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_fat_avx2_3 + 4160
+    db 0xf, 0x1f, 0x0
+; .L55:
+    mov r13, qword [rsp + 448]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_fat_avx2_3 + 4138
+    cmp r15, 4
+    jb strict near L.nvol_teddy_fat_avx2_3 + 2176
+; .L60:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_fat_avx2_3 + 4116
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L69:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2249
+; .L71:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_fat_avx2_3 + 4088
+; .L70:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L59:
+    test eax, eax
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2256
+; .L57:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 480]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_fat_avx2_3 + 3984
+; .L56:
+    mov r11, [rsp + 416]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_3 + 3872
+; .L54:
+    mov rbx, -1
+; .L52:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2275
+; .L73:
+    mov r11, [rsp + 64]
+    lea r10, [r11 + 12]
+    mov [rsp + 544], r10
+    vpextrq rdx, xmm10, 1
+    mov qword [rsp + 576], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_3 + 4545
+    db 0xf, 0x1f, 0x0
+; .L76:
+    mov r11, [rsp + 576]
+    bsf r9, r11
+    mov rbx, qword [rsp + 576]
+    mov r11, [rsp + 576]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 576], rbx
+    mov rbx, r9
+    shr rbx, 4
+    mov r11, [rsp + 544]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 15
+    mov [rsp + 608], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 640], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_fat_avx2_3 + 4528
+    db 0xf, 0x1f, 0x0
+; .L78:
+    mov r13, qword [rsp + 608]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_fat_avx2_3 + 4506
+    cmp r15, 4
+    jb strict near L.nvol_teddy_fat_avx2_3 + 2337
+; .L83:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_fat_avx2_3 + 4484
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L92:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2410
+; .L94:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_fat_avx2_3 + 4456
+; .L93:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L82:
+    test eax, eax
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2417
+; .L80:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 640]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_fat_avx2_3 + 4352
+; .L79:
+    mov r11, [rsp + 576]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_3 + 4240
+; .L77:
+    mov rbx, -1
+; .L75:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_fat_avx2_3 + 2436
+; .L96:
+    jmp strict near L.nvol_teddy_fat_avx2_3 + 223
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_teddy_slim_avx2_4:function hidden 4844
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_teddy_slim_avx2_4:function hidden 4855
 nvol_teddy_slim_avx2_4:
 L.nvol_teddy_slim_avx2_4:
     push rbx
@@ -22461,7 +22559,7 @@ L.nvol_teddy_slim_avx2_4:
     lea r11, [rcx - 32]
     mov [rsp + 192], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_slim_avx2_4 + 1879
+    ja strict near L.nvol_teddy_slim_avx2_4 + 385
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L2:
     vmovdqu ymm13, [r8]
@@ -22497,377 +22595,7 @@ L.nvol_teddy_slim_avx2_4:
     vmovdqa ymm11, ymm1
     vmovdqa ymm12, ymm2
     vptest ymm3, ymm3
-    je strict near L.nvol_teddy_slim_avx2_4 + 1858
-    lea r11, [r8 - 3]
-    mov [rsp + 224], r11
-    vmovq rax, xmm3
-    mov qword [rsp + 256], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_4 + 711
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L7:
-    mov r11, [rsp + 256]
-    bsf rbp, r11
-    mov r12, qword [rsp + 256]
-    mov r11, [rsp + 256]
-    lea r13, [r11 - 1]
-    and r12, r13
-    mov qword [rsp + 256], r12
-    mov r12, rbp
-    shr r12, 3
-    mov r11, [rsp + 224]
-    lea r12, [r11 + r12]
-    mov r11, rbp
-    and r11, 7
-    mov [rsp + 288], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 320], r10
-    xor r14d, r14d
-    mov r11, r10
-    cmp r14, r11
-    jae strict near L.nvol_teddy_slim_avx2_4 + 694
-    db 0xf, 0x1f, 0x0
-; .L9:
-    mov r15, qword [rsp + 288]
-    shl r15, 6
-    lea r15, [r15 + r14]
-    movzx r15d, byte [rdi + r15 + 336]
-    mov rbx, r15
-    shl rbx, 4
-    mov rbx, qword [rsi + rbx + 8]
-    lea rbx, [rsi + rbx]
-    mov rax, r15
-    shl rax, 4
-    mov rax, qword [rsi + rax + 16]
-    mov rdx, rcx
-    sub rdx, r12
-    cmp rax, rdx
-    ja strict short L.nvol_teddy_slim_avx2_4 + 673
-    cmp rax, 4
-    jb strict near L.nvol_teddy_slim_avx2_4 + 3599
-; .L14:
-    lea rdx, [rax - 4]
-    lea rdx, [rbx + rdx]
-    lea rax, [rax - 4]
-    lea rax, [r12 + rax]
-    mov r9, r12
-    cmp rbx, rdx
-    jae strict short L.nvol_teddy_slim_avx2_4 + 652
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L23:
-    mov r13d, dword [rbx]
-    mov ebp, dword [r9]
-    cmp r13d, ebp
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3671
-; .L25:
-    lea rbx, [rbx + 4]
-    add r9, 4
-    cmp rbx, rdx
-    jb strict short L.nvol_teddy_slim_avx2_4 + 624
-; .L24:
-    mov edx, dword [rdx]
-    mov eax, dword [rax]
-    cmp rdx, rax
-    sete al
-    movzx eax, al
-; .L13:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3678
-; .L11:
-    lea r14, [r14 + 1]
-    mov r11, [rsp + 320]
-    cmp r14, r11
-    jb strict near L.nvol_teddy_slim_avx2_4 + 520
-; .L10:
-    mov r11, [rsp + 256]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_4 + 408
-; .L8:
-    mov r12, -1
-; .L6:
-    cmp r12, -1
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3697
-; .L27:
-    mov r11, [rsp + 224]
-    lea r10, [r11 + 8]
-    mov [rsp + 384], r10
-    vpextrq rdx, xmm3, 1
-    mov qword [rsp + 416], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_4 + 1089
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-; .L30:
-    mov r11, [rsp + 416]
-    bsf r9, r11
-    mov rbx, qword [rsp + 416]
-    mov r11, [rsp + 416]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 416], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 384]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 448], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 480], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_4 + 1072
-    db 0xf, 0x1f, 0x0
-; .L32:
-    mov r13, qword [rsp + 448]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_4 + 1050
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_4 + 3759
-; .L37:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_4 + 1028
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L46:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3832
-; .L48:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_4 + 1000
-; .L47:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L36:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3839
-; .L34:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 480]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_4 + 896
-; .L33:
-    mov r11, [rsp + 416]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_4 + 784
-; .L31:
-    mov rbx, -1
-; .L29:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3858
-; .L50:
-    mov r11, [rsp + 224]
-    lea r10, [r11 + 16]
-    mov [rsp + 544], r10
-    vextracti128 xmm0, ymm3, 1
-    vmovq rdx, xmm0
-    mov qword [rsp + 576], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_4 + 1465
-    db 0xf, 0x1f, 0x0
-; .L53:
-    mov r11, [rsp + 576]
-    bsf r9, r11
-    mov rbx, qword [rsp + 576]
-    mov r11, [rsp + 576]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 576], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 544]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 608], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 640], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_4 + 1448
-    db 0xf, 0x1f, 0x0
-; .L55:
-    mov r13, qword [rsp + 608]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_4 + 1426
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_4 + 3920
-; .L60:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_4 + 1404
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L69:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3993
-; .L71:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_4 + 1376
-; .L70:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L59:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4000
-; .L57:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 640]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_4 + 1272
-; .L56:
-    mov r11, [rsp + 576]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_4 + 1160
-; .L54:
-    mov rbx, -1
-; .L52:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4019
-; .L73:
-    mov r11, [rsp + 224]
-    lea r10, [r11 + 24]
-    mov [rsp + 704], r10
-    vextracti128 xmm0, ymm3, 1
-    vpextrq rdx, xmm0, 1
-    mov qword [rsp + 736], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_4 + 1841
-    db 0x66, 0x90
-; .L76:
-    mov r11, [rsp + 736]
-    bsf r9, r11
-    mov rbx, qword [rsp + 736]
-    mov r11, [rsp + 736]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 736], rbx
-    mov rbx, r9
-    shr rbx, 3
-    mov r11, [rsp + 704]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 7
-    mov [rsp + 768], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 800], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_slim_avx2_4 + 1824
-    db 0xf, 0x1f, 0x0
-; .L78:
-    mov r13, qword [rsp + 768]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_slim_avx2_4 + 1802
-    cmp r15, 4
-    jb strict near L.nvol_teddy_slim_avx2_4 + 4081
-; .L83:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_slim_avx2_4 + 1780
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L92:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4154
-; .L94:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_slim_avx2_4 + 1752
-; .L93:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L82:
-    test eax, eax
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4161
-; .L80:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 800]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_slim_avx2_4 + 1648
-; .L79:
-    mov r11, [rsp + 736]
-    test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_4 + 1536
-; .L77:
-    mov rbx, -1
-; .L75:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4180
-; .L96:
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3356
 ; .L4:
     lea r8, [r8 + 32]
     mov r11, [rsp + 192]
@@ -22875,7 +22603,7 @@ L.nvol_teddy_slim_avx2_4:
     jbe strict near L.nvol_teddy_slim_avx2_4 + 184
 ; .L3:
     cmp r8, rcx
-    jae strict near L.nvol_teddy_slim_avx2_4 + 3517
+    jae strict near L.nvol_teddy_slim_avx2_4 + 2029
     vmovdqu ymm12, [rsp + 160]
     lea r8, [rcx - 32]
     vmovdqa ymm10, ymm12
@@ -22913,15 +22641,15 @@ L.nvol_teddy_slim_avx2_4:
     vmovdqa ymm11, ymm3
     vmovdqa ymm12, ymm4
     vptest ymm0, ymm0
-    je strict near L.nvol_teddy_slim_avx2_4 + 3517
+    je strict near L.nvol_teddy_slim_avx2_4 + 2029
     lea r11, [r8 - 3]
     mov [rsp + 864], r11
     vmovq rax, xmm0
     mov qword [rsp + 896], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_4 + 2411
-    db 0xf, 0x1f, 0x0
+    je strict near L.nvol_teddy_slim_avx2_4 + 923
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L103:
     mov r11, [rsp + 896]
     bsf r8, r11
@@ -22939,7 +22667,7 @@ L.nvol_teddy_slim_avx2_4:
     mov [rsp + 928], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_4 + 2394
+    jae strict near L.nvol_teddy_slim_avx2_4 + 906
     db 0x66, 0x90
 ; .L105:
     mov r12, r8
@@ -22956,9 +22684,9 @@ L.nvol_teddy_slim_avx2_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_4 + 2373
+    ja strict short L.nvol_teddy_slim_avx2_4 + 885
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_4 + 4249
+    jb strict near L.nvol_teddy_slim_avx2_4 + 2761
 ; .L110:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -22966,18 +22694,18 @@ L.nvol_teddy_slim_avx2_4:
     lea r14, [r9 + r14]
     mov rdx, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_4 + 2347
+    jae strict short L.nvol_teddy_slim_avx2_4 + 859
     db 0x66, 0x90
 ; .L119:
     mov eax, dword [r13]
     mov ebx, dword [rdx]
     cmp eax, ebx
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4325
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2837
 ; .L121:
     lea r13, [r13 + 4]
     add rdx, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_4 + 2320
+    jb strict short L.nvol_teddy_slim_avx2_4 + 832
 ; .L120:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -22986,23 +22714,23 @@ L.nvol_teddy_slim_avx2_4:
     movzx r14d, r14b
 ; .L109:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4333
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2845
 ; .L107:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 928]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_4 + 2224
+    jb strict near L.nvol_teddy_slim_avx2_4 + 736
 ; .L106:
     mov r11, [rsp + 896]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_4 + 2128
+    jne strict near L.nvol_teddy_slim_avx2_4 + 640
 ; .L104:
     mov r9, -1
 ; .L102:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_4 + 2432
+    je strict short L.nvol_teddy_slim_avx2_4 + 944
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3524
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 2036
 ; .L123:
     mov r11, [rsp + 864]
     lea r10, [r11 + 8]
@@ -23011,7 +22739,7 @@ L.nvol_teddy_slim_avx2_4:
     mov qword [rsp + 1024], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_4 + 2763
+    je strict near L.nvol_teddy_slim_avx2_4 + 1275
     db 0x66, 0x90
 ; .L126:
     mov r11, [rsp + 1024]
@@ -23030,7 +22758,7 @@ L.nvol_teddy_slim_avx2_4:
     mov [rsp + 1056], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_4 + 2746
+    jae strict near L.nvol_teddy_slim_avx2_4 + 1258
     db 0x66, 0x90
 ; .L128:
     mov r12, r8
@@ -23047,9 +22775,9 @@ L.nvol_teddy_slim_avx2_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_4 + 2725
+    ja strict short L.nvol_teddy_slim_avx2_4 + 1237
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_4 + 4413
+    jb strict near L.nvol_teddy_slim_avx2_4 + 2925
 ; .L133:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -23057,18 +22785,18 @@ L.nvol_teddy_slim_avx2_4:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_4 + 2699
+    jae strict short L.nvol_teddy_slim_avx2_4 + 1211
     db 0x66, 0x90
 ; .L142:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4489
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3001
 ; .L144:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_4 + 2672
+    jb strict short L.nvol_teddy_slim_avx2_4 + 1184
 ; .L143:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -23077,23 +22805,23 @@ L.nvol_teddy_slim_avx2_4:
     movzx r14d, r14b
 ; .L132:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4497
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3009
 ; .L130:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1056]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_4 + 2576
+    jb strict near L.nvol_teddy_slim_avx2_4 + 1088
 ; .L129:
     mov r11, [rsp + 1024]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_4 + 2480
+    jne strict near L.nvol_teddy_slim_avx2_4 + 992
 ; .L127:
     mov r9, -1
 ; .L125:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_4 + 2784
+    je strict short L.nvol_teddy_slim_avx2_4 + 1296
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3524
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 2036
 ; .L146:
     mov r11, [rsp + 864]
     lea r10, [r11 + 16]
@@ -23103,7 +22831,7 @@ L.nvol_teddy_slim_avx2_4:
     mov qword [rsp + 1152], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_4 + 3131
+    je strict near L.nvol_teddy_slim_avx2_4 + 1643
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L149:
     mov r11, [rsp + 1152]
@@ -23122,7 +22850,7 @@ L.nvol_teddy_slim_avx2_4:
     mov [rsp + 1184], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_4 + 3114
+    jae strict near L.nvol_teddy_slim_avx2_4 + 1626
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L151:
@@ -23140,9 +22868,9 @@ L.nvol_teddy_slim_avx2_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_4 + 3093
+    ja strict short L.nvol_teddy_slim_avx2_4 + 1605
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_4 + 4577
+    jb strict near L.nvol_teddy_slim_avx2_4 + 3089
 ; .L156:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -23150,18 +22878,18 @@ L.nvol_teddy_slim_avx2_4:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_4 + 3067
+    jae strict short L.nvol_teddy_slim_avx2_4 + 1579
     db 0x66, 0x90
 ; .L165:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4653
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3165
 ; .L167:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_4 + 3040
+    jb strict short L.nvol_teddy_slim_avx2_4 + 1552
 ; .L166:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -23170,23 +22898,23 @@ L.nvol_teddy_slim_avx2_4:
     movzx r14d, r14b
 ; .L155:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4661
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3173
 ; .L153:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1184]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_4 + 2944
+    jb strict near L.nvol_teddy_slim_avx2_4 + 1456
 ; .L152:
     mov r11, [rsp + 1152]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_4 + 2840
+    jne strict near L.nvol_teddy_slim_avx2_4 + 1352
 ; .L150:
     mov r9, -1
 ; .L148:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_4 + 3152
+    je strict short L.nvol_teddy_slim_avx2_4 + 1664
     mov rax, r9
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3524
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 2036
 ; .L169:
     mov r11, [rsp + 864]
     lea r10, [r11 + 24]
@@ -23196,7 +22924,7 @@ L.nvol_teddy_slim_avx2_4:
     mov qword [rsp + 1280], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_slim_avx2_4 + 3499
+    je strict near L.nvol_teddy_slim_avx2_4 + 2011
     db 0xf, 0x1f, 0x40, 0x0
 ; .L172:
     mov r11, [rsp + 1280]
@@ -23215,7 +22943,7 @@ L.nvol_teddy_slim_avx2_4:
     mov [rsp + 1312], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_slim_avx2_4 + 3482
+    jae strict near L.nvol_teddy_slim_avx2_4 + 1994
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L174:
@@ -23233,9 +22961,9 @@ L.nvol_teddy_slim_avx2_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_slim_avx2_4 + 3461
+    ja strict short L.nvol_teddy_slim_avx2_4 + 1973
     cmp r14, 4
-    jb strict near L.nvol_teddy_slim_avx2_4 + 4741
+    jb strict near L.nvol_teddy_slim_avx2_4 + 3253
 ; .L179:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -23243,18 +22971,18 @@ L.nvol_teddy_slim_avx2_4:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_slim_avx2_4 + 3435
+    jae strict short L.nvol_teddy_slim_avx2_4 + 1947
     db 0x66, 0x90
 ; .L188:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4817
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3329
 ; .L190:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_slim_avx2_4 + 3408
+    jb strict short L.nvol_teddy_slim_avx2_4 + 1920
 ; .L189:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -23263,23 +22991,23 @@ L.nvol_teddy_slim_avx2_4:
     movzx r14d, r14b
 ; .L178:
     test r14d, r14d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 4825
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3337
 ; .L176:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1312]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_slim_avx2_4 + 3312
+    jb strict near L.nvol_teddy_slim_avx2_4 + 1824
 ; .L175:
     mov r11, [rsp + 1280]
     test r11, r11
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3208
+    jne strict near L.nvol_teddy_slim_avx2_4 + 1720
 ; .L173:
     mov r9, -1
 ; .L171:
     cmp r9, -1
-    je strict short L.nvol_teddy_slim_avx2_4 + 3517
+    je strict short L.nvol_teddy_slim_avx2_4 + 2029
     mov rax, r9
-    jmp strict short L.nvol_teddy_slim_avx2_4 + 3524
+    jmp strict short L.nvol_teddy_slim_avx2_4 + 2036
 ; .L192:
 ; .L100:
 ; .L98:
@@ -23296,405 +23024,775 @@ L.nvol_teddy_slim_avx2_4:
     ret
 ; .L17:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 665
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 3657
 ; .L19:
     movzx eax, byte [rbx]
     movzx edx, byte [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 665
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 3657
 ; .L21:
     movzx eax, word [rbx]
     movzx edx, word [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 665
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 3657
 ; .L15:
     test rax, rax
-    je strict short L.nvol_teddy_slim_avx2_4 + 3545
+    je strict short L.nvol_teddy_slim_avx2_4 + 2057
 ; .L16:
     cmp rax, 1
-    je strict short L.nvol_teddy_slim_avx2_4 + 3555
+    je strict short L.nvol_teddy_slim_avx2_4 + 2067
 ; .L18:
     cmp rax, 2
-    je strict short L.nvol_teddy_slim_avx2_4 + 3577
+    je strict short L.nvol_teddy_slim_avx2_4 + 2089
 ; .L20:
     xor eax, eax
     movzx edx, word [rbx]
     movzx r11d, word [r12]
     mov [rsp + 352], r11
     cmp edx, r11d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 665
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3657
     movzx edx, byte [rbx + 2]
     movzx ebx, byte [r12 + 2]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_slim_avx2_4 + 665
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3657
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 665
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 3657
 ; .L26:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 665
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 3657
 ; .L12:
     mov r11, [rsp]
     sub r12, r11
     shl r12, 8
     or r12, r15
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 718
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 3710
 ; .L28:
     mov rax, r12
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3524
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 2036
 ; .L40:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1042
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4034
 ; .L42:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1042
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4034
 ; .L44:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1042
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4034
 ; .L38:
     test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_4 + 3705
+    je strict short L.nvol_teddy_slim_avx2_4 + 2217
 ; .L39:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_4 + 3715
+    je strict short L.nvol_teddy_slim_avx2_4 + 2227
 ; .L41:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_4 + 3737
+    je strict short L.nvol_teddy_slim_avx2_4 + 2249
 ; .L43:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 512], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 1042
+    jne strict near L.nvol_teddy_slim_avx2_4 + 4034
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 1042
+    jne strict near L.nvol_teddy_slim_avx2_4 + 4034
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1042
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4034
 ; .L49:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1042
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4034
 ; .L35:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1096
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4088
 ; .L51:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3524
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 2036
 ; .L63:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1418
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4410
 ; .L65:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1418
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4410
 ; .L67:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1418
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4410
 ; .L61:
     test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_4 + 3866
+    je strict short L.nvol_teddy_slim_avx2_4 + 2378
 ; .L62:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_4 + 3876
+    je strict short L.nvol_teddy_slim_avx2_4 + 2388
 ; .L64:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_4 + 3898
+    je strict short L.nvol_teddy_slim_avx2_4 + 2410
 ; .L66:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 672], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 1418
+    jne strict near L.nvol_teddy_slim_avx2_4 + 4410
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 1418
+    jne strict near L.nvol_teddy_slim_avx2_4 + 4410
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1418
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4410
 ; .L72:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1418
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4410
 ; .L58:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1472
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4464
 ; .L74:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3524
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 2036
 ; .L86:
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1794
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4786
 ; .L88:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1794
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4786
 ; .L90:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1794
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4786
 ; .L84:
     test r15, r15
-    je strict short L.nvol_teddy_slim_avx2_4 + 4027
+    je strict short L.nvol_teddy_slim_avx2_4 + 2539
 ; .L85:
     cmp r15, 1
-    je strict short L.nvol_teddy_slim_avx2_4 + 4037
+    je strict short L.nvol_teddy_slim_avx2_4 + 2549
 ; .L87:
     cmp r15, 2
-    je strict short L.nvol_teddy_slim_avx2_4 + 4059
+    je strict short L.nvol_teddy_slim_avx2_4 + 2571
 ; .L89:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 832], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 1794
+    jne strict near L.nvol_teddy_slim_avx2_4 + 4786
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 1794
+    jne strict near L.nvol_teddy_slim_avx2_4 + 4786
     mov eax, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1794
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4786
 ; .L95:
     xor eax, eax
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1794
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4786
 ; .L81:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 1848
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 4840
 ; .L97:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3524
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 2036
 ; .L113:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2364
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 876
 ; .L115:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2364
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 876
 ; .L117:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2364
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 876
 ; .L111:
     test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_4 + 4188
+    je strict short L.nvol_teddy_slim_avx2_4 + 2700
 ; .L112:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_4 + 4199
+    je strict short L.nvol_teddy_slim_avx2_4 + 2711
 ; .L114:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_4 + 4224
+    je strict short L.nvol_teddy_slim_avx2_4 + 2736
 ; .L116:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 960], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 2364
+    jne strict near L.nvol_teddy_slim_avx2_4 + 876
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 2364
+    jne strict near L.nvol_teddy_slim_avx2_4 + 876
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2364
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 876
 ; .L122:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2364
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 876
 ; .L108:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2418
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 930
 ; .L136:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2716
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1228
 ; .L138:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2716
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1228
 ; .L140:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2716
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1228
 ; .L134:
     test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_4 + 4352
+    je strict short L.nvol_teddy_slim_avx2_4 + 2864
 ; .L135:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_4 + 4363
+    je strict short L.nvol_teddy_slim_avx2_4 + 2875
 ; .L137:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_4 + 4388
+    je strict short L.nvol_teddy_slim_avx2_4 + 2900
 ; .L139:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1088], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 2716
+    jne strict near L.nvol_teddy_slim_avx2_4 + 1228
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 2716
+    jne strict near L.nvol_teddy_slim_avx2_4 + 1228
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2716
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1228
 ; .L145:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2716
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1228
 ; .L131:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 2770
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1282
 ; .L159:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3084
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1596
 ; .L161:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3084
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1596
 ; .L163:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3084
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1596
 ; .L157:
     test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_4 + 4516
+    je strict short L.nvol_teddy_slim_avx2_4 + 3028
 ; .L158:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_4 + 4527
+    je strict short L.nvol_teddy_slim_avx2_4 + 3039
 ; .L160:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_4 + 4552
+    je strict short L.nvol_teddy_slim_avx2_4 + 3064
 ; .L162:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1216], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3084
+    jne strict near L.nvol_teddy_slim_avx2_4 + 1596
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3084
+    jne strict near L.nvol_teddy_slim_avx2_4 + 1596
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3084
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1596
 ; .L168:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3084
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1596
 ; .L154:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3138
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1650
 ; .L182:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3452
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1964
 ; .L184:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3452
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1964
 ; .L186:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3452
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1964
 ; .L180:
     test r14, r14
-    je strict short L.nvol_teddy_slim_avx2_4 + 4680
+    je strict short L.nvol_teddy_slim_avx2_4 + 3192
 ; .L181:
     cmp r14, 1
-    je strict short L.nvol_teddy_slim_avx2_4 + 4691
+    je strict short L.nvol_teddy_slim_avx2_4 + 3203
 ; .L183:
     cmp r14, 2
-    je strict short L.nvol_teddy_slim_avx2_4 + 4716
+    je strict short L.nvol_teddy_slim_avx2_4 + 3228
 ; .L185:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1344], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3452
+    jne strict near L.nvol_teddy_slim_avx2_4 + 1964
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_slim_avx2_4 + 3452
+    jne strict near L.nvol_teddy_slim_avx2_4 + 1964
     mov r14d, 1
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3452
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1964
 ; .L191:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3452
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 1964
 ; .L177:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_slim_avx2_4 + 3506
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 2018
+; .Lrare1:
+    lea r11, [r8 - 3]
+    mov [rsp + 224], r11
+    vmovq rax, xmm3
+    mov qword [rsp + 256], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_4 + 3703
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L7:
+    mov r11, [rsp + 256]
+    bsf rbp, r11
+    mov r12, qword [rsp + 256]
+    mov r11, [rsp + 256]
+    lea r13, [r11 - 1]
+    and r12, r13
+    mov qword [rsp + 256], r12
+    mov r12, rbp
+    shr r12, 3
+    mov r11, [rsp + 224]
+    lea r12, [r11 + r12]
+    mov r11, rbp
+    and r11, 7
+    mov [rsp + 288], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 320], r10
+    xor r14d, r14d
+    mov r11, r10
+    cmp r14, r11
+    jae strict near L.nvol_teddy_slim_avx2_4 + 3686
+    db 0xf, 0x1f, 0x0
+; .L9:
+    mov r15, qword [rsp + 288]
+    shl r15, 6
+    lea r15, [r15 + r14]
+    movzx r15d, byte [rdi + r15 + 336]
+    mov rbx, r15
+    shl rbx, 4
+    mov rbx, qword [rsi + rbx + 8]
+    lea rbx, [rsi + rbx]
+    mov rax, r15
+    shl rax, 4
+    mov rax, qword [rsi + rax + 16]
+    mov rdx, rcx
+    sub rdx, r12
+    cmp rax, rdx
+    ja strict short L.nvol_teddy_slim_avx2_4 + 3665
+    cmp rax, 4
+    jb strict near L.nvol_teddy_slim_avx2_4 + 2111
+; .L14:
+    lea rdx, [rax - 4]
+    lea rdx, [rbx + rdx]
+    lea rax, [rax - 4]
+    lea rax, [r12 + rax]
+    mov r9, r12
+    cmp rbx, rdx
+    jae strict short L.nvol_teddy_slim_avx2_4 + 3644
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov r13d, dword [rbx]
+    mov ebp, dword [r9]
+    cmp r13d, ebp
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2183
+; .L25:
+    lea rbx, [rbx + 4]
+    add r9, 4
+    cmp rbx, rdx
+    jb strict short L.nvol_teddy_slim_avx2_4 + 3616
+; .L24:
+    mov edx, dword [rdx]
+    mov eax, dword [rax]
+    cmp rdx, rax
+    sete al
+    movzx eax, al
+; .L13:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2190
+; .L11:
+    lea r14, [r14 + 1]
+    mov r11, [rsp + 320]
+    cmp r14, r11
+    jb strict near L.nvol_teddy_slim_avx2_4 + 3512
+; .L10:
+    mov r11, [rsp + 256]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3400
+; .L8:
+    mov r12, -1
+; .L6:
+    cmp r12, -1
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2209
+; .L27:
+    mov r11, [rsp + 224]
+    lea r10, [r11 + 8]
+    mov [rsp + 384], r10
+    vpextrq rdx, xmm3, 1
+    mov qword [rsp + 416], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_4 + 4081
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L30:
+    mov r11, [rsp + 416]
+    bsf r9, r11
+    mov rbx, qword [rsp + 416]
+    mov r11, [rsp + 416]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 416], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 384]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 448], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 480], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_avx2_4 + 4064
+    db 0xf, 0x1f, 0x0
+; .L32:
+    mov r13, qword [rsp + 448]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_avx2_4 + 4042
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_avx2_4 + 2271
+; .L37:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_avx2_4 + 4020
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2344
+; .L48:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_avx2_4 + 3992
+; .L47:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L36:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2351
+; .L34:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 480]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_avx2_4 + 3888
+; .L33:
+    mov r11, [rsp + 416]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_4 + 3776
+; .L31:
+    mov rbx, -1
+; .L29:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2370
+; .L50:
+    mov r11, [rsp + 224]
+    lea r10, [r11 + 16]
+    mov [rsp + 544], r10
+    vextracti128 xmm0, ymm3, 1
+    vmovq rdx, xmm0
+    mov qword [rsp + 576], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_4 + 4457
+    db 0xf, 0x1f, 0x0
+; .L53:
+    mov r11, [rsp + 576]
+    bsf r9, r11
+    mov rbx, qword [rsp + 576]
+    mov r11, [rsp + 576]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 576], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 544]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 608], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 640], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_avx2_4 + 4440
+    db 0xf, 0x1f, 0x0
+; .L55:
+    mov r13, qword [rsp + 608]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_avx2_4 + 4418
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_avx2_4 + 2432
+; .L60:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_avx2_4 + 4396
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L69:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2505
+; .L71:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_avx2_4 + 4368
+; .L70:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L59:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2512
+; .L57:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 640]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_avx2_4 + 4264
+; .L56:
+    mov r11, [rsp + 576]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_4 + 4152
+; .L54:
+    mov rbx, -1
+; .L52:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2531
+; .L73:
+    mov r11, [rsp + 224]
+    lea r10, [r11 + 24]
+    mov [rsp + 704], r10
+    vextracti128 xmm0, ymm3, 1
+    vpextrq rdx, xmm0, 1
+    mov qword [rsp + 736], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_slim_avx2_4 + 4833
+    db 0x66, 0x90
+; .L76:
+    mov r11, [rsp + 736]
+    bsf r9, r11
+    mov rbx, qword [rsp + 736]
+    mov r11, [rsp + 736]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 736], rbx
+    mov rbx, r9
+    shr rbx, 3
+    mov r11, [rsp + 704]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 7
+    mov [rsp + 768], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 800], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_slim_avx2_4 + 4816
+    db 0xf, 0x1f, 0x0
+; .L78:
+    mov r13, qword [rsp + 768]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_slim_avx2_4 + 4794
+    cmp r15, 4
+    jb strict near L.nvol_teddy_slim_avx2_4 + 2593
+; .L83:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_slim_avx2_4 + 4772
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L92:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2666
+; .L94:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_slim_avx2_4 + 4744
+; .L93:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L82:
+    test eax, eax
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2673
+; .L80:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 800]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_slim_avx2_4 + 4640
+; .L79:
+    mov r11, [rsp + 736]
+    test r11, r11
+    jne strict near L.nvol_teddy_slim_avx2_4 + 4528
+; .L77:
+    mov rbx, -1
+; .L75:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_slim_avx2_4 + 2692
+; .L96:
+    jmp strict near L.nvol_teddy_slim_avx2_4 + 364
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
-global nvol_teddy_fat_avx2_4:function hidden 4780
+global nvol_teddy_fat_avx2_4:function hidden 4791
 nvol_teddy_fat_avx2_4:
 L.nvol_teddy_fat_avx2_4:
     push rbx
@@ -23728,7 +23826,7 @@ L.nvol_teddy_fat_avx2_4:
     lea r11, [rcx - 16]
     mov [rsp + 192], r11
     cmp r8, r11
-    ja strict near L.nvol_teddy_fat_avx2_4 + 1847
+    ja strict near L.nvol_teddy_fat_avx2_4 + 367
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L2:
     vbroadcasti128 ymm13, oword [r8]
@@ -23761,376 +23859,7 @@ L.nvol_teddy_fat_avx2_4:
     vmovdqa ymm11, ymm1
     vmovdqa ymm12, ymm2
     vptest ymm3, ymm3
-    je strict near L.nvol_teddy_fat_avx2_4 + 1826
-    lea r11, [r8 - 3]
-    mov [rsp + 224], r11
-    vpermq ymm0, ymm3, 78
-    vpunpcklbw ymm1, ymm3, ymm0
-    vpunpckhbw ymm0, ymm3, ymm0
-    vmovq rax, xmm1
-    mov qword [rsp + 256], rax
-    mov r11, rax
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_4 + 703
-    db 0xf, 0x1f, 0x0
-; .L7:
-    mov r11, [rsp + 256]
-    bsf rbp, r11
-    mov r12, qword [rsp + 256]
-    mov r11, [rsp + 256]
-    lea r13, [r11 - 1]
-    and r12, r13
-    mov qword [rsp + 256], r12
-    mov r12, rbp
-    shr r12, 4
-    mov r11, [rsp + 224]
-    lea r12, [r11 + r12]
-    mov r11, rbp
-    and r11, 15
-    mov [rsp + 288], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 320], r10
-    xor r14d, r14d
-    mov r11, r10
-    cmp r14, r11
-    jae strict near L.nvol_teddy_fat_avx2_4 + 686
-    db 0xf, 0x1f, 0x0
-; .L9:
-    mov r15, qword [rsp + 288]
-    shl r15, 6
-    lea r15, [r15 + r14]
-    movzx r15d, byte [rdi + r15 + 336]
-    mov rbx, r15
-    shl rbx, 4
-    mov rbx, qword [rsi + rbx + 8]
-    lea rbx, [rsi + rbx]
-    mov rax, r15
-    shl rax, 4
-    mov rax, qword [rsi + rax + 16]
-    mov rdx, rcx
-    sub rdx, r12
-    cmp rax, rdx
-    ja strict short L.nvol_teddy_fat_avx2_4 + 665
-    cmp rax, 4
-    jb strict near L.nvol_teddy_fat_avx2_4 + 3535
-; .L14:
-    lea rdx, [rax - 4]
-    lea rdx, [rbx + rdx]
-    lea rax, [rax - 4]
-    lea rax, [r12 + rax]
-    mov r9, r12
-    cmp rbx, rdx
-    jae strict short L.nvol_teddy_fat_avx2_4 + 644
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L23:
-    mov r13d, dword [rbx]
-    mov ebp, dword [r9]
-    cmp r13d, ebp
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3607
-; .L25:
-    lea rbx, [rbx + 4]
-    add r9, 4
-    cmp rbx, rdx
-    jb strict short L.nvol_teddy_fat_avx2_4 + 616
-; .L24:
-    mov edx, dword [rdx]
-    mov eax, dword [rax]
-    cmp rdx, rax
-    sete al
-    movzx eax, al
-; .L13:
-    test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3614
-; .L11:
-    lea r14, [r14 + 1]
-    mov r11, [rsp + 320]
-    cmp r14, r11
-    jb strict near L.nvol_teddy_fat_avx2_4 + 512
-; .L10:
-    mov r11, [rsp + 256]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_4 + 400
-; .L8:
-    mov r12, -1
-; .L6:
-    cmp r12, -1
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3633
-; .L27:
-    mov r11, [rsp + 224]
-    lea r10, [r11 + 4]
-    mov [rsp + 384], r10
-    vpextrq rdx, xmm1, 1
-    mov qword [rsp + 416], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_4 + 1073
-    db 0x66, 0x90
-; .L30:
-    mov r11, [rsp + 416]
-    bsf r9, r11
-    mov rbx, qword [rsp + 416]
-    mov r11, [rsp + 416]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 416], rbx
-    mov rbx, r9
-    shr rbx, 4
-    mov r11, [rsp + 384]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 15
-    mov [rsp + 448], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 480], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_4 + 1056
-    db 0xf, 0x1f, 0x0
-; .L32:
-    mov r13, qword [rsp + 448]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_4 + 1034
-    cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_4 + 3695
-; .L37:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_4 + 1012
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L46:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3768
-; .L48:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_4 + 984
-; .L47:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L36:
-    test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3775
-; .L34:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 480]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_4 + 880
-; .L33:
-    mov r11, [rsp + 416]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_4 + 768
-; .L31:
-    mov rbx, -1
-; .L29:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3794
-; .L50:
-    mov r11, [rsp + 224]
-    lea r10, [r11 + 8]
-    mov [rsp + 544], r10
-    vmovq rdx, xmm0
-    mov qword [rsp + 576], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_4 + 1441
-    db 0x90
-; .L53:
-    mov r11, [rsp + 576]
-    bsf r9, r11
-    mov rbx, qword [rsp + 576]
-    mov r11, [rsp + 576]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 576], rbx
-    mov rbx, r9
-    shr rbx, 4
-    mov r11, [rsp + 544]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 15
-    mov [rsp + 608], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 640], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_4 + 1424
-    db 0xf, 0x1f, 0x0
-; .L55:
-    mov r13, qword [rsp + 608]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_4 + 1402
-    cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_4 + 3856
-; .L60:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_4 + 1380
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L69:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3929
-; .L71:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_4 + 1352
-; .L70:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L59:
-    test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3936
-; .L57:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 640]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_4 + 1248
-; .L56:
-    mov r11, [rsp + 576]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_4 + 1136
-; .L54:
-    mov rbx, -1
-; .L52:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3955
-; .L73:
-    mov r11, [rsp + 224]
-    lea r10, [r11 + 12]
-    mov [rsp + 704], r10
-    vpextrq rdx, xmm0, 1
-    mov qword [rsp + 736], rdx
-    mov r11, rdx
-    test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_4 + 1809
-; .L76:
-    mov r11, [rsp + 736]
-    bsf r9, r11
-    mov rbx, qword [rsp + 736]
-    mov r11, [rsp + 736]
-    lea rbp, [r11 - 1]
-    and rbx, rbp
-    mov qword [rsp + 736], rbx
-    mov rbx, r9
-    shr rbx, 4
-    mov r11, [rsp + 704]
-    lea rbx, [r11 + rbx]
-    mov r11, r9
-    and r11, 15
-    mov [rsp + 768], r11
-    movzx r10d, byte [rdi + r11 + 320]
-    mov [rsp + 800], r10
-    xor r12d, r12d
-    mov r11, r10
-    cmp r12, r11
-    jae strict near L.nvol_teddy_fat_avx2_4 + 1792
-    db 0xf, 0x1f, 0x0
-; .L78:
-    mov r13, qword [rsp + 768]
-    shl r13, 6
-    lea r13, [r13 + r12]
-    movzx r13d, byte [rdi + r13 + 336]
-    mov r14, r13
-    shl r14, 4
-    mov r14, qword [rsi + r14 + 8]
-    lea r14, [rsi + r14]
-    mov r15, r13
-    shl r15, 4
-    mov r15, qword [rsi + r15 + 16]
-    mov rax, rcx
-    sub rax, rbx
-    cmp r15, rax
-    ja strict short L.nvol_teddy_fat_avx2_4 + 1770
-    cmp r15, 4
-    jb strict near L.nvol_teddy_fat_avx2_4 + 4017
-; .L83:
-    lea rax, [r15 - 4]
-    lea rax, [r14 + rax]
-    lea r15, [r15 - 4]
-    lea r15, [rbx + r15]
-    mov rdx, rbx
-    cmp r14, rax
-    jae strict short L.nvol_teddy_fat_avx2_4 + 1748
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L92:
-    mov ebp, dword [r14]
-    mov r9d, dword [rdx]
-    cmp ebp, r9d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4090
-; .L94:
-    lea r14, [r14 + 4]
-    add rdx, 4
-    cmp r14, rax
-    jb strict short L.nvol_teddy_fat_avx2_4 + 1720
-; .L93:
-    mov eax, dword [rax]
-    mov edx, dword [r15]
-    cmp rax, rdx
-    sete al
-    movzx eax, al
-; .L82:
-    test eax, eax
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4097
-; .L80:
-    lea r12, [r12 + 1]
-    mov r11, [rsp + 800]
-    cmp r12, r11
-    jb strict near L.nvol_teddy_fat_avx2_4 + 1616
-; .L79:
-    mov r11, [rsp + 736]
-    test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_4 + 1504
-; .L77:
-    mov rbx, -1
-; .L75:
-    cmp rbx, -1
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4116
-; .L96:
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3308
 ; .L4:
     lea r8, [r8 + 16]
     mov r11, [rsp + 192]
@@ -24138,7 +23867,7 @@ L.nvol_teddy_fat_avx2_4:
     jbe strict near L.nvol_teddy_fat_avx2_4 + 184
 ; .L3:
     cmp r8, rcx
-    jae strict near L.nvol_teddy_fat_avx2_4 + 3453
+    jae strict near L.nvol_teddy_fat_avx2_4 + 1981
     vmovdqu ymm12, [rsp + 160]
     lea r8, [rcx - 16]
     vmovdqa ymm10, ymm12
@@ -24173,7 +23902,7 @@ L.nvol_teddy_fat_avx2_4:
     vmovdqa ymm11, ymm3
     vmovdqa ymm12, ymm4
     vptest ymm0, ymm0
-    je strict near L.nvol_teddy_fat_avx2_4 + 3453
+    je strict near L.nvol_teddy_fat_avx2_4 + 1981
     lea r11, [r8 - 3]
     mov [rsp + 864], r11
     vpermq ymm1, ymm0, 78
@@ -24183,7 +23912,7 @@ L.nvol_teddy_fat_avx2_4:
     mov qword [rsp + 896], rax
     mov r11, rax
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_4 + 2379
+    je strict near L.nvol_teddy_fat_avx2_4 + 907
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L103:
     mov r11, [rsp + 896]
@@ -24202,8 +23931,9 @@ L.nvol_teddy_fat_avx2_4:
     mov [rsp + 928], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_4 + 2362
-    db 0x66, 0x90
+    jae strict near L.nvol_teddy_fat_avx2_4 + 890
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 ; .L105:
     mov r12, r8
     shl r12, 6
@@ -24219,9 +23949,9 @@ L.nvol_teddy_fat_avx2_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_4 + 2341
+    ja strict short L.nvol_teddy_fat_avx2_4 + 869
     cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_4 + 4185
+    jb strict near L.nvol_teddy_fat_avx2_4 + 2713
 ; .L110:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -24229,18 +23959,18 @@ L.nvol_teddy_fat_avx2_4:
     lea r14, [r9 + r14]
     mov rdx, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_4 + 2315
+    jae strict short L.nvol_teddy_fat_avx2_4 + 843
     db 0x66, 0x90
 ; .L119:
     mov eax, dword [r13]
     mov ebx, dword [rdx]
     cmp eax, ebx
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4261
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2789
 ; .L121:
     lea r13, [r13 + 4]
     add rdx, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_4 + 2288
+    jb strict short L.nvol_teddy_fat_avx2_4 + 816
 ; .L120:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -24249,23 +23979,23 @@ L.nvol_teddy_fat_avx2_4:
     movzx r14d, r14b
 ; .L109:
     test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4269
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2797
 ; .L107:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 928]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_4 + 2192
+    jb strict near L.nvol_teddy_fat_avx2_4 + 720
 ; .L106:
     mov r11, [rsp + 896]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_4 + 2096
+    jne strict near L.nvol_teddy_fat_avx2_4 + 616
 ; .L104:
     mov r9, -1
 ; .L102:
     cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_4 + 2400
+    je strict short L.nvol_teddy_fat_avx2_4 + 928
     mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3460
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1988
 ; .L123:
     mov r11, [rsp + 864]
     lea r10, [r11 + 4]
@@ -24274,7 +24004,7 @@ L.nvol_teddy_fat_avx2_4:
     mov qword [rsp + 1024], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_4 + 2731
+    je strict near L.nvol_teddy_fat_avx2_4 + 1259
     db 0x66, 0x90
 ; .L126:
     mov r11, [rsp + 1024]
@@ -24293,7 +24023,7 @@ L.nvol_teddy_fat_avx2_4:
     mov [rsp + 1056], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_4 + 2714
+    jae strict near L.nvol_teddy_fat_avx2_4 + 1242
     db 0x66, 0x90
 ; .L128:
     mov r12, r8
@@ -24310,9 +24040,9 @@ L.nvol_teddy_fat_avx2_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_4 + 2693
+    ja strict short L.nvol_teddy_fat_avx2_4 + 1221
     cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_4 + 4349
+    jb strict near L.nvol_teddy_fat_avx2_4 + 2877
 ; .L133:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -24320,18 +24050,18 @@ L.nvol_teddy_fat_avx2_4:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_4 + 2667
+    jae strict short L.nvol_teddy_fat_avx2_4 + 1195
     db 0x66, 0x90
 ; .L142:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4425
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2953
 ; .L144:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_4 + 2640
+    jb strict short L.nvol_teddy_fat_avx2_4 + 1168
 ; .L143:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -24340,23 +24070,23 @@ L.nvol_teddy_fat_avx2_4:
     movzx r14d, r14b
 ; .L132:
     test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4433
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2961
 ; .L130:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1056]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_4 + 2544
+    jb strict near L.nvol_teddy_fat_avx2_4 + 1072
 ; .L129:
     mov r11, [rsp + 1024]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_4 + 2448
+    jne strict near L.nvol_teddy_fat_avx2_4 + 976
 ; .L127:
     mov r9, -1
 ; .L125:
     cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_4 + 2752
+    je strict short L.nvol_teddy_fat_avx2_4 + 1280
     mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3460
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1988
 ; .L146:
     mov r11, [rsp + 864]
     lea r10, [r11 + 8]
@@ -24365,7 +24095,7 @@ L.nvol_teddy_fat_avx2_4:
     mov qword [rsp + 1152], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_4 + 3083
+    je strict near L.nvol_teddy_fat_avx2_4 + 1611
     db 0xf, 0x1f, 0x0
 ; .L149:
     mov r11, [rsp + 1152]
@@ -24384,7 +24114,7 @@ L.nvol_teddy_fat_avx2_4:
     mov [rsp + 1184], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_4 + 3066
+    jae strict near L.nvol_teddy_fat_avx2_4 + 1594
     db 0x66, 0x90
 ; .L151:
     mov r12, r8
@@ -24401,9 +24131,9 @@ L.nvol_teddy_fat_avx2_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_4 + 3045
+    ja strict short L.nvol_teddy_fat_avx2_4 + 1573
     cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_4 + 4513
+    jb strict near L.nvol_teddy_fat_avx2_4 + 3041
 ; .L156:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -24411,18 +24141,18 @@ L.nvol_teddy_fat_avx2_4:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_4 + 3019
+    jae strict short L.nvol_teddy_fat_avx2_4 + 1547
     db 0x66, 0x90
 ; .L165:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4589
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3117
 ; .L167:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_4 + 2992
+    jb strict short L.nvol_teddy_fat_avx2_4 + 1520
 ; .L166:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -24431,23 +24161,23 @@ L.nvol_teddy_fat_avx2_4:
     movzx r14d, r14b
 ; .L155:
     test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4597
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3125
 ; .L153:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1184]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_4 + 2896
+    jb strict near L.nvol_teddy_fat_avx2_4 + 1424
 ; .L152:
     mov r11, [rsp + 1152]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_4 + 2800
+    jne strict near L.nvol_teddy_fat_avx2_4 + 1328
 ; .L150:
     mov r9, -1
 ; .L148:
     cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_4 + 3104
+    je strict short L.nvol_teddy_fat_avx2_4 + 1632
     mov rax, r9
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3460
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1988
 ; .L169:
     mov r11, [rsp + 864]
     lea r10, [r11 + 12]
@@ -24456,7 +24186,7 @@ L.nvol_teddy_fat_avx2_4:
     mov qword [rsp + 1280], rdx
     mov r11, rdx
     test r11, r11
-    je strict near L.nvol_teddy_fat_avx2_4 + 3435
+    je strict near L.nvol_teddy_fat_avx2_4 + 1963
     db 0x66, 0x90
 ; .L172:
     mov r11, [rsp + 1280]
@@ -24475,7 +24205,7 @@ L.nvol_teddy_fat_avx2_4:
     mov [rsp + 1312], r11
     xor ebp, ebp
     cmp rbp, r11
-    jae strict near L.nvol_teddy_fat_avx2_4 + 3418
+    jae strict near L.nvol_teddy_fat_avx2_4 + 1946
     db 0x66, 0x90
 ; .L174:
     mov r12, r8
@@ -24492,9 +24222,9 @@ L.nvol_teddy_fat_avx2_4:
     mov r15, rcx
     sub r15, r9
     cmp r14, r15
-    ja strict short L.nvol_teddy_fat_avx2_4 + 3397
+    ja strict short L.nvol_teddy_fat_avx2_4 + 1925
     cmp r14, 4
-    jb strict near L.nvol_teddy_fat_avx2_4 + 4677
+    jb strict near L.nvol_teddy_fat_avx2_4 + 3205
 ; .L179:
     lea r15, [r14 - 4]
     lea r15, [r13 + r15]
@@ -24502,18 +24232,18 @@ L.nvol_teddy_fat_avx2_4:
     lea r14, [r9 + r14]
     mov rax, r9
     cmp r13, r15
-    jae strict short L.nvol_teddy_fat_avx2_4 + 3371
+    jae strict short L.nvol_teddy_fat_avx2_4 + 1899
     db 0x66, 0x90
 ; .L188:
     mov edx, dword [r13]
     mov ebx, dword [rax]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4753
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3281
 ; .L190:
     lea r13, [r13 + 4]
     add rax, 4
     cmp r13, r15
-    jb strict short L.nvol_teddy_fat_avx2_4 + 3344
+    jb strict short L.nvol_teddy_fat_avx2_4 + 1872
 ; .L189:
     mov eax, dword [r15]
     mov edx, dword [r14]
@@ -24522,23 +24252,23 @@ L.nvol_teddy_fat_avx2_4:
     movzx r14d, r14b
 ; .L178:
     test r14d, r14d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 4761
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3289
 ; .L176:
     lea rbp, [rbp + 1]
     mov r11, [rsp + 1312]
     cmp rbp, r11
-    jb strict near L.nvol_teddy_fat_avx2_4 + 3248
+    jb strict near L.nvol_teddy_fat_avx2_4 + 1776
 ; .L175:
     mov r11, [rsp + 1280]
     test r11, r11
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3152
+    jne strict near L.nvol_teddy_fat_avx2_4 + 1680
 ; .L173:
     mov r9, -1
 ; .L171:
     cmp r9, -1
-    je strict short L.nvol_teddy_fat_avx2_4 + 3453
+    je strict short L.nvol_teddy_fat_avx2_4 + 1981
     mov rax, r9
-    jmp strict short L.nvol_teddy_fat_avx2_4 + 3460
+    jmp strict short L.nvol_teddy_fat_avx2_4 + 1988
 ; .L192:
 ; .L100:
 ; .L98:
@@ -24555,404 +24285,773 @@ L.nvol_teddy_fat_avx2_4:
     ret
 ; .L17:
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 657
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3617
 ; .L19:
     movzx eax, byte [rbx]
     movzx edx, byte [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 657
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3617
 ; .L21:
     movzx eax, word [rbx]
     movzx edx, word [r12]
     cmp rax, rdx
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 657
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3617
 ; .L15:
     test rax, rax
-    je strict short L.nvol_teddy_fat_avx2_4 + 3481
+    je strict short L.nvol_teddy_fat_avx2_4 + 2009
 ; .L16:
     cmp rax, 1
-    je strict short L.nvol_teddy_fat_avx2_4 + 3491
+    je strict short L.nvol_teddy_fat_avx2_4 + 2019
 ; .L18:
     cmp rax, 2
-    je strict short L.nvol_teddy_fat_avx2_4 + 3513
+    je strict short L.nvol_teddy_fat_avx2_4 + 2041
 ; .L20:
     xor eax, eax
     movzx edx, word [rbx]
     movzx r11d, word [r12]
     mov [rsp + 352], r11
     cmp edx, r11d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 657
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3617
     movzx edx, byte [rbx + 2]
     movzx ebx, byte [r12 + 2]
     cmp edx, ebx
-    jne strict near L.nvol_teddy_fat_avx2_4 + 657
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3617
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 657
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3617
 ; .L26:
     xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 657
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3617
 ; .L12:
     mov r11, [rsp]
     sub r12, r11
     shl r12, 8
     or r12, r15
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 710
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3670
 ; .L28:
     mov rax, r12
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3460
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1988
 ; .L40:
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1026
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3986
 ; .L42:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1026
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3986
 ; .L44:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1026
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3986
 ; .L38:
     test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_4 + 3641
+    je strict short L.nvol_teddy_fat_avx2_4 + 2169
 ; .L39:
     cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_4 + 3651
+    je strict short L.nvol_teddy_fat_avx2_4 + 2179
 ; .L41:
     cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_4 + 3673
+    je strict short L.nvol_teddy_fat_avx2_4 + 2201
 ; .L43:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 512], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 1026
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3986
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 1026
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3986
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1026
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3986
 ; .L49:
     xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1026
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 3986
 ; .L35:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1080
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4040
 ; .L51:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3460
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1988
 ; .L63:
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1394
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4354
 ; .L65:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1394
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4354
 ; .L67:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1394
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4354
 ; .L61:
     test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_4 + 3802
+    je strict short L.nvol_teddy_fat_avx2_4 + 2330
 ; .L62:
     cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_4 + 3812
+    je strict short L.nvol_teddy_fat_avx2_4 + 2340
 ; .L64:
     cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_4 + 3834
+    je strict short L.nvol_teddy_fat_avx2_4 + 2362
 ; .L66:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 672], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 1394
+    jne strict near L.nvol_teddy_fat_avx2_4 + 4354
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 1394
+    jne strict near L.nvol_teddy_fat_avx2_4 + 4354
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1394
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4354
 ; .L72:
     xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1394
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4354
 ; .L58:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1448
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4408
 ; .L74:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3460
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1988
 ; .L86:
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1762
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4722
 ; .L88:
     movzx eax, byte [r14]
     movzx r14d, byte [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1762
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4722
 ; .L90:
     movzx eax, word [r14]
     movzx r14d, word [rbx]
     cmp rax, r14
     sete al
     movzx eax, al
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1762
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4722
 ; .L84:
     test r15, r15
-    je strict short L.nvol_teddy_fat_avx2_4 + 3963
+    je strict short L.nvol_teddy_fat_avx2_4 + 2491
 ; .L85:
     cmp r15, 1
-    je strict short L.nvol_teddy_fat_avx2_4 + 3973
+    je strict short L.nvol_teddy_fat_avx2_4 + 2501
 ; .L87:
     cmp r15, 2
-    je strict short L.nvol_teddy_fat_avx2_4 + 3995
+    je strict short L.nvol_teddy_fat_avx2_4 + 2523
 ; .L89:
     xor eax, eax
     movzx r15d, word [r14]
     movzx r11d, word [rbx]
     mov [rsp + 832], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 1762
+    jne strict near L.nvol_teddy_fat_avx2_4 + 4722
     movzx r14d, byte [r14 + 2]
     movzx r15d, byte [rbx + 2]
     cmp r14d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 1762
+    jne strict near L.nvol_teddy_fat_avx2_4 + 4722
     mov eax, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1762
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4722
 ; .L95:
     xor eax, eax
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1762
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4722
 ; .L81:
     mov r11, [rsp]
     sub rbx, r11
     shl rbx, 8
     or rbx, r13
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 1816
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 4776
 ; .L97:
     mov rax, rbx
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3460
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1988
 ; .L113:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2332
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 860
 ; .L115:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2332
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 860
 ; .L117:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2332
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 860
 ; .L111:
     test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_4 + 4124
+    je strict short L.nvol_teddy_fat_avx2_4 + 2652
 ; .L112:
     cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_4 + 4135
+    je strict short L.nvol_teddy_fat_avx2_4 + 2663
 ; .L114:
     cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_4 + 4160
+    je strict short L.nvol_teddy_fat_avx2_4 + 2688
 ; .L116:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 960], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 2332
+    jne strict near L.nvol_teddy_fat_avx2_4 + 860
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 2332
+    jne strict near L.nvol_teddy_fat_avx2_4 + 860
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2332
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 860
 ; .L122:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2332
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 860
 ; .L108:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2386
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 914
 ; .L136:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2684
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1212
 ; .L138:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2684
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1212
 ; .L140:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2684
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1212
 ; .L134:
     test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_4 + 4288
+    je strict short L.nvol_teddy_fat_avx2_4 + 2816
 ; .L135:
     cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_4 + 4299
+    je strict short L.nvol_teddy_fat_avx2_4 + 2827
 ; .L137:
     cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_4 + 4324
+    je strict short L.nvol_teddy_fat_avx2_4 + 2852
 ; .L139:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1088], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 2684
+    jne strict near L.nvol_teddy_fat_avx2_4 + 1212
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 2684
+    jne strict near L.nvol_teddy_fat_avx2_4 + 1212
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2684
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1212
 ; .L145:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2684
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1212
 ; .L131:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 2738
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1266
 ; .L159:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3036
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1564
 ; .L161:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3036
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1564
 ; .L163:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3036
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1564
 ; .L157:
     test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_4 + 4452
+    je strict short L.nvol_teddy_fat_avx2_4 + 2980
 ; .L158:
     cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_4 + 4463
+    je strict short L.nvol_teddy_fat_avx2_4 + 2991
 ; .L160:
     cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_4 + 4488
+    je strict short L.nvol_teddy_fat_avx2_4 + 3016
 ; .L162:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1216], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3036
+    jne strict near L.nvol_teddy_fat_avx2_4 + 1564
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3036
+    jne strict near L.nvol_teddy_fat_avx2_4 + 1564
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3036
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1564
 ; .L168:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3036
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1564
 ; .L154:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3090
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1618
 ; .L182:
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3388
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1916
 ; .L184:
     movzx r13d, byte [r13]
     movzx r14d, byte [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3388
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1916
 ; .L186:
     movzx r13d, word [r13]
     movzx r14d, word [r9]
     cmp r13, r14
     sete r14b
     movzx r14d, r14b
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3388
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1916
 ; .L180:
     test r14, r14
-    je strict short L.nvol_teddy_fat_avx2_4 + 4616
+    je strict short L.nvol_teddy_fat_avx2_4 + 3144
 ; .L181:
     cmp r14, 1
-    je strict short L.nvol_teddy_fat_avx2_4 + 4627
+    je strict short L.nvol_teddy_fat_avx2_4 + 3155
 ; .L183:
     cmp r14, 2
-    je strict short L.nvol_teddy_fat_avx2_4 + 4652
+    je strict short L.nvol_teddy_fat_avx2_4 + 3180
 ; .L185:
     xor r14d, r14d
     movzx r15d, word [r13]
     movzx r11d, word [r9]
     mov [rsp + 1344], r11
     cmp r15d, r11d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3388
+    jne strict near L.nvol_teddy_fat_avx2_4 + 1916
     movzx r13d, byte [r13 + 2]
     movzx r15d, byte [r9 + 2]
     cmp r13d, r15d
-    jne strict near L.nvol_teddy_fat_avx2_4 + 3388
+    jne strict near L.nvol_teddy_fat_avx2_4 + 1916
     mov r14d, 1
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3388
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1916
 ; .L191:
     xor r14d, r14d
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3388
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1916
 ; .L177:
     mov r11, [rsp]
     sub r9, r11
     shl r9, 8
     or r9, r12
-    jmp strict near L.nvol_teddy_fat_avx2_4 + 3442
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 1970
+; .Lrare1:
+    lea r11, [r8 - 3]
+    mov [rsp + 224], r11
+    vpermq ymm0, ymm3, 78
+    vpunpcklbw ymm1, ymm3, ymm0
+    vpunpckhbw ymm0, ymm3, ymm0
+    vmovq rax, xmm1
+    mov qword [rsp + 256], rax
+    mov r11, rax
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_4 + 3663
+    db 0x90
+; .L7:
+    mov r11, [rsp + 256]
+    bsf rbp, r11
+    mov r12, qword [rsp + 256]
+    mov r11, [rsp + 256]
+    lea r13, [r11 - 1]
+    and r12, r13
+    mov qword [rsp + 256], r12
+    mov r12, rbp
+    shr r12, 4
+    mov r11, [rsp + 224]
+    lea r12, [r11 + r12]
+    mov r11, rbp
+    and r11, 15
+    mov [rsp + 288], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 320], r10
+    xor r14d, r14d
+    mov r11, r10
+    cmp r14, r11
+    jae strict near L.nvol_teddy_fat_avx2_4 + 3646
+    db 0xf, 0x1f, 0x0
+; .L9:
+    mov r15, qword [rsp + 288]
+    shl r15, 6
+    lea r15, [r15 + r14]
+    movzx r15d, byte [rdi + r15 + 336]
+    mov rbx, r15
+    shl rbx, 4
+    mov rbx, qword [rsi + rbx + 8]
+    lea rbx, [rsi + rbx]
+    mov rax, r15
+    shl rax, 4
+    mov rax, qword [rsi + rax + 16]
+    mov rdx, rcx
+    sub rdx, r12
+    cmp rax, rdx
+    ja strict short L.nvol_teddy_fat_avx2_4 + 3625
+    cmp rax, 4
+    jb strict near L.nvol_teddy_fat_avx2_4 + 2063
+; .L14:
+    lea rdx, [rax - 4]
+    lea rdx, [rbx + rdx]
+    lea rax, [rax - 4]
+    lea rax, [r12 + rax]
+    mov r9, r12
+    cmp rbx, rdx
+    jae strict short L.nvol_teddy_fat_avx2_4 + 3604
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov r13d, dword [rbx]
+    mov ebp, dword [r9]
+    cmp r13d, ebp
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2135
+; .L25:
+    lea rbx, [rbx + 4]
+    add r9, 4
+    cmp rbx, rdx
+    jb strict short L.nvol_teddy_fat_avx2_4 + 3576
+; .L24:
+    mov edx, dword [rdx]
+    mov eax, dword [rax]
+    cmp rdx, rax
+    sete al
+    movzx eax, al
+; .L13:
+    test eax, eax
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2142
+; .L11:
+    lea r14, [r14 + 1]
+    mov r11, [rsp + 320]
+    cmp r14, r11
+    jb strict near L.nvol_teddy_fat_avx2_4 + 3472
+; .L10:
+    mov r11, [rsp + 256]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3360
+; .L8:
+    mov r12, -1
+; .L6:
+    cmp r12, -1
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2161
+; .L27:
+    mov r11, [rsp + 224]
+    lea r10, [r11 + 4]
+    mov [rsp + 384], r10
+    vpextrq rdx, xmm1, 1
+    mov qword [rsp + 416], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_4 + 4033
+    db 0x66, 0x90
+; .L30:
+    mov r11, [rsp + 416]
+    bsf r9, r11
+    mov rbx, qword [rsp + 416]
+    mov r11, [rsp + 416]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 416], rbx
+    mov rbx, r9
+    shr rbx, 4
+    mov r11, [rsp + 384]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 15
+    mov [rsp + 448], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 480], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_fat_avx2_4 + 4016
+    db 0xf, 0x1f, 0x0
+; .L32:
+    mov r13, qword [rsp + 448]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_fat_avx2_4 + 3994
+    cmp r15, 4
+    jb strict near L.nvol_teddy_fat_avx2_4 + 2223
+; .L37:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_fat_avx2_4 + 3972
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2296
+; .L48:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_fat_avx2_4 + 3944
+; .L47:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L36:
+    test eax, eax
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2303
+; .L34:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 480]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_fat_avx2_4 + 3840
+; .L33:
+    mov r11, [rsp + 416]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_4 + 3728
+; .L31:
+    mov rbx, -1
+; .L29:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2322
+; .L50:
+    mov r11, [rsp + 224]
+    lea r10, [r11 + 8]
+    mov [rsp + 544], r10
+    vmovq rdx, xmm0
+    mov qword [rsp + 576], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_4 + 4401
+    db 0x90
+; .L53:
+    mov r11, [rsp + 576]
+    bsf r9, r11
+    mov rbx, qword [rsp + 576]
+    mov r11, [rsp + 576]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 576], rbx
+    mov rbx, r9
+    shr rbx, 4
+    mov r11, [rsp + 544]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 15
+    mov [rsp + 608], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 640], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_fat_avx2_4 + 4384
+    db 0xf, 0x1f, 0x0
+; .L55:
+    mov r13, qword [rsp + 608]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_fat_avx2_4 + 4362
+    cmp r15, 4
+    jb strict near L.nvol_teddy_fat_avx2_4 + 2384
+; .L60:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_fat_avx2_4 + 4340
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L69:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2457
+; .L71:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_fat_avx2_4 + 4312
+; .L70:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L59:
+    test eax, eax
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2464
+; .L57:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 640]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_fat_avx2_4 + 4208
+; .L56:
+    mov r11, [rsp + 576]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_4 + 4096
+; .L54:
+    mov rbx, -1
+; .L52:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2483
+; .L73:
+    mov r11, [rsp + 224]
+    lea r10, [r11 + 12]
+    mov [rsp + 704], r10
+    vpextrq rdx, xmm0, 1
+    mov qword [rsp + 736], rdx
+    mov r11, rdx
+    test r11, r11
+    je strict near L.nvol_teddy_fat_avx2_4 + 4769
+; .L76:
+    mov r11, [rsp + 736]
+    bsf r9, r11
+    mov rbx, qword [rsp + 736]
+    mov r11, [rsp + 736]
+    lea rbp, [r11 - 1]
+    and rbx, rbp
+    mov qword [rsp + 736], rbx
+    mov rbx, r9
+    shr rbx, 4
+    mov r11, [rsp + 704]
+    lea rbx, [r11 + rbx]
+    mov r11, r9
+    and r11, 15
+    mov [rsp + 768], r11
+    movzx r10d, byte [rdi + r11 + 320]
+    mov [rsp + 800], r10
+    xor r12d, r12d
+    mov r11, r10
+    cmp r12, r11
+    jae strict near L.nvol_teddy_fat_avx2_4 + 4752
+    db 0xf, 0x1f, 0x0
+; .L78:
+    mov r13, qword [rsp + 768]
+    shl r13, 6
+    lea r13, [r13 + r12]
+    movzx r13d, byte [rdi + r13 + 336]
+    mov r14, r13
+    shl r14, 4
+    mov r14, qword [rsi + r14 + 8]
+    lea r14, [rsi + r14]
+    mov r15, r13
+    shl r15, 4
+    mov r15, qword [rsi + r15 + 16]
+    mov rax, rcx
+    sub rax, rbx
+    cmp r15, rax
+    ja strict short L.nvol_teddy_fat_avx2_4 + 4730
+    cmp r15, 4
+    jb strict near L.nvol_teddy_fat_avx2_4 + 2545
+; .L83:
+    lea rax, [r15 - 4]
+    lea rax, [r14 + rax]
+    lea r15, [r15 - 4]
+    lea r15, [rbx + r15]
+    mov rdx, rbx
+    cmp r14, rax
+    jae strict short L.nvol_teddy_fat_avx2_4 + 4708
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L92:
+    mov ebp, dword [r14]
+    mov r9d, dword [rdx]
+    cmp ebp, r9d
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2618
+; .L94:
+    lea r14, [r14 + 4]
+    add rdx, 4
+    cmp r14, rax
+    jb strict short L.nvol_teddy_fat_avx2_4 + 4680
+; .L93:
+    mov eax, dword [rax]
+    mov edx, dword [r15]
+    cmp rax, rdx
+    sete al
+    movzx eax, al
+; .L82:
+    test eax, eax
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2625
+; .L80:
+    lea r12, [r12 + 1]
+    mov r11, [rsp + 800]
+    cmp r12, r11
+    jb strict near L.nvol_teddy_fat_avx2_4 + 4576
+; .L79:
+    mov r11, [rsp + 736]
+    test r11, r11
+    jne strict near L.nvol_teddy_fat_avx2_4 + 4464
+; .L77:
+    mov rbx, -1
+; .L75:
+    cmp rbx, -1
+    jne strict near L.nvol_teddy_fat_avx2_4 + 2644
+; .L96:
+    jmp strict near L.nvol_teddy_fat_avx2_4 + 346
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
 global nvol_teddy_find_raw:function 69
 nvol_teddy_find_raw:
 L.nvol_teddy_find_raw:
@@ -25872,7 +25971,7 @@ L.nvol_copy_until_byteset_scalar:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x40, 0x0
-global nvol_find_byteset_pair_scalar:function hidden 164
+global nvol_find_byteset_pair_scalar:function hidden 166
 nvol_find_byteset_pair_scalar:
 L.nvol_find_byteset_pair_scalar:
     mov rcx, qword [rdi + 224]
@@ -25890,7 +25989,7 @@ L.nvol_find_byteset_pair_scalar:
 ; .L2:
     sub rdx, r9
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_scalar + 157
+    ja strict short L.nvol_find_byteset_pair_scalar + 110
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L4:
     movzx eax, byte [rsi + rcx]
@@ -25904,20 +26003,7 @@ L.nvol_find_byteset_pair_scalar:
     shr rax, 4
     and rax, 7
     bt r9d, eax
-    jae strict short L.nvol_find_byteset_pair_scalar + 148
-    movzx eax, byte [rsi + r8]
-    mov r9, rax
-    shr r9, 7
-    shl r9, 4
-    mov r10, rax
-    and r10, 15
-    lea r9, [r9 + r10]
-    movzx r9d, byte [rdi + r9 + 112]
-    shr rax, 4
-    and rax, 7
-    bt r9d, eax
-    jb strict short L.nvol_find_byteset_pair_scalar + 160
-; .L8:
+    jb strict short L.nvol_find_byteset_pair_scalar + 117
 ; .L6:
     add rsi, 1
     cmp rsi, rdx
@@ -25929,12 +26015,26 @@ L.nvol_find_byteset_pair_scalar:
 ; .L9:
     mov rax, rsi
     ret
+; .Lrare1:
+    movzx eax, byte [rsi + r8]
+    mov r9, rax
+    shr r9, 7
+    shl r9, 4
+    mov r10, rax
+    and r10, 15
+    lea r9, [r9 + r10]
+    movzx r9d, byte [rdi + r9 + 112]
+    shr rax, 4
+    and rax, 7
+    bt r9d, eax
+    jb strict short L.nvol_find_byteset_pair_scalar + 113
+; .L8:
+    jmp strict short L.nvol_find_byteset_pair_scalar + 101
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-global nvol_find_byteset_pair_mask_scalar:function hidden 180
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_find_byteset_pair_mask_scalar:function hidden 182
 nvol_find_byteset_pair_mask_scalar:
 L.nvol_find_byteset_pair_mask_scalar:
     mov r8, qword [rdi + 224]
@@ -25952,7 +26052,7 @@ L.nvol_find_byteset_pair_mask_scalar:
 ; .L2:
     sub rdx, r10
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_scalar + 158
+    ja strict short L.nvol_find_byteset_pair_mask_scalar + 111
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L4:
     movzx eax, byte [rsi + r8]
@@ -25966,20 +26066,7 @@ L.nvol_find_byteset_pair_mask_scalar:
     shr rax, 4
     and rax, 7
     bt r10d, eax
-    jae strict short L.nvol_find_byteset_pair_mask_scalar + 149
-    movzx eax, byte [rsi + r9]
-    mov r10, rax
-    shr r10, 7
-    shl r10, 4
-    mov r11, rax
-    and r11, 15
-    lea r10, [r10 + r11]
-    movzx r10d, byte [rdi + r10 + 112]
-    shr rax, 4
-    and rax, 7
-    bt r10d, eax
-    jb strict short L.nvol_find_byteset_pair_mask_scalar + 161
-; .L8:
+    jb strict short L.nvol_find_byteset_pair_mask_scalar + 133
 ; .L6:
     add rsi, 1
     cmp rsi, rdx
@@ -25993,10 +26080,25 @@ L.nvol_find_byteset_pair_mask_scalar:
     mov qword [rcx + 8], 1
     mov rax, rsi
     ret
+; .Lrare1:
+    movzx eax, byte [rsi + r9]
+    mov r10, rax
+    shr r10, 7
+    shl r10, 4
+    mov r11, rax
+    and r11, 15
+    lea r10, [r10 + r11]
+    movzx r10d, byte [rdi + r10 + 112]
+    shr rax, 4
+    and rax, 7
+    bt r10d, eax
+    jb strict short L.nvol_find_byteset_pair_mask_scalar + 114
+; .L8:
+    jmp strict short L.nvol_find_byteset_pair_mask_scalar + 102
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
-global nvol_find_byteset_pair_visit_scalar:function hidden 238
+    db 0x90
+global nvol_find_byteset_pair_visit_scalar:function hidden 234
 nvol_find_byteset_pair_visit_scalar:
 L.nvol_find_byteset_pair_visit_scalar:
     push rbx
@@ -26017,16 +26119,16 @@ L.nvol_find_byteset_pair_visit_scalar:
     mov rax, rdx
     sub rax, rsi
     cmp rax, rcx
-    jae strict short L.nvol_find_byteset_pair_visit_scalar + 66
+    jae strict short L.nvol_find_byteset_pair_visit_scalar + 63
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_scalar + 218
+    jmp strict short L.nvol_find_byteset_pair_visit_scalar + 135
 ; .L2:
     mov r14, rdx
     sub r14, rcx
     mov r15, rsi
     cmp r15, r14
-    ja strict near L.nvol_find_byteset_pair_visit_scalar + 216
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_find_byteset_pair_visit_scalar + 133
+    db 0xf, 0x1f, 0x0
 ; .L4:
     movzx eax, byte [r15 + r12]
     mov rcx, rax
@@ -26039,35 +26141,11 @@ L.nvol_find_byteset_pair_visit_scalar:
     shr rax, 4
     and rax, 7
     bt ecx, eax
-    jae strict short L.nvol_find_byteset_pair_visit_scalar + 207
-    movzx eax, byte [r15 + r13]
-    mov rcx, rax
-    shr rcx, 7
-    shl rcx, 4
-    mov rdx, rax
-    and rdx, 15
-    lea rcx, [rcx + rdx]
-    movzx ecx, byte [rbx + rcx + 112]
-    shr rax, 4
-    and rax, 7
-    bt ecx, eax
-    jae strict short L.nvol_find_byteset_pair_visit_scalar + 207
-    mov edx, 1
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r15
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict short L.nvol_find_byteset_pair_visit_scalar + 233
-; .L10:
-; .L8:
+    jb strict short L.nvol_find_byteset_pair_visit_scalar + 187
 ; .L6:
     add r15, 1
     cmp r15, r14
-    jbe strict short L.nvol_find_byteset_pair_visit_scalar + 88
+    jbe strict short L.nvol_find_byteset_pair_visit_scalar + 80
 ; .L5:
     xor eax, eax
 ; .L1:
@@ -26081,10 +26159,39 @@ L.nvol_find_byteset_pair_visit_scalar:
     ret
 ; .L11:
     mov rax, r15
-    jmp strict short L.nvol_find_byteset_pair_visit_scalar + 218
+    jmp strict short L.nvol_find_byteset_pair_visit_scalar + 135
+; .Lrare1:
+    mov edx, 1
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r15
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_scalar + 150
+; .L10:
+    jmp strict short L.nvol_find_byteset_pair_visit_scalar + 232
+; .Lrare2:
+    movzx eax, byte [r15 + r13]
+    mov rcx, rax
+    shr rcx, 7
+    shl rcx, 4
+    mov rdx, rax
+    and rdx, 15
+    lea rcx, [rcx + rdx]
+    movzx ecx, byte [rbx + rcx + 112]
+    shr rax, 4
+    and rax, 7
+    bt ecx, eax
+    jb strict short L.nvol_find_byteset_pair_visit_scalar + 155
+; .L8:
+    jmp strict short L.nvol_find_byteset_pair_visit_scalar + 124
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
 global nvol_find_byteset_ssse3:function hidden 244
 nvol_find_byteset_ssse3:
 L.nvol_find_byteset_ssse3:
@@ -30290,7 +30397,7 @@ L.nvol_find_byteset_pair_mask_ssse3_k6:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0x90
-global nvol_find_byteset_pair_visit_ssse3:function hidden 719
+global nvol_find_byteset_pair_visit_ssse3:function hidden 724
 nvol_find_byteset_pair_visit_ssse3:
 L.nvol_find_byteset_pair_visit_ssse3:
     push rbx
@@ -30326,7 +30433,7 @@ L.nvol_find_byteset_pair_visit_ssse3:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_ssse3 + 446
+    ja strict near L.nvol_find_byteset_pair_visit_ssse3 + 422
     db 0x66, 0x90
 ; .L2:
     movdqu xmm0, [r14 + rbp]
@@ -30366,17 +30473,7 @@ L.nvol_find_byteset_pair_visit_ssse3:
     pand xmm0, xmm1
     pmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3 + 433
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_ssse3 + 714
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_ssse3 + 695
 ; .L4:
     add r14, 16
     cmp r14, r13
@@ -30384,7 +30481,7 @@ L.nvol_find_byteset_pair_visit_ssse3:
 ; .L3:
     lea rax, [r13 + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_ssse3 + 696
+    jae strict near L.nvol_find_byteset_pair_visit_ssse3 + 672
     movdqu xmm4, [rsp + 192]
     movdqu xmm5, [rsp + 224]
     sub r14, r13
@@ -30425,7 +30522,7 @@ L.nvol_find_byteset_pair_visit_ssse3:
     pmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3 + 696
+    je strict short L.nvol_find_byteset_pair_visit_ssse3 + 672
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -30435,9 +30532,9 @@ L.nvol_find_byteset_pair_visit_ssse3:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_ssse3 + 696
+    je strict short L.nvol_find_byteset_pair_visit_ssse3 + 672
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3 + 698
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3 + 674
 ; .L12:
 ; .L10:
 ; .L8:
@@ -30452,15 +30549,26 @@ L.nvol_find_byteset_pair_visit_ssse3:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3 + 698
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3 + 674
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_ssse3 + 690
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_ssse3 + 409
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
-global nvol_find_byteset_pair_visit_ssse3_k1:function hidden 354
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_find_byteset_pair_visit_ssse3_k1:function hidden 359
 nvol_find_byteset_pair_visit_ssse3_k1:
 L.nvol_find_byteset_pair_visit_ssse3_k1:
     push rbx
@@ -30494,7 +30602,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 228
+    ja strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 204
     db 0xf, 0x1f, 0x0
 ; .L2:
     movdqu xmm0, [r14 + rbp]
@@ -30506,17 +30614,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
     pand xmm0, xmm1
     pmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 219
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k1 + 349
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k1 + 330
 ; .L4:
     add r14, 16
     cmp r14, r13
@@ -30524,7 +30622,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
 ; .L3:
     lea rax, [r13 + 16]
     cmp r14, rax
-    jae strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 334
+    jae strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 310
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -30539,7 +30637,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
     pmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 334
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 310
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -30549,9 +30647,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 334
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 310
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 336
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 312
 ; .L12:
 ; .L10:
 ; .L8:
@@ -30566,13 +30664,24 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 336
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 312
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_ssse3_k1 + 325
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_ssse3_k1 + 195
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
-global nvol_find_byteset_pair_visit_ssse3_k2:function hidden 537
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+global nvol_find_byteset_pair_visit_ssse3_k2:function hidden 542
 nvol_find_byteset_pair_visit_ssse3_k2:
 L.nvol_find_byteset_pair_visit_ssse3_k2:
     push rbx
@@ -30620,8 +30729,8 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k2 + 364
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    ja strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 340
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     movdqu xmm0, [r14 + rbp]
     movdqa xmm1, xmm0
@@ -30640,17 +30749,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
     pand xmm1, xmm2
     pmovmskb edx, xmm1
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 355
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k2 + 532
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k2 + 513
 ; .L4:
     add r14, 16
     cmp r14, r13
@@ -30658,7 +30757,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
 ; .L3:
     lea rax, [r13 + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k2 + 514
+    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k2 + 490
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -30681,7 +30780,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
     pmovmskb ecx, xmm1
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 514
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 490
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -30691,9 +30790,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 514
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 490
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 516
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 492
 ; .L12:
 ; .L10:
 ; .L8:
@@ -30708,14 +30807,25 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 516
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 492
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_ssse3_k2 + 508
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_ssse3_k2 + 331
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
-global nvol_find_byteset_pair_visit_ssse3_k3:function hidden 737
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+global nvol_find_byteset_pair_visit_ssse3_k3:function hidden 742
 nvol_find_byteset_pair_visit_ssse3_k3:
 L.nvol_find_byteset_pair_visit_ssse3_k3:
     push rbx
@@ -30777,7 +30887,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k3 + 518
+    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k3 + 494
     db 0xf, 0x1f, 0x40, 0x0
 ; .L2:
     movdqu xmm0, [r14 + rbp]
@@ -30805,17 +30915,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
     pand xmm1, xmm2
     pmovmskb edx, xmm1
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 505
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k3 + 732
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k3 + 713
 ; .L4:
     add r14, 16
     cmp r14, r13
@@ -30823,7 +30923,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
 ; .L3:
     lea rax, [r13 + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k3 + 714
+    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k3 + 690
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -30854,7 +30954,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
     pmovmskb ecx, xmm1
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 714
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 690
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -30864,9 +30964,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 714
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 690
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 716
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 692
 ; .L12:
 ; .L10:
 ; .L8:
@@ -30881,13 +30981,24 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 716
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 692
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_ssse3_k3 + 708
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_ssse3_k3 + 481
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
-global nvol_find_byteset_pair_visit_ssse3_k4:function hidden 933
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_find_byteset_pair_visit_ssse3_k4:function hidden 938
 nvol_find_byteset_pair_visit_ssse3_k4:
 L.nvol_find_byteset_pair_visit_ssse3_k4:
     push rbx
@@ -30963,7 +31074,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k4 + 668
+    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k4 + 644
     db 0xf, 0x1f, 0x0
 ; .L2:
     movdqu xmm0, [r14 + rbp]
@@ -30999,17 +31110,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
     pand xmm1, xmm2
     pmovmskb edx, xmm1
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 655
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k4 + 928
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k4 + 909
 ; .L4:
     add r14, 16
     cmp r14, r13
@@ -31017,7 +31118,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
 ; .L3:
     lea rax, [r13 + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k4 + 910
+    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k4 + 886
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -31056,7 +31157,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
     pmovmskb ecx, xmm1
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 910
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 886
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -31066,9 +31167,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 910
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 886
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 912
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 888
 ; .L12:
 ; .L10:
 ; .L8:
@@ -31083,12 +31184,24 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 912
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 888
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_ssse3_k4 + 904
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_ssse3_k4 + 631
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_find_byteset_pair_visit_ssse3_k5:function hidden 1137
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_find_byteset_pair_visit_ssse3_k5:function hidden 1142
 nvol_find_byteset_pair_visit_ssse3_k5:
 L.nvol_find_byteset_pair_visit_ssse3_k5:
     push rbx
@@ -31178,7 +31291,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k5:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k5 + 826
+    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k5 + 802
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L2:
@@ -31223,17 +31336,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k5:
     pand xmm1, xmm2
     pmovmskb edx, xmm1
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 813
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k5 + 1132
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k5 + 1113
 ; .L4:
     add r14, 16
     cmp r14, r13
@@ -31241,7 +31344,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k5:
 ; .L3:
     lea rax, [r13 + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k5 + 1114
+    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k5 + 1090
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -31288,7 +31391,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k5:
     pmovmskb ecx, xmm1
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1114
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1090
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -31298,9 +31401,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k5:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1114
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1090
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1116
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1092
 ; .L12:
 ; .L10:
 ; .L8:
@@ -31315,11 +31418,23 @@ L.nvol_find_byteset_pair_visit_ssse3_k5:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1116
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1092
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_ssse3_k5 + 1108
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_ssse3_k5 + 789
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-global nvol_find_byteset_pair_visit_ssse3_k6:function hidden 1325
+    db 0x90
+global nvol_find_byteset_pair_visit_ssse3_k6:function hidden 1330
 nvol_find_byteset_pair_visit_ssse3_k6:
 L.nvol_find_byteset_pair_visit_ssse3_k6:
     push rbx
@@ -31423,7 +31538,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k6 + 968
+    ja strict near L.nvol_find_byteset_pair_visit_ssse3_k6 + 944
     db 0x90
 ; .L2:
     movdqu xmm0, [r14 + rbp]
@@ -31475,17 +31590,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
     pand xmm1, xmm2
     pmovmskb edx, xmm1
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 955
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k6 + 1320
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_ssse3_k6 + 1301
 ; .L4:
     add r14, 16
     cmp r14, r13
@@ -31493,7 +31598,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
 ; .L3:
     lea rax, [r13 + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k6 + 1302
+    jae strict near L.nvol_find_byteset_pair_visit_ssse3_k6 + 1278
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -31548,7 +31653,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
     pmovmskb ecx, xmm1
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1302
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1278
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -31558,9 +31663,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1302
+    je strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1278
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1304
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1280
 ; .L12:
 ; .L10:
 ; .L8:
@@ -31575,11 +31680,22 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1304
+    jmp strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1280
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_ssse3_k6 + 1296
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_ssse3_k6 + 931
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_find_byteset_avx2:function hidden 230
 nvol_find_byteset_avx2:
 L.nvol_find_byteset_avx2:
@@ -35456,7 +35572,7 @@ L.nvol_find_byteset_pair_mask_avx2_k6:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0x90
-global nvol_find_byteset_pair_visit_avx2:function hidden 700
+global nvol_find_byteset_pair_visit_avx2:function hidden 705
 nvol_find_byteset_pair_visit_avx2:
 L.nvol_find_byteset_pair_visit_avx2:
     push rbx
@@ -35492,7 +35608,7 @@ L.nvol_find_byteset_pair_visit_avx2:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_avx2 + 429
+    ja strict near L.nvol_find_byteset_pair_visit_avx2 + 402
     db 0xf, 0x1f, 0x40, 0x0
 ; .L2:
     vmovdqu ymm0, [r14 + rbp]
@@ -35530,18 +35646,7 @@ L.nvol_find_byteset_pair_visit_avx2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_avx2 + 416
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_avx2 + 695
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_avx2 + 673
 ; .L4:
     add r14, 32
     cmp r14, r13
@@ -35549,7 +35654,7 @@ L.nvol_find_byteset_pair_visit_avx2:
 ; .L3:
     lea rax, [r13 + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_avx2 + 674
+    jae strict near L.nvol_find_byteset_pair_visit_avx2 + 647
     vmovdqu ymm3, [rsp + 192]
     vmovdqu ymm4, [rsp + 224]
     sub r14, r13
@@ -35588,7 +35693,7 @@ L.nvol_find_byteset_pair_visit_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_avx2 + 674
+    je strict short L.nvol_find_byteset_pair_visit_avx2 + 647
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -35599,9 +35704,9 @@ L.nvol_find_byteset_pair_visit_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_avx2 + 674
+    je strict short L.nvol_find_byteset_pair_visit_avx2 + 647
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2 + 676
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2 + 649
 ; .L12:
 ; .L10:
 ; .L8:
@@ -35617,10 +35722,29 @@ L.nvol_find_byteset_pair_visit_avx2:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2 + 676
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2 + 649
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_avx2 + 668
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_avx2 + 389
 
-    db 0xf, 0x1f, 0x40, 0x0
-global nvol_find_byteset_pair_visit_avx2_k1:function hidden 319
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_find_byteset_pair_visit_avx2_k1:function hidden 328
 nvol_find_byteset_pair_visit_avx2_k1:
 L.nvol_find_byteset_pair_visit_avx2_k1:
     push rbx
@@ -35652,7 +35776,7 @@ L.nvol_find_byteset_pair_visit_avx2_k1:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 199
+    ja strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 176
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     vmovdqu ymm15, [rsp]
@@ -35662,18 +35786,7 @@ L.nvol_find_byteset_pair_visit_avx2_k1:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 190
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 314
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_avx2_k1 + 296
 ; .L4:
     add r14, 32
     cmp r14, r13
@@ -35681,7 +35794,7 @@ L.nvol_find_byteset_pair_visit_avx2_k1:
 ; .L3:
     lea rax, [r13 + 32]
     cmp r14, rax
-    jae strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 296
+    jae strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 273
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -35694,7 +35807,7 @@ L.nvol_find_byteset_pair_visit_avx2_k1:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 296
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 273
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -35705,9 +35818,9 @@ L.nvol_find_byteset_pair_visit_avx2_k1:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 296
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 273
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 298
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 275
 ; .L12:
 ; .L10:
 ; .L8:
@@ -35723,10 +35836,29 @@ L.nvol_find_byteset_pair_visit_avx2_k1:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 298
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 275
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_avx2_k1 + 291
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_avx2_k1 + 167
 
-    db 0x90
-global nvol_find_byteset_pair_visit_avx2_k2:function hidden 474
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0x90
+global nvol_find_byteset_pair_visit_avx2_k2:function hidden 479
 nvol_find_byteset_pair_visit_avx2_k2:
 L.nvol_find_byteset_pair_visit_avx2_k2:
     push rbx
@@ -35770,7 +35902,7 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 307
+    ja strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 280
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L2:
     vmovdqu ymm0, [r14 + rbp]
@@ -35788,18 +35920,7 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 298
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_avx2_k2 + 469
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_avx2_k2 + 447
 ; .L4:
     add r14, 32
     cmp r14, r13
@@ -35807,7 +35928,7 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
 ; .L3:
     lea rax, [r13 + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_avx2_k2 + 448
+    jae strict near L.nvol_find_byteset_pair_visit_avx2_k2 + 421
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -35828,7 +35949,7 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 448
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 421
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -35839,9 +35960,9 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 448
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 421
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 450
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 423
 ; .L12:
 ; .L10:
 ; .L8:
@@ -35857,14 +35978,26 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 450
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 423
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_avx2_k2 + 442
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_avx2_k2 + 271
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
-global nvol_find_byteset_pair_visit_avx2_k3:function hidden 638
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_find_byteset_pair_visit_avx2_k3:function hidden 631
 nvol_find_byteset_pair_visit_avx2_k3:
 L.nvol_find_byteset_pair_visit_avx2_k3:
     push rbx
@@ -35920,8 +36053,8 @@ L.nvol_find_byteset_pair_visit_avx2_k3:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_avx2_k3 + 435
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    ja strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 396
+    db 0x66, 0x90
 ; .L2:
     vmovdqu ymm0, [r14 + rbp]
     vmovdqu ymm15, [rsp]
@@ -35944,26 +36077,15 @@ L.nvol_find_byteset_pair_visit_avx2_k3:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 422
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_avx2_k3 + 633
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_avx2_k3 + 599
 ; .L4:
     add r14, 32
     cmp r14, r13
-    jbe strict near L.nvol_find_byteset_pair_visit_avx2_k3 + 280
+    jbe strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 272
 ; .L3:
     lea rax, [r13 + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_avx2_k3 + 612
+    jae strict near L.nvol_find_byteset_pair_visit_avx2_k3 + 573
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -35990,7 +36112,7 @@ L.nvol_find_byteset_pair_visit_avx2_k3:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 612
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 573
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -36001,9 +36123,9 @@ L.nvol_find_byteset_pair_visit_avx2_k3:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 612
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 573
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 614
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 575
 ; .L12:
 ; .L10:
 ; .L8:
@@ -36019,10 +36141,23 @@ L.nvol_find_byteset_pair_visit_avx2_k3:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 614
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 575
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_avx2_k3 + 594
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_avx2_k3 + 387
 
-    db 0x66, 0x90
-global nvol_find_byteset_pair_visit_avx2_k4:function hidden 790
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_find_byteset_pair_visit_avx2_k4:function hidden 795
 nvol_find_byteset_pair_visit_avx2_k4:
 L.nvol_find_byteset_pair_visit_avx2_k4:
     push rbx
@@ -36090,7 +36225,7 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_avx2_k4 + 551
+    ja strict near L.nvol_find_byteset_pair_visit_avx2_k4 + 524
     db 0xf, 0x1f, 0x0
 ; .L2:
     vmovdqu ymm0, [r14 + rbp]
@@ -36120,18 +36255,7 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 538
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_avx2_k4 + 785
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_avx2_k4 + 763
 ; .L4:
     add r14, 32
     cmp r14, r13
@@ -36139,7 +36263,7 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
 ; .L3:
     lea rax, [r13 + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_avx2_k4 + 764
+    jae strict near L.nvol_find_byteset_pair_visit_avx2_k4 + 737
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -36172,7 +36296,7 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 764
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 737
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -36183,9 +36307,9 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 764
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 737
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 766
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 739
 ; .L12:
 ; .L10:
 ; .L8:
@@ -36201,14 +36325,27 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 766
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 739
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_avx2_k4 + 758
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_avx2_k4 + 511
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-global nvol_find_byteset_pair_visit_avx2_k5:function hidden 950
+    db 0x90
+global nvol_find_byteset_pair_visit_avx2_k5:function hidden 955
 nvol_find_byteset_pair_visit_avx2_k5:
 L.nvol_find_byteset_pair_visit_avx2_k5:
     push rbx
@@ -36288,7 +36425,7 @@ L.nvol_find_byteset_pair_visit_avx2_k5:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_avx2_k5 + 675
+    ja strict near L.nvol_find_byteset_pair_visit_avx2_k5 + 648
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     vmovdqu ymm0, [r14 + rbp]
@@ -36324,18 +36461,7 @@ L.nvol_find_byteset_pair_visit_avx2_k5:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 662
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_avx2_k5 + 945
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_avx2_k5 + 923
 ; .L4:
     add r14, 32
     cmp r14, r13
@@ -36343,7 +36469,7 @@ L.nvol_find_byteset_pair_visit_avx2_k5:
 ; .L3:
     lea rax, [r13 + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_avx2_k5 + 924
+    jae strict near L.nvol_find_byteset_pair_visit_avx2_k5 + 897
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -36382,7 +36508,7 @@ L.nvol_find_byteset_pair_visit_avx2_k5:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 924
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 897
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -36393,9 +36519,9 @@ L.nvol_find_byteset_pair_visit_avx2_k5:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 924
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 897
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 926
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 899
 ; .L12:
 ; .L10:
 ; .L8:
@@ -36411,11 +36537,23 @@ L.nvol_find_byteset_pair_visit_avx2_k5:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 926
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 899
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_avx2_k5 + 918
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_avx2_k5 + 635
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-global nvol_find_byteset_pair_visit_avx2_k6:function hidden 1102
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_find_byteset_pair_visit_avx2_k6:function hidden 1107
 nvol_find_byteset_pair_visit_avx2_k6:
 L.nvol_find_byteset_pair_visit_avx2_k6:
     push rbx
@@ -36507,7 +36645,7 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
     sub r13, rax
     mov r14, rsi
     cmp r14, r13
-    ja strict near L.nvol_find_byteset_pair_visit_avx2_k6 + 791
+    ja strict near L.nvol_find_byteset_pair_visit_avx2_k6 + 764
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L2:
     vmovdqu ymm0, [r14 + rbp]
@@ -36549,18 +36687,7 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 778
-    mov rax, qword [rbx]
-    mov rdi, qword [rbx + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_avx2_k6 + 1097
-; .L6:
+    jne strict near L.nvol_find_byteset_pair_visit_avx2_k6 + 1075
 ; .L4:
     add r14, 32
     cmp r14, r13
@@ -36568,7 +36695,7 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
 ; .L3:
     lea rax, [r13 + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_avx2_k6 + 1076
+    jae strict near L.nvol_find_byteset_pair_visit_avx2_k6 + 1049
     sub r14, r13
     mov eax, 4294967295
     mov rcx, r14
@@ -36613,7 +36740,7 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1076
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1049
     mov rax, qword [rbx]
     mov rdi, qword [rbx + 8]
     mov rsi, r13
@@ -36624,9 +36751,9 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1076
+    je strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1049
     mov rax, r13
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1078
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1051
 ; .L12:
 ; .L10:
 ; .L8:
@@ -36642,14 +36769,26 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
     ret
 ; .L7:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1078
+    jmp strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1051
+; .Lrare1:
+    mov rax, qword [rbx]
+    mov rdi, qword [rbx + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_avx2_k6 + 1070
+; .L6:
+    jmp strict near L.nvol_find_byteset_pair_visit_avx2_k6 + 751
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_find_not_byteset_sse42:function hidden 77
 nvol_find_not_byteset_sse42:
 L.nvol_find_not_byteset_sse42:
@@ -41970,7 +42109,7 @@ L.nvol_find_not_byteset_entry_sse42:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_find_byteset_pair_entry_avx2:function hidden 5515
+global nvol_find_byteset_pair_entry_avx2:function hidden 5507
 nvol_find_byteset_pair_entry_avx2:
 L.nvol_find_byteset_pair_entry_avx2:
     mov r8, qword [rdi + 240]
@@ -41988,7 +42127,7 @@ L.nvol_find_byteset_pair_entry_avx2:
 ; .L2:
     sub r9, rcx
     cmp r9, 16
-    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 223
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 168
     mov rcx, qword [rdi + 224]
     mov r8, qword [rdi + 232]
     mov rax, rcx
@@ -41998,16 +42137,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     mov rax, rdx
     sub rax, rsi
     cmp rax, r9
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 94
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 90
     xor eax, eax
     vzeroupper
     ret
 ; .L7:
     sub rdx, r9
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 217
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 162
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L9:
     movzx eax, byte [rsi + rcx]
     mov r9, rax
@@ -42020,33 +42158,20 @@ L.nvol_find_byteset_pair_entry_avx2:
     shr rax, 4
     and rax, 7
     bt r9d, eax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 208
-    movzx eax, byte [rsi + r8]
-    mov r9, rax
-    shr r9, 7
-    shl r9, 4
-    mov r10, rax
-    and r10, 15
-    lea r9, [r9 + r10]
-    movzx r9d, byte [rdi + r9 + 112]
-    shr rax, 4
-    and rax, 7
-    bt r9d, eax
-    jb strict near L.nvol_find_byteset_pair_entry_avx2 + 5354
-; .L13:
+    jb strict near L.nvol_find_byteset_pair_entry_avx2 + 5451
 ; .L11:
     add rsi, 1
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 112
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 104
 ; .L10:
     xor eax, eax
     vzeroupper
     ret
 ; .L5:
     cmp r9, 32
-    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 2794
+    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 2730
     cmp r8, 1
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 415
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 359
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42061,23 +42186,23 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 349
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 293
+    db 0xf, 0x1f, 0x0
 ; .L19:
     vpcmpeqb xmm2, xmm0, [rsi + r8]
     vpcmpeqb xmm3, xmm1, [rsi + r9]
     vpand xmm2, xmm2, xmm3
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5361
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5297
 ; .L21:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 312
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 256
 ; .L20:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 409
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 353
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42088,7 +42213,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 409
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 353
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42100,7 +42225,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L17:
     cmp r8, 2
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 679
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 615
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42121,8 +42246,8 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 589
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 525
+    db 0x90
 ; .L29:
     vmovdqu xmm4, [rsi + r8]
     vpcmpeqb xmm5, xmm4, xmm0
@@ -42135,15 +42260,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand xmm4, xmm4, xmm5
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5372
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5308
 ; .L31:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 528
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 464
 ; .L30:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 673
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 609
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42160,7 +42285,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 673
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 609
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42172,7 +42297,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L27:
     cmp r8, 3
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 1001
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 937
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42199,7 +42324,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 895
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 831
     db 0xf, 0x1f, 0x40, 0x0
 ; .L39:
     vmovdqu xmm6, [rsi + r8]
@@ -42217,15 +42342,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand xmm6, xmm6, xmm7
     vpmovmskb eax, xmm6
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5383
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5319
 ; .L41:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 816
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 752
 ; .L40:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 995
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 931
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42246,7 +42371,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 995
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 931
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42258,7 +42383,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L37:
     cmp r8, 4
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 1391
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 1327
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42291,7 +42416,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 1269
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 1205
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L49:
     vmovdqu xmm8, [rsi + r8]
@@ -42313,15 +42438,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand xmm8, xmm8, xmm9
     vpmovmskb eax, xmm8
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5394
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5330
 ; .L51:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 1168
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 1104
 ; .L50:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 1385
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 1321
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42346,7 +42471,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 1385
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 1321
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42358,7 +42483,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L47:
     cmp r8, 5
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 1845
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 1781
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42397,7 +42522,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 1705
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 1641
     db 0x66, 0x90
 ; .L59:
     vmovdqu xmm10, [rsi + r8]
@@ -42423,15 +42548,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand xmm10, xmm10, xmm11
     vpmovmskb eax, xmm10
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5405
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5341
 ; .L61:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 1584
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 1520
 ; .L60:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 1839
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 1775
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42460,7 +42585,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 1839
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 1775
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42472,7 +42597,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L57:
     cmp r8, 6
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 2379
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 2315
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42517,7 +42642,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict near L.nvol_find_byteset_pair_entry_avx2 + 2217
+    ja strict near L.nvol_find_byteset_pair_entry_avx2 + 2153
     db 0xf, 0x1f, 0x0
 ; .L69:
     vmovdqu xmm12, [rsi + r8]
@@ -42547,15 +42672,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand xmm12, xmm12, xmm13
     vpmovmskb eax, xmm12
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5416
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5352
 ; .L71:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict near L.nvol_find_byteset_pair_entry_avx2 + 2072
+    jbe strict near L.nvol_find_byteset_pair_entry_avx2 + 2008
 ; .L70:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 2373
+    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 2309
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42588,7 +42713,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 2373
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 2309
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42615,7 +42740,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict near L.nvol_find_byteset_pair_entry_avx2 + 2627
+    ja strict near L.nvol_find_byteset_pair_entry_avx2 + 2563
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
 ; .L77:
@@ -42644,15 +42769,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand xmm8, xmm8, xmm9
     vpmovmskb eax, xmm8
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5427
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5363
 ; .L79:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict near L.nvol_find_byteset_pair_entry_avx2 + 2480
+    jbe strict near L.nvol_find_byteset_pair_entry_avx2 + 2416
 ; .L78:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 2788
+    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 2724
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42683,7 +42808,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 2788
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 2724
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42695,7 +42820,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L15:
     cmp r8, 1
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 2975
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 2911
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42710,7 +42835,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 2909
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 2845
     db 0xf, 0x1f, 0x0
 ; .L87:
     vpcmpeqb ymm2, ymm0, [rsi + r8]
@@ -42718,15 +42843,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand ymm2, ymm2, ymm3
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5438
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5374
 ; .L89:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 2872
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 2808
 ; .L88:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 2969
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 2905
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42737,7 +42862,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 2969
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 2905
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42749,7 +42874,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L85:
     cmp r8, 2
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 3239
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 3175
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42770,7 +42895,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 3149
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 3085
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L97:
     vmovdqu ymm4, [rsi + r8]
@@ -42784,15 +42909,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand ymm4, ymm4, ymm5
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5449
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5385
 ; .L99:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 3088
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 3024
 ; .L98:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 3233
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 3169
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42809,7 +42934,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 3233
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 3169
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42821,7 +42946,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L95:
     cmp r8, 3
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 3561
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 3497
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42848,7 +42973,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 3455
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 3391
     db 0xf, 0x1f, 0x40, 0x0
 ; .L107:
     vmovdqu ymm6, [rsi + r8]
@@ -42866,15 +42991,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand ymm6, ymm6, ymm7
     vpmovmskb eax, ymm6
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5460
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5396
 ; .L109:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 3376
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 3312
 ; .L108:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 3555
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 3491
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42895,7 +43020,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 3555
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 3491
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -42907,7 +43032,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L105:
     cmp r8, 4
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 3951
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 3887
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -42940,7 +43065,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 3829
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 3765
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L117:
     vmovdqu ymm8, [rsi + r8]
@@ -42962,15 +43087,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand ymm8, ymm8, ymm9
     vpmovmskb eax, ymm8
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5471
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5407
 ; .L119:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 3728
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 3664
 ; .L118:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 3945
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 3881
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -42995,7 +43120,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 3945
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 3881
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -43007,7 +43132,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L115:
     cmp r8, 5
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 4405
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 4341
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -43046,7 +43171,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 4265
+    ja strict short L.nvol_find_byteset_pair_entry_avx2 + 4201
     db 0x66, 0x90
 ; .L127:
     vmovdqu ymm10, [rsi + r8]
@@ -43072,15 +43197,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand ymm10, ymm10, ymm11
     vpmovmskb eax, ymm10
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5482
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5418
 ; .L129:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 4144
+    jbe strict short L.nvol_find_byteset_pair_entry_avx2 + 4080
 ; .L128:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 4399
+    jae strict short L.nvol_find_byteset_pair_entry_avx2 + 4335
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -43109,7 +43234,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 4399
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 4335
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -43121,7 +43246,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     ret
 ; .L125:
     cmp r8, 6
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 4939
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 4875
     mov r8, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -43166,7 +43291,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict near L.nvol_find_byteset_pair_entry_avx2 + 4777
+    ja strict near L.nvol_find_byteset_pair_entry_avx2 + 4713
     db 0xf, 0x1f, 0x0
 ; .L137:
     vmovdqu ymm12, [rsi + r8]
@@ -43196,15 +43321,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand ymm12, ymm12, ymm13
     vpmovmskb eax, ymm12
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5493
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5429
 ; .L139:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict near L.nvol_find_byteset_pair_entry_avx2 + 4632
+    jbe strict near L.nvol_find_byteset_pair_entry_avx2 + 4568
 ; .L138:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 4933
+    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 4869
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -43237,7 +43362,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 4933
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 4869
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -43264,7 +43389,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict near L.nvol_find_byteset_pair_entry_avx2 + 5187
+    ja strict near L.nvol_find_byteset_pair_entry_avx2 + 5123
     db 0xf, 0x1f, 0x40, 0x0
 ; .L145:
     vmovdqu ymm8, [rsi + r8]
@@ -43292,15 +43417,15 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpand ymm8, ymm8, ymm9
     vpmovmskb eax, ymm8
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5504
+    jne strict near L.nvol_find_byteset_pair_entry_avx2 + 5440
 ; .L147:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict near L.nvol_find_byteset_pair_entry_avx2 + 5040
+    jbe strict near L.nvol_find_byteset_pair_entry_avx2 + 4976
 ; .L146:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 5348
+    jae strict near L.nvol_find_byteset_pair_entry_avx2 + 5284
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -43331,7 +43456,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_entry_avx2 + 5348
+    je strict short L.nvol_find_byteset_pair_entry_avx2 + 5284
     bsf eax, ecx
     lea rax, [rdx + rax]
     vzeroupper
@@ -43416,14 +43541,30 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea rax, [rsi + rax]
     vzeroupper
     ret
+; .Lrare1:
+    movzx eax, byte [rsi + r8]
+    mov r9, rax
+    shr r9, 7
+    shl r9, 4
+    mov r10, rax
+    and r10, 15
+    lea r9, [r9 + r10]
+    movzx r9d, byte [rdi + r9 + 112]
+    shr rax, 4
+    and rax, 7
+    bt r9d, eax
+    jb strict near L.nvol_find_byteset_pair_entry_avx2 + 5290
+; .L13:
+    jmp strict near L.nvol_find_byteset_pair_entry_avx2 + 153
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_find_byteset_pair_mask_entry_avx2:function hidden 5731
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+global nvol_find_byteset_pair_mask_entry_avx2:function hidden 5739
 nvol_find_byteset_pair_mask_entry_avx2:
 L.nvol_find_byteset_pair_mask_entry_avx2:
     mov r8, rcx
@@ -43442,7 +43583,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
 ; .L2:
     sub r10, rcx
     cmp r10, 16
-    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 223
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 168
     mov rcx, qword [rdi + 224]
     mov r9, qword [rdi + 232]
     mov rax, rcx
@@ -43452,15 +43593,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov rax, rdx
     sub rax, rsi
     cmp rax, r10
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 97
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 93
     xor eax, eax
     vzeroupper
     ret
 ; .L7:
     sub rdx, r10
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 217
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 162
+    db 0xf, 0x1f, 0x0
 ; .L9:
     movzx eax, byte [rsi + rcx]
     mov r10, rax
@@ -43473,33 +43614,20 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     shr rax, 4
     and rax, 7
     bt r10d, eax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 208
-    movzx eax, byte [rsi + r9]
-    mov r10, rax
-    shr r10, 7
-    shl r10, 4
-    mov r11, rax
-    and r11, 15
-    lea r10, [r10 + r11]
-    movzx r10d, byte [rdi + r10 + 112]
-    shr rax, 4
-    and rax, 7
-    bt r10d, eax
-    jb strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5457
-; .L13:
+    jb strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5683
 ; .L11:
     add rsi, 1
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 112
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 104
 ; .L10:
     xor eax, eax
     vzeroupper
     ret
 ; .L5:
     cmp r10, 32
-    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2841
+    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2793
     cmp r9, 1
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 422
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 366
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -43514,23 +43642,23 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 349
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 293
+    db 0xf, 0x1f, 0x0
 ; .L19:
     vpcmpeqb xmm2, xmm0, [rsi + r9]
     vpcmpeqb xmm3, xmm1, [rsi + r10]
     vpand xmm2, xmm2, xmm3
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5479
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5431
 ; .L21:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 312
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 256
 ; .L20:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 416
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 360
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -43541,7 +43669,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 416
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 360
     mov qword [r8], rcx
     mov qword [r8 + 8], 16
     mov rax, rdx
@@ -43554,7 +43682,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L17:
     cmp r9, 2
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 686
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 638
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -43575,8 +43703,9 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 589
-    db 0x66, 0x90
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 541
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 ; .L29:
     vmovdqu xmm4, [rsi + r9]
     vpcmpeqb xmm5, xmm4, xmm0
@@ -43589,15 +43718,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand xmm4, xmm4, xmm5
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5497
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5449
 ; .L31:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 528
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 480
 ; .L30:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 680
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 632
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -43614,7 +43743,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 680
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 632
     mov qword [r8], rcx
     mov qword [r8 + 8], 16
     mov rax, rdx
@@ -43627,7 +43756,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L27:
     cmp r9, 3
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 1016
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 968
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -43654,7 +43783,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 903
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 855
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L39:
     vmovdqu xmm6, [rsi + r9]
@@ -43672,15 +43801,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand xmm6, xmm6, xmm7
     vpmovmskb eax, xmm6
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5515
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5467
 ; .L41:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 824
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 776
 ; .L40:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1010
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 962
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -43701,7 +43830,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1010
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 962
     mov qword [r8], rcx
     mov qword [r8 + 8], 16
     mov rax, rdx
@@ -43714,7 +43843,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L37:
     cmp r9, 4
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 1414
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 1366
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -43747,7 +43876,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1285
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1237
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L49:
     vmovdqu xmm8, [rsi + r9]
@@ -43769,15 +43898,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand xmm8, xmm8, xmm9
     vpmovmskb eax, xmm8
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5533
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5485
 ; .L51:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1184
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1136
 ; .L50:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1408
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1360
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -43802,7 +43931,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1408
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1360
     mov qword [r8], rcx
     mov qword [r8 + 8], 16
     mov rax, rdx
@@ -43815,7 +43944,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L47:
     cmp r9, 5
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 1880
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 1832
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -43854,7 +43983,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1729
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1681
     db 0xf, 0x1f, 0x0
 ; .L59:
     vmovdqu xmm10, [rsi + r9]
@@ -43880,15 +44009,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand xmm10, xmm10, xmm11
     vpmovmskb eax, xmm10
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5551
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5503
 ; .L61:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1608
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1560
 ; .L60:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 1874
+    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 1826
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -43917,7 +44046,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1874
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 1826
     mov qword [r8], rcx
     mov qword [r8 + 8], 16
     mov rax, rdx
@@ -43930,7 +44059,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L57:
     cmp r9, 6
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2426
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2378
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -43975,7 +44104,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2257
+    ja strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2209
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L69:
     vmovdqu xmm12, [rsi + r9]
@@ -44005,15 +44134,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand xmm12, xmm12, xmm13
     vpmovmskb eax, xmm12
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5569
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5521
 ; .L71:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2112
+    jbe strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2064
 ; .L70:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2420
+    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2372
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44046,7 +44175,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2420
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2372
     mov qword [r8], rcx
     mov qword [r8 + 8], 16
     mov rax, rdx
@@ -44074,7 +44203,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 16]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2667
+    ja strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2619
     db 0xf, 0x1f, 0x0
 ; .L77:
     vmovdqu xmm8, [rsi + r9]
@@ -44102,15 +44231,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand xmm8, xmm8, xmm9
     vpmovmskb eax, xmm8
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5587
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5539
 ; .L79:
     add rsi, 16
     cmp rsi, rdx
-    jbe strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2520
+    jbe strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2472
 ; .L78:
     lea rax, [rdx + 16]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2835
+    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2787
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44141,7 +44270,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2835
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2787
     mov qword [r8], rcx
     mov qword [r8 + 8], 16
     mov rax, rdx
@@ -44154,7 +44283,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L15:
     cmp r9, 1
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 3030
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 2982
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -44169,7 +44298,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2957
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2909
     db 0xf, 0x1f, 0x40, 0x0
 ; .L87:
     vpcmpeqb ymm2, ymm0, [rsi + r9]
@@ -44177,15 +44306,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand ymm2, ymm2, ymm3
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5605
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5557
 ; .L89:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2920
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2872
 ; .L88:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3024
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2976
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44196,7 +44325,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3024
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 2976
     mov qword [r8], rcx
     mov qword [r8 + 8], 32
     mov rax, rdx
@@ -44209,7 +44338,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L85:
     cmp r9, 2
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 3294
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 3246
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -44230,7 +44359,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3197
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3149
     db 0x66, 0x90
 ; .L97:
     vmovdqu ymm4, [rsi + r9]
@@ -44244,15 +44373,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand ymm4, ymm4, ymm5
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5623
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5575
 ; .L99:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3136
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3088
 ; .L98:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3288
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3240
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44269,7 +44398,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3288
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3240
     mov qword [r8], rcx
     mov qword [r8 + 8], 32
     mov rax, rdx
@@ -44282,7 +44411,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L95:
     cmp r9, 3
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 3624
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 3576
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -44309,7 +44438,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3511
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3463
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L107:
     vmovdqu ymm6, [rsi + r9]
@@ -44327,15 +44456,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand ymm6, ymm6, ymm7
     vpmovmskb eax, ymm6
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5641
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5593
 ; .L109:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3432
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3384
 ; .L108:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3618
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3570
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44356,7 +44485,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3618
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3570
     mov qword [r8], rcx
     mov qword [r8 + 8], 32
     mov rax, rdx
@@ -44369,7 +44498,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L105:
     cmp r9, 4
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4022
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 3974
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -44402,7 +44531,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3893
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3845
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L117:
     vmovdqu ymm8, [rsi + r9]
@@ -44424,15 +44553,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand ymm8, ymm8, ymm9
     vpmovmskb eax, ymm8
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5659
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5611
 ; .L119:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3792
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3744
 ; .L118:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4016
+    jae strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3968
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44457,7 +44586,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4016
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 3968
     mov qword [r8], rcx
     mov qword [r8 + 8], 32
     mov rax, rdx
@@ -44470,7 +44599,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L115:
     cmp r9, 5
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4488
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4440
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -44509,7 +44638,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4337
+    ja strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4289
     db 0xf, 0x1f, 0x0
 ; .L127:
     vmovdqu ymm10, [rsi + r9]
@@ -44535,15 +44664,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand ymm10, ymm10, ymm11
     vpmovmskb eax, ymm10
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5677
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5629
 ; .L129:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4216
+    jbe strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4168
 ; .L128:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4482
+    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4434
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44572,7 +44701,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4482
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4434
     mov qword [r8], rcx
     mov qword [r8 + 8], 32
     mov rax, rdx
@@ -44585,7 +44714,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     ret
 ; .L125:
     cmp r9, 6
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5034
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4986
     mov r9, qword [rdi + 224]
     mov r10, qword [rdi + 232]
     movzx eax, byte [rdi + 56]
@@ -44630,7 +44759,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4865
+    ja strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4817
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L137:
     vmovdqu ymm12, [rsi + r9]
@@ -44660,15 +44789,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand ymm12, ymm12, ymm13
     vpmovmskb eax, ymm12
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5695
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5647
 ; .L139:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4720
+    jbe strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4672
 ; .L138:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5028
+    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 4980
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44701,7 +44830,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 5028
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 4980
     mov qword [r8], rcx
     mov qword [r8 + 8], 32
     mov rax, rdx
@@ -44729,7 +44858,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     lea rax, [rax + 32]
     sub rdx, rax
     cmp rsi, rdx
-    ja strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5283
+    ja strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5235
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L145:
     vmovdqu ymm8, [rsi + r9]
@@ -44757,15 +44886,15 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpand ymm8, ymm8, ymm9
     vpmovmskb eax, ymm8
     test eax, eax
-    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5713
+    jne strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5665
 ; .L147:
     add rsi, 32
     cmp rsi, rdx
-    jbe strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5136
+    jbe strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5088
 ; .L146:
     lea rax, [rdx + 32]
     cmp rsi, rax
-    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5451
+    jae strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5403
     sub rsi, rdx
     mov eax, 4294967295
     mov rcx, rsi
@@ -44796,7 +44925,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 5451
+    je strict short L.nvol_find_byteset_pair_mask_entry_avx2 + 5403
     mov qword [r8], rcx
     mov qword [r8 + 8], 32
     mov rax, rdx
@@ -44898,12 +45027,26 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov rax, rsi
     vzeroupper
     ret
+; .Lrare1:
+    movzx eax, byte [rsi + r9]
+    mov r10, rax
+    shr r10, 7
+    shl r10, 4
+    mov r11, rax
+    and r11, 15
+    lea r10, [r10 + r11]
+    movzx r10d, byte [rdi + r10 + 112]
+    shr rax, 4
+    and rax, 7
+    bt r10d, eax
+    jb strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 5409
+; .L13:
+    jmp strict near L.nvol_find_byteset_pair_mask_entry_avx2 + 153
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
-global nvol_find_byteset_pair_visit_entry_avx2:function hidden 10726
+    db 0xf, 0x1f, 0x0
+global nvol_find_byteset_pair_visit_entry_avx2:function hidden 10853
 nvol_find_byteset_pair_visit_entry_avx2:
 L.nvol_find_byteset_pair_visit_entry_avx2:
     push rbx
@@ -44925,11 +45068,11 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 60
 ; .L4:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L2:
     sub r13, rcx
     cmp r13, 16
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 290
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 200
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     mov rax, r12
@@ -44941,14 +45084,14 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     cmp rax, rcx
     jae strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 119
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L7:
     mov r14, rdx
     sub r14, rcx
     mov r15, rsi
     cmp r15, r14
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 283
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 193
+    db 0xf, 0x1f, 0x0
 ; .L9:
     movzx eax, byte [r15 + r12]
     mov rcx, rax
@@ -44961,44 +45104,19 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     shr rax, 4
     and rax, 7
     bt ecx, eax
-    jae strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 270
-    movzx eax, byte [r15 + r13]
-    mov rcx, rax
-    shr rcx, 7
-    shl rcx, 4
-    mov rdx, rax
-    and rdx, 15
-    lea rcx, [rcx + rdx]
-    movzx ecx, byte [rbx + rcx + 112]
-    shr rax, 4
-    and rax, 7
-    bt ecx, eax
-    jae strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 270
-    mov edx, 1
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r15
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10651
-; .L15:
-; .L13:
+    jb strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10285
 ; .L11:
     add r15, 1
     cmp r15, r14
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 144
+    jbe strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 136
 ; .L10:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L5:
     cmp r13, 32
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5430
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5146
     cmp r12, 1
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 598
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 482
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -45021,8 +45139,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 492
-    db 0x66, 0x90
+    ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 376
+    db 0xf, 0x1f, 0x40, 0x0
 ; .L21:
     vmovdqu ymm15, [rsp]
     vpcmpeqb xmm0, xmm15, [r14 + r12]
@@ -45031,26 +45149,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand xmm0, xmm0, xmm1
     vpmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 483
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10656
-; .L25:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10335
 ; .L23:
     add r14, 16
     cmp r14, rbx
-    jbe strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 416
+    jbe strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 328
 ; .L22:
     lea rax, [rbx + 16]
     cmp r14, rax
-    jae strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 591
+    jae strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 475
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -45063,7 +45170,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 591
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 475
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -45074,17 +45181,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 591
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 475
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L31:
 ; .L29:
 ; .L27:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L19:
     cmp r12, 2
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1080
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 940
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -45119,8 +45226,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 923
-    db 0x66, 0x90
+    ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 783
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L35:
     vmovdqu xmm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 64]
@@ -45137,26 +45244,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand xmm0, xmm0, xmm1
     vpmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 914
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10661
-; .L39:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10372
 ; .L37:
     add r14, 16
     cmp r14, rbx
-    jbe strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 800
+    jbe strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 688
 ; .L36:
     lea rax, [rbx + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1073
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 933
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -45177,7 +45273,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 1073
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 933
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -45188,17 +45284,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 1073
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 933
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L45:
 ; .L43:
 ; .L41:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L33:
     cmp r12, 3
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1760
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1588
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -45245,8 +45341,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1561
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1389
+    db 0xf, 0x1f, 0x0
 ; .L49:
     vmovdqu xmm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 192]
@@ -45269,26 +45365,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand xmm0, xmm0, xmm1
     vpmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 1548
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10666
-; .L53:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10409
 ; .L51:
     add r14, 16
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1392
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1248
 ; .L50:
     lea rax, [rbx + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1753
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1581
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -45315,7 +45400,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 1753
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 1581
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -45326,17 +45411,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 1753
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 1581
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L59:
 ; .L57:
 ; .L55:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L47:
     cmp r12, 4
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2592
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2396
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -45395,8 +45480,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2357
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2161
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L63:
     vmovdqu xmm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 384]
@@ -45425,26 +45510,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand xmm0, xmm0, xmm1
     vpmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 2344
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10671
-; .L67:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10446
 ; .L65:
     add r14, 16
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2152
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1984
 ; .L64:
     lea rax, [rbx + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2585
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2389
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -45477,7 +45551,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 2585
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 2389
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -45488,17 +45562,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 2585
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 2389
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L73:
 ; .L71:
 ; .L69:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L61:
     cmp r12, 5
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3584
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3356
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -45569,8 +45643,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3313
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3085
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L77:
     vmovdqu xmm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 640]
@@ -45605,26 +45679,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand xmm0, xmm0, xmm1
     vpmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 3300
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10676
-; .L81:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10483
 ; .L79:
     add r14, 16
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3072
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2872
 ; .L78:
     lea rax, [rbx + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3577
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3349
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -45663,7 +45726,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 3577
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 3349
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -45674,17 +45737,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 3577
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 3349
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L87:
 ; .L85:
 ; .L83:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L75:
     cmp r12, 6
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4728
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4476
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -45767,8 +45830,9 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4421
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4169
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 ; .L91:
     vmovdqu xmm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 960]
@@ -45809,26 +45873,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand xmm0, xmm0, xmm1
     vpmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 4408
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10681
-; .L95:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10520
 ; .L93:
     add r14, 16
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4144
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3920
 ; .L92:
     lea rax, [rbx + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4721
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4469
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -45873,7 +45926,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 4721
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 4469
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -45884,14 +45937,14 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 4721
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 4469
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L101:
 ; .L99:
 ; .L97:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L89:
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
@@ -45919,8 +45972,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5163
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4879
+    db 0xf, 0x1f, 0x0
 ; .L103:
     vmovdqu xmm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 1536]
@@ -45957,26 +46010,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand xmm0, xmm0, xmm1
     vpmovmskb edx, xmm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5150
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10686
-; .L107:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10557
 ; .L105:
     add r14, 16
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4904
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4648
 ; .L104:
     lea rax, [rbx + 16]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5423
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5139
     vmovdqu ymm3, [rsp + 1536]
     vmovdqu ymm4, [rsp + 1568]
     sub r14, rbx
@@ -46015,7 +46057,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, xmm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5423
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5139
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -46026,17 +46068,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5423
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5139
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L113:
 ; .L111:
 ; .L109:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L17:
     cmp r12, 1
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5764
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5456
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -46059,8 +46101,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5651
-    db 0xf, 0x1f, 0x0
+    ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5343
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L117:
     vmovdqu ymm15, [rsp + 1600]
     vpcmpeqb ymm0, ymm15, [r14 + r12]
@@ -46069,26 +46111,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5642
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10691
-; .L121:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10594
 ; .L119:
     add r14, 32
     cmp r14, rbx
-    jbe strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5568
+    jbe strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5288
 ; .L118:
     lea rax, [rbx + 32]
     cmp r14, rax
-    jae strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5757
+    jae strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5449
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -46101,7 +46132,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5757
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5449
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -46112,17 +46143,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5757
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5449
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L127:
 ; .L125:
 ; .L123:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L115:
     cmp r12, 2
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6288
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5944
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -46157,7 +46188,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6125
+    ja strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5781
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L131:
     vmovdqu ymm0, [r14 + r12]
@@ -46175,26 +46206,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 6112
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10696
-; .L135:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10631
 ; .L133:
     add r14, 32
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5992
+    jbe strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5680
 ; .L132:
     lea rax, [rbx + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6281
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5937
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -46215,7 +46235,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 6281
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5937
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -46226,17 +46246,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 6281
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 5937
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L141:
 ; .L139:
 ; .L137:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L129:
     cmp r12, 3
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6968
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6596
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -46283,7 +46303,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6769
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6397
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L145:
     vmovdqu ymm0, [r14 + r12]
@@ -46307,26 +46327,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 6756
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10701
-; .L149:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10668
 ; .L147:
     add r14, 32
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6600
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6256
 ; .L146:
     lea rax, [rbx + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6961
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6589
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -46353,7 +46362,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 6961
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 6589
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -46364,17 +46373,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 6961
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 6589
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L155:
 ; .L153:
 ; .L151:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L143:
     cmp r12, 4
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7800
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7404
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -46433,8 +46442,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7565
-    db 0xf, 0x1f, 0x40, 0x0
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7169
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L159:
     vmovdqu ymm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 1984]
@@ -46463,26 +46472,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 7552
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10706
-; .L163:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10705
 ; .L161:
     add r14, 32
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7360
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6992
 ; .L160:
     lea rax, [rbx + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7793
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7397
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -46515,7 +46513,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 7793
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 7397
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -46526,17 +46524,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 7793
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 7397
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L169:
 ; .L167:
 ; .L165:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L157:
     cmp r12, 5
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8784
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8364
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -46607,8 +46605,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8513
-    db 0x90
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8093
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L173:
     vmovdqu ymm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 2240]
@@ -46643,26 +46641,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 8500
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10711
-; .L177:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10742
 ; .L175:
     add r14, 32
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8272
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7880
 ; .L174:
     lea rax, [rbx + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8777
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8357
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -46701,7 +46688,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 8777
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 8357
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -46712,17 +46699,17 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 8777
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 8357
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L183:
 ; .L181:
 ; .L179:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L171:
     cmp r12, 6
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9928
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9484
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
     movzx eax, byte [rbx + 56]
@@ -46805,8 +46792,9 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9621
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9177
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 ; .L187:
     vmovdqu ymm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 2560]
@@ -46847,26 +46835,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 9608
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10716
-; .L191:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10779
 ; .L189:
     add r14, 32
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9344
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8928
 ; .L188:
     lea rax, [rbx + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9921
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9477
     sub r14, rbx
     mov eax, 4294967295
     mov rcx, r14
@@ -46911,7 +46888,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 9921
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 9477
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -46922,14 +46899,14 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 9921
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 9477
     mov rax, rbx
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L197:
 ; .L195:
 ; .L193:
     xor eax, eax
-    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L185:
     mov r12, qword [rbx + 224]
     mov r13, qword [rbx + 232]
@@ -46957,8 +46934,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub rbx, rax
     mov r14, rsi
     cmp r14, rbx
-    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10371
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    ja strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9895
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L199:
     vmovdqu ymm0, [r14 + r12]
     vmovdqu ymm15, [rsp + 3136]
@@ -46995,26 +46972,15 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand ymm0, ymm0, ymm1
     vpmovmskb edx, ymm0
     test edx, edx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10358
-    mov rax, qword [rbp]
-    mov rdi, qword [rbp + 8]
-    mov rsi, r14
-    vzeroupper
-    call rax
-    test eax, eax
-    setne al
-    movzx eax, al
-    test eax, eax
-    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10721
-; .L203:
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10816
 ; .L201:
     add r14, 32
     cmp r14, rbx
-    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10112
+    jbe strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9664
 ; .L200:
     lea rax, [rbx + 32]
     cmp r14, rax
-    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10628
+    jae strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10152
     vmovdqu ymm3, [rsp + 3136]
     vmovdqu ymm4, [rsp + 3168]
     sub r14, rbx
@@ -47053,7 +47019,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpmovmskb ecx, ymm0
     and rcx, rax
     test ecx, ecx
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10628
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10152
     mov rax, qword [rbp]
     mov rdi, qword [rbp + 8]
     mov rsi, rbx
@@ -47064,9 +47030,9 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     setne al
     movzx eax, al
     test eax, eax
-    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10628
+    je strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10152
     mov rax, rbx
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L209:
 ; .L207:
 ; .L205:
@@ -47083,53 +47049,264 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     ret
 ; .L16:
     mov rax, r15
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L26:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L40:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L54:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L68:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L82:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L96:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L108:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L122:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L136:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L150:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L164:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L178:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L192:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
 ; .L204:
     mov rax, r14
-    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10630
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10154
+; .Lrare1:
+    mov edx, 1
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r15
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10175
+; .L15:
+    jmp strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10330
+; .Lrare2:
+    movzx eax, byte [r15 + r13]
+    mov rcx, rax
+    shr rcx, 7
+    shl rcx, 4
+    mov rdx, rax
+    and rdx, 15
+    lea rcx, [rcx + rdx]
+    movzx ecx, byte [rbx + rcx + 112]
+    shr rax, 4
+    and rax, 7
+    bt ecx, eax
+    jb strict short L.nvol_find_byteset_pair_visit_entry_avx2 + 10250
+; .L13:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 184
+; .Lrare3:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10180
+; .L25:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 367
+; .Lrare4:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10185
+; .L39:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 774
+; .Lrare5:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10190
+; .L53:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 1376
+; .Lrare6:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10195
+; .L67:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 2148
+; .Lrare7:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10200
+; .L81:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 3072
+; .Lrare8:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10205
+; .L95:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4156
+; .Lrare9:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10210
+; .L107:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 4866
+; .Lrare10:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10215
+; .L121:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5334
+; .Lrare11:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10220
+; .L135:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 5772
+; .Lrare12:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10225
+; .L149:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 6384
+; .Lrare13:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10230
+; .L163:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 7156
+; .Lrare14:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10235
+; .L177:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 8080
+; .Lrare15:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10240
+; .L191:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9164
+; .Lrare16:
+    mov rax, qword [rbp]
+    mov rdi, qword [rbp + 8]
+    mov rsi, r14
+    vzeroupper
+    call rax
+    test eax, eax
+    setne al
+    movzx eax, al
+    test eax, eax
+    jne strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 10245
+; .L203:
+    jmp strict near L.nvol_find_byteset_pair_visit_entry_avx2 + 9882
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_copy_until_byteset_entry_avx2:function hidden 5497
 nvol_copy_until_byteset_entry_avx2:
 L.nvol_copy_until_byteset_entry_avx2:
@@ -50241,22 +50418,22 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_first_non_ascii_sse2 - $
-    dd 256
+    dd 261
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_first_non_ascii_avx2 - $
-    dd 277
+    dd 282
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_first_non_ascii_entry_avx2 - $
-    dd 634
+    dd 612
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_first_non_ascii_entry_sse2 - $
-    dd 300
+    dd 305
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50278,16 +50455,16 @@ nvol_cie:
     dd L.nvol_is_equal - $
     dd 100
     db 0, 0, 0, 0
-    dd 44
+    dd 48
     dd $ - nvol_cie
     dd L.nvol_memmem_rk - $
-    dd 234
-    db 0, 65, 14, 16, 131, 2, 80, 10, 65, 14, 8, 65, 11, 2, 192, 10, 65, 14, 8, 65, 11, 79, 10, 65, 14, 8, 65, 11, 67, 14, 8, 0
-    dd 44
+    dd 235
+    db 0, 65, 14, 16, 131, 2, 80, 10, 65, 14, 8, 65, 11, 2, 157, 10, 65, 14, 8, 65, 11, 79, 10, 65, 14, 8, 65, 11, 66, 10, 65, 14, 8, 65, 11, 0
+    dd 48
     dd $ - nvol_cie
     dd L.nvol_memmem_rk_oneshot - $
-    dd 262
-    db 0, 65, 14, 16, 131, 2, 83, 10, 65, 14, 8, 65, 11, 2, 217, 10, 65, 14, 8, 65, 11, 79, 10, 65, 14, 8, 65, 11, 67, 14, 8, 0
+    dd 266
+    db 0, 65, 14, 16, 131, 2, 83, 10, 65, 14, 8, 65, 11, 2, 185, 10, 65, 14, 8, 65, 11, 79, 10, 65, 14, 8, 65, 11, 66, 10, 65, 14, 8, 65, 11, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memmem_suffix_min - $
@@ -50313,11 +50490,11 @@ nvol_cie:
     dd L.nvol_memmem_pppre_avx2 - $
     dd 179
     db 0, 0, 0, 0
-    dd 108
+    dd 112
     dd $ - nvol_cie
     dd L.nvol_memmem_pp_sse2 - $
-    dd 595
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 3, 67, 1, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 2, 201, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 85, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 78, 14, 24, 65, 14, 16, 65, 14, 8, 0, 0, 0
+    dd 613
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 3, 33, 1, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 2, 170, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 85, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 76, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memmem_pp2_sse2 - $
@@ -50326,13 +50503,13 @@ nvol_cie:
     dd 76
     dd $ - nvol_cie
     dd L.nvol_memmem_tw_sse2 - $
-    dd 1267
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 142, 4, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 1280
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 110, 4, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 44
     dd $ - nvol_cie
     dd L.nvol_memmem_pp_avx2 - $
-    dd 554
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 3, 244, 1, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    dd 564
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 3, 171, 1, 10, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memmem_pp2_avx2 - $
@@ -50341,18 +50518,18 @@ nvol_cie:
     dd 76
     dd $ - nvol_cie
     dd L.nvol_memmem_tw_avx2 - $
-    dd 1553
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 141, 5, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 1563
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 77, 5, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 100
     dd $ - nvol_cie
     dd L.nvol_memmem_find_entry_avx2 - $
-    dd 3863
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 6, 123, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 92, 13, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    dd 3947
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 6, 123, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 44, 12, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
     dd 100
     dd $ - nvol_cie
     dd L.nvol_memmem_find_entry_sse2 - $
-    dd 2790
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 5, 120, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 163, 9, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
+    dd 2864
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 5, 120, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 69, 11, 3, 243, 8, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memmem_find_raw - $
@@ -50391,63 +50568,63 @@ nvol_cie:
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_slim_ssse3_1 - $
-    dd 2335
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 115, 6, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 2327
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 163, 3, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_slim_ssse3_2 - $
     dd 2479
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 3, 7, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 51, 4, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_slim_ssse3_3 - $
-    dd 2607
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 131, 7, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 2591
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 5, 3, 163, 4, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_slim_ssse3_4 - $
-    dd 2815
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 6, 3, 83, 8, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 2807
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 6, 3, 99, 5, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_slim_avx2_1 - $
-    dd 4412
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 6, 12, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 4407
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 70, 6, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_fat_avx2_1 - $
-    dd 4380
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 230, 11, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 4391
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 54, 6, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_slim_avx2_2 - $
-    dd 4524
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 118, 12, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 4519
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 182, 6, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_fat_avx2_2 - $
-    dd 4492
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 86, 12, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 4487
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 150, 6, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_slim_avx2_3 - $
-    dd 4620
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 214, 12, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 4615
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 22, 7, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_fat_avx2_3 - $
-    dd 4572
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 166, 12, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 4567
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 128, 10, 3, 230, 6, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_slim_avx2_4 - $
-    dd 4844
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 11, 3, 182, 13, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 4855
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 11, 3, 230, 7, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_teddy_fat_avx2_4 - $
-    dd 4780
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 11, 3, 118, 13, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 4791
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 11, 3, 182, 7, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_teddy_find_raw - $
@@ -50481,18 +50658,18 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_scalar - $
-    dd 164
+    dd 166
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_mask_scalar - $
-    dd 180
+    dd 182
     db 0, 0, 0, 0
     dd 72
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_scalar - $
-    dd 238
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 68, 14, 64, 2, 204, 10, 68, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11
+    dd 234
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 68, 14, 64, 2, 121, 10, 68, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11
     dd 16
     dd $ - nvol_cie
     dd L.nvol_find_byteset_ssse3 - $
@@ -50731,38 +50908,38 @@ nvol_cie:
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_ssse3 - $
-    dd 719
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 2, 3, 171, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 724
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 2, 3, 147, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_ssse3_k1 - $
-    dd 354
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 68, 14, 112, 3, 68, 1, 10, 68, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0, 0
+    dd 359
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 68, 14, 112, 3, 44, 1, 10, 68, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_ssse3_k2 - $
-    dd 537
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 1, 3, 245, 1, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 542
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 1, 3, 221, 1, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_ssse3_k3 - $
-    dd 737
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 240, 1, 3, 189, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 742
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 240, 1, 3, 165, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_ssse3_k4 - $
-    dd 933
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 2, 3, 129, 3, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 938
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 2, 3, 105, 3, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_ssse3_k5 - $
-    dd 1137
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 240, 2, 3, 77, 4, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 1142
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 240, 2, 3, 53, 4, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_ssse3_k6 - $
-    dd 1325
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 3, 3, 9, 5, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 1330
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 3, 3, 241, 4, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_find_byteset_avx2 - $
@@ -51001,38 +51178,38 @@ nvol_cie:
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_avx2 - $
-    dd 700
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 2, 3, 152, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 705
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 2, 3, 125, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_avx2_k1 - $
-    dd 319
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 68, 14, 112, 3, 33, 1, 10, 68, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0, 0
+    dd 328
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 68, 14, 112, 3, 10, 1, 10, 68, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_avx2_k2 - $
-    dd 474
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 1, 3, 182, 1, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 479
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 1, 3, 155, 1, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_avx2_k3 - $
-    dd 638
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 240, 1, 3, 90, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 631
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 240, 1, 3, 51, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_avx2_k4 - $
-    dd 790
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 2, 3, 242, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 795
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 2, 3, 215, 2, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_avx2_k5 - $
-    dd 950
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 240, 2, 3, 146, 3, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 955
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 240, 2, 3, 119, 3, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_avx2_k6 - $
-    dd 1102
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 3, 3, 42, 4, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 1107
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 71, 14, 176, 3, 3, 15, 4, 10, 71, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_find_not_byteset_sse42 - $
@@ -51066,18 +51243,18 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_entry_avx2 - $
-    dd 5515
+    dd 5507
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_mask_entry_avx2 - $
-    dd 5731
+    dd 5739
     db 0, 0, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_visit_entry_avx2 - $
-    dd 10726
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 25, 3, 120, 41, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 10853
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 25, 3, 156, 39, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_copy_until_byteset_entry_avx2 - $
@@ -51143,8 +51320,8 @@ nvol_cie:
     dd L.nvol_find_byteset_pair_mask_raw - $
     dd 6
     db 0, 0, 0, 0
-    dd 72
+    dd 68
     dd $ - nvol_cie
     dd L.nvol_find_byteset_pair_mask_raw_resolve - $
     dd 64
-    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 102, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0, 0, 0, 0, 0
+    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 102, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0

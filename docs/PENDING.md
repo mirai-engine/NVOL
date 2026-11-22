@@ -259,6 +259,7 @@ The detail is in "Done".
       | count below one SAD block (item 17) | count 64 B AVX2 | 13.4-13.9 → 16.2-16.8 | same code, loop heads 32-aligned: 11.0 |
       | return tails copied (item 17) | memchr 16 B SSE2, count 64 B SSE2 | 13.73 / 15.63 → 15.04 / 16.65 | both 32-aligned: 13.93 → 13.65, 17.04 → 16.98 |
       | return tails copied (item 17) | first_non_ascii 4 KiB AVX2 / SSE2 | 92.4 / 210.3 → 98.5 / 236.5 | both 32-aligned: 108.7 → 109.2, 237.2 → 234.9 |
+      | rare regions out of line (item 17) | first_non_ascii 16 B AVX2 | 14.53 → 15.86 | both 32-aligned: 15.99 → 15.98 |
 
       In the 64-aligned layout no function body changed, so each of its rows is position by
       construction. The count_parity control shows the trade: at +48 bytes, the SSE2 path gets
@@ -690,6 +691,32 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **Rare regions out of line, after allocation (item 17).** Inside a loop, an arm that loops
+  or returns itself (a search kernel's candidate check) was laid out in place, so the
+  common path jumped over it to the latch every iteration. `regalloc.layout_rare` now moves
+  each `jcc L; region; L:` out of line after the allocation: the jcc inverted to `R`, and
+  `R: region; jmp L` after the function's ret. The loop runs its common path straight into
+  the latch. Only the order changes. Done in the lowering, before allocation, the jump back
+  had split the allocator's regions (the memmem attempt above); after it, it is plain
+  layout. x86 91 regions moved, aarch64 96. `.text` 176688 → 177136. 104 rows, best of 5,
+  HEAD / new / HEAD again: geomean −0.71 % (noise −0.04 %), 13 rows better than −5 %:
+
+  | row | cycles HEAD / new / HEAD again |
+  |---|---|
+  | memmem 4 KiB SSE2 | 810.20 / **670.15** / 817.90 (GCC 672.5: the SSE2 gap of item 25) |
+  | pair 16 B / 64 B / 256 B / 4 KiB SSE2 | −10 % / −12 % / −10 % / −12.5 % |
+  | byteset 4 KiB AVX2 | 317.68 / 287.65 / 323.51 |
+  | memchr3 4 KiB AVX2 | 288.51 / 246.09 / 287.79 |
+  | first_non_ascii 64 B AVX2 | 16.81 / 13.99 / 16.85 |
+
+  Three rows worse than +5 %, checked with the control (HEAD and new regenerated with every
+  loop head 32-aligned): count 64 B AVX2 is noise (15.16 / 15.14, control 11.75 / 11.51);
+  first_non_ascii 16 B AVX2 is placement (control 15.99 / 15.98; logged); memmem 4 KiB AVX2
+  is **a trade-off**, 378-393 → 423-428 in both layouts. In this bench the AVX2 packed-pair
+  loop finds a candidate often, so the region is not rare there, and out of line it costs
+  two taken jumps per candidate. Accepted against the SSE2 row's −17 % and the rest.
+  Teddy does not move (a predicted taken jump costs little in its loop).
 
 - **Return tails copied into the jumps to them (item 17).** Every exit of a kernel jumped to
   one shared return (`jmp L1` … `L1: vzeroupper; ret`), where GCC and Clang return in

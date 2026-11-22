@@ -720,10 +720,44 @@ def allocate(code: list, abi: ABI, T) -> list:
         code = new
     else:
         assign, spilled, _ = _alloc(code, abi, T, set(parent))
-    code = [ins for ins in code if ins.op not in ("rarebegin", "rareend")]
     code, nslots = T.rewrite(code, assign, spilled)
     code = T.peephole(code)
-    return dup_returns(layout_cold(T.frame(code, abi, nslots)))
+    return dup_returns(layout_rare(layout_cold(T.frame(code, abi, nslots))))
+
+
+def layout_rare(code: list) -> list:
+    """Move every rare region (`rarebegin` .. `rareend`: an arm inside a loop that loops or
+    returns itself, a search kernel's candidate verification) out of line, after the
+    function's ret. `jcc L; region; L:` becomes `jcc' R` (inverted) in place and `R: region;
+    jmp L` at the end. The loop then runs its common path straight into its latch, with no
+    taken jump over the region. Registers are already allocated, so only the order changes.
+    The lowering did this before allocation once, and the jump back split the allocator's
+    regions (PENDING item 17). A region whose shape is not exactly that stays in place; its
+    markers go either way."""
+    code = list(code)
+    n = 0
+    while True:
+        begins = [i for i, ins in enumerate(code) if ins.op == "rarebegin"]
+        if not begins:
+            break
+        for i in begins:        # the innermost: no other region inside it
+            j = next(k for k in range(i + 1, len(code)) if code[k].op in ("rarebegin", "rareend"))
+            if code[j].op == "rareend":
+                break
+        prev = code[i - 1] if i else None
+        after = code[j + 1] if j + 1 < len(code) else None
+        if prev is not None and prev.op in INVERT and isinstance(prev.args[0], Lab) \
+                and after is not None and after.op == "label" and after.args[0].name == prev.args[0].name:
+            n += 1
+            r = Lab(f".Lrare{n}")
+            region = code[i + 1:j]
+            del code[i:j + 1]
+            code[i - 1] = Ins(INVERT[prev.op], [r] + prev.args[1:], prev.defs, prev.uses, prev.clobbers)
+            code += [Ins("label", [r])] + region + [Ins("jmp", [after.args[0]])]
+        else:
+            del code[j]
+            del code[i]
+    return code
 
 
 DUP_MAX = 4     # instructions of a return tail worth copying instead of jumping to it

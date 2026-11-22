@@ -7055,23 +7055,7 @@ L.nvol_first_non_ascii_sse2:
     por %xmm5, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_first_non_ascii_sse2.L8
-    pmovmskb %xmm0, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_sse2.L11
-.Lnvol_first_non_ascii_sse2.L10:
-    pmovmskb %xmm1, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_sse2.L13
-.Lnvol_first_non_ascii_sse2.L12:
-    pmovmskb %xmm2, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_sse2.L15
-.Lnvol_first_non_ascii_sse2.L14:
-    pmovmskb %xmm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_sse2.L17
-.Lnvol_first_non_ascii_sse2.L16:
+    {disp8} jne .Lnvol_first_non_ascii_sse2.Lrare1
 .Lnvol_first_non_ascii_sse2.L8:
     add $64, %rdi
     cmp %rcx, %rdi
@@ -7127,9 +7111,34 @@ L.nvol_first_non_ascii_sse2:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
     ret
+.Lnvol_first_non_ascii_sse2.Lrare1:
+    pmovmskb %xmm0, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_sse2.L11
+.Lnvol_first_non_ascii_sse2.L10:
+    pmovmskb %xmm1, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_sse2.L13
+.Lnvol_first_non_ascii_sse2.L12:
+    pmovmskb %xmm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_sse2.L15
+.Lnvol_first_non_ascii_sse2.L14:
+    pmovmskb %xmm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_sse2.L17
+.Lnvol_first_non_ascii_sse2.L16:
+    {disp32} jmp .Lnvol_first_non_ascii_sse2.L8
 .cfi_endproc
 .size nvol_first_non_ascii_sse2, .-nvol_first_non_ascii_sse2
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_first_non_ascii_avx2
 .type nvol_first_non_ascii_avx2, @function
 .hidden nvol_first_non_ascii_avx2
@@ -7165,23 +7174,7 @@ L.nvol_first_non_ascii_avx2:
     vpor %ymm5, %ymm4, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_first_non_ascii_avx2.L8
-    vpmovmskb %ymm0, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_avx2.L11
-.Lnvol_first_non_ascii_avx2.L10:
-    vpmovmskb %ymm1, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_avx2.L13
-.Lnvol_first_non_ascii_avx2.L12:
-    vpmovmskb %ymm2, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_avx2.L15
-.Lnvol_first_non_ascii_avx2.L14:
-    vpmovmskb %ymm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_avx2.L17
-.Lnvol_first_non_ascii_avx2.L16:
+    {disp32} jne .Lnvol_first_non_ascii_avx2.Lrare1
 .Lnvol_first_non_ascii_avx2.L8:
     sub $-128, %rdi
     cmp %rcx, %rdi
@@ -7191,7 +7184,7 @@ L.nvol_first_non_ascii_avx2:
     lea -32(%rsi), %rcx
     cmp %rcx, %rdi
     {disp8} ja .Lnvol_first_non_ascii_avx2.L19
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_first_non_ascii_avx2.L18:
     vmovdqu (%rdi), %ymm0
     vpmovmskb %ymm0, %eax
@@ -7244,6 +7237,24 @@ L.nvol_first_non_ascii_avx2:
     lea (%rdi,%rax), %rax
     vzeroupper
     ret
+.Lnvol_first_non_ascii_avx2.Lrare1:
+    vpmovmskb %ymm0, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_avx2.L11
+.Lnvol_first_non_ascii_avx2.L10:
+    vpmovmskb %ymm1, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_avx2.L13
+.Lnvol_first_non_ascii_avx2.L12:
+    vpmovmskb %ymm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_avx2.L15
+.Lnvol_first_non_ascii_avx2.L14:
+    vpmovmskb %ymm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_avx2.L17
+.Lnvol_first_non_ascii_avx2.L16:
+    {disp32} jmp .Lnvol_first_non_ascii_avx2.L8
 .cfi_endproc
 .size nvol_first_non_ascii_avx2, .-nvol_first_non_ascii_avx2
 
@@ -7251,7 +7262,7 @@ L.nvol_first_non_ascii_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_first_non_ascii_entry_avx2
 .type nvol_first_non_ascii_entry_avx2, @function
 .hidden nvol_first_non_ascii_entry_avx2
@@ -7307,23 +7318,7 @@ L.nvol_first_non_ascii_entry_avx2:
     vpor %xmm5, %xmm4, %xmm4
     vpmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_first_non_ascii_entry_avx2.L16
-    vpmovmskb %xmm0, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.L19
-.Lnvol_first_non_ascii_entry_avx2.L18:
-    vpmovmskb %xmm1, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.L21
-.Lnvol_first_non_ascii_entry_avx2.L20:
-    vpmovmskb %xmm2, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.L23
-.Lnvol_first_non_ascii_entry_avx2.L22:
-    vpmovmskb %xmm3, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.L25
-.Lnvol_first_non_ascii_entry_avx2.L24:
+    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.Lrare1
 .Lnvol_first_non_ascii_entry_avx2.L16:
     add $64, %rdi
     cmp %rcx, %rdi
@@ -7333,7 +7328,7 @@ L.nvol_first_non_ascii_entry_avx2:
     lea -16(%rsi), %rcx
     cmp %rcx, %rdi
     {disp8} ja .Lnvol_first_non_ascii_entry_avx2.L27
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_first_non_ascii_entry_avx2.L26:
     vmovdqu (%rdi), %xmm0
     vpmovmskb %xmm0, %eax
@@ -7387,23 +7382,7 @@ L.nvol_first_non_ascii_entry_avx2:
     vpor %ymm5, %ymm4, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_first_non_ascii_entry_avx2.L40
-    vpmovmskb %ymm0, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.L43
-.Lnvol_first_non_ascii_entry_avx2.L42:
-    vpmovmskb %ymm1, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.L45
-.Lnvol_first_non_ascii_entry_avx2.L44:
-    vpmovmskb %ymm2, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.L47
-.Lnvol_first_non_ascii_entry_avx2.L46:
-    vpmovmskb %ymm3, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.L49
-.Lnvol_first_non_ascii_entry_avx2.L48:
+    {disp32} jne .Lnvol_first_non_ascii_entry_avx2.Lrare2
 .Lnvol_first_non_ascii_entry_avx2.L40:
     sub $-128, %rdi
     cmp %rcx, %rdi
@@ -7413,7 +7392,7 @@ L.nvol_first_non_ascii_entry_avx2:
     lea -32(%rsi), %rcx
     cmp %rcx, %rdi
     {disp8} ja .Lnvol_first_non_ascii_entry_avx2.L51
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_first_non_ascii_entry_avx2.L50:
     vmovdqu (%rdi), %ymm0
     vpmovmskb %ymm0, %eax
@@ -7495,10 +7474,49 @@ L.nvol_first_non_ascii_entry_avx2:
     lea (%rdi,%rax), %rax
     vzeroupper
     ret
+.Lnvol_first_non_ascii_entry_avx2.Lrare1:
+    vpmovmskb %xmm0, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_avx2.L19
+.Lnvol_first_non_ascii_entry_avx2.L18:
+    vpmovmskb %xmm1, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_avx2.L21
+.Lnvol_first_non_ascii_entry_avx2.L20:
+    vpmovmskb %xmm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_avx2.L23
+.Lnvol_first_non_ascii_entry_avx2.L22:
+    vpmovmskb %xmm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_avx2.L25
+.Lnvol_first_non_ascii_entry_avx2.L24:
+    {disp32} jmp .Lnvol_first_non_ascii_entry_avx2.L16
+.Lnvol_first_non_ascii_entry_avx2.Lrare2:
+    vpmovmskb %ymm0, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_avx2.L43
+.Lnvol_first_non_ascii_entry_avx2.L42:
+    vpmovmskb %ymm1, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_avx2.L45
+.Lnvol_first_non_ascii_entry_avx2.L44:
+    vpmovmskb %ymm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_avx2.L47
+.Lnvol_first_non_ascii_entry_avx2.L46:
+    vpmovmskb %ymm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_avx2.L49
+.Lnvol_first_non_ascii_entry_avx2.L48:
+    {disp32} jmp .Lnvol_first_non_ascii_entry_avx2.L40
 .cfi_endproc
 .size nvol_first_non_ascii_entry_avx2, .-nvol_first_non_ascii_entry_avx2
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_first_non_ascii_entry_sse2
 .type nvol_first_non_ascii_entry_sse2, @function
 .hidden nvol_first_non_ascii_entry_sse2
@@ -7552,23 +7570,7 @@ L.nvol_first_non_ascii_entry_sse2:
     por %xmm5, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_first_non_ascii_entry_sse2.L14
-    pmovmskb %xmm0, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.L17
-.Lnvol_first_non_ascii_entry_sse2.L16:
-    pmovmskb %xmm1, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.L19
-.Lnvol_first_non_ascii_entry_sse2.L18:
-    pmovmskb %xmm2, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.L21
-.Lnvol_first_non_ascii_entry_sse2.L20:
-    pmovmskb %xmm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.L23
-.Lnvol_first_non_ascii_entry_sse2.L22:
+    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.Lrare1
 .Lnvol_first_non_ascii_entry_sse2.L14:
     add $64, %rdi
     cmp %rcx, %rdi
@@ -7627,12 +7629,29 @@ L.nvol_first_non_ascii_entry_sse2:
     bsf %eax, %eax
     lea (%rdi,%rax), %rax
     ret
+.Lnvol_first_non_ascii_entry_sse2.Lrare1:
+    pmovmskb %xmm0, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.L17
+.Lnvol_first_non_ascii_entry_sse2.L16:
+    pmovmskb %xmm1, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.L19
+.Lnvol_first_non_ascii_entry_sse2.L18:
+    pmovmskb %xmm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.L21
+.Lnvol_first_non_ascii_entry_sse2.L20:
+    pmovmskb %xmm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_first_non_ascii_entry_sse2.L23
+.Lnvol_first_non_ascii_entry_sse2.L22:
+    {disp32} jmp .Lnvol_first_non_ascii_entry_sse2.L14
 .cfi_endproc
 .size nvol_first_non_ascii_entry_sse2, .-nvol_first_non_ascii_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_first_non_ascii_raw
 .type nvol_first_non_ascii_raw, @function
 nvol_first_non_ascii_raw:
@@ -7846,21 +7865,10 @@ L.nvol_memmem_rk:
 .Lnvol_memmem_rk.L12:
     lea 2(%rax), %r11
     cmp %rdx, %r11
-    {disp8} ja .Lnvol_memmem_rk.L15
-    movzwl (%rcx,%rax), %r11d
-    movzwl (%rsi,%rax), %ebx
-    cmp %ebx, %r11d
-    {disp8} jne .Lnvol_memmem_rk.L18
-.Lnvol_memmem_rk.L17:
-    lea 2(%rax), %rax
+    {disp8} jbe .Lnvol_memmem_rk.Lrare1
 .Lnvol_memmem_rk.L15:
     cmp %rdx, %rax
-    {disp8} jae .Lnvol_memmem_rk.L19
-    movzbl (%rcx,%rax), %r11d
-    movzbl (%rsi,%rax), %eax
-    cmp %eax, %r11d
-    {disp8} jne .Lnvol_memmem_rk.L22
-.Lnvol_memmem_rk.L21:
+    {disp8} jb .Lnvol_memmem_rk.Lrare2
 .Lnvol_memmem_rk.L19:
     mov $1, %eax
 .Lnvol_memmem_rk.L10:
@@ -7877,7 +7885,7 @@ L.nvol_memmem_rk:
     movzbl (%rcx,%rdx), %eax
     add %eax, %r10d
     lea 1(%rcx), %rcx
-    {disp32} jmp .Lnvol_memmem_rk.L6
+    {disp8} jmp .Lnvol_memmem_rk.L6
     xor %eax, %eax
 .Lnvol_memmem_rk.L1:
 .cfi_remember_state
@@ -7903,15 +7911,32 @@ L.nvol_memmem_rk:
 .Lnvol_memmem_rk.L24:
 .cfi_restore_state
     xor %eax, %eax
+.cfi_remember_state
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
+.Lnvol_memmem_rk.Lrare1:
+.cfi_restore_state
+    movzwl (%rcx,%rax), %r11d
+    movzwl (%rsi,%rax), %ebx
+    cmp %ebx, %r11d
+    {disp8} jne .Lnvol_memmem_rk.L18
+.Lnvol_memmem_rk.L17:
+    lea 2(%rax), %rax
+    {disp8} jmp .Lnvol_memmem_rk.L15
+.Lnvol_memmem_rk.Lrare2:
+    movzbl (%rcx,%rax), %r11d
+    movzbl (%rsi,%rax), %eax
+    cmp %eax, %r11d
+    {disp8} jne .Lnvol_memmem_rk.L22
+.Lnvol_memmem_rk.L21:
+    {disp8} jmp .Lnvol_memmem_rk.L19
 .cfi_endproc
 .size nvol_memmem_rk, .-nvol_memmem_rk
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 0
 .globl nvol_memmem_rk_oneshot
 .type nvol_memmem_rk_oneshot, @function
 nvol_memmem_rk_oneshot:
@@ -7986,21 +8011,10 @@ L.nvol_memmem_rk_oneshot:
 .Lnvol_memmem_rk_oneshot.L16:
     lea 2(%rax), %r11
     cmp %r8, %r11
-    {disp8} ja .Lnvol_memmem_rk_oneshot.L19
-    movzwl (%rdx,%rax), %r11d
-    movzwl (%rdi,%rax), %ebx
-    cmp %ebx, %r11d
-    {disp8} jne .Lnvol_memmem_rk_oneshot.L22
-.Lnvol_memmem_rk_oneshot.L21:
-    lea 2(%rax), %rax
+    {disp8} jbe .Lnvol_memmem_rk_oneshot.Lrare1
 .Lnvol_memmem_rk_oneshot.L19:
     cmp %r8, %rax
-    {disp8} jae .Lnvol_memmem_rk_oneshot.L23
-    movzbl (%rdx,%rax), %r11d
-    movzbl (%rdi,%rax), %eax
-    cmp %eax, %r11d
-    {disp8} jne .Lnvol_memmem_rk_oneshot.L26
-.Lnvol_memmem_rk_oneshot.L25:
+    {disp8} jb .Lnvol_memmem_rk_oneshot.Lrare2
 .Lnvol_memmem_rk_oneshot.L23:
     mov $1, %eax
 .Lnvol_memmem_rk_oneshot.L14:
@@ -8043,9 +8057,26 @@ L.nvol_memmem_rk_oneshot:
 .Lnvol_memmem_rk_oneshot.L28:
 .cfi_restore_state
     xor %eax, %eax
+.cfi_remember_state
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
+.Lnvol_memmem_rk_oneshot.Lrare1:
+.cfi_restore_state
+    movzwl (%rdx,%rax), %r11d
+    movzwl (%rdi,%rax), %ebx
+    cmp %ebx, %r11d
+    {disp8} jne .Lnvol_memmem_rk_oneshot.L22
+.Lnvol_memmem_rk_oneshot.L21:
+    lea 2(%rax), %rax
+    {disp8} jmp .Lnvol_memmem_rk_oneshot.L19
+.Lnvol_memmem_rk_oneshot.Lrare2:
+    movzbl (%rdx,%rax), %r11d
+    movzbl (%rdi,%rax), %eax
+    cmp %eax, %r11d
+    {disp8} jne .Lnvol_memmem_rk_oneshot.L26
+.Lnvol_memmem_rk_oneshot.L25:
+    {disp8} jmp .Lnvol_memmem_rk_oneshot.L23
 .cfi_endproc
 .size nvol_memmem_rk_oneshot, .-nvol_memmem_rk_oneshot
 
@@ -8055,7 +8086,6 @@ L.nvol_memmem_rk_oneshot:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_memmem_suffix_min
 .type nvol_memmem_suffix_min, @function
 .hidden nvol_memmem_suffix_min
@@ -8724,21 +8754,10 @@ L.nvol_memmem_pp_sse2:
 .Lnvol_memmem_pp_sse2.L12:
     lea 2(%rbx), %rbp
     cmp %rdx, %rbp
-    {disp8} ja .Lnvol_memmem_pp_sse2.L15
-    movzwl (%rsi,%rbx), %ebp
-    movzwl (%rax,%rbx), %r12d
-    cmp %r12d, %ebp
-    {disp32} jne .Lnvol_memmem_pp_sse2.L18
-.Lnvol_memmem_pp_sse2.L17:
-    lea 2(%rbx), %rbx
+    {disp32} jbe .Lnvol_memmem_pp_sse2.Lrare1
 .Lnvol_memmem_pp_sse2.L15:
     cmp %rdx, %rbx
-    {disp8} jae .Lnvol_memmem_pp_sse2.L19
-    movzbl (%rsi,%rbx), %ebp
-    movzbl (%rax,%rbx), %ebx
-    cmp %ebx, %ebp
-    {disp32} jne .Lnvol_memmem_pp_sse2.L22
-.Lnvol_memmem_pp_sse2.L21:
+    {disp32} jb .Lnvol_memmem_pp_sse2.Lrare2
 .Lnvol_memmem_pp_sse2.L19:
     mov $1, %ebx
 .Lnvol_memmem_pp_sse2.L10:
@@ -8750,7 +8769,7 @@ L.nvol_memmem_pp_sse2:
     and %rbx, %rax
     mov %rax, %r11
     test %r11d, %r11d
-    {disp32} jne .Lnvol_memmem_pp_sse2.L4
+    {disp8} jne .Lnvol_memmem_pp_sse2.L4
 .Lnvol_memmem_pp_sse2.L5:
     add $16, %rcx
     cmp %r10, %rcx
@@ -8784,8 +8803,8 @@ L.nvol_memmem_pp_sse2:
     pmovmskb %xmm2, %ecx
     and %rax, %rcx
     test %ecx, %ecx
-    {disp32} je .Lnvol_memmem_pp_sse2.L28
-    .byte 15, 31, 0
+    {disp8} je .Lnvol_memmem_pp_sse2.L28
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_pp_sse2.L27:
     bsf %ecx, %eax
     lea (%r10,%rax), %rax
@@ -8803,7 +8822,7 @@ L.nvol_memmem_pp_sse2:
     mov (%rsi,%rdi), %r9d
     mov (%rax,%rdi), %r11d
     cmp %r11d, %r9d
-    {disp32} jne .Lnvol_memmem_pp_sse2.L37
+    {disp8} jne .Lnvol_memmem_pp_sse2.L37
 .Lnvol_memmem_pp_sse2.L36:
     lea 4(%rdi), %rdi
     lea 4(%rdi), %r9
@@ -8812,21 +8831,10 @@ L.nvol_memmem_pp_sse2:
 .Lnvol_memmem_pp_sse2.L35:
     lea 2(%rdi), %r9
     cmp %rdx, %r9
-    {disp8} ja .Lnvol_memmem_pp_sse2.L38
-    movzwl (%rsi,%rdi), %r9d
-    movzwl (%rax,%rdi), %r11d
-    cmp %r11d, %r9d
-    {disp8} jne .Lnvol_memmem_pp_sse2.L41
-.Lnvol_memmem_pp_sse2.L40:
-    lea 2(%rdi), %rdi
+    {disp32} jbe .Lnvol_memmem_pp_sse2.Lrare3
 .Lnvol_memmem_pp_sse2.L38:
     cmp %rdx, %rdi
-    {disp8} jae .Lnvol_memmem_pp_sse2.L42
-    movzbl (%rsi,%rdi), %r9d
-    movzbl (%rax,%rdi), %edi
-    cmp %edi, %r9d
-    {disp8} jne .Lnvol_memmem_pp_sse2.L45
-.Lnvol_memmem_pp_sse2.L44:
+    {disp32} jb .Lnvol_memmem_pp_sse2.Lrare4
 .Lnvol_memmem_pp_sse2.L42:
     mov $1, %edi
 .Lnvol_memmem_pp_sse2.L33:
@@ -8838,7 +8846,7 @@ L.nvol_memmem_pp_sse2:
     and %rdi, %rax
     mov %rax, %rcx
     test %ecx, %ecx
-    {disp32} jne .Lnvol_memmem_pp_sse2.L27
+    {disp8} jne .Lnvol_memmem_pp_sse2.L27
 .Lnvol_memmem_pp_sse2.L28:
 .Lnvol_memmem_pp_sse2.L23:
     xor %eax, %eax
@@ -8903,6 +8911,7 @@ L.nvol_memmem_pp_sse2:
     xor %edi, %edi
     {disp8} jmp .Lnvol_memmem_pp_sse2.L33
 .Lnvol_memmem_pp_sse2.L32:
+.cfi_remember_state
     pop %r12
 .cfi_def_cfa_offset 24
     pop %rbp
@@ -8910,11 +8919,40 @@ L.nvol_memmem_pp_sse2:
     pop %rbx
 .cfi_def_cfa_offset 8
     ret
+.Lnvol_memmem_pp_sse2.Lrare1:
+.cfi_restore_state
+    movzwl (%rsi,%rbx), %ebp
+    movzwl (%rax,%rbx), %r12d
+    cmp %r12d, %ebp
+    {disp8} jne .Lnvol_memmem_pp_sse2.L18
+.Lnvol_memmem_pp_sse2.L17:
+    lea 2(%rbx), %rbx
+    {disp32} jmp .Lnvol_memmem_pp_sse2.L15
+.Lnvol_memmem_pp_sse2.Lrare2:
+    movzbl (%rsi,%rbx), %ebp
+    movzbl (%rax,%rbx), %ebx
+    cmp %ebx, %ebp
+    {disp8} jne .Lnvol_memmem_pp_sse2.L22
+.Lnvol_memmem_pp_sse2.L21:
+    {disp32} jmp .Lnvol_memmem_pp_sse2.L19
+.Lnvol_memmem_pp_sse2.Lrare3:
+    movzwl (%rsi,%rdi), %r9d
+    movzwl (%rax,%rdi), %r11d
+    cmp %r11d, %r9d
+    {disp8} jne .Lnvol_memmem_pp_sse2.L41
+.Lnvol_memmem_pp_sse2.L40:
+    lea 2(%rdi), %rdi
+    {disp32} jmp .Lnvol_memmem_pp_sse2.L38
+.Lnvol_memmem_pp_sse2.Lrare4:
+    movzbl (%rsi,%rdi), %r9d
+    movzbl (%rax,%rdi), %edi
+    cmp %edi, %r9d
+    {disp8} jne .Lnvol_memmem_pp_sse2.L45
+.Lnvol_memmem_pp_sse2.L44:
+    {disp32} jmp .Lnvol_memmem_pp_sse2.L42
 .cfi_endproc
 .size nvol_memmem_pp_sse2, .-nvol_memmem_pp_sse2
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
@@ -9194,17 +9232,7 @@ L.nvol_memmem_tw_sse2:
     {disp8} jbe .Lnvol_memmem_tw_sse2.L22
 .Lnvol_memmem_tw_sse2.L23:
     cmp %rbx, %rcx
-    {disp8} jae .Lnvol_memmem_tw_sse2.L26
-    mov 384(%rsp), %r11
-    movdqu (%rax,%r11), %xmm2
-    pcmpeqb %xmm0, %xmm2
-    movdqu (%rax,%r8), %xmm0
-    pcmpeqb %xmm1, %xmm0
-    pand %xmm0, %xmm2
-    pmovmskb %xmm2, %ecx
-    test %ecx, %ecx
-    {disp32} jne .Lnvol_memmem_tw_sse2.L29
-.Lnvol_memmem_tw_sse2.L28:
+    {disp32} jb .Lnvol_memmem_tw_sse2.Lrare1
 .Lnvol_memmem_tw_sse2.L26:
     mov $-1, %rdi
 .Lnvol_memmem_tw_sse2.L21:
@@ -9263,7 +9291,7 @@ L.nvol_memmem_tw_sse2:
     movzbl (%r9,%r8), %r8d
     cmp %r8d, %ecx
     {disp8} jne .Lnvol_memmem_tw_sse2.L41
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_tw_sse2.L40:
     add $1, %rdi
     cmp %rdx, %rdi
@@ -9396,11 +9424,21 @@ L.nvol_memmem_tw_sse2:
 .Lnvol_memmem_tw_sse2.L58:
     lea (%r9,%r14), %rax
     {disp8} jmp .Lnvol_memmem_tw_sse2.L1
+.Lnvol_memmem_tw_sse2.Lrare1:
+    mov 384(%rsp), %r11
+    movdqu (%rax,%r11), %xmm2
+    pcmpeqb %xmm0, %xmm2
+    movdqu (%rax,%r8), %xmm0
+    pcmpeqb %xmm1, %xmm0
+    pand %xmm0, %xmm2
+    pmovmskb %xmm2, %ecx
+    test %ecx, %ecx
+    {disp8} jne .Lnvol_memmem_tw_sse2.L29
+.Lnvol_memmem_tw_sse2.L28:
+    {disp32} jmp .Lnvol_memmem_tw_sse2.L26
 .cfi_endproc
 .size nvol_memmem_tw_sse2, .-nvol_memmem_tw_sse2
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
 .globl nvol_memmem_pp_avx2
 .type nvol_memmem_pp_avx2, @function
 .hidden nvol_memmem_pp_avx2
@@ -9470,21 +9508,10 @@ L.nvol_memmem_pp_avx2:
 .Lnvol_memmem_pp_avx2.L12:
     lea 2(%rbx), %rbp
     cmp %rdx, %rbp
-    {disp8} ja .Lnvol_memmem_pp_avx2.L15
-    movzwl (%rsi,%rbx), %ebp
-    movzwl (%rax,%rbx), %r12d
-    cmp %r12d, %ebp
-    {disp32} jne .Lnvol_memmem_pp_avx2.L18
-.Lnvol_memmem_pp_avx2.L17:
-    lea 2(%rbx), %rbx
+    {disp32} jbe .Lnvol_memmem_pp_avx2.Lrare1
 .Lnvol_memmem_pp_avx2.L15:
     cmp %rdx, %rbx
-    {disp8} jae .Lnvol_memmem_pp_avx2.L19
-    movzbl (%rsi,%rbx), %ebp
-    movzbl (%rax,%rbx), %ebx
-    cmp %ebx, %ebp
-    {disp32} jne .Lnvol_memmem_pp_avx2.L22
-.Lnvol_memmem_pp_avx2.L21:
+    {disp32} jb .Lnvol_memmem_pp_avx2.Lrare2
 .Lnvol_memmem_pp_avx2.L19:
     mov $1, %ebx
 .Lnvol_memmem_pp_avx2.L10:
@@ -9496,7 +9523,7 @@ L.nvol_memmem_pp_avx2:
     and %rbx, %rax
     mov %rax, %r11
     test %r11d, %r11d
-    {disp32} jne .Lnvol_memmem_pp_avx2.L4
+    {disp8} jne .Lnvol_memmem_pp_avx2.L4
 .Lnvol_memmem_pp_avx2.L5:
     add $32, %rcx
     cmp %r10, %rcx
@@ -9520,26 +9547,26 @@ L.nvol_memmem_pp_avx2:
     vpmovmskb %ymm0, %ecx
     and %rax, %rcx
     test %ecx, %ecx
-    {disp32} je .Lnvol_memmem_pp_avx2.L28
-    .byte 15, 31, 0
+    {disp8} je .Lnvol_memmem_pp_avx2.L28
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_pp_avx2.L27:
     bsf %ecx, %eax
     lea (%r10,%rax), %rax
     mov %r8, %rdi
     sub %rax, %rdi
     cmp %rdx, %rdi
-    {disp32} jb .Lnvol_memmem_pp_avx2.L30
+    {disp8} jb .Lnvol_memmem_pp_avx2.L30
 .Lnvol_memmem_pp_avx2.L29:
     xor %edi, %edi
     lea 4(%rdi), %r9
     cmp %rdx, %r9
     {disp8} ja .Lnvol_memmem_pp_avx2.L35
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_memmem_pp_avx2.L34:
     mov (%rsi,%rdi), %r9d
     mov (%rax,%rdi), %r11d
     cmp %r11d, %r9d
-    {disp32} jne .Lnvol_memmem_pp_avx2.L37
+    {disp8} jne .Lnvol_memmem_pp_avx2.L37
 .Lnvol_memmem_pp_avx2.L36:
     lea 4(%rdi), %rdi
     lea 4(%rdi), %r9
@@ -9548,21 +9575,10 @@ L.nvol_memmem_pp_avx2:
 .Lnvol_memmem_pp_avx2.L35:
     lea 2(%rdi), %r9
     cmp %rdx, %r9
-    {disp8} ja .Lnvol_memmem_pp_avx2.L38
-    movzwl (%rsi,%rdi), %r9d
-    movzwl (%rax,%rdi), %r11d
-    cmp %r11d, %r9d
-    {disp8} jne .Lnvol_memmem_pp_avx2.L41
-.Lnvol_memmem_pp_avx2.L40:
-    lea 2(%rdi), %rdi
+    {disp32} jbe .Lnvol_memmem_pp_avx2.Lrare3
 .Lnvol_memmem_pp_avx2.L38:
     cmp %rdx, %rdi
-    {disp8} jae .Lnvol_memmem_pp_avx2.L42
-    movzbl (%rsi,%rdi), %r9d
-    movzbl (%rax,%rdi), %edi
-    cmp %edi, %r9d
-    {disp8} jne .Lnvol_memmem_pp_avx2.L45
-.Lnvol_memmem_pp_avx2.L44:
+    {disp32} jb .Lnvol_memmem_pp_avx2.Lrare4
 .Lnvol_memmem_pp_avx2.L42:
     mov $1, %edi
 .Lnvol_memmem_pp_avx2.L33:
@@ -9574,7 +9590,7 @@ L.nvol_memmem_pp_avx2:
     and %rdi, %rax
     mov %rax, %rcx
     test %ecx, %ecx
-    {disp32} jne .Lnvol_memmem_pp_avx2.L27
+    {disp8} jne .Lnvol_memmem_pp_avx2.L27
 .Lnvol_memmem_pp_avx2.L28:
 .Lnvol_memmem_pp_avx2.L23:
     xor %eax, %eax
@@ -9617,12 +9633,41 @@ L.nvol_memmem_pp_avx2:
     {disp8} jmp .Lnvol_memmem_pp_avx2.L33
 .Lnvol_memmem_pp_avx2.L32:
     {disp8} jmp .Lnvol_memmem_pp_avx2.L1
+.Lnvol_memmem_pp_avx2.Lrare1:
+    movzwl (%rsi,%rbx), %ebp
+    movzwl (%rax,%rbx), %r12d
+    cmp %r12d, %ebp
+    {disp8} jne .Lnvol_memmem_pp_avx2.L18
+.Lnvol_memmem_pp_avx2.L17:
+    lea 2(%rbx), %rbx
+    {disp32} jmp .Lnvol_memmem_pp_avx2.L15
+.Lnvol_memmem_pp_avx2.Lrare2:
+    movzbl (%rsi,%rbx), %ebp
+    movzbl (%rax,%rbx), %ebx
+    cmp %ebx, %ebp
+    {disp8} jne .Lnvol_memmem_pp_avx2.L22
+.Lnvol_memmem_pp_avx2.L21:
+    {disp32} jmp .Lnvol_memmem_pp_avx2.L19
+.Lnvol_memmem_pp_avx2.Lrare3:
+    movzwl (%rsi,%rdi), %r9d
+    movzwl (%rax,%rdi), %r11d
+    cmp %r11d, %r9d
+    {disp8} jne .Lnvol_memmem_pp_avx2.L41
+.Lnvol_memmem_pp_avx2.L40:
+    lea 2(%rdi), %rdi
+    {disp32} jmp .Lnvol_memmem_pp_avx2.L38
+.Lnvol_memmem_pp_avx2.Lrare4:
+    movzbl (%rsi,%rdi), %r9d
+    movzbl (%rax,%rdi), %edi
+    cmp %edi, %r9d
+    {disp8} jne .Lnvol_memmem_pp_avx2.L45
+.Lnvol_memmem_pp_avx2.L44:
+    {disp32} jmp .Lnvol_memmem_pp_avx2.L42
 .cfi_endproc
 .size nvol_memmem_pp_avx2, .-nvol_memmem_pp_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 0
 .globl nvol_memmem_pp2_avx2
 .type nvol_memmem_pp2_avx2, @function
 .hidden nvol_memmem_pp2_avx2
@@ -9905,15 +9950,7 @@ L.nvol_memmem_tw_avx2:
 .Lnvol_memmem_tw_avx2.L25:
     mov 32(%rsp), %r11
     cmp %r11, %rdi
-    {disp8} jae .Lnvol_memmem_tw_avx2.L28
-    mov 416(%rsp), %r11
-    vpcmpeqb (%rcx,%r11), %xmm0, %xmm0
-    vpcmpeqb (%rcx,%r14), %xmm1, %xmm1
-    vpand %xmm1, %xmm0, %xmm0
-    vpmovmskb %xmm0, %edi
-    test %edi, %edi
-    {disp32} jne .Lnvol_memmem_tw_avx2.L31
-.Lnvol_memmem_tw_avx2.L30:
+    {disp32} jb .Lnvol_memmem_tw_avx2.Lrare1
 .Lnvol_memmem_tw_avx2.L28:
     mov $-1, %r8
     {disp32} jmp .Lnvol_memmem_tw_avx2.L22
@@ -9958,15 +9995,7 @@ L.nvol_memmem_tw_avx2:
 .Lnvol_memmem_tw_avx2.L34:
     mov 32(%rsp), %r11
     cmp %r11, %rcx
-    {disp8} jae .Lnvol_memmem_tw_avx2.L37
-    mov 608(%rsp), %r11
-    vpcmpeqb (%r14,%r11), %ymm0, %ymm0
-    vpcmpeqb (%r14,%r8), %ymm1, %ymm1
-    vpand %ymm1, %ymm0, %ymm0
-    vpmovmskb %ymm0, %ecx
-    test %ecx, %ecx
-    {disp32} jne .Lnvol_memmem_tw_avx2.L40
-.Lnvol_memmem_tw_avx2.L39:
+    {disp32} jb .Lnvol_memmem_tw_avx2.Lrare2
 .Lnvol_memmem_tw_avx2.L37:
     mov $-1, %r8
 .Lnvol_memmem_tw_avx2.L32:
@@ -10171,6 +10200,26 @@ L.nvol_memmem_tw_avx2:
 .Lnvol_memmem_tw_avx2.L69:
     lea (%r9,%r15), %rax
     {disp8} jmp .Lnvol_memmem_tw_avx2.L1
+.Lnvol_memmem_tw_avx2.Lrare1:
+    mov 416(%rsp), %r11
+    vpcmpeqb (%rcx,%r11), %xmm0, %xmm0
+    vpcmpeqb (%rcx,%r14), %xmm1, %xmm1
+    vpand %xmm1, %xmm0, %xmm0
+    vpmovmskb %xmm0, %edi
+    test %edi, %edi
+    {disp8} jne .Lnvol_memmem_tw_avx2.L31
+.Lnvol_memmem_tw_avx2.L30:
+    {disp32} jmp .Lnvol_memmem_tw_avx2.L28
+.Lnvol_memmem_tw_avx2.Lrare2:
+    mov 608(%rsp), %r11
+    vpcmpeqb (%r14,%r11), %ymm0, %ymm0
+    vpcmpeqb (%r14,%r8), %ymm1, %ymm1
+    vpand %ymm1, %ymm0, %ymm0
+    vpmovmskb %ymm0, %ecx
+    test %ecx, %ecx
+    {disp8} jne .Lnvol_memmem_tw_avx2.L40
+.Lnvol_memmem_tw_avx2.L39:
+    {disp32} jmp .Lnvol_memmem_tw_avx2.L37
 .cfi_endproc
 .size nvol_memmem_tw_avx2, .-nvol_memmem_tw_avx2
 
@@ -10178,8 +10227,7 @@ L.nvol_memmem_tw_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 144
 .globl nvol_memmem_find_entry_avx2
 .type nvol_memmem_find_entry_avx2, @function
 .hidden nvol_memmem_find_entry_avx2
@@ -10302,21 +10350,10 @@ L.nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L22:
     lea 2(%rbx), %rbp
     cmp %rdx, %rbp
-    {disp8} ja .Lnvol_memmem_find_entry_avx2.L25
-    movzwl (%rax,%rbx), %ebp
-    movzwl (%rsi,%rbx), %r12d
-    cmp %r12d, %ebp
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L28
-.Lnvol_memmem_find_entry_avx2.L27:
-    lea 2(%rbx), %rbx
+    {disp32} jbe .Lnvol_memmem_find_entry_avx2.Lrare1
 .Lnvol_memmem_find_entry_avx2.L25:
     cmp %rdx, %rbx
-    {disp8} jae .Lnvol_memmem_find_entry_avx2.L29
-    movzbl (%rax,%rbx), %ebp
-    movzbl (%rsi,%rbx), %ebx
-    cmp %ebx, %ebp
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L32
-.Lnvol_memmem_find_entry_avx2.L31:
+    {disp32} jb .Lnvol_memmem_find_entry_avx2.Lrare2
 .Lnvol_memmem_find_entry_avx2.L29:
     mov $1, %ebx
 .Lnvol_memmem_find_entry_avx2.L20:
@@ -10333,7 +10370,7 @@ L.nvol_memmem_find_entry_avx2:
     movzbl (%rax,%rdx), %ebx
     add %ebx, %r9d
     lea 1(%rax), %rax
-    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L16
+    {disp8} jmp .Lnvol_memmem_find_entry_avx2.L16
     xor %eax, %eax
     {disp32} jmp .Lnvol_memmem_find_entry_avx2.L1
 .Lnvol_memmem_find_entry_avx2.L10:
@@ -10366,7 +10403,7 @@ L.nvol_memmem_find_entry_avx2:
     sub %rcx, %rsi
     cmp %rsi, %rax
     {disp8} ja .Lnvol_memmem_find_entry_avx2.L40
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_avx2.L39:
     vpcmpeqb (%rax,%rdi), %xmm0, %xmm2
     vpcmpeqb (%rax,%r9), %xmm1, %xmm3
@@ -10460,21 +10497,10 @@ L.nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L59:
     lea 2(%r12), %r13
     cmp %rdx, %r13
-    {disp8} ja .Lnvol_memmem_find_entry_avx2.L62
-    movzwl (%rsi,%r12), %r13d
-    movzwl (%rbp,%r12), %r14d
-    cmp %r14d, %r13d
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L65
-.Lnvol_memmem_find_entry_avx2.L64:
-    lea 2(%r12), %r12
+    {disp32} jbe .Lnvol_memmem_find_entry_avx2.Lrare3
 .Lnvol_memmem_find_entry_avx2.L62:
     cmp %rdx, %r12
-    {disp8} jae .Lnvol_memmem_find_entry_avx2.L66
-    movzbl (%rsi,%r12), %r13d
-    movzbl (%rbp,%r12), %r12d
-    cmp %r12d, %r13d
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L69
-.Lnvol_memmem_find_entry_avx2.L68:
+    {disp32} jb .Lnvol_memmem_find_entry_avx2.Lrare4
 .Lnvol_memmem_find_entry_avx2.L66:
     mov $1, %r12d
 .Lnvol_memmem_find_entry_avx2.L57:
@@ -10486,7 +10512,7 @@ L.nvol_memmem_find_entry_avx2:
     and %r12, %rbp
     mov %rbp, %rcx
     test %ecx, %ecx
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L51
+    {disp8} jne .Lnvol_memmem_find_entry_avx2.L51
 .Lnvol_memmem_find_entry_avx2.L52:
     add $16, %rax
     cmp %rbx, %rax
@@ -10511,8 +10537,8 @@ L.nvol_memmem_find_entry_avx2:
     vpmovmskb %xmm0, %eax
     and %rbp, %rax
     test %eax, %eax
-    {disp32} je .Lnvol_memmem_find_entry_avx2.L75
-    .byte 15, 31, 64, 0
+    {disp8} je .Lnvol_memmem_find_entry_avx2.L75
+    .byte 144
 .Lnvol_memmem_find_entry_avx2.L74:
     bsf %eax, %ecx
     lea (%rbx,%rcx), %rcx
@@ -10539,21 +10565,10 @@ L.nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L82:
     lea 2(%rdi), %r9
     cmp %rdx, %r9
-    {disp8} ja .Lnvol_memmem_find_entry_avx2.L85
-    movzwl (%rsi,%rdi), %r9d
-    movzwl (%rcx,%rdi), %ebp
-    cmp %ebp, %r9d
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L88
-.Lnvol_memmem_find_entry_avx2.L87:
-    lea 2(%rdi), %rdi
+    {disp32} jbe .Lnvol_memmem_find_entry_avx2.Lrare5
 .Lnvol_memmem_find_entry_avx2.L85:
     cmp %rdx, %rdi
-    {disp8} jae .Lnvol_memmem_find_entry_avx2.L89
-    movzbl (%rsi,%rdi), %r9d
-    movzbl (%rcx,%rdi), %edi
-    cmp %edi, %r9d
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L92
-.Lnvol_memmem_find_entry_avx2.L91:
+    {disp32} jb .Lnvol_memmem_find_entry_avx2.Lrare6
 .Lnvol_memmem_find_entry_avx2.L89:
     mov $1, %edi
 .Lnvol_memmem_find_entry_avx2.L80:
@@ -10565,7 +10580,7 @@ L.nvol_memmem_find_entry_avx2:
     and %rdi, %rcx
     mov %rcx, %rax
     test %eax, %eax
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L74
+    {disp8} jne .Lnvol_memmem_find_entry_avx2.L74
 .Lnvol_memmem_find_entry_avx2.L75:
 .Lnvol_memmem_find_entry_avx2.L70:
     xor %eax, %eax
@@ -10592,7 +10607,6 @@ L.nvol_memmem_find_entry_avx2:
     sub %rcx, %rsi
     cmp %rsi, %rax
     {disp8} ja .Lnvol_memmem_find_entry_avx2.L96
-    .byte 15, 31, 64, 0
 .Lnvol_memmem_find_entry_avx2.L95:
     vpcmpeqb (%rax,%rdi), %ymm0, %ymm2
     vpcmpeqb (%rax,%r9), %ymm1, %ymm3
@@ -10686,21 +10700,10 @@ L.nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L115:
     lea 2(%r12), %r13
     cmp %rdx, %r13
-    {disp8} ja .Lnvol_memmem_find_entry_avx2.L118
-    movzwl (%rsi,%r12), %r13d
-    movzwl (%rbp,%r12), %r14d
-    cmp %r14d, %r13d
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L121
-.Lnvol_memmem_find_entry_avx2.L120:
-    lea 2(%r12), %r12
+    {disp32} jbe .Lnvol_memmem_find_entry_avx2.Lrare7
 .Lnvol_memmem_find_entry_avx2.L118:
     cmp %rdx, %r12
-    {disp8} jae .Lnvol_memmem_find_entry_avx2.L122
-    movzbl (%rsi,%r12), %r13d
-    movzbl (%rbp,%r12), %r12d
-    cmp %r12d, %r13d
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L125
-.Lnvol_memmem_find_entry_avx2.L124:
+    {disp32} jb .Lnvol_memmem_find_entry_avx2.Lrare8
 .Lnvol_memmem_find_entry_avx2.L122:
     mov $1, %r12d
 .Lnvol_memmem_find_entry_avx2.L113:
@@ -10712,7 +10715,7 @@ L.nvol_memmem_find_entry_avx2:
     and %r12, %rbp
     mov %rbp, %rcx
     test %ecx, %ecx
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L107
+    {disp8} jne .Lnvol_memmem_find_entry_avx2.L107
 .Lnvol_memmem_find_entry_avx2.L108:
     add $32, %rax
     cmp %rbx, %rax
@@ -10737,8 +10740,8 @@ L.nvol_memmem_find_entry_avx2:
     vpmovmskb %ymm0, %eax
     and %rbp, %rax
     test %eax, %eax
-    {disp32} je .Lnvol_memmem_find_entry_avx2.L131
-    .byte 15, 31, 64, 0
+    {disp8} je .Lnvol_memmem_find_entry_avx2.L131
+    .byte 144
 .Lnvol_memmem_find_entry_avx2.L130:
     bsf %eax, %ecx
     lea (%rbx,%rcx), %rcx
@@ -10765,21 +10768,10 @@ L.nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L138:
     lea 2(%rdi), %r9
     cmp %rdx, %r9
-    {disp8} ja .Lnvol_memmem_find_entry_avx2.L141
-    movzwl (%rsi,%rdi), %r9d
-    movzwl (%rcx,%rdi), %ebp
-    cmp %ebp, %r9d
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L144
-.Lnvol_memmem_find_entry_avx2.L143:
-    lea 2(%rdi), %rdi
+    {disp32} jbe .Lnvol_memmem_find_entry_avx2.Lrare9
 .Lnvol_memmem_find_entry_avx2.L141:
     cmp %rdx, %rdi
-    {disp8} jae .Lnvol_memmem_find_entry_avx2.L145
-    movzbl (%rsi,%rdi), %r9d
-    movzbl (%rcx,%rdi), %edi
-    cmp %edi, %r9d
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L148
-.Lnvol_memmem_find_entry_avx2.L147:
+    {disp32} jb .Lnvol_memmem_find_entry_avx2.Lrare10
 .Lnvol_memmem_find_entry_avx2.L145:
     mov $1, %edi
 .Lnvol_memmem_find_entry_avx2.L136:
@@ -10791,7 +10783,7 @@ L.nvol_memmem_find_entry_avx2:
     and %rdi, %rcx
     mov %rcx, %rax
     test %eax, %eax
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L130
+    {disp8} jne .Lnvol_memmem_find_entry_avx2.L130
 .Lnvol_memmem_find_entry_avx2.L131:
 .Lnvol_memmem_find_entry_avx2.L126:
     xor %eax, %eax
@@ -10812,7 +10804,6 @@ L.nvol_memmem_find_entry_avx2:
     lea (%rax,%rdx), %rbp
     cmp %rbp, %rbx
     {disp8} jae .Lnvol_memmem_find_entry_avx2.L154
-    .byte 15, 31, 64, 0
 .Lnvol_memmem_find_entry_avx2.L153:
     shl $1, %r9d
     movzbl (%rbx), %r12d
@@ -10843,21 +10834,10 @@ L.nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L161:
     lea 2(%rbx), %rbp
     cmp %rdx, %rbp
-    {disp8} ja .Lnvol_memmem_find_entry_avx2.L164
-    movzwl (%rax,%rbx), %ebp
-    movzwl (%rsi,%rbx), %r12d
-    cmp %r12d, %ebp
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L167
-.Lnvol_memmem_find_entry_avx2.L166:
-    lea 2(%rbx), %rbx
+    {disp32} jbe .Lnvol_memmem_find_entry_avx2.Lrare11
 .Lnvol_memmem_find_entry_avx2.L164:
     cmp %rdx, %rbx
-    {disp8} jae .Lnvol_memmem_find_entry_avx2.L168
-    movzbl (%rax,%rbx), %ebp
-    movzbl (%rsi,%rbx), %ebx
-    cmp %ebx, %ebp
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L171
-.Lnvol_memmem_find_entry_avx2.L170:
+    {disp32} jb .Lnvol_memmem_find_entry_avx2.Lrare12
 .Lnvol_memmem_find_entry_avx2.L168:
     mov $1, %ebx
 .Lnvol_memmem_find_entry_avx2.L159:
@@ -10874,7 +10854,7 @@ L.nvol_memmem_find_entry_avx2:
     movzbl (%rax,%rdx), %ebx
     add %ebx, %r9d
     lea 1(%rax), %rax
-    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L155
+    {disp8} jmp .Lnvol_memmem_find_entry_avx2.L155
     xor %eax, %eax
     {disp32} jmp .Lnvol_memmem_find_entry_avx2.L1
 .Lnvol_memmem_find_entry_avx2.L149:
@@ -10925,7 +10905,7 @@ L.nvol_memmem_find_entry_avx2:
     mov 32(%rsp), %r11
     cmp %r11, %rcx
     {disp32} ja .Lnvol_memmem_find_entry_avx2.L175
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_find_entry_avx2.L174:
     mov %rbx, %rbp
     cmp %rdi, %rbp
@@ -11049,15 +11029,7 @@ L.nvol_memmem_find_entry_avx2:
     {disp8} jbe .Lnvol_memmem_find_entry_avx2.L196
 .Lnvol_memmem_find_entry_avx2.L197:
     cmp %r8, %rdi
-    {disp8} jae .Lnvol_memmem_find_entry_avx2.L200
-    mov 512(%rsp), %r11
-    vpcmpeqb (%rcx,%r11), %xmm0, %xmm0
-    vpcmpeqb (%rcx,%r14), %xmm1, %xmm1
-    vpand %xmm1, %xmm0, %xmm0
-    vpmovmskb %xmm0, %edi
-    test %edi, %edi
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L203
-.Lnvol_memmem_find_entry_avx2.L202:
+    {disp32} jb .Lnvol_memmem_find_entry_avx2.Lrare13
 .Lnvol_memmem_find_entry_avx2.L200:
     mov $-1, %rbp
     {disp32} jmp .Lnvol_memmem_find_entry_avx2.L194
@@ -11101,15 +11073,7 @@ L.nvol_memmem_find_entry_avx2:
     {disp8} jbe .Lnvol_memmem_find_entry_avx2.L205
 .Lnvol_memmem_find_entry_avx2.L206:
     cmp %r8, %rcx
-    {disp8} jae .Lnvol_memmem_find_entry_avx2.L209
-    mov 704(%rsp), %r11
-    vpcmpeqb (%r14,%r11), %ymm0, %ymm0
-    vpcmpeqb (%r14,%rbp), %ymm1, %ymm1
-    vpand %ymm1, %ymm0, %ymm0
-    vpmovmskb %ymm0, %ecx
-    test %ecx, %ecx
-    {disp32} jne .Lnvol_memmem_find_entry_avx2.L212
-.Lnvol_memmem_find_entry_avx2.L211:
+    {disp32} jb .Lnvol_memmem_find_entry_avx2.Lrare14
 .Lnvol_memmem_find_entry_avx2.L209:
     mov $-1, %rbp
 .Lnvol_memmem_find_entry_avx2.L204:
@@ -11410,14 +11374,122 @@ L.nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L241:
     lea (%rax,%r15), %rax
     {disp32} jmp .Lnvol_memmem_find_entry_avx2.L1
+.Lnvol_memmem_find_entry_avx2.Lrare1:
+    movzwl (%rax,%rbx), %ebp
+    movzwl (%rsi,%rbx), %r12d
+    cmp %r12d, %ebp
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L28
+.Lnvol_memmem_find_entry_avx2.L27:
+    lea 2(%rbx), %rbx
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L25
+.Lnvol_memmem_find_entry_avx2.Lrare2:
+    movzbl (%rax,%rbx), %ebp
+    movzbl (%rsi,%rbx), %ebx
+    cmp %ebx, %ebp
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L32
+.Lnvol_memmem_find_entry_avx2.L31:
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L29
+.Lnvol_memmem_find_entry_avx2.Lrare3:
+    movzwl (%rsi,%r12), %r13d
+    movzwl (%rbp,%r12), %r14d
+    cmp %r14d, %r13d
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L65
+.Lnvol_memmem_find_entry_avx2.L64:
+    lea 2(%r12), %r12
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L62
+.Lnvol_memmem_find_entry_avx2.Lrare4:
+    movzbl (%rsi,%r12), %r13d
+    movzbl (%rbp,%r12), %r12d
+    cmp %r12d, %r13d
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L69
+.Lnvol_memmem_find_entry_avx2.L68:
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L66
+.Lnvol_memmem_find_entry_avx2.Lrare5:
+    movzwl (%rsi,%rdi), %r9d
+    movzwl (%rcx,%rdi), %ebp
+    cmp %ebp, %r9d
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L88
+.Lnvol_memmem_find_entry_avx2.L87:
+    lea 2(%rdi), %rdi
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L85
+.Lnvol_memmem_find_entry_avx2.Lrare6:
+    movzbl (%rsi,%rdi), %r9d
+    movzbl (%rcx,%rdi), %edi
+    cmp %edi, %r9d
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L92
+.Lnvol_memmem_find_entry_avx2.L91:
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L89
+.Lnvol_memmem_find_entry_avx2.Lrare7:
+    movzwl (%rsi,%r12), %r13d
+    movzwl (%rbp,%r12), %r14d
+    cmp %r14d, %r13d
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L121
+.Lnvol_memmem_find_entry_avx2.L120:
+    lea 2(%r12), %r12
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L118
+.Lnvol_memmem_find_entry_avx2.Lrare8:
+    movzbl (%rsi,%r12), %r13d
+    movzbl (%rbp,%r12), %r12d
+    cmp %r12d, %r13d
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L125
+.Lnvol_memmem_find_entry_avx2.L124:
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L122
+.Lnvol_memmem_find_entry_avx2.Lrare9:
+    movzwl (%rsi,%rdi), %r9d
+    movzwl (%rcx,%rdi), %ebp
+    cmp %ebp, %r9d
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L144
+.Lnvol_memmem_find_entry_avx2.L143:
+    lea 2(%rdi), %rdi
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L141
+.Lnvol_memmem_find_entry_avx2.Lrare10:
+    movzbl (%rsi,%rdi), %r9d
+    movzbl (%rcx,%rdi), %edi
+    cmp %edi, %r9d
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L148
+.Lnvol_memmem_find_entry_avx2.L147:
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L145
+.Lnvol_memmem_find_entry_avx2.Lrare11:
+    movzwl (%rax,%rbx), %ebp
+    movzwl (%rsi,%rbx), %r12d
+    cmp %r12d, %ebp
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L167
+.Lnvol_memmem_find_entry_avx2.L166:
+    lea 2(%rbx), %rbx
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L164
+.Lnvol_memmem_find_entry_avx2.Lrare12:
+    movzbl (%rax,%rbx), %ebp
+    movzbl (%rsi,%rbx), %ebx
+    cmp %ebx, %ebp
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L171
+.Lnvol_memmem_find_entry_avx2.L170:
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L168
+.Lnvol_memmem_find_entry_avx2.Lrare13:
+    mov 512(%rsp), %r11
+    vpcmpeqb (%rcx,%r11), %xmm0, %xmm0
+    vpcmpeqb (%rcx,%r14), %xmm1, %xmm1
+    vpand %xmm1, %xmm0, %xmm0
+    vpmovmskb %xmm0, %edi
+    test %edi, %edi
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L203
+.Lnvol_memmem_find_entry_avx2.L202:
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L200
+.Lnvol_memmem_find_entry_avx2.Lrare14:
+    mov 704(%rsp), %r11
+    vpcmpeqb (%r14,%r11), %ymm0, %ymm0
+    vpcmpeqb (%r14,%rbp), %ymm1, %ymm1
+    vpand %ymm1, %ymm0, %ymm0
+    vpmovmskb %ymm0, %ecx
+    test %ecx, %ecx
+    {disp32} jne .Lnvol_memmem_find_entry_avx2.L212
+.Lnvol_memmem_find_entry_avx2.L211:
+    {disp32} jmp .Lnvol_memmem_find_entry_avx2.L209
 .cfi_endproc
 .size nvol_memmem_find_entry_avx2, .-nvol_memmem_find_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memmem_find_entry_sse2
 .type nvol_memmem_find_entry_sse2, @function
 .hidden nvol_memmem_find_entry_sse2
@@ -11537,21 +11609,10 @@ L.nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L22:
     lea 2(%rbx), %rbp
     cmp %rdx, %rbp
-    {disp8} ja .Lnvol_memmem_find_entry_sse2.L25
-    movzwl (%rax,%rbx), %ebp
-    movzwl (%rsi,%rbx), %r12d
-    cmp %r12d, %ebp
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L28
-.Lnvol_memmem_find_entry_sse2.L27:
-    lea 2(%rbx), %rbx
+    {disp32} jbe .Lnvol_memmem_find_entry_sse2.Lrare1
 .Lnvol_memmem_find_entry_sse2.L25:
     cmp %rdx, %rbx
-    {disp8} jae .Lnvol_memmem_find_entry_sse2.L29
-    movzbl (%rax,%rbx), %ebp
-    movzbl (%rsi,%rbx), %ebx
-    cmp %ebx, %ebp
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L32
-.Lnvol_memmem_find_entry_sse2.L31:
+    {disp32} jb .Lnvol_memmem_find_entry_sse2.Lrare2
 .Lnvol_memmem_find_entry_sse2.L29:
     mov $1, %ebx
 .Lnvol_memmem_find_entry_sse2.L20:
@@ -11568,7 +11629,7 @@ L.nvol_memmem_find_entry_sse2:
     movzbl (%rax,%rdx), %ebx
     add %ebx, %r9d
     lea 1(%rax), %rax
-    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L16
+    {disp8} jmp .Lnvol_memmem_find_entry_sse2.L16
     xor %eax, %eax
     {disp32} jmp .Lnvol_memmem_find_entry_sse2.L1
 .Lnvol_memmem_find_entry_sse2.L10:
@@ -11595,8 +11656,7 @@ L.nvol_memmem_find_entry_sse2:
     sub %rcx, %rsi
     cmp %rsi, %rax
     {disp8} ja .Lnvol_memmem_find_entry_sse2.L38
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 0
 .Lnvol_memmem_find_entry_sse2.L37:
     movdqu (%rax,%rdi), %xmm2
     pcmpeqb %xmm0, %xmm2
@@ -11661,7 +11721,6 @@ L.nvol_memmem_find_entry_sse2:
     sub %rcx, %rbx
     cmp %rbx, %rax
     {disp32} ja .Lnvol_memmem_find_entry_sse2.L48
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_sse2.L47:
     movdqu (%rax,%rdi), %xmm2
     pcmpeqb %xmm0, %xmm2
@@ -11698,21 +11757,10 @@ L.nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L57:
     lea 2(%r12), %r13
     cmp %rdx, %r13
-    {disp8} ja .Lnvol_memmem_find_entry_sse2.L60
-    movzwl (%rsi,%r12), %r13d
-    movzwl (%rbp,%r12), %r14d
-    cmp %r14d, %r13d
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L63
-.Lnvol_memmem_find_entry_sse2.L62:
-    lea 2(%r12), %r12
+    {disp32} jbe .Lnvol_memmem_find_entry_sse2.Lrare3
 .Lnvol_memmem_find_entry_sse2.L60:
     cmp %rdx, %r12
-    {disp8} jae .Lnvol_memmem_find_entry_sse2.L64
-    movzbl (%rsi,%r12), %r13d
-    movzbl (%rbp,%r12), %r12d
-    cmp %r12d, %r13d
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L67
-.Lnvol_memmem_find_entry_sse2.L66:
+    {disp32} jb .Lnvol_memmem_find_entry_sse2.Lrare4
 .Lnvol_memmem_find_entry_sse2.L64:
     mov $1, %r12d
 .Lnvol_memmem_find_entry_sse2.L55:
@@ -11724,7 +11772,7 @@ L.nvol_memmem_find_entry_sse2:
     and %r12, %rbp
     mov %rbp, %rcx
     test %ecx, %ecx
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L49
+    {disp8} jne .Lnvol_memmem_find_entry_sse2.L49
 .Lnvol_memmem_find_entry_sse2.L50:
     add $16, %rax
     cmp %rbx, %rax
@@ -11752,7 +11800,7 @@ L.nvol_memmem_find_entry_sse2:
     and %rbp, %rax
     test %eax, %eax
     {disp32} je .Lnvol_memmem_find_entry_sse2.L73
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_find_entry_sse2.L72:
     bsf %eax, %ecx
     lea (%rbx,%rcx), %rcx
@@ -11779,21 +11827,10 @@ L.nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L80:
     lea 2(%rdi), %r9
     cmp %rdx, %r9
-    {disp8} ja .Lnvol_memmem_find_entry_sse2.L83
-    movzwl (%rsi,%rdi), %r9d
-    movzwl (%rcx,%rdi), %ebp
-    cmp %ebp, %r9d
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L86
-.Lnvol_memmem_find_entry_sse2.L85:
-    lea 2(%rdi), %rdi
+    {disp32} jbe .Lnvol_memmem_find_entry_sse2.Lrare5
 .Lnvol_memmem_find_entry_sse2.L83:
     cmp %rdx, %rdi
-    {disp8} jae .Lnvol_memmem_find_entry_sse2.L87
-    movzbl (%rsi,%rdi), %r9d
-    movzbl (%rcx,%rdi), %edi
-    cmp %edi, %r9d
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L90
-.Lnvol_memmem_find_entry_sse2.L89:
+    {disp32} jb .Lnvol_memmem_find_entry_sse2.Lrare6
 .Lnvol_memmem_find_entry_sse2.L87:
     mov $1, %edi
 .Lnvol_memmem_find_entry_sse2.L78:
@@ -11805,7 +11842,7 @@ L.nvol_memmem_find_entry_sse2:
     and %rdi, %rcx
     mov %rcx, %rax
     test %eax, %eax
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L72
+    {disp8} jne .Lnvol_memmem_find_entry_sse2.L72
 .Lnvol_memmem_find_entry_sse2.L73:
 .Lnvol_memmem_find_entry_sse2.L68:
     xor %eax, %eax
@@ -11826,7 +11863,7 @@ L.nvol_memmem_find_entry_sse2:
     lea (%rax,%rdx), %rbp
     cmp %rbp, %rbx
     {disp8} jae .Lnvol_memmem_find_entry_sse2.L96
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_sse2.L95:
     shl $1, %r9d
     movzbl (%rbx), %r12d
@@ -11843,6 +11880,7 @@ L.nvol_memmem_find_entry_sse2:
     lea 4(%rbx), %rbp
     cmp %rdx, %rbp
     {disp8} ja .Lnvol_memmem_find_entry_sse2.L103
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_memmem_find_entry_sse2.L102:
     mov (%rax,%rbx), %ebp
     mov (%rsi,%rbx), %r12d
@@ -11856,21 +11894,10 @@ L.nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L103:
     lea 2(%rbx), %rbp
     cmp %rdx, %rbp
-    {disp8} ja .Lnvol_memmem_find_entry_sse2.L106
-    movzwl (%rax,%rbx), %ebp
-    movzwl (%rsi,%rbx), %r12d
-    cmp %r12d, %ebp
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L109
-.Lnvol_memmem_find_entry_sse2.L108:
-    lea 2(%rbx), %rbx
+    {disp32} jbe .Lnvol_memmem_find_entry_sse2.Lrare7
 .Lnvol_memmem_find_entry_sse2.L106:
     cmp %rdx, %rbx
-    {disp8} jae .Lnvol_memmem_find_entry_sse2.L110
-    movzbl (%rax,%rbx), %ebp
-    movzbl (%rsi,%rbx), %ebx
-    cmp %ebx, %ebp
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L113
-.Lnvol_memmem_find_entry_sse2.L112:
+    {disp32} jb .Lnvol_memmem_find_entry_sse2.Lrare8
 .Lnvol_memmem_find_entry_sse2.L110:
     mov $1, %ebx
 .Lnvol_memmem_find_entry_sse2.L101:
@@ -11887,7 +11914,7 @@ L.nvol_memmem_find_entry_sse2:
     movzbl (%rax,%rdx), %ebx
     add %ebx, %r9d
     lea 1(%rax), %rax
-    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L97
+    {disp8} jmp .Lnvol_memmem_find_entry_sse2.L97
     xor %eax, %eax
     {disp32} jmp .Lnvol_memmem_find_entry_sse2.L1
 .Lnvol_memmem_find_entry_sse2.L91:
@@ -11927,7 +11954,7 @@ L.nvol_memmem_find_entry_sse2:
     mov 32(%rsp), %r11
     cmp %r11, %rcx
     {disp32} ja .Lnvol_memmem_find_entry_sse2.L117
-    .byte 15, 31, 0
+    .byte 15, 31, 64, 0
 .Lnvol_memmem_find_entry_sse2.L116:
     mov %rbx, %rdi
     cmp %r13, %rdi
@@ -12054,17 +12081,7 @@ L.nvol_memmem_find_entry_sse2:
     {disp8} jbe .Lnvol_memmem_find_entry_sse2.L136
 .Lnvol_memmem_find_entry_sse2.L137:
     cmp %r8, %rdi
-    {disp8} jae .Lnvol_memmem_find_entry_sse2.L140
-    mov 384(%rsp), %r11
-    movdqu (%rcx,%r11), %xmm2
-    pcmpeqb %xmm0, %xmm2
-    movdqu (%rcx,%r13), %xmm0
-    pcmpeqb %xmm1, %xmm0
-    pand %xmm0, %xmm2
-    pmovmskb %xmm2, %edi
-    test %edi, %edi
-    {disp32} jne .Lnvol_memmem_find_entry_sse2.L143
-.Lnvol_memmem_find_entry_sse2.L142:
+    {disp32} jb .Lnvol_memmem_find_entry_sse2.Lrare9
 .Lnvol_memmem_find_entry_sse2.L140:
     mov $-1, %rbp
 .Lnvol_memmem_find_entry_sse2.L135:
@@ -12125,7 +12142,8 @@ L.nvol_memmem_find_entry_sse2:
     movzbl (%rax,%rbp), %ebp
     cmp %ebp, %ecx
     {disp8} jne .Lnvol_memmem_find_entry_sse2.L155
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_memmem_find_entry_sse2.L154:
     add $1, %rdi
     cmp %rdx, %rdi
@@ -12320,12 +12338,83 @@ L.nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L172:
     lea (%rax,%r15), %rax
     {disp32} jmp .Lnvol_memmem_find_entry_sse2.L1
+.Lnvol_memmem_find_entry_sse2.Lrare1:
+    movzwl (%rax,%rbx), %ebp
+    movzwl (%rsi,%rbx), %r12d
+    cmp %r12d, %ebp
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L28
+.Lnvol_memmem_find_entry_sse2.L27:
+    lea 2(%rbx), %rbx
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L25
+.Lnvol_memmem_find_entry_sse2.Lrare2:
+    movzbl (%rax,%rbx), %ebp
+    movzbl (%rsi,%rbx), %ebx
+    cmp %ebx, %ebp
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L32
+.Lnvol_memmem_find_entry_sse2.L31:
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L29
+.Lnvol_memmem_find_entry_sse2.Lrare3:
+    movzwl (%rsi,%r12), %r13d
+    movzwl (%rbp,%r12), %r14d
+    cmp %r14d, %r13d
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L63
+.Lnvol_memmem_find_entry_sse2.L62:
+    lea 2(%r12), %r12
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L60
+.Lnvol_memmem_find_entry_sse2.Lrare4:
+    movzbl (%rsi,%r12), %r13d
+    movzbl (%rbp,%r12), %r12d
+    cmp %r12d, %r13d
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L67
+.Lnvol_memmem_find_entry_sse2.L66:
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L64
+.Lnvol_memmem_find_entry_sse2.Lrare5:
+    movzwl (%rsi,%rdi), %r9d
+    movzwl (%rcx,%rdi), %ebp
+    cmp %ebp, %r9d
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L86
+.Lnvol_memmem_find_entry_sse2.L85:
+    lea 2(%rdi), %rdi
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L83
+.Lnvol_memmem_find_entry_sse2.Lrare6:
+    movzbl (%rsi,%rdi), %r9d
+    movzbl (%rcx,%rdi), %edi
+    cmp %edi, %r9d
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L90
+.Lnvol_memmem_find_entry_sse2.L89:
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L87
+.Lnvol_memmem_find_entry_sse2.Lrare7:
+    movzwl (%rax,%rbx), %ebp
+    movzwl (%rsi,%rbx), %r12d
+    cmp %r12d, %ebp
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L109
+.Lnvol_memmem_find_entry_sse2.L108:
+    lea 2(%rbx), %rbx
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L106
+.Lnvol_memmem_find_entry_sse2.Lrare8:
+    movzbl (%rax,%rbx), %ebp
+    movzbl (%rsi,%rbx), %ebx
+    cmp %ebx, %ebp
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L113
+.Lnvol_memmem_find_entry_sse2.L112:
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L110
+.Lnvol_memmem_find_entry_sse2.Lrare9:
+    mov 384(%rsp), %r11
+    movdqu (%rcx,%r11), %xmm2
+    pcmpeqb %xmm0, %xmm2
+    movdqu (%rcx,%r13), %xmm0
+    pcmpeqb %xmm1, %xmm0
+    pand %xmm0, %xmm2
+    pmovmskb %xmm2, %edi
+    test %edi, %edi
+    {disp32} jne .Lnvol_memmem_find_entry_sse2.L143
+.Lnvol_memmem_find_entry_sse2.L142:
+    {disp32} jmp .Lnvol_memmem_find_entry_sse2.L140
 .cfi_endproc
 .size nvol_memmem_find_entry_sse2, .-nvol_memmem_find_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memmem_find_raw
 .type nvol_memmem_find_raw, @function
 nvol_memmem_find_raw:
@@ -13437,8 +13526,8 @@ L.nvol_teddy_slim_ssse3_1:
     lea -16(%rcx), %r11
     mov %r11, 32(%rsp)
     cmp %r11, %r8
-    {disp32} ja .Lnvol_teddy_slim_ssse3_1.L3
-    .byte 15, 31, 64, 0
+    {disp8} ja .Lnvol_teddy_slim_ssse3_1.L3
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_slim_ssse3_1.L2:
     movdqu (%r8), %xmm3
     movdqa %xmm3, %xmm4
@@ -13455,197 +13544,12 @@ L.nvol_teddy_slim_ssse3_1:
     pcmpeqb %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     cmp $65535, %eax
-    {disp32} je .Lnvol_teddy_slim_ssse3_1.L4
-    mov %r8, 64(%rsp)
-    movq %xmm5, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_ssse3_1.L8
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
-.Lnvol_teddy_slim_ssse3_1.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $3, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $7, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_slim_ssse3_1.L10
-    .byte 102, 144
-.Lnvol_teddy_slim_ssse3_1.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rdx
-    shl $4, %rdx
-    mov 16(%rsi,%rdx), %rdx
-    mov %rcx, %rax
-    sub %r12, %rax
-    cmp %rax, %rdx
-    {disp8} ja .Lnvol_teddy_slim_ssse3_1.L11
-    cmp $4, %rdx
-    {disp32} jb .Lnvol_teddy_slim_ssse3_1.L15
-.Lnvol_teddy_slim_ssse3_1.L14:
-    lea -4(%rdx), %rax
-    lea (%rbx,%rax), %rax
-    lea -4(%rdx), %rdx
-    lea (%r12,%rdx), %rdx
-    mov %r12, %r9
-    cmp %rax, %rbx
-    {disp8} jae .Lnvol_teddy_slim_ssse3_1.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_ssse3_1.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L26
-.Lnvol_teddy_slim_ssse3_1.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rax, %rbx
-    {disp8} jb .Lnvol_teddy_slim_ssse3_1.L23
-.Lnvol_teddy_slim_ssse3_1.L24:
-    mov (%rax), %eax
-    mov (%rdx), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_ssse3_1.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L12
-.Lnvol_teddy_slim_ssse3_1.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_slim_ssse3_1.L9
-.Lnvol_teddy_slim_ssse3_1.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L7
-.Lnvol_teddy_slim_ssse3_1.L8:
-    mov $-1, %r12
-.Lnvol_teddy_slim_ssse3_1.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L28
-.Lnvol_teddy_slim_ssse3_1.L27:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
-    movdqa %xmm5, %xmm3
-    punpckhqdq %xmm5, %xmm3
-    movq %xmm3, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_ssse3_1.L31
-    .byte 144
-.Lnvol_teddy_slim_ssse3_1.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_ssse3_1.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_ssse3_1.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_ssse3_1.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_ssse3_1.L38
-.Lnvol_teddy_slim_ssse3_1.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_ssse3_1.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_ssse3_1.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L49
-.Lnvol_teddy_slim_ssse3_1.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_ssse3_1.L46
-.Lnvol_teddy_slim_ssse3_1.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_ssse3_1.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L35
-.Lnvol_teddy_slim_ssse3_1.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_ssse3_1.L32
-.Lnvol_teddy_slim_ssse3_1.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L30
-.Lnvol_teddy_slim_ssse3_1.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_ssse3_1.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L51
-.Lnvol_teddy_slim_ssse3_1.L50:
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.Lrare1
 .Lnvol_teddy_slim_ssse3_1.L4:
     lea 16(%r8), %r8
     mov 32(%rsp), %r11
     cmp %r11, %r8
-    {disp32} jbe .Lnvol_teddy_slim_ssse3_1.L2
+    {disp8} jbe .Lnvol_teddy_slim_ssse3_1.L2
 .Lnvol_teddy_slim_ssse3_1.L3:
     cmp %rcx, %r8
     {disp32} jae .Lnvol_teddy_slim_ssse3_1.L52
@@ -13670,7 +13574,7 @@ L.nvol_teddy_slim_ssse3_1:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_ssse3_1.L58
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_ssse3_1.L57:
     mov 416(%rsp), %r11
     bsf %r11, %rdx
@@ -13689,8 +13593,7 @@ L.nvol_teddy_slim_ssse3_1:
     xor %ebp, %ebp
     cmp %r11, %rbp
     {disp32} jae .Lnvol_teddy_slim_ssse3_1.L60
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_teddy_slim_ssse3_1.L59:
     mov %rdx, %r12
     shl $6, %r12
@@ -14067,13 +13970,200 @@ L.nvol_teddy_slim_ssse3_1:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_slim_ssse3_1.L79
+.Lnvol_teddy_slim_ssse3_1.Lrare1:
+    mov %r8, 64(%rsp)
+    movq %xmm5, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_ssse3_1.L8
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_1.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $3, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $7, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_slim_ssse3_1.L10
+    .byte 102, 144
+.Lnvol_teddy_slim_ssse3_1.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rdx
+    shl $4, %rdx
+    mov 16(%rsi,%rdx), %rdx
+    mov %rcx, %rax
+    sub %r12, %rax
+    cmp %rax, %rdx
+    {disp8} ja .Lnvol_teddy_slim_ssse3_1.L11
+    cmp $4, %rdx
+    {disp32} jb .Lnvol_teddy_slim_ssse3_1.L15
+.Lnvol_teddy_slim_ssse3_1.L14:
+    lea -4(%rdx), %rax
+    lea (%rbx,%rax), %rax
+    lea -4(%rdx), %rdx
+    lea (%r12,%rdx), %rdx
+    mov %r12, %r9
+    cmp %rax, %rbx
+    {disp8} jae .Lnvol_teddy_slim_ssse3_1.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_1.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L26
+.Lnvol_teddy_slim_ssse3_1.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rax, %rbx
+    {disp8} jb .Lnvol_teddy_slim_ssse3_1.L23
+.Lnvol_teddy_slim_ssse3_1.L24:
+    mov (%rax), %eax
+    mov (%rdx), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_ssse3_1.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L12
+.Lnvol_teddy_slim_ssse3_1.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_slim_ssse3_1.L9
+.Lnvol_teddy_slim_ssse3_1.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L7
+.Lnvol_teddy_slim_ssse3_1.L8:
+    mov $-1, %r12
+.Lnvol_teddy_slim_ssse3_1.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L28
+.Lnvol_teddy_slim_ssse3_1.L27:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 224(%rsp)
+    movdqa %xmm5, %xmm3
+    punpckhqdq %xmm5, %xmm3
+    movq %xmm3, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_ssse3_1.L31
+    .byte 144
+.Lnvol_teddy_slim_ssse3_1.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_ssse3_1.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_ssse3_1.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_ssse3_1.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_ssse3_1.L38
+.Lnvol_teddy_slim_ssse3_1.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_ssse3_1.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_1.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L49
+.Lnvol_teddy_slim_ssse3_1.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_ssse3_1.L46
+.Lnvol_teddy_slim_ssse3_1.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_ssse3_1.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L35
+.Lnvol_teddy_slim_ssse3_1.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_ssse3_1.L32
+.Lnvol_teddy_slim_ssse3_1.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L30
+.Lnvol_teddy_slim_ssse3_1.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_ssse3_1.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_ssse3_1.L51
+.Lnvol_teddy_slim_ssse3_1.L50:
+    {disp32} jmp .Lnvol_teddy_slim_ssse3_1.L4
 .cfi_endproc
 .size nvol_teddy_slim_ssse3_1, .-nvol_teddy_slim_ssse3_1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_teddy_slim_ssse3_2
 .type nvol_teddy_slim_ssse3_2, @function
 .hidden nvol_teddy_slim_ssse3_2
@@ -14140,193 +14230,7 @@ L.nvol_teddy_slim_ssse3_2:
     pcmpeqb %xmm8, %xmm9
     pmovmskb %xmm9, %eax
     cmp $65535, %eax
-    {disp32} je .Lnvol_teddy_slim_ssse3_2.L4
-    lea -1(%r8), %r11
-    mov %r11, 64(%rsp)
-    movq %xmm7, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_ssse3_2.L8
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_ssse3_2.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $3, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $7, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_slim_ssse3_2.L10
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
-.Lnvol_teddy_slim_ssse3_2.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rdx
-    shl $4, %rdx
-    mov 16(%rsi,%rdx), %rdx
-    mov %rcx, %rax
-    sub %r12, %rax
-    cmp %rax, %rdx
-    {disp8} ja .Lnvol_teddy_slim_ssse3_2.L11
-    cmp $4, %rdx
-    {disp32} jb .Lnvol_teddy_slim_ssse3_2.L15
-.Lnvol_teddy_slim_ssse3_2.L14:
-    lea -4(%rdx), %rax
-    lea (%rbx,%rax), %rax
-    lea -4(%rdx), %rdx
-    lea (%r12,%rdx), %rdx
-    mov %r12, %r9
-    cmp %rax, %rbx
-    {disp8} jae .Lnvol_teddy_slim_ssse3_2.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_ssse3_2.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L26
-.Lnvol_teddy_slim_ssse3_2.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rax, %rbx
-    {disp8} jb .Lnvol_teddy_slim_ssse3_2.L23
-.Lnvol_teddy_slim_ssse3_2.L24:
-    mov (%rax), %eax
-    mov (%rdx), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_ssse3_2.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L12
-.Lnvol_teddy_slim_ssse3_2.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_slim_ssse3_2.L9
-.Lnvol_teddy_slim_ssse3_2.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L7
-.Lnvol_teddy_slim_ssse3_2.L8:
-    mov $-1, %r12
-.Lnvol_teddy_slim_ssse3_2.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L28
-.Lnvol_teddy_slim_ssse3_2.L27:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
-    movdqa %xmm7, %xmm8
-    punpckhqdq %xmm7, %xmm8
-    movq %xmm8, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_ssse3_2.L31
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_teddy_slim_ssse3_2.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_ssse3_2.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_ssse3_2.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_ssse3_2.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_ssse3_2.L38
-.Lnvol_teddy_slim_ssse3_2.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_ssse3_2.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_ssse3_2.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L49
-.Lnvol_teddy_slim_ssse3_2.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_ssse3_2.L46
-.Lnvol_teddy_slim_ssse3_2.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_ssse3_2.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L35
-.Lnvol_teddy_slim_ssse3_2.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_ssse3_2.L32
-.Lnvol_teddy_slim_ssse3_2.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L30
-.Lnvol_teddy_slim_ssse3_2.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_ssse3_2.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L51
-.Lnvol_teddy_slim_ssse3_2.L50:
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.Lrare1
 .Lnvol_teddy_slim_ssse3_2.L4:
     lea 16(%r8), %r8
     mov 32(%rsp), %r11
@@ -14365,7 +14269,7 @@ L.nvol_teddy_slim_ssse3_2:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_ssse3_2.L58
-    .byte 15, 31, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_teddy_slim_ssse3_2.L57:
     mov 416(%rsp), %r11
     bsf %r11, %r8
@@ -14762,6 +14666,193 @@ L.nvol_teddy_slim_ssse3_2:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_slim_ssse3_2.L79
+.Lnvol_teddy_slim_ssse3_2.Lrare1:
+    lea -1(%r8), %r11
+    mov %r11, 64(%rsp)
+    movq %xmm7, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_ssse3_2.L8
+    .byte 102, 144
+.Lnvol_teddy_slim_ssse3_2.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $3, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $7, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_slim_ssse3_2.L10
+    .byte 102, 144
+.Lnvol_teddy_slim_ssse3_2.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rdx
+    shl $4, %rdx
+    mov 16(%rsi,%rdx), %rdx
+    mov %rcx, %rax
+    sub %r12, %rax
+    cmp %rax, %rdx
+    {disp8} ja .Lnvol_teddy_slim_ssse3_2.L11
+    cmp $4, %rdx
+    {disp32} jb .Lnvol_teddy_slim_ssse3_2.L15
+.Lnvol_teddy_slim_ssse3_2.L14:
+    lea -4(%rdx), %rax
+    lea (%rbx,%rax), %rax
+    lea -4(%rdx), %rdx
+    lea (%r12,%rdx), %rdx
+    mov %r12, %r9
+    cmp %rax, %rbx
+    {disp8} jae .Lnvol_teddy_slim_ssse3_2.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_2.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L26
+.Lnvol_teddy_slim_ssse3_2.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rax, %rbx
+    {disp8} jb .Lnvol_teddy_slim_ssse3_2.L23
+.Lnvol_teddy_slim_ssse3_2.L24:
+    mov (%rax), %eax
+    mov (%rdx), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_ssse3_2.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L12
+.Lnvol_teddy_slim_ssse3_2.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_slim_ssse3_2.L9
+.Lnvol_teddy_slim_ssse3_2.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L7
+.Lnvol_teddy_slim_ssse3_2.L8:
+    mov $-1, %r12
+.Lnvol_teddy_slim_ssse3_2.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L28
+.Lnvol_teddy_slim_ssse3_2.L27:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 224(%rsp)
+    movdqa %xmm7, %xmm8
+    punpckhqdq %xmm7, %xmm8
+    movq %xmm8, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_ssse3_2.L31
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_teddy_slim_ssse3_2.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_ssse3_2.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_ssse3_2.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_ssse3_2.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_ssse3_2.L38
+.Lnvol_teddy_slim_ssse3_2.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_ssse3_2.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_2.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L49
+.Lnvol_teddy_slim_ssse3_2.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_ssse3_2.L46
+.Lnvol_teddy_slim_ssse3_2.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_ssse3_2.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L35
+.Lnvol_teddy_slim_ssse3_2.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_ssse3_2.L32
+.Lnvol_teddy_slim_ssse3_2.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L30
+.Lnvol_teddy_slim_ssse3_2.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_ssse3_2.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_ssse3_2.L51
+.Lnvol_teddy_slim_ssse3_2.L50:
+    {disp32} jmp .Lnvol_teddy_slim_ssse3_2.L4
 .cfi_endproc
 .size nvol_teddy_slim_ssse3_2, .-nvol_teddy_slim_ssse3_2
 
@@ -14845,193 +14936,7 @@ L.nvol_teddy_slim_ssse3_3:
     pcmpeqb %xmm11, %xmm12
     pmovmskb %xmm12, %eax
     cmp $65535, %eax
-    {disp32} je .Lnvol_teddy_slim_ssse3_3.L4
-    lea -2(%r8), %r11
-    mov %r11, 64(%rsp)
-    movq %xmm10, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_ssse3_3.L8
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_teddy_slim_ssse3_3.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $3, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $7, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_slim_ssse3_3.L10
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
-.Lnvol_teddy_slim_ssse3_3.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rdx
-    shl $4, %rdx
-    mov 16(%rsi,%rdx), %rdx
-    mov %rcx, %rax
-    sub %r12, %rax
-    cmp %rax, %rdx
-    {disp8} ja .Lnvol_teddy_slim_ssse3_3.L11
-    cmp $4, %rdx
-    {disp32} jb .Lnvol_teddy_slim_ssse3_3.L15
-.Lnvol_teddy_slim_ssse3_3.L14:
-    lea -4(%rdx), %rax
-    lea (%rbx,%rax), %rax
-    lea -4(%rdx), %rdx
-    lea (%r12,%rdx), %rdx
-    mov %r12, %r9
-    cmp %rax, %rbx
-    {disp8} jae .Lnvol_teddy_slim_ssse3_3.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_ssse3_3.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L26
-.Lnvol_teddy_slim_ssse3_3.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rax, %rbx
-    {disp8} jb .Lnvol_teddy_slim_ssse3_3.L23
-.Lnvol_teddy_slim_ssse3_3.L24:
-    mov (%rax), %eax
-    mov (%rdx), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_ssse3_3.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L12
-.Lnvol_teddy_slim_ssse3_3.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_slim_ssse3_3.L9
-.Lnvol_teddy_slim_ssse3_3.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L7
-.Lnvol_teddy_slim_ssse3_3.L8:
-    mov $-1, %r12
-.Lnvol_teddy_slim_ssse3_3.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L28
-.Lnvol_teddy_slim_ssse3_3.L27:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
-    movdqa %xmm10, %xmm11
-    punpckhqdq %xmm10, %xmm11
-    movq %xmm11, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_ssse3_3.L31
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_teddy_slim_ssse3_3.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_ssse3_3.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_ssse3_3.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_ssse3_3.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_ssse3_3.L38
-.Lnvol_teddy_slim_ssse3_3.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_ssse3_3.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_ssse3_3.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L49
-.Lnvol_teddy_slim_ssse3_3.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_ssse3_3.L46
-.Lnvol_teddy_slim_ssse3_3.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_ssse3_3.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L35
-.Lnvol_teddy_slim_ssse3_3.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_ssse3_3.L32
-.Lnvol_teddy_slim_ssse3_3.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L30
-.Lnvol_teddy_slim_ssse3_3.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_ssse3_3.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L51
-.Lnvol_teddy_slim_ssse3_3.L50:
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.Lrare1
 .Lnvol_teddy_slim_ssse3_3.L4:
     lea 16(%r8), %r8
     mov 32(%rsp), %r11
@@ -15097,8 +15002,7 @@ L.nvol_teddy_slim_ssse3_3:
     xor %ebp, %ebp
     cmp %r11, %rbp
     {disp32} jae .Lnvol_teddy_slim_ssse3_3.L60
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_teddy_slim_ssse3_3.L59:
     mov %r8, %r12
     shl $6, %r12
@@ -15475,11 +15379,200 @@ L.nvol_teddy_slim_ssse3_3:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_slim_ssse3_3.L79
+.Lnvol_teddy_slim_ssse3_3.Lrare1:
+    lea -2(%r8), %r11
+    mov %r11, 64(%rsp)
+    movq %xmm10, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_ssse3_3.L8
+    .byte 102, 144
+.Lnvol_teddy_slim_ssse3_3.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $3, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $7, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_slim_ssse3_3.L10
+    .byte 102, 144
+.Lnvol_teddy_slim_ssse3_3.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rdx
+    shl $4, %rdx
+    mov 16(%rsi,%rdx), %rdx
+    mov %rcx, %rax
+    sub %r12, %rax
+    cmp %rax, %rdx
+    {disp8} ja .Lnvol_teddy_slim_ssse3_3.L11
+    cmp $4, %rdx
+    {disp32} jb .Lnvol_teddy_slim_ssse3_3.L15
+.Lnvol_teddy_slim_ssse3_3.L14:
+    lea -4(%rdx), %rax
+    lea (%rbx,%rax), %rax
+    lea -4(%rdx), %rdx
+    lea (%r12,%rdx), %rdx
+    mov %r12, %r9
+    cmp %rax, %rbx
+    {disp8} jae .Lnvol_teddy_slim_ssse3_3.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_3.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L26
+.Lnvol_teddy_slim_ssse3_3.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rax, %rbx
+    {disp8} jb .Lnvol_teddy_slim_ssse3_3.L23
+.Lnvol_teddy_slim_ssse3_3.L24:
+    mov (%rax), %eax
+    mov (%rdx), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_ssse3_3.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L12
+.Lnvol_teddy_slim_ssse3_3.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_slim_ssse3_3.L9
+.Lnvol_teddy_slim_ssse3_3.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L7
+.Lnvol_teddy_slim_ssse3_3.L8:
+    mov $-1, %r12
+.Lnvol_teddy_slim_ssse3_3.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L28
+.Lnvol_teddy_slim_ssse3_3.L27:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 224(%rsp)
+    movdqa %xmm10, %xmm11
+    punpckhqdq %xmm10, %xmm11
+    movq %xmm11, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_ssse3_3.L31
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_teddy_slim_ssse3_3.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_ssse3_3.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_ssse3_3.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_ssse3_3.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_ssse3_3.L38
+.Lnvol_teddy_slim_ssse3_3.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_ssse3_3.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_3.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L49
+.Lnvol_teddy_slim_ssse3_3.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_ssse3_3.L46
+.Lnvol_teddy_slim_ssse3_3.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_ssse3_3.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L35
+.Lnvol_teddy_slim_ssse3_3.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_ssse3_3.L32
+.Lnvol_teddy_slim_ssse3_3.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L30
+.Lnvol_teddy_slim_ssse3_3.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_ssse3_3.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_ssse3_3.L51
+.Lnvol_teddy_slim_ssse3_3.L50:
+    {disp32} jmp .Lnvol_teddy_slim_ssse3_3.L4
 .cfi_endproc
 .size nvol_teddy_slim_ssse3_3, .-nvol_teddy_slim_ssse3_3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_teddy_slim_ssse3_4
 .type nvol_teddy_slim_ssse3_4, @function
 .hidden nvol_teddy_slim_ssse3_4
@@ -15575,192 +15668,7 @@ L.nvol_teddy_slim_ssse3_4:
     pcmpeqb %xmm0, %xmm1
     pmovmskb %xmm1, %eax
     cmp $65535, %eax
-    {disp32} je .Lnvol_teddy_slim_ssse3_4.L4
-    lea -3(%r8), %r11
-    mov %r11, 224(%rsp)
-    movq %xmm13, %rax
-    mov %rax, 256(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_ssse3_4.L8
-    .byte 144
-.Lnvol_teddy_slim_ssse3_4.L7:
-    mov 256(%rsp), %r11
-    bsf %r11, %rbp
-    mov 256(%rsp), %r12
-    mov 256(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 256(%rsp)
-    mov %rbp, %r12
-    shr $3, %r12
-    mov 224(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $7, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_slim_ssse3_4.L10
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_ssse3_4.L9:
-    mov 288(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rdx
-    shl $4, %rdx
-    mov 16(%rsi,%rdx), %rdx
-    mov %rcx, %rax
-    sub %r12, %rax
-    cmp %rax, %rdx
-    {disp8} ja .Lnvol_teddy_slim_ssse3_4.L11
-    cmp $4, %rdx
-    {disp32} jb .Lnvol_teddy_slim_ssse3_4.L15
-.Lnvol_teddy_slim_ssse3_4.L14:
-    lea -4(%rdx), %rax
-    lea (%rbx,%rax), %rax
-    lea -4(%rdx), %rdx
-    lea (%r12,%rdx), %rdx
-    mov %r12, %r9
-    cmp %rax, %rbx
-    {disp8} jae .Lnvol_teddy_slim_ssse3_4.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_ssse3_4.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L26
-.Lnvol_teddy_slim_ssse3_4.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rax, %rbx
-    {disp8} jb .Lnvol_teddy_slim_ssse3_4.L23
-.Lnvol_teddy_slim_ssse3_4.L24:
-    mov (%rax), %eax
-    mov (%rdx), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_ssse3_4.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L12
-.Lnvol_teddy_slim_ssse3_4.L11:
-    lea 1(%r14), %r14
-    mov 320(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_slim_ssse3_4.L9
-.Lnvol_teddy_slim_ssse3_4.L10:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L7
-.Lnvol_teddy_slim_ssse3_4.L8:
-    mov $-1, %r12
-.Lnvol_teddy_slim_ssse3_4.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L28
-.Lnvol_teddy_slim_ssse3_4.L27:
-    mov 224(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
-    movdqa %xmm13, %xmm0
-    punpckhqdq %xmm13, %xmm0
-    movq %xmm0, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_ssse3_4.L31
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_teddy_slim_ssse3_4.L30:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_ssse3_4.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_ssse3_4.L32:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_ssse3_4.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_ssse3_4.L38
-.Lnvol_teddy_slim_ssse3_4.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_ssse3_4.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_ssse3_4.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L49
-.Lnvol_teddy_slim_ssse3_4.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_ssse3_4.L46
-.Lnvol_teddy_slim_ssse3_4.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_ssse3_4.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L35
-.Lnvol_teddy_slim_ssse3_4.L34:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_ssse3_4.L32
-.Lnvol_teddy_slim_ssse3_4.L33:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L30
-.Lnvol_teddy_slim_ssse3_4.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_ssse3_4.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L51
-.Lnvol_teddy_slim_ssse3_4.L50:
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.Lrare1
 .Lnvol_teddy_slim_ssse3_4.L4:
     lea 16(%r8), %r8
     mov 192(%rsp), %r11
@@ -15838,8 +15746,7 @@ L.nvol_teddy_slim_ssse3_4:
     xor %ebp, %ebp
     cmp %r11, %rbp
     {disp32} jae .Lnvol_teddy_slim_ssse3_4.L60
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_teddy_slim_ssse3_4.L59:
     mov %r8, %r12
     shl $6, %r12
@@ -16216,10 +16123,197 @@ L.nvol_teddy_slim_ssse3_4:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_slim_ssse3_4.L79
+.Lnvol_teddy_slim_ssse3_4.Lrare1:
+    lea -3(%r8), %r11
+    mov %r11, 224(%rsp)
+    movq %xmm13, %rax
+    mov %rax, 256(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_ssse3_4.L8
+    .byte 15, 31, 64, 0
+.Lnvol_teddy_slim_ssse3_4.L7:
+    mov 256(%rsp), %r11
+    bsf %r11, %rbp
+    mov 256(%rsp), %r12
+    mov 256(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 256(%rsp)
+    mov %rbp, %r12
+    shr $3, %r12
+    mov 224(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $7, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_slim_ssse3_4.L10
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_ssse3_4.L9:
+    mov 288(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rdx
+    shl $4, %rdx
+    mov 16(%rsi,%rdx), %rdx
+    mov %rcx, %rax
+    sub %r12, %rax
+    cmp %rax, %rdx
+    {disp8} ja .Lnvol_teddy_slim_ssse3_4.L11
+    cmp $4, %rdx
+    {disp32} jb .Lnvol_teddy_slim_ssse3_4.L15
+.Lnvol_teddy_slim_ssse3_4.L14:
+    lea -4(%rdx), %rax
+    lea (%rbx,%rax), %rax
+    lea -4(%rdx), %rdx
+    lea (%r12,%rdx), %rdx
+    mov %r12, %r9
+    cmp %rax, %rbx
+    {disp8} jae .Lnvol_teddy_slim_ssse3_4.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_4.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L26
+.Lnvol_teddy_slim_ssse3_4.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rax, %rbx
+    {disp8} jb .Lnvol_teddy_slim_ssse3_4.L23
+.Lnvol_teddy_slim_ssse3_4.L24:
+    mov (%rax), %eax
+    mov (%rdx), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_ssse3_4.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L12
+.Lnvol_teddy_slim_ssse3_4.L11:
+    lea 1(%r14), %r14
+    mov 320(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_slim_ssse3_4.L9
+.Lnvol_teddy_slim_ssse3_4.L10:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L7
+.Lnvol_teddy_slim_ssse3_4.L8:
+    mov $-1, %r12
+.Lnvol_teddy_slim_ssse3_4.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L28
+.Lnvol_teddy_slim_ssse3_4.L27:
+    mov 224(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 384(%rsp)
+    movdqa %xmm13, %xmm0
+    punpckhqdq %xmm13, %xmm0
+    movq %xmm0, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_ssse3_4.L31
+    .byte 144
+.Lnvol_teddy_slim_ssse3_4.L30:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_ssse3_4.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_ssse3_4.L32:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_ssse3_4.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_ssse3_4.L38
+.Lnvol_teddy_slim_ssse3_4.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_ssse3_4.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_ssse3_4.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L49
+.Lnvol_teddy_slim_ssse3_4.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_ssse3_4.L46
+.Lnvol_teddy_slim_ssse3_4.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_ssse3_4.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L35
+.Lnvol_teddy_slim_ssse3_4.L34:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_ssse3_4.L32
+.Lnvol_teddy_slim_ssse3_4.L33:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L30
+.Lnvol_teddy_slim_ssse3_4.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_ssse3_4.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_ssse3_4.L51
+.Lnvol_teddy_slim_ssse3_4.L50:
+    {disp32} jmp .Lnvol_teddy_slim_ssse3_4.L4
 .cfi_endproc
 .size nvol_teddy_slim_ssse3_4, .-nvol_teddy_slim_ssse3_4
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_slim_avx2_1
 .type nvol_teddy_slim_avx2_1, @function
 .hidden nvol_teddy_slim_avx2_1
@@ -16254,8 +16348,8 @@ L.nvol_teddy_slim_avx2_1:
     lea -32(%rcx), %r11
     mov %r11, 32(%rsp)
     cmp %r11, %r8
-    {disp32} ja .Lnvol_teddy_slim_avx2_1.L3
-    .byte 15, 31, 64, 0
+    {disp8} ja .Lnvol_teddy_slim_avx2_1.L3
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_slim_avx2_1.L2:
     vmovdqu (%r8), %ymm3
     vpand %ymm2, %ymm3, %ymm4
@@ -16265,380 +16359,12 @@ L.nvol_teddy_slim_avx2_1:
     vpshufb %ymm3, %ymm1, %ymm3
     vpand %ymm3, %ymm4, %ymm3
     vptest %ymm3, %ymm3
-    {disp32} je .Lnvol_teddy_slim_avx2_1.L4
-    mov %r8, 64(%rsp)
-    vmovq %xmm3, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_1.L8
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_1.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $3, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $7, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_slim_avx2_1.L10
-    .byte 102, 144
-.Lnvol_teddy_slim_avx2_1.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rax
-    shl $4, %rax
-    mov 16(%rsi,%rax), %rax
-    mov %rcx, %rdx
-    sub %r12, %rdx
-    cmp %rdx, %rax
-    {disp8} ja .Lnvol_teddy_slim_avx2_1.L11
-    cmp $4, %rax
-    {disp32} jb .Lnvol_teddy_slim_avx2_1.L15
-.Lnvol_teddy_slim_avx2_1.L14:
-    lea -4(%rax), %rdx
-    lea (%rbx,%rdx), %rdx
-    lea -4(%rax), %rax
-    lea (%r12,%rax), %rax
-    mov %r12, %r9
-    cmp %rdx, %rbx
-    {disp8} jae .Lnvol_teddy_slim_avx2_1.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_1.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L26
-.Lnvol_teddy_slim_avx2_1.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rdx, %rbx
-    {disp8} jb .Lnvol_teddy_slim_avx2_1.L23
-.Lnvol_teddy_slim_avx2_1.L24:
-    mov (%rdx), %edx
-    mov (%rax), %eax
-    cmp %rax, %rdx
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_1.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L12
-.Lnvol_teddy_slim_avx2_1.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_slim_avx2_1.L9
-.Lnvol_teddy_slim_avx2_1.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L7
-.Lnvol_teddy_slim_avx2_1.L8:
-    mov $-1, %r12
-.Lnvol_teddy_slim_avx2_1.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L28
-.Lnvol_teddy_slim_avx2_1.L27:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
-    vpextrq $1, %xmm3, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_1.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_teddy_slim_avx2_1.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_1.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_1.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_1.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_1.L38
-.Lnvol_teddy_slim_avx2_1.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_1.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_1.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L49
-.Lnvol_teddy_slim_avx2_1.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_1.L46
-.Lnvol_teddy_slim_avx2_1.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_1.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L35
-.Lnvol_teddy_slim_avx2_1.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_1.L32
-.Lnvol_teddy_slim_avx2_1.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L30
-.Lnvol_teddy_slim_avx2_1.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_1.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L51
-.Lnvol_teddy_slim_avx2_1.L50:
-    mov 64(%rsp), %r11
-    lea 16(%r11), %r10
-    mov %r10, 384(%rsp)
-    vextracti128 $1, %ymm3, %xmm4
-    vmovq %xmm4, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_1.L54
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_1.L53:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_1.L56
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_1.L55:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_1.L57
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_1.L61
-.Lnvol_teddy_slim_avx2_1.L60:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_1.L70
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_1.L69:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L72
-.Lnvol_teddy_slim_avx2_1.L71:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_1.L69
-.Lnvol_teddy_slim_avx2_1.L70:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_1.L59:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L58
-.Lnvol_teddy_slim_avx2_1.L57:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_1.L55
-.Lnvol_teddy_slim_avx2_1.L56:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L53
-.Lnvol_teddy_slim_avx2_1.L54:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_1.L52:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L74
-.Lnvol_teddy_slim_avx2_1.L73:
-    mov 64(%rsp), %r11
-    lea 24(%r11), %r10
-    mov %r10, 544(%rsp)
-    vextracti128 $1, %ymm3, %xmm3
-    vpextrq $1, %xmm3, %rdx
-    mov %rdx, 576(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_1.L77
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_1.L76:
-    mov 576(%rsp), %r11
-    bsf %r11, %r9
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 576(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 544(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 608(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 640(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_1.L79
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_1.L78:
-    mov 608(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_1.L80
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_1.L84
-.Lnvol_teddy_slim_avx2_1.L83:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_1.L93
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_1.L92:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L95
-.Lnvol_teddy_slim_avx2_1.L94:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_1.L92
-.Lnvol_teddy_slim_avx2_1.L93:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_1.L82:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L81
-.Lnvol_teddy_slim_avx2_1.L80:
-    lea 1(%r12), %r12
-    mov 640(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_1.L78
-.Lnvol_teddy_slim_avx2_1.L79:
-    mov 576(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L76
-.Lnvol_teddy_slim_avx2_1.L77:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_1.L75:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_1.L97
-.Lnvol_teddy_slim_avx2_1.L96:
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.Lrare1
 .Lnvol_teddy_slim_avx2_1.L4:
     lea 32(%r8), %r8
     mov 32(%rsp), %r11
     cmp %r11, %r8
-    {disp32} jbe .Lnvol_teddy_slim_avx2_1.L2
+    {disp8} jbe .Lnvol_teddy_slim_avx2_1.L2
 .Lnvol_teddy_slim_avx2_1.L3:
     cmp %rcx, %r8
     {disp32} jae .Lnvol_teddy_slim_avx2_1.L98
@@ -16658,7 +16384,7 @@ L.nvol_teddy_slim_avx2_1:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_1.L104
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_avx2_1.L103:
     mov 736(%rsp), %r11
     bsf %r11, %rdx
@@ -16677,8 +16403,7 @@ L.nvol_teddy_slim_avx2_1:
     xor %ebp, %ebp
     cmp %r11, %rbp
     {disp32} jae .Lnvol_teddy_slim_avx2_1.L106
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_teddy_slim_avx2_1.L105:
     mov %rdx, %r12
     shl $6, %r12
@@ -17437,10 +17162,380 @@ L.nvol_teddy_slim_avx2_1:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_slim_avx2_1.L171
+.Lnvol_teddy_slim_avx2_1.Lrare1:
+    mov %r8, 64(%rsp)
+    vmovq %xmm3, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_1.L8
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_teddy_slim_avx2_1.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $3, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $7, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_slim_avx2_1.L10
+    .byte 102, 144
+.Lnvol_teddy_slim_avx2_1.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rax
+    shl $4, %rax
+    mov 16(%rsi,%rax), %rax
+    mov %rcx, %rdx
+    sub %r12, %rdx
+    cmp %rdx, %rax
+    {disp8} ja .Lnvol_teddy_slim_avx2_1.L11
+    cmp $4, %rax
+    {disp32} jb .Lnvol_teddy_slim_avx2_1.L15
+.Lnvol_teddy_slim_avx2_1.L14:
+    lea -4(%rax), %rdx
+    lea (%rbx,%rdx), %rdx
+    lea -4(%rax), %rax
+    lea (%r12,%rax), %rax
+    mov %r12, %r9
+    cmp %rdx, %rbx
+    {disp8} jae .Lnvol_teddy_slim_avx2_1.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_1.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L26
+.Lnvol_teddy_slim_avx2_1.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rdx, %rbx
+    {disp8} jb .Lnvol_teddy_slim_avx2_1.L23
+.Lnvol_teddy_slim_avx2_1.L24:
+    mov (%rdx), %edx
+    mov (%rax), %eax
+    cmp %rax, %rdx
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_1.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L12
+.Lnvol_teddy_slim_avx2_1.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_slim_avx2_1.L9
+.Lnvol_teddy_slim_avx2_1.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L7
+.Lnvol_teddy_slim_avx2_1.L8:
+    mov $-1, %r12
+.Lnvol_teddy_slim_avx2_1.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L28
+.Lnvol_teddy_slim_avx2_1.L27:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 224(%rsp)
+    vpextrq $1, %xmm3, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_1.L31
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_teddy_slim_avx2_1.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_1.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_1.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_1.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_1.L38
+.Lnvol_teddy_slim_avx2_1.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_1.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_1.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L49
+.Lnvol_teddy_slim_avx2_1.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_1.L46
+.Lnvol_teddy_slim_avx2_1.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_1.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L35
+.Lnvol_teddy_slim_avx2_1.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_1.L32
+.Lnvol_teddy_slim_avx2_1.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L30
+.Lnvol_teddy_slim_avx2_1.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_1.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L51
+.Lnvol_teddy_slim_avx2_1.L50:
+    mov 64(%rsp), %r11
+    lea 16(%r11), %r10
+    mov %r10, 384(%rsp)
+    vextracti128 $1, %ymm3, %xmm4
+    vmovq %xmm4, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_1.L54
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_1.L53:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_1.L56
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_1.L55:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_1.L57
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_1.L61
+.Lnvol_teddy_slim_avx2_1.L60:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_1.L70
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_1.L69:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L72
+.Lnvol_teddy_slim_avx2_1.L71:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_1.L69
+.Lnvol_teddy_slim_avx2_1.L70:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_1.L59:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L58
+.Lnvol_teddy_slim_avx2_1.L57:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_1.L55
+.Lnvol_teddy_slim_avx2_1.L56:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L53
+.Lnvol_teddy_slim_avx2_1.L54:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_1.L52:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L74
+.Lnvol_teddy_slim_avx2_1.L73:
+    mov 64(%rsp), %r11
+    lea 24(%r11), %r10
+    mov %r10, 544(%rsp)
+    vextracti128 $1, %ymm3, %xmm3
+    vpextrq $1, %xmm3, %rdx
+    mov %rdx, 576(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_1.L77
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_1.L76:
+    mov 576(%rsp), %r11
+    bsf %r11, %r9
+    mov 576(%rsp), %rbx
+    mov 576(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 576(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 544(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 608(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 640(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_1.L79
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_1.L78:
+    mov 608(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_1.L80
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_1.L84
+.Lnvol_teddy_slim_avx2_1.L83:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_1.L93
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_1.L92:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L95
+.Lnvol_teddy_slim_avx2_1.L94:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_1.L92
+.Lnvol_teddy_slim_avx2_1.L93:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_1.L82:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L81
+.Lnvol_teddy_slim_avx2_1.L80:
+    lea 1(%r12), %r12
+    mov 640(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_1.L78
+.Lnvol_teddy_slim_avx2_1.L79:
+    mov 576(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L76
+.Lnvol_teddy_slim_avx2_1.L77:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_1.L75:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_1.L97
+.Lnvol_teddy_slim_avx2_1.L96:
+    {disp32} jmp .Lnvol_teddy_slim_avx2_1.L4
 .cfi_endproc
 .size nvol_teddy_slim_avx2_1, .-nvol_teddy_slim_avx2_1
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_fat_avx2_1
 .type nvol_teddy_fat_avx2_1, @function
 .hidden nvol_teddy_fat_avx2_1
@@ -17475,8 +17570,8 @@ L.nvol_teddy_fat_avx2_1:
     lea -16(%rcx), %r11
     mov %r11, 32(%rsp)
     cmp %r11, %r8
-    {disp32} ja .Lnvol_teddy_fat_avx2_1.L3
-    .byte 15, 31, 64, 0
+    {disp8} ja .Lnvol_teddy_fat_avx2_1.L3
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_fat_avx2_1.L2:
     vbroadcasti128 (%r8), %ymm3
     vpand %ymm2, %ymm3, %ymm4
@@ -17486,381 +17581,12 @@ L.nvol_teddy_fat_avx2_1:
     vpshufb %ymm3, %ymm1, %ymm3
     vpand %ymm3, %ymm4, %ymm3
     vptest %ymm3, %ymm3
-    {disp32} je .Lnvol_teddy_fat_avx2_1.L4
-    mov %r8, 64(%rsp)
-    vpermq $78, %ymm3, %ymm4
-    vpunpcklbw %ymm4, %ymm3, %ymm5
-    vpunpckhbw %ymm4, %ymm3, %ymm3
-    vmovq %xmm5, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_1.L8
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_teddy_fat_avx2_1.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $4, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $15, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_fat_avx2_1.L10
-    .byte 102, 144
-.Lnvol_teddy_fat_avx2_1.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rax
-    shl $4, %rax
-    mov 16(%rsi,%rax), %rax
-    mov %rcx, %rdx
-    sub %r12, %rdx
-    cmp %rdx, %rax
-    {disp8} ja .Lnvol_teddy_fat_avx2_1.L11
-    cmp $4, %rax
-    {disp32} jb .Lnvol_teddy_fat_avx2_1.L15
-.Lnvol_teddy_fat_avx2_1.L14:
-    lea -4(%rax), %rdx
-    lea (%rbx,%rdx), %rdx
-    lea -4(%rax), %rax
-    lea (%r12,%rax), %rax
-    mov %r12, %r9
-    cmp %rdx, %rbx
-    {disp8} jae .Lnvol_teddy_fat_avx2_1.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_1.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L26
-.Lnvol_teddy_fat_avx2_1.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rdx, %rbx
-    {disp8} jb .Lnvol_teddy_fat_avx2_1.L23
-.Lnvol_teddy_fat_avx2_1.L24:
-    mov (%rdx), %edx
-    mov (%rax), %eax
-    cmp %rax, %rdx
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_1.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L12
-.Lnvol_teddy_fat_avx2_1.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_fat_avx2_1.L9
-.Lnvol_teddy_fat_avx2_1.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L7
-.Lnvol_teddy_fat_avx2_1.L8:
-    mov $-1, %r12
-.Lnvol_teddy_fat_avx2_1.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L28
-.Lnvol_teddy_fat_avx2_1.L27:
-    mov 64(%rsp), %r11
-    lea 4(%r11), %r10
-    mov %r10, 224(%rsp)
-    vpextrq $1, %xmm5, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_1.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_teddy_fat_avx2_1.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_1.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_1.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_1.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_1.L38
-.Lnvol_teddy_fat_avx2_1.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_1.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_1.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L49
-.Lnvol_teddy_fat_avx2_1.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_1.L46
-.Lnvol_teddy_fat_avx2_1.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_1.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L35
-.Lnvol_teddy_fat_avx2_1.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_1.L32
-.Lnvol_teddy_fat_avx2_1.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L30
-.Lnvol_teddy_fat_avx2_1.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_1.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L51
-.Lnvol_teddy_fat_avx2_1.L50:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
-    vmovq %xmm3, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_1.L54
-    .byte 15, 31, 64, 0
-.Lnvol_teddy_fat_avx2_1.L53:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_1.L56
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_1.L55:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_1.L57
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_1.L61
-.Lnvol_teddy_fat_avx2_1.L60:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_1.L70
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_1.L69:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L72
-.Lnvol_teddy_fat_avx2_1.L71:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_1.L69
-.Lnvol_teddy_fat_avx2_1.L70:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_1.L59:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L58
-.Lnvol_teddy_fat_avx2_1.L57:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_1.L55
-.Lnvol_teddy_fat_avx2_1.L56:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L53
-.Lnvol_teddy_fat_avx2_1.L54:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_1.L52:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L74
-.Lnvol_teddy_fat_avx2_1.L73:
-    mov 64(%rsp), %r11
-    lea 12(%r11), %r10
-    mov %r10, 544(%rsp)
-    vpextrq $1, %xmm3, %rdx
-    mov %rdx, 576(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_1.L77
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_1.L76:
-    mov 576(%rsp), %r11
-    bsf %r11, %r9
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 576(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 544(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 608(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 640(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_1.L79
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_1.L78:
-    mov 608(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_1.L80
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_1.L84
-.Lnvol_teddy_fat_avx2_1.L83:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_1.L93
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_1.L92:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L95
-.Lnvol_teddy_fat_avx2_1.L94:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_1.L92
-.Lnvol_teddy_fat_avx2_1.L93:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_1.L82:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L81
-.Lnvol_teddy_fat_avx2_1.L80:
-    lea 1(%r12), %r12
-    mov 640(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_1.L78
-.Lnvol_teddy_fat_avx2_1.L79:
-    mov 576(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L76
-.Lnvol_teddy_fat_avx2_1.L77:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_1.L75:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_1.L97
-.Lnvol_teddy_fat_avx2_1.L96:
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.Lrare1
 .Lnvol_teddy_fat_avx2_1.L4:
     lea 16(%r8), %r8
     mov 32(%rsp), %r11
     cmp %r11, %r8
-    {disp32} jbe .Lnvol_teddy_fat_avx2_1.L2
+    {disp8} jbe .Lnvol_teddy_fat_avx2_1.L2
 .Lnvol_teddy_fat_avx2_1.L3:
     cmp %rcx, %r8
     {disp32} jae .Lnvol_teddy_fat_avx2_1.L98
@@ -17883,7 +17609,7 @@ L.nvol_teddy_fat_avx2_1:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_1.L104
-    .byte 144
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_fat_avx2_1.L103:
     mov 736(%rsp), %r11
     bsf %r11, %rdx
@@ -18657,13 +18383,384 @@ L.nvol_teddy_fat_avx2_1:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_fat_avx2_1.L171
+.Lnvol_teddy_fat_avx2_1.Lrare1:
+    mov %r8, 64(%rsp)
+    vpermq $78, %ymm3, %ymm4
+    vpunpcklbw %ymm4, %ymm3, %ymm5
+    vpunpckhbw %ymm4, %ymm3, %ymm3
+    vmovq %xmm5, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_1.L8
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_1.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $4, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $15, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_fat_avx2_1.L10
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
+.Lnvol_teddy_fat_avx2_1.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rax
+    shl $4, %rax
+    mov 16(%rsi,%rax), %rax
+    mov %rcx, %rdx
+    sub %r12, %rdx
+    cmp %rdx, %rax
+    {disp8} ja .Lnvol_teddy_fat_avx2_1.L11
+    cmp $4, %rax
+    {disp32} jb .Lnvol_teddy_fat_avx2_1.L15
+.Lnvol_teddy_fat_avx2_1.L14:
+    lea -4(%rax), %rdx
+    lea (%rbx,%rdx), %rdx
+    lea -4(%rax), %rax
+    lea (%r12,%rax), %rax
+    mov %r12, %r9
+    cmp %rdx, %rbx
+    {disp8} jae .Lnvol_teddy_fat_avx2_1.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_1.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L26
+.Lnvol_teddy_fat_avx2_1.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rdx, %rbx
+    {disp8} jb .Lnvol_teddy_fat_avx2_1.L23
+.Lnvol_teddy_fat_avx2_1.L24:
+    mov (%rdx), %edx
+    mov (%rax), %eax
+    cmp %rax, %rdx
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_1.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L12
+.Lnvol_teddy_fat_avx2_1.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_fat_avx2_1.L9
+.Lnvol_teddy_fat_avx2_1.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L7
+.Lnvol_teddy_fat_avx2_1.L8:
+    mov $-1, %r12
+.Lnvol_teddy_fat_avx2_1.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L28
+.Lnvol_teddy_fat_avx2_1.L27:
+    mov 64(%rsp), %r11
+    lea 4(%r11), %r10
+    mov %r10, 224(%rsp)
+    vpextrq $1, %xmm5, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_1.L31
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_teddy_fat_avx2_1.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_1.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_1.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_1.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_1.L38
+.Lnvol_teddy_fat_avx2_1.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_1.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_1.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L49
+.Lnvol_teddy_fat_avx2_1.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_1.L46
+.Lnvol_teddy_fat_avx2_1.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_1.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L35
+.Lnvol_teddy_fat_avx2_1.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_1.L32
+.Lnvol_teddy_fat_avx2_1.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L30
+.Lnvol_teddy_fat_avx2_1.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_1.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L51
+.Lnvol_teddy_fat_avx2_1.L50:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 384(%rsp)
+    vmovq %xmm3, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_1.L54
+    .byte 15, 31, 64, 0
+.Lnvol_teddy_fat_avx2_1.L53:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_1.L56
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_1.L55:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_1.L57
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_1.L61
+.Lnvol_teddy_fat_avx2_1.L60:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_1.L70
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_1.L69:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L72
+.Lnvol_teddy_fat_avx2_1.L71:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_1.L69
+.Lnvol_teddy_fat_avx2_1.L70:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_1.L59:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L58
+.Lnvol_teddy_fat_avx2_1.L57:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_1.L55
+.Lnvol_teddy_fat_avx2_1.L56:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L53
+.Lnvol_teddy_fat_avx2_1.L54:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_1.L52:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L74
+.Lnvol_teddy_fat_avx2_1.L73:
+    mov 64(%rsp), %r11
+    lea 12(%r11), %r10
+    mov %r10, 544(%rsp)
+    vpextrq $1, %xmm3, %rdx
+    mov %rdx, 576(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_1.L77
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_1.L76:
+    mov 576(%rsp), %r11
+    bsf %r11, %r9
+    mov 576(%rsp), %rbx
+    mov 576(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 576(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 544(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 608(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 640(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_1.L79
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_1.L78:
+    mov 608(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_1.L80
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_1.L84
+.Lnvol_teddy_fat_avx2_1.L83:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_1.L93
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_1.L92:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L95
+.Lnvol_teddy_fat_avx2_1.L94:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_1.L92
+.Lnvol_teddy_fat_avx2_1.L93:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_1.L82:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L81
+.Lnvol_teddy_fat_avx2_1.L80:
+    lea 1(%r12), %r12
+    mov 640(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_1.L78
+.Lnvol_teddy_fat_avx2_1.L79:
+    mov 576(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L76
+.Lnvol_teddy_fat_avx2_1.L77:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_1.L75:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_1.L97
+.Lnvol_teddy_fat_avx2_1.L96:
+    {disp32} jmp .Lnvol_teddy_fat_avx2_1.L4
 .cfi_endproc
 .size nvol_teddy_fat_avx2_1, .-nvol_teddy_fat_avx2_1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_teddy_slim_avx2_2
 .type nvol_teddy_slim_avx2_2, @function
 .hidden nvol_teddy_slim_avx2_2
@@ -18703,8 +18800,8 @@ L.nvol_teddy_slim_avx2_2:
     lea -32(%rcx), %r11
     mov %r11, 32(%rsp)
     cmp %r11, %r8
-    {disp32} ja .Lnvol_teddy_slim_avx2_2.L3
-    .byte 15, 31, 64, 0
+    {disp8} ja .Lnvol_teddy_slim_avx2_2.L3
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_slim_avx2_2.L2:
     vmovdqu (%r8), %ymm7
     vpand %ymm4, %ymm7, %ymm8
@@ -18721,382 +18818,12 @@ L.nvol_teddy_slim_avx2_2:
     vpand %ymm7, %ymm8, %ymm7
     vmovdqa %ymm9, %ymm6
     vptest %ymm7, %ymm7
-    {disp32} je .Lnvol_teddy_slim_avx2_2.L4
-    lea -1(%r8), %r11
-    mov %r11, 64(%rsp)
-    vmovq %xmm7, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_2.L8
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_teddy_slim_avx2_2.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $3, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $7, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_slim_avx2_2.L10
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
-.Lnvol_teddy_slim_avx2_2.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rax
-    shl $4, %rax
-    mov 16(%rsi,%rax), %rax
-    mov %rcx, %rdx
-    sub %r12, %rdx
-    cmp %rdx, %rax
-    {disp8} ja .Lnvol_teddy_slim_avx2_2.L11
-    cmp $4, %rax
-    {disp32} jb .Lnvol_teddy_slim_avx2_2.L15
-.Lnvol_teddy_slim_avx2_2.L14:
-    lea -4(%rax), %rdx
-    lea (%rbx,%rdx), %rdx
-    lea -4(%rax), %rax
-    lea (%r12,%rax), %rax
-    mov %r12, %r9
-    cmp %rdx, %rbx
-    {disp8} jae .Lnvol_teddy_slim_avx2_2.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_2.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L26
-.Lnvol_teddy_slim_avx2_2.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rdx, %rbx
-    {disp8} jb .Lnvol_teddy_slim_avx2_2.L23
-.Lnvol_teddy_slim_avx2_2.L24:
-    mov (%rdx), %edx
-    mov (%rax), %eax
-    cmp %rax, %rdx
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_2.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L12
-.Lnvol_teddy_slim_avx2_2.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_slim_avx2_2.L9
-.Lnvol_teddy_slim_avx2_2.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L7
-.Lnvol_teddy_slim_avx2_2.L8:
-    mov $-1, %r12
-.Lnvol_teddy_slim_avx2_2.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L28
-.Lnvol_teddy_slim_avx2_2.L27:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
-    vpextrq $1, %xmm7, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_2.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_teddy_slim_avx2_2.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_2.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_2.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_2.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_2.L38
-.Lnvol_teddy_slim_avx2_2.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_2.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_2.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L49
-.Lnvol_teddy_slim_avx2_2.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_2.L46
-.Lnvol_teddy_slim_avx2_2.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_2.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L35
-.Lnvol_teddy_slim_avx2_2.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_2.L32
-.Lnvol_teddy_slim_avx2_2.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L30
-.Lnvol_teddy_slim_avx2_2.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_2.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L51
-.Lnvol_teddy_slim_avx2_2.L50:
-    mov 64(%rsp), %r11
-    lea 16(%r11), %r10
-    mov %r10, 384(%rsp)
-    vextracti128 $1, %ymm7, %xmm8
-    vmovq %xmm8, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_2.L54
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_2.L53:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_2.L56
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_2.L55:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_2.L57
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_2.L61
-.Lnvol_teddy_slim_avx2_2.L60:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_2.L70
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_2.L69:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L72
-.Lnvol_teddy_slim_avx2_2.L71:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_2.L69
-.Lnvol_teddy_slim_avx2_2.L70:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_2.L59:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L58
-.Lnvol_teddy_slim_avx2_2.L57:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_2.L55
-.Lnvol_teddy_slim_avx2_2.L56:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L53
-.Lnvol_teddy_slim_avx2_2.L54:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_2.L52:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L74
-.Lnvol_teddy_slim_avx2_2.L73:
-    mov 64(%rsp), %r11
-    lea 24(%r11), %r10
-    mov %r10, 544(%rsp)
-    vextracti128 $1, %ymm7, %xmm7
-    vpextrq $1, %xmm7, %rdx
-    mov %rdx, 576(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_2.L77
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_2.L76:
-    mov 576(%rsp), %r11
-    bsf %r11, %r9
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 576(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 544(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 608(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 640(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_2.L79
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_2.L78:
-    mov 608(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_2.L80
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_2.L84
-.Lnvol_teddy_slim_avx2_2.L83:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_2.L93
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_2.L92:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L95
-.Lnvol_teddy_slim_avx2_2.L94:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_2.L92
-.Lnvol_teddy_slim_avx2_2.L93:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_2.L82:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L81
-.Lnvol_teddy_slim_avx2_2.L80:
-    lea 1(%r12), %r12
-    mov 640(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_2.L78
-.Lnvol_teddy_slim_avx2_2.L79:
-    mov 576(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L76
-.Lnvol_teddy_slim_avx2_2.L77:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_2.L75:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_2.L97
-.Lnvol_teddy_slim_avx2_2.L96:
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.Lrare1
 .Lnvol_teddy_slim_avx2_2.L4:
     lea 32(%r8), %r8
     mov 32(%rsp), %r11
     cmp %r11, %r8
-    {disp32} jbe .Lnvol_teddy_slim_avx2_2.L2
+    {disp8} jbe .Lnvol_teddy_slim_avx2_2.L2
 .Lnvol_teddy_slim_avx2_2.L3:
     cmp %rcx, %r8
     {disp32} jae .Lnvol_teddy_slim_avx2_2.L98
@@ -19125,7 +18852,7 @@ L.nvol_teddy_slim_avx2_2:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_2.L104
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_slim_avx2_2.L103:
     mov 736(%rsp), %r11
     bsf %r11, %r8
@@ -19903,12 +19630,383 @@ L.nvol_teddy_slim_avx2_2:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_slim_avx2_2.L171
+.Lnvol_teddy_slim_avx2_2.Lrare1:
+    lea -1(%r8), %r11
+    mov %r11, 64(%rsp)
+    vmovq %xmm7, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_2.L8
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_2.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $3, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $7, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_slim_avx2_2.L10
+    .byte 102, 144
+.Lnvol_teddy_slim_avx2_2.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rax
+    shl $4, %rax
+    mov 16(%rsi,%rax), %rax
+    mov %rcx, %rdx
+    sub %r12, %rdx
+    cmp %rdx, %rax
+    {disp8} ja .Lnvol_teddy_slim_avx2_2.L11
+    cmp $4, %rax
+    {disp32} jb .Lnvol_teddy_slim_avx2_2.L15
+.Lnvol_teddy_slim_avx2_2.L14:
+    lea -4(%rax), %rdx
+    lea (%rbx,%rdx), %rdx
+    lea -4(%rax), %rax
+    lea (%r12,%rax), %rax
+    mov %r12, %r9
+    cmp %rdx, %rbx
+    {disp8} jae .Lnvol_teddy_slim_avx2_2.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_2.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L26
+.Lnvol_teddy_slim_avx2_2.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rdx, %rbx
+    {disp8} jb .Lnvol_teddy_slim_avx2_2.L23
+.Lnvol_teddy_slim_avx2_2.L24:
+    mov (%rdx), %edx
+    mov (%rax), %eax
+    cmp %rax, %rdx
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_2.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L12
+.Lnvol_teddy_slim_avx2_2.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_slim_avx2_2.L9
+.Lnvol_teddy_slim_avx2_2.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L7
+.Lnvol_teddy_slim_avx2_2.L8:
+    mov $-1, %r12
+.Lnvol_teddy_slim_avx2_2.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L28
+.Lnvol_teddy_slim_avx2_2.L27:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 224(%rsp)
+    vpextrq $1, %xmm7, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_2.L31
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_teddy_slim_avx2_2.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_2.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_2.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_2.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_2.L38
+.Lnvol_teddy_slim_avx2_2.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_2.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_2.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L49
+.Lnvol_teddy_slim_avx2_2.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_2.L46
+.Lnvol_teddy_slim_avx2_2.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_2.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L35
+.Lnvol_teddy_slim_avx2_2.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_2.L32
+.Lnvol_teddy_slim_avx2_2.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L30
+.Lnvol_teddy_slim_avx2_2.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_2.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L51
+.Lnvol_teddy_slim_avx2_2.L50:
+    mov 64(%rsp), %r11
+    lea 16(%r11), %r10
+    mov %r10, 384(%rsp)
+    vextracti128 $1, %ymm7, %xmm8
+    vmovq %xmm8, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_2.L54
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_2.L53:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_2.L56
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_2.L55:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_2.L57
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_2.L61
+.Lnvol_teddy_slim_avx2_2.L60:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_2.L70
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_2.L69:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L72
+.Lnvol_teddy_slim_avx2_2.L71:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_2.L69
+.Lnvol_teddy_slim_avx2_2.L70:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_2.L59:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L58
+.Lnvol_teddy_slim_avx2_2.L57:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_2.L55
+.Lnvol_teddy_slim_avx2_2.L56:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L53
+.Lnvol_teddy_slim_avx2_2.L54:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_2.L52:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L74
+.Lnvol_teddy_slim_avx2_2.L73:
+    mov 64(%rsp), %r11
+    lea 24(%r11), %r10
+    mov %r10, 544(%rsp)
+    vextracti128 $1, %ymm7, %xmm7
+    vpextrq $1, %xmm7, %rdx
+    mov %rdx, 576(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_2.L77
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_2.L76:
+    mov 576(%rsp), %r11
+    bsf %r11, %r9
+    mov 576(%rsp), %rbx
+    mov 576(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 576(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 544(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 608(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 640(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_2.L79
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_2.L78:
+    mov 608(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_2.L80
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_2.L84
+.Lnvol_teddy_slim_avx2_2.L83:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_2.L93
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_2.L92:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L95
+.Lnvol_teddy_slim_avx2_2.L94:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_2.L92
+.Lnvol_teddy_slim_avx2_2.L93:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_2.L82:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L81
+.Lnvol_teddy_slim_avx2_2.L80:
+    lea 1(%r12), %r12
+    mov 640(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_2.L78
+.Lnvol_teddy_slim_avx2_2.L79:
+    mov 576(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L76
+.Lnvol_teddy_slim_avx2_2.L77:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_2.L75:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_2.L97
+.Lnvol_teddy_slim_avx2_2.L96:
+    {disp32} jmp .Lnvol_teddy_slim_avx2_2.L4
 .cfi_endproc
 .size nvol_teddy_slim_avx2_2, .-nvol_teddy_slim_avx2_2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_teddy_fat_avx2_2
 .type nvol_teddy_fat_avx2_2, @function
 .hidden nvol_teddy_fat_avx2_2
@@ -19948,8 +20046,8 @@ L.nvol_teddy_fat_avx2_2:
     lea -16(%rcx), %r11
     mov %r11, 32(%rsp)
     cmp %r11, %r8
-    {disp32} ja .Lnvol_teddy_fat_avx2_2.L3
-    .byte 15, 31, 64, 0
+    {disp8} ja .Lnvol_teddy_fat_avx2_2.L3
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_fat_avx2_2.L2:
     vbroadcasti128 (%r8), %ymm7
     vpand %ymm4, %ymm7, %ymm8
@@ -19965,382 +20063,12 @@ L.nvol_teddy_fat_avx2_2:
     vpand %ymm7, %ymm8, %ymm7
     vmovdqa %ymm9, %ymm6
     vptest %ymm7, %ymm7
-    {disp32} je .Lnvol_teddy_fat_avx2_2.L4
-    lea -1(%r8), %r11
-    mov %r11, 64(%rsp)
-    vpermq $78, %ymm7, %ymm8
-    vpunpcklbw %ymm8, %ymm7, %ymm9
-    vpunpckhbw %ymm8, %ymm7, %ymm7
-    vmovq %xmm9, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_2.L8
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_2.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $4, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $15, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_fat_avx2_2.L10
-    .byte 102, 144
-.Lnvol_teddy_fat_avx2_2.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rax
-    shl $4, %rax
-    mov 16(%rsi,%rax), %rax
-    mov %rcx, %rdx
-    sub %r12, %rdx
-    cmp %rdx, %rax
-    {disp8} ja .Lnvol_teddy_fat_avx2_2.L11
-    cmp $4, %rax
-    {disp32} jb .Lnvol_teddy_fat_avx2_2.L15
-.Lnvol_teddy_fat_avx2_2.L14:
-    lea -4(%rax), %rdx
-    lea (%rbx,%rdx), %rdx
-    lea -4(%rax), %rax
-    lea (%r12,%rax), %rax
-    mov %r12, %r9
-    cmp %rdx, %rbx
-    {disp8} jae .Lnvol_teddy_fat_avx2_2.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_2.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L26
-.Lnvol_teddy_fat_avx2_2.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rdx, %rbx
-    {disp8} jb .Lnvol_teddy_fat_avx2_2.L23
-.Lnvol_teddy_fat_avx2_2.L24:
-    mov (%rdx), %edx
-    mov (%rax), %eax
-    cmp %rax, %rdx
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_2.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L12
-.Lnvol_teddy_fat_avx2_2.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_fat_avx2_2.L9
-.Lnvol_teddy_fat_avx2_2.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L7
-.Lnvol_teddy_fat_avx2_2.L8:
-    mov $-1, %r12
-.Lnvol_teddy_fat_avx2_2.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L28
-.Lnvol_teddy_fat_avx2_2.L27:
-    mov 64(%rsp), %r11
-    lea 4(%r11), %r10
-    mov %r10, 224(%rsp)
-    vpextrq $1, %xmm9, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_2.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_teddy_fat_avx2_2.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_2.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_2.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_2.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_2.L38
-.Lnvol_teddy_fat_avx2_2.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_2.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_2.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L49
-.Lnvol_teddy_fat_avx2_2.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_2.L46
-.Lnvol_teddy_fat_avx2_2.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_2.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L35
-.Lnvol_teddy_fat_avx2_2.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_2.L32
-.Lnvol_teddy_fat_avx2_2.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L30
-.Lnvol_teddy_fat_avx2_2.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_2.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L51
-.Lnvol_teddy_fat_avx2_2.L50:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
-    vmovq %xmm7, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_2.L54
-    .byte 15, 31, 64, 0
-.Lnvol_teddy_fat_avx2_2.L53:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_2.L56
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_2.L55:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_2.L57
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_2.L61
-.Lnvol_teddy_fat_avx2_2.L60:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_2.L70
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_2.L69:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L72
-.Lnvol_teddy_fat_avx2_2.L71:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_2.L69
-.Lnvol_teddy_fat_avx2_2.L70:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_2.L59:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L58
-.Lnvol_teddy_fat_avx2_2.L57:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_2.L55
-.Lnvol_teddy_fat_avx2_2.L56:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L53
-.Lnvol_teddy_fat_avx2_2.L54:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_2.L52:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L74
-.Lnvol_teddy_fat_avx2_2.L73:
-    mov 64(%rsp), %r11
-    lea 12(%r11), %r10
-    mov %r10, 544(%rsp)
-    vpextrq $1, %xmm7, %rdx
-    mov %rdx, 576(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_2.L77
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_2.L76:
-    mov 576(%rsp), %r11
-    bsf %r11, %r9
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 576(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 544(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 608(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 640(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_2.L79
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_2.L78:
-    mov 608(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_2.L80
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_2.L84
-.Lnvol_teddy_fat_avx2_2.L83:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_2.L93
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_2.L92:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L95
-.Lnvol_teddy_fat_avx2_2.L94:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_2.L92
-.Lnvol_teddy_fat_avx2_2.L93:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_2.L82:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L81
-.Lnvol_teddy_fat_avx2_2.L80:
-    lea 1(%r12), %r12
-    mov 640(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_2.L78
-.Lnvol_teddy_fat_avx2_2.L79:
-    mov 576(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L76
-.Lnvol_teddy_fat_avx2_2.L77:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_2.L75:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_2.L97
-.Lnvol_teddy_fat_avx2_2.L96:
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.Lrare1
 .Lnvol_teddy_fat_avx2_2.L4:
     lea 16(%r8), %r8
     mov 32(%rsp), %r11
     cmp %r11, %r8
-    {disp32} jbe .Lnvol_teddy_fat_avx2_2.L2
+    {disp8} jbe .Lnvol_teddy_fat_avx2_2.L2
 .Lnvol_teddy_fat_avx2_2.L3:
     cmp %rcx, %r8
     {disp32} jae .Lnvol_teddy_fat_avx2_2.L98
@@ -20371,7 +20099,7 @@ L.nvol_teddy_fat_avx2_2:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_2.L104
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_teddy_fat_avx2_2.L103:
     mov 736(%rsp), %r11
     bsf %r11, %r8
@@ -20390,8 +20118,7 @@ L.nvol_teddy_fat_avx2_2:
     xor %ebp, %ebp
     cmp %r11, %rbp
     {disp32} jae .Lnvol_teddy_fat_avx2_2.L106
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_teddy_fat_avx2_2.L105:
     mov %r8, %r12
     shl $6, %r12
@@ -21146,6 +20873,378 @@ L.nvol_teddy_fat_avx2_2:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_fat_avx2_2.L171
+.Lnvol_teddy_fat_avx2_2.Lrare1:
+    lea -1(%r8), %r11
+    mov %r11, 64(%rsp)
+    vpermq $78, %ymm7, %ymm8
+    vpunpcklbw %ymm8, %ymm7, %ymm9
+    vpunpckhbw %ymm8, %ymm7, %ymm7
+    vmovq %xmm9, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_2.L8
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_2.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $4, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $15, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_fat_avx2_2.L10
+    .byte 102, 144
+.Lnvol_teddy_fat_avx2_2.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rax
+    shl $4, %rax
+    mov 16(%rsi,%rax), %rax
+    mov %rcx, %rdx
+    sub %r12, %rdx
+    cmp %rdx, %rax
+    {disp8} ja .Lnvol_teddy_fat_avx2_2.L11
+    cmp $4, %rax
+    {disp32} jb .Lnvol_teddy_fat_avx2_2.L15
+.Lnvol_teddy_fat_avx2_2.L14:
+    lea -4(%rax), %rdx
+    lea (%rbx,%rdx), %rdx
+    lea -4(%rax), %rax
+    lea (%r12,%rax), %rax
+    mov %r12, %r9
+    cmp %rdx, %rbx
+    {disp8} jae .Lnvol_teddy_fat_avx2_2.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_2.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L26
+.Lnvol_teddy_fat_avx2_2.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rdx, %rbx
+    {disp8} jb .Lnvol_teddy_fat_avx2_2.L23
+.Lnvol_teddy_fat_avx2_2.L24:
+    mov (%rdx), %edx
+    mov (%rax), %eax
+    cmp %rax, %rdx
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_2.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L12
+.Lnvol_teddy_fat_avx2_2.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_fat_avx2_2.L9
+.Lnvol_teddy_fat_avx2_2.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L7
+.Lnvol_teddy_fat_avx2_2.L8:
+    mov $-1, %r12
+.Lnvol_teddy_fat_avx2_2.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L28
+.Lnvol_teddy_fat_avx2_2.L27:
+    mov 64(%rsp), %r11
+    lea 4(%r11), %r10
+    mov %r10, 224(%rsp)
+    vpextrq $1, %xmm9, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_2.L31
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_teddy_fat_avx2_2.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_2.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_2.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_2.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_2.L38
+.Lnvol_teddy_fat_avx2_2.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_2.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_2.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L49
+.Lnvol_teddy_fat_avx2_2.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_2.L46
+.Lnvol_teddy_fat_avx2_2.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_2.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L35
+.Lnvol_teddy_fat_avx2_2.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_2.L32
+.Lnvol_teddy_fat_avx2_2.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L30
+.Lnvol_teddy_fat_avx2_2.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_2.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L51
+.Lnvol_teddy_fat_avx2_2.L50:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 384(%rsp)
+    vmovq %xmm7, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_2.L54
+    .byte 15, 31, 64, 0
+.Lnvol_teddy_fat_avx2_2.L53:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_2.L56
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_2.L55:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_2.L57
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_2.L61
+.Lnvol_teddy_fat_avx2_2.L60:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_2.L70
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_2.L69:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L72
+.Lnvol_teddy_fat_avx2_2.L71:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_2.L69
+.Lnvol_teddy_fat_avx2_2.L70:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_2.L59:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L58
+.Lnvol_teddy_fat_avx2_2.L57:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_2.L55
+.Lnvol_teddy_fat_avx2_2.L56:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L53
+.Lnvol_teddy_fat_avx2_2.L54:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_2.L52:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L74
+.Lnvol_teddy_fat_avx2_2.L73:
+    mov 64(%rsp), %r11
+    lea 12(%r11), %r10
+    mov %r10, 544(%rsp)
+    vpextrq $1, %xmm7, %rdx
+    mov %rdx, 576(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_2.L77
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_2.L76:
+    mov 576(%rsp), %r11
+    bsf %r11, %r9
+    mov 576(%rsp), %rbx
+    mov 576(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 576(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 544(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 608(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 640(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_2.L79
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_2.L78:
+    mov 608(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_2.L80
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_2.L84
+.Lnvol_teddy_fat_avx2_2.L83:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_2.L93
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_2.L92:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L95
+.Lnvol_teddy_fat_avx2_2.L94:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_2.L92
+.Lnvol_teddy_fat_avx2_2.L93:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_2.L82:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L81
+.Lnvol_teddy_fat_avx2_2.L80:
+    lea 1(%r12), %r12
+    mov 640(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_2.L78
+.Lnvol_teddy_fat_avx2_2.L79:
+    mov 576(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L76
+.Lnvol_teddy_fat_avx2_2.L77:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_2.L75:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_2.L97
+.Lnvol_teddy_fat_avx2_2.L96:
+    {disp32} jmp .Lnvol_teddy_fat_avx2_2.L4
 .cfi_endproc
 .size nvol_teddy_fat_avx2_2, .-nvol_teddy_fat_avx2_2
 
@@ -21154,7 +21253,8 @@ L.nvol_teddy_fat_avx2_2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_teddy_slim_avx2_3
 .type nvol_teddy_slim_avx2_3, @function
 .hidden nvol_teddy_slim_avx2_3
@@ -21221,376 +21321,7 @@ L.nvol_teddy_slim_avx2_3:
     vmovdqa %ymm12, %ymm8
     vmovdqa %ymm13, %ymm9
     vptest %ymm10, %ymm10
-    {disp32} je .Lnvol_teddy_slim_avx2_3.L4
-    lea -2(%r8), %r11
-    mov %r11, 64(%rsp)
-    vmovq %xmm10, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_3.L8
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_3.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $3, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $7, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_slim_avx2_3.L10
-    .byte 102, 144
-.Lnvol_teddy_slim_avx2_3.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rax
-    shl $4, %rax
-    mov 16(%rsi,%rax), %rax
-    mov %rcx, %rdx
-    sub %r12, %rdx
-    cmp %rdx, %rax
-    {disp8} ja .Lnvol_teddy_slim_avx2_3.L11
-    cmp $4, %rax
-    {disp32} jb .Lnvol_teddy_slim_avx2_3.L15
-.Lnvol_teddy_slim_avx2_3.L14:
-    lea -4(%rax), %rdx
-    lea (%rbx,%rdx), %rdx
-    lea -4(%rax), %rax
-    lea (%r12,%rax), %rax
-    mov %r12, %r9
-    cmp %rdx, %rbx
-    {disp8} jae .Lnvol_teddy_slim_avx2_3.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_3.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L26
-.Lnvol_teddy_slim_avx2_3.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rdx, %rbx
-    {disp8} jb .Lnvol_teddy_slim_avx2_3.L23
-.Lnvol_teddy_slim_avx2_3.L24:
-    mov (%rdx), %edx
-    mov (%rax), %eax
-    cmp %rax, %rdx
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_3.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L12
-.Lnvol_teddy_slim_avx2_3.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_slim_avx2_3.L9
-.Lnvol_teddy_slim_avx2_3.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L7
-.Lnvol_teddy_slim_avx2_3.L8:
-    mov $-1, %r12
-.Lnvol_teddy_slim_avx2_3.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L28
-.Lnvol_teddy_slim_avx2_3.L27:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
-    vpextrq $1, %xmm10, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_3.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_teddy_slim_avx2_3.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_3.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_3.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_3.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_3.L38
-.Lnvol_teddy_slim_avx2_3.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_3.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_3.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L49
-.Lnvol_teddy_slim_avx2_3.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_3.L46
-.Lnvol_teddy_slim_avx2_3.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_3.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L35
-.Lnvol_teddy_slim_avx2_3.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_3.L32
-.Lnvol_teddy_slim_avx2_3.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L30
-.Lnvol_teddy_slim_avx2_3.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_3.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L51
-.Lnvol_teddy_slim_avx2_3.L50:
-    mov 64(%rsp), %r11
-    lea 16(%r11), %r10
-    mov %r10, 384(%rsp)
-    vextracti128 $1, %ymm10, %xmm11
-    vmovq %xmm11, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_3.L54
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_3.L53:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_3.L56
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_3.L55:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_3.L57
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_3.L61
-.Lnvol_teddy_slim_avx2_3.L60:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_3.L70
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_3.L69:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L72
-.Lnvol_teddy_slim_avx2_3.L71:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_3.L69
-.Lnvol_teddy_slim_avx2_3.L70:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_3.L59:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L58
-.Lnvol_teddy_slim_avx2_3.L57:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_3.L55
-.Lnvol_teddy_slim_avx2_3.L56:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L53
-.Lnvol_teddy_slim_avx2_3.L54:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_3.L52:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L74
-.Lnvol_teddy_slim_avx2_3.L73:
-    mov 64(%rsp), %r11
-    lea 24(%r11), %r10
-    mov %r10, 544(%rsp)
-    vextracti128 $1, %ymm10, %xmm10
-    vpextrq $1, %xmm10, %rdx
-    mov %rdx, 576(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_3.L77
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_3.L76:
-    mov 576(%rsp), %r11
-    bsf %r11, %r9
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 576(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 544(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 608(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 640(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_3.L79
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_3.L78:
-    mov 608(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_3.L80
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_3.L84
-.Lnvol_teddy_slim_avx2_3.L83:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_3.L93
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_3.L92:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L95
-.Lnvol_teddy_slim_avx2_3.L94:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_3.L92
-.Lnvol_teddy_slim_avx2_3.L93:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_3.L82:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L81
-.Lnvol_teddy_slim_avx2_3.L80:
-    lea 1(%r12), %r12
-    mov 640(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_3.L78
-.Lnvol_teddy_slim_avx2_3.L79:
-    mov 576(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L76
-.Lnvol_teddy_slim_avx2_3.L77:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_3.L75:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_3.L97
-.Lnvol_teddy_slim_avx2_3.L96:
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.Lrare1
 .Lnvol_teddy_slim_avx2_3.L4:
     lea 32(%r8), %r8
     mov 32(%rsp), %r11
@@ -21632,7 +21363,7 @@ L.nvol_teddy_slim_avx2_3:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_3.L104
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_avx2_3.L103:
     mov 736(%rsp), %r11
     bsf %r11, %r8
@@ -21651,8 +21382,7 @@ L.nvol_teddy_slim_avx2_3:
     xor %ebp, %ebp
     cmp %r11, %rbp
     {disp32} jae .Lnvol_teddy_slim_avx2_3.L106
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_teddy_slim_avx2_3.L105:
     mov %r8, %r12
     shl $6, %r12
@@ -22411,6 +22141,377 @@ L.nvol_teddy_slim_avx2_3:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_slim_avx2_3.L171
+.Lnvol_teddy_slim_avx2_3.Lrare1:
+    lea -2(%r8), %r11
+    mov %r11, 64(%rsp)
+    vmovq %xmm10, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_3.L8
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_3.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $3, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $7, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_slim_avx2_3.L10
+    .byte 102, 144
+.Lnvol_teddy_slim_avx2_3.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rax
+    shl $4, %rax
+    mov 16(%rsi,%rax), %rax
+    mov %rcx, %rdx
+    sub %r12, %rdx
+    cmp %rdx, %rax
+    {disp8} ja .Lnvol_teddy_slim_avx2_3.L11
+    cmp $4, %rax
+    {disp32} jb .Lnvol_teddy_slim_avx2_3.L15
+.Lnvol_teddy_slim_avx2_3.L14:
+    lea -4(%rax), %rdx
+    lea (%rbx,%rdx), %rdx
+    lea -4(%rax), %rax
+    lea (%r12,%rax), %rax
+    mov %r12, %r9
+    cmp %rdx, %rbx
+    {disp8} jae .Lnvol_teddy_slim_avx2_3.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_3.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L26
+.Lnvol_teddy_slim_avx2_3.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rdx, %rbx
+    {disp8} jb .Lnvol_teddy_slim_avx2_3.L23
+.Lnvol_teddy_slim_avx2_3.L24:
+    mov (%rdx), %edx
+    mov (%rax), %eax
+    cmp %rax, %rdx
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_3.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L12
+.Lnvol_teddy_slim_avx2_3.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_slim_avx2_3.L9
+.Lnvol_teddy_slim_avx2_3.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L7
+.Lnvol_teddy_slim_avx2_3.L8:
+    mov $-1, %r12
+.Lnvol_teddy_slim_avx2_3.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L28
+.Lnvol_teddy_slim_avx2_3.L27:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 224(%rsp)
+    vpextrq $1, %xmm10, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_3.L31
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_teddy_slim_avx2_3.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_3.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_3.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_3.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_3.L38
+.Lnvol_teddy_slim_avx2_3.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_3.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_3.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L49
+.Lnvol_teddy_slim_avx2_3.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_3.L46
+.Lnvol_teddy_slim_avx2_3.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_3.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L35
+.Lnvol_teddy_slim_avx2_3.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_3.L32
+.Lnvol_teddy_slim_avx2_3.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L30
+.Lnvol_teddy_slim_avx2_3.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_3.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L51
+.Lnvol_teddy_slim_avx2_3.L50:
+    mov 64(%rsp), %r11
+    lea 16(%r11), %r10
+    mov %r10, 384(%rsp)
+    vextracti128 $1, %ymm10, %xmm11
+    vmovq %xmm11, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_3.L54
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_3.L53:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_3.L56
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_3.L55:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_3.L57
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_3.L61
+.Lnvol_teddy_slim_avx2_3.L60:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_3.L70
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_3.L69:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L72
+.Lnvol_teddy_slim_avx2_3.L71:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_3.L69
+.Lnvol_teddy_slim_avx2_3.L70:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_3.L59:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L58
+.Lnvol_teddy_slim_avx2_3.L57:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_3.L55
+.Lnvol_teddy_slim_avx2_3.L56:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L53
+.Lnvol_teddy_slim_avx2_3.L54:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_3.L52:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L74
+.Lnvol_teddy_slim_avx2_3.L73:
+    mov 64(%rsp), %r11
+    lea 24(%r11), %r10
+    mov %r10, 544(%rsp)
+    vextracti128 $1, %ymm10, %xmm10
+    vpextrq $1, %xmm10, %rdx
+    mov %rdx, 576(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_3.L77
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_3.L76:
+    mov 576(%rsp), %r11
+    bsf %r11, %r9
+    mov 576(%rsp), %rbx
+    mov 576(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 576(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 544(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 608(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 640(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_3.L79
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_3.L78:
+    mov 608(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_3.L80
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_3.L84
+.Lnvol_teddy_slim_avx2_3.L83:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_3.L93
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_3.L92:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L95
+.Lnvol_teddy_slim_avx2_3.L94:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_3.L92
+.Lnvol_teddy_slim_avx2_3.L93:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_3.L82:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L81
+.Lnvol_teddy_slim_avx2_3.L80:
+    lea 1(%r12), %r12
+    mov 640(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_3.L78
+.Lnvol_teddy_slim_avx2_3.L79:
+    mov 576(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L76
+.Lnvol_teddy_slim_avx2_3.L77:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_3.L75:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_3.L97
+.Lnvol_teddy_slim_avx2_3.L96:
+    {disp32} jmp .Lnvol_teddy_slim_avx2_3.L4
 .cfi_endproc
 .size nvol_teddy_slim_avx2_3, .-nvol_teddy_slim_avx2_3
 
@@ -22419,7 +22520,8 @@ L.nvol_teddy_slim_avx2_3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_teddy_fat_avx2_3
 .type nvol_teddy_fat_avx2_3, @function
 .hidden nvol_teddy_fat_avx2_3
@@ -22484,382 +22586,12 @@ L.nvol_teddy_fat_avx2_3:
     vmovdqa %ymm12, %ymm8
     vmovdqa %ymm13, %ymm9
     vptest %ymm10, %ymm10
-    {disp32} je .Lnvol_teddy_fat_avx2_3.L4
-    lea -2(%r8), %r11
-    mov %r11, 64(%rsp)
-    vpermq $78, %ymm10, %ymm11
-    vpunpcklbw %ymm11, %ymm10, %ymm12
-    vpunpckhbw %ymm11, %ymm10, %ymm10
-    vmovq %xmm12, %rax
-    mov %rax, 96(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_3.L8
-    .byte 102, 144
-.Lnvol_teddy_fat_avx2_3.L7:
-    mov 96(%rsp), %r11
-    bsf %r11, %rbp
-    mov 96(%rsp), %r12
-    mov 96(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 96(%rsp)
-    mov %rbp, %r12
-    shr $4, %r12
-    mov 64(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $15, %r11
-    mov %r11, 128(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 160(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_fat_avx2_3.L10
-    .byte 102, 144
-.Lnvol_teddy_fat_avx2_3.L9:
-    mov 128(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rax
-    shl $4, %rax
-    mov 16(%rsi,%rax), %rax
-    mov %rcx, %rdx
-    sub %r12, %rdx
-    cmp %rdx, %rax
-    {disp8} ja .Lnvol_teddy_fat_avx2_3.L11
-    cmp $4, %rax
-    {disp32} jb .Lnvol_teddy_fat_avx2_3.L15
-.Lnvol_teddy_fat_avx2_3.L14:
-    lea -4(%rax), %rdx
-    lea (%rbx,%rdx), %rdx
-    lea -4(%rax), %rax
-    lea (%r12,%rax), %rax
-    mov %r12, %r9
-    cmp %rdx, %rbx
-    {disp8} jae .Lnvol_teddy_fat_avx2_3.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_3.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L26
-.Lnvol_teddy_fat_avx2_3.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rdx, %rbx
-    {disp8} jb .Lnvol_teddy_fat_avx2_3.L23
-.Lnvol_teddy_fat_avx2_3.L24:
-    mov (%rdx), %edx
-    mov (%rax), %eax
-    cmp %rax, %rdx
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_3.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L12
-.Lnvol_teddy_fat_avx2_3.L11:
-    lea 1(%r14), %r14
-    mov 160(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_fat_avx2_3.L9
-.Lnvol_teddy_fat_avx2_3.L10:
-    mov 96(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L7
-.Lnvol_teddy_fat_avx2_3.L8:
-    mov $-1, %r12
-.Lnvol_teddy_fat_avx2_3.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L28
-.Lnvol_teddy_fat_avx2_3.L27:
-    mov 64(%rsp), %r11
-    lea 4(%r11), %r10
-    mov %r10, 224(%rsp)
-    vpextrq $1, %xmm12, %rdx
-    mov %rdx, 256(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_3.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_teddy_fat_avx2_3.L30:
-    mov 256(%rsp), %r11
-    bsf %r11, %r9
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 256(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 224(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_3.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_3.L32:
-    mov 288(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_3.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_3.L38
-.Lnvol_teddy_fat_avx2_3.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_3.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_3.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L49
-.Lnvol_teddy_fat_avx2_3.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_3.L46
-.Lnvol_teddy_fat_avx2_3.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_3.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L35
-.Lnvol_teddy_fat_avx2_3.L34:
-    lea 1(%r12), %r12
-    mov 320(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_3.L32
-.Lnvol_teddy_fat_avx2_3.L33:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L30
-.Lnvol_teddy_fat_avx2_3.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_3.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L51
-.Lnvol_teddy_fat_avx2_3.L50:
-    mov 64(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
-    vmovq %xmm10, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_3.L54
-    .byte 15, 31, 64, 0
-.Lnvol_teddy_fat_avx2_3.L53:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_3.L56
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_3.L55:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_3.L57
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_3.L61
-.Lnvol_teddy_fat_avx2_3.L60:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_3.L70
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_3.L69:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L72
-.Lnvol_teddy_fat_avx2_3.L71:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_3.L69
-.Lnvol_teddy_fat_avx2_3.L70:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_3.L59:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L58
-.Lnvol_teddy_fat_avx2_3.L57:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_3.L55
-.Lnvol_teddy_fat_avx2_3.L56:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L53
-.Lnvol_teddy_fat_avx2_3.L54:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_3.L52:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L74
-.Lnvol_teddy_fat_avx2_3.L73:
-    mov 64(%rsp), %r11
-    lea 12(%r11), %r10
-    mov %r10, 544(%rsp)
-    vpextrq $1, %xmm10, %rdx
-    mov %rdx, 576(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_3.L77
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_3.L76:
-    mov 576(%rsp), %r11
-    bsf %r11, %r9
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 576(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 544(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 608(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 640(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_3.L79
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_3.L78:
-    mov 608(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_3.L80
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_3.L84
-.Lnvol_teddy_fat_avx2_3.L83:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_3.L93
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_3.L92:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L95
-.Lnvol_teddy_fat_avx2_3.L94:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_3.L92
-.Lnvol_teddy_fat_avx2_3.L93:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_3.L82:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L81
-.Lnvol_teddy_fat_avx2_3.L80:
-    lea 1(%r12), %r12
-    mov 640(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_3.L78
-.Lnvol_teddy_fat_avx2_3.L79:
-    mov 576(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L76
-.Lnvol_teddy_fat_avx2_3.L77:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_3.L75:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_3.L97
-.Lnvol_teddy_fat_avx2_3.L96:
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.Lrare1
 .Lnvol_teddy_fat_avx2_3.L4:
     lea 16(%r8), %r8
     mov 32(%rsp), %r11
     cmp %r11, %r8
-    {disp32} jbe .Lnvol_teddy_fat_avx2_3.L2
+    {disp8} jbe .Lnvol_teddy_fat_avx2_3.L2
 .Lnvol_teddy_fat_avx2_3.L3:
     cmp %rcx, %r8
     {disp32} jae .Lnvol_teddy_fat_avx2_3.L98
@@ -22897,7 +22629,7 @@ L.nvol_teddy_fat_avx2_3:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_3.L104
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_teddy_fat_avx2_3.L103:
     mov 736(%rsp), %r11
     bsf %r11, %r8
@@ -22916,8 +22648,7 @@ L.nvol_teddy_fat_avx2_3:
     xor %ebp, %ebp
     cmp %r11, %rbp
     {disp32} jae .Lnvol_teddy_fat_avx2_3.L106
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 144
 .Lnvol_teddy_fat_avx2_3.L105:
     mov %r8, %r12
     shl $6, %r12
@@ -23672,6 +23403,378 @@ L.nvol_teddy_fat_avx2_3:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_fat_avx2_3.L171
+.Lnvol_teddy_fat_avx2_3.Lrare1:
+    lea -2(%r8), %r11
+    mov %r11, 64(%rsp)
+    vpermq $78, %ymm10, %ymm11
+    vpunpcklbw %ymm11, %ymm10, %ymm12
+    vpunpckhbw %ymm11, %ymm10, %ymm10
+    vmovq %xmm12, %rax
+    mov %rax, 96(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_3.L8
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_3.L7:
+    mov 96(%rsp), %r11
+    bsf %r11, %rbp
+    mov 96(%rsp), %r12
+    mov 96(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 96(%rsp)
+    mov %rbp, %r12
+    shr $4, %r12
+    mov 64(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $15, %r11
+    mov %r11, 128(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 160(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_fat_avx2_3.L10
+    .byte 102, 144
+.Lnvol_teddy_fat_avx2_3.L9:
+    mov 128(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rax
+    shl $4, %rax
+    mov 16(%rsi,%rax), %rax
+    mov %rcx, %rdx
+    sub %r12, %rdx
+    cmp %rdx, %rax
+    {disp8} ja .Lnvol_teddy_fat_avx2_3.L11
+    cmp $4, %rax
+    {disp32} jb .Lnvol_teddy_fat_avx2_3.L15
+.Lnvol_teddy_fat_avx2_3.L14:
+    lea -4(%rax), %rdx
+    lea (%rbx,%rdx), %rdx
+    lea -4(%rax), %rax
+    lea (%r12,%rax), %rax
+    mov %r12, %r9
+    cmp %rdx, %rbx
+    {disp8} jae .Lnvol_teddy_fat_avx2_3.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_3.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L26
+.Lnvol_teddy_fat_avx2_3.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rdx, %rbx
+    {disp8} jb .Lnvol_teddy_fat_avx2_3.L23
+.Lnvol_teddy_fat_avx2_3.L24:
+    mov (%rdx), %edx
+    mov (%rax), %eax
+    cmp %rax, %rdx
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_3.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L12
+.Lnvol_teddy_fat_avx2_3.L11:
+    lea 1(%r14), %r14
+    mov 160(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_fat_avx2_3.L9
+.Lnvol_teddy_fat_avx2_3.L10:
+    mov 96(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L7
+.Lnvol_teddy_fat_avx2_3.L8:
+    mov $-1, %r12
+.Lnvol_teddy_fat_avx2_3.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L28
+.Lnvol_teddy_fat_avx2_3.L27:
+    mov 64(%rsp), %r11
+    lea 4(%r11), %r10
+    mov %r10, 224(%rsp)
+    vpextrq $1, %xmm12, %rdx
+    mov %rdx, 256(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_3.L31
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_teddy_fat_avx2_3.L30:
+    mov 256(%rsp), %r11
+    bsf %r11, %r9
+    mov 256(%rsp), %rbx
+    mov 256(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 256(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 224(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_3.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_3.L32:
+    mov 288(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_3.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_3.L38
+.Lnvol_teddy_fat_avx2_3.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_3.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_3.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L49
+.Lnvol_teddy_fat_avx2_3.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_3.L46
+.Lnvol_teddy_fat_avx2_3.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_3.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L35
+.Lnvol_teddy_fat_avx2_3.L34:
+    lea 1(%r12), %r12
+    mov 320(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_3.L32
+.Lnvol_teddy_fat_avx2_3.L33:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L30
+.Lnvol_teddy_fat_avx2_3.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_3.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L51
+.Lnvol_teddy_fat_avx2_3.L50:
+    mov 64(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 384(%rsp)
+    vmovq %xmm10, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_3.L54
+    .byte 15, 31, 64, 0
+.Lnvol_teddy_fat_avx2_3.L53:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_3.L56
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_3.L55:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_3.L57
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_3.L61
+.Lnvol_teddy_fat_avx2_3.L60:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_3.L70
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_3.L69:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L72
+.Lnvol_teddy_fat_avx2_3.L71:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_3.L69
+.Lnvol_teddy_fat_avx2_3.L70:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_3.L59:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L58
+.Lnvol_teddy_fat_avx2_3.L57:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_3.L55
+.Lnvol_teddy_fat_avx2_3.L56:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L53
+.Lnvol_teddy_fat_avx2_3.L54:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_3.L52:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L74
+.Lnvol_teddy_fat_avx2_3.L73:
+    mov 64(%rsp), %r11
+    lea 12(%r11), %r10
+    mov %r10, 544(%rsp)
+    vpextrq $1, %xmm10, %rdx
+    mov %rdx, 576(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_3.L77
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_3.L76:
+    mov 576(%rsp), %r11
+    bsf %r11, %r9
+    mov 576(%rsp), %rbx
+    mov 576(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 576(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 544(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 608(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 640(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_3.L79
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_3.L78:
+    mov 608(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_3.L80
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_3.L84
+.Lnvol_teddy_fat_avx2_3.L83:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_3.L93
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_3.L92:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L95
+.Lnvol_teddy_fat_avx2_3.L94:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_3.L92
+.Lnvol_teddy_fat_avx2_3.L93:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_3.L82:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L81
+.Lnvol_teddy_fat_avx2_3.L80:
+    lea 1(%r12), %r12
+    mov 640(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_3.L78
+.Lnvol_teddy_fat_avx2_3.L79:
+    mov 576(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L76
+.Lnvol_teddy_fat_avx2_3.L77:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_3.L75:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_3.L97
+.Lnvol_teddy_fat_avx2_3.L96:
+    {disp32} jmp .Lnvol_teddy_fat_avx2_3.L4
 .cfi_endproc
 .size nvol_teddy_fat_avx2_3, .-nvol_teddy_fat_avx2_3
 
@@ -23679,6 +23782,7 @@ L.nvol_teddy_fat_avx2_3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_teddy_slim_avx2_4
 .type nvol_teddy_slim_avx2_4, @function
 .hidden nvol_teddy_slim_avx2_4
@@ -23765,377 +23869,7 @@ L.nvol_teddy_slim_avx2_4:
     vmovdqa %ymm1, %ymm11
     vmovdqa %ymm2, %ymm12
     vptest %ymm3, %ymm3
-    {disp32} je .Lnvol_teddy_slim_avx2_4.L4
-    lea -3(%r8), %r11
-    mov %r11, 224(%rsp)
-    vmovq %xmm3, %rax
-    mov %rax, 256(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_4.L8
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_teddy_slim_avx2_4.L7:
-    mov 256(%rsp), %r11
-    bsf %r11, %rbp
-    mov 256(%rsp), %r12
-    mov 256(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 256(%rsp)
-    mov %rbp, %r12
-    shr $3, %r12
-    mov 224(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $7, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_slim_avx2_4.L10
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_4.L9:
-    mov 288(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rax
-    shl $4, %rax
-    mov 16(%rsi,%rax), %rax
-    mov %rcx, %rdx
-    sub %r12, %rdx
-    cmp %rdx, %rax
-    {disp8} ja .Lnvol_teddy_slim_avx2_4.L11
-    cmp $4, %rax
-    {disp32} jb .Lnvol_teddy_slim_avx2_4.L15
-.Lnvol_teddy_slim_avx2_4.L14:
-    lea -4(%rax), %rdx
-    lea (%rbx,%rdx), %rdx
-    lea -4(%rax), %rax
-    lea (%r12,%rax), %rax
-    mov %r12, %r9
-    cmp %rdx, %rbx
-    {disp8} jae .Lnvol_teddy_slim_avx2_4.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_4.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L26
-.Lnvol_teddy_slim_avx2_4.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rdx, %rbx
-    {disp8} jb .Lnvol_teddy_slim_avx2_4.L23
-.Lnvol_teddy_slim_avx2_4.L24:
-    mov (%rdx), %edx
-    mov (%rax), %eax
-    cmp %rax, %rdx
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_4.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L12
-.Lnvol_teddy_slim_avx2_4.L11:
-    lea 1(%r14), %r14
-    mov 320(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_slim_avx2_4.L9
-.Lnvol_teddy_slim_avx2_4.L10:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L7
-.Lnvol_teddy_slim_avx2_4.L8:
-    mov $-1, %r12
-.Lnvol_teddy_slim_avx2_4.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L28
-.Lnvol_teddy_slim_avx2_4.L27:
-    mov 224(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
-    vpextrq $1, %xmm3, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_4.L31
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
-.Lnvol_teddy_slim_avx2_4.L30:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_4.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_4.L32:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_4.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_4.L38
-.Lnvol_teddy_slim_avx2_4.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_4.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_4.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L49
-.Lnvol_teddy_slim_avx2_4.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_4.L46
-.Lnvol_teddy_slim_avx2_4.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_4.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L35
-.Lnvol_teddy_slim_avx2_4.L34:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_4.L32
-.Lnvol_teddy_slim_avx2_4.L33:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L30
-.Lnvol_teddy_slim_avx2_4.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_4.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L51
-.Lnvol_teddy_slim_avx2_4.L50:
-    mov 224(%rsp), %r11
-    lea 16(%r11), %r10
-    mov %r10, 544(%rsp)
-    vextracti128 $1, %ymm3, %xmm0
-    vmovq %xmm0, %rdx
-    mov %rdx, 576(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_4.L54
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_4.L53:
-    mov 576(%rsp), %r11
-    bsf %r11, %r9
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 576(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 544(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 608(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 640(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_4.L56
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_4.L55:
-    mov 608(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_4.L57
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_4.L61
-.Lnvol_teddy_slim_avx2_4.L60:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_4.L70
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_4.L69:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L72
-.Lnvol_teddy_slim_avx2_4.L71:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_4.L69
-.Lnvol_teddy_slim_avx2_4.L70:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_4.L59:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L58
-.Lnvol_teddy_slim_avx2_4.L57:
-    lea 1(%r12), %r12
-    mov 640(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_4.L55
-.Lnvol_teddy_slim_avx2_4.L56:
-    mov 576(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L53
-.Lnvol_teddy_slim_avx2_4.L54:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_4.L52:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L74
-.Lnvol_teddy_slim_avx2_4.L73:
-    mov 224(%rsp), %r11
-    lea 24(%r11), %r10
-    mov %r10, 704(%rsp)
-    vextracti128 $1, %ymm3, %xmm0
-    vpextrq $1, %xmm0, %rdx
-    mov %rdx, 736(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_slim_avx2_4.L77
-    .byte 102, 144
-.Lnvol_teddy_slim_avx2_4.L76:
-    mov 736(%rsp), %r11
-    bsf %r11, %r9
-    mov 736(%rsp), %rbx
-    mov 736(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 736(%rsp)
-    mov %r9, %rbx
-    shr $3, %rbx
-    mov 704(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $7, %r11
-    mov %r11, 768(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 800(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_slim_avx2_4.L79
-    .byte 15, 31, 0
-.Lnvol_teddy_slim_avx2_4.L78:
-    mov 768(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_slim_avx2_4.L80
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_slim_avx2_4.L84
-.Lnvol_teddy_slim_avx2_4.L83:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_slim_avx2_4.L93
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_slim_avx2_4.L92:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L95
-.Lnvol_teddy_slim_avx2_4.L94:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_slim_avx2_4.L92
-.Lnvol_teddy_slim_avx2_4.L93:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_slim_avx2_4.L82:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L81
-.Lnvol_teddy_slim_avx2_4.L80:
-    lea 1(%r12), %r12
-    mov 800(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_slim_avx2_4.L78
-.Lnvol_teddy_slim_avx2_4.L79:
-    mov 736(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L76
-.Lnvol_teddy_slim_avx2_4.L77:
-    mov $-1, %rbx
-.Lnvol_teddy_slim_avx2_4.L75:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_slim_avx2_4.L97
-.Lnvol_teddy_slim_avx2_4.L96:
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.Lrare1
 .Lnvol_teddy_slim_avx2_4.L4:
     lea 32(%r8), %r8
     mov 192(%rsp), %r11
@@ -24189,7 +23923,7 @@ L.nvol_teddy_slim_avx2_4:
     mov %rax, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_4.L104
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_slim_avx2_4.L103:
     mov 896(%rsp), %r11
     bsf %r11, %r8
@@ -24967,12 +24701,382 @@ L.nvol_teddy_slim_avx2_4:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_slim_avx2_4.L171
+.Lnvol_teddy_slim_avx2_4.Lrare1:
+    lea -3(%r8), %r11
+    mov %r11, 224(%rsp)
+    vmovq %xmm3, %rax
+    mov %rax, 256(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_4.L8
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_teddy_slim_avx2_4.L7:
+    mov 256(%rsp), %r11
+    bsf %r11, %rbp
+    mov 256(%rsp), %r12
+    mov 256(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 256(%rsp)
+    mov %rbp, %r12
+    shr $3, %r12
+    mov 224(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $7, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_slim_avx2_4.L10
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_4.L9:
+    mov 288(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rax
+    shl $4, %rax
+    mov 16(%rsi,%rax), %rax
+    mov %rcx, %rdx
+    sub %r12, %rdx
+    cmp %rdx, %rax
+    {disp8} ja .Lnvol_teddy_slim_avx2_4.L11
+    cmp $4, %rax
+    {disp32} jb .Lnvol_teddy_slim_avx2_4.L15
+.Lnvol_teddy_slim_avx2_4.L14:
+    lea -4(%rax), %rdx
+    lea (%rbx,%rdx), %rdx
+    lea -4(%rax), %rax
+    lea (%r12,%rax), %rax
+    mov %r12, %r9
+    cmp %rdx, %rbx
+    {disp8} jae .Lnvol_teddy_slim_avx2_4.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_4.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L26
+.Lnvol_teddy_slim_avx2_4.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rdx, %rbx
+    {disp8} jb .Lnvol_teddy_slim_avx2_4.L23
+.Lnvol_teddy_slim_avx2_4.L24:
+    mov (%rdx), %edx
+    mov (%rax), %eax
+    cmp %rax, %rdx
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_4.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L12
+.Lnvol_teddy_slim_avx2_4.L11:
+    lea 1(%r14), %r14
+    mov 320(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_slim_avx2_4.L9
+.Lnvol_teddy_slim_avx2_4.L10:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L7
+.Lnvol_teddy_slim_avx2_4.L8:
+    mov $-1, %r12
+.Lnvol_teddy_slim_avx2_4.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L28
+.Lnvol_teddy_slim_avx2_4.L27:
+    mov 224(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 384(%rsp)
+    vpextrq $1, %xmm3, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_4.L31
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
+.Lnvol_teddy_slim_avx2_4.L30:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_4.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_4.L32:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_4.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_4.L38
+.Lnvol_teddy_slim_avx2_4.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_4.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_4.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L49
+.Lnvol_teddy_slim_avx2_4.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_4.L46
+.Lnvol_teddy_slim_avx2_4.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_4.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L35
+.Lnvol_teddy_slim_avx2_4.L34:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_4.L32
+.Lnvol_teddy_slim_avx2_4.L33:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L30
+.Lnvol_teddy_slim_avx2_4.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_4.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L51
+.Lnvol_teddy_slim_avx2_4.L50:
+    mov 224(%rsp), %r11
+    lea 16(%r11), %r10
+    mov %r10, 544(%rsp)
+    vextracti128 $1, %ymm3, %xmm0
+    vmovq %xmm0, %rdx
+    mov %rdx, 576(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_4.L54
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_4.L53:
+    mov 576(%rsp), %r11
+    bsf %r11, %r9
+    mov 576(%rsp), %rbx
+    mov 576(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 576(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 544(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 608(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 640(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_4.L56
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_4.L55:
+    mov 608(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_4.L57
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_4.L61
+.Lnvol_teddy_slim_avx2_4.L60:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_4.L70
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_4.L69:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L72
+.Lnvol_teddy_slim_avx2_4.L71:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_4.L69
+.Lnvol_teddy_slim_avx2_4.L70:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_4.L59:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L58
+.Lnvol_teddy_slim_avx2_4.L57:
+    lea 1(%r12), %r12
+    mov 640(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_4.L55
+.Lnvol_teddy_slim_avx2_4.L56:
+    mov 576(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L53
+.Lnvol_teddy_slim_avx2_4.L54:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_4.L52:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L74
+.Lnvol_teddy_slim_avx2_4.L73:
+    mov 224(%rsp), %r11
+    lea 24(%r11), %r10
+    mov %r10, 704(%rsp)
+    vextracti128 $1, %ymm3, %xmm0
+    vpextrq $1, %xmm0, %rdx
+    mov %rdx, 736(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_slim_avx2_4.L77
+    .byte 102, 144
+.Lnvol_teddy_slim_avx2_4.L76:
+    mov 736(%rsp), %r11
+    bsf %r11, %r9
+    mov 736(%rsp), %rbx
+    mov 736(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 736(%rsp)
+    mov %r9, %rbx
+    shr $3, %rbx
+    mov 704(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $7, %r11
+    mov %r11, 768(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 800(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_slim_avx2_4.L79
+    .byte 15, 31, 0
+.Lnvol_teddy_slim_avx2_4.L78:
+    mov 768(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_slim_avx2_4.L80
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_slim_avx2_4.L84
+.Lnvol_teddy_slim_avx2_4.L83:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_slim_avx2_4.L93
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_slim_avx2_4.L92:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L95
+.Lnvol_teddy_slim_avx2_4.L94:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_slim_avx2_4.L92
+.Lnvol_teddy_slim_avx2_4.L93:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_slim_avx2_4.L82:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L81
+.Lnvol_teddy_slim_avx2_4.L80:
+    lea 1(%r12), %r12
+    mov 800(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_slim_avx2_4.L78
+.Lnvol_teddy_slim_avx2_4.L79:
+    mov 736(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L76
+.Lnvol_teddy_slim_avx2_4.L77:
+    mov $-1, %rbx
+.Lnvol_teddy_slim_avx2_4.L75:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_slim_avx2_4.L97
+.Lnvol_teddy_slim_avx2_4.L96:
+    {disp32} jmp .Lnvol_teddy_slim_avx2_4.L4
 .cfi_endproc
 .size nvol_teddy_slim_avx2_4, .-nvol_teddy_slim_avx2_4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
 .globl nvol_teddy_fat_avx2_4
 .type nvol_teddy_fat_avx2_4, @function
 .hidden nvol_teddy_fat_avx2_4
@@ -25056,376 +25160,7 @@ L.nvol_teddy_fat_avx2_4:
     vmovdqa %ymm1, %ymm11
     vmovdqa %ymm2, %ymm12
     vptest %ymm3, %ymm3
-    {disp32} je .Lnvol_teddy_fat_avx2_4.L4
-    lea -3(%r8), %r11
-    mov %r11, 224(%rsp)
-    vpermq $78, %ymm3, %ymm0
-    vpunpcklbw %ymm0, %ymm3, %ymm1
-    vpunpckhbw %ymm0, %ymm3, %ymm0
-    vmovq %xmm1, %rax
-    mov %rax, 256(%rsp)
-    mov %rax, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_4.L8
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_4.L7:
-    mov 256(%rsp), %r11
-    bsf %r11, %rbp
-    mov 256(%rsp), %r12
-    mov 256(%rsp), %r11
-    lea -1(%r11), %r13
-    and %r13, %r12
-    mov %r12, 256(%rsp)
-    mov %rbp, %r12
-    shr $4, %r12
-    mov 224(%rsp), %r11
-    lea (%r11,%r12), %r12
-    mov %rbp, %r11
-    and $15, %r11
-    mov %r11, 288(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 320(%rsp)
-    xor %r14d, %r14d
-    mov %r10, %r11
-    cmp %r11, %r14
-    {disp32} jae .Lnvol_teddy_fat_avx2_4.L10
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_4.L9:
-    mov 288(%rsp), %r15
-    shl $6, %r15
-    lea (%r15,%r14), %r15
-    movzbl 336(%rdi,%r15), %r15d
-    mov %r15, %rbx
-    shl $4, %rbx
-    mov 8(%rsi,%rbx), %rbx
-    lea (%rsi,%rbx), %rbx
-    mov %r15, %rax
-    shl $4, %rax
-    mov 16(%rsi,%rax), %rax
-    mov %rcx, %rdx
-    sub %r12, %rdx
-    cmp %rdx, %rax
-    {disp8} ja .Lnvol_teddy_fat_avx2_4.L11
-    cmp $4, %rax
-    {disp32} jb .Lnvol_teddy_fat_avx2_4.L15
-.Lnvol_teddy_fat_avx2_4.L14:
-    lea -4(%rax), %rdx
-    lea (%rbx,%rdx), %rdx
-    lea -4(%rax), %rax
-    lea (%r12,%rax), %rax
-    mov %r12, %r9
-    cmp %rdx, %rbx
-    {disp8} jae .Lnvol_teddy_fat_avx2_4.L24
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_4.L23:
-    mov (%rbx), %r13d
-    mov (%r9), %ebp
-    cmp %ebp, %r13d
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L26
-.Lnvol_teddy_fat_avx2_4.L25:
-    lea 4(%rbx), %rbx
-    add $4, %r9
-    cmp %rdx, %rbx
-    {disp8} jb .Lnvol_teddy_fat_avx2_4.L23
-.Lnvol_teddy_fat_avx2_4.L24:
-    mov (%rdx), %edx
-    mov (%rax), %eax
-    cmp %rax, %rdx
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_4.L13:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L12
-.Lnvol_teddy_fat_avx2_4.L11:
-    lea 1(%r14), %r14
-    mov 320(%rsp), %r11
-    cmp %r11, %r14
-    {disp32} jb .Lnvol_teddy_fat_avx2_4.L9
-.Lnvol_teddy_fat_avx2_4.L10:
-    mov 256(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L7
-.Lnvol_teddy_fat_avx2_4.L8:
-    mov $-1, %r12
-.Lnvol_teddy_fat_avx2_4.L6:
-    cmp $-1, %r12
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L28
-.Lnvol_teddy_fat_avx2_4.L27:
-    mov 224(%rsp), %r11
-    lea 4(%r11), %r10
-    mov %r10, 384(%rsp)
-    vpextrq $1, %xmm1, %rdx
-    mov %rdx, 416(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_4.L31
-    .byte 102, 144
-.Lnvol_teddy_fat_avx2_4.L30:
-    mov 416(%rsp), %r11
-    bsf %r11, %r9
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 416(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 384(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 448(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 480(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_4.L33
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_4.L32:
-    mov 448(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_4.L34
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_4.L38
-.Lnvol_teddy_fat_avx2_4.L37:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_4.L47
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_4.L46:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L49
-.Lnvol_teddy_fat_avx2_4.L48:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_4.L46
-.Lnvol_teddy_fat_avx2_4.L47:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_4.L36:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L35
-.Lnvol_teddy_fat_avx2_4.L34:
-    lea 1(%r12), %r12
-    mov 480(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_4.L32
-.Lnvol_teddy_fat_avx2_4.L33:
-    mov 416(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L30
-.Lnvol_teddy_fat_avx2_4.L31:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_4.L29:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L51
-.Lnvol_teddy_fat_avx2_4.L50:
-    mov 224(%rsp), %r11
-    lea 8(%r11), %r10
-    mov %r10, 544(%rsp)
-    vmovq %xmm0, %rdx
-    mov %rdx, 576(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_4.L54
-    .byte 144
-.Lnvol_teddy_fat_avx2_4.L53:
-    mov 576(%rsp), %r11
-    bsf %r11, %r9
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 576(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 544(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 608(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 640(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_4.L56
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_4.L55:
-    mov 608(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_4.L57
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_4.L61
-.Lnvol_teddy_fat_avx2_4.L60:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_4.L70
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_4.L69:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L72
-.Lnvol_teddy_fat_avx2_4.L71:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_4.L69
-.Lnvol_teddy_fat_avx2_4.L70:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_4.L59:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L58
-.Lnvol_teddy_fat_avx2_4.L57:
-    lea 1(%r12), %r12
-    mov 640(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_4.L55
-.Lnvol_teddy_fat_avx2_4.L56:
-    mov 576(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L53
-.Lnvol_teddy_fat_avx2_4.L54:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_4.L52:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L74
-.Lnvol_teddy_fat_avx2_4.L73:
-    mov 224(%rsp), %r11
-    lea 12(%r11), %r10
-    mov %r10, 704(%rsp)
-    vpextrq $1, %xmm0, %rdx
-    mov %rdx, 736(%rsp)
-    mov %rdx, %r11
-    test %r11, %r11
-    {disp32} je .Lnvol_teddy_fat_avx2_4.L77
-.Lnvol_teddy_fat_avx2_4.L76:
-    mov 736(%rsp), %r11
-    bsf %r11, %r9
-    mov 736(%rsp), %rbx
-    mov 736(%rsp), %r11
-    lea -1(%r11), %rbp
-    and %rbp, %rbx
-    mov %rbx, 736(%rsp)
-    mov %r9, %rbx
-    shr $4, %rbx
-    mov 704(%rsp), %r11
-    lea (%r11,%rbx), %rbx
-    mov %r9, %r11
-    and $15, %r11
-    mov %r11, 768(%rsp)
-    movzbl 320(%rdi,%r11), %r10d
-    mov %r10, 800(%rsp)
-    xor %r12d, %r12d
-    mov %r10, %r11
-    cmp %r11, %r12
-    {disp32} jae .Lnvol_teddy_fat_avx2_4.L79
-    .byte 15, 31, 0
-.Lnvol_teddy_fat_avx2_4.L78:
-    mov 768(%rsp), %r13
-    shl $6, %r13
-    lea (%r13,%r12), %r13
-    movzbl 336(%rdi,%r13), %r13d
-    mov %r13, %r14
-    shl $4, %r14
-    mov 8(%rsi,%r14), %r14
-    lea (%rsi,%r14), %r14
-    mov %r13, %r15
-    shl $4, %r15
-    mov 16(%rsi,%r15), %r15
-    mov %rcx, %rax
-    sub %rbx, %rax
-    cmp %rax, %r15
-    {disp8} ja .Lnvol_teddy_fat_avx2_4.L80
-    cmp $4, %r15
-    {disp32} jb .Lnvol_teddy_fat_avx2_4.L84
-.Lnvol_teddy_fat_avx2_4.L83:
-    lea -4(%r15), %rax
-    lea (%r14,%rax), %rax
-    lea -4(%r15), %r15
-    lea (%rbx,%r15), %r15
-    mov %rbx, %rdx
-    cmp %rax, %r14
-    {disp8} jae .Lnvol_teddy_fat_avx2_4.L93
-    .byte 15, 31, 68, 0, 0
-.Lnvol_teddy_fat_avx2_4.L92:
-    mov (%r14), %ebp
-    mov (%rdx), %r9d
-    cmp %r9d, %ebp
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L95
-.Lnvol_teddy_fat_avx2_4.L94:
-    lea 4(%r14), %r14
-    add $4, %rdx
-    cmp %rax, %r14
-    {disp8} jb .Lnvol_teddy_fat_avx2_4.L92
-.Lnvol_teddy_fat_avx2_4.L93:
-    mov (%rax), %eax
-    mov (%r15), %edx
-    cmp %rdx, %rax
-    sete %al
-    movzbl %al, %eax
-.Lnvol_teddy_fat_avx2_4.L82:
-    test %eax, %eax
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L81
-.Lnvol_teddy_fat_avx2_4.L80:
-    lea 1(%r12), %r12
-    mov 800(%rsp), %r11
-    cmp %r11, %r12
-    {disp32} jb .Lnvol_teddy_fat_avx2_4.L78
-.Lnvol_teddy_fat_avx2_4.L79:
-    mov 736(%rsp), %r11
-    test %r11, %r11
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L76
-.Lnvol_teddy_fat_avx2_4.L77:
-    mov $-1, %rbx
-.Lnvol_teddy_fat_avx2_4.L75:
-    cmp $-1, %rbx
-    {disp32} jne .Lnvol_teddy_fat_avx2_4.L97
-.Lnvol_teddy_fat_avx2_4.L96:
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.Lrare1
 .Lnvol_teddy_fat_avx2_4.L4:
     lea 16(%r8), %r8
     mov 192(%rsp), %r11
@@ -25498,7 +25233,8 @@ L.nvol_teddy_fat_avx2_4:
     xor %ebp, %ebp
     cmp %r11, %rbp
     {disp32} jae .Lnvol_teddy_fat_avx2_4.L106
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_teddy_fat_avx2_4.L105:
     mov %r8, %r12
     shl $6, %r12
@@ -26253,12 +25989,381 @@ L.nvol_teddy_fat_avx2_4:
     shl $8, %r9
     or %r12, %r9
     {disp32} jmp .Lnvol_teddy_fat_avx2_4.L171
+.Lnvol_teddy_fat_avx2_4.Lrare1:
+    lea -3(%r8), %r11
+    mov %r11, 224(%rsp)
+    vpermq $78, %ymm3, %ymm0
+    vpunpcklbw %ymm0, %ymm3, %ymm1
+    vpunpckhbw %ymm0, %ymm3, %ymm0
+    vmovq %xmm1, %rax
+    mov %rax, 256(%rsp)
+    mov %rax, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_4.L8
+    .byte 144
+.Lnvol_teddy_fat_avx2_4.L7:
+    mov 256(%rsp), %r11
+    bsf %r11, %rbp
+    mov 256(%rsp), %r12
+    mov 256(%rsp), %r11
+    lea -1(%r11), %r13
+    and %r13, %r12
+    mov %r12, 256(%rsp)
+    mov %rbp, %r12
+    shr $4, %r12
+    mov 224(%rsp), %r11
+    lea (%r11,%r12), %r12
+    mov %rbp, %r11
+    and $15, %r11
+    mov %r11, 288(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 320(%rsp)
+    xor %r14d, %r14d
+    mov %r10, %r11
+    cmp %r11, %r14
+    {disp32} jae .Lnvol_teddy_fat_avx2_4.L10
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_4.L9:
+    mov 288(%rsp), %r15
+    shl $6, %r15
+    lea (%r15,%r14), %r15
+    movzbl 336(%rdi,%r15), %r15d
+    mov %r15, %rbx
+    shl $4, %rbx
+    mov 8(%rsi,%rbx), %rbx
+    lea (%rsi,%rbx), %rbx
+    mov %r15, %rax
+    shl $4, %rax
+    mov 16(%rsi,%rax), %rax
+    mov %rcx, %rdx
+    sub %r12, %rdx
+    cmp %rdx, %rax
+    {disp8} ja .Lnvol_teddy_fat_avx2_4.L11
+    cmp $4, %rax
+    {disp32} jb .Lnvol_teddy_fat_avx2_4.L15
+.Lnvol_teddy_fat_avx2_4.L14:
+    lea -4(%rax), %rdx
+    lea (%rbx,%rdx), %rdx
+    lea -4(%rax), %rax
+    lea (%r12,%rax), %rax
+    mov %r12, %r9
+    cmp %rdx, %rbx
+    {disp8} jae .Lnvol_teddy_fat_avx2_4.L24
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_4.L23:
+    mov (%rbx), %r13d
+    mov (%r9), %ebp
+    cmp %ebp, %r13d
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L26
+.Lnvol_teddy_fat_avx2_4.L25:
+    lea 4(%rbx), %rbx
+    add $4, %r9
+    cmp %rdx, %rbx
+    {disp8} jb .Lnvol_teddy_fat_avx2_4.L23
+.Lnvol_teddy_fat_avx2_4.L24:
+    mov (%rdx), %edx
+    mov (%rax), %eax
+    cmp %rax, %rdx
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_4.L13:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L12
+.Lnvol_teddy_fat_avx2_4.L11:
+    lea 1(%r14), %r14
+    mov 320(%rsp), %r11
+    cmp %r11, %r14
+    {disp32} jb .Lnvol_teddy_fat_avx2_4.L9
+.Lnvol_teddy_fat_avx2_4.L10:
+    mov 256(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L7
+.Lnvol_teddy_fat_avx2_4.L8:
+    mov $-1, %r12
+.Lnvol_teddy_fat_avx2_4.L6:
+    cmp $-1, %r12
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L28
+.Lnvol_teddy_fat_avx2_4.L27:
+    mov 224(%rsp), %r11
+    lea 4(%r11), %r10
+    mov %r10, 384(%rsp)
+    vpextrq $1, %xmm1, %rdx
+    mov %rdx, 416(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_4.L31
+    .byte 102, 144
+.Lnvol_teddy_fat_avx2_4.L30:
+    mov 416(%rsp), %r11
+    bsf %r11, %r9
+    mov 416(%rsp), %rbx
+    mov 416(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 416(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 384(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 448(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 480(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_4.L33
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_4.L32:
+    mov 448(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_4.L34
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_4.L38
+.Lnvol_teddy_fat_avx2_4.L37:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_4.L47
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_4.L46:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L49
+.Lnvol_teddy_fat_avx2_4.L48:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_4.L46
+.Lnvol_teddy_fat_avx2_4.L47:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_4.L36:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L35
+.Lnvol_teddy_fat_avx2_4.L34:
+    lea 1(%r12), %r12
+    mov 480(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_4.L32
+.Lnvol_teddy_fat_avx2_4.L33:
+    mov 416(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L30
+.Lnvol_teddy_fat_avx2_4.L31:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_4.L29:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L51
+.Lnvol_teddy_fat_avx2_4.L50:
+    mov 224(%rsp), %r11
+    lea 8(%r11), %r10
+    mov %r10, 544(%rsp)
+    vmovq %xmm0, %rdx
+    mov %rdx, 576(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_4.L54
+    .byte 144
+.Lnvol_teddy_fat_avx2_4.L53:
+    mov 576(%rsp), %r11
+    bsf %r11, %r9
+    mov 576(%rsp), %rbx
+    mov 576(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 576(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 544(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 608(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 640(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_4.L56
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_4.L55:
+    mov 608(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_4.L57
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_4.L61
+.Lnvol_teddy_fat_avx2_4.L60:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_4.L70
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_4.L69:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L72
+.Lnvol_teddy_fat_avx2_4.L71:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_4.L69
+.Lnvol_teddy_fat_avx2_4.L70:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_4.L59:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L58
+.Lnvol_teddy_fat_avx2_4.L57:
+    lea 1(%r12), %r12
+    mov 640(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_4.L55
+.Lnvol_teddy_fat_avx2_4.L56:
+    mov 576(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L53
+.Lnvol_teddy_fat_avx2_4.L54:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_4.L52:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L74
+.Lnvol_teddy_fat_avx2_4.L73:
+    mov 224(%rsp), %r11
+    lea 12(%r11), %r10
+    mov %r10, 704(%rsp)
+    vpextrq $1, %xmm0, %rdx
+    mov %rdx, 736(%rsp)
+    mov %rdx, %r11
+    test %r11, %r11
+    {disp32} je .Lnvol_teddy_fat_avx2_4.L77
+.Lnvol_teddy_fat_avx2_4.L76:
+    mov 736(%rsp), %r11
+    bsf %r11, %r9
+    mov 736(%rsp), %rbx
+    mov 736(%rsp), %r11
+    lea -1(%r11), %rbp
+    and %rbp, %rbx
+    mov %rbx, 736(%rsp)
+    mov %r9, %rbx
+    shr $4, %rbx
+    mov 704(%rsp), %r11
+    lea (%r11,%rbx), %rbx
+    mov %r9, %r11
+    and $15, %r11
+    mov %r11, 768(%rsp)
+    movzbl 320(%rdi,%r11), %r10d
+    mov %r10, 800(%rsp)
+    xor %r12d, %r12d
+    mov %r10, %r11
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_teddy_fat_avx2_4.L79
+    .byte 15, 31, 0
+.Lnvol_teddy_fat_avx2_4.L78:
+    mov 768(%rsp), %r13
+    shl $6, %r13
+    lea (%r13,%r12), %r13
+    movzbl 336(%rdi,%r13), %r13d
+    mov %r13, %r14
+    shl $4, %r14
+    mov 8(%rsi,%r14), %r14
+    lea (%rsi,%r14), %r14
+    mov %r13, %r15
+    shl $4, %r15
+    mov 16(%rsi,%r15), %r15
+    mov %rcx, %rax
+    sub %rbx, %rax
+    cmp %rax, %r15
+    {disp8} ja .Lnvol_teddy_fat_avx2_4.L80
+    cmp $4, %r15
+    {disp32} jb .Lnvol_teddy_fat_avx2_4.L84
+.Lnvol_teddy_fat_avx2_4.L83:
+    lea -4(%r15), %rax
+    lea (%r14,%rax), %rax
+    lea -4(%r15), %r15
+    lea (%rbx,%r15), %r15
+    mov %rbx, %rdx
+    cmp %rax, %r14
+    {disp8} jae .Lnvol_teddy_fat_avx2_4.L93
+    .byte 15, 31, 68, 0, 0
+.Lnvol_teddy_fat_avx2_4.L92:
+    mov (%r14), %ebp
+    mov (%rdx), %r9d
+    cmp %r9d, %ebp
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L95
+.Lnvol_teddy_fat_avx2_4.L94:
+    lea 4(%r14), %r14
+    add $4, %rdx
+    cmp %rax, %r14
+    {disp8} jb .Lnvol_teddy_fat_avx2_4.L92
+.Lnvol_teddy_fat_avx2_4.L93:
+    mov (%rax), %eax
+    mov (%r15), %edx
+    cmp %rdx, %rax
+    sete %al
+    movzbl %al, %eax
+.Lnvol_teddy_fat_avx2_4.L82:
+    test %eax, %eax
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L81
+.Lnvol_teddy_fat_avx2_4.L80:
+    lea 1(%r12), %r12
+    mov 800(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_teddy_fat_avx2_4.L78
+.Lnvol_teddy_fat_avx2_4.L79:
+    mov 736(%rsp), %r11
+    test %r11, %r11
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L76
+.Lnvol_teddy_fat_avx2_4.L77:
+    mov $-1, %rbx
+.Lnvol_teddy_fat_avx2_4.L75:
+    cmp $-1, %rbx
+    {disp32} jne .Lnvol_teddy_fat_avx2_4.L97
+.Lnvol_teddy_fat_avx2_4.L96:
+    {disp32} jmp .Lnvol_teddy_fat_avx2_4.L4
 .cfi_endproc
 .size nvol_teddy_fat_avx2_4, .-nvol_teddy_fat_avx2_4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
 .globl nvol_teddy_find_raw
 .type nvol_teddy_find_raw, @function
 nvol_teddy_find_raw:
@@ -27275,7 +27380,19 @@ L.nvol_find_byteset_pair_scalar:
     shr $4, %rax
     and $7, %rax
     bt %eax, %r9d
-    {disp8} jae .Lnvol_find_byteset_pair_scalar.L6
+    {disp8} jb .Lnvol_find_byteset_pair_scalar.Lrare1
+.Lnvol_find_byteset_pair_scalar.L6:
+    add $1, %rsi
+    cmp %rdx, %rsi
+    {disp8} jbe .Lnvol_find_byteset_pair_scalar.L4
+.Lnvol_find_byteset_pair_scalar.L5:
+    xor %eax, %eax
+.Lnvol_find_byteset_pair_scalar.L1:
+    ret
+.Lnvol_find_byteset_pair_scalar.L9:
+    mov %rsi, %rax
+    ret
+.Lnvol_find_byteset_pair_scalar.Lrare1:
     movzbl (%rsi,%r8), %eax
     mov %rax, %r9
     shr $7, %r9
@@ -27289,24 +27406,13 @@ L.nvol_find_byteset_pair_scalar:
     bt %eax, %r9d
     {disp8} jb .Lnvol_find_byteset_pair_scalar.L9
 .Lnvol_find_byteset_pair_scalar.L8:
-.Lnvol_find_byteset_pair_scalar.L6:
-    add $1, %rsi
-    cmp %rdx, %rsi
-    {disp8} jbe .Lnvol_find_byteset_pair_scalar.L4
-.Lnvol_find_byteset_pair_scalar.L5:
-    xor %eax, %eax
-.Lnvol_find_byteset_pair_scalar.L1:
-    ret
-.Lnvol_find_byteset_pair_scalar.L9:
-    mov %rsi, %rax
-    ret
+    {disp8} jmp .Lnvol_find_byteset_pair_scalar.L6
 .cfi_endproc
 .size nvol_find_byteset_pair_scalar, .-nvol_find_byteset_pair_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_scalar
 .type nvol_find_byteset_pair_mask_scalar, @function
 .hidden nvol_find_byteset_pair_mask_scalar
@@ -27342,20 +27448,7 @@ L.nvol_find_byteset_pair_mask_scalar:
     shr $4, %rax
     and $7, %rax
     bt %eax, %r10d
-    {disp8} jae .Lnvol_find_byteset_pair_mask_scalar.L6
-    movzbl (%rsi,%r9), %eax
-    mov %rax, %r10
-    shr $7, %r10
-    shl $4, %r10
-    mov %rax, %r11
-    and $15, %r11
-    lea (%r10,%r11), %r10
-    movzbl 112(%rdi,%r10), %r10d
-    shr $4, %rax
-    and $7, %rax
-    bt %eax, %r10d
-    {disp8} jb .Lnvol_find_byteset_pair_mask_scalar.L9
-.Lnvol_find_byteset_pair_mask_scalar.L8:
+    {disp8} jb .Lnvol_find_byteset_pair_mask_scalar.Lrare1
 .Lnvol_find_byteset_pair_mask_scalar.L6:
     add $1, %rsi
     cmp %rdx, %rsi
@@ -27369,11 +27462,26 @@ L.nvol_find_byteset_pair_mask_scalar:
     movq $1, 8(%rcx)
     mov %rsi, %rax
     ret
+.Lnvol_find_byteset_pair_mask_scalar.Lrare1:
+    movzbl (%rsi,%r9), %eax
+    mov %rax, %r10
+    shr $7, %r10
+    shl $4, %r10
+    mov %rax, %r11
+    and $15, %r11
+    lea (%r10,%r11), %r10
+    movzbl 112(%rdi,%r10), %r10d
+    shr $4, %rax
+    and $7, %rax
+    bt %eax, %r10d
+    {disp8} jb .Lnvol_find_byteset_pair_mask_scalar.L9
+.Lnvol_find_byteset_pair_mask_scalar.L8:
+    {disp8} jmp .Lnvol_find_byteset_pair_mask_scalar.L6
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_scalar, .-nvol_find_byteset_pair_mask_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 144
 .globl nvol_find_byteset_pair_visit_scalar
 .type nvol_find_byteset_pair_visit_scalar, @function
 .hidden nvol_find_byteset_pair_visit_scalar
@@ -27413,14 +27521,14 @@ L.nvol_find_byteset_pair_visit_scalar:
     cmp %rcx, %rax
     {disp8} jae .Lnvol_find_byteset_pair_visit_scalar.L2
     xor %eax, %eax
-    {disp32} jmp .Lnvol_find_byteset_pair_visit_scalar.L1
+    {disp8} jmp .Lnvol_find_byteset_pair_visit_scalar.L1
 .Lnvol_find_byteset_pair_visit_scalar.L2:
     mov %rdx, %r14
     sub %rcx, %r14
     mov %rsi, %r15
     cmp %r14, %r15
-    {disp32} ja .Lnvol_find_byteset_pair_visit_scalar.L5
-    .byte 15, 31, 64, 0
+    {disp8} ja .Lnvol_find_byteset_pair_visit_scalar.L5
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_scalar.L4:
     movzbl (%r15,%r12), %eax
     mov %rax, %rcx
@@ -27433,31 +27541,7 @@ L.nvol_find_byteset_pair_visit_scalar:
     shr $4, %rax
     and $7, %rax
     bt %eax, %ecx
-    {disp8} jae .Lnvol_find_byteset_pair_visit_scalar.L6
-    movzbl (%r15,%r13), %eax
-    mov %rax, %rcx
-    shr $7, %rcx
-    shl $4, %rcx
-    mov %rax, %rdx
-    and $15, %rdx
-    lea (%rcx,%rdx), %rcx
-    movzbl 112(%rbx,%rcx), %ecx
-    shr $4, %rax
-    and $7, %rax
-    bt %eax, %ecx
-    {disp8} jae .Lnvol_find_byteset_pair_visit_scalar.L8
-    mov $1, %edx
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r15, %rsi
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_find_byteset_pair_visit_scalar.L11
-.Lnvol_find_byteset_pair_visit_scalar.L10:
-.Lnvol_find_byteset_pair_visit_scalar.L8:
+    {disp8} jb .Lnvol_find_byteset_pair_visit_scalar.Lrare2
 .Lnvol_find_byteset_pair_visit_scalar.L6:
     add $1, %r15
     cmp %r14, %r15
@@ -27485,11 +27569,40 @@ L.nvol_find_byteset_pair_visit_scalar:
 .cfi_restore_state
     mov %r15, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_scalar.L1
+.Lnvol_find_byteset_pair_visit_scalar.Lrare1:
+    mov $1, %edx
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r15, %rsi
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_scalar.L11
+.Lnvol_find_byteset_pair_visit_scalar.L10:
+    {disp8} jmp .Lnvol_find_byteset_pair_visit_scalar.L8
+.Lnvol_find_byteset_pair_visit_scalar.Lrare2:
+    movzbl (%r15,%r13), %eax
+    mov %rax, %rcx
+    shr $7, %rcx
+    shl $4, %rcx
+    mov %rax, %rdx
+    and $15, %rdx
+    lea (%rcx,%rdx), %rcx
+    movzbl 112(%rbx,%rcx), %ecx
+    shr $4, %rax
+    and $7, %rax
+    bt %eax, %ecx
+    {disp8} jb .Lnvol_find_byteset_pair_visit_scalar.Lrare1
+.Lnvol_find_byteset_pair_visit_scalar.L8:
+    {disp8} jmp .Lnvol_find_byteset_pair_visit_scalar.L6
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_scalar, .-nvol_find_byteset_pair_visit_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_ssse3
 .type nvol_find_byteset_ssse3, @function
 .hidden nvol_find_byteset_ssse3
@@ -32020,17 +32133,7 @@ L.nvol_find_byteset_pair_visit_ssse3:
     pand %xmm1, %xmm0
     pmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_ssse3.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3.L7
-.Lnvol_find_byteset_pair_visit_ssse3.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3.Lrare1
 .Lnvol_find_byteset_pair_visit_ssse3.L4:
     add $16, %r14
     cmp %r13, %r14
@@ -32115,6 +32218,18 @@ L.nvol_find_byteset_pair_visit_ssse3:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_ssse3.L1
+.Lnvol_find_byteset_pair_visit_ssse3.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_ssse3.L7
+.Lnvol_find_byteset_pair_visit_ssse3.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_ssse3.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3, .-nvol_find_byteset_pair_visit_ssse3
 
@@ -32122,8 +32237,7 @@ L.nvol_find_byteset_pair_visit_ssse3:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k1
 .type nvol_find_byteset_pair_visit_ssse3_k1, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k1
@@ -32184,17 +32298,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
     pand %xmm1, %xmm0
     pmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_ssse3_k1.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k1.L7
-.Lnvol_find_byteset_pair_visit_ssse3_k1.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k1.Lrare1
 .Lnvol_find_byteset_pair_visit_ssse3_k1.L4:
     add $16, %r14
     cmp %r13, %r14
@@ -32253,13 +32357,24 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_ssse3_k1.L1
+.Lnvol_find_byteset_pair_visit_ssse3_k1.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_ssse3_k1.L7
+.Lnvol_find_byteset_pair_visit_ssse3_k1.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_ssse3_k1.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3_k1, .-nvol_find_byteset_pair_visit_ssse3_k1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k2
 .type nvol_find_byteset_pair_visit_ssse3_k2, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k2
@@ -32322,8 +32437,8 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
     sub %rax, %r13
     mov %rsi, %r14
     cmp %r13, %r14
-    {disp32} ja .Lnvol_find_byteset_pair_visit_ssse3_k2.L3
-    .byte 15, 31, 68, 0, 0
+    {disp8} ja .Lnvol_find_byteset_pair_visit_ssse3_k2.L3
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_visit_ssse3_k2.L2:
     movdqu (%r14,%rbp), %xmm0
     movdqa %xmm0, %xmm1
@@ -32342,17 +32457,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
     pand %xmm2, %xmm1
     pmovmskb %xmm1, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_ssse3_k2.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k2.L7
-.Lnvol_find_byteset_pair_visit_ssse3_k2.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k2.Lrare1
 .Lnvol_find_byteset_pair_visit_ssse3_k2.L4:
     add $16, %r14
     cmp %r13, %r14
@@ -32419,14 +32524,25 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_ssse3_k2.L1
+.Lnvol_find_byteset_pair_visit_ssse3_k2.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_ssse3_k2.L7
+.Lnvol_find_byteset_pair_visit_ssse3_k2.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_ssse3_k2.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3_k2, .-nvol_find_byteset_pair_visit_ssse3_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k3
 .type nvol_find_byteset_pair_visit_ssse3_k3, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k3
@@ -32531,17 +32647,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
     pand %xmm2, %xmm1
     pmovmskb %xmm1, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_ssse3_k3.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k3.L7
-.Lnvol_find_byteset_pair_visit_ssse3_k3.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k3.Lrare1
 .Lnvol_find_byteset_pair_visit_ssse3_k3.L4:
     add $16, %r14
     cmp %r13, %r14
@@ -32616,13 +32722,24 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_ssse3_k3.L1
+.Lnvol_find_byteset_pair_visit_ssse3_k3.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_ssse3_k3.L7
+.Lnvol_find_byteset_pair_visit_ssse3_k3.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_ssse3_k3.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3_k3, .-nvol_find_byteset_pair_visit_ssse3_k3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k4
 .type nvol_find_byteset_pair_visit_ssse3_k4, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k4
@@ -32749,17 +32866,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
     pand %xmm2, %xmm1
     pmovmskb %xmm1, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_ssse3_k4.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k4.L7
-.Lnvol_find_byteset_pair_visit_ssse3_k4.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k4.Lrare1
 .Lnvol_find_byteset_pair_visit_ssse3_k4.L4:
     add $16, %r14
     cmp %r13, %r14
@@ -32842,12 +32949,24 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_ssse3_k4.L1
+.Lnvol_find_byteset_pair_visit_ssse3_k4.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_ssse3_k4.L7
+.Lnvol_find_byteset_pair_visit_ssse3_k4.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_ssse3_k4.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3_k4, .-nvol_find_byteset_pair_visit_ssse3_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k5
 .type nvol_find_byteset_pair_visit_ssse3_k5, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k5
@@ -32997,17 +33116,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k5:
     pand %xmm2, %xmm1
     pmovmskb %xmm1, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_ssse3_k5.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k5.L7
-.Lnvol_find_byteset_pair_visit_ssse3_k5.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k5.Lrare1
 .Lnvol_find_byteset_pair_visit_ssse3_k5.L4:
     add $16, %r14
     cmp %r13, %r14
@@ -33098,11 +33207,23 @@ L.nvol_find_byteset_pair_visit_ssse3_k5:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_ssse3_k5.L1
+.Lnvol_find_byteset_pair_visit_ssse3_k5.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_ssse3_k5.L7
+.Lnvol_find_byteset_pair_visit_ssse3_k5.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_ssse3_k5.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3_k5, .-nvol_find_byteset_pair_visit_ssse3_k5
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_visit_ssse3_k6
 .type nvol_find_byteset_pair_visit_ssse3_k6, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k6
@@ -33273,17 +33394,7 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
     pand %xmm2, %xmm1
     pmovmskb %xmm1, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_ssse3_k6.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k6.L7
-.Lnvol_find_byteset_pair_visit_ssse3_k6.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_ssse3_k6.Lrare1
 .Lnvol_find_byteset_pair_visit_ssse3_k6.L4:
     add $16, %r14
     cmp %r13, %r14
@@ -33382,12 +33493,23 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_ssse3_k6.L1
+.Lnvol_find_byteset_pair_visit_ssse3_k6.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_ssse3_k6.L7
+.Lnvol_find_byteset_pair_visit_ssse3_k6.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_ssse3_k6.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3_k6, .-nvol_find_byteset_pair_visit_ssse3_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_avx2
 .type nvol_find_byteset_avx2, @function
 .hidden nvol_find_byteset_avx2
@@ -37587,18 +37709,7 @@ L.nvol_find_byteset_pair_visit_avx2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_avx2.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2.L7
-.Lnvol_find_byteset_pair_visit_avx2.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2.Lrare1
 .Lnvol_find_byteset_pair_visit_avx2.L4:
     add $32, %r14
     cmp %r13, %r14
@@ -37683,10 +37794,29 @@ L.nvol_find_byteset_pair_visit_avx2:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2.L1
+.Lnvol_find_byteset_pair_visit_avx2.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_avx2.L7
+.Lnvol_find_byteset_pair_visit_avx2.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_avx2.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2, .-nvol_find_byteset_pair_visit_avx2
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_avx2_k1
 .type nvol_find_byteset_pair_visit_avx2_k1, @function
 .hidden nvol_find_byteset_pair_visit_avx2_k1
@@ -37743,18 +37873,7 @@ L.nvol_find_byteset_pair_visit_avx2_k1:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_avx2_k1.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_find_byteset_pair_visit_avx2_k1.L7
-.Lnvol_find_byteset_pair_visit_avx2_k1.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k1.Lrare1
 .Lnvol_find_byteset_pair_visit_avx2_k1.L4:
     add $32, %r14
     cmp %r13, %r14
@@ -37813,10 +37932,29 @@ L.nvol_find_byteset_pair_visit_avx2_k1:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k1.L1
+.Lnvol_find_byteset_pair_visit_avx2_k1.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_avx2_k1.L7
+.Lnvol_find_byteset_pair_visit_avx2_k1.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_avx2_k1.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2_k1, .-nvol_find_byteset_pair_visit_avx2_k1
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_visit_avx2_k2
 .type nvol_find_byteset_pair_visit_avx2_k2, @function
 .hidden nvol_find_byteset_pair_visit_avx2_k2
@@ -37893,18 +38031,7 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_avx2_k2.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k2.L7
-.Lnvol_find_byteset_pair_visit_avx2_k2.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k2.Lrare1
 .Lnvol_find_byteset_pair_visit_avx2_k2.L4:
     add $32, %r14
     cmp %r13, %r14
@@ -37971,14 +38098,26 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k2.L1
+.Lnvol_find_byteset_pair_visit_avx2_k2.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_avx2_k2.L7
+.Lnvol_find_byteset_pair_visit_avx2_k2.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_avx2_k2.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2_k2, .-nvol_find_byteset_pair_visit_avx2_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_visit_avx2_k3
 .type nvol_find_byteset_pair_visit_avx2_k3, @function
 .hidden nvol_find_byteset_pair_visit_avx2_k3
@@ -38049,8 +38188,8 @@ L.nvol_find_byteset_pair_visit_avx2_k3:
     sub %rax, %r13
     mov %rsi, %r14
     cmp %r13, %r14
-    {disp32} ja .Lnvol_find_byteset_pair_visit_avx2_k3.L3
-    .byte 102, 15, 31, 68, 0, 0
+    {disp8} ja .Lnvol_find_byteset_pair_visit_avx2_k3.L3
+    .byte 102, 144
 .Lnvol_find_byteset_pair_visit_avx2_k3.L2:
     vmovdqu (%r14,%rbp), %ymm0
     vmovdqu (%rsp), %ymm15
@@ -38073,22 +38212,11 @@ L.nvol_find_byteset_pair_visit_avx2_k3:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_avx2_k3.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k3.L7
-.Lnvol_find_byteset_pair_visit_avx2_k3.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k3.Lrare1
 .Lnvol_find_byteset_pair_visit_avx2_k3.L4:
     add $32, %r14
     cmp %r13, %r14
-    {disp32} jbe .Lnvol_find_byteset_pair_visit_avx2_k3.L2
+    {disp8} jbe .Lnvol_find_byteset_pair_visit_avx2_k3.L2
 .Lnvol_find_byteset_pair_visit_avx2_k3.L3:
     lea 32(%r13), %rax
     cmp %rax, %r14
@@ -38157,10 +38285,23 @@ L.nvol_find_byteset_pair_visit_avx2_k3:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k3.L1
+.Lnvol_find_byteset_pair_visit_avx2_k3.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_avx2_k3.L7
+.Lnvol_find_byteset_pair_visit_avx2_k3.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_avx2_k3.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2_k3, .-nvol_find_byteset_pair_visit_avx2_k3
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_avx2_k4
 .type nvol_find_byteset_pair_visit_avx2_k4, @function
 .hidden nvol_find_byteset_pair_visit_avx2_k4
@@ -38273,18 +38414,7 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_avx2_k4.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k4.L7
-.Lnvol_find_byteset_pair_visit_avx2_k4.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k4.Lrare1
 .Lnvol_find_byteset_pair_visit_avx2_k4.L4:
     add $32, %r14
     cmp %r13, %r14
@@ -38363,6 +38493,19 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k4.L1
+.Lnvol_find_byteset_pair_visit_avx2_k4.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_avx2_k4.L7
+.Lnvol_find_byteset_pair_visit_avx2_k4.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_avx2_k4.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2_k4, .-nvol_find_byteset_pair_visit_avx2_k4
 
@@ -38370,7 +38513,7 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_visit_avx2_k5
 .type nvol_find_byteset_pair_visit_avx2_k5, @function
 .hidden nvol_find_byteset_pair_visit_avx2_k5
@@ -38501,18 +38644,7 @@ L.nvol_find_byteset_pair_visit_avx2_k5:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_avx2_k5.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k5.L7
-.Lnvol_find_byteset_pair_visit_avx2_k5.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k5.Lrare1
 .Lnvol_find_byteset_pair_visit_avx2_k5.L4:
     add $32, %r14
     cmp %r13, %r14
@@ -38597,11 +38729,23 @@ L.nvol_find_byteset_pair_visit_avx2_k5:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k5.L1
+.Lnvol_find_byteset_pair_visit_avx2_k5.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_avx2_k5.L7
+.Lnvol_find_byteset_pair_visit_avx2_k5.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_avx2_k5.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2_k5, .-nvol_find_byteset_pair_visit_avx2_k5
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_visit_avx2_k6
 .type nvol_find_byteset_pair_visit_avx2_k6, @function
 .hidden nvol_find_byteset_pair_visit_avx2_k6
@@ -38750,18 +38894,7 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_avx2_k6.L4
-    mov (%rbx), %rax
-    mov 8(%rbx), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k6.L7
-.Lnvol_find_byteset_pair_visit_avx2_k6.L6:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_avx2_k6.Lrare1
 .Lnvol_find_byteset_pair_visit_avx2_k6.L4:
     add $32, %r14
     cmp %r13, %r14
@@ -38852,6 +38985,19 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
 .cfi_restore_state
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_avx2_k6.L1
+.Lnvol_find_byteset_pair_visit_avx2_k6.Lrare1:
+    mov (%rbx), %rax
+    mov 8(%rbx), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_avx2_k6.L7
+.Lnvol_find_byteset_pair_visit_avx2_k6.L6:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_avx2_k6.L4
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2_k6, .-nvol_find_byteset_pair_visit_avx2_k6
 
@@ -38860,7 +39006,6 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_sse42
 .type nvol_find_not_byteset_sse42, @function
 .hidden nvol_find_not_byteset_sse42
@@ -44474,7 +44619,7 @@ L.nvol_find_byteset_pair_entry_avx2:
 .Lnvol_find_byteset_pair_entry_avx2.L2:
     sub %rcx, %r9
     cmp $16, %r9
-    {disp32} jae .Lnvol_find_byteset_pair_entry_avx2.L5
+    {disp8} jae .Lnvol_find_byteset_pair_entry_avx2.L5
     mov 224(%rdi), %rcx
     mov 232(%rdi), %r8
     mov %rcx, %rax
@@ -44492,8 +44637,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %r9, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L10
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_entry_avx2.L9:
     movzbl (%rsi,%rcx), %eax
     mov %rax, %r9
@@ -44506,20 +44650,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     shr $4, %rax
     and $7, %rax
     bt %eax, %r9d
-    {disp8} jae .Lnvol_find_byteset_pair_entry_avx2.L11
-    movzbl (%rsi,%r8), %eax
-    mov %rax, %r9
-    shr $7, %r9
-    shl $4, %r9
-    mov %rax, %r10
-    and $15, %r10
-    lea (%r9,%r10), %r9
-    movzbl 112(%rdi,%r9), %r9d
-    shr $4, %rax
-    and $7, %rax
-    bt %eax, %r9d
-    {disp32} jb .Lnvol_find_byteset_pair_entry_avx2.L14
-.Lnvol_find_byteset_pair_entry_avx2.L13:
+    {disp32} jb .Lnvol_find_byteset_pair_entry_avx2.Lrare1
 .Lnvol_find_byteset_pair_entry_avx2.L11:
     add $1, %rsi
     cmp %rdx, %rsi
@@ -44548,7 +44679,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L20
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_entry_avx2.L19:
     vpcmpeqb (%rsi,%r8), %xmm0, %xmm2
     vpcmpeqb (%rsi,%r9), %xmm1, %xmm3
@@ -44608,7 +44739,7 @@ L.nvol_find_byteset_pair_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_entry_avx2.L30
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_entry_avx2.L29:
     vmovdqu (%rsi,%r8), %xmm4
     vpcmpeqb %xmm0, %xmm4, %xmm5
@@ -45902,6 +46033,21 @@ L.nvol_find_byteset_pair_entry_avx2:
     lea (%rsi,%rax), %rax
     vzeroupper
     ret
+.Lnvol_find_byteset_pair_entry_avx2.Lrare1:
+    movzbl (%rsi,%r8), %eax
+    mov %rax, %r9
+    shr $7, %r9
+    shl $4, %r9
+    mov %rax, %r10
+    and $15, %r10
+    lea (%r9,%r10), %r9
+    movzbl 112(%rdi,%r9), %r9d
+    shr $4, %rax
+    and $7, %rax
+    bt %eax, %r9d
+    {disp32} jb .Lnvol_find_byteset_pair_entry_avx2.L14
+.Lnvol_find_byteset_pair_entry_avx2.L13:
+    {disp32} jmp .Lnvol_find_byteset_pair_entry_avx2.L11
 .cfi_endproc
 .size nvol_find_byteset_pair_entry_avx2, .-nvol_find_byteset_pair_entry_avx2
 
@@ -45910,7 +46056,8 @@ L.nvol_find_byteset_pair_entry_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_entry_avx2
 .type nvol_find_byteset_pair_mask_entry_avx2, @function
 .hidden nvol_find_byteset_pair_mask_entry_avx2
@@ -45933,7 +46080,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
 .Lnvol_find_byteset_pair_mask_entry_avx2.L2:
     sub %rcx, %r10
     cmp $16, %r10
-    {disp32} jae .Lnvol_find_byteset_pair_mask_entry_avx2.L5
+    {disp8} jae .Lnvol_find_byteset_pair_mask_entry_avx2.L5
     mov 224(%rdi), %rcx
     mov 232(%rdi), %r9
     mov %rcx, %rax
@@ -45951,7 +46098,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %r10, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L10
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L9:
     movzbl (%rsi,%rcx), %eax
     mov %rax, %r10
@@ -45964,20 +46111,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     shr $4, %rax
     and $7, %rax
     bt %eax, %r10d
-    {disp8} jae .Lnvol_find_byteset_pair_mask_entry_avx2.L11
-    movzbl (%rsi,%r9), %eax
-    mov %rax, %r10
-    shr $7, %r10
-    shl $4, %r10
-    mov %rax, %r11
-    and $15, %r11
-    lea (%r10,%r11), %r10
-    movzbl 112(%rdi,%r10), %r10d
-    shr $4, %rax
-    and $7, %rax
-    bt %eax, %r10d
-    {disp32} jb .Lnvol_find_byteset_pair_mask_entry_avx2.L14
-.Lnvol_find_byteset_pair_mask_entry_avx2.L13:
+    {disp32} jb .Lnvol_find_byteset_pair_mask_entry_avx2.Lrare1
 .Lnvol_find_byteset_pair_mask_entry_avx2.L11:
     add $1, %rsi
     cmp %rdx, %rsi
@@ -46006,7 +46140,7 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L20
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_mask_entry_avx2.L19:
     vpcmpeqb (%rsi,%r9), %xmm0, %xmm2
     vpcmpeqb (%rsi,%r10), %xmm1, %xmm3
@@ -46067,7 +46201,8 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     sub %rax, %rdx
     cmp %rdx, %rsi
     {disp8} ja .Lnvol_find_byteset_pair_mask_entry_avx2.L30
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_mask_entry_avx2.L29:
     vmovdqu (%rsi,%r9), %xmm4
     vpcmpeqb %xmm0, %xmm4, %xmm5
@@ -47389,13 +47524,27 @@ L.nvol_find_byteset_pair_mask_entry_avx2:
     mov %rsi, %rax
     vzeroupper
     ret
+.Lnvol_find_byteset_pair_mask_entry_avx2.Lrare1:
+    movzbl (%rsi,%r9), %eax
+    mov %rax, %r10
+    shr $7, %r10
+    shl $4, %r10
+    mov %rax, %r11
+    and $15, %r11
+    lea (%r10,%r11), %r10
+    movzbl 112(%rdi,%r10), %r10d
+    shr $4, %rax
+    and $7, %rax
+    bt %eax, %r10d
+    {disp32} jb .Lnvol_find_byteset_pair_mask_entry_avx2.L14
+.Lnvol_find_byteset_pair_mask_entry_avx2.L13:
+    {disp32} jmp .Lnvol_find_byteset_pair_mask_entry_avx2.L11
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_entry_avx2, .-nvol_find_byteset_pair_mask_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_visit_entry_avx2
 .type nvol_find_byteset_pair_visit_entry_avx2, @function
 .hidden nvol_find_byteset_pair_visit_entry_avx2
@@ -47456,8 +47605,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub %rcx, %r14
     mov %rsi, %r15
     cmp %r14, %r15
-    {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L10
-    .byte 15, 31, 128, 0, 0, 0, 0
+    {disp8} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L10
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L9:
     movzbl (%r15,%r12), %eax
     mov %rax, %rcx
@@ -47470,36 +47619,11 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     shr $4, %rax
     and $7, %rax
     bt %eax, %ecx
-    {disp8} jae .Lnvol_find_byteset_pair_visit_entry_avx2.L11
-    movzbl (%r15,%r13), %eax
-    mov %rax, %rcx
-    shr $7, %rcx
-    shl $4, %rcx
-    mov %rax, %rdx
-    and $15, %rdx
-    lea (%rcx,%rdx), %rcx
-    movzbl 112(%rbx,%rcx), %ecx
-    shr $4, %rax
-    and $7, %rax
-    bt %eax, %ecx
-    {disp8} jae .Lnvol_find_byteset_pair_visit_entry_avx2.L13
-    mov $1, %edx
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r15, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L16
-.Lnvol_find_byteset_pair_visit_entry_avx2.L15:
-.Lnvol_find_byteset_pair_visit_entry_avx2.L13:
+    {disp32} jb .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare2
 .Lnvol_find_byteset_pair_visit_entry_avx2.L11:
     add $1, %r15
     cmp %r14, %r15
-    {disp32} jbe .Lnvol_find_byteset_pair_visit_entry_avx2.L9
+    {disp8} jbe .Lnvol_find_byteset_pair_visit_entry_avx2.L9
 .Lnvol_find_byteset_pair_visit_entry_avx2.L10:
     xor %eax, %eax
     {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L1
@@ -47531,7 +47655,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp8} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L22
-    .byte 102, 144
+    .byte 15, 31, 64, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L21:
     vmovdqu (%rsp), %ymm15
     vpcmpeqb (%r14,%r12), %xmm15, %xmm0
@@ -47540,18 +47664,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L23
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L26
-.Lnvol_find_byteset_pair_visit_entry_avx2.L25:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare3
 .Lnvol_find_byteset_pair_visit_entry_avx2.L23:
     add $16, %r14
     cmp %rbx, %r14
@@ -47629,7 +47742,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp8} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L36
-    .byte 102, 144
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L35:
     vmovdqu (%r14,%r12), %xmm0
     vmovdqu 64(%rsp), %ymm15
@@ -47646,18 +47759,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L37
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L40
-.Lnvol_find_byteset_pair_visit_entry_avx2.L39:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare4
 .Lnvol_find_byteset_pair_visit_entry_avx2.L37:
     add $16, %r14
     cmp %rbx, %r14
@@ -47755,7 +47857,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L50
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L49:
     vmovdqu (%r14,%r12), %xmm0
     vmovdqu 192(%rsp), %ymm15
@@ -47778,18 +47880,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L51
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L54
-.Lnvol_find_byteset_pair_visit_entry_avx2.L53:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare5
 .Lnvol_find_byteset_pair_visit_entry_avx2.L51:
     add $16, %r14
     cmp %rbx, %r14
@@ -47905,7 +47996,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L64
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L63:
     vmovdqu (%r14,%r12), %xmm0
     vmovdqu 384(%rsp), %ymm15
@@ -47934,18 +48025,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L65
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L68
-.Lnvol_find_byteset_pair_visit_entry_avx2.L67:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare6
 .Lnvol_find_byteset_pair_visit_entry_avx2.L65:
     add $16, %r14
     cmp %rbx, %r14
@@ -48079,7 +48159,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L78
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L77:
     vmovdqu (%r14,%r12), %xmm0
     vmovdqu 640(%rsp), %ymm15
@@ -48114,18 +48194,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L79
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L82
-.Lnvol_find_byteset_pair_visit_entry_avx2.L81:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare7
 .Lnvol_find_byteset_pair_visit_entry_avx2.L79:
     add $16, %r14
     cmp %rbx, %r14
@@ -48277,7 +48346,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L92
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_visit_entry_avx2.L91:
     vmovdqu (%r14,%r12), %xmm0
     vmovdqu 960(%rsp), %ymm15
@@ -48318,18 +48388,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L93
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L96
-.Lnvol_find_byteset_pair_visit_entry_avx2.L95:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare8
 .Lnvol_find_byteset_pair_visit_entry_avx2.L93:
     add $16, %r14
     cmp %rbx, %r14
@@ -48429,7 +48488,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L104
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L103:
     vmovdqu (%r14,%r12), %xmm0
     vmovdqu 1536(%rsp), %ymm15
@@ -48466,18 +48525,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L105
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L108
-.Lnvol_find_byteset_pair_visit_entry_avx2.L107:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare9
 .Lnvol_find_byteset_pair_visit_entry_avx2.L105:
     add $16, %r14
     cmp %rbx, %r14
@@ -48569,7 +48617,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp8} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L118
-    .byte 15, 31, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L117:
     vmovdqu 1600(%rsp), %ymm15
     vpcmpeqb (%r14,%r12), %ymm15, %ymm0
@@ -48578,18 +48626,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L119
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L122
-.Lnvol_find_byteset_pair_visit_entry_avx2.L121:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare10
 .Lnvol_find_byteset_pair_visit_entry_avx2.L119:
     add $32, %r14
     cmp %rbx, %r14
@@ -48666,7 +48703,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     sub %rax, %rbx
     mov %rsi, %r14
     cmp %rbx, %r14
-    {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L132
+    {disp8} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L132
     .byte 102, 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L131:
     vmovdqu (%r14,%r12), %ymm0
@@ -48684,22 +48721,11 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L133
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L136
-.Lnvol_find_byteset_pair_visit_entry_avx2.L135:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare11
 .Lnvol_find_byteset_pair_visit_entry_avx2.L133:
     add $32, %r14
     cmp %rbx, %r14
-    {disp32} jbe .Lnvol_find_byteset_pair_visit_entry_avx2.L131
+    {disp8} jbe .Lnvol_find_byteset_pair_visit_entry_avx2.L131
 .Lnvol_find_byteset_pair_visit_entry_avx2.L132:
     lea 32(%rbx), %rax
     cmp %rax, %r14
@@ -48816,18 +48842,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L147
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L150
-.Lnvol_find_byteset_pair_visit_entry_avx2.L149:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare12
 .Lnvol_find_byteset_pair_visit_entry_avx2.L147:
     add $32, %r14
     cmp %rbx, %r14
@@ -48943,7 +48958,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L160
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L159:
     vmovdqu (%r14,%r12), %ymm0
     vmovdqu 1984(%rsp), %ymm15
@@ -48972,18 +48987,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L161
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L164
-.Lnvol_find_byteset_pair_visit_entry_avx2.L163:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare13
 .Lnvol_find_byteset_pair_visit_entry_avx2.L161:
     add $32, %r14
     cmp %rbx, %r14
@@ -49117,7 +49121,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L174
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L173:
     vmovdqu (%r14,%r12), %ymm0
     vmovdqu 2240(%rsp), %ymm15
@@ -49152,18 +49156,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L175
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L178
-.Lnvol_find_byteset_pair_visit_entry_avx2.L177:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare14
 .Lnvol_find_byteset_pair_visit_entry_avx2.L175:
     add $32, %r14
     cmp %rbx, %r14
@@ -49315,7 +49308,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L188
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_find_byteset_pair_visit_entry_avx2.L187:
     vmovdqu (%r14,%r12), %ymm0
     vmovdqu 2560(%rsp), %ymm15
@@ -49356,18 +49350,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L189
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L192
-.Lnvol_find_byteset_pair_visit_entry_avx2.L191:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare15
 .Lnvol_find_byteset_pair_visit_entry_avx2.L189:
     add $32, %r14
     cmp %rbx, %r14
@@ -49467,7 +49450,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     mov %rsi, %r14
     cmp %rbx, %r14
     {disp32} ja .Lnvol_find_byteset_pair_visit_entry_avx2.L200
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_find_byteset_pair_visit_entry_avx2.L199:
     vmovdqu (%r14,%r12), %ymm0
     vmovdqu 3136(%rsp), %ymm15
@@ -49504,18 +49487,7 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
     vpand %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %edx
     test %edx, %edx
-    {disp8} je .Lnvol_find_byteset_pair_visit_entry_avx2.L201
-    mov (%rbp), %rax
-    mov 8(%rbp), %rdi
-    mov %r14, %rsi
-    vzeroupper
-    call *%rax
-    test %eax, %eax
-    setne %al
-    movzbl %al, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L204
-.Lnvol_find_byteset_pair_visit_entry_avx2.L203:
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare16
 .Lnvol_find_byteset_pair_visit_entry_avx2.L201:
     add $32, %r14
     cmp %rbx, %r14
@@ -49644,12 +49616,223 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
 .Lnvol_find_byteset_pair_visit_entry_avx2.L204:
     mov %r14, %rax
     {disp8} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L1
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare1:
+    mov $1, %edx
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r15, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L16
+.Lnvol_find_byteset_pair_visit_entry_avx2.L15:
+    {disp8} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L13
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare2:
+    movzbl (%r15,%r13), %eax
+    mov %rax, %rcx
+    shr $7, %rcx
+    shl $4, %rcx
+    mov %rax, %rdx
+    and $15, %rdx
+    lea (%rcx,%rdx), %rcx
+    movzbl 112(%rbx,%rcx), %ecx
+    shr $4, %rax
+    and $7, %rax
+    bt %eax, %ecx
+    {disp8} jb .Lnvol_find_byteset_pair_visit_entry_avx2.Lrare1
+.Lnvol_find_byteset_pair_visit_entry_avx2.L13:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L11
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare3:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L26
+.Lnvol_find_byteset_pair_visit_entry_avx2.L25:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L23
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare4:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L40
+.Lnvol_find_byteset_pair_visit_entry_avx2.L39:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L37
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare5:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L54
+.Lnvol_find_byteset_pair_visit_entry_avx2.L53:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L51
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare6:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L68
+.Lnvol_find_byteset_pair_visit_entry_avx2.L67:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L65
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare7:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L82
+.Lnvol_find_byteset_pair_visit_entry_avx2.L81:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L79
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare8:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L96
+.Lnvol_find_byteset_pair_visit_entry_avx2.L95:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L93
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare9:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L108
+.Lnvol_find_byteset_pair_visit_entry_avx2.L107:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L105
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare10:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L122
+.Lnvol_find_byteset_pair_visit_entry_avx2.L121:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L119
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare11:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L136
+.Lnvol_find_byteset_pair_visit_entry_avx2.L135:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L133
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare12:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L150
+.Lnvol_find_byteset_pair_visit_entry_avx2.L149:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L147
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare13:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L164
+.Lnvol_find_byteset_pair_visit_entry_avx2.L163:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L161
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare14:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L178
+.Lnvol_find_byteset_pair_visit_entry_avx2.L177:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L175
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare15:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L192
+.Lnvol_find_byteset_pair_visit_entry_avx2.L191:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L189
+.Lnvol_find_byteset_pair_visit_entry_avx2.Lrare16:
+    mov (%rbp), %rax
+    mov 8(%rbp), %rdi
+    mov %r14, %rsi
+    vzeroupper
+    call *%rax
+    test %eax, %eax
+    setne %al
+    movzbl %al, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_find_byteset_pair_visit_entry_avx2.L204
+.Lnvol_find_byteset_pair_visit_entry_avx2.L203:
+    {disp32} jmp .Lnvol_find_byteset_pair_visit_entry_avx2.L201
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_entry_avx2, .-nvol_find_byteset_pair_visit_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_entry_avx2
 .type nvol_copy_until_byteset_entry_avx2, @function
 .hidden nvol_copy_until_byteset_entry_avx2
