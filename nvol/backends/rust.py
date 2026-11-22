@@ -232,6 +232,22 @@ class RustPrinter(Printer):
                 # index API (NULL -> usize::MAX -> None) left a branchless
                 # sbb/or/cmov chain after every call (-8 % on 16-byte memchr).
                 self.out.append("    let s = hay.as_ptr();")
+                if name == "nvol_first_non_ascii":
+                    # 16-31 bytes on x86_64: SSE2 (the baseline) inline, the first and the last
+                    # 16 bytes, so the call skips the dispatch's indirect call and the AVX2
+                    # entry's vzeroupper, which bstr's inlined static SSE2 does not pay
+                    # (PENDING item 29)
+                    self.out += [
+                        "    #[cfg(target_arch = \"x86_64\")]",
+                        "    if hay.len() >= 16 && hay.len() < 32 {",
+                        "        use core::arch::x86_64::{__m128i, _mm_loadu_si128, _mm_movemask_epi8};",
+                        "        let t = hay.len() - 16;",
+                        "        let (a, b) = unsafe { (_mm_movemask_epi8(_mm_loadu_si128(s as *const __m128i)) as u32,",
+                        "                               _mm_movemask_epi8(_mm_loadu_si128(s.add(t) as *const __m128i)) as u32) };",
+                        "        return if a != 0 { Some(a.trailing_zeros() as usize) }",
+                        "               else if b != 0 { Some(t + b.trailing_zeros() as usize) } else { None };",
+                        "    }",
+                    ]
                 self.out.append(f"    let p = unsafe {{ raw::{name}_raw({nargs}s, s.add(hay.len())) }};")
                 self.out.append("    if p.is_null() { None } else { Some(p as usize - s as usize) }")
                 self.out.append("}")

@@ -13146,6 +13146,15 @@ pub fn count(n1: u8, hay: &[u8]) -> usize {
 #[inline]
 pub fn first_non_ascii(hay: &[u8]) -> Option<usize> {
     let s = hay.as_ptr();
+    #[cfg(target_arch = "x86_64")]
+    if hay.len() >= 16 && hay.len() < 32 {
+        use core::arch::x86_64::{__m128i, _mm_loadu_si128, _mm_movemask_epi8};
+        let t = hay.len() - 16;
+        let (a, b) = unsafe { (_mm_movemask_epi8(_mm_loadu_si128(s as *const __m128i)) as u32,
+                               _mm_movemask_epi8(_mm_loadu_si128(s.add(t) as *const __m128i)) as u32) };
+        return if a != 0 { Some(a.trailing_zeros() as usize) }
+               else if b != 0 { Some(t + b.trailing_zeros() as usize) } else { None };
+    }
     let p = unsafe { raw::nvol_first_non_ascii_raw(s, s.add(hay.len())) };
     if p.is_null() { None } else { Some(p as usize - s as usize) }
 }

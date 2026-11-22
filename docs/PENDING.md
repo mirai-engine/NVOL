@@ -414,8 +414,8 @@ The detail is in "Done".
       dispatch: an indirect call through `nvol_first_non_ascii_raw::FN`, then `vzeroupper` in
       the AVX2 entry. The work is the same (one 16-byte load and `pmovmskb`). NVOL issues 37
       µops against 34, with no MITE and no mispredictions. A fix would be an inline SSE2 path
-      in the wrappers for haystacks shorter than 32 B, before the dispatch: a feature to
-      measure against the bigger code it inlines.
+      in the wrappers for haystacks shorter than 32 B, before the dispatch. Done for Rust,
+      accepted with a trade-off (see Done).
     - The semantics of "none": bstr's public `find_non_ascii_byte` returns `None` when every
       byte is ASCII, the same as NVOL. Only its internal `ascii::first_non_ascii_byte` returns
       `len`. The wrappers therefore already match the public API; the maintainer decides
@@ -622,6 +622,26 @@ as (16); see Done. What remains is maturity (items 17-18):
 7. **aarch64** in GNU as, tested under QEMU (emulated: correctness, not speed).
 
 ## Done (for reference)
+
+- **`first_non_ascii` inline for 16-31 bytes in Rust (item 29), accepted with a trade-off.**
+  The Rust wrapper (`nvol/backends/rust.py`) checks 16-31 bytes on x86_64 with inline SSE2
+  (the baseline): the first and the last 16 bytes, `movemask` each. That skips the dispatch's
+  indirect call and the AVX2 entry's `vzeroupper`, which bstr's inlined static SSE2 does not
+  pay. Other sizes and architectures go through the dispatch as before. Cycles (`nacount`,
+  best of 7, 3 rounds):
+
+  | size | 8 B | 16 B | 20-31 B | 32 B | 64 B | 256 B | 4 KiB |
+  |---|---|---|---|---|---|---|---|
+  | before | 17.0-17.4 | 11.0 | 12.0 | 12.0-12.2 | 12.7-13.1 | 18.0-19.1 | 123 |
+  | after | 16.7-16.9 | **4.0** | **4.0** | 14.0-14.1 | 14.0 | 21.9-22.4 | 100 |
+  | bstr | 19.0 | 9.0 | 19.8-32.9 | 10.0 | 12.6 | 22.9-23.0 | — |
+
+  **The trade-off:** 16-31 B −65 %, against 32 B +17 % (40 → 48 instructions, so at least
+  partly code) and 64-256 B +8…+20 %. At 64 B the instructions are unchanged, so that row is
+  position (Rust's LTO lays out the whole binary anew). 4 KiB moves the other way (−19 %)
+  with the same code. Two other forms were measured and are worse: the short path as a
+  `#[cold]` function (no gain: 11 cycles at 16-31 B) and as an `#[inline(never)]` function
+  (9 cycles, but +25…+33 % from 32 B). The maintainer accepted the inline one.
 
 - **A 2-byte memmem in the asm (item 32).** With a 2-byte needle, the packed pair's two
   offsets are 0 and 1, so every candidate is a match. `nvol_memmem_pp2_<isa>` (`packed_pair(...,
