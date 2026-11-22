@@ -131,8 +131,10 @@ harness/rapidjson-e2e patch to rapidjson on nvol.hpp; 5 builds (no SIMD, SSE2, S
    (tested under QEMU; +12.2 % static instructions against Clang -O2) · ~~maturity~~ (every
    row equal or better in instructions than the best of GCC and Clang, or a listed deviation
    with its cause).
-9. Parity of each language against the assembly, with each difference explained (parity and
-   toolchain logs).
+9. ~~Parity of each language against the assembly, with each difference explained~~
+   ([parity log](docs/PARITY.md), [toolchain log](docs/TOOLCHAINS.md); `harness/parity`).
+   Open: the rows with the same instructions and more cycles, with item 25
+   ([report](docs/benchmarks/2026-11-22-cycle-gaps.md)).
 10. simdjson: block-to-mask kernels (64-bit masks, `prefix_xor`, UTF-8, digits), Phase 6 of
     [PENDING](docs/PENDING.md).
 
