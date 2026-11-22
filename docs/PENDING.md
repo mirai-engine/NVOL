@@ -627,18 +627,26 @@ Two consequences for the design:
 `feat/<kind>` branches, merged to `main` with the maintainer's approval). In dependency order:
 
 33. **`feat/ir-mask64`: the IR for 64-bit blocks and masks.** Everything else builds on it.
-    - `andnot` on integers and on vectors (`xor` exists since 2026-11-22);
-    - `u64` masks on x86, from the `movemask` of two AVX2 vectors or four SSE vectors (today
-      the x86 mask is `u32`; NEON already uses `u64`);
-    - several masks per call: output through a pointer (`Store64` over `MPTR`), or one function
-      per mask if inlining merges them; and `Store32`, for the index list of 35;
-    - 64-bit scalar operations: `popcnt64` (today `popcnt` takes a `u32`), an arithmetic shift
-      or the sign smear `x >> 63` as `0 - (x >> 63)`, and `blsr` (`x & (x - 1)`, which the IR
-      already expresses);
-    - the vector operations the generic code uses and NVOL lacks: signed `>`/`<` and
-      `max`/`min`, saturating `+`/`-` on `u8`, a byte shift by N with its mask (`shr<N>`,
-      `shl<N>`; today only `vshr4`), and `prev<1..3>` across the two halves of a 64-byte
-      block (NVOL's `shin1-3` cover one vector).
+    *(Done on the branch, 2026-11-22; merged with 35, the first kernels that use it.)* One
+    commit each, in every backend and in the asm, with its case in `test_prims` and
+    `test_asm` (x86 and NEON under QEMU) and a seeded bug that fails it:
+    - `vxor`, `vandnot` (`a & ~b`, as `bit_andnot`); on integers `xor` exists, and `andnot`
+      is `a & (b ^ ~0)`;
+    - `bmask64x2` (two AVX2 vectors) and `bmask64x4` (four SSE or NEON vectors): the `u64`
+      mask of a 64-byte block, for 0x00/0xFF lanes;
+    - `popcnt64`; the sign smear is `0 - (x >> 63)` and `blsr` is `x & (x - 1)`, both
+      already expressible;
+    - `Store32`, for the index list of 35; several masks per call go out through `Store64`
+      over an `MPTR`, which exists;
+    - `vsubs8`, the saturating `u8` subtraction behind `gt_bits` and `saturating_sub`.
+
+    Not added, because the generic code does not call them (checked in `src/generic` and
+    `include/simdjson/generic`, 5.2.0): `simd8<int8_t>` (signed compare, `max`, `min`), the
+    saturating addition, `max_val`/`min_val` and `shl<N>`. `shr<4>` is NVOL's `vnib_hi`, and
+    `prev<1..3>` is `shin1-3(input, prev_input)`, which on AVX2 crosses the 128-bit lanes
+    with the same `vperm2i128` + `vpalignr` as simdjson's haswell `prev<N>`.
+    The Rust and Odin lowerings of these primitives are compiled (rustc, odin check, x86_64
+    and aarch64) but not run until a kernel uses them (2.3).
 34. **`feat/clmul`: carry-less multiplication.** `pclmulqdq` (x86) and `pmull` (aarch64), with
     the scalar `prefix_xor` (six shifts and `xor`s) as the fallback, and the runtime check
     `cpu_pclmul` (westmere needs SSE4.2 plus PCLMUL). Then `prefix_xor` itself.
@@ -654,7 +662,7 @@ Two consequences for the design:
       `tzcnt` and `blsr` unrolled, as `write_indexes` does).
 36. **`feat/utf8-validation`: UTF-8 validation** (1.13), the Keiser–Lemire lookup
     (`utf8_lookup4_algorithm`: `prev<1..3>`, three `lookup_16`, `shr<4>`, saturating
-    subtraction, `max`). simdjson needs it, and ugrep's `isutf8` too.
+    subtraction, and `any_bits_set_anywhere`, which is `!is_zero`). simdjson needs it, and ugrep's `isutf8` too.
 37. **Stage 2**, in two branches:
     - **`feat/json-numbers`:** `parse_eight_digits_unrolled` (`pmaddubsw`, `pmaddwd`,
       `packusdw` on 128 bits);
