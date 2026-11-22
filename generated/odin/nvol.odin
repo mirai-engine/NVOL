@@ -52,15 +52,63 @@ when ODIN_ARCH == .amd64 {
 	@(private, rodata) NVOL_TBL_RANK := [256]u8{55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28, 255, 148, 164, 149, 136, 160, 155, 173, 221, 222, 134, 122, 232, 202, 215, 224, 208, 220, 204, 187, 183, 179, 177, 168, 178, 200, 226, 195, 154, 184, 174, 126, 120, 191, 157, 194, 170, 189, 162, 161, 150, 193, 142, 137, 171, 176, 185, 167, 186, 112, 175, 192, 188, 156, 140, 143, 123, 133, 128, 147, 138, 146, 114, 223, 151, 249, 216, 238, 236, 253, 227, 218, 230, 247, 135, 180, 241, 233, 246, 244, 231, 139, 245, 243, 251, 235, 201, 196, 240, 214, 152, 182, 205, 181, 127, 27, 212, 211, 210, 213, 228, 197, 169, 159, 131, 172, 105, 80, 98, 96, 97, 81, 207, 145, 116, 115, 144, 130, 153, 121, 107, 132, 109, 110, 124, 111, 82, 108, 118, 141, 113, 129, 119, 125, 165, 117, 92, 106, 83, 72, 99, 93, 65, 79, 166, 237, 163, 199, 190, 225, 209, 203, 198, 217, 219, 206, 234, 248, 158, 239, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255}
 	@(private, rodata) NVOL_FNTBL_TEDDY := [12]proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint{nvol_teddy_slim_ssse3_1, nvol_teddy_slim_ssse3_2, nvol_teddy_slim_ssse3_3, nvol_teddy_slim_ssse3_4, nvol_teddy_slim_avx2_1, nvol_teddy_slim_avx2_2, nvol_teddy_slim_avx2_3, nvol_teddy_slim_avx2_4, nvol_teddy_fat_avx2_1, nvol_teddy_fat_avx2_2, nvol_teddy_fat_avx2_3, nvol_teddy_fat_avx2_4}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memchr_scalar :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = start
-		for (p < end) {
-			if (p[0] == n1) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(4)) {
+			p: [^]u8 = start
+			for (p < end) {
+				if (p[0] == n1) {
+					return p
+				}
+				p = p[uint(1):]
 			}
-			p = p[uint(1):]
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(start))
+			m: u32 = ((((w ~ sh1) - u32(16843009)) & ((w ~ sh1) ~ u32(4294967295))) & u32(2155905152))
+			if (m != u32(0)) {
+				return start[(uint(intrinsics.count_trailing_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m1: u32 = ((((w1 ~ sh1) - u32(16843009)) & ((w1 ~ sh1) ~ u32(4294967295))) & u32(2155905152))
+			if (m1 != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(intrinsics.count_trailing_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(start))
+		m2: u64 = ((((w2 ~ sw1) - u64(72340172838076673)) & ((w2 ~ sw1) ~ u64(18446744073709551615))) & u64(9259542123273814144))
+		if (m2 != u64(0)) {
+			return start[(uint(intrinsics.count_trailing_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m3: u64 = ((((w3 ~ sw1) - u64(72340172838076673)) & ((w3 ~ sw1) ~ u64(18446744073709551615))) & u64(9259542123273814144))
+			if (m3 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr((uint(uintptr(start)) | uint(7)) + uint(1)))
+		for (q <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))) {
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = ((((w4 ~ sw1) - u64(72340172838076673)) & ((w4 ~ sw1) ~ u64(18446744073709551615))) & u64(9259542123273814144))
+			if (m4 != u64(0)) {
+				return q[(uint(intrinsics.count_trailing_zeros(m4)) >> uint(3)):]
+			}
+			q = q[uint(8):]
+		}
+		if (q < end) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m5: u64 = ((((w5 ~ sw1) - u64(72340172838076673)) & ((w5 ~ sw1) ~ u64(18446744073709551615))) & u64(9259542123273814144))
+			if (m5 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m5)) >> uint(3)):]
+			}
 		}
 		return nil
 	}
@@ -227,14 +275,62 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memrchr_scalar :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = end
-		for (p > start) {
-			p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
-			if (p[0] == n1) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(4)) {
+			p: [^]u8 = end
+			for (p > start) {
+				p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
+				if (p[0] == n1) {
+					return p
+				}
+			}
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m: u32 = ((((((w ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w ~ sh1)) | u32(2139062143)) ~ u32(4294967295))
+			if (m != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(31 - intrinsics.count_leading_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(start))
+			m1: u32 = ((((((w1 ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh1)) | u32(2139062143)) ~ u32(4294967295))
+			if (m1 != u32(0)) {
+				return start[(uint(31 - intrinsics.count_leading_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+		m2: u64 = ((((((w2 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw1)) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+		if (m2 != u64(0)) {
+			return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(63 - intrinsics.count_leading_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(start))
+			m3: u64 = ((((((w3 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw1)) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m3 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr(uint(uintptr(end)) &~ uint(7)))
+		for (q >= start[uint(8):]) {
+			q = ([^]u8)(intrinsics.ptr_offset((^u8)(q), -int(uint(8))))
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = ((((((w4 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw1)) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m4 != u64(0)) {
+				return q[(uint(63 - intrinsics.count_leading_zeros(m4)) >> uint(3)):]
+			}
+		}
+		if (q > start) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(start))
+			m5: u64 = ((((((w5 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw1)) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m5 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m5)) >> uint(3)):]
 			}
 		}
 		return nil
@@ -400,15 +496,76 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memchr2_scalar :: #force_inline proc "contextless" (n1: u8, n2: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = start
-		for (p < end) {
-			if ((p[0] == n1) || (p[0] == n2)) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(4)) {
+			if (len_ == uint(0)) {
+				return nil
 			}
-			p = p[uint(1):]
+			if ((start[0] == n1) || (start[0] == n2)) {
+				return start
+			}
+			if (len_ == uint(1)) {
+				return nil
+			}
+			if ((start[uint(1):][0] == n1) || (start[uint(1):][0] == n2)) {
+				return start[uint(1):]
+			}
+			if (len_ == uint(2)) {
+				return nil
+			}
+			if ((start[uint(2):][0] == n1) || (start[uint(2):][0] == n2)) {
+				return start[uint(2):]
+			}
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			sh2: u32 = (u32(n2) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(start))
+			m: u32 = (((((w ~ sh1) - u32(16843009)) & ((w ~ sh1) ~ u32(4294967295))) | (((w ~ sh2) - u32(16843009)) & ((w ~ sh2) ~ u32(4294967295)))) & u32(2155905152))
+			if (m != u32(0)) {
+				return start[(uint(intrinsics.count_trailing_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m1: u32 = (((((w1 ~ sh1) - u32(16843009)) & ((w1 ~ sh1) ~ u32(4294967295))) | (((w1 ~ sh2) - u32(16843009)) & ((w1 ~ sh2) ~ u32(4294967295)))) & u32(2155905152))
+			if (m1 != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(intrinsics.count_trailing_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		sw2: u64 = (u64(n2) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(start))
+		m2: u64 = (((((w2 ~ sw1) - u64(72340172838076673)) & ((w2 ~ sw1) ~ u64(18446744073709551615))) | (((w2 ~ sw2) - u64(72340172838076673)) & ((w2 ~ sw2) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+		if (m2 != u64(0)) {
+			return start[(uint(intrinsics.count_trailing_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m3: u64 = (((((w3 ~ sw1) - u64(72340172838076673)) & ((w3 ~ sw1) ~ u64(18446744073709551615))) | (((w3 ~ sw2) - u64(72340172838076673)) & ((w3 ~ sw2) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m3 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr((uint(uintptr(start)) | uint(7)) + uint(1)))
+		for (q <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))) {
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = (((((w4 ~ sw1) - u64(72340172838076673)) & ((w4 ~ sw1) ~ u64(18446744073709551615))) | (((w4 ~ sw2) - u64(72340172838076673)) & ((w4 ~ sw2) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m4 != u64(0)) {
+				return q[(uint(intrinsics.count_trailing_zeros(m4)) >> uint(3)):]
+			}
+			q = q[uint(8):]
+		}
+		if (q < end) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m5: u64 = (((((w5 ~ sw1) - u64(72340172838076673)) & ((w5 ~ sw1) ~ u64(18446744073709551615))) | (((w5 ~ sw2) - u64(72340172838076673)) & ((w5 ~ sw2) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m5 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m5)) >> uint(3)):]
+			}
 		}
 		return nil
 	}
@@ -553,14 +710,75 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memrchr2_scalar :: #force_inline proc "contextless" (n1: u8, n2: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = end
-		for (p > start) {
-			p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
-			if ((p[0] == n1) || (p[0] == n2)) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(4)) {
+			if (len_ == uint(0)) {
+				return nil
+			}
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(1))))[0] == n1) || (([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(1))))[0] == n2)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(1))))
+			}
+			if (len_ == uint(1)) {
+				return nil
+			}
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(2))))[0] == n1) || (([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(2))))[0] == n2)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(2))))
+			}
+			if (len_ == uint(2)) {
+				return nil
+			}
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(3))))[0] == n1) || (([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(3))))[0] == n2)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(3))))
+			}
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			sh2: u32 = (u32(n2) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m: u32 = (((((((w ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w ~ sh1)) & ((((w ~ sh2) & u32(2139062143)) + u32(2139062143)) | (w ~ sh2))) | u32(2139062143)) ~ u32(4294967295))
+			if (m != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(31 - intrinsics.count_leading_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(start))
+			m1: u32 = (((((((w1 ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh1)) & ((((w1 ~ sh2) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh2))) | u32(2139062143)) ~ u32(4294967295))
+			if (m1 != u32(0)) {
+				return start[(uint(31 - intrinsics.count_leading_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		sw2: u64 = (u64(n2) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+		m2: u64 = (((((((w2 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw1)) & ((((w2 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw2))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+		if (m2 != u64(0)) {
+			return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(63 - intrinsics.count_leading_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(start))
+			m3: u64 = (((((((w3 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw1)) & ((((w3 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw2))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m3 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr(uint(uintptr(end)) &~ uint(7)))
+		for (q >= start[uint(8):]) {
+			q = ([^]u8)(intrinsics.ptr_offset((^u8)(q), -int(uint(8))))
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = (((((((w4 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw1)) & ((((w4 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw2))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m4 != u64(0)) {
+				return q[(uint(63 - intrinsics.count_leading_zeros(m4)) >> uint(3)):]
+			}
+		}
+		if (q > start) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(start))
+			m5: u64 = (((((((w5 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw1)) & ((((w5 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw2))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m5 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m5)) >> uint(3)):]
 			}
 		}
 		return nil
@@ -704,15 +922,67 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memchr3_scalar :: #force_inline proc "contextless" (n1: u8, n2: u8, n3: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = start
-		for (p < end) {
-			if (((p[0] == n1) || (p[0] == n2)) || (p[0] == n3)) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(5)) {
+			p: [^]u8 = start
+			for (p < end) {
+				if (((p[0] == n1) || (p[0] == n2)) || (p[0] == n3)) {
+					return p
+				}
+				p = p[uint(1):]
 			}
-			p = p[uint(1):]
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			sh2: u32 = (u32(n2) * u32(16843009))
+			sh3: u32 = (u32(n3) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(start))
+			m: u32 = ((((((w ~ sh1) - u32(16843009)) & ((w ~ sh1) ~ u32(4294967295))) | (((w ~ sh2) - u32(16843009)) & ((w ~ sh2) ~ u32(4294967295)))) | (((w ~ sh3) - u32(16843009)) & ((w ~ sh3) ~ u32(4294967295)))) & u32(2155905152))
+			if (m != u32(0)) {
+				return start[(uint(intrinsics.count_trailing_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m1: u32 = ((((((w1 ~ sh1) - u32(16843009)) & ((w1 ~ sh1) ~ u32(4294967295))) | (((w1 ~ sh2) - u32(16843009)) & ((w1 ~ sh2) ~ u32(4294967295)))) | (((w1 ~ sh3) - u32(16843009)) & ((w1 ~ sh3) ~ u32(4294967295)))) & u32(2155905152))
+			if (m1 != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(intrinsics.count_trailing_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		sw2: u64 = (u64(n2) * u64(72340172838076673))
+		sw3: u64 = (u64(n3) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(start))
+		m2: u64 = ((((((w2 ~ sw1) - u64(72340172838076673)) & ((w2 ~ sw1) ~ u64(18446744073709551615))) | (((w2 ~ sw2) - u64(72340172838076673)) & ((w2 ~ sw2) ~ u64(18446744073709551615)))) | (((w2 ~ sw3) - u64(72340172838076673)) & ((w2 ~ sw3) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+		if (m2 != u64(0)) {
+			return start[(uint(intrinsics.count_trailing_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m3: u64 = ((((((w3 ~ sw1) - u64(72340172838076673)) & ((w3 ~ sw1) ~ u64(18446744073709551615))) | (((w3 ~ sw2) - u64(72340172838076673)) & ((w3 ~ sw2) ~ u64(18446744073709551615)))) | (((w3 ~ sw3) - u64(72340172838076673)) & ((w3 ~ sw3) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m3 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr((uint(uintptr(start)) | uint(7)) + uint(1)))
+		for (q <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))) {
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = ((((((w4 ~ sw1) - u64(72340172838076673)) & ((w4 ~ sw1) ~ u64(18446744073709551615))) | (((w4 ~ sw2) - u64(72340172838076673)) & ((w4 ~ sw2) ~ u64(18446744073709551615)))) | (((w4 ~ sw3) - u64(72340172838076673)) & ((w4 ~ sw3) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m4 != u64(0)) {
+				return q[(uint(intrinsics.count_trailing_zeros(m4)) >> uint(3)):]
+			}
+			q = q[uint(8):]
+		}
+		if (q < end) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m5: u64 = ((((((w5 ~ sw1) - u64(72340172838076673)) & ((w5 ~ sw1) ~ u64(18446744073709551615))) | (((w5 ~ sw2) - u64(72340172838076673)) & ((w5 ~ sw2) ~ u64(18446744073709551615)))) | (((w5 ~ sw3) - u64(72340172838076673)) & ((w5 ~ sw3) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m5 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m5)) >> uint(3)):]
+			}
 		}
 		return nil
 	}
@@ -859,14 +1129,66 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memrchr3_scalar :: #force_inline proc "contextless" (n1: u8, n2: u8, n3: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = end
-		for (p > start) {
-			p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
-			if (((p[0] == n1) || (p[0] == n2)) || (p[0] == n3)) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(5)) {
+			p: [^]u8 = end
+			for (p > start) {
+				p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
+				if (((p[0] == n1) || (p[0] == n2)) || (p[0] == n3)) {
+					return p
+				}
+			}
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			sh2: u32 = (u32(n2) * u32(16843009))
+			sh3: u32 = (u32(n3) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m: u32 = ((((((((w ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w ~ sh1)) & ((((w ~ sh2) & u32(2139062143)) + u32(2139062143)) | (w ~ sh2))) & ((((w ~ sh3) & u32(2139062143)) + u32(2139062143)) | (w ~ sh3))) | u32(2139062143)) ~ u32(4294967295))
+			if (m != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(31 - intrinsics.count_leading_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(start))
+			m1: u32 = ((((((((w1 ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh1)) & ((((w1 ~ sh2) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh2))) & ((((w1 ~ sh3) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh3))) | u32(2139062143)) ~ u32(4294967295))
+			if (m1 != u32(0)) {
+				return start[(uint(31 - intrinsics.count_leading_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		sw2: u64 = (u64(n2) * u64(72340172838076673))
+		sw3: u64 = (u64(n3) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+		m2: u64 = ((((((((w2 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw1)) & ((((w2 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw2))) & ((((w2 ~ sw3) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw3))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+		if (m2 != u64(0)) {
+			return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(63 - intrinsics.count_leading_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(start))
+			m3: u64 = ((((((((w3 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw1)) & ((((w3 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw2))) & ((((w3 ~ sw3) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw3))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m3 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr(uint(uintptr(end)) &~ uint(7)))
+		for (q >= start[uint(8):]) {
+			q = ([^]u8)(intrinsics.ptr_offset((^u8)(q), -int(uint(8))))
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = ((((((((w4 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw1)) & ((((w4 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw2))) & ((((w4 ~ sw3) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw3))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m4 != u64(0)) {
+				return q[(uint(63 - intrinsics.count_leading_zeros(m4)) >> uint(3)):]
+			}
+		}
+		if (q > start) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(start))
+			m5: u64 = ((((((((w5 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw1)) & ((((w5 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw2))) & ((((w5 ~ sw3) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw3))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m5 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m5)) >> uint(3)):]
 			}
 		}
 		return nil
@@ -8058,15 +8380,63 @@ when ODIN_ARCH == .amd64 {
 	@(private, rodata) NVOL_TBL_RANK := [256]u8{55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28, 255, 148, 164, 149, 136, 160, 155, 173, 221, 222, 134, 122, 232, 202, 215, 224, 208, 220, 204, 187, 183, 179, 177, 168, 178, 200, 226, 195, 154, 184, 174, 126, 120, 191, 157, 194, 170, 189, 162, 161, 150, 193, 142, 137, 171, 176, 185, 167, 186, 112, 175, 192, 188, 156, 140, 143, 123, 133, 128, 147, 138, 146, 114, 223, 151, 249, 216, 238, 236, 253, 227, 218, 230, 247, 135, 180, 241, 233, 246, 244, 231, 139, 245, 243, 251, 235, 201, 196, 240, 214, 152, 182, 205, 181, 127, 27, 212, 211, 210, 213, 228, 197, 169, 159, 131, 172, 105, 80, 98, 96, 97, 81, 207, 145, 116, 115, 144, 130, 153, 121, 107, 132, 109, 110, 124, 111, 82, 108, 118, 141, 113, 129, 119, 125, 165, 117, 92, 106, 83, 72, 99, 93, 65, 79, 166, 237, 163, 199, 190, 225, 209, 203, 198, 217, 219, 206, 234, 248, 158, 239, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255}
 	@(private, rodata) NVOL_FNTBL_TEDDY := [4]proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint{nvol_teddy_slim_neon_1, nvol_teddy_slim_neon_2, nvol_teddy_slim_neon_3, nvol_teddy_slim_neon_4}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memchr_scalar :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = start
-		for (p < end) {
-			if (p[0] == n1) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(4)) {
+			p: [^]u8 = start
+			for (p < end) {
+				if (p[0] == n1) {
+					return p
+				}
+				p = p[uint(1):]
 			}
-			p = p[uint(1):]
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(start))
+			m: u32 = ((((w ~ sh1) - u32(16843009)) & ((w ~ sh1) ~ u32(4294967295))) & u32(2155905152))
+			if (m != u32(0)) {
+				return start[(uint(intrinsics.count_trailing_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m1: u32 = ((((w1 ~ sh1) - u32(16843009)) & ((w1 ~ sh1) ~ u32(4294967295))) & u32(2155905152))
+			if (m1 != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(intrinsics.count_trailing_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(start))
+		m2: u64 = ((((w2 ~ sw1) - u64(72340172838076673)) & ((w2 ~ sw1) ~ u64(18446744073709551615))) & u64(9259542123273814144))
+		if (m2 != u64(0)) {
+			return start[(uint(intrinsics.count_trailing_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m3: u64 = ((((w3 ~ sw1) - u64(72340172838076673)) & ((w3 ~ sw1) ~ u64(18446744073709551615))) & u64(9259542123273814144))
+			if (m3 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr((uint(uintptr(start)) | uint(7)) + uint(1)))
+		for (q <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))) {
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = ((((w4 ~ sw1) - u64(72340172838076673)) & ((w4 ~ sw1) ~ u64(18446744073709551615))) & u64(9259542123273814144))
+			if (m4 != u64(0)) {
+				return q[(uint(intrinsics.count_trailing_zeros(m4)) >> uint(3)):]
+			}
+			q = q[uint(8):]
+		}
+		if (q < end) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m5: u64 = ((((w5 ~ sw1) - u64(72340172838076673)) & ((w5 ~ sw1) ~ u64(18446744073709551615))) & u64(9259542123273814144))
+			if (m5 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m5)) >> uint(3)):]
+			}
 		}
 		return nil
 	}
@@ -8148,14 +8518,62 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memrchr_scalar :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = end
-		for (p > start) {
-			p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
-			if (p[0] == n1) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(4)) {
+			p: [^]u8 = end
+			for (p > start) {
+				p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
+				if (p[0] == n1) {
+					return p
+				}
+			}
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m: u32 = ((((((w ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w ~ sh1)) | u32(2139062143)) ~ u32(4294967295))
+			if (m != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(31 - intrinsics.count_leading_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(start))
+			m1: u32 = ((((((w1 ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh1)) | u32(2139062143)) ~ u32(4294967295))
+			if (m1 != u32(0)) {
+				return start[(uint(31 - intrinsics.count_leading_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+		m2: u64 = ((((((w2 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw1)) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+		if (m2 != u64(0)) {
+			return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(63 - intrinsics.count_leading_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(start))
+			m3: u64 = ((((((w3 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw1)) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m3 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr(uint(uintptr(end)) &~ uint(7)))
+		for (q >= start[uint(8):]) {
+			q = ([^]u8)(intrinsics.ptr_offset((^u8)(q), -int(uint(8))))
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = ((((((w4 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw1)) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m4 != u64(0)) {
+				return q[(uint(63 - intrinsics.count_leading_zeros(m4)) >> uint(3)):]
+			}
+		}
+		if (q > start) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(start))
+			m5: u64 = ((((((w5 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw1)) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m5 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m5)) >> uint(3)):]
 			}
 		}
 		return nil
@@ -8237,15 +8655,76 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memchr2_scalar :: #force_inline proc "contextless" (n1: u8, n2: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = start
-		for (p < end) {
-			if ((p[0] == n1) || (p[0] == n2)) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(4)) {
+			if (len_ == uint(0)) {
+				return nil
 			}
-			p = p[uint(1):]
+			if ((start[0] == n1) || (start[0] == n2)) {
+				return start
+			}
+			if (len_ == uint(1)) {
+				return nil
+			}
+			if ((start[uint(1):][0] == n1) || (start[uint(1):][0] == n2)) {
+				return start[uint(1):]
+			}
+			if (len_ == uint(2)) {
+				return nil
+			}
+			if ((start[uint(2):][0] == n1) || (start[uint(2):][0] == n2)) {
+				return start[uint(2):]
+			}
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			sh2: u32 = (u32(n2) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(start))
+			m: u32 = (((((w ~ sh1) - u32(16843009)) & ((w ~ sh1) ~ u32(4294967295))) | (((w ~ sh2) - u32(16843009)) & ((w ~ sh2) ~ u32(4294967295)))) & u32(2155905152))
+			if (m != u32(0)) {
+				return start[(uint(intrinsics.count_trailing_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m1: u32 = (((((w1 ~ sh1) - u32(16843009)) & ((w1 ~ sh1) ~ u32(4294967295))) | (((w1 ~ sh2) - u32(16843009)) & ((w1 ~ sh2) ~ u32(4294967295)))) & u32(2155905152))
+			if (m1 != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(intrinsics.count_trailing_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		sw2: u64 = (u64(n2) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(start))
+		m2: u64 = (((((w2 ~ sw1) - u64(72340172838076673)) & ((w2 ~ sw1) ~ u64(18446744073709551615))) | (((w2 ~ sw2) - u64(72340172838076673)) & ((w2 ~ sw2) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+		if (m2 != u64(0)) {
+			return start[(uint(intrinsics.count_trailing_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m3: u64 = (((((w3 ~ sw1) - u64(72340172838076673)) & ((w3 ~ sw1) ~ u64(18446744073709551615))) | (((w3 ~ sw2) - u64(72340172838076673)) & ((w3 ~ sw2) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m3 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr((uint(uintptr(start)) | uint(7)) + uint(1)))
+		for (q <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))) {
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = (((((w4 ~ sw1) - u64(72340172838076673)) & ((w4 ~ sw1) ~ u64(18446744073709551615))) | (((w4 ~ sw2) - u64(72340172838076673)) & ((w4 ~ sw2) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m4 != u64(0)) {
+				return q[(uint(intrinsics.count_trailing_zeros(m4)) >> uint(3)):]
+			}
+			q = q[uint(8):]
+		}
+		if (q < end) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m5: u64 = (((((w5 ~ sw1) - u64(72340172838076673)) & ((w5 ~ sw1) ~ u64(18446744073709551615))) | (((w5 ~ sw2) - u64(72340172838076673)) & ((w5 ~ sw2) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m5 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m5)) >> uint(3)):]
+			}
 		}
 		return nil
 	}
@@ -8316,14 +8795,75 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memrchr2_scalar :: #force_inline proc "contextless" (n1: u8, n2: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = end
-		for (p > start) {
-			p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
-			if ((p[0] == n1) || (p[0] == n2)) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(4)) {
+			if (len_ == uint(0)) {
+				return nil
+			}
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(1))))[0] == n1) || (([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(1))))[0] == n2)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(1))))
+			}
+			if (len_ == uint(1)) {
+				return nil
+			}
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(2))))[0] == n1) || (([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(2))))[0] == n2)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(2))))
+			}
+			if (len_ == uint(2)) {
+				return nil
+			}
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(3))))[0] == n1) || (([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(3))))[0] == n2)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(3))))
+			}
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			sh2: u32 = (u32(n2) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m: u32 = (((((((w ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w ~ sh1)) & ((((w ~ sh2) & u32(2139062143)) + u32(2139062143)) | (w ~ sh2))) | u32(2139062143)) ~ u32(4294967295))
+			if (m != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(31 - intrinsics.count_leading_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(start))
+			m1: u32 = (((((((w1 ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh1)) & ((((w1 ~ sh2) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh2))) | u32(2139062143)) ~ u32(4294967295))
+			if (m1 != u32(0)) {
+				return start[(uint(31 - intrinsics.count_leading_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		sw2: u64 = (u64(n2) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+		m2: u64 = (((((((w2 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw1)) & ((((w2 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw2))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+		if (m2 != u64(0)) {
+			return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(63 - intrinsics.count_leading_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(start))
+			m3: u64 = (((((((w3 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw1)) & ((((w3 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw2))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m3 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr(uint(uintptr(end)) &~ uint(7)))
+		for (q >= start[uint(8):]) {
+			q = ([^]u8)(intrinsics.ptr_offset((^u8)(q), -int(uint(8))))
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = (((((((w4 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw1)) & ((((w4 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw2))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m4 != u64(0)) {
+				return q[(uint(63 - intrinsics.count_leading_zeros(m4)) >> uint(3)):]
+			}
+		}
+		if (q > start) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(start))
+			m5: u64 = (((((((w5 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw1)) & ((((w5 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw2))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m5 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m5)) >> uint(3)):]
 			}
 		}
 		return nil
@@ -8394,15 +8934,67 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memchr3_scalar :: #force_inline proc "contextless" (n1: u8, n2: u8, n3: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = start
-		for (p < end) {
-			if (((p[0] == n1) || (p[0] == n2)) || (p[0] == n3)) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(5)) {
+			p: [^]u8 = start
+			for (p < end) {
+				if (((p[0] == n1) || (p[0] == n2)) || (p[0] == n3)) {
+					return p
+				}
+				p = p[uint(1):]
 			}
-			p = p[uint(1):]
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			sh2: u32 = (u32(n2) * u32(16843009))
+			sh3: u32 = (u32(n3) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(start))
+			m: u32 = ((((((w ~ sh1) - u32(16843009)) & ((w ~ sh1) ~ u32(4294967295))) | (((w ~ sh2) - u32(16843009)) & ((w ~ sh2) ~ u32(4294967295)))) | (((w ~ sh3) - u32(16843009)) & ((w ~ sh3) ~ u32(4294967295)))) & u32(2155905152))
+			if (m != u32(0)) {
+				return start[(uint(intrinsics.count_trailing_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m1: u32 = ((((((w1 ~ sh1) - u32(16843009)) & ((w1 ~ sh1) ~ u32(4294967295))) | (((w1 ~ sh2) - u32(16843009)) & ((w1 ~ sh2) ~ u32(4294967295)))) | (((w1 ~ sh3) - u32(16843009)) & ((w1 ~ sh3) ~ u32(4294967295)))) & u32(2155905152))
+			if (m1 != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(intrinsics.count_trailing_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		sw2: u64 = (u64(n2) * u64(72340172838076673))
+		sw3: u64 = (u64(n3) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(start))
+		m2: u64 = ((((((w2 ~ sw1) - u64(72340172838076673)) & ((w2 ~ sw1) ~ u64(18446744073709551615))) | (((w2 ~ sw2) - u64(72340172838076673)) & ((w2 ~ sw2) ~ u64(18446744073709551615)))) | (((w2 ~ sw3) - u64(72340172838076673)) & ((w2 ~ sw3) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+		if (m2 != u64(0)) {
+			return start[(uint(intrinsics.count_trailing_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m3: u64 = ((((((w3 ~ sw1) - u64(72340172838076673)) & ((w3 ~ sw1) ~ u64(18446744073709551615))) | (((w3 ~ sw2) - u64(72340172838076673)) & ((w3 ~ sw2) ~ u64(18446744073709551615)))) | (((w3 ~ sw3) - u64(72340172838076673)) & ((w3 ~ sw3) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m3 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr((uint(uintptr(start)) | uint(7)) + uint(1)))
+		for (q <= ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))) {
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = ((((((w4 ~ sw1) - u64(72340172838076673)) & ((w4 ~ sw1) ~ u64(18446744073709551615))) | (((w4 ~ sw2) - u64(72340172838076673)) & ((w4 ~ sw2) ~ u64(18446744073709551615)))) | (((w4 ~ sw3) - u64(72340172838076673)) & ((w4 ~ sw3) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m4 != u64(0)) {
+				return q[(uint(intrinsics.count_trailing_zeros(m4)) >> uint(3)):]
+			}
+			q = q[uint(8):]
+		}
+		if (q < end) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+			m5: u64 = ((((((w5 ~ sw1) - u64(72340172838076673)) & ((w5 ~ sw1) ~ u64(18446744073709551615))) | (((w5 ~ sw2) - u64(72340172838076673)) & ((w5 ~ sw2) ~ u64(18446744073709551615)))) | (((w5 ~ sw3) - u64(72340172838076673)) & ((w5 ~ sw3) ~ u64(18446744073709551615)))) & u64(9259542123273814144))
+			if (m5 != u64(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(intrinsics.count_trailing_zeros(m5)) >> uint(3)):]
+			}
 		}
 		return nil
 	}
@@ -8474,14 +9066,66 @@ when ODIN_ARCH == .amd64 {
 		return uint(intrinsics.ptr_sub((^u8)(p), (^u8)(start)))
 	}
 
-	// byte-at-a-time fallback
+	// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
 	@(private)
 	nvol_memrchr3_scalar :: #force_inline proc "contextless" (n1: u8, n2: u8, n3: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
-		p: [^]u8 = end
-		for (p > start) {
-			p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
-			if (((p[0] == n1) || (p[0] == n2)) || (p[0] == n3)) {
-				return p
+		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
+		if (len_ < uint(5)) {
+			p: [^]u8 = end
+			for (p > start) {
+				p = ([^]u8)(intrinsics.ptr_offset((^u8)(p), -int(uint(1))))
+				if (((p[0] == n1) || (p[0] == n2)) || (p[0] == n3)) {
+					return p
+				}
+			}
+			return nil
+		}
+		if (len_ < uint(8)) {
+			sh1: u32 = (u32(n1) * u32(16843009))
+			sh2: u32 = (u32(n2) * u32(16843009))
+			sh3: u32 = (u32(n3) * u32(16843009))
+			w: u32 = intrinsics.unaligned_load((^u32)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))))
+			m: u32 = ((((((((w ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w ~ sh1)) & ((((w ~ sh2) & u32(2139062143)) + u32(2139062143)) | (w ~ sh2))) & ((((w ~ sh3) & u32(2139062143)) + u32(2139062143)) | (w ~ sh3))) | u32(2139062143)) ~ u32(4294967295))
+			if (m != u32(0)) {
+				return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(4))))[(uint(31 - intrinsics.count_leading_zeros(m)) >> uint(3)):]
+			}
+			w1: u32 = intrinsics.unaligned_load((^u32)(start))
+			m1: u32 = ((((((((w1 ~ sh1) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh1)) & ((((w1 ~ sh2) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh2))) & ((((w1 ~ sh3) & u32(2139062143)) + u32(2139062143)) | (w1 ~ sh3))) | u32(2139062143)) ~ u32(4294967295))
+			if (m1 != u32(0)) {
+				return start[(uint(31 - intrinsics.count_leading_zeros(m1)) >> uint(3)):]
+			}
+			return nil
+		}
+		sw1: u64 = (u64(n1) * u64(72340172838076673))
+		sw2: u64 = (u64(n2) * u64(72340172838076673))
+		sw3: u64 = (u64(n3) * u64(72340172838076673))
+		w2: u64 = intrinsics.unaligned_load((^u64)(([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))))
+		m2: u64 = ((((((((w2 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw1)) & ((((w2 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw2))) & ((((w2 ~ sw3) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w2 ~ sw3))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+		if (m2 != u64(0)) {
+			return ([^]u8)(intrinsics.ptr_offset((^u8)(end), -int(uint(8))))[(uint(63 - intrinsics.count_leading_zeros(m2)) >> uint(3)):]
+		}
+		if (len_ <= uint(16)) {
+			w3: u64 = intrinsics.unaligned_load((^u64)(start))
+			m3: u64 = ((((((((w3 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw1)) & ((((w3 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw2))) & ((((w3 ~ sw3) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w3 ~ sw3))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m3 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m3)) >> uint(3)):]
+			}
+			return nil
+		}
+		q: [^]u8 = ([^]u8)(uintptr(uint(uintptr(end)) &~ uint(7)))
+		for (q >= start[uint(8):]) {
+			q = ([^]u8)(intrinsics.ptr_offset((^u8)(q), -int(uint(8))))
+			w4: u64 = intrinsics.unaligned_load((^u64)(q))
+			m4: u64 = ((((((((w4 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw1)) & ((((w4 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw2))) & ((((w4 ~ sw3) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w4 ~ sw3))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m4 != u64(0)) {
+				return q[(uint(63 - intrinsics.count_leading_zeros(m4)) >> uint(3)):]
+			}
+		}
+		if (q > start) {
+			w5: u64 = intrinsics.unaligned_load((^u64)(start))
+			m5: u64 = ((((((((w5 ~ sw1) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw1)) & ((((w5 ~ sw2) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw2))) & ((((w5 ~ sw3) & u64(9187201950435737471)) + u64(9187201950435737471)) | (w5 ~ sw3))) | u64(9187201950435737471)) ~ u64(18446744073709551615))
+			if (m5 != u64(0)) {
+				return start[(uint(63 - intrinsics.count_leading_zeros(m5)) >> uint(3)):]
 			}
 		}
 		return nil

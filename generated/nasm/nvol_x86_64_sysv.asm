@@ -125,32 +125,152 @@ L.nvol_find_byteset_pair_mask_raw_ptr:
 section .note.GNU-stack noalloc noexec nowrite progbits
 section .text align=64
 
-global nvol_memchr_scalar:function hidden 39
+global nvol_memchr_scalar:function hidden 439
 nvol_memchr_scalar:
 L.nvol_memchr_scalar:
     movzx ecx, dil
+    mov rdi, rdx
+    sub rdi, rsi
+    cmp rdi, 4
+    jae strict short L.nvol_memchr_scalar + 47
     cmp rsi, rdx
-    jae strict short L.nvol_memchr_scalar + 32
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L2:
+    jae strict short L.nvol_memchr_scalar + 44
+    db 0xf, 0x1f, 0x0
+; .L4:
     movzx eax, byte [rsi]
     cmp eax, ecx
-    je strict short L.nvol_memchr_scalar + 35
-; .L4:
+    je strict near L.nvol_memchr_scalar + 422
+; .L6:
     add rsi, 1
     cmp rsi, rdx
-    jb strict short L.nvol_memchr_scalar + 16
-; .L3:
+    jb strict short L.nvol_memchr_scalar + 24
+; .L5:
+    xor eax, eax
+    ret
+; .L2:
+    cmp rdi, 8
+    jae strict short L.nvol_memchr_scalar + 144
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rsi]
+    xor rax, rcx
+    mov rdi, rax
+    sub edi, 16843009
+    not eax
+    and rdi, rax
+    and edi, -2139062144
+    je strict short L.nvol_memchr_scalar + 100
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L10:
+    mov eax, dword [rdx - 4]
+    xor rax, rcx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    and ecx, -2139062144
+    je strict short L.nvol_memchr_scalar + 141
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [rdx + rax - 4]
+    ret
+; .L12:
+    xor eax, eax
+    ret
+; .L8:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 72340172838076673
+    sub r8, r9
+    not rax
+    and r8, rax
+    mov rax, 9259542123273814144
+    and r8, rax
+    je strict short L.nvol_memchr_scalar + 214
+    bsf rax, r8
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L14:
+    cmp rdi, 16
+    ja strict short L.nvol_memchr_scalar + 281
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rsi, 72340172838076673
+    sub rcx, rsi
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short L.nvol_memchr_scalar + 278
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    ret
+; .L18:
+    xor eax, eax
+    ret
+; .L16:
+    and rsi, -8
+    add rsi, 8
+    lea rdi, [rdx - 8]
+    cmp rsi, rdi
+    ja strict short L.nvol_memchr_scalar + 356
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L20:
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 72340172838076673
+    sub r8, r9
+    not rax
+    and r8, rax
+    mov rax, 9259542123273814144
+    and r8, rax
+    jne strict short L.nvol_memchr_scalar + 426
+; .L22:
+    add rsi, 8
+    cmp rsi, rdi
+    jbe strict short L.nvol_memchr_scalar + 304
+; .L21:
+    cmp rsi, rdx
+    jae strict short L.nvol_memchr_scalar + 419
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rsi, 72340172838076673
+    sub rcx, rsi
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short L.nvol_memchr_scalar + 419
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    ret
+; .L26:
+; .L24:
     xor eax, eax
 ; .L1:
     ret
-; .L5:
+; .L7:
     mov rax, rsi
+    ret
+; .L23:
+    bsf rax, r8
+    shr rax, 3
+    lea rax, [rsi + rax]
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_memchr_sse2:function hidden 300
 nvol_memchr_sse2:
 L.nvol_memchr_sse2:
@@ -385,52 +505,175 @@ L.nvol_memchr_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x0
-global nvol_memchr_entry_avx2:function hidden 618
+global nvol_memchr_entry_avx2:function hidden 1050
 nvol_memchr_entry_avx2:
 L.nvol_memchr_entry_avx2:
     movzx ecx, dil
     mov rdi, rdx
     sub rdi, rsi
     cmp rdi, 16
-    jae strict short L.nvol_memchr_entry_avx2 + 50
+    jae strict near L.nvol_memchr_entry_avx2 + 464
+    cmp rdi, 4
+    jae strict short L.nvol_memchr_entry_avx2 + 58
     cmp rsi, rdx
-    jae strict short L.nvol_memchr_entry_avx2 + 44
-    db 0xf, 0x1f, 0x0
-; .L4:
+    jae strict short L.nvol_memchr_entry_avx2 + 52
+    db 0x90
+; .L6:
     movzx eax, byte [rsi]
     cmp eax, ecx
-    je strict near L.nvol_memchr_entry_avx2 + 439
-; .L6:
+    je strict near L.nvol_memchr_entry_avx2 + 855
+; .L8:
     add rsi, 1
     cmp rsi, rdx
-    jb strict short L.nvol_memchr_entry_avx2 + 24
-; .L5:
+    jb strict short L.nvol_memchr_entry_avx2 + 32
+; .L7:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L4:
+    cmp rdi, 8
+    jae strict short L.nvol_memchr_entry_avx2 + 164
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rsi]
+    xor rax, rcx
+    mov rdi, rax
+    sub edi, 16843009
+    not eax
+    and rdi, rax
+    and edi, -2139062144
+    je strict short L.nvol_memchr_entry_avx2 + 114
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [rsi + rax]
+    vzeroupper
+    ret
+; .L12:
+    mov eax, dword [rdx - 4]
+    xor rax, rcx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    and ecx, -2139062144
+    je strict short L.nvol_memchr_entry_avx2 + 158
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [rdx + rax - 4]
+    vzeroupper
+    ret
+; .L14:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L10:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 72340172838076673
+    sub r8, r9
+    not rax
+    and r8, rax
+    mov rax, 9259542123273814144
+    and r8, rax
+    je strict short L.nvol_memchr_entry_avx2 + 237
+    bsf rax, r8
+    shr rax, 3
+    lea rax, [rsi + rax]
+    vzeroupper
+    ret
+; .L16:
+    cmp rdi, 16
+    ja strict short L.nvol_memchr_entry_avx2 + 310
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rsi, 72340172838076673
+    sub rcx, rsi
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short L.nvol_memchr_entry_avx2 + 304
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    vzeroupper
+    ret
+; .L20:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L18:
+    and rsi, -8
+    add rsi, 8
+    lea rdi, [rdx - 8]
+    cmp rsi, rdi
+    ja strict short L.nvol_memchr_entry_avx2 + 392
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L22:
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 72340172838076673
+    sub r8, r9
+    not rax
+    and r8, rax
+    mov rax, 9259542123273814144
+    and r8, rax
+    jne strict near L.nvol_memchr_entry_avx2 + 862
+; .L24:
+    add rsi, 8
+    cmp rsi, rdi
+    jbe strict short L.nvol_memchr_entry_avx2 + 336
+; .L23:
+    cmp rsi, rdx
+    jae strict short L.nvol_memchr_entry_avx2 + 458
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rsi, 72340172838076673
+    sub rcx, rsi
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short L.nvol_memchr_entry_avx2 + 458
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    vzeroupper
+    ret
+; .L28:
+; .L26:
     xor eax, eax
     vzeroupper
     ret
 ; .L2:
     cmp rdi, 32
-    jae strict near L.nvol_memchr_entry_avx2 + 247
+    jae strict near L.nvol_memchr_entry_avx2 + 663
     vmovd xmm0, ecx
     vpbroadcastb xmm0, xmm0
     vpcmpeqb xmm1, xmm0, [rsi]
     vpmovmskb eax, xmm1
     test eax, eax
-    je strict short L.nvol_memchr_entry_avx2 + 92
+    je strict short L.nvol_memchr_entry_avx2 + 506
     bsf eax, eax
     lea rax, [rsi + rax]
     vzeroupper
     ret
-; .L10:
+; .L32:
     and rsi, -16
     add rsi, 16
     cmp rdi, 64
-    jb strict short L.nvol_memchr_entry_avx2 + 172
+    jb strict short L.nvol_memchr_entry_avx2 + 588
     lea rcx, [rdx - 64]
     cmp rsi, rcx
-    ja strict short L.nvol_memchr_entry_avx2 + 172
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L14:
+    ja strict short L.nvol_memchr_entry_avx2 + 588
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L36:
     vpcmpeqb xmm1, xmm0, [rsi]
     vpcmpeqb xmm2, xmm0, [rsi + 16]
     vpcmpeqb xmm3, xmm0, [rsi + 32]
@@ -440,64 +683,64 @@ L.nvol_memchr_entry_avx2:
     vpor xmm5, xmm5, xmm6
     vpmovmskb eax, xmm5
     test eax, eax
-    jne strict near L.nvol_memchr_entry_avx2 + 481
-; .L16:
+    jne strict near L.nvol_memchr_entry_avx2 + 913
+; .L38:
     add rsi, 64
     cmp rsi, rcx
-    jbe strict short L.nvol_memchr_entry_avx2 + 120
-; .L15:
-; .L12:
+    jbe strict short L.nvol_memchr_entry_avx2 + 536
+; .L37:
+; .L34:
     lea rcx, [rdx - 16]
     cmp rsi, rcx
-    ja strict short L.nvol_memchr_entry_avx2 + 209
+    ja strict short L.nvol_memchr_entry_avx2 + 625
     db 0xf, 0x1f, 0x0
-; .L24:
+; .L46:
     vpcmpeqb xmm1, xmm0, [rsi]
     vpmovmskb eax, xmm1
     test eax, eax
-    jne strict near L.nvol_memchr_entry_avx2 + 521
-; .L26:
+    jne strict near L.nvol_memchr_entry_avx2 + 953
+; .L48:
     add rsi, 16
     cmp rsi, rcx
-    jbe strict short L.nvol_memchr_entry_avx2 + 184
-; .L25:
+    jbe strict short L.nvol_memchr_entry_avx2 + 600
+; .L47:
     cmp rsi, rdx
-    jae strict short L.nvol_memchr_entry_avx2 + 241
+    jae strict short L.nvol_memchr_entry_avx2 + 657
     lea rsi, [rdx - 16]
     vpcmpeqb xmm0, xmm0, [rsi]
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_memchr_entry_avx2 + 241
+    je strict short L.nvol_memchr_entry_avx2 + 657
     bsf eax, eax
     lea rax, [rsi + rax]
     vzeroupper
     ret
-; .L30:
-; .L28:
+; .L52:
+; .L50:
     xor eax, eax
     vzeroupper
     ret
-; .L8:
+; .L30:
     vmovd xmm0, ecx
     vpbroadcastb ymm0, xmm0
     vpcmpeqb ymm1, ymm0, [rsi]
     vpmovmskb eax, ymm1
     test eax, eax
-    je strict short L.nvol_memchr_entry_avx2 + 279
+    je strict short L.nvol_memchr_entry_avx2 + 695
     bsf eax, eax
     lea rax, [rsi + rax]
     vzeroupper
     ret
-; .L32:
+; .L54:
     and rsi, -32
     add rsi, 32
     cmp rdi, 128
-    jb strict short L.nvol_memchr_entry_avx2 + 364
+    jb strict short L.nvol_memchr_entry_avx2 + 780
     lea rcx, [rdx - 128]
     cmp rsi, rcx
-    ja strict short L.nvol_memchr_entry_avx2 + 364
+    ja strict short L.nvol_memchr_entry_avx2 + 780
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L36:
+; .L58:
     vpcmpeqb ymm1, ymm0, [rsi]
     vpcmpeqb ymm2, ymm0, [rsi + 32]
     vpcmpeqb ymm3, ymm0, [rsi + 64]
@@ -507,83 +750,51 @@ L.nvol_memchr_entry_avx2:
     vpor ymm5, ymm5, ymm6
     vpmovmskb eax, ymm5
     test eax, eax
-    jne strict near L.nvol_memchr_entry_avx2 + 567
-; .L38:
+    jne strict near L.nvol_memchr_entry_avx2 + 999
+; .L60:
     sub rsi, -128
     cmp rsi, rcx
-    jbe strict short L.nvol_memchr_entry_avx2 + 312
-; .L37:
-; .L34:
+    jbe strict short L.nvol_memchr_entry_avx2 + 728
+; .L59:
+; .L56:
     lea rcx, [rdx - 32]
     cmp rsi, rcx
-    ja strict short L.nvol_memchr_entry_avx2 + 401
+    ja strict short L.nvol_memchr_entry_avx2 + 817
     db 0xf, 0x1f, 0x0
-; .L46:
+; .L68:
     vpcmpeqb ymm1, ymm0, [rsi]
     vpmovmskb eax, ymm1
     test eax, eax
-    jne strict near L.nvol_memchr_entry_avx2 + 607
-; .L48:
+    jne strict near L.nvol_memchr_entry_avx2 + 1039
+; .L70:
     add rsi, 32
     cmp rsi, rcx
-    jbe strict short L.nvol_memchr_entry_avx2 + 376
-; .L47:
+    jbe strict short L.nvol_memchr_entry_avx2 + 792
+; .L69:
     cmp rsi, rdx
-    jae strict short L.nvol_memchr_entry_avx2 + 433
+    jae strict short L.nvol_memchr_entry_avx2 + 849
     lea rsi, [rdx - 32]
     vpcmpeqb ymm0, ymm0, [rsi]
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_memchr_entry_avx2 + 433
+    je strict short L.nvol_memchr_entry_avx2 + 849
     bsf eax, eax
     lea rax, [rsi + rax]
     vzeroupper
     ret
-; .L52:
-; .L50:
+; .L74:
+; .L72:
     xor eax, eax
 ; .L1:
     vzeroupper
     ret
-; .L7:
+; .L9:
     mov rax, rsi
     vzeroupper
     ret
-; .L19:
-    bsf eax, eax
-    lea rax, [rsi + rax]
-    vzeroupper
-    ret
-; .L21:
-    bsf eax, eax
-    lea rax, [rsi + rax + 16]
-    vzeroupper
-    ret
-; .L23:
-    bsf eax, eax
-    lea rax, [rsi + rax + 32]
-    vzeroupper
-    ret
-; .L17:
-    vpmovmskb eax, xmm1
-    test eax, eax
-    jne strict short L.nvol_memchr_entry_avx2 + 446
-; .L18:
-    vpmovmskb eax, xmm2
-    test eax, eax
-    jne strict short L.nvol_memchr_entry_avx2 + 457
-; .L20:
-    vpmovmskb eax, xmm3
-    test eax, eax
-    jne strict short L.nvol_memchr_entry_avx2 + 469
-; .L22:
-    vpmovmskb eax, xmm4
-    bsf eax, eax
-    lea rax, [rsi + rax + 48]
-    vzeroupper
-    ret
-; .L27:
-    bsf eax, eax
+; .L25:
+    bsf rax, r8
+    shr rax, 3
     lea rax, [rsi + rax]
     vzeroupper
     ret
@@ -594,30 +805,30 @@ L.nvol_memchr_entry_avx2:
     ret
 ; .L43:
     bsf eax, eax
-    lea rax, [rsi + rax + 32]
+    lea rax, [rsi + rax + 16]
     vzeroupper
     ret
 ; .L45:
     bsf eax, eax
-    lea rax, [rsi + rax + 64]
+    lea rax, [rsi + rax + 32]
     vzeroupper
     ret
 ; .L39:
-    vpmovmskb eax, ymm1
+    vpmovmskb eax, xmm1
     test eax, eax
-    jne strict short L.nvol_memchr_entry_avx2 + 532
+    jne strict short L.nvol_memchr_entry_avx2 + 878
 ; .L40:
-    vpmovmskb eax, ymm2
+    vpmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memchr_entry_avx2 + 543
+    jne strict short L.nvol_memchr_entry_avx2 + 889
 ; .L42:
-    vpmovmskb eax, ymm3
+    vpmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memchr_entry_avx2 + 555
+    jne strict short L.nvol_memchr_entry_avx2 + 901
 ; .L44:
-    vpmovmskb eax, ymm4
+    vpmovmskb eax, xmm4
     bsf eax, eax
-    lea rax, [rsi + rax + 96]
+    lea rax, [rsi + rax + 48]
     vzeroupper
     ret
 ; .L49:
@@ -625,30 +836,185 @@ L.nvol_memchr_entry_avx2:
     lea rax, [rsi + rax]
     vzeroupper
     ret
+; .L63:
+    bsf eax, eax
+    lea rax, [rsi + rax]
+    vzeroupper
+    ret
+; .L65:
+    bsf eax, eax
+    lea rax, [rsi + rax + 32]
+    vzeroupper
+    ret
+; .L67:
+    bsf eax, eax
+    lea rax, [rsi + rax + 64]
+    vzeroupper
+    ret
+; .L61:
+    vpmovmskb eax, ymm1
+    test eax, eax
+    jne strict short L.nvol_memchr_entry_avx2 + 964
+; .L62:
+    vpmovmskb eax, ymm2
+    test eax, eax
+    jne strict short L.nvol_memchr_entry_avx2 + 975
+; .L64:
+    vpmovmskb eax, ymm3
+    test eax, eax
+    jne strict short L.nvol_memchr_entry_avx2 + 987
+; .L66:
+    vpmovmskb eax, ymm4
+    bsf eax, eax
+    lea rax, [rsi + rax + 96]
+    vzeroupper
+    ret
+; .L71:
+    bsf eax, eax
+    lea rax, [rsi + rax]
+    vzeroupper
+    ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
-global nvol_memchr_entry_sse2:function hidden 336
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0x90
+global nvol_memchr_entry_sse2:function hidden 733
 nvol_memchr_entry_sse2:
 L.nvol_memchr_entry_sse2:
     movzx ecx, dil
     mov rdi, rdx
     sub rdi, rsi
     cmp rdi, 16
-    jae strict short L.nvol_memchr_entry_sse2 + 47
+    jae strict near L.nvol_memchr_entry_sse2 + 434
+    cmp rdi, 4
+    jae strict short L.nvol_memchr_entry_sse2 + 55
     cmp rsi, rdx
-    jae strict short L.nvol_memchr_entry_sse2 + 44
-    db 0xf, 0x1f, 0x0
-; .L4:
+    jae strict short L.nvol_memchr_entry_sse2 + 52
+    db 0x90
+; .L6:
     movzx eax, byte [rsi]
     cmp eax, ecx
-    je strict near L.nvol_memchr_entry_sse2 + 261
-; .L6:
+    je strict near L.nvol_memchr_entry_sse2 + 645
+; .L8:
     add rsi, 1
     cmp rsi, rdx
-    jb strict short L.nvol_memchr_entry_sse2 + 24
-; .L5:
+    jb strict short L.nvol_memchr_entry_sse2 + 32
+; .L7:
+    xor eax, eax
+    ret
+; .L4:
+    cmp rdi, 8
+    jae strict short L.nvol_memchr_entry_sse2 + 152
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rsi]
+    xor rax, rcx
+    mov rdi, rax
+    sub edi, 16843009
+    not eax
+    and rdi, rax
+    and edi, -2139062144
+    je strict short L.nvol_memchr_entry_sse2 + 108
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L12:
+    mov eax, dword [rdx - 4]
+    xor rax, rcx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    and ecx, -2139062144
+    je strict short L.nvol_memchr_entry_sse2 + 149
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [rdx + rax - 4]
+    ret
+; .L14:
+    xor eax, eax
+    ret
+; .L10:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 72340172838076673
+    sub r8, r9
+    not rax
+    and r8, rax
+    mov rax, 9259542123273814144
+    and r8, rax
+    je strict short L.nvol_memchr_entry_sse2 + 222
+    bsf rax, r8
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L16:
+    cmp rdi, 16
+    ja strict short L.nvol_memchr_entry_sse2 + 289
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rsi, 72340172838076673
+    sub rcx, rsi
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short L.nvol_memchr_entry_sse2 + 286
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    ret
+; .L20:
+    xor eax, eax
+    ret
+; .L18:
+    and rsi, -8
+    add rsi, 8
+    lea rdi, [rdx - 8]
+    cmp rsi, rdi
+    ja strict short L.nvol_memchr_entry_sse2 + 368
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L22:
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 72340172838076673
+    sub r8, r9
+    not rax
+    and r8, rax
+    mov rax, 9259542123273814144
+    and r8, rax
+    jne strict near L.nvol_memchr_entry_sse2 + 649
+; .L24:
+    add rsi, 8
+    cmp rsi, rdi
+    jbe strict short L.nvol_memchr_entry_sse2 + 312
+; .L23:
+    cmp rsi, rdx
+    jae strict short L.nvol_memchr_entry_sse2 + 431
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rsi, 72340172838076673
+    sub rcx, rsi
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short L.nvol_memchr_entry_sse2 + 431
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    ret
+; .L28:
+; .L26:
     xor eax, eax
     ret
 ; .L2:
@@ -659,20 +1025,19 @@ L.nvol_memchr_entry_sse2:
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    je strict short L.nvol_memchr_entry_sse2 + 86
+    je strict short L.nvol_memchr_entry_sse2 + 473
     bsf eax, eax
     lea rax, [rsi + rax]
     ret
-; .L8:
+; .L30:
     and rsi, -16
     add rsi, 16
     cmp rdi, 64
-    jb strict short L.nvol_memchr_entry_sse2 + 184
+    jb strict short L.nvol_memchr_entry_sse2 + 572
     lea rcx, [rdx - 64]
     cmp rsi, rcx
-    ja strict short L.nvol_memchr_entry_sse2 + 184
-    db 0xf, 0x1f, 0x0
-; .L12:
+    ja strict short L.nvol_memchr_entry_sse2 + 572
+; .L34:
     movdqa xmm1, [rsi]
     pcmpeqb xmm1, xmm0
     movdqa xmm2, [rsi + 16]
@@ -688,77 +1053,82 @@ L.nvol_memchr_entry_sse2:
     por xmm5, xmm6
     pmovmskb eax, xmm5
     test eax, eax
-    jne strict short L.nvol_memchr_entry_sse2 + 291
-; .L14:
+    jne strict near L.nvol_memchr_entry_sse2 + 688
+; .L36:
     add rsi, 64
     cmp rsi, rcx
-    jbe strict short L.nvol_memchr_entry_sse2 + 112
-; .L13:
-; .L10:
+    jbe strict short L.nvol_memchr_entry_sse2 + 496
+; .L35:
+; .L32:
     lea rcx, [rdx - 16]
     cmp rsi, rcx
-    ja strict short L.nvol_memchr_entry_sse2 + 225
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L22:
+    ja strict short L.nvol_memchr_entry_sse2 + 609
+    db 0xf, 0x1f, 0x0
+; .L44:
     movdqu xmm1, [rsi]
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    jne strict short L.nvol_memchr_entry_sse2 + 328
-; .L24:
+    jne strict short L.nvol_memchr_entry_sse2 + 725
+; .L46:
     add rsi, 16
     cmp rsi, rcx
-    jbe strict short L.nvol_memchr_entry_sse2 + 200
-; .L23:
+    jbe strict short L.nvol_memchr_entry_sse2 + 584
+; .L45:
     cmp rsi, rdx
-    jae strict short L.nvol_memchr_entry_sse2 + 258
+    jae strict short L.nvol_memchr_entry_sse2 + 642
     lea rsi, [rdx - 16]
     movdqu xmm1, [rsi]
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    je strict short L.nvol_memchr_entry_sse2 + 258
+    je strict short L.nvol_memchr_entry_sse2 + 642
     bsf eax, eax
     lea rax, [rsi + rax]
     ret
-; .L28:
-; .L26:
+; .L50:
+; .L48:
     xor eax, eax
 ; .L1:
     ret
-; .L7:
+; .L9:
     mov rax, rsi
     ret
-; .L17:
+; .L25:
+    bsf rax, r8
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L39:
     bsf eax, eax
     lea rax, [rsi + rax]
     ret
-; .L19:
+; .L41:
     bsf eax, eax
     lea rax, [rsi + rax + 16]
     ret
-; .L21:
+; .L43:
     bsf eax, eax
     lea rax, [rsi + rax + 32]
     ret
-; .L15:
+; .L37:
     pmovmskb eax, xmm1
     test eax, eax
-    jne strict short L.nvol_memchr_entry_sse2 + 265
-; .L16:
+    jne strict short L.nvol_memchr_entry_sse2 + 662
+; .L38:
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memchr_entry_sse2 + 273
-; .L18:
+    jne strict short L.nvol_memchr_entry_sse2 + 670
+; .L40:
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memchr_entry_sse2 + 282
-; .L20:
+    jne strict short L.nvol_memchr_entry_sse2 + 679
+; .L42:
     pmovmskb eax, xmm4
     bsf eax, eax
     lea rax, [rsi + rax + 48]
     ret
-; .L25:
+; .L47:
     bsf eax, eax
     lea rax, [rsi + rax]
     ret
@@ -766,9 +1136,7 @@ L.nvol_memchr_entry_sse2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_memchr_raw:function 6
 nvol_memchr_raw:
 L.nvol_memchr_raw:
@@ -829,32 +1197,174 @@ L.nvol_memchr:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-global nvol_memrchr_scalar:function hidden 39
+global nvol_memrchr_scalar:function hidden 517
 nvol_memrchr_scalar:
 L.nvol_memrchr_scalar:
     movzx ecx, dil
+    mov rdi, rdx
+    sub rdi, rsi
+    cmp rdi, 4
+    jae strict short L.nvol_memrchr_scalar + 47
     cmp rdx, rsi
-    jbe strict short L.nvol_memrchr_scalar + 32
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L2:
+    jbe strict short L.nvol_memrchr_scalar + 44
+    db 0xf, 0x1f, 0x0
+; .L4:
     lea rdx, [rdx - 1]
     movzx eax, byte [rdx]
     cmp eax, ecx
-    je strict short L.nvol_memrchr_scalar + 35
-; .L4:
+    je strict near L.nvol_memrchr_scalar + 500
+; .L6:
     cmp rdx, rsi
-    ja strict short L.nvol_memrchr_scalar + 16
-; .L3:
+    ja strict short L.nvol_memrchr_scalar + 24
+; .L5:
+    xor eax, eax
+    ret
+; .L2:
+    cmp rdi, 8
+    jae strict short L.nvol_memrchr_scalar + 160
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rdx - 4]
+    xor rax, rcx
+    mov rdi, rax
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, rax
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr_scalar + 110
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rdx + rax - 4]
+    ret
+; .L10:
+    mov eax, dword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short L.nvol_memrchr_scalar + 157
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L12:
+    xor eax, eax
+    ret
+; .L8:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 9187201950435737471
+    and r8, r9
+    mov r9, 9187201950435737471
+    add r8, r9
+    or r8, rax
+    mov rax, 9187201950435737471
+    or r8, rax
+    not r8
+    test r8, r8
+    je strict short L.nvol_memrchr_scalar + 248
+    bsr rax, r8
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    ret
+; .L14:
+    cmp rdi, 16
+    ja strict short L.nvol_memrchr_scalar + 329
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 9187201950435737471
+    and rcx, rdx
+    mov rdx, 9187201950435737471
+    add rcx, rdx
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short L.nvol_memrchr_scalar + 326
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L18:
+    xor eax, eax
+    ret
+; .L16:
+    and rdx, -8
+    lea rdi, [rsi + 8]
+    cmp rdx, rdi
+    jb strict short L.nvol_memrchr_scalar + 420
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L20:
+    lea rdx, [rdx - 8]
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 9187201950435737471
+    and r8, r9
+    mov r9, 9187201950435737471
+    add r8, r9
+    or r8, rax
+    mov rax, 9187201950435737471
+    or r8, rax
+    not r8
+    test r8, r8
+    jne strict short L.nvol_memrchr_scalar + 504
+; .L22:
+    cmp rdx, rdi
+    jae strict short L.nvol_memrchr_scalar + 352
+; .L21:
+    cmp rdx, rsi
+    jbe strict short L.nvol_memrchr_scalar + 497
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 9187201950435737471
+    and rcx, rdx
+    mov rdx, 9187201950435737471
+    add rcx, rdx
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short L.nvol_memrchr_scalar + 497
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L26:
+; .L24:
     xor eax, eax
 ; .L1:
     ret
-; .L5:
+; .L7:
     mov rax, rdx
+    ret
+; .L23:
+    bsr rax, r8
+    shr rax, 3
+    lea rax, [rdx + rax]
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memrchr_sse2:function hidden 460
 nvol_memrchr_sse2:
 L.nvol_memrchr_sse2:
@@ -1191,54 +1701,192 @@ L.nvol_memrchr_avx2:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-global nvol_memrchr_entry_avx2:function hidden 902
+global nvol_memrchr_entry_avx2:function hidden 1414
 nvol_memrchr_entry_avx2:
 L.nvol_memrchr_entry_avx2:
     movzx ecx, dil
     mov rdi, rdx
     sub rdi, rsi
     cmp rdi, 16
-    jae strict short L.nvol_memrchr_entry_avx2 + 50
+    jae strict near L.nvol_memrchr_entry_avx2 + 534
+    cmp rdi, 4
+    jae strict short L.nvol_memrchr_entry_avx2 + 58
     cmp rdx, rsi
-    jbe strict short L.nvol_memrchr_entry_avx2 + 44
-    db 0xf, 0x1f, 0x0
-; .L4:
+    jbe strict short L.nvol_memrchr_entry_avx2 + 52
+    db 0x90
+; .L6:
     lea rdx, [rdx - 1]
     movzx eax, byte [rdx]
     cmp eax, ecx
-    je strict near L.nvol_memrchr_entry_avx2 + 451
-; .L6:
+    je strict near L.nvol_memrchr_entry_avx2 + 939
+; .L8:
     cmp rdx, rsi
-    ja strict short L.nvol_memrchr_entry_avx2 + 24
-; .L5:
+    ja strict short L.nvol_memrchr_entry_avx2 + 32
+; .L7:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L4:
+    cmp rdi, 8
+    jae strict short L.nvol_memrchr_entry_avx2 + 180
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rdx - 4]
+    xor rax, rcx
+    mov rdi, rax
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, rax
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr_entry_avx2 + 124
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rdx + rax - 4]
+    vzeroupper
+    ret
+; .L12:
+    mov eax, dword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short L.nvol_memrchr_entry_avx2 + 174
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    vzeroupper
+    ret
+; .L14:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L10:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 9187201950435737471
+    and r8, r9
+    mov r9, 9187201950435737471
+    add r8, r9
+    or r8, rax
+    mov rax, 9187201950435737471
+    or r8, rax
+    not r8
+    test r8, r8
+    je strict short L.nvol_memrchr_entry_avx2 + 271
+    bsr rax, r8
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    vzeroupper
+    ret
+; .L16:
+    cmp rdi, 16
+    ja strict short L.nvol_memrchr_entry_avx2 + 358
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 9187201950435737471
+    and rcx, rdx
+    mov rdx, 9187201950435737471
+    add rcx, rdx
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short L.nvol_memrchr_entry_avx2 + 352
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    vzeroupper
+    ret
+; .L20:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L18:
+    and rdx, -8
+    lea rdi, [rsi + 8]
+    cmp rdx, rdi
+    jb strict short L.nvol_memrchr_entry_avx2 + 448
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L22:
+    lea rdx, [rdx - 8]
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 9187201950435737471
+    and r8, r9
+    mov r9, 9187201950435737471
+    add r8, r9
+    or r8, rax
+    mov rax, 9187201950435737471
+    or r8, rax
+    not r8
+    test r8, r8
+    jne strict near L.nvol_memrchr_entry_avx2 + 946
+; .L24:
+    cmp rdx, rdi
+    jae strict short L.nvol_memrchr_entry_avx2 + 376
+; .L23:
+    cmp rdx, rsi
+    jbe strict short L.nvol_memrchr_entry_avx2 + 528
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 9187201950435737471
+    and rcx, rdx
+    mov rdx, 9187201950435737471
+    add rcx, rdx
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short L.nvol_memrchr_entry_avx2 + 528
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    vzeroupper
+    ret
+; .L28:
+; .L26:
     xor eax, eax
     vzeroupper
     ret
 ; .L2:
     cmp rdi, 32
-    jae strict near L.nvol_memrchr_entry_avx2 + 251
+    jae strict near L.nvol_memrchr_entry_avx2 + 739
     vmovd xmm0, ecx
     vpbroadcastb xmm0, xmm0
     vpcmpeqb xmm1, xmm0, [rdx - 16]
     vpmovmskb eax, xmm1
     test eax, eax
-    je strict short L.nvol_memrchr_entry_avx2 + 94
+    je strict short L.nvol_memrchr_entry_avx2 + 578
     bsr eax, eax
     lea rax, [rdx + rax - 16]
     vzeroupper
     ret
-; .L10:
+; .L32:
     and rdx, -16
     cmp rdi, 64
-    jb strict short L.nvol_memrchr_entry_avx2 + 180
+    jb strict short L.nvol_memrchr_entry_avx2 + 668
     lea rcx, [rsi + 64]
     cmp rdi, 1024
-    jae strict near L.nvol_memrchr_entry_avx2 + 494
-; .L14:
+    jae strict near L.nvol_memrchr_entry_avx2 + 998
+; .L36:
     cmp rdx, rcx
-    jb strict short L.nvol_memrchr_entry_avx2 + 180
-    db 0x66, 0x90
-; .L24:
+    jb strict short L.nvol_memrchr_entry_avx2 + 668
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
     lea rdx, [rdx - 64]
     vpcmpeqb xmm1, xmm0, [rdx]
     vpcmpeqb xmm2, xmm0, [rdx + 16]
@@ -1249,64 +1897,64 @@ L.nvol_memrchr_entry_avx2:
     vpor xmm5, xmm5, xmm6
     vpmovmskb eax, xmm5
     test eax, eax
-    jne strict near L.nvol_memrchr_entry_avx2 + 628
-; .L26:
+    jne strict near L.nvol_memrchr_entry_avx2 + 1140
+; .L48:
     cmp rdx, rcx
-    jae strict short L.nvol_memrchr_entry_avx2 + 128
-; .L25:
-; .L12:
+    jae strict short L.nvol_memrchr_entry_avx2 + 616
+; .L47:
+; .L34:
     lea rcx, [rsi + 16]
     cmp rdx, rcx
-    jb strict short L.nvol_memrchr_entry_avx2 + 217
+    jb strict short L.nvol_memrchr_entry_avx2 + 705
     db 0xf, 0x1f, 0x0
-; .L34:
+; .L56:
     lea rdx, [rdx - 16]
     vpcmpeqb xmm1, xmm0, [rdx]
     vpmovmskb eax, xmm1
     test eax, eax
-    jne strict near L.nvol_memrchr_entry_avx2 + 667
-; .L36:
+    jne strict near L.nvol_memrchr_entry_avx2 + 1179
+; .L58:
     cmp rdx, rcx
-    jae strict short L.nvol_memrchr_entry_avx2 + 192
-; .L35:
+    jae strict short L.nvol_memrchr_entry_avx2 + 680
+; .L57:
     cmp rdx, rsi
-    jbe strict short L.nvol_memrchr_entry_avx2 + 245
+    jbe strict short L.nvol_memrchr_entry_avx2 + 733
     vpcmpeqb xmm0, xmm0, [rsi]
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_memrchr_entry_avx2 + 245
+    je strict short L.nvol_memrchr_entry_avx2 + 733
     bsr eax, eax
     lea rax, [rsi + rax]
     vzeroupper
     ret
-; .L40:
-; .L38:
+; .L62:
+; .L60:
     xor eax, eax
     vzeroupper
     ret
-; .L8:
+; .L30:
     vmovd xmm0, ecx
     vpbroadcastb ymm0, xmm0
     vpcmpeqb ymm1, ymm0, [rdx - 32]
     vpmovmskb eax, ymm1
     test eax, eax
-    je strict short L.nvol_memrchr_entry_avx2 + 285
+    je strict short L.nvol_memrchr_entry_avx2 + 773
     bsr eax, eax
     lea rax, [rdx + rax - 32]
     vzeroupper
     ret
-; .L42:
+; .L64:
     and rdx, -32
     cmp rdi, 128
-    jb strict short L.nvol_memrchr_entry_avx2 + 380
+    jb strict short L.nvol_memrchr_entry_avx2 + 868
     lea rcx, [rsi + 128]
     cmp rdi, 4096
-    jae strict near L.nvol_memrchr_entry_avx2 + 714
-; .L46:
+    jae strict near L.nvol_memrchr_entry_avx2 + 1226
+; .L68:
     cmp rdx, rcx
-    jb strict short L.nvol_memrchr_entry_avx2 + 380
+    jb strict short L.nvol_memrchr_entry_avx2 + 868
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L56:
+; .L78:
     lea rdx, [rdx - 128]
     vpcmpeqb ymm1, ymm0, [rdx]
     vpcmpeqb ymm2, ymm0, [rdx + 32]
@@ -1317,66 +1965,73 @@ L.nvol_memrchr_entry_avx2:
     vpor ymm5, ymm5, ymm6
     vpmovmskb eax, ymm5
     test eax, eax
-    jne strict near L.nvol_memrchr_entry_avx2 + 852
-; .L58:
+    jne strict near L.nvol_memrchr_entry_avx2 + 1364
+; .L80:
     cmp rdx, rcx
-    jae strict short L.nvol_memrchr_entry_avx2 + 328
-; .L57:
-; .L44:
+    jae strict short L.nvol_memrchr_entry_avx2 + 816
+; .L79:
+; .L66:
     lea rcx, [rsi + 32]
     cmp rdx, rcx
-    jb strict short L.nvol_memrchr_entry_avx2 + 417
+    jb strict short L.nvol_memrchr_entry_avx2 + 905
     db 0xf, 0x1f, 0x0
-; .L66:
+; .L88:
     lea rdx, [rdx - 32]
     vpcmpeqb ymm1, ymm0, [rdx]
     vpmovmskb eax, ymm1
     test eax, eax
-    jne strict near L.nvol_memrchr_entry_avx2 + 891
-; .L68:
+    jne strict near L.nvol_memrchr_entry_avx2 + 1403
+; .L90:
     cmp rdx, rcx
-    jae strict short L.nvol_memrchr_entry_avx2 + 392
-; .L67:
+    jae strict short L.nvol_memrchr_entry_avx2 + 880
+; .L89:
     cmp rdx, rsi
-    jbe strict short L.nvol_memrchr_entry_avx2 + 445
+    jbe strict short L.nvol_memrchr_entry_avx2 + 933
     vpcmpeqb ymm0, ymm0, [rsi]
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_memrchr_entry_avx2 + 445
+    je strict short L.nvol_memrchr_entry_avx2 + 933
     bsr eax, eax
     lea rax, [rsi + rax]
     vzeroupper
     ret
-; .L72:
-; .L70:
+; .L94:
+; .L92:
     xor eax, eax
 ; .L1:
     vzeroupper
     ret
-; .L7:
+; .L9:
     mov rax, rdx
     vzeroupper
     ret
-; .L19:
+; .L25:
+    bsr rax, r8
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    ret
+; .L41:
     bsr eax, eax
     lea rax, [rdx + rax + 48]
     vzeroupper
     ret
-; .L21:
+; .L43:
     bsr eax, eax
     lea rax, [rdx + rax + 32]
     vzeroupper
     ret
-; .L23:
+; .L45:
     bsr eax, eax
     lea rax, [rdx + rax + 16]
     vzeroupper
     ret
-; .L17:
-    db 0x66, 0x90
-; .L15:
+; .L39:
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L37:
     cmp rdx, rcx
-    jb strict near L.nvol_memrchr_entry_avx2 + 121
+    jb strict near L.nvol_memrchr_entry_avx2 + 605
     lea rdx, [rdx - 64]
     vpcmpeqb xmm1, xmm0, [rdx]
     vpcmpeqb xmm2, xmm0, [rdx + 16]
@@ -1387,83 +2042,83 @@ L.nvol_memrchr_entry_avx2:
     vpor xmm5, xmm5, xmm6
     vpmovmskb eax, xmm5
     test eax, eax
-    je strict short L.nvol_memrchr_entry_avx2 + 496
+    je strict short L.nvol_memrchr_entry_avx2 + 1008
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 458
-; .L18:
+    jne strict short L.nvol_memrchr_entry_avx2 + 962
+; .L40:
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 470
-; .L20:
+    jne strict short L.nvol_memrchr_entry_avx2 + 974
+; .L42:
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 482
-; .L22:
+    jne strict short L.nvol_memrchr_entry_avx2 + 986
+; .L44:
     vpmovmskb eax, xmm1
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-    jmp strict near L.nvol_memrchr_entry_avx2 + 121
-; .L29:
+    jmp strict near L.nvol_memrchr_entry_avx2 + 605
+; .L51:
     bsr eax, eax
     lea rax, [rdx + rax + 48]
     vzeroupper
     ret
-; .L31:
+; .L53:
     bsr eax, eax
     lea rax, [rdx + rax + 32]
     vzeroupper
     ret
-; .L33:
+; .L55:
     bsr eax, eax
     lea rax, [rdx + rax + 16]
     vzeroupper
     ret
-; .L27:
+; .L49:
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 592
-; .L28:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1104
+; .L50:
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 604
-; .L30:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1116
+; .L52:
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 616
-; .L32:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1128
+; .L54:
     vpmovmskb eax, xmm1
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L37:
+; .L59:
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L51:
+; .L73:
     bsr eax, eax
     lea rax, [rdx + rax + 96]
     vzeroupper
     ret
-; .L53:
+; .L75:
     bsr eax, eax
     lea rax, [rdx + rax + 64]
     vzeroupper
     ret
-; .L55:
+; .L77:
     bsr eax, eax
     lea rax, [rdx + rax + 32]
     vzeroupper
     ret
-; .L49:
+; .L71:
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L47:
+; .L69:
     cmp rdx, rcx
-    jb strict near L.nvol_memrchr_entry_avx2 + 318
+    jb strict near L.nvol_memrchr_entry_avx2 + 806
     lea rdx, [rdx - 128]
     vpcmpeqb ymm1, ymm0, [rdx]
     vpcmpeqb ymm2, ymm0, [rdx + 32]
@@ -1474,59 +2129,59 @@ L.nvol_memrchr_entry_avx2:
     vpor ymm5, ymm5, ymm6
     vpmovmskb eax, ymm5
     test eax, eax
-    je strict short L.nvol_memrchr_entry_avx2 + 720
+    je strict short L.nvol_memrchr_entry_avx2 + 1232
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 678
-; .L50:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1190
+; .L72:
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 690
-; .L52:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1202
+; .L74:
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 702
-; .L54:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1214
+; .L76:
     vpmovmskb eax, ymm1
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-    jmp strict near L.nvol_memrchr_entry_avx2 + 318
-; .L61:
+    jmp strict near L.nvol_memrchr_entry_avx2 + 806
+; .L83:
     bsr eax, eax
     lea rax, [rdx + rax + 96]
     vzeroupper
     ret
-; .L63:
+; .L85:
     bsr eax, eax
     lea rax, [rdx + rax + 64]
     vzeroupper
     ret
-; .L65:
+; .L87:
     bsr eax, eax
     lea rax, [rdx + rax + 32]
     vzeroupper
     ret
-; .L59:
+; .L81:
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 816
-; .L60:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1328
+; .L82:
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 828
-; .L62:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1340
+; .L84:
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_avx2 + 840
-; .L64:
+    jne strict short L.nvol_memrchr_entry_avx2 + 1352
+; .L86:
     vpmovmskb eax, ymm1
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L69:
+; .L91:
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
@@ -1539,26 +2194,156 @@ L.nvol_memrchr_entry_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x40, 0x0
-global nvol_memrchr_entry_sse2:function hidden 500
+global nvol_memrchr_entry_sse2:function hidden 972
 nvol_memrchr_entry_sse2:
 L.nvol_memrchr_entry_sse2:
     movzx ecx, dil
     mov rdi, rdx
     sub rdi, rsi
     cmp rdi, 16
-    jae strict short L.nvol_memrchr_entry_sse2 + 47
+    jae strict near L.nvol_memrchr_entry_sse2 + 504
+    cmp rdi, 4
+    jae strict short L.nvol_memrchr_entry_sse2 + 55
     cmp rdx, rsi
-    jbe strict short L.nvol_memrchr_entry_sse2 + 44
-    db 0xf, 0x1f, 0x0
-; .L4:
+    jbe strict short L.nvol_memrchr_entry_sse2 + 52
+    db 0x90
+; .L6:
     lea rdx, [rdx - 1]
     movzx eax, byte [rdx]
     cmp eax, ecx
-    je strict near L.nvol_memrchr_entry_sse2 + 277
-; .L6:
+    je strict near L.nvol_memrchr_entry_sse2 + 733
+; .L8:
     cmp rdx, rsi
-    ja strict short L.nvol_memrchr_entry_sse2 + 24
-; .L5:
+    ja strict short L.nvol_memrchr_entry_sse2 + 32
+; .L7:
+    xor eax, eax
+    ret
+; .L4:
+    cmp rdi, 8
+    jae strict short L.nvol_memrchr_entry_sse2 + 168
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rdx - 4]
+    xor rax, rcx
+    mov rdi, rax
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, rax
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr_entry_sse2 + 118
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rdx + rax - 4]
+    ret
+; .L12:
+    mov eax, dword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short L.nvol_memrchr_entry_sse2 + 165
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L14:
+    xor eax, eax
+    ret
+; .L10:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rdx - 8]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 9187201950435737471
+    and r8, r9
+    mov r9, 9187201950435737471
+    add r8, r9
+    or r8, rax
+    mov rax, 9187201950435737471
+    or r8, rax
+    not r8
+    test r8, r8
+    je strict short L.nvol_memrchr_entry_sse2 + 256
+    bsr rax, r8
+    shr rax, 3
+    lea rax, [rdx + rax - 8]
+    ret
+; .L16:
+    cmp rdi, 16
+    ja strict short L.nvol_memrchr_entry_sse2 + 337
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 9187201950435737471
+    and rcx, rdx
+    mov rdx, 9187201950435737471
+    add rcx, rdx
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short L.nvol_memrchr_entry_sse2 + 334
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L20:
+    xor eax, eax
+    ret
+; .L18:
+    and rdx, -8
+    lea rdi, [rsi + 8]
+    cmp rdx, rdi
+    jb strict short L.nvol_memrchr_entry_sse2 + 424
+    db 0x66, 0x90
+; .L22:
+    lea rdx, [rdx - 8]
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r8, rax
+    mov r9, 9187201950435737471
+    and r8, r9
+    mov r9, 9187201950435737471
+    add r8, r9
+    or r8, rax
+    mov rax, 9187201950435737471
+    or r8, rax
+    not r8
+    test r8, r8
+    jne strict near L.nvol_memrchr_entry_sse2 + 737
+; .L24:
+    cmp rdx, rdi
+    jae strict short L.nvol_memrchr_entry_sse2 + 352
+; .L23:
+    cmp rdx, rsi
+    jbe strict short L.nvol_memrchr_entry_sse2 + 501
+    mov rax, qword [rsi]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 9187201950435737471
+    and rcx, rdx
+    mov rdx, 9187201950435737471
+    add rcx, rdx
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short L.nvol_memrchr_entry_sse2 + 501
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rsi + rax]
+    ret
+; .L28:
+; .L26:
     xor eax, eax
     ret
 ; .L2:
@@ -1569,22 +2354,22 @@ L.nvol_memrchr_entry_sse2:
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    je strict short L.nvol_memrchr_entry_sse2 + 88
+    je strict short L.nvol_memrchr_entry_sse2 + 545
     bsr eax, eax
     lea rax, [rdx + rax - 16]
     ret
-; .L8:
+; .L30:
     and rdx, -16
     cmp rdi, 64
-    jb strict short L.nvol_memrchr_entry_sse2 + 204
+    jb strict short L.nvol_memrchr_entry_sse2 + 660
     lea rcx, [rsi + 64]
     cmp rdi, 1024
-    jae strict near L.nvol_memrchr_entry_sse2 + 308
-; .L12:
+    jae strict near L.nvol_memrchr_entry_sse2 + 777
+; .L34:
     cmp rdx, rcx
-    jb strict short L.nvol_memrchr_entry_sse2 + 204
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-; .L22:
+    jb strict short L.nvol_memrchr_entry_sse2 + 660
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L44:
     lea rdx, [rdx - 64]
     movdqa xmm1, [rdx]
     pcmpeqb xmm1, xmm0
@@ -1601,62 +2386,67 @@ L.nvol_memrchr_entry_sse2:
     por xmm5, xmm6
     pmovmskb eax, xmm5
     test eax, eax
-    jne strict near L.nvol_memrchr_entry_sse2 + 456
-; .L24:
+    jne strict near L.nvol_memrchr_entry_sse2 + 928
+; .L46:
     cmp rdx, rcx
-    jae strict short L.nvol_memrchr_entry_sse2 + 128
-; .L23:
-; .L10:
+    jae strict short L.nvol_memrchr_entry_sse2 + 584
+; .L45:
+; .L32:
     lea rcx, [rsi + 16]
     cmp rdx, rcx
-    jb strict short L.nvol_memrchr_entry_sse2 + 245
+    jb strict short L.nvol_memrchr_entry_sse2 + 701
     db 0xf, 0x1f, 0x0
-; .L32:
+; .L54:
     lea rdx, [rdx - 16]
     movdqu xmm1, [rdx]
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    jne strict near L.nvol_memrchr_entry_sse2 + 492
-; .L34:
+    jne strict near L.nvol_memrchr_entry_sse2 + 964
+; .L56:
     cmp rdx, rcx
-    jae strict short L.nvol_memrchr_entry_sse2 + 216
-; .L33:
+    jae strict short L.nvol_memrchr_entry_sse2 + 672
+; .L55:
     cmp rdx, rsi
-    jbe strict short L.nvol_memrchr_entry_sse2 + 274
+    jbe strict short L.nvol_memrchr_entry_sse2 + 730
     movdqu xmm1, [rsi]
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    je strict short L.nvol_memrchr_entry_sse2 + 274
+    je strict short L.nvol_memrchr_entry_sse2 + 730
     bsr eax, eax
     lea rax, [rsi + rax]
     ret
-; .L38:
-; .L36:
+; .L60:
+; .L58:
     xor eax, eax
 ; .L1:
     ret
-; .L7:
+; .L9:
     mov rax, rdx
     ret
-; .L17:
+; .L25:
+    bsr rax, r8
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L39:
     bsr eax, eax
     lea rax, [rdx + rax + 48]
     ret
-; .L19:
+; .L41:
     bsr eax, eax
     lea rax, [rdx + rax + 32]
     ret
-; .L21:
+; .L43:
     bsr eax, eax
     lea rax, [rdx + rax + 16]
     ret
-; .L15:
-    db 0xf, 0x1f, 0x40, 0x0
-; .L13:
+; .L37:
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L35:
     cmp rdx, rcx
-    jb strict near L.nvol_memrchr_entry_sse2 + 115
+    jb strict near L.nvol_memrchr_entry_sse2 + 572
     lea rdx, [rdx - 64]
     movdqa xmm1, [rdx]
     pcmpeqb xmm1, xmm0
@@ -1673,60 +2463,64 @@ L.nvol_memrchr_entry_sse2:
     por xmm5, xmm6
     pmovmskb eax, xmm5
     test eax, eax
-    je strict short L.nvol_memrchr_entry_sse2 + 312
+    je strict short L.nvol_memrchr_entry_sse2 + 784
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_sse2 + 281
-; .L16:
+    jne strict short L.nvol_memrchr_entry_sse2 + 750
+; .L38:
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_sse2 + 290
-; .L18:
+    jne strict short L.nvol_memrchr_entry_sse2 + 759
+; .L40:
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_sse2 + 299
-; .L20:
+    jne strict short L.nvol_memrchr_entry_sse2 + 768
+; .L42:
     pmovmskb eax, xmm1
     bsr eax, eax
     lea rax, [rdx + rax]
     ret
-    jmp strict near L.nvol_memrchr_entry_sse2 + 115
-; .L27:
+    jmp strict near L.nvol_memrchr_entry_sse2 + 572
+; .L49:
     bsr eax, eax
     lea rax, [rdx + rax + 48]
     ret
-; .L29:
+; .L51:
     bsr eax, eax
     lea rax, [rdx + rax + 32]
     ret
-; .L31:
+; .L53:
     bsr eax, eax
     lea rax, [rdx + rax + 16]
     ret
-; .L25:
+; .L47:
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_sse2 + 429
-; .L26:
+    jne strict short L.nvol_memrchr_entry_sse2 + 901
+; .L48:
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_sse2 + 438
-; .L28:
+    jne strict short L.nvol_memrchr_entry_sse2 + 910
+; .L50:
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memrchr_entry_sse2 + 447
-; .L30:
+    jne strict short L.nvol_memrchr_entry_sse2 + 919
+; .L52:
     pmovmskb eax, xmm1
     bsr eax, eax
     lea rax, [rdx + rax]
     ret
-; .L35:
+; .L57:
     bsr eax, eax
     lea rax, [rdx + rax]
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_memrchr_raw:function 6
 nvol_memrchr_raw:
 L.nvol_memrchr_raw:
@@ -1787,36 +2581,231 @@ L.nvol_memrchr:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-global nvol_memchr2_scalar:function hidden 43
+global nvol_memchr2_scalar:function hidden 689
 nvol_memchr2_scalar:
 L.nvol_memchr2_scalar:
     movzx edi, dil
     movzx esi, sil
-    cmp rdx, rcx
-    jae strict short L.nvol_memchr2_scalar + 40
-    db 0xf, 0x1f, 0x0
-; .L2:
-    movzx eax, byte [rdx]
-    cmp eax, edi
-    je strict short L.nvol_memchr2_scalar + 27
-    cmp eax, esi
-    jne strict short L.nvol_memchr2_scalar + 31
-; .L6:
-; .L5:
-    mov rax, rdx
+    mov r8, rcx
+    sub r8, rdx
+    cmp r8, 4
+    jae strict short L.nvol_memchr2_scalar + 98
+    test r8, r8
+    jne strict short L.nvol_memchr2_scalar + 28
+    xor eax, eax
     ret
 ; .L4:
-    add rdx, 1
+    movzx eax, byte [rdx]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_scalar + 39
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_scalar + 43
+; .L8:
+    mov rax, rdx
+    ret
+; .L6:
+    cmp r8, 1
+    jne strict short L.nvol_memchr2_scalar + 52
+    xor eax, eax
+    ret
+; .L9:
+    movzx eax, byte [rdx + 1]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_scalar + 64
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_scalar + 69
+; .L13:
+    lea rax, [rdx + 1]
+    ret
+; .L11:
+    cmp r8, 2
+    jne strict short L.nvol_memchr2_scalar + 78
+    xor eax, eax
+    ret
+; .L14:
+    movzx eax, byte [rdx + 2]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_scalar + 90
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_scalar + 95
+; .L18:
+    lea rax, [rdx + 2]
+    ret
+; .L16:
+    xor eax, eax
+    ret
+; .L2:
+    cmp r8, 8
+    jae strict near L.nvol_memchr2_scalar + 258
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, dword [rdx]
+    mov r8, rax
+    xor r8, rdi
+    mov r9, r8
+    sub r9d, 16843009
+    not r8d
+    and r9, r8
+    xor rax, rsi
+    mov r8, rax
+    sub r8d, 16843009
+    not eax
+    and r8, rax
+    or r9, r8
+    and r9d, -2139062144
+    je strict short L.nvol_memchr2_scalar + 191
+    bsf eax, r9d
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L21:
+    mov eax, dword [rcx - 4]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    sub edi, 16843009
+    not edx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rdi, rdx
+    and edi, -2139062144
+    je strict short L.nvol_memchr2_scalar + 255
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [rcx + rax - 4]
+    ret
+; .L23:
+    xor eax, eax
+    ret
+; .L19:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, qword [rdx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 72340172838076673
+    sub r10, r11
+    not r9
+    and r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 72340172838076673
+    sub r9, r11
+    not rax
+    and r9, rax
+    or r10, r9
+    mov rax, 9259542123273814144
+    and r10, rax
+    je strict short L.nvol_memchr2_scalar + 373
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L25:
+    cmp r8, 16
+    ja strict short L.nvol_memchr2_scalar + 471
+    mov rax, qword [rcx - 8]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    mov r8, 72340172838076673
+    sub rdi, r8
+    not rdx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    mov rsi, 72340172838076673
+    sub rdx, rsi
+    not rax
+    and rdx, rax
+    or rdi, rdx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr2_scalar + 468
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    ret
+; .L29:
+    xor eax, eax
+    ret
+; .L27:
+    and rdx, -8
+    add rdx, 8
+    lea r8, [rcx - 8]
+    cmp rdx, r8
+    ja strict short L.nvol_memchr2_scalar + 579
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L31:
+    mov rax, qword [rdx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 72340172838076673
+    sub r10, r11
+    not r9
+    and r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 72340172838076673
+    sub r9, r11
+    not rax
+    and r9, rax
+    or r10, r9
+    mov rax, 9259542123273814144
+    and r10, rax
+    jne strict short L.nvol_memchr2_scalar + 676
+; .L33:
+    add rdx, 8
+    cmp rdx, r8
+    jbe strict short L.nvol_memchr2_scalar + 496
+; .L32:
     cmp rdx, rcx
-    jb strict short L.nvol_memchr2_scalar + 16
-; .L3:
+    jae strict short L.nvol_memchr2_scalar + 673
+    mov rax, qword [rcx - 8]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    mov r8, 72340172838076673
+    sub rdi, r8
+    not rdx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    mov rsi, 72340172838076673
+    sub rdx, rsi
+    not rax
+    and rdx, rax
+    or rdi, rdx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr2_scalar + 673
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    ret
+; .L37:
+; .L35:
     xor eax, eax
 ; .L1:
     ret
+; .L34:
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memchr2_sse2:function hidden 314
 nvol_memchr2_sse2:
 L.nvol_memchr2_sse2:
@@ -2040,7 +3029,7 @@ L.nvol_memchr2_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x40, 0x0
-global nvol_memchr2_entry_avx2:function hidden 651
+global nvol_memchr2_entry_avx2:function hidden 1331
 nvol_memchr2_entry_avx2:
 L.nvol_memchr2_entry_avx2:
     movzx edi, dil
@@ -2048,32 +3037,234 @@ L.nvol_memchr2_entry_avx2:
     mov r8, rcx
     sub r8, rdx
     cmp r8, 16
-    jae strict short L.nvol_memchr2_entry_avx2 + 65
-    cmp rdx, rcx
-    jae strict short L.nvol_memchr2_entry_avx2 + 59
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L4:
-    movzx eax, byte [rdx]
-    cmp eax, edi
-    je strict short L.nvol_memchr2_entry_avx2 + 43
-    cmp eax, esi
-    jne strict short L.nvol_memchr2_entry_avx2 + 50
-; .L8:
-; .L7:
-    mov rax, rdx
+    jae strict near L.nvol_memchr2_entry_avx2 + 734
+    cmp r8, 4
+    jae strict short L.nvol_memchr2_entry_avx2 + 129
+    test r8, r8
+    jne strict short L.nvol_memchr2_entry_avx2 + 41
+    xor eax, eax
     vzeroupper
     ret
 ; .L6:
-    add rdx, 1
+    movzx eax, byte [rdx]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_entry_avx2 + 52
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_entry_avx2 + 59
+; .L10:
+    mov rax, rdx
+    vzeroupper
+    ret
+; .L8:
+    cmp r8, 1
+    jne strict short L.nvol_memchr2_entry_avx2 + 71
+    xor eax, eax
+    vzeroupper
+    ret
+; .L11:
+    movzx eax, byte [rdx + 1]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_entry_avx2 + 83
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_entry_avx2 + 91
+; .L15:
+    lea rax, [rdx + 1]
+    vzeroupper
+    ret
+; .L13:
+    cmp r8, 2
+    jne strict short L.nvol_memchr2_entry_avx2 + 103
+    xor eax, eax
+    vzeroupper
+    ret
+; .L16:
+    movzx eax, byte [rdx + 2]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_entry_avx2 + 115
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_entry_avx2 + 123
+; .L20:
+    lea rax, [rdx + 2]
+    vzeroupper
+    ret
+; .L18:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L4:
+    cmp r8, 8
+    jae strict near L.nvol_memchr2_entry_avx2 + 298
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, dword [rdx]
+    mov r8, rax
+    xor r8, rdi
+    mov r9, r8
+    sub r9d, 16843009
+    not r8d
+    and r9, r8
+    xor rax, rsi
+    mov r8, rax
+    sub r8d, 16843009
+    not eax
+    and r8, rax
+    or r9, r8
+    and r9d, -2139062144
+    je strict short L.nvol_memchr2_entry_avx2 + 225
+    bsf eax, r9d
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    ret
+; .L23:
+    mov eax, dword [rcx - 4]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    sub edi, 16843009
+    not edx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rdi, rdx
+    and edi, -2139062144
+    je strict short L.nvol_memchr2_entry_avx2 + 292
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [rcx + rax - 4]
+    vzeroupper
+    ret
+; .L25:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L21:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, qword [rdx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 72340172838076673
+    sub r10, r11
+    not r9
+    and r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 72340172838076673
+    sub r9, r11
+    not rax
+    and r9, rax
+    or r10, r9
+    mov rax, 9259542123273814144
+    and r10, rax
+    je strict short L.nvol_memchr2_entry_avx2 + 416
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    ret
+; .L27:
+    cmp r8, 16
+    ja strict short L.nvol_memchr2_entry_avx2 + 520
+    mov rax, qword [rcx - 8]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    mov r8, 72340172838076673
+    sub rdi, r8
+    not rdx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    mov rsi, 72340172838076673
+    sub rdx, rsi
+    not rax
+    and rdx, rax
+    or rdi, rdx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr2_entry_avx2 + 514
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    vzeroupper
+    ret
+; .L31:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L29:
+    and rdx, -8
+    add rdx, 8
+    lea r8, [rcx - 8]
+    cmp rdx, r8
+    ja strict short L.nvol_memchr2_entry_avx2 + 631
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L33:
+    mov rax, qword [rdx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 72340172838076673
+    sub r10, r11
+    not r9
+    and r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 72340172838076673
+    sub r9, r11
+    not rax
+    and r9, rax
+    or r10, r9
+    mov rax, 9259542123273814144
+    and r10, rax
+    jne strict near L.nvol_memchr2_entry_avx2 + 1223
+; .L35:
+    add rdx, 8
+    cmp rdx, r8
+    jbe strict short L.nvol_memchr2_entry_avx2 + 544
+; .L34:
     cmp rdx, rcx
-    jb strict short L.nvol_memchr2_entry_avx2 + 32
-; .L5:
+    jae strict short L.nvol_memchr2_entry_avx2 + 728
+    mov rax, qword [rcx - 8]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    mov r8, 72340172838076673
+    sub rdi, r8
+    not rdx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    mov rsi, 72340172838076673
+    sub rdx, rsi
+    not rax
+    and rdx, rax
+    or rdi, rdx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr2_entry_avx2 + 728
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    vzeroupper
+    ret
+; .L39:
+; .L37:
     xor eax, eax
     vzeroupper
     ret
 ; .L2:
     cmp r8, 32
-    jae strict near L.nvol_memchr2_entry_avx2 + 319
+    jae strict near L.nvol_memchr2_entry_avx2 + 983
     vmovd xmm0, edi
     vpbroadcastb xmm0, xmm0
     vmovd xmm1, esi
@@ -2084,21 +3275,21 @@ L.nvol_memchr2_entry_avx2:
     vpor xmm2, xmm3, xmm2
     vpmovmskb eax, xmm2
     test eax, eax
-    je strict short L.nvol_memchr2_entry_avx2 + 128
+    je strict short L.nvol_memchr2_entry_avx2 + 797
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L11:
+; .L43:
     and rdx, -16
     add rdx, 16
     cmp r8, 32
-    jb strict short L.nvol_memchr2_entry_avx2 + 218
+    jb strict short L.nvol_memchr2_entry_avx2 + 882
     lea rsi, [rcx - 32]
     cmp rdx, rsi
-    ja strict short L.nvol_memchr2_entry_avx2 + 218
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-; .L15:
+    ja strict short L.nvol_memchr2_entry_avx2 + 882
+    db 0xf, 0x1f, 0x40, 0x0
+; .L47:
     vmovdqa xmm2, [rdx]
     vmovdqa xmm3, [rdx + 16]
     vpcmpeqb xmm4, xmm2, xmm0
@@ -2110,32 +3301,32 @@ L.nvol_memchr2_entry_avx2:
     vpor xmm4, xmm2, xmm3
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict near L.nvol_memchr2_entry_avx2 + 570
-; .L17:
+    jne strict near L.nvol_memchr2_entry_avx2 + 1250
+; .L49:
     add rdx, 32
     cmp rdx, rsi
-    jbe strict short L.nvol_memchr2_entry_avx2 + 160
-; .L16:
-; .L13:
+    jbe strict short L.nvol_memchr2_entry_avx2 + 824
+; .L48:
+; .L45:
     lea rsi, [rcx - 16]
     cmp rdx, rsi
-    ja strict short L.nvol_memchr2_entry_avx2 + 269
+    ja strict short L.nvol_memchr2_entry_avx2 + 933
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L21:
+; .L53:
     vmovdqu xmm2, [rdx]
     vpcmpeqb xmm3, xmm2, xmm0
     vpcmpeqb xmm2, xmm2, xmm1
     vpor xmm2, xmm3, xmm2
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict near L.nvol_memchr2_entry_avx2 + 594
-; .L23:
+    jne strict near L.nvol_memchr2_entry_avx2 + 1274
+; .L55:
     add rdx, 16
     cmp rdx, rsi
-    jbe strict short L.nvol_memchr2_entry_avx2 + 232
-; .L22:
+    jbe strict short L.nvol_memchr2_entry_avx2 + 896
+; .L54:
     cmp rdx, rcx
-    jae strict short L.nvol_memchr2_entry_avx2 + 313
+    jae strict short L.nvol_memchr2_entry_avx2 + 977
     lea rdx, [rcx - 16]
     vmovdqu xmm2, [rdx]
     vpcmpeqb xmm0, xmm2, xmm0
@@ -2143,17 +3334,17 @@ L.nvol_memchr2_entry_avx2:
     vpor xmm0, xmm0, xmm1
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_memchr2_entry_avx2 + 313
+    je strict short L.nvol_memchr2_entry_avx2 + 977
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L27:
-; .L25:
+; .L59:
+; .L57:
     xor eax, eax
     vzeroupper
     ret
-; .L9:
+; .L41:
     vmovd xmm0, edi
     vpbroadcastb ymm0, xmm0
     vmovd xmm1, esi
@@ -2164,21 +3355,21 @@ L.nvol_memchr2_entry_avx2:
     vpor ymm2, ymm3, ymm2
     vpmovmskb eax, ymm2
     test eax, eax
-    je strict short L.nvol_memchr2_entry_avx2 + 372
+    je strict short L.nvol_memchr2_entry_avx2 + 1036
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L29:
+; .L61:
     and rdx, -32
     add rdx, 32
     cmp r8, 64
-    jb strict short L.nvol_memchr2_entry_avx2 + 458
+    jb strict short L.nvol_memchr2_entry_avx2 + 1122
     lea rsi, [rcx - 64]
     cmp rdx, rsi
-    ja strict short L.nvol_memchr2_entry_avx2 + 458
+    ja strict short L.nvol_memchr2_entry_avx2 + 1122
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L33:
+; .L65:
     vmovdqa ymm2, [rdx]
     vmovdqa ymm3, [rdx + 32]
     vpcmpeqb ymm4, ymm2, ymm0
@@ -2190,32 +3381,32 @@ L.nvol_memchr2_entry_avx2:
     vpor ymm4, ymm2, ymm3
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict near L.nvol_memchr2_entry_avx2 + 616
-; .L35:
+    jne strict near L.nvol_memchr2_entry_avx2 + 1296
+; .L67:
     add rdx, 64
     cmp rdx, rsi
-    jbe strict short L.nvol_memchr2_entry_avx2 + 400
-; .L34:
-; .L31:
+    jbe strict short L.nvol_memchr2_entry_avx2 + 1064
+; .L66:
+; .L63:
     lea rsi, [rcx - 32]
     cmp rdx, rsi
-    ja strict short L.nvol_memchr2_entry_avx2 + 509
+    ja strict short L.nvol_memchr2_entry_avx2 + 1173
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L39:
+; .L71:
     vmovdqu ymm2, [rdx]
     vpcmpeqb ymm3, ymm2, ymm0
     vpcmpeqb ymm2, ymm2, ymm1
     vpor ymm2, ymm3, ymm2
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict near L.nvol_memchr2_entry_avx2 + 640
-; .L41:
+    jne strict near L.nvol_memchr2_entry_avx2 + 1320
+; .L73:
     add rdx, 32
     cmp rdx, rsi
-    jbe strict short L.nvol_memchr2_entry_avx2 + 472
-; .L40:
+    jbe strict short L.nvol_memchr2_entry_avx2 + 1136
+; .L72:
     cmp rdx, rcx
-    jae strict short L.nvol_memchr2_entry_avx2 + 553
+    jae strict short L.nvol_memchr2_entry_avx2 + 1217
     lea rdx, [rcx - 32]
     vmovdqu ymm2, [rdx]
     vpcmpeqb ymm0, ymm2, ymm0
@@ -2223,65 +3414,67 @@ L.nvol_memchr2_entry_avx2:
     vpor ymm0, ymm0, ymm1
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_memchr2_entry_avx2 + 553
+    je strict short L.nvol_memchr2_entry_avx2 + 1217
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L45:
-; .L43:
+; .L77:
+; .L75:
     xor eax, eax
 ; .L1:
     vzeroupper
     ret
-; .L20:
+; .L36:
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    ret
+; .L52:
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L18:
+; .L50:
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memchr2_entry_avx2 + 559
-; .L19:
+    jne strict short L.nvol_memchr2_entry_avx2 + 1239
+; .L51:
     vpmovmskb eax, xmm3
     bsf eax, eax
     lea rax, [rdx + rax + 16]
     vzeroupper
     ret
-; .L24:
+; .L56:
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L38:
+; .L70:
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L36:
+; .L68:
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict short L.nvol_memchr2_entry_avx2 + 605
-; .L37:
+    jne strict short L.nvol_memchr2_entry_avx2 + 1285
+; .L69:
     vpmovmskb eax, ymm3
     bsf eax, eax
     lea rax, [rdx + rax + 32]
     vzeroupper
     ret
-; .L42:
+; .L74:
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_memchr2_entry_sse2:function hidden 354
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_memchr2_entry_sse2:function hidden 999
 nvol_memchr2_entry_sse2:
 L.nvol_memchr2_entry_sse2:
     movzx edi, dil
@@ -2289,25 +3482,214 @@ L.nvol_memchr2_entry_sse2:
     mov r8, rcx
     sub r8, rdx
     cmp r8, 16
-    jae strict short L.nvol_memchr2_entry_sse2 + 59
-    cmp rdx, rcx
-    jae strict short L.nvol_memchr2_entry_sse2 + 56
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L4:
-    movzx eax, byte [rdx]
-    cmp eax, edi
-    je strict short L.nvol_memchr2_entry_sse2 + 43
-    cmp eax, esi
-    jne strict short L.nvol_memchr2_entry_sse2 + 47
-; .L8:
-; .L7:
-    mov rax, rdx
+    jae strict near L.nvol_memchr2_entry_sse2 + 688
+    cmp r8, 4
+    jae strict short L.nvol_memchr2_entry_sse2 + 108
+    test r8, r8
+    jne strict short L.nvol_memchr2_entry_sse2 + 38
+    xor eax, eax
     ret
 ; .L6:
-    add rdx, 1
+    movzx eax, byte [rdx]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_entry_sse2 + 49
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_entry_sse2 + 53
+; .L10:
+    mov rax, rdx
+    ret
+; .L8:
+    cmp r8, 1
+    jne strict short L.nvol_memchr2_entry_sse2 + 62
+    xor eax, eax
+    ret
+; .L11:
+    movzx eax, byte [rdx + 1]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_entry_sse2 + 74
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_entry_sse2 + 79
+; .L15:
+    lea rax, [rdx + 1]
+    ret
+; .L13:
+    cmp r8, 2
+    jne strict short L.nvol_memchr2_entry_sse2 + 88
+    xor eax, eax
+    ret
+; .L16:
+    movzx eax, byte [rdx + 2]
+    cmp eax, edi
+    je strict short L.nvol_memchr2_entry_sse2 + 100
+    cmp eax, esi
+    jne strict short L.nvol_memchr2_entry_sse2 + 105
+; .L20:
+    lea rax, [rdx + 2]
+    ret
+; .L18:
+    xor eax, eax
+    ret
+; .L4:
+    cmp r8, 8
+    jae strict near L.nvol_memchr2_entry_sse2 + 268
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, dword [rdx]
+    mov r8, rax
+    xor r8, rdi
+    mov r9, r8
+    sub r9d, 16843009
+    not r8d
+    and r9, r8
+    xor rax, rsi
+    mov r8, rax
+    sub r8d, 16843009
+    not eax
+    and r8, rax
+    or r9, r8
+    and r9d, -2139062144
+    je strict short L.nvol_memchr2_entry_sse2 + 201
+    bsf eax, r9d
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L23:
+    mov eax, dword [rcx - 4]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    sub edi, 16843009
+    not edx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rdi, rdx
+    and edi, -2139062144
+    je strict short L.nvol_memchr2_entry_sse2 + 265
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [rcx + rax - 4]
+    ret
+; .L25:
+    xor eax, eax
+    ret
+; .L21:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, qword [rdx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 72340172838076673
+    sub r10, r11
+    not r9
+    and r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 72340172838076673
+    sub r9, r11
+    not rax
+    and r9, rax
+    or r10, r9
+    mov rax, 9259542123273814144
+    and r10, rax
+    je strict short L.nvol_memchr2_entry_sse2 + 383
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L27:
+    cmp r8, 16
+    ja strict short L.nvol_memchr2_entry_sse2 + 481
+    mov rax, qword [rcx - 8]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    mov r8, 72340172838076673
+    sub rdi, r8
+    not rdx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    mov rsi, 72340172838076673
+    sub rdx, rsi
+    not rax
+    and rdx, rax
+    or rdi, rdx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr2_entry_sse2 + 478
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    ret
+; .L31:
+    xor eax, eax
+    ret
+; .L29:
+    and rdx, -8
+    add rdx, 8
+    lea r8, [rcx - 8]
+    cmp rdx, r8
+    ja strict short L.nvol_memchr2_entry_sse2 + 591
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L33:
+    mov rax, qword [rdx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 72340172838076673
+    sub r10, r11
+    not r9
+    and r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 72340172838076673
+    sub r9, r11
+    not rax
+    and r9, rax
+    or r10, r9
+    mov rax, 9259542123273814144
+    and r10, rax
+    jne strict near L.nvol_memchr2_entry_sse2 + 949
+; .L35:
+    add rdx, 8
+    cmp rdx, r8
+    jbe strict short L.nvol_memchr2_entry_sse2 + 504
+; .L34:
     cmp rdx, rcx
-    jb strict short L.nvol_memchr2_entry_sse2 + 32
-; .L5:
+    jae strict short L.nvol_memchr2_entry_sse2 + 685
+    mov rax, qword [rcx - 8]
+    mov rdx, rax
+    xor rdx, rdi
+    mov rdi, rdx
+    mov r8, 72340172838076673
+    sub rdi, r8
+    not rdx
+    and rdi, rdx
+    xor rax, rsi
+    mov rdx, rax
+    mov rsi, 72340172838076673
+    sub rdx, rsi
+    not rax
+    and rdx, rax
+    or rdi, rdx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr2_entry_sse2 + 685
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    ret
+; .L39:
+; .L37:
     xor eax, eax
     ret
 ; .L2:
@@ -2324,20 +3706,20 @@ L.nvol_memchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short L.nvol_memchr2_entry_sse2 + 125
+    je strict short L.nvol_memchr2_entry_sse2 + 754
     bsf eax, eax
     lea rax, [rdx + rax]
     ret
-; .L9:
+; .L41:
     and rdx, -16
     add rdx, 16
     cmp r8, 32
-    jb strict short L.nvol_memchr2_entry_sse2 + 218
+    jb strict short L.nvol_memchr2_entry_sse2 + 854
     lea rsi, [rcx - 32]
     cmp rdx, rsi
-    ja strict short L.nvol_memchr2_entry_sse2 + 218
-    db 0xf, 0x1f, 0x40, 0x0
-; .L13:
+    ja strict short L.nvol_memchr2_entry_sse2 + 854
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L45:
     movdqa xmm2, [rdx]
     movdqa xmm3, [rdx + 16]
     movdqa xmm4, xmm2
@@ -2352,18 +3734,18 @@ L.nvol_memchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memchr2_entry_sse2 + 325
-; .L15:
+    jne strict near L.nvol_memchr2_entry_sse2 + 970
+; .L47:
     add rdx, 32
     cmp rdx, rsi
-    jbe strict short L.nvol_memchr2_entry_sse2 + 152
-; .L14:
-; .L11:
+    jbe strict short L.nvol_memchr2_entry_sse2 + 784
+; .L46:
+; .L43:
     lea rsi, [rcx - 16]
     cmp rdx, rsi
-    ja strict short L.nvol_memchr2_entry_sse2 + 269
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L19:
+    ja strict short L.nvol_memchr2_entry_sse2 + 901
+    db 0x90
+; .L51:
     movdqu xmm2, [rdx]
     movdqa xmm3, xmm2
     pcmpeqb xmm3, xmm0
@@ -2371,14 +3753,14 @@ L.nvol_memchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memchr2_entry_sse2 + 346
-; .L21:
+    jne strict short L.nvol_memchr2_entry_sse2 + 991
+; .L53:
     add rdx, 16
     cmp rdx, rsi
-    jbe strict short L.nvol_memchr2_entry_sse2 + 232
-; .L20:
+    jbe strict short L.nvol_memchr2_entry_sse2 + 864
+; .L52:
     cmp rdx, rcx
-    jae strict short L.nvol_memchr2_entry_sse2 + 314
+    jae strict short L.nvol_memchr2_entry_sse2 + 946
     lea rdx, [rcx - 16]
     movdqu xmm2, [rdx]
     movdqa xmm3, xmm2
@@ -2387,37 +3769,41 @@ L.nvol_memchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short L.nvol_memchr2_entry_sse2 + 314
+    je strict short L.nvol_memchr2_entry_sse2 + 946
     bsf eax, eax
     lea rax, [rdx + rax]
     ret
-; .L25:
-; .L23:
+; .L57:
+; .L55:
     xor eax, eax
 ; .L1:
     ret
-; .L18:
+; .L36:
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L50:
     bsf eax, eax
     lea rax, [rdx + rax]
     ret
-; .L16:
+; .L48:
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict short L.nvol_memchr2_entry_sse2 + 317
-; .L17:
+    jne strict short L.nvol_memchr2_entry_sse2 + 962
+; .L49:
     pmovmskb eax, xmm2
     bsf eax, eax
     lea rax, [rdx + rax + 16]
     ret
-; .L22:
+; .L54:
     bsf eax, eax
     lea rax, [rdx + rax]
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_memchr2_raw:function 6
 nvol_memchr2_raw:
 L.nvol_memchr2_raw:
@@ -2478,31 +3864,246 @@ L.nvol_memchr2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-global nvol_memrchr2_scalar:function hidden 43
+global nvol_memrchr2_scalar:function hidden 811
 nvol_memrchr2_scalar:
 L.nvol_memrchr2_scalar:
     movzx edi, dil
     movzx esi, sil
-    cmp rcx, rdx
-    jbe strict short L.nvol_memrchr2_scalar + 40
-    db 0xf, 0x1f, 0x0
-; .L2:
-    lea rcx, [rcx - 1]
-    movzx eax, byte [rcx]
-    cmp eax, edi
-    je strict short L.nvol_memrchr2_scalar + 31
-    cmp eax, esi
-    jne strict short L.nvol_memrchr2_scalar + 35
-; .L6:
-; .L5:
-    mov rax, rcx
+    mov r8, rcx
+    sub r8, rdx
+    cmp r8, 4
+    jae strict short L.nvol_memrchr2_scalar + 100
+    test r8, r8
+    jne strict short L.nvol_memrchr2_scalar + 28
+    xor eax, eax
     ret
 ; .L4:
+    movzx eax, byte [rcx - 1]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_scalar + 40
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_scalar + 45
+; .L8:
+    lea rax, [rcx - 1]
+    ret
+; .L6:
+    cmp r8, 1
+    jne strict short L.nvol_memrchr2_scalar + 54
+    xor eax, eax
+    ret
+; .L9:
+    movzx eax, byte [rcx - 2]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_scalar + 66
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_scalar + 71
+; .L13:
+    lea rax, [rcx - 2]
+    ret
+; .L11:
+    cmp r8, 2
+    jne strict short L.nvol_memrchr2_scalar + 80
+    xor eax, eax
+    ret
+; .L14:
+    movzx eax, byte [rcx - 3]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_scalar + 92
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_scalar + 97
+; .L18:
+    lea rax, [rcx - 3]
+    ret
+; .L16:
+    xor eax, eax
+    ret
+; .L2:
+    cmp r8, 8
+    jae strict near L.nvol_memrchr2_scalar + 287
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, dword [rcx - 4]
+    mov r8, rax
+    xor r8, rdi
+    mov r9, r8
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, r8
+    xor rax, rsi
+    mov r8, rax
+    and r8d, 2139062143
+    add r8d, 2139062143
+    or r8, rax
+    and r9, r8
+    or r9d, 2139062143
+    not r9d
+    test r9d, r9d
+    je strict short L.nvol_memrchr2_scalar + 210
+    bsr eax, r9d
+    shr rax, 3
+    lea rax, [rcx + rax - 4]
+    ret
+; .L21:
+    mov eax, dword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    and rdi, rcx
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr2_scalar + 284
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L23:
+    xor eax, eax
+    ret
+; .L19:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, qword [rcx - 8]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 9187201950435737471
+    and r9, r11
+    mov r11, 9187201950435737471
+    add r9, r11
+    or r9, rax
+    and r10, r9
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    je strict short L.nvol_memrchr2_scalar + 430
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    ret
+; .L25:
+    cmp r8, 16
+    ja strict short L.nvol_memrchr2_scalar + 552
+    mov rax, qword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r8, 9187201950435737471
+    and rdi, r8
+    mov r8, 9187201950435737471
+    add rdi, r8
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    mov rsi, 9187201950435737471
+    and rcx, rsi
+    mov rsi, 9187201950435737471
+    add rcx, rsi
+    or rcx, rax
+    and rdi, rcx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr2_scalar + 549
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L29:
+    xor eax, eax
+    ret
+; .L27:
+    and rcx, -8
+    lea r8, [rdx + 8]
+    cmp rcx, r8
+    jb strict short L.nvol_memrchr2_scalar + 677
+    db 0xf, 0x1f, 0x0
+; .L31:
+    lea rcx, [rcx - 8]
+    mov rax, qword [rcx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 9187201950435737471
+    and r9, r11
+    mov r11, 9187201950435737471
+    add r9, r11
+    or r9, rax
+    and r10, r9
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    jne strict short L.nvol_memrchr2_scalar + 798
+; .L33:
+    cmp rcx, r8
+    jae strict short L.nvol_memrchr2_scalar + 568
+; .L32:
     cmp rcx, rdx
-    ja strict short L.nvol_memrchr2_scalar + 16
-; .L3:
+    jbe strict short L.nvol_memrchr2_scalar + 795
+    mov rax, qword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r8, 9187201950435737471
+    and rdi, r8
+    mov r8, 9187201950435737471
+    add rdi, r8
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    mov rsi, 9187201950435737471
+    and rcx, rsi
+    mov rsi, 9187201950435737471
+    add rcx, rsi
+    or rcx, rax
+    and rdi, rcx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr2_scalar + 795
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L37:
+; .L35:
     xor eax, eax
 ; .L1:
+    ret
+; .L34:
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [rcx + rax]
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
@@ -2802,7 +4403,7 @@ L.nvol_memrchr2_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_memrchr2_entry_avx2:function hidden 868
+global nvol_memrchr2_entry_avx2:function hidden 1684
 nvol_memrchr2_entry_avx2:
 L.nvol_memrchr2_entry_avx2:
     movzx edi, dil
@@ -2810,32 +4411,254 @@ L.nvol_memrchr2_entry_avx2:
     mov r8, rcx
     sub r8, rdx
     cmp r8, 16
-    jae strict short L.nvol_memrchr2_entry_avx2 + 65
-    cmp rcx, rdx
-    jbe strict short L.nvol_memrchr2_entry_avx2 + 59
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L4:
-    lea rcx, [rcx - 1]
-    movzx eax, byte [rcx]
-    cmp eax, edi
-    je strict short L.nvol_memrchr2_entry_avx2 + 47
-    cmp eax, esi
-    jne strict short L.nvol_memrchr2_entry_avx2 + 54
-; .L8:
-; .L7:
-    mov rax, rcx
+    jae strict near L.nvol_memrchr2_entry_avx2 + 864
+    cmp r8, 4
+    jae strict short L.nvol_memrchr2_entry_avx2 + 131
+    test r8, r8
+    jne strict short L.nvol_memrchr2_entry_avx2 + 41
+    xor eax, eax
     vzeroupper
     ret
 ; .L6:
+    movzx eax, byte [rcx - 1]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_entry_avx2 + 53
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_entry_avx2 + 61
+; .L10:
+    lea rax, [rcx - 1]
+    vzeroupper
+    ret
+; .L8:
+    cmp r8, 1
+    jne strict short L.nvol_memrchr2_entry_avx2 + 73
+    xor eax, eax
+    vzeroupper
+    ret
+; .L11:
+    movzx eax, byte [rcx - 2]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_entry_avx2 + 85
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_entry_avx2 + 93
+; .L15:
+    lea rax, [rcx - 2]
+    vzeroupper
+    ret
+; .L13:
+    cmp r8, 2
+    jne strict short L.nvol_memrchr2_entry_avx2 + 105
+    xor eax, eax
+    vzeroupper
+    ret
+; .L16:
+    movzx eax, byte [rcx - 3]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_entry_avx2 + 117
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_entry_avx2 + 125
+; .L20:
+    lea rax, [rcx - 3]
+    vzeroupper
+    ret
+; .L18:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L4:
+    cmp r8, 8
+    jae strict near L.nvol_memrchr2_entry_avx2 + 327
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, dword [rcx - 4]
+    mov r8, rax
+    xor r8, rdi
+    mov r9, r8
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, r8
+    xor rax, rsi
+    mov r8, rax
+    and r8d, 2139062143
+    add r8d, 2139062143
+    or r8, rax
+    and r9, r8
+    or r9d, 2139062143
+    not r9d
+    test r9d, r9d
+    je strict short L.nvol_memrchr2_entry_avx2 + 244
+    bsr eax, r9d
+    shr rax, 3
+    lea rax, [rcx + rax - 4]
+    vzeroupper
+    ret
+; .L23:
+    mov eax, dword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    and rdi, rcx
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr2_entry_avx2 + 321
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    ret
+; .L25:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L21:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, qword [rcx - 8]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 9187201950435737471
+    and r9, r11
+    mov r11, 9187201950435737471
+    add r9, r11
+    or r9, rax
+    and r10, r9
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    je strict short L.nvol_memrchr2_entry_avx2 + 473
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    vzeroupper
+    ret
+; .L27:
+    cmp r8, 16
+    ja strict short L.nvol_memrchr2_entry_avx2 + 601
+    mov rax, qword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r8, 9187201950435737471
+    and rdi, r8
+    mov r8, 9187201950435737471
+    add rdi, r8
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    mov rsi, 9187201950435737471
+    and rcx, rsi
+    mov rsi, 9187201950435737471
+    add rcx, rsi
+    or rcx, rax
+    and rdi, rcx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr2_entry_avx2 + 595
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    ret
+; .L31:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L29:
+    and rcx, -8
+    lea r8, [rdx + 8]
+    cmp rcx, r8
+    jb strict short L.nvol_memrchr2_entry_avx2 + 737
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L33:
+    lea rcx, [rcx - 8]
+    mov rax, qword [rcx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 9187201950435737471
+    and r9, r11
+    mov r11, 9187201950435737471
+    add r9, r11
+    or r9, rax
+    and r10, r9
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    jne strict near L.nvol_memrchr2_entry_avx2 + 1371
+; .L35:
+    cmp rcx, r8
+    jae strict short L.nvol_memrchr2_entry_avx2 + 624
+; .L34:
     cmp rcx, rdx
-    ja strict short L.nvol_memrchr2_entry_avx2 + 32
-; .L5:
+    jbe strict short L.nvol_memrchr2_entry_avx2 + 858
+    mov rax, qword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r8, 9187201950435737471
+    and rdi, r8
+    mov r8, 9187201950435737471
+    add rdi, r8
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    mov rsi, 9187201950435737471
+    and rcx, rsi
+    mov rsi, 9187201950435737471
+    add rcx, rsi
+    or rcx, rax
+    and rdi, rcx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr2_entry_avx2 + 858
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    ret
+; .L39:
+; .L37:
     xor eax, eax
     vzeroupper
     ret
 ; .L2:
     cmp r8, 32
-    jae strict near L.nvol_memrchr2_entry_avx2 + 323
+    jae strict near L.nvol_memrchr2_entry_avx2 + 1123
     vmovd xmm0, edi
     vpbroadcastb xmm0, xmm0
     vmovd xmm1, esi
@@ -2846,23 +4669,23 @@ L.nvol_memrchr2_entry_avx2:
     vpor xmm2, xmm3, xmm2
     vpmovmskb eax, xmm2
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_avx2 + 130
+    je strict short L.nvol_memrchr2_entry_avx2 + 929
     bsr eax, eax
     lea rax, [rcx + rax - 16]
     vzeroupper
     ret
-; .L11:
+; .L43:
     and rcx, -16
     cmp r8, 32
-    jb strict short L.nvol_memrchr2_entry_avx2 + 226
+    jb strict short L.nvol_memrchr2_entry_avx2 + 1026
     lea rsi, [rdx + 32]
     cmp r8, 512
-    jae strict near L.nvol_memrchr2_entry_avx2 + 583
-; .L15:
+    jae strict near L.nvol_memrchr2_entry_avx2 + 1399
+; .L47:
     cmp rcx, rsi
-    jb strict short L.nvol_memrchr2_entry_avx2 + 226
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L21:
+    jb strict short L.nvol_memrchr2_entry_avx2 + 1026
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L53:
     lea rcx, [rcx - 32]
     vmovdqa xmm2, [rcx]
     vmovdqa xmm3, [rcx + 16]
@@ -2875,17 +4698,17 @@ L.nvol_memrchr2_entry_avx2:
     vpor xmm4, xmm2, xmm3
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict near L.nvol_memrchr2_entry_avx2 + 690
-; .L23:
+    jne strict near L.nvol_memrchr2_entry_avx2 + 1506
+; .L55:
     cmp rcx, rsi
-    jae strict short L.nvol_memrchr2_entry_avx2 + 168
-; .L22:
-; .L13:
+    jae strict short L.nvol_memrchr2_entry_avx2 + 968
+; .L54:
+; .L45:
     lea rsi, [rdx + 16]
     cmp rcx, rsi
-    jb strict short L.nvol_memrchr2_entry_avx2 + 277
+    jb strict short L.nvol_memrchr2_entry_avx2 + 1077
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L27:
+; .L59:
     lea rcx, [rcx - 16]
     vmovdqu xmm2, [rcx]
     vpcmpeqb xmm3, xmm2, xmm0
@@ -2893,30 +4716,30 @@ L.nvol_memrchr2_entry_avx2:
     vpor xmm2, xmm3, xmm2
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict near L.nvol_memrchr2_entry_avx2 + 713
-; .L29:
+    jne strict near L.nvol_memrchr2_entry_avx2 + 1529
+; .L61:
     cmp rcx, rsi
-    jae strict short L.nvol_memrchr2_entry_avx2 + 240
-; .L28:
+    jae strict short L.nvol_memrchr2_entry_avx2 + 1040
+; .L60:
     cmp rcx, rdx
-    jbe strict short L.nvol_memrchr2_entry_avx2 + 317
+    jbe strict short L.nvol_memrchr2_entry_avx2 + 1117
     vmovdqu xmm2, [rdx]
     vpcmpeqb xmm0, xmm2, xmm0
     vpcmpeqb xmm1, xmm2, xmm1
     vpor xmm0, xmm0, xmm1
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_avx2 + 317
+    je strict short L.nvol_memrchr2_entry_avx2 + 1117
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L33:
-; .L31:
+; .L65:
+; .L63:
     xor eax, eax
     vzeroupper
     ret
-; .L9:
+; .L41:
     vmovd xmm0, edi
     vpbroadcastb ymm0, xmm0
     vmovd xmm1, esi
@@ -2927,23 +4750,23 @@ L.nvol_memrchr2_entry_avx2:
     vpor ymm2, ymm3, ymm2
     vpmovmskb eax, ymm2
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_avx2 + 378
+    je strict short L.nvol_memrchr2_entry_avx2 + 1178
     bsr eax, eax
     lea rax, [rcx + rax - 32]
     vzeroupper
     ret
-; .L35:
+; .L67:
     and rcx, -32
     cmp r8, 64
-    jb strict short L.nvol_memrchr2_entry_avx2 + 474
+    jb strict short L.nvol_memrchr2_entry_avx2 + 1274
     lea rsi, [rdx + 64]
     cmp r8, 2048
-    jae strict near L.nvol_memrchr2_entry_avx2 + 736
-; .L39:
+    jae strict near L.nvol_memrchr2_entry_avx2 + 1552
+; .L71:
     cmp rcx, rsi
-    jb strict short L.nvol_memrchr2_entry_avx2 + 474
+    jb strict short L.nvol_memrchr2_entry_avx2 + 1274
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L45:
+; .L77:
     lea rcx, [rcx - 64]
     vmovdqa ymm2, [rcx]
     vmovdqa ymm3, [rcx + 32]
@@ -2956,17 +4779,17 @@ L.nvol_memrchr2_entry_avx2:
     vpor ymm4, ymm2, ymm3
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict near L.nvol_memrchr2_entry_avx2 + 834
-; .L47:
+    jne strict near L.nvol_memrchr2_entry_avx2 + 1650
+; .L79:
     cmp rcx, rsi
-    jae strict short L.nvol_memrchr2_entry_avx2 + 416
-; .L46:
-; .L37:
+    jae strict short L.nvol_memrchr2_entry_avx2 + 1216
+; .L78:
+; .L69:
     lea rsi, [rdx + 32]
     cmp rcx, rsi
-    jb strict short L.nvol_memrchr2_entry_avx2 + 525
+    jb strict short L.nvol_memrchr2_entry_avx2 + 1325
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L51:
+; .L83:
     lea rcx, [rcx - 32]
     vmovdqu ymm2, [rcx]
     vpcmpeqb ymm3, ymm2, ymm0
@@ -2974,40 +4797,46 @@ L.nvol_memrchr2_entry_avx2:
     vpor ymm2, ymm3, ymm2
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict near L.nvol_memrchr2_entry_avx2 + 857
-; .L53:
+    jne strict near L.nvol_memrchr2_entry_avx2 + 1673
+; .L85:
     cmp rcx, rsi
-    jae strict short L.nvol_memrchr2_entry_avx2 + 488
-; .L52:
+    jae strict short L.nvol_memrchr2_entry_avx2 + 1288
+; .L84:
     cmp rcx, rdx
-    jbe strict short L.nvol_memrchr2_entry_avx2 + 565
+    jbe strict short L.nvol_memrchr2_entry_avx2 + 1365
     vmovdqu ymm2, [rdx]
     vpcmpeqb ymm0, ymm2, ymm0
     vpcmpeqb ymm1, ymm2, ymm1
     vpor ymm0, ymm0, ymm1
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_avx2 + 565
+    je strict short L.nvol_memrchr2_entry_avx2 + 1365
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     ret
-; .L57:
-; .L55:
+; .L89:
+; .L87:
     xor eax, eax
 ; .L1:
     vzeroupper
     ret
-; .L20:
+; .L36:
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [rcx + rax]
+    vzeroupper
+    ret
+; .L52:
     bsr eax, eax
     lea rax, [rcx + rax + 16]
     vzeroupper
     ret
-; .L18:
+; .L50:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-; .L16:
+; .L48:
     cmp rcx, rsi
-    jb strict near L.nvol_memrchr2_entry_avx2 + 157
+    jb strict near L.nvol_memrchr2_entry_avx2 + 956
     lea rcx, [rcx - 32]
     vmovdqa xmm2, [rcx]
     vmovdqa xmm3, [rcx + 16]
@@ -3020,46 +4849,46 @@ L.nvol_memrchr2_entry_avx2:
     vpor xmm4, xmm2, xmm3
     vpmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_avx2 + 592
+    je strict short L.nvol_memrchr2_entry_avx2 + 1408
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memrchr2_entry_avx2 + 571
-; .L19:
+    jne strict short L.nvol_memrchr2_entry_avx2 + 1387
+; .L51:
     vpmovmskb eax, xmm2
     bsr eax, eax
     lea rax, [rcx + rax]
     vzeroupper
     ret
-    jmp strict near L.nvol_memrchr2_entry_avx2 + 157
-; .L26:
+    jmp strict near L.nvol_memrchr2_entry_avx2 + 956
+; .L58:
     bsr eax, eax
     lea rax, [rcx + rax + 16]
     vzeroupper
     ret
-; .L24:
+; .L56:
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memrchr2_entry_avx2 + 678
-; .L25:
+    jne strict short L.nvol_memrchr2_entry_avx2 + 1494
+; .L57:
     vpmovmskb eax, xmm2
     bsr eax, eax
     lea rax, [rcx + rax]
     vzeroupper
     ret
-; .L30:
+; .L62:
     bsr eax, eax
     lea rax, [rcx + rax]
     vzeroupper
     ret
-; .L44:
+; .L76:
     bsr eax, eax
     lea rax, [rcx + rax + 32]
     vzeroupper
     ret
-; .L42:
-; .L40:
+; .L74:
+; .L72:
     cmp rcx, rsi
-    jb strict near L.nvol_memrchr2_entry_avx2 + 405
+    jb strict near L.nvol_memrchr2_entry_avx2 + 1205
     lea rcx, [rcx - 64]
     vmovdqa ymm2, [rcx]
     vmovdqa ymm3, [rcx + 32]
@@ -3072,33 +4901,33 @@ L.nvol_memrchr2_entry_avx2:
     vpor ymm4, ymm2, ymm3
     vpmovmskb eax, ymm4
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_avx2 + 736
+    je strict short L.nvol_memrchr2_entry_avx2 + 1552
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict short L.nvol_memrchr2_entry_avx2 + 724
-; .L43:
+    jne strict short L.nvol_memrchr2_entry_avx2 + 1540
+; .L75:
     vpmovmskb eax, ymm2
     bsr eax, eax
     lea rax, [rcx + rax]
     vzeroupper
     ret
-    jmp strict near L.nvol_memrchr2_entry_avx2 + 405
-; .L50:
+    jmp strict near L.nvol_memrchr2_entry_avx2 + 1205
+; .L82:
     bsr eax, eax
     lea rax, [rcx + rax + 32]
     vzeroupper
     ret
-; .L48:
+; .L80:
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict short L.nvol_memrchr2_entry_avx2 + 822
-; .L49:
+    jne strict short L.nvol_memrchr2_entry_avx2 + 1638
+; .L81:
     vpmovmskb eax, ymm2
     bsr eax, eax
     lea rax, [rcx + rax]
     vzeroupper
     ret
-; .L54:
+; .L86:
     bsr eax, eax
     lea rax, [rcx + rax]
     vzeroupper
@@ -3107,8 +4936,9 @@ L.nvol_memrchr2_entry_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-global nvol_memrchr2_entry_sse2:function hidden 468
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_memrchr2_entry_sse2:function hidden 1236
 nvol_memrchr2_entry_sse2:
 L.nvol_memrchr2_entry_sse2:
     movzx edi, dil
@@ -3116,25 +4946,233 @@ L.nvol_memrchr2_entry_sse2:
     mov r8, rcx
     sub r8, rdx
     cmp r8, 16
-    jae strict short L.nvol_memrchr2_entry_sse2 + 59
-    cmp rcx, rdx
-    jbe strict short L.nvol_memrchr2_entry_sse2 + 56
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L4:
-    lea rcx, [rcx - 1]
-    movzx eax, byte [rcx]
-    cmp eax, edi
-    je strict short L.nvol_memrchr2_entry_sse2 + 47
-    cmp eax, esi
-    jne strict short L.nvol_memrchr2_entry_sse2 + 51
-; .L8:
-; .L7:
-    mov rax, rcx
+    jae strict near L.nvol_memrchr2_entry_sse2 + 810
+    cmp r8, 4
+    jae strict short L.nvol_memrchr2_entry_sse2 + 110
+    test r8, r8
+    jne strict short L.nvol_memrchr2_entry_sse2 + 38
+    xor eax, eax
     ret
 ; .L6:
+    movzx eax, byte [rcx - 1]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_entry_sse2 + 50
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_entry_sse2 + 55
+; .L10:
+    lea rax, [rcx - 1]
+    ret
+; .L8:
+    cmp r8, 1
+    jne strict short L.nvol_memrchr2_entry_sse2 + 64
+    xor eax, eax
+    ret
+; .L11:
+    movzx eax, byte [rcx - 2]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_entry_sse2 + 76
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_entry_sse2 + 81
+; .L15:
+    lea rax, [rcx - 2]
+    ret
+; .L13:
+    cmp r8, 2
+    jne strict short L.nvol_memrchr2_entry_sse2 + 90
+    xor eax, eax
+    ret
+; .L16:
+    movzx eax, byte [rcx - 3]
+    cmp eax, edi
+    je strict short L.nvol_memrchr2_entry_sse2 + 102
+    cmp eax, esi
+    jne strict short L.nvol_memrchr2_entry_sse2 + 107
+; .L20:
+    lea rax, [rcx - 3]
+    ret
+; .L18:
+    xor eax, eax
+    ret
+; .L4:
+    cmp r8, 8
+    jae strict near L.nvol_memrchr2_entry_sse2 + 297
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, dword [rcx - 4]
+    mov r8, rax
+    xor r8, rdi
+    mov r9, r8
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, r8
+    xor rax, rsi
+    mov r8, rax
+    and r8d, 2139062143
+    add r8d, 2139062143
+    or r8, rax
+    and r9, r8
+    or r9d, 2139062143
+    not r9d
+    test r9d, r9d
+    je strict short L.nvol_memrchr2_entry_sse2 + 220
+    bsr eax, r9d
+    shr rax, 3
+    lea rax, [rcx + rax - 4]
+    ret
+; .L23:
+    mov eax, dword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    and rdi, rcx
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr2_entry_sse2 + 294
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L25:
+    xor eax, eax
+    ret
+; .L21:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, qword [rcx - 8]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 9187201950435737471
+    and r9, r11
+    mov r11, 9187201950435737471
+    add r9, r11
+    or r9, rax
+    and r10, r9
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    je strict short L.nvol_memrchr2_entry_sse2 + 440
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [rcx + rax - 8]
+    ret
+; .L27:
+    cmp r8, 16
+    ja strict short L.nvol_memrchr2_entry_sse2 + 562
+    mov rax, qword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r8, 9187201950435737471
+    and rdi, r8
+    mov r8, 9187201950435737471
+    add rdi, r8
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    mov rsi, 9187201950435737471
+    and rcx, rsi
+    mov rsi, 9187201950435737471
+    add rcx, rsi
+    or rcx, rax
+    and rdi, rcx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr2_entry_sse2 + 559
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L31:
+    xor eax, eax
+    ret
+; .L29:
+    and rcx, -8
+    lea r8, [rdx + 8]
+    cmp rcx, r8
+    jb strict short L.nvol_memrchr2_entry_sse2 + 689
+    db 0x90
+; .L33:
+    lea rcx, [rcx - 8]
+    mov rax, qword [rcx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, r9
+    xor rax, rsi
+    mov r9, rax
+    mov r11, 9187201950435737471
+    and r9, r11
+    mov r11, 9187201950435737471
+    add r9, r11
+    or r9, rax
+    and r10, r9
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    jne strict near L.nvol_memrchr2_entry_sse2 + 1077
+; .L35:
+    cmp rcx, r8
+    jae strict short L.nvol_memrchr2_entry_sse2 + 576
+; .L34:
     cmp rcx, rdx
-    ja strict short L.nvol_memrchr2_entry_sse2 + 32
-; .L5:
+    jbe strict short L.nvol_memrchr2_entry_sse2 + 807
+    mov rax, qword [rdx]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r8, 9187201950435737471
+    and rdi, r8
+    mov r8, 9187201950435737471
+    add rdi, r8
+    or rdi, rcx
+    xor rax, rsi
+    mov rcx, rax
+    mov rsi, 9187201950435737471
+    and rcx, rsi
+    mov rsi, 9187201950435737471
+    add rcx, rsi
+    or rcx, rax
+    and rdi, rcx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr2_entry_sse2 + 807
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+; .L39:
+; .L37:
     xor eax, eax
     ret
 ; .L2:
@@ -3151,22 +5189,22 @@ L.nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_sse2 + 127
+    je strict short L.nvol_memrchr2_entry_sse2 + 878
     bsr eax, eax
     lea rax, [rcx + rax - 16]
     ret
-; .L9:
+; .L41:
     and rcx, -16
     cmp r8, 32
-    jb strict short L.nvol_memrchr2_entry_sse2 + 230
+    jb strict short L.nvol_memrchr2_entry_sse2 + 982
     lea rsi, [rdx + 32]
     cmp r8, 512
-    jae strict near L.nvol_memrchr2_entry_sse2 + 334
-; .L13:
+    jae strict near L.nvol_memrchr2_entry_sse2 + 1099
+; .L45:
     cmp rcx, rsi
-    jb strict short L.nvol_memrchr2_entry_sse2 + 230
-    db 0x90
-; .L19:
+    jb strict short L.nvol_memrchr2_entry_sse2 + 982
+    db 0x66, 0x90
+; .L51:
     lea rcx, [rcx - 32]
     movdqa xmm2, [rcx]
     movdqa xmm3, [rcx + 16]
@@ -3182,17 +5220,17 @@ L.nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict near L.nvol_memrchr2_entry_sse2 + 440
-; .L21:
+    jne strict near L.nvol_memrchr2_entry_sse2 + 1208
+; .L53:
     cmp rcx, rsi
-    jae strict short L.nvol_memrchr2_entry_sse2 + 160
-; .L20:
-; .L11:
+    jae strict short L.nvol_memrchr2_entry_sse2 + 912
+; .L52:
+; .L43:
     lea rsi, [rdx + 16]
     cmp rcx, rsi
-    jb strict short L.nvol_memrchr2_entry_sse2 + 281
+    jb strict short L.nvol_memrchr2_entry_sse2 + 1033
     db 0x90
-; .L25:
+; .L57:
     lea rcx, [rcx - 16]
     movdqu xmm2, [rcx]
     movdqa xmm3, xmm2
@@ -3201,13 +5239,13 @@ L.nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict near L.nvol_memrchr2_entry_sse2 + 460
-; .L27:
+    jne strict near L.nvol_memrchr2_entry_sse2 + 1228
+; .L59:
     cmp rcx, rsi
-    jae strict short L.nvol_memrchr2_entry_sse2 + 240
-; .L26:
+    jae strict short L.nvol_memrchr2_entry_sse2 + 992
+; .L58:
     cmp rcx, rdx
-    jbe strict short L.nvol_memrchr2_entry_sse2 + 322
+    jbe strict short L.nvol_memrchr2_entry_sse2 + 1074
     movdqu xmm2, [rdx]
     movdqa xmm3, xmm2
     pcmpeqb xmm3, xmm0
@@ -3215,24 +5253,29 @@ L.nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_sse2 + 322
+    je strict short L.nvol_memrchr2_entry_sse2 + 1074
     bsr eax, eax
     lea rax, [rdx + rax]
     ret
-; .L31:
-; .L29:
+; .L63:
+; .L61:
     xor eax, eax
 ; .L1:
     ret
-; .L18:
+; .L36:
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [rcx + rax]
+    ret
+; .L50:
     bsr eax, eax
     lea rax, [rcx + rax + 16]
     ret
-; .L16:
-    db 0x66, 0x90
-; .L14:
+; .L48:
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L46:
     cmp rcx, rsi
-    jb strict near L.nvol_memrchr2_entry_sse2 + 154
+    jb strict near L.nvol_memrchr2_entry_sse2 + 905
     lea rcx, [rcx - 32]
     movdqa xmm2, [rcx]
     movdqa xmm3, [rcx + 16]
@@ -3248,30 +5291,30 @@ L.nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short L.nvol_memrchr2_entry_sse2 + 336
+    je strict short L.nvol_memrchr2_entry_sse2 + 1104
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memrchr2_entry_sse2 + 325
-; .L17:
+    jne strict short L.nvol_memrchr2_entry_sse2 + 1090
+; .L49:
     pmovmskb eax, xmm4
     bsr eax, eax
     lea rax, [rcx + rax]
     ret
-    jmp strict near L.nvol_memrchr2_entry_sse2 + 154
-; .L24:
+    jmp strict near L.nvol_memrchr2_entry_sse2 + 905
+; .L56:
     bsr eax, eax
     lea rax, [rcx + rax + 16]
     ret
-; .L22:
+; .L54:
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short L.nvol_memrchr2_entry_sse2 + 431
-; .L23:
+    jne strict short L.nvol_memrchr2_entry_sse2 + 1199
+; .L55:
     pmovmskb eax, xmm4
     bsr eax, eax
     lea rax, [rcx + rax]
     ret
-; .L28:
+; .L60:
     bsr eax, eax
     lea rax, [rcx + rax]
     ret
@@ -3341,37 +5384,285 @@ L.nvol_memrchr2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-global nvol_memchr3_scalar:function hidden 47
+global nvol_memchr3_scalar:function hidden 873
 nvol_memchr3_scalar:
 L.nvol_memchr3_scalar:
+    push rbx
+    push rbp
     movzx edi, dil
     movzx esi, sil
     movzx edx, dl
+    mov r9, r8
+    sub r9, rcx
+    cmp r9, 5
+    jae strict short L.nvol_memchr3_scalar + 67
     cmp rcx, r8
-    jae strict short L.nvol_memchr3_scalar + 44
-; .L2:
+    jae strict short L.nvol_memchr3_scalar + 62
+    db 0x66, 0x90
+; .L4:
     movzx eax, byte [rcx]
     cmp eax, edi
-    je strict short L.nvol_memchr3_scalar + 31
+    je strict short L.nvol_memchr3_scalar + 47
     cmp eax, esi
-    je strict short L.nvol_memchr3_scalar + 31
+    je strict short L.nvol_memchr3_scalar + 47
     cmp eax, edx
-    jne strict short L.nvol_memchr3_scalar + 35
-; .L6:
-; .L5:
+    jne strict short L.nvol_memchr3_scalar + 53
+; .L8:
+; .L7:
     mov rax, rcx
+    pop rbp
+    pop rbx
     ret
-; .L4:
+; .L6:
     add rcx, 1
     cmp rcx, r8
-    jb strict short L.nvol_memchr3_scalar + 16
-; .L3:
+    jb strict short L.nvol_memchr3_scalar + 32
+; .L5:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L2:
+    cmp r9, 8
+    jae strict near L.nvol_memchr3_scalar + 290
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [rcx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    sub r10d, 16843009
+    not r9d
+    and r10, r9
+    mov r9, rax
+    xor r9, rsi
+    mov r11, r9
+    sub r11d, 16843009
+    not r9d
+    and r11, r9
+    or r10, r11
+    xor rax, rdx
+    mov r9, rax
+    sub r9d, 16843009
+    not eax
+    and r9, rax
+    or r10, r9
+    and r10d, -2139062144
+    je strict short L.nvol_memchr3_scalar + 195
+    bsf eax, r10d
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L11:
+    mov eax, dword [r8 - 4]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    sub edi, 16843009
+    not ecx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    sub esi, 16843009
+    not ecx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    or rdi, rcx
+    and edi, -2139062144
+    je strict short L.nvol_memchr3_scalar + 285
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    pop rbp
+    pop rbx
+    ret
+; .L13:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L9:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [rcx]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 72340172838076673
+    sub r11, rbx
+    not r10
+    and r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not r10
+    and rbx, r10
+    or r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 72340172838076673
+    sub r10, rbx
+    not rax
+    and r10, rax
+    or r11, r10
+    mov rax, 9259542123273814144
+    and r11, rax
+    je strict short L.nvol_memchr3_scalar + 452
+    bsf rax, r11
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L15:
+    cmp r9, 16
+    ja strict short L.nvol_memchr3_scalar + 585
+    mov rax, qword [r8 - 8]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r9, 72340172838076673
+    sub rdi, r9
+    not rcx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    mov r9, 72340172838076673
+    sub rsi, r9
+    not rcx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    or rdi, rcx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr3_scalar + 580
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    pop rbp
+    pop rbx
+    ret
+; .L19:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    and rcx, -8
+    add rcx, 8
+    lea r9, [r8 - 8]
+    cmp rcx, r9
+    ja strict short L.nvol_memchr3_scalar + 726
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L21:
+    mov rax, qword [rcx]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 72340172838076673
+    sub r11, rbx
+    not r10
+    and r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not r10
+    and rbx, r10
+    or r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 72340172838076673
+    sub r10, rbx
+    not rax
+    and r10, rax
+    or r11, r10
+    mov rax, 9259542123273814144
+    and r11, rax
+    jne strict near L.nvol_memchr3_scalar + 858
+; .L23:
+    add rcx, 8
+    cmp rcx, r9
+    jbe strict short L.nvol_memchr3_scalar + 608
+; .L22:
+    cmp rcx, r8
+    jae strict short L.nvol_memchr3_scalar + 853
+    mov rax, qword [r8 - 8]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r9, 72340172838076673
+    sub rdi, r9
+    not rcx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    mov r9, 72340172838076673
+    sub rsi, r9
+    not rcx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    or rdi, rcx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr3_scalar + 853
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    pop rbp
+    pop rbx
+    ret
+; .L27:
+; .L25:
     xor eax, eax
 ; .L1:
+    pop rbp
+    pop rbx
+    ret
+; .L24:
+    bsf rax, r11
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memchr3_sse2:function hidden 386
 nvol_memchr3_sse2:
 L.nvol_memchr3_sse2:
@@ -3634,43 +5925,288 @@ L.nvol_memchr3_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x0
-global nvol_memchr3_entry_avx2:function hidden 747
+global nvol_memchr3_entry_avx2:function hidden 1637
 nvol_memchr3_entry_avx2:
 L.nvol_memchr3_entry_avx2:
+    push rbx
+    push rbp
     movzx edi, dil
     movzx esi, sil
     movzx edx, dl
     mov r9, r8
     sub r9, rcx
     cmp r9, 16
-    jae strict short L.nvol_memchr3_entry_avx2 + 69
+    jae strict near L.nvol_memchr3_entry_avx2 + 912
+    cmp r9, 5
+    jae strict short L.nvol_memchr3_entry_avx2 + 89
     cmp rcx, r8
-    jae strict short L.nvol_memchr3_entry_avx2 + 63
-    db 0xf, 0x1f, 0x40, 0x0
-; .L4:
+    jae strict short L.nvol_memchr3_entry_avx2 + 81
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L6:
     movzx eax, byte [rcx]
     cmp eax, edi
-    je strict short L.nvol_memchr3_entry_avx2 + 47
+    je strict short L.nvol_memchr3_entry_avx2 + 63
     cmp eax, esi
-    je strict short L.nvol_memchr3_entry_avx2 + 47
+    je strict short L.nvol_memchr3_entry_avx2 + 63
     cmp eax, edx
-    jne strict short L.nvol_memchr3_entry_avx2 + 54
-; .L8:
-; .L7:
+    jne strict short L.nvol_memchr3_entry_avx2 + 72
+; .L10:
+; .L9:
     mov rax, rcx
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L6:
+; .L8:
     add rcx, 1
     cmp rcx, r8
-    jb strict short L.nvol_memchr3_entry_avx2 + 32
-; .L5:
+    jb strict short L.nvol_memchr3_entry_avx2 + 48
+; .L7:
     xor eax, eax
     vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L4:
+    cmp r9, 8
+    jae strict near L.nvol_memchr3_entry_avx2 + 321
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [rcx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    sub r10d, 16843009
+    not r9d
+    and r10, r9
+    mov r9, rax
+    xor r9, rsi
+    mov r11, r9
+    sub r11d, 16843009
+    not r9d
+    and r11, r9
+    or r10, r11
+    xor rax, rdx
+    mov r9, rax
+    sub r9d, 16843009
+    not eax
+    and r9, rax
+    or r10, r9
+    and r10d, -2139062144
+    je strict short L.nvol_memchr3_entry_avx2 + 220
+    bsf eax, r10d
+    shr rax, 3
+    lea rax, [rcx + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L13:
+    mov eax, dword [r8 - 4]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    sub edi, 16843009
+    not ecx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    sub esi, 16843009
+    not ecx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    or rdi, rcx
+    and edi, -2139062144
+    je strict short L.nvol_memchr3_entry_avx2 + 313
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L15:
+    xor eax, eax
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L11:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [rcx]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 72340172838076673
+    sub r11, rbx
+    not r10
+    and r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not r10
+    and rbx, r10
+    or r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 72340172838076673
+    sub r10, rbx
+    not rax
+    and r10, rax
+    or r11, r10
+    mov rax, 9259542123273814144
+    and r11, rax
+    je strict short L.nvol_memchr3_entry_avx2 + 486
+    bsf rax, r11
+    shr rax, 3
+    lea rax, [rcx + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    cmp r9, 16
+    ja strict near L.nvol_memchr3_entry_avx2 + 629
+    mov rax, qword [r8 - 8]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r9, 72340172838076673
+    sub rdi, r9
+    not rcx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    mov r9, 72340172838076673
+    sub rsi, r9
+    not rcx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    or rdi, rcx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr3_entry_avx2 + 621
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L21:
+    xor eax, eax
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L19:
+    and rcx, -8
+    add rcx, 8
+    lea r9, [r8 - 8]
+    cmp rcx, r9
+    ja strict near L.nvol_memchr3_entry_avx2 + 774
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov rax, qword [rcx]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 72340172838076673
+    sub r11, rbx
+    not r10
+    and r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not r10
+    and rbx, r10
+    or r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 72340172838076673
+    sub r10, rbx
+    not rax
+    and r10, rax
+    or r11, r10
+    mov rax, 9259542123273814144
+    and r11, rax
+    jne strict near L.nvol_memchr3_entry_avx2 + 1515
+; .L25:
+    add rcx, 8
+    cmp rcx, r9
+    jbe strict short L.nvol_memchr3_entry_avx2 + 656
+; .L24:
+    cmp rcx, r8
+    jae strict short L.nvol_memchr3_entry_avx2 + 904
+    mov rax, qword [r8 - 8]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r9, 72340172838076673
+    sub rdi, r9
+    not rcx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    mov r9, 72340172838076673
+    sub rsi, r9
+    not rcx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    or rdi, rcx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr3_entry_avx2 + 904
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L29:
+; .L27:
+    xor eax, eax
+    vzeroupper
+    pop rbp
+    pop rbx
     ret
 ; .L2:
     cmp r9, 32
-    jae strict near L.nvol_memchr3_entry_avx2 + 367
+    jae strict near L.nvol_memchr3_entry_avx2 + 1219
     vmovd xmm0, edi
     vpbroadcastb xmm0, xmm0
     vmovd xmm1, esi
@@ -3685,21 +6221,23 @@ L.nvol_memchr3_entry_avx2:
     vpor xmm3, xmm4, xmm3
     vpmovmskb eax, xmm3
     test eax, eax
-    je strict short L.nvol_memchr3_entry_avx2 + 149
+    je strict short L.nvol_memchr3_entry_avx2 + 994
     bsf eax, eax
     lea rax, [rcx + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L11:
+; .L33:
     and rcx, -16
     add rcx, 16
     cmp r9, 32
-    jb strict short L.nvol_memchr3_entry_avx2 + 250
+    jb strict short L.nvol_memchr3_entry_avx2 + 1098
     lea rdx, [r8 - 32]
     cmp rcx, rdx
-    ja strict short L.nvol_memchr3_entry_avx2 + 250
-    db 0xf, 0x1f, 0x40, 0x0
-; .L15:
+    ja strict short L.nvol_memchr3_entry_avx2 + 1098
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L37:
     vmovdqa xmm3, [rcx]
     vmovdqa xmm4, [rcx + 16]
     vpcmpeqb xmm5, xmm3, xmm0
@@ -3715,18 +6253,18 @@ L.nvol_memchr3_entry_avx2:
     vpor xmm5, xmm3, xmm4
     vpmovmskb eax, xmm5
     test eax, eax
-    jne strict near L.nvol_memchr3_entry_avx2 + 666
-; .L17:
+    jne strict near L.nvol_memchr3_entry_avx2 + 1546
+; .L39:
     add rcx, 32
     cmp rcx, rdx
-    jbe strict short L.nvol_memchr3_entry_avx2 + 176
-; .L16:
-; .L13:
+    jbe strict short L.nvol_memchr3_entry_avx2 + 1024
+; .L38:
+; .L35:
     lea rdx, [r8 - 16]
     cmp rcx, rdx
-    ja strict short L.nvol_memchr3_entry_avx2 + 309
+    ja strict short L.nvol_memchr3_entry_avx2 + 1157
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L21:
+; .L43:
     vmovdqu xmm3, [rcx]
     vpcmpeqb xmm4, xmm3, xmm0
     vpcmpeqb xmm5, xmm3, xmm1
@@ -3735,14 +6273,14 @@ L.nvol_memchr3_entry_avx2:
     vpor xmm3, xmm4, xmm3
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict near L.nvol_memchr3_entry_avx2 + 690
-; .L23:
+    jne strict near L.nvol_memchr3_entry_avx2 + 1572
+; .L45:
     add rcx, 16
     cmp rcx, rdx
-    jbe strict short L.nvol_memchr3_entry_avx2 + 264
-; .L22:
+    jbe strict short L.nvol_memchr3_entry_avx2 + 1112
+; .L44:
     cmp rcx, r8
-    jae strict short L.nvol_memchr3_entry_avx2 + 361
+    jae strict short L.nvol_memchr3_entry_avx2 + 1211
     lea rcx, [r8 - 16]
     vmovdqu xmm3, [rcx]
     vpcmpeqb xmm0, xmm3, xmm0
@@ -3752,17 +6290,21 @@ L.nvol_memchr3_entry_avx2:
     vpor xmm0, xmm0, xmm1
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_memchr3_entry_avx2 + 361
+    je strict short L.nvol_memchr3_entry_avx2 + 1211
     bsf eax, eax
     lea rax, [rcx + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L27:
-; .L25:
+; .L49:
+; .L47:
     xor eax, eax
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L9:
+; .L31:
     vmovd xmm0, edi
     vpbroadcastb ymm0, xmm0
     vmovd xmm1, esi
@@ -3777,21 +6319,23 @@ L.nvol_memchr3_entry_avx2:
     vpor ymm3, ymm4, ymm3
     vpmovmskb eax, ymm3
     test eax, eax
-    je strict short L.nvol_memchr3_entry_avx2 + 437
+    je strict short L.nvol_memchr3_entry_avx2 + 1291
     bsf eax, eax
     lea rax, [rcx + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L29:
+; .L51:
     and rcx, -32
     add rcx, 32
     cmp r9, 64
-    jb strict short L.nvol_memchr3_entry_avx2 + 538
+    jb strict short L.nvol_memchr3_entry_avx2 + 1394
     lea rdx, [r8 - 64]
     cmp rcx, rdx
-    ja strict short L.nvol_memchr3_entry_avx2 + 538
-    db 0xf, 0x1f, 0x40, 0x0
-; .L33:
+    ja strict short L.nvol_memchr3_entry_avx2 + 1394
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L55:
     vmovdqa ymm3, [rcx]
     vmovdqa ymm4, [rcx + 32]
     vpcmpeqb ymm5, ymm3, ymm0
@@ -3807,18 +6351,18 @@ L.nvol_memchr3_entry_avx2:
     vpor ymm5, ymm3, ymm4
     vpmovmskb eax, ymm5
     test eax, eax
-    jne strict near L.nvol_memchr3_entry_avx2 + 712
-; .L35:
+    jne strict near L.nvol_memchr3_entry_avx2 + 1598
+; .L57:
     add rcx, 64
     cmp rcx, rdx
-    jbe strict short L.nvol_memchr3_entry_avx2 + 464
-; .L34:
-; .L31:
+    jbe strict short L.nvol_memchr3_entry_avx2 + 1320
+; .L56:
+; .L53:
     lea rdx, [r8 - 32]
     cmp rcx, rdx
-    ja strict short L.nvol_memchr3_entry_avx2 + 597
+    ja strict short L.nvol_memchr3_entry_avx2 + 1453
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L39:
+; .L61:
     vmovdqu ymm3, [rcx]
     vpcmpeqb ymm4, ymm3, ymm0
     vpcmpeqb ymm5, ymm3, ymm1
@@ -3827,14 +6371,14 @@ L.nvol_memchr3_entry_avx2:
     vpor ymm3, ymm4, ymm3
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict near L.nvol_memchr3_entry_avx2 + 736
-; .L41:
+    jne strict near L.nvol_memchr3_entry_avx2 + 1624
+; .L63:
     add rcx, 32
     cmp rcx, rdx
-    jbe strict short L.nvol_memchr3_entry_avx2 + 552
-; .L40:
+    jbe strict short L.nvol_memchr3_entry_avx2 + 1408
+; .L62:
     cmp rcx, r8
-    jae strict short L.nvol_memchr3_entry_avx2 + 649
+    jae strict short L.nvol_memchr3_entry_avx2 + 1507
     lea rcx, [r8 - 32]
     vmovdqu ymm3, [rcx]
     vpcmpeqb ymm0, ymm3, ymm0
@@ -3844,92 +6388,353 @@ L.nvol_memchr3_entry_avx2:
     vpor ymm0, ymm0, ymm1
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_memchr3_entry_avx2 + 649
+    je strict short L.nvol_memchr3_entry_avx2 + 1507
     bsf eax, eax
     lea rax, [rcx + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L45:
-; .L43:
+; .L67:
+; .L65:
     xor eax, eax
 ; .L1:
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L20:
-    bsf eax, eax
+; .L26:
+    bsf rax, r11
+    shr rax, 3
     lea rax, [rcx + rax]
     vzeroupper
-    ret
-; .L18:
-    vpmovmskb eax, xmm3
-    test eax, eax
-    jne strict short L.nvol_memchr3_entry_avx2 + 655
-; .L19:
-    vpmovmskb eax, xmm4
-    bsf eax, eax
-    lea rax, [rcx + rax + 16]
-    vzeroupper
-    ret
-; .L24:
-    bsf eax, eax
-    lea rax, [rcx + rax]
-    vzeroupper
-    ret
-; .L38:
-    bsf eax, eax
-    lea rax, [rcx + rax]
-    vzeroupper
-    ret
-; .L36:
-    vpmovmskb eax, ymm3
-    test eax, eax
-    jne strict short L.nvol_memchr3_entry_avx2 + 701
-; .L37:
-    vpmovmskb eax, ymm4
-    bsf eax, eax
-    lea rax, [rcx + rax + 32]
-    vzeroupper
+    pop rbp
+    pop rbx
     ret
 ; .L42:
     bsf eax, eax
     lea rax, [rcx + rax]
     vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L40:
+    vpmovmskb eax, xmm3
+    test eax, eax
+    jne strict short L.nvol_memchr3_entry_avx2 + 1533
+; .L41:
+    vpmovmskb eax, xmm4
+    bsf eax, eax
+    lea rax, [rcx + rax + 16]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L46:
+    bsf eax, eax
+    lea rax, [rcx + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L60:
+    bsf eax, eax
+    lea rax, [rcx + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L58:
+    vpmovmskb eax, ymm3
+    test eax, eax
+    jne strict short L.nvol_memchr3_entry_avx2 + 1585
+; .L59:
+    vpmovmskb eax, ymm4
+    bsf eax, eax
+    lea rax, [rcx + rax + 32]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L64:
+    bsf eax, eax
+    lea rax, [rcx + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
-global nvol_memchr3_entry_sse2:function hidden 434
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_memchr3_entry_sse2:function hidden 1275
 nvol_memchr3_entry_sse2:
 L.nvol_memchr3_entry_sse2:
+    push rbx
+    push rbp
     movzx edi, dil
     movzx esi, sil
     movzx edx, dl
     mov r9, r8
     sub r9, rcx
     cmp r9, 16
-    jae strict short L.nvol_memchr3_entry_sse2 + 63
+    jae strict near L.nvol_memchr3_entry_sse2 + 874
+    cmp r9, 5
+    jae strict short L.nvol_memchr3_entry_sse2 + 83
     cmp rcx, r8
-    jae strict short L.nvol_memchr3_entry_sse2 + 60
-    db 0xf, 0x1f, 0x40, 0x0
-; .L4:
+    jae strict short L.nvol_memchr3_entry_sse2 + 78
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L6:
     movzx eax, byte [rcx]
     cmp eax, edi
-    je strict short L.nvol_memchr3_entry_sse2 + 47
+    je strict short L.nvol_memchr3_entry_sse2 + 63
     cmp eax, esi
-    je strict short L.nvol_memchr3_entry_sse2 + 47
+    je strict short L.nvol_memchr3_entry_sse2 + 63
     cmp eax, edx
-    jne strict short L.nvol_memchr3_entry_sse2 + 51
-; .L8:
-; .L7:
+    jne strict short L.nvol_memchr3_entry_sse2 + 69
+; .L10:
+; .L9:
     mov rax, rcx
+    pop rbp
+    pop rbx
     ret
-; .L6:
+; .L8:
     add rcx, 1
     cmp rcx, r8
-    jb strict short L.nvol_memchr3_entry_sse2 + 32
-; .L5:
+    jb strict short L.nvol_memchr3_entry_sse2 + 48
+; .L7:
     xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L4:
+    cmp r9, 8
+    jae strict near L.nvol_memchr3_entry_sse2 + 306
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [rcx]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    sub r10d, 16843009
+    not r9d
+    and r10, r9
+    mov r9, rax
+    xor r9, rsi
+    mov r11, r9
+    sub r11d, 16843009
+    not r9d
+    and r11, r9
+    or r10, r11
+    xor rax, rdx
+    mov r9, rax
+    sub r9d, 16843009
+    not eax
+    and r9, rax
+    or r10, r9
+    and r10d, -2139062144
+    je strict short L.nvol_memchr3_entry_sse2 + 211
+    bsf eax, r10d
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L13:
+    mov eax, dword [r8 - 4]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    sub edi, 16843009
+    not ecx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    sub esi, 16843009
+    not ecx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    or rdi, rcx
+    and edi, -2139062144
+    je strict short L.nvol_memchr3_entry_sse2 + 301
+    bsf eax, edi
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    pop rbp
+    pop rbx
+    ret
+; .L15:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L11:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [rcx]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 72340172838076673
+    sub r11, rbx
+    not r10
+    and r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not r10
+    and rbx, r10
+    or r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 72340172838076673
+    sub r10, rbx
+    not rax
+    and r10, rax
+    or r11, r10
+    mov rax, 9259542123273814144
+    and r11, rax
+    je strict short L.nvol_memchr3_entry_sse2 + 468
+    bsf rax, r11
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    cmp r9, 16
+    ja strict short L.nvol_memchr3_entry_sse2 + 601
+    mov rax, qword [r8 - 8]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r9, 72340172838076673
+    sub rdi, r9
+    not rcx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    mov r9, 72340172838076673
+    sub rsi, r9
+    not rcx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    or rdi, rcx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr3_entry_sse2 + 596
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    pop rbp
+    pop rbx
+    ret
+; .L21:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L19:
+    and rcx, -8
+    add rcx, 8
+    lea r9, [r8 - 8]
+    cmp rcx, r9
+    ja strict short L.nvol_memchr3_entry_sse2 + 742
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    mov rax, qword [rcx]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 72340172838076673
+    sub r11, rbx
+    not r10
+    and r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not r10
+    and rbx, r10
+    or r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 72340172838076673
+    sub r10, rbx
+    not rax
+    and r10, rax
+    or r11, r10
+    mov rax, 9259542123273814144
+    and r11, rax
+    jne strict near L.nvol_memchr3_entry_sse2 + 1217
+; .L25:
+    add rcx, 8
+    cmp rcx, r9
+    jbe strict short L.nvol_memchr3_entry_sse2 + 624
+; .L24:
+    cmp rcx, r8
+    jae strict short L.nvol_memchr3_entry_sse2 + 869
+    mov rax, qword [r8 - 8]
+    mov rcx, rax
+    xor rcx, rdi
+    mov rdi, rcx
+    mov r9, 72340172838076673
+    sub rdi, r9
+    not rcx
+    and rdi, rcx
+    mov rcx, rax
+    xor rcx, rsi
+    mov rsi, rcx
+    mov r9, 72340172838076673
+    sub rsi, r9
+    not rcx
+    and rsi, rcx
+    or rdi, rsi
+    xor rax, rdx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    or rdi, rcx
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short L.nvol_memchr3_entry_sse2 + 869
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    pop rbp
+    pop rbx
+    ret
+; .L29:
+; .L27:
+    xor eax, eax
+    pop rbp
+    pop rbx
     ret
 ; .L2:
     imul eax, edi, 16843009
@@ -3951,20 +6756,21 @@ L.nvol_memchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_memchr3_entry_sse2 + 156
+    je strict short L.nvol_memchr3_entry_sse2 + 969
     bsf eax, eax
     lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
     ret
-; .L9:
+; .L31:
     and rcx, -16
     add rcx, 16
     cmp r9, 32
-    jb strict short L.nvol_memchr3_entry_sse2 + 278
+    jb strict short L.nvol_memchr3_entry_sse2 + 1086
     lea rdx, [r8 - 32]
     cmp rcx, rdx
-    ja strict short L.nvol_memchr3_entry_sse2 + 278
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L13:
+    ja strict short L.nvol_memchr3_entry_sse2 + 1086
+; .L35:
     movdqa xmm3, [rcx]
     movdqa xmm4, [rcx + 16]
     movdqa xmm5, xmm3
@@ -3985,18 +6791,18 @@ L.nvol_memchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict near L.nvol_memchr3_entry_sse2 + 405
-; .L15:
+    jne strict near L.nvol_memchr3_entry_sse2 + 1242
+; .L37:
     add rcx, 32
     cmp rcx, rdx
-    jbe strict short L.nvol_memchr3_entry_sse2 + 184
-; .L14:
-; .L11:
+    jbe strict short L.nvol_memchr3_entry_sse2 + 992
+; .L36:
+; .L33:
     lea rdx, [r8 - 16]
     cmp rcx, rdx
-    ja strict short L.nvol_memchr3_entry_sse2 + 337
-    db 0x90
-; .L19:
+    ja strict short L.nvol_memchr3_entry_sse2 + 1153
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L41:
     movdqu xmm3, [rcx]
     movdqa xmm4, xmm3
     pcmpeqb xmm4, xmm0
@@ -4007,14 +6813,14 @@ L.nvol_memchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict short L.nvol_memchr3_entry_sse2 + 426
-; .L21:
+    jne strict short L.nvol_memchr3_entry_sse2 + 1265
+; .L43:
     add rcx, 16
     cmp rcx, rdx
-    jbe strict short L.nvol_memchr3_entry_sse2 + 288
-; .L20:
+    jbe strict short L.nvol_memchr3_entry_sse2 + 1104
+; .L42:
     cmp rcx, r8
-    jae strict short L.nvol_memchr3_entry_sse2 + 394
+    jae strict short L.nvol_memchr3_entry_sse2 + 1212
     lea rcx, [r8 - 16]
     movdqu xmm3, [rcx]
     movdqa xmm4, xmm3
@@ -4026,34 +6832,50 @@ L.nvol_memchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_memchr3_entry_sse2 + 394
+    je strict short L.nvol_memchr3_entry_sse2 + 1212
     bsf eax, eax
     lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
     ret
-; .L25:
-; .L23:
+; .L47:
+; .L45:
     xor eax, eax
 ; .L1:
+    pop rbp
+    pop rbx
     ret
-; .L18:
+; .L26:
+    bsf rax, r11
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L40:
     bsf eax, eax
     lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
     ret
-; .L16:
+; .L38:
     pmovmskb eax, xmm5
     test eax, eax
-    jne strict short L.nvol_memchr3_entry_sse2 + 397
-; .L17:
+    jne strict short L.nvol_memchr3_entry_sse2 + 1232
+; .L39:
     pmovmskb eax, xmm3
     bsf eax, eax
     lea rax, [rcx + rax + 16]
+    pop rbp
+    pop rbx
     ret
-; .L22:
+; .L44:
     bsf eax, eax
     lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
     ret
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memchr3_raw:function 6
 nvol_memchr3_raw:
@@ -4115,35 +6937,306 @@ L.nvol_memchr3:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-global nvol_memrchr3_scalar:function hidden 48
+global nvol_memrchr3_scalar:function hidden 1063
 nvol_memrchr3_scalar:
 L.nvol_memrchr3_scalar:
+    push rbx
+    push rbp
     movzx edi, dil
     movzx esi, sil
     movzx edx, dl
+    mov r9, r8
+    sub r9, rcx
+    cmp r9, 5
+    jae strict short L.nvol_memrchr3_scalar + 68
     cmp r8, rcx
-    jbe strict short L.nvol_memrchr3_scalar + 45
-; .L2:
+    jbe strict short L.nvol_memrchr3_scalar + 63
+    db 0x66, 0x90
+; .L4:
     lea r8, [r8 - 1]
     movzx eax, byte [r8]
     cmp eax, edi
-    je strict short L.nvol_memrchr3_scalar + 36
+    je strict short L.nvol_memrchr3_scalar + 52
     cmp eax, esi
-    je strict short L.nvol_memrchr3_scalar + 36
+    je strict short L.nvol_memrchr3_scalar + 52
     cmp eax, edx
-    jne strict short L.nvol_memrchr3_scalar + 40
-; .L6:
-; .L5:
+    jne strict short L.nvol_memrchr3_scalar + 58
+; .L8:
+; .L7:
     mov rax, r8
+    pop rbp
+    pop rbx
     ret
-; .L4:
+; .L6:
     cmp r8, rcx
-    ja strict short L.nvol_memrchr3_scalar + 16
-; .L3:
+    ja strict short L.nvol_memrchr3_scalar + 32
+; .L5:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L2:
+    cmp r9, 8
+    jae strict near L.nvol_memrchr3_scalar + 326
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r8 - 4]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    and r10d, 2139062143
+    add r10d, 2139062143
+    or r10, r9
+    mov r9, rax
+    xor r9, rsi
+    mov r11, r9
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, r9
+    and r10, r11
+    xor rax, rdx
+    mov r9, rax
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, rax
+    and r10, r9
+    or r10d, 2139062143
+    not r10d
+    test r10d, r10d
+    je strict short L.nvol_memrchr3_scalar + 218
+    bsr eax, r10d
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    pop rbp
+    pop rbx
+    ret
+; .L11:
+    mov eax, dword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    and esi, 2139062143
+    add esi, 2139062143
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rdi, rdx
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr3_scalar + 321
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L13:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L9:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r8 - 8]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 9187201950435737471
+    and r11, rbx
+    mov rbx, 9187201950435737471
+    add r11, rbx
+    or r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, r10
+    and r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 9187201950435737471
+    and r10, rbx
+    mov rbx, 9187201950435737471
+    add r10, rbx
+    or r10, rax
+    and r11, r10
+    mov rax, 9187201950435737471
+    or r11, rax
+    not r11
+    test r11, r11
+    je strict short L.nvol_memrchr3_scalar + 526
+    bsr rax, r11
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    pop rbp
+    pop rbx
+    ret
+; .L15:
+    cmp r9, 16
+    ja strict near L.nvol_memrchr3_scalar + 697
+    mov rax, qword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    mov r9, 9187201950435737471
+    and rdi, r9
+    mov r9, 9187201950435737471
+    add rdi, r9
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    mov r9, 9187201950435737471
+    and rsi, r9
+    mov r9, 9187201950435737471
+    add rsi, r9
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    mov rsi, 9187201950435737471
+    and rdx, rsi
+    mov rsi, 9187201950435737471
+    add rdx, rsi
+    or rdx, rax
+    and rdi, rdx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr3_scalar + 692
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L19:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    and r8, -8
+    lea r9, [rcx + 8]
+    cmp r8, r9
+    jb strict near L.nvol_memrchr3_scalar + 878
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L21:
+    lea r8, [r8 - 8]
+    mov rax, qword [r8]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 9187201950435737471
+    and r11, rbx
+    mov rbx, 9187201950435737471
+    add r11, rbx
+    or r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, r10
+    and r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 9187201950435737471
+    and r10, rbx
+    mov rbx, 9187201950435737471
+    add r10, rbx
+    or r10, rax
+    and r11, r10
+    mov rax, 9187201950435737471
+    or r11, rax
+    not r11
+    test r11, r11
+    jne strict near L.nvol_memrchr3_scalar + 1048
+; .L23:
+    cmp r8, r9
+    jae strict near L.nvol_memrchr3_scalar + 720
+; .L22:
+    cmp r8, rcx
+    jbe strict near L.nvol_memrchr3_scalar + 1043
+    mov rax, qword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    mov r9, 9187201950435737471
+    and rdi, r9
+    mov r9, 9187201950435737471
+    add rdi, r9
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    mov r9, 9187201950435737471
+    and rsi, r9
+    mov r9, 9187201950435737471
+    add rsi, r9
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    mov rsi, 9187201950435737471
+    and rdx, rsi
+    mov rsi, 9187201950435737471
+    add rdx, rsi
+    or rdx, rax
+    and rdi, rdx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr3_scalar + 1043
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L27:
+; .L25:
     xor eax, eax
 ; .L1:
+    pop rbp
+    pop rbx
+    ret
+; .L24:
+    bsr rax, r11
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rbp
+    pop rbx
     ret
 
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_memrchr3_sse2:function hidden 542
@@ -4482,43 +7575,311 @@ L.nvol_memrchr3_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_memrchr3_entry_avx2:function hidden 1006
+global nvol_memrchr3_entry_avx2:function hidden 2078
 nvol_memrchr3_entry_avx2:
 L.nvol_memrchr3_entry_avx2:
+    push rbx
+    push rbp
     movzx edi, dil
     movzx esi, sil
     movzx edx, dl
     mov r9, r8
     sub r9, rcx
     cmp r9, 16
-    jae strict short L.nvol_memrchr3_entry_avx2 + 70
+    jae strict near L.nvol_memrchr3_entry_avx2 + 1094
+    cmp r9, 5
+    jae strict short L.nvol_memrchr3_entry_avx2 + 90
     cmp r8, rcx
-    jbe strict short L.nvol_memrchr3_entry_avx2 + 64
-    db 0xf, 0x1f, 0x40, 0x0
-; .L4:
+    jbe strict short L.nvol_memrchr3_entry_avx2 + 82
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L6:
     lea r8, [r8 - 1]
     movzx eax, byte [r8]
     cmp eax, edi
-    je strict short L.nvol_memrchr3_entry_avx2 + 52
+    je strict short L.nvol_memrchr3_entry_avx2 + 68
     cmp eax, esi
-    je strict short L.nvol_memrchr3_entry_avx2 + 52
+    je strict short L.nvol_memrchr3_entry_avx2 + 68
     cmp eax, edx
-    jne strict short L.nvol_memrchr3_entry_avx2 + 59
-; .L8:
-; .L7:
+    jne strict short L.nvol_memrchr3_entry_avx2 + 77
+; .L10:
+; .L9:
     mov rax, r8
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L6:
+; .L8:
     cmp r8, rcx
-    ja strict short L.nvol_memrchr3_entry_avx2 + 32
-; .L5:
+    ja strict short L.nvol_memrchr3_entry_avx2 + 48
+; .L7:
     xor eax, eax
     vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L4:
+    cmp r9, 8
+    jae strict near L.nvol_memrchr3_entry_avx2 + 357
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r8 - 4]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    and r10d, 2139062143
+    add r10d, 2139062143
+    or r10, r9
+    mov r9, rax
+    xor r9, rsi
+    mov r11, r9
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, r9
+    and r10, r11
+    xor rax, rdx
+    mov r9, rax
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, rax
+    and r10, r9
+    or r10d, 2139062143
+    not r10d
+    test r10d, r10d
+    je strict short L.nvol_memrchr3_entry_avx2 + 243
+    bsr eax, r10d
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L13:
+    mov eax, dword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    and esi, 2139062143
+    add esi, 2139062143
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rdi, rdx
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr3_entry_avx2 + 349
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L15:
+    xor eax, eax
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L11:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r8 - 8]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 9187201950435737471
+    and r11, rbx
+    mov rbx, 9187201950435737471
+    add r11, rbx
+    or r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, r10
+    and r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 9187201950435737471
+    and r10, rbx
+    mov rbx, 9187201950435737471
+    add r10, rbx
+    or r10, rax
+    and r11, r10
+    mov rax, 9187201950435737471
+    or r11, rax
+    not r11
+    test r11, r11
+    je strict short L.nvol_memrchr3_entry_avx2 + 560
+    bsr rax, r11
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    cmp r9, 16
+    ja strict near L.nvol_memrchr3_entry_avx2 + 737
+    mov rax, qword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    mov r9, 9187201950435737471
+    and rdi, r9
+    mov r9, 9187201950435737471
+    add rdi, r9
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    mov r9, 9187201950435737471
+    and rsi, r9
+    mov r9, 9187201950435737471
+    add rsi, r9
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    mov rsi, 9187201950435737471
+    and rdx, rsi
+    mov rsi, 9187201950435737471
+    add rdx, rsi
+    or rdx, rax
+    and rdi, rdx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr3_entry_avx2 + 729
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L21:
+    xor eax, eax
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L19:
+    and r8, -8
+    lea r9, [rcx + 8]
+    cmp r8, r9
+    jb strict near L.nvol_memrchr3_entry_avx2 + 918
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    lea r8, [r8 - 8]
+    mov rax, qword [r8]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 9187201950435737471
+    and r11, rbx
+    mov rbx, 9187201950435737471
+    add r11, rbx
+    or r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, r10
+    and r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 9187201950435737471
+    and r10, rbx
+    mov rbx, 9187201950435737471
+    add r10, rbx
+    or r10, rax
+    and r11, r10
+    mov rax, 9187201950435737471
+    or r11, rax
+    not r11
+    test r11, r11
+    jne strict near L.nvol_memrchr3_entry_avx2 + 1712
+; .L25:
+    cmp r8, r9
+    jae strict near L.nvol_memrchr3_entry_avx2 + 760
+; .L24:
+    cmp r8, rcx
+    jbe strict near L.nvol_memrchr3_entry_avx2 + 1086
+    mov rax, qword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    mov r9, 9187201950435737471
+    and rdi, r9
+    mov r9, 9187201950435737471
+    add rdi, r9
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    mov r9, 9187201950435737471
+    and rsi, r9
+    mov r9, 9187201950435737471
+    add rsi, r9
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    mov rsi, 9187201950435737471
+    and rdx, rsi
+    mov rsi, 9187201950435737471
+    add rdx, rsi
+    or rdx, rax
+    and rdi, rdx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr3_entry_avx2 + 1086
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L29:
+; .L27:
+    xor eax, eax
+    vzeroupper
+    pop rbp
+    pop rbx
     ret
 ; .L2:
     cmp r9, 32
-    jae strict near L.nvol_memrchr3_entry_avx2 + 380
+    jae strict near L.nvol_memrchr3_entry_avx2 + 1408
     vmovd xmm0, edi
     vpbroadcastb xmm0, xmm0
     vmovd xmm1, esi
@@ -4533,23 +7894,25 @@ L.nvol_memrchr3_entry_avx2:
     vpor xmm3, xmm4, xmm3
     vpmovmskb eax, xmm3
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_avx2 + 153
+    je strict short L.nvol_memrchr3_entry_avx2 + 1179
     bsr eax, eax
     lea rax, [r8 + rax - 16]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L11:
+; .L33:
     and r8, -16
     cmp r9, 32
-    jb strict short L.nvol_memrchr3_entry_avx2 + 268
+    jb strict short L.nvol_memrchr3_entry_avx2 + 1292
     lea rdx, [rcx + 32]
     cmp r9, 512
-    jae strict near L.nvol_memrchr3_entry_avx2 + 688
-; .L15:
+    jae strict near L.nvol_memrchr3_entry_avx2 + 1744
+; .L37:
     cmp r8, rdx
-    jb strict short L.nvol_memrchr3_entry_avx2 + 268
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L21:
+    jb strict short L.nvol_memrchr3_entry_avx2 + 1292
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L43:
     lea r8, [r8 - 32]
     vmovdqa xmm3, [r8]
     vmovdqa xmm4, [r8 + 16]
@@ -4566,17 +7929,17 @@ L.nvol_memrchr3_entry_avx2:
     vpor xmm5, xmm3, xmm4
     vpmovmskb eax, xmm5
     test eax, eax
-    jne strict near L.nvol_memrchr3_entry_avx2 + 804
-; .L23:
+    jne strict near L.nvol_memrchr3_entry_avx2 + 1864
+; .L45:
     cmp r8, rdx
-    jae strict short L.nvol_memrchr3_entry_avx2 + 192
-; .L22:
-; .L13:
+    jae strict short L.nvol_memrchr3_entry_avx2 + 1216
+; .L44:
+; .L35:
     lea rdx, [rcx + 16]
     cmp r8, rdx
-    jb strict short L.nvol_memrchr3_entry_avx2 + 326
+    jb strict short L.nvol_memrchr3_entry_avx2 + 1350
     db 0xf, 0x1f, 0x0
-; .L27:
+; .L49:
     lea r8, [r8 - 16]
     vmovdqu xmm3, [r8]
     vpcmpeqb xmm4, xmm3, xmm0
@@ -4586,13 +7949,13 @@ L.nvol_memrchr3_entry_avx2:
     vpor xmm3, xmm4, xmm3
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict near L.nvol_memrchr3_entry_avx2 + 827
-; .L29:
+    jne strict near L.nvol_memrchr3_entry_avx2 + 1889
+; .L51:
     cmp r8, rdx
-    jae strict short L.nvol_memrchr3_entry_avx2 + 280
-; .L28:
+    jae strict short L.nvol_memrchr3_entry_avx2 + 1304
+; .L50:
     cmp r8, rcx
-    jbe strict short L.nvol_memrchr3_entry_avx2 + 374
+    jbe strict short L.nvol_memrchr3_entry_avx2 + 1400
     vmovdqu xmm3, [rcx]
     vpcmpeqb xmm0, xmm3, xmm0
     vpcmpeqb xmm1, xmm3, xmm1
@@ -4601,17 +7964,21 @@ L.nvol_memrchr3_entry_avx2:
     vpor xmm0, xmm0, xmm1
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_avx2 + 374
+    je strict short L.nvol_memrchr3_entry_avx2 + 1400
     bsr eax, eax
     lea rax, [rcx + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L33:
-; .L31:
+; .L55:
+; .L53:
     xor eax, eax
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L9:
+; .L31:
     vmovd xmm0, edi
     vpbroadcastb ymm0, xmm0
     vmovd xmm1, esi
@@ -4626,23 +7993,25 @@ L.nvol_memrchr3_entry_avx2:
     vpor ymm3, ymm4, ymm3
     vpmovmskb eax, ymm3
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_avx2 + 453
+    je strict short L.nvol_memrchr3_entry_avx2 + 1483
     bsr eax, eax
     lea rax, [r8 + rax - 32]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L35:
+; .L57:
     and r8, -32
     cmp r9, 64
-    jb strict short L.nvol_memrchr3_entry_avx2 + 564
+    jb strict short L.nvol_memrchr3_entry_avx2 + 1596
     lea rdx, [rcx + 64]
     cmp r9, 2048
-    jae strict near L.nvol_memrchr3_entry_avx2 + 850
-; .L39:
+    jae strict near L.nvol_memrchr3_entry_avx2 + 1916
+; .L61:
     cmp r8, rdx
-    jb strict short L.nvol_memrchr3_entry_avx2 + 564
-    db 0xf, 0x1f, 0x0
-; .L45:
+    jb strict short L.nvol_memrchr3_entry_avx2 + 1596
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L67:
     lea r8, [r8 - 64]
     vmovdqa ymm3, [r8]
     vmovdqa ymm4, [r8 + 32]
@@ -4659,17 +8028,17 @@ L.nvol_memrchr3_entry_avx2:
     vpor ymm5, ymm3, ymm4
     vpmovmskb eax, ymm5
     test eax, eax
-    jne strict near L.nvol_memrchr3_entry_avx2 + 972
-; .L47:
+    jne strict near L.nvol_memrchr3_entry_avx2 + 2040
+; .L69:
     cmp r8, rdx
-    jae strict short L.nvol_memrchr3_entry_avx2 + 488
-; .L46:
-; .L37:
+    jae strict short L.nvol_memrchr3_entry_avx2 + 1520
+; .L68:
+; .L59:
     lea rdx, [rcx + 32]
     cmp r8, rdx
-    jb strict short L.nvol_memrchr3_entry_avx2 + 622
+    jb strict short L.nvol_memrchr3_entry_avx2 + 1654
     db 0xf, 0x1f, 0x0
-; .L51:
+; .L73:
     lea r8, [r8 - 32]
     vmovdqu ymm3, [r8]
     vpcmpeqb ymm4, ymm3, ymm0
@@ -4679,13 +8048,13 @@ L.nvol_memrchr3_entry_avx2:
     vpor ymm3, ymm4, ymm3
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict near L.nvol_memrchr3_entry_avx2 + 995
-; .L53:
+    jne strict near L.nvol_memrchr3_entry_avx2 + 2065
+; .L75:
     cmp r8, rdx
-    jae strict short L.nvol_memrchr3_entry_avx2 + 576
-; .L52:
+    jae strict short L.nvol_memrchr3_entry_avx2 + 1608
+; .L74:
     cmp r8, rcx
-    jbe strict short L.nvol_memrchr3_entry_avx2 + 670
+    jbe strict short L.nvol_memrchr3_entry_avx2 + 1704
     vmovdqu ymm3, [rcx]
     vpcmpeqb ymm0, ymm3, ymm0
     vpcmpeqb ymm1, ymm3, ymm1
@@ -4694,26 +8063,40 @@ L.nvol_memrchr3_entry_avx2:
     vpor ymm0, ymm0, ymm1
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_avx2 + 670
+    je strict short L.nvol_memrchr3_entry_avx2 + 1704
     bsr eax, eax
     lea rax, [rcx + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L57:
-; .L55:
+; .L79:
+; .L77:
     xor eax, eax
 ; .L1:
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L20:
+; .L26:
+    bsr rax, r11
+    shr rax, 3
+    lea rax, [r8 + rax]
+    vzeroupper
+    pop rbp
+    pop rbx
+    ret
+; .L42:
     bsr eax, eax
     lea rax, [r8 + rax + 16]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L18:
-; .L16:
+; .L40:
+; .L38:
     cmp r8, rdx
-    jb strict near L.nvol_memrchr3_entry_avx2 + 180
+    jb strict near L.nvol_memrchr3_entry_avx2 + 1206
     lea r8, [r8 - 32]
     vmovdqa xmm3, [r8]
     vmovdqa xmm4, [r8 + 16]
@@ -4730,47 +8113,57 @@ L.nvol_memrchr3_entry_avx2:
     vpor xmm5, xmm3, xmm4
     vpmovmskb eax, xmm5
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_avx2 + 688
+    je strict short L.nvol_memrchr3_entry_avx2 + 1744
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict short L.nvol_memrchr3_entry_avx2 + 676
-; .L19:
+    jne strict short L.nvol_memrchr3_entry_avx2 + 1730
+; .L41:
     vpmovmskb eax, xmm3
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-    jmp strict near L.nvol_memrchr3_entry_avx2 + 180
-; .L26:
+    jmp strict near L.nvol_memrchr3_entry_avx2 + 1206
+; .L48:
     bsr eax, eax
     lea rax, [r8 + rax + 16]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L24:
+; .L46:
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict short L.nvol_memrchr3_entry_avx2 + 792
-; .L25:
+    jne strict short L.nvol_memrchr3_entry_avx2 + 1850
+; .L47:
     vpmovmskb eax, xmm3
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L30:
+; .L52:
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L44:
+; .L66:
     bsr eax, eax
     lea rax, [r8 + rax + 32]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L42:
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L40:
+; .L64:
+    db 0xf, 0x1f, 0x40, 0x0
+; .L62:
     cmp r8, rdx
-    jb strict near L.nvol_memrchr3_entry_avx2 + 480
+    jb strict near L.nvol_memrchr3_entry_avx2 + 1510
     lea r8, [r8 - 64]
     vmovdqa ymm3, [r8]
     vmovdqa ymm4, [r8 + 32]
@@ -4787,71 +8180,341 @@ L.nvol_memrchr3_entry_avx2:
     vpor ymm5, ymm3, ymm4
     vpmovmskb eax, ymm5
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_avx2 + 856
+    je strict short L.nvol_memrchr3_entry_avx2 + 1920
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict short L.nvol_memrchr3_entry_avx2 + 838
-; .L43:
+    jne strict short L.nvol_memrchr3_entry_avx2 + 1902
+; .L65:
     vpmovmskb eax, ymm3
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-    jmp strict near L.nvol_memrchr3_entry_avx2 + 480
-; .L50:
+    jmp strict near L.nvol_memrchr3_entry_avx2 + 1510
+; .L72:
     bsr eax, eax
     lea rax, [r8 + rax + 32]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L48:
+; .L70:
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict short L.nvol_memrchr3_entry_avx2 + 960
-; .L49:
+    jne strict short L.nvol_memrchr3_entry_avx2 + 2026
+; .L71:
     vpmovmskb eax, ymm3
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
-; .L54:
+; .L76:
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rbp
+    pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-global nvol_memrchr3_entry_sse2:function hidden 590
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+global nvol_memrchr3_entry_sse2:function hidden 1622
 nvol_memrchr3_entry_sse2:
 L.nvol_memrchr3_entry_sse2:
+    push rbx
+    push rbp
     movzx edi, dil
     movzx esi, sil
     movzx edx, dl
     mov r9, r8
     sub r9, rcx
     cmp r9, 16
-    jae strict short L.nvol_memrchr3_entry_sse2 + 64
+    jae strict near L.nvol_memrchr3_entry_sse2 + 1064
+    cmp r9, 5
+    jae strict short L.nvol_memrchr3_entry_sse2 + 84
     cmp r8, rcx
-    jbe strict short L.nvol_memrchr3_entry_sse2 + 61
-    db 0xf, 0x1f, 0x40, 0x0
-; .L4:
+    jbe strict short L.nvol_memrchr3_entry_sse2 + 79
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+; .L6:
     lea r8, [r8 - 1]
     movzx eax, byte [r8]
     cmp eax, edi
-    je strict short L.nvol_memrchr3_entry_sse2 + 52
+    je strict short L.nvol_memrchr3_entry_sse2 + 68
     cmp eax, esi
-    je strict short L.nvol_memrchr3_entry_sse2 + 52
+    je strict short L.nvol_memrchr3_entry_sse2 + 68
     cmp eax, edx
-    jne strict short L.nvol_memrchr3_entry_sse2 + 56
-; .L8:
-; .L7:
+    jne strict short L.nvol_memrchr3_entry_sse2 + 74
+; .L10:
+; .L9:
     mov rax, r8
+    pop rbp
+    pop rbx
     ret
-; .L6:
+; .L8:
     cmp r8, rcx
-    ja strict short L.nvol_memrchr3_entry_sse2 + 32
-; .L5:
+    ja strict short L.nvol_memrchr3_entry_sse2 + 48
+; .L7:
     xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L4:
+    cmp r9, 8
+    jae strict near L.nvol_memrchr3_entry_sse2 + 342
+    mov eax, 16843009
+    imul edi, eax
+    mov eax, 16843009
+    imul esi, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r8 - 4]
+    mov r9, rax
+    xor r9, rdi
+    mov r10, r9
+    and r10d, 2139062143
+    add r10d, 2139062143
+    or r10, r9
+    mov r9, rax
+    xor r9, rsi
+    mov r11, r9
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, r9
+    and r10, r11
+    xor rax, rdx
+    mov r9, rax
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, rax
+    and r10, r9
+    or r10d, 2139062143
+    not r10d
+    test r10d, r10d
+    je strict short L.nvol_memrchr3_entry_sse2 + 234
+    bsr eax, r10d
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    pop rbp
+    pop rbx
+    ret
+; .L13:
+    mov eax, dword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    and esi, 2139062143
+    add esi, 2139062143
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rdi, rdx
+    or edi, 2139062143
+    not edi
+    test edi, edi
+    je strict short L.nvol_memrchr3_entry_sse2 + 337
+    bsr eax, edi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L15:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L11:
+    mov rax, 72340172838076673
+    imul rdi, rax
+    mov rax, 72340172838076673
+    imul rsi, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r8 - 8]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 9187201950435737471
+    and r11, rbx
+    mov rbx, 9187201950435737471
+    add r11, rbx
+    or r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, r10
+    and r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 9187201950435737471
+    and r10, rbx
+    mov rbx, 9187201950435737471
+    add r10, rbx
+    or r10, rax
+    and r11, r10
+    mov rax, 9187201950435737471
+    or r11, rax
+    not r11
+    test r11, r11
+    je strict short L.nvol_memrchr3_entry_sse2 + 542
+    bsr rax, r11
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    pop rbp
+    pop rbx
+    ret
+; .L17:
+    cmp r9, 16
+    ja strict near L.nvol_memrchr3_entry_sse2 + 713
+    mov rax, qword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    mov r9, 9187201950435737471
+    and rdi, r9
+    mov r9, 9187201950435737471
+    add rdi, r9
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    mov r9, 9187201950435737471
+    and rsi, r9
+    mov r9, 9187201950435737471
+    add rsi, r9
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    mov rsi, 9187201950435737471
+    and rdx, rsi
+    mov rsi, 9187201950435737471
+    add rdx, rsi
+    or rdx, rax
+    and rdi, rdx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr3_entry_sse2 + 708
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L21:
+    xor eax, eax
+    pop rbp
+    pop rbx
+    ret
+; .L19:
+    and r8, -8
+    lea r9, [rcx + 8]
+    cmp r8, r9
+    jb strict near L.nvol_memrchr3_entry_sse2 + 894
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L23:
+    lea r8, [r8 - 8]
+    mov rax, qword [r8]
+    mov r10, rax
+    xor r10, rdi
+    mov r11, r10
+    mov rbx, 9187201950435737471
+    and r11, rbx
+    mov rbx, 9187201950435737471
+    add r11, rbx
+    or r11, r10
+    mov r10, rax
+    xor r10, rsi
+    mov rbx, r10
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, r10
+    and r11, rbx
+    xor rax, rdx
+    mov r10, rax
+    mov rbx, 9187201950435737471
+    and r10, rbx
+    mov rbx, 9187201950435737471
+    add r10, rbx
+    or r10, rax
+    and r11, r10
+    mov rax, 9187201950435737471
+    or r11, rax
+    not r11
+    test r11, r11
+    jne strict near L.nvol_memrchr3_entry_sse2 + 1426
+; .L25:
+    cmp r8, r9
+    jae strict near L.nvol_memrchr3_entry_sse2 + 736
+; .L24:
+    cmp r8, rcx
+    jbe strict near L.nvol_memrchr3_entry_sse2 + 1059
+    mov rax, qword [rcx]
+    mov r8, rax
+    xor r8, rdi
+    mov rdi, r8
+    mov r9, 9187201950435737471
+    and rdi, r9
+    mov r9, 9187201950435737471
+    add rdi, r9
+    or rdi, r8
+    mov r8, rax
+    xor r8, rsi
+    mov rsi, r8
+    mov r9, 9187201950435737471
+    and rsi, r9
+    mov r9, 9187201950435737471
+    add rsi, r9
+    or rsi, r8
+    and rdi, rsi
+    xor rax, rdx
+    mov rdx, rax
+    mov rsi, 9187201950435737471
+    and rdx, rsi
+    mov rsi, 9187201950435737471
+    add rdx, rsi
+    or rdx, rax
+    and rdi, rdx
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short L.nvol_memrchr3_entry_sse2 + 1059
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L29:
+; .L27:
+    xor eax, eax
+    pop rbp
+    pop rbx
     ret
 ; .L2:
     imul eax, edi, 16843009
@@ -4873,21 +8536,24 @@ L.nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_sse2 + 160
+    je strict short L.nvol_memrchr3_entry_sse2 + 1162
     bsr eax, eax
     lea rax, [r8 + rax - 16]
+    pop rbp
+    pop rbx
     ret
-; .L9:
+; .L31:
     and r8, -16
     cmp r9, 32
-    jb strict short L.nvol_memrchr3_entry_sse2 + 288
+    jb strict short L.nvol_memrchr3_entry_sse2 + 1296
     lea rdx, [rcx + 32]
     cmp r9, 512
-    jae strict near L.nvol_memrchr3_entry_sse2 + 423
-; .L13:
+    jae strict near L.nvol_memrchr3_entry_sse2 + 1452
+; .L35:
     cmp r8, rdx
-    jb strict short L.nvol_memrchr3_entry_sse2 + 288
-; .L19:
+    jb strict short L.nvol_memrchr3_entry_sse2 + 1296
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L41:
     lea r8, [r8 - 32]
     movdqa xmm3, [r8]
     movdqa xmm4, [r8 + 16]
@@ -4909,17 +8575,17 @@ L.nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict near L.nvol_memrchr3_entry_sse2 + 562
-; .L21:
+    jne strict near L.nvol_memrchr3_entry_sse2 + 1590
+; .L43:
     cmp r8, rdx
-    jae strict short L.nvol_memrchr3_entry_sse2 + 192
-; .L20:
-; .L11:
+    jae strict short L.nvol_memrchr3_entry_sse2 + 1200
+; .L42:
+; .L33:
     lea rdx, [rcx + 16]
     cmp r8, rdx
-    jb strict short L.nvol_memrchr3_entry_sse2 + 358
+    jb strict short L.nvol_memrchr3_entry_sse2 + 1366
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L25:
+; .L47:
     lea r8, [r8 - 16]
     movdqu xmm3, [r8]
     movdqa xmm4, xmm3
@@ -4931,13 +8597,13 @@ L.nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict near L.nvol_memrchr3_entry_sse2 + 582
-; .L27:
+    jne strict near L.nvol_memrchr3_entry_sse2 + 1612
+; .L49:
     cmp r8, rdx
-    jae strict short L.nvol_memrchr3_entry_sse2 + 304
-; .L26:
+    jae strict short L.nvol_memrchr3_entry_sse2 + 1312
+; .L48:
     cmp r8, rcx
-    jbe strict short L.nvol_memrchr3_entry_sse2 + 411
+    jbe strict short L.nvol_memrchr3_entry_sse2 + 1421
     movdqu xmm3, [rcx]
     movdqa xmm4, xmm3
     pcmpeqb xmm4, xmm0
@@ -4948,24 +8614,37 @@ L.nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_sse2 + 411
+    je strict short L.nvol_memrchr3_entry_sse2 + 1421
     bsr eax, eax
     lea rax, [rcx + rax]
+    pop rbp
+    pop rbx
     ret
-; .L31:
-; .L29:
+; .L53:
+; .L51:
     xor eax, eax
 ; .L1:
+    pop rbp
+    pop rbx
     ret
-; .L18:
+; .L26:
+    bsr rax, r11
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rbp
+    pop rbx
+    ret
+; .L40:
     bsr eax, eax
     lea rax, [r8 + rax + 16]
+    pop rbp
+    pop rbx
     ret
-; .L16:
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-; .L14:
+; .L38:
+    db 0xf, 0x1f, 0x40, 0x0
+; .L36:
     cmp r8, rdx
-    jb strict near L.nvol_memrchr3_entry_sse2 + 187
+    jb strict near L.nvol_memrchr3_entry_sse2 + 1189
     lea r8, [r8 - 32]
     movdqa xmm3, [r8]
     movdqa xmm4, [r8 + 16]
@@ -4987,40 +8666,47 @@ L.nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short L.nvol_memrchr3_entry_sse2 + 432
+    je strict short L.nvol_memrchr3_entry_sse2 + 1456
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memrchr3_entry_sse2 + 414
-; .L17:
+    jne strict short L.nvol_memrchr3_entry_sse2 + 1441
+; .L39:
     pmovmskb eax, xmm5
     bsr eax, eax
     lea rax, [r8 + rax]
+    pop rbp
+    pop rbx
     ret
-    jmp strict near L.nvol_memrchr3_entry_sse2 + 187
-; .L24:
+    jmp strict near L.nvol_memrchr3_entry_sse2 + 1189
+; .L46:
     bsr eax, eax
     lea rax, [r8 + rax + 16]
+    pop rbp
+    pop rbx
     ret
-; .L22:
+; .L44:
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short L.nvol_memrchr3_entry_sse2 + 553
-; .L23:
+    jne strict short L.nvol_memrchr3_entry_sse2 + 1579
+; .L45:
     pmovmskb eax, xmm5
     bsr eax, eax
     lea rax, [r8 + rax]
+    pop rbp
+    pop rbx
     ret
-; .L28:
+; .L50:
     bsr eax, eax
     lea rax, [r8 + rax]
+    pop rbp
+    pop rbx
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memrchr3_raw:function 6
 nvol_memrchr3_raw:
 L.nvol_memrchr3_raw:
@@ -50081,7 +53767,7 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr_scalar - $
-    dd 39
+    dd 439
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50096,12 +53782,12 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr_entry_avx2 - $
-    dd 618
+    dd 1050
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr_entry_sse2 - $
-    dd 336
+    dd 733
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50121,7 +53807,7 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr_scalar - $
-    dd 39
+    dd 517
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50136,12 +53822,12 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr_entry_avx2 - $
-    dd 902
+    dd 1414
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr_entry_sse2 - $
-    dd 500
+    dd 972
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50161,7 +53847,7 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr2_scalar - $
-    dd 43
+    dd 689
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50176,12 +53862,12 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr2_entry_avx2 - $
-    dd 651
+    dd 1331
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr2_entry_sse2 - $
-    dd 354
+    dd 999
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50201,7 +53887,7 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr2_scalar - $
-    dd 43
+    dd 811
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50216,12 +53902,12 @@ nvol_cie:
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr2_entry_avx2 - $
-    dd 868
+    dd 1684
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr2_entry_sse2 - $
-    dd 468
+    dd 1236
     db 0, 0, 0, 0
     dd 16
     dd $ - nvol_cie
@@ -50238,11 +53924,11 @@ nvol_cie:
     dd L.nvol_memrchr2 - $
     dd 36
     db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
-    dd 16
+    dd 136
     dd $ - nvol_cie
     dd L.nvol_memchr3_scalar - $
-    dd 47
-    db 0, 0, 0, 0
+    dd 873
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 112, 10, 65, 14, 16, 65, 14, 8, 65, 11, 75, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 125, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 87, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 159, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 125, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 3, 9, 1, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 77, 14, 16, 65, 14, 8, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr3_sse2 - $
@@ -50253,16 +53939,16 @@ nvol_cie:
     dd L.nvol_memchr3_avx2 - $
     dd 345
     db 0, 0, 0, 0
-    dd 16
+    dd 260
     dd $ - nvol_cie
     dd L.nvol_memchr3_entry_avx2 - $
-    dd 747
-    db 0, 0, 0, 0
-    dd 16
+    dd 1637
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 2, 67, 10, 65, 14, 16, 65, 14, 8, 65, 11, 78, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 128, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 90, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 162, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 132, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 3, 16, 1, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 79, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 214, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 213, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 79, 10, 65, 14, 16, 65, 14, 8, 65, 11, 74, 10, 65, 14, 16, 65, 14, 8, 65, 11, 87, 10, 65, 14, 16, 65, 14, 8, 65, 11, 74, 10, 65, 14, 16, 65, 14, 8, 65, 11, 74, 10, 65, 14, 16, 65, 14, 8, 65, 11, 87, 10, 65, 14, 16, 65, 14, 8, 65, 11, 75, 14, 16, 65, 14, 8
+    dd 200
     dd $ - nvol_cie
     dd L.nvol_memchr3_entry_sse2 - $
-    dd 434
-    db 0, 0, 0, 0
+    dd 1275
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 2, 64, 10, 65, 14, 16, 65, 14, 8, 65, 11, 75, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 125, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 87, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 159, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 125, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 3, 9, 1, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 92, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 240, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 76, 10, 65, 14, 16, 65, 14, 8, 65, 11, 71, 10, 65, 14, 16, 65, 14, 8, 65, 11, 84, 10, 65, 14, 16, 65, 14, 8, 65, 11, 72, 14, 16, 65, 14, 8, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memchr3_raw - $
@@ -50278,11 +53964,11 @@ nvol_cie:
     dd L.nvol_memchr3 - $
     dd 36
     db 0, 65, 14, 16, 131, 2, 98, 14, 8, 0, 0, 0
-    dd 16
+    dd 136
     dd $ - nvol_cie
     dd L.nvol_memrchr3_scalar - $
-    dd 48
-    db 0, 0, 0, 0
+    dd 1063
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 117, 10, 65, 14, 16, 65, 14, 8, 65, 11, 71, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 147, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 100, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 197, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 163, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 3, 87, 1, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 77, 14, 16, 65, 14, 8, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr3_sse2 - $
@@ -50293,16 +53979,16 @@ nvol_cie:
     dd L.nvol_memrchr3_avx2 - $
     dd 486
     db 0, 0, 0, 0
-    dd 16
+    dd 304
     dd $ - nvol_cie
     dd L.nvol_memrchr3_entry_avx2 - $
-    dd 1006
-    db 0, 0, 0, 0
-    dd 16
+    dd 2078
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 2, 72, 10, 65, 14, 16, 65, 14, 8, 65, 11, 74, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 150, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 103, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 200, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 166, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 3, 90, 1, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 82, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 218, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 72, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 218, 10, 65, 14, 16, 65, 14, 8, 65, 11, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 79, 10, 65, 14, 16, 65, 14, 8, 65, 11, 75, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 98, 10, 65, 14, 16, 65, 14, 8, 65, 11, 80, 10, 65, 14, 16, 65, 14, 8, 65, 11, 86, 10, 65, 14, 16, 65, 14, 8, 65, 11, 74, 10, 65, 14, 16, 65, 14, 8, 65, 11, 75, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 102, 10, 65, 14, 16, 65, 14, 8, 65, 11, 80, 10, 65, 14, 16, 65, 14, 8, 65, 11, 86, 10, 65, 14, 16, 65, 14, 8, 65, 11, 75, 14, 16, 65, 14, 8, 0, 0
+    dd 220
     dd $ - nvol_cie
     dd L.nvol_memrchr3_entry_sse2 - $
-    dd 590
-    db 0, 0, 0, 0
+    dd 1622
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 2, 69, 10, 65, 14, 16, 65, 14, 8, 65, 11, 71, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 147, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 100, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 197, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 163, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 3, 87, 1, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 95, 10, 65, 14, 16, 65, 14, 8, 65, 11, 3, 0, 1, 10, 65, 14, 16, 65, 14, 8, 65, 11, 66, 10, 65, 14, 16, 65, 14, 8, 65, 11, 76, 10, 65, 14, 16, 65, 14, 8, 65, 11, 72, 10, 65, 14, 16, 65, 14, 8, 65, 11, 2, 119, 10, 65, 14, 16, 65, 14, 8, 65, 11, 77, 10, 65, 14, 16, 65, 14, 8, 65, 11, 83, 10, 65, 14, 16, 65, 14, 8, 65, 11, 72, 14, 16, 65, 14, 8
     dd 16
     dd $ - nvol_cie
     dd L.nvol_memrchr3_raw - $

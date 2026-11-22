@@ -30,16 +30,64 @@ pub mod raw {
 
     pub(crate) static NVOL_TBL_RANK: [u8; 256] = [55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28, 255, 148, 164, 149, 136, 160, 155, 173, 221, 222, 134, 122, 232, 202, 215, 224, 208, 220, 204, 187, 183, 179, 177, 168, 178, 200, 226, 195, 154, 184, 174, 126, 120, 191, 157, 194, 170, 189, 162, 161, 150, 193, 142, 137, 171, 176, 185, 167, 186, 112, 175, 192, 188, 156, 140, 143, 123, 133, 128, 147, 138, 146, 114, 223, 151, 249, 216, 238, 236, 253, 227, 218, 230, 247, 135, 180, 241, 233, 246, 244, 231, 139, 245, 243, 251, 235, 201, 196, 240, 214, 152, 182, 205, 181, 127, 27, 212, 211, 210, 213, 228, 197, 169, 159, 131, 172, 105, 80, 98, 96, 97, 81, 207, 145, 116, 115, 144, 130, 153, 121, 107, 132, 109, 110, 124, 111, 82, 108, 118, 141, 113, 129, 119, 125, 165, 117, 92, 106, 83, 72, 99, 93, 65, 79, 166, 237, 163, 199, 190, 225, 209, 203, 198, 217, 219, 206, 234, 248, 158, 239, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255];
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memchr_scalar(n1: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = start;
-            while (p < end) {
-                if ((*p) == n1) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 4usize) {
+                let mut p: *const u8 = start;
+                while (p < end) {
+                    if ((*p) == n1) {
+                        return p;
+                    }
+                    p = p.add(1usize);
                 }
-                p = p.add(1usize);
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (start as *const u32).read_unaligned();
+                let m: u32 = (((w ^ sh1).wrapping_sub(16843009u32) & ((w ^ sh1) ^ 4294967295u32)) & 2155905152u32);
+                if (m != 0u32) {
+                    return start.add(((m.trailing_zeros() as usize) >> 3usize));
+                }
+                let w1: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m1: u32 = (((w1 ^ sh1).wrapping_sub(16843009u32) & ((w1 ^ sh1) ^ 4294967295u32)) & 2155905152u32);
+                if (m1 != 0u32) {
+                    return end.sub(4usize).add(((m1.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (start as *const u64).read_unaligned();
+            let m2: u64 = (((w2 ^ sw1).wrapping_sub(72340172838076673u64) & ((w2 ^ sw1) ^ 18446744073709551615u64)) & 9259542123273814144u64);
+            if (m2 != 0u64) {
+                return start.add(((m2.trailing_zeros() as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m3: u64 = (((w3 ^ sw1).wrapping_sub(72340172838076673u64) & ((w3 ^ sw1) ^ 18446744073709551615u64)) & 9259542123273814144u64);
+                if (m3 != 0u64) {
+                    return end.sub(8usize).add(((m3.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = start.add((8usize - ((start as usize) & 7usize)));
+            while (q <= end.sub(8usize)) {
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = (((w4 ^ sw1).wrapping_sub(72340172838076673u64) & ((w4 ^ sw1) ^ 18446744073709551615u64)) & 9259542123273814144u64);
+                if (m4 != 0u64) {
+                    return q.add(((m4.trailing_zeros() as usize) >> 3usize));
+                }
+                q = q.add(8usize);
+            }
+            if (q < end) {
+                let w5: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m5: u64 = (((w5 ^ sw1).wrapping_sub(72340172838076673u64) & ((w5 ^ sw1) ^ 18446744073709551615u64)) & 9259542123273814144u64);
+                if (m5 != 0u64) {
+                    return end.sub(8usize).add(((m5.trailing_zeros() as usize) >> 3usize));
+                }
             }
             return core::ptr::null();
         }
@@ -226,15 +274,63 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memrchr_scalar(n1: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = end;
-            while (p > start) {
-                p = p.sub(1usize);
-                if ((*p) == n1) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 4usize) {
+                let mut p: *const u8 = end;
+                while (p > start) {
+                    p = p.sub(1usize);
+                    if ((*p) == n1) {
+                        return p;
+                    }
+                }
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m: u32 = (((((w ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh1)) | 2139062143u32) ^ 4294967295u32);
+                if (m != 0u32) {
+                    return end.sub(4usize).add((((31 - m.leading_zeros()) as usize) >> 3usize));
+                }
+                let w1: u32 = (start as *const u32).read_unaligned();
+                let m1: u32 = (((((w1 ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh1)) | 2139062143u32) ^ 4294967295u32);
+                if (m1 != 0u32) {
+                    return start.add((((31 - m1.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+            let m2: u64 = (((((w2 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw1)) | 9187201950435737471u64) ^ 18446744073709551615u64);
+            if (m2 != 0u64) {
+                return end.sub(8usize).add((((63 - m2.leading_zeros()) as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (start as *const u64).read_unaligned();
+                let m3: u64 = (((((w3 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw1)) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m3 != 0u64) {
+                    return start.add((((63 - m3.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = end.sub(((end as usize) & 7usize));
+            while (q >= start.add(8usize)) {
+                q = q.sub(8usize);
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = (((((w4 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw1)) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m4 != 0u64) {
+                    return q.add((((63 - m4.leading_zeros()) as usize) >> 3usize));
+                }
+            }
+            if (q > start) {
+                let w5: u64 = (start as *const u64).read_unaligned();
+                let m5: u64 = (((((w5 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw1)) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m5 != 0u64) {
+                    return start.add((((63 - m5.leading_zeros()) as usize) >> 3usize));
                 }
             }
             return core::ptr::null();
@@ -420,16 +516,77 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memchr2_scalar(n1: u8, n2: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = start;
-            while (p < end) {
-                if (((*p) == n1) || ((*p) == n2)) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 4usize) {
+                if (len_ == 0usize) {
+                    return core::ptr::null();
                 }
-                p = p.add(1usize);
+                if (((*start) == n1) || ((*start) == n2)) {
+                    return start;
+                }
+                if (len_ == 1usize) {
+                    return core::ptr::null();
+                }
+                if (((*start.add(1usize)) == n1) || ((*start.add(1usize)) == n2)) {
+                    return start.add(1usize);
+                }
+                if (len_ == 2usize) {
+                    return core::ptr::null();
+                }
+                if (((*start.add(2usize)) == n1) || ((*start.add(2usize)) == n2)) {
+                    return start.add(2usize);
+                }
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let sh2: u32 = (n2 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (start as *const u32).read_unaligned();
+                let m: u32 = ((((w ^ sh1).wrapping_sub(16843009u32) & ((w ^ sh1) ^ 4294967295u32)) | ((w ^ sh2).wrapping_sub(16843009u32) & ((w ^ sh2) ^ 4294967295u32))) & 2155905152u32);
+                if (m != 0u32) {
+                    return start.add(((m.trailing_zeros() as usize) >> 3usize));
+                }
+                let w1: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m1: u32 = ((((w1 ^ sh1).wrapping_sub(16843009u32) & ((w1 ^ sh1) ^ 4294967295u32)) | ((w1 ^ sh2).wrapping_sub(16843009u32) & ((w1 ^ sh2) ^ 4294967295u32))) & 2155905152u32);
+                if (m1 != 0u32) {
+                    return end.sub(4usize).add(((m1.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let sw2: u64 = (n2 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (start as *const u64).read_unaligned();
+            let m2: u64 = ((((w2 ^ sw1).wrapping_sub(72340172838076673u64) & ((w2 ^ sw1) ^ 18446744073709551615u64)) | ((w2 ^ sw2).wrapping_sub(72340172838076673u64) & ((w2 ^ sw2) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+            if (m2 != 0u64) {
+                return start.add(((m2.trailing_zeros() as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m3: u64 = ((((w3 ^ sw1).wrapping_sub(72340172838076673u64) & ((w3 ^ sw1) ^ 18446744073709551615u64)) | ((w3 ^ sw2).wrapping_sub(72340172838076673u64) & ((w3 ^ sw2) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m3 != 0u64) {
+                    return end.sub(8usize).add(((m3.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = start.add((8usize - ((start as usize) & 7usize)));
+            while (q <= end.sub(8usize)) {
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = ((((w4 ^ sw1).wrapping_sub(72340172838076673u64) & ((w4 ^ sw1) ^ 18446744073709551615u64)) | ((w4 ^ sw2).wrapping_sub(72340172838076673u64) & ((w4 ^ sw2) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m4 != 0u64) {
+                    return q.add(((m4.trailing_zeros() as usize) >> 3usize));
+                }
+                q = q.add(8usize);
+            }
+            if (q < end) {
+                let w5: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m5: u64 = ((((w5 ^ sw1).wrapping_sub(72340172838076673u64) & ((w5 ^ sw1) ^ 18446744073709551615u64)) | ((w5 ^ sw2).wrapping_sub(72340172838076673u64) & ((w5 ^ sw2) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m5 != 0u64) {
+                    return end.sub(8usize).add(((m5.trailing_zeros() as usize) >> 3usize));
+                }
             }
             return core::ptr::null();
         }
@@ -594,15 +751,76 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memrchr2_scalar(n1: u8, n2: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = end;
-            while (p > start) {
-                p = p.sub(1usize);
-                if (((*p) == n1) || ((*p) == n2)) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 4usize) {
+                if (len_ == 0usize) {
+                    return core::ptr::null();
+                }
+                if (((*end.sub(1usize)) == n1) || ((*end.sub(1usize)) == n2)) {
+                    return end.sub(1usize);
+                }
+                if (len_ == 1usize) {
+                    return core::ptr::null();
+                }
+                if (((*end.sub(2usize)) == n1) || ((*end.sub(2usize)) == n2)) {
+                    return end.sub(2usize);
+                }
+                if (len_ == 2usize) {
+                    return core::ptr::null();
+                }
+                if (((*end.sub(3usize)) == n1) || ((*end.sub(3usize)) == n2)) {
+                    return end.sub(3usize);
+                }
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let sh2: u32 = (n2 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m: u32 = ((((((w ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh1)) & (((w ^ sh2) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh2))) | 2139062143u32) ^ 4294967295u32);
+                if (m != 0u32) {
+                    return end.sub(4usize).add((((31 - m.leading_zeros()) as usize) >> 3usize));
+                }
+                let w1: u32 = (start as *const u32).read_unaligned();
+                let m1: u32 = ((((((w1 ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh1)) & (((w1 ^ sh2) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh2))) | 2139062143u32) ^ 4294967295u32);
+                if (m1 != 0u32) {
+                    return start.add((((31 - m1.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let sw2: u64 = (n2 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+            let m2: u64 = ((((((w2 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw1)) & (((w2 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw2))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+            if (m2 != 0u64) {
+                return end.sub(8usize).add((((63 - m2.leading_zeros()) as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (start as *const u64).read_unaligned();
+                let m3: u64 = ((((((w3 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw1)) & (((w3 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw2))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m3 != 0u64) {
+                    return start.add((((63 - m3.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = end.sub(((end as usize) & 7usize));
+            while (q >= start.add(8usize)) {
+                q = q.sub(8usize);
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = ((((((w4 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw1)) & (((w4 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw2))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m4 != 0u64) {
+                    return q.add((((63 - m4.leading_zeros()) as usize) >> 3usize));
+                }
+            }
+            if (q > start) {
+                let w5: u64 = (start as *const u64).read_unaligned();
+                let m5: u64 = ((((((w5 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw1)) & (((w5 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw2))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m5 != 0u64) {
+                    return start.add((((63 - m5.leading_zeros()) as usize) >> 3usize));
                 }
             }
             return core::ptr::null();
@@ -766,16 +984,68 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memchr3_scalar(n1: u8, n2: u8, n3: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = start;
-            while (p < end) {
-                if ((((*p) == n1) || ((*p) == n2)) || ((*p) == n3)) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 5usize) {
+                let mut p: *const u8 = start;
+                while (p < end) {
+                    if ((((*p) == n1) || ((*p) == n2)) || ((*p) == n3)) {
+                        return p;
+                    }
+                    p = p.add(1usize);
                 }
-                p = p.add(1usize);
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let sh2: u32 = (n2 as u32).wrapping_mul(16843009u32);
+                let sh3: u32 = (n3 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (start as *const u32).read_unaligned();
+                let m: u32 = (((((w ^ sh1).wrapping_sub(16843009u32) & ((w ^ sh1) ^ 4294967295u32)) | ((w ^ sh2).wrapping_sub(16843009u32) & ((w ^ sh2) ^ 4294967295u32))) | ((w ^ sh3).wrapping_sub(16843009u32) & ((w ^ sh3) ^ 4294967295u32))) & 2155905152u32);
+                if (m != 0u32) {
+                    return start.add(((m.trailing_zeros() as usize) >> 3usize));
+                }
+                let w1: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m1: u32 = (((((w1 ^ sh1).wrapping_sub(16843009u32) & ((w1 ^ sh1) ^ 4294967295u32)) | ((w1 ^ sh2).wrapping_sub(16843009u32) & ((w1 ^ sh2) ^ 4294967295u32))) | ((w1 ^ sh3).wrapping_sub(16843009u32) & ((w1 ^ sh3) ^ 4294967295u32))) & 2155905152u32);
+                if (m1 != 0u32) {
+                    return end.sub(4usize).add(((m1.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let sw2: u64 = (n2 as u64).wrapping_mul(72340172838076673u64);
+            let sw3: u64 = (n3 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (start as *const u64).read_unaligned();
+            let m2: u64 = (((((w2 ^ sw1).wrapping_sub(72340172838076673u64) & ((w2 ^ sw1) ^ 18446744073709551615u64)) | ((w2 ^ sw2).wrapping_sub(72340172838076673u64) & ((w2 ^ sw2) ^ 18446744073709551615u64))) | ((w2 ^ sw3).wrapping_sub(72340172838076673u64) & ((w2 ^ sw3) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+            if (m2 != 0u64) {
+                return start.add(((m2.trailing_zeros() as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m3: u64 = (((((w3 ^ sw1).wrapping_sub(72340172838076673u64) & ((w3 ^ sw1) ^ 18446744073709551615u64)) | ((w3 ^ sw2).wrapping_sub(72340172838076673u64) & ((w3 ^ sw2) ^ 18446744073709551615u64))) | ((w3 ^ sw3).wrapping_sub(72340172838076673u64) & ((w3 ^ sw3) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m3 != 0u64) {
+                    return end.sub(8usize).add(((m3.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = start.add((8usize - ((start as usize) & 7usize)));
+            while (q <= end.sub(8usize)) {
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = (((((w4 ^ sw1).wrapping_sub(72340172838076673u64) & ((w4 ^ sw1) ^ 18446744073709551615u64)) | ((w4 ^ sw2).wrapping_sub(72340172838076673u64) & ((w4 ^ sw2) ^ 18446744073709551615u64))) | ((w4 ^ sw3).wrapping_sub(72340172838076673u64) & ((w4 ^ sw3) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m4 != 0u64) {
+                    return q.add(((m4.trailing_zeros() as usize) >> 3usize));
+                }
+                q = q.add(8usize);
+            }
+            if (q < end) {
+                let w5: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m5: u64 = (((((w5 ^ sw1).wrapping_sub(72340172838076673u64) & ((w5 ^ sw1) ^ 18446744073709551615u64)) | ((w5 ^ sw2).wrapping_sub(72340172838076673u64) & ((w5 ^ sw2) ^ 18446744073709551615u64))) | ((w5 ^ sw3).wrapping_sub(72340172838076673u64) & ((w5 ^ sw3) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m5 != 0u64) {
+                    return end.sub(8usize).add(((m5.trailing_zeros() as usize) >> 3usize));
+                }
             }
             return core::ptr::null();
         }
@@ -942,15 +1212,67 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memrchr3_scalar(n1: u8, n2: u8, n3: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = end;
-            while (p > start) {
-                p = p.sub(1usize);
-                if ((((*p) == n1) || ((*p) == n2)) || ((*p) == n3)) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 5usize) {
+                let mut p: *const u8 = end;
+                while (p > start) {
+                    p = p.sub(1usize);
+                    if ((((*p) == n1) || ((*p) == n2)) || ((*p) == n3)) {
+                        return p;
+                    }
+                }
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let sh2: u32 = (n2 as u32).wrapping_mul(16843009u32);
+                let sh3: u32 = (n3 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m: u32 = (((((((w ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh1)) & (((w ^ sh2) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh2))) & (((w ^ sh3) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh3))) | 2139062143u32) ^ 4294967295u32);
+                if (m != 0u32) {
+                    return end.sub(4usize).add((((31 - m.leading_zeros()) as usize) >> 3usize));
+                }
+                let w1: u32 = (start as *const u32).read_unaligned();
+                let m1: u32 = (((((((w1 ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh1)) & (((w1 ^ sh2) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh2))) & (((w1 ^ sh3) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh3))) | 2139062143u32) ^ 4294967295u32);
+                if (m1 != 0u32) {
+                    return start.add((((31 - m1.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let sw2: u64 = (n2 as u64).wrapping_mul(72340172838076673u64);
+            let sw3: u64 = (n3 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+            let m2: u64 = (((((((w2 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw1)) & (((w2 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw2))) & (((w2 ^ sw3) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw3))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+            if (m2 != 0u64) {
+                return end.sub(8usize).add((((63 - m2.leading_zeros()) as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (start as *const u64).read_unaligned();
+                let m3: u64 = (((((((w3 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw1)) & (((w3 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw2))) & (((w3 ^ sw3) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw3))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m3 != 0u64) {
+                    return start.add((((63 - m3.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = end.sub(((end as usize) & 7usize));
+            while (q >= start.add(8usize)) {
+                q = q.sub(8usize);
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = (((((((w4 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw1)) & (((w4 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw2))) & (((w4 ^ sw3) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw3))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m4 != 0u64) {
+                    return q.add((((63 - m4.leading_zeros()) as usize) >> 3usize));
+                }
+            }
+            if (q > start) {
+                let w5: u64 = (start as *const u64).read_unaligned();
+                let m5: u64 = (((((((w5 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw1)) & (((w5 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw2))) & (((w5 ^ sw3) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw3))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m5 != 0u64) {
+                    return start.add((((63 - m5.leading_zeros()) as usize) >> 3usize));
                 }
             }
             return core::ptr::null();
@@ -8697,16 +9019,64 @@ pub mod raw {
 
     pub(crate) static NVOL_TBL_RANK: [u8; 256] = [55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28, 255, 148, 164, 149, 136, 160, 155, 173, 221, 222, 134, 122, 232, 202, 215, 224, 208, 220, 204, 187, 183, 179, 177, 168, 178, 200, 226, 195, 154, 184, 174, 126, 120, 191, 157, 194, 170, 189, 162, 161, 150, 193, 142, 137, 171, 176, 185, 167, 186, 112, 175, 192, 188, 156, 140, 143, 123, 133, 128, 147, 138, 146, 114, 223, 151, 249, 216, 238, 236, 253, 227, 218, 230, 247, 135, 180, 241, 233, 246, 244, 231, 139, 245, 243, 251, 235, 201, 196, 240, 214, 152, 182, 205, 181, 127, 27, 212, 211, 210, 213, 228, 197, 169, 159, 131, 172, 105, 80, 98, 96, 97, 81, 207, 145, 116, 115, 144, 130, 153, 121, 107, 132, 109, 110, 124, 111, 82, 108, 118, 141, 113, 129, 119, 125, 165, 117, 92, 106, 83, 72, 99, 93, 65, 79, 166, 237, 163, 199, 190, 225, 209, 203, 198, 217, 219, 206, 234, 248, 158, 239, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255];
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memchr_scalar(n1: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = start;
-            while (p < end) {
-                if ((*p) == n1) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 4usize) {
+                let mut p: *const u8 = start;
+                while (p < end) {
+                    if ((*p) == n1) {
+                        return p;
+                    }
+                    p = p.add(1usize);
                 }
-                p = p.add(1usize);
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (start as *const u32).read_unaligned();
+                let m: u32 = (((w ^ sh1).wrapping_sub(16843009u32) & ((w ^ sh1) ^ 4294967295u32)) & 2155905152u32);
+                if (m != 0u32) {
+                    return start.add(((m.trailing_zeros() as usize) >> 3usize));
+                }
+                let w1: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m1: u32 = (((w1 ^ sh1).wrapping_sub(16843009u32) & ((w1 ^ sh1) ^ 4294967295u32)) & 2155905152u32);
+                if (m1 != 0u32) {
+                    return end.sub(4usize).add(((m1.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (start as *const u64).read_unaligned();
+            let m2: u64 = (((w2 ^ sw1).wrapping_sub(72340172838076673u64) & ((w2 ^ sw1) ^ 18446744073709551615u64)) & 9259542123273814144u64);
+            if (m2 != 0u64) {
+                return start.add(((m2.trailing_zeros() as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m3: u64 = (((w3 ^ sw1).wrapping_sub(72340172838076673u64) & ((w3 ^ sw1) ^ 18446744073709551615u64)) & 9259542123273814144u64);
+                if (m3 != 0u64) {
+                    return end.sub(8usize).add(((m3.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = start.add((8usize - ((start as usize) & 7usize)));
+            while (q <= end.sub(8usize)) {
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = (((w4 ^ sw1).wrapping_sub(72340172838076673u64) & ((w4 ^ sw1) ^ 18446744073709551615u64)) & 9259542123273814144u64);
+                if (m4 != 0u64) {
+                    return q.add(((m4.trailing_zeros() as usize) >> 3usize));
+                }
+                q = q.add(8usize);
+            }
+            if (q < end) {
+                let w5: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m5: u64 = (((w5 ^ sw1).wrapping_sub(72340172838076673u64) & ((w5 ^ sw1) ^ 18446744073709551615u64)) & 9259542123273814144u64);
+                if (m5 != 0u64) {
+                    return end.sub(8usize).add(((m5.trailing_zeros() as usize) >> 3usize));
+                }
             }
             return core::ptr::null();
         }
@@ -8797,15 +9167,63 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memrchr_scalar(n1: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = end;
-            while (p > start) {
-                p = p.sub(1usize);
-                if ((*p) == n1) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 4usize) {
+                let mut p: *const u8 = end;
+                while (p > start) {
+                    p = p.sub(1usize);
+                    if ((*p) == n1) {
+                        return p;
+                    }
+                }
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m: u32 = (((((w ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh1)) | 2139062143u32) ^ 4294967295u32);
+                if (m != 0u32) {
+                    return end.sub(4usize).add((((31 - m.leading_zeros()) as usize) >> 3usize));
+                }
+                let w1: u32 = (start as *const u32).read_unaligned();
+                let m1: u32 = (((((w1 ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh1)) | 2139062143u32) ^ 4294967295u32);
+                if (m1 != 0u32) {
+                    return start.add((((31 - m1.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+            let m2: u64 = (((((w2 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw1)) | 9187201950435737471u64) ^ 18446744073709551615u64);
+            if (m2 != 0u64) {
+                return end.sub(8usize).add((((63 - m2.leading_zeros()) as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (start as *const u64).read_unaligned();
+                let m3: u64 = (((((w3 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw1)) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m3 != 0u64) {
+                    return start.add((((63 - m3.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = end.sub(((end as usize) & 7usize));
+            while (q >= start.add(8usize)) {
+                q = q.sub(8usize);
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = (((((w4 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw1)) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m4 != 0u64) {
+                    return q.add((((63 - m4.leading_zeros()) as usize) >> 3usize));
+                }
+            }
+            if (q > start) {
+                let w5: u64 = (start as *const u64).read_unaligned();
+                let m5: u64 = (((((w5 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw1)) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m5 != 0u64) {
+                    return start.add((((63 - m5.leading_zeros()) as usize) >> 3usize));
                 }
             }
             return core::ptr::null();
@@ -8896,16 +9314,77 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memchr2_scalar(n1: u8, n2: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = start;
-            while (p < end) {
-                if (((*p) == n1) || ((*p) == n2)) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 4usize) {
+                if (len_ == 0usize) {
+                    return core::ptr::null();
                 }
-                p = p.add(1usize);
+                if (((*start) == n1) || ((*start) == n2)) {
+                    return start;
+                }
+                if (len_ == 1usize) {
+                    return core::ptr::null();
+                }
+                if (((*start.add(1usize)) == n1) || ((*start.add(1usize)) == n2)) {
+                    return start.add(1usize);
+                }
+                if (len_ == 2usize) {
+                    return core::ptr::null();
+                }
+                if (((*start.add(2usize)) == n1) || ((*start.add(2usize)) == n2)) {
+                    return start.add(2usize);
+                }
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let sh2: u32 = (n2 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (start as *const u32).read_unaligned();
+                let m: u32 = ((((w ^ sh1).wrapping_sub(16843009u32) & ((w ^ sh1) ^ 4294967295u32)) | ((w ^ sh2).wrapping_sub(16843009u32) & ((w ^ sh2) ^ 4294967295u32))) & 2155905152u32);
+                if (m != 0u32) {
+                    return start.add(((m.trailing_zeros() as usize) >> 3usize));
+                }
+                let w1: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m1: u32 = ((((w1 ^ sh1).wrapping_sub(16843009u32) & ((w1 ^ sh1) ^ 4294967295u32)) | ((w1 ^ sh2).wrapping_sub(16843009u32) & ((w1 ^ sh2) ^ 4294967295u32))) & 2155905152u32);
+                if (m1 != 0u32) {
+                    return end.sub(4usize).add(((m1.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let sw2: u64 = (n2 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (start as *const u64).read_unaligned();
+            let m2: u64 = ((((w2 ^ sw1).wrapping_sub(72340172838076673u64) & ((w2 ^ sw1) ^ 18446744073709551615u64)) | ((w2 ^ sw2).wrapping_sub(72340172838076673u64) & ((w2 ^ sw2) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+            if (m2 != 0u64) {
+                return start.add(((m2.trailing_zeros() as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m3: u64 = ((((w3 ^ sw1).wrapping_sub(72340172838076673u64) & ((w3 ^ sw1) ^ 18446744073709551615u64)) | ((w3 ^ sw2).wrapping_sub(72340172838076673u64) & ((w3 ^ sw2) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m3 != 0u64) {
+                    return end.sub(8usize).add(((m3.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = start.add((8usize - ((start as usize) & 7usize)));
+            while (q <= end.sub(8usize)) {
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = ((((w4 ^ sw1).wrapping_sub(72340172838076673u64) & ((w4 ^ sw1) ^ 18446744073709551615u64)) | ((w4 ^ sw2).wrapping_sub(72340172838076673u64) & ((w4 ^ sw2) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m4 != 0u64) {
+                    return q.add(((m4.trailing_zeros() as usize) >> 3usize));
+                }
+                q = q.add(8usize);
+            }
+            if (q < end) {
+                let w5: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m5: u64 = ((((w5 ^ sw1).wrapping_sub(72340172838076673u64) & ((w5 ^ sw1) ^ 18446744073709551615u64)) | ((w5 ^ sw2).wrapping_sub(72340172838076673u64) & ((w5 ^ sw2) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m5 != 0u64) {
+                    return end.sub(8usize).add(((m5.trailing_zeros() as usize) >> 3usize));
+                }
             }
             return core::ptr::null();
         }
@@ -8985,15 +9464,76 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memrchr2_scalar(n1: u8, n2: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = end;
-            while (p > start) {
-                p = p.sub(1usize);
-                if (((*p) == n1) || ((*p) == n2)) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 4usize) {
+                if (len_ == 0usize) {
+                    return core::ptr::null();
+                }
+                if (((*end.sub(1usize)) == n1) || ((*end.sub(1usize)) == n2)) {
+                    return end.sub(1usize);
+                }
+                if (len_ == 1usize) {
+                    return core::ptr::null();
+                }
+                if (((*end.sub(2usize)) == n1) || ((*end.sub(2usize)) == n2)) {
+                    return end.sub(2usize);
+                }
+                if (len_ == 2usize) {
+                    return core::ptr::null();
+                }
+                if (((*end.sub(3usize)) == n1) || ((*end.sub(3usize)) == n2)) {
+                    return end.sub(3usize);
+                }
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let sh2: u32 = (n2 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m: u32 = ((((((w ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh1)) & (((w ^ sh2) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh2))) | 2139062143u32) ^ 4294967295u32);
+                if (m != 0u32) {
+                    return end.sub(4usize).add((((31 - m.leading_zeros()) as usize) >> 3usize));
+                }
+                let w1: u32 = (start as *const u32).read_unaligned();
+                let m1: u32 = ((((((w1 ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh1)) & (((w1 ^ sh2) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh2))) | 2139062143u32) ^ 4294967295u32);
+                if (m1 != 0u32) {
+                    return start.add((((31 - m1.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let sw2: u64 = (n2 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+            let m2: u64 = ((((((w2 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw1)) & (((w2 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw2))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+            if (m2 != 0u64) {
+                return end.sub(8usize).add((((63 - m2.leading_zeros()) as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (start as *const u64).read_unaligned();
+                let m3: u64 = ((((((w3 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw1)) & (((w3 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw2))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m3 != 0u64) {
+                    return start.add((((63 - m3.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = end.sub(((end as usize) & 7usize));
+            while (q >= start.add(8usize)) {
+                q = q.sub(8usize);
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = ((((((w4 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw1)) & (((w4 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw2))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m4 != 0u64) {
+                    return q.add((((63 - m4.leading_zeros()) as usize) >> 3usize));
+                }
+            }
+            if (q > start) {
+                let w5: u64 = (start as *const u64).read_unaligned();
+                let m5: u64 = ((((((w5 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw1)) & (((w5 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw2))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m5 != 0u64) {
+                    return start.add((((63 - m5.leading_zeros()) as usize) >> 3usize));
                 }
             }
             return core::ptr::null();
@@ -9073,16 +9613,68 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memchr3_scalar(n1: u8, n2: u8, n3: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = start;
-            while (p < end) {
-                if ((((*p) == n1) || ((*p) == n2)) || ((*p) == n3)) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 5usize) {
+                let mut p: *const u8 = start;
+                while (p < end) {
+                    if ((((*p) == n1) || ((*p) == n2)) || ((*p) == n3)) {
+                        return p;
+                    }
+                    p = p.add(1usize);
                 }
-                p = p.add(1usize);
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let sh2: u32 = (n2 as u32).wrapping_mul(16843009u32);
+                let sh3: u32 = (n3 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (start as *const u32).read_unaligned();
+                let m: u32 = (((((w ^ sh1).wrapping_sub(16843009u32) & ((w ^ sh1) ^ 4294967295u32)) | ((w ^ sh2).wrapping_sub(16843009u32) & ((w ^ sh2) ^ 4294967295u32))) | ((w ^ sh3).wrapping_sub(16843009u32) & ((w ^ sh3) ^ 4294967295u32))) & 2155905152u32);
+                if (m != 0u32) {
+                    return start.add(((m.trailing_zeros() as usize) >> 3usize));
+                }
+                let w1: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m1: u32 = (((((w1 ^ sh1).wrapping_sub(16843009u32) & ((w1 ^ sh1) ^ 4294967295u32)) | ((w1 ^ sh2).wrapping_sub(16843009u32) & ((w1 ^ sh2) ^ 4294967295u32))) | ((w1 ^ sh3).wrapping_sub(16843009u32) & ((w1 ^ sh3) ^ 4294967295u32))) & 2155905152u32);
+                if (m1 != 0u32) {
+                    return end.sub(4usize).add(((m1.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let sw2: u64 = (n2 as u64).wrapping_mul(72340172838076673u64);
+            let sw3: u64 = (n3 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (start as *const u64).read_unaligned();
+            let m2: u64 = (((((w2 ^ sw1).wrapping_sub(72340172838076673u64) & ((w2 ^ sw1) ^ 18446744073709551615u64)) | ((w2 ^ sw2).wrapping_sub(72340172838076673u64) & ((w2 ^ sw2) ^ 18446744073709551615u64))) | ((w2 ^ sw3).wrapping_sub(72340172838076673u64) & ((w2 ^ sw3) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+            if (m2 != 0u64) {
+                return start.add(((m2.trailing_zeros() as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m3: u64 = (((((w3 ^ sw1).wrapping_sub(72340172838076673u64) & ((w3 ^ sw1) ^ 18446744073709551615u64)) | ((w3 ^ sw2).wrapping_sub(72340172838076673u64) & ((w3 ^ sw2) ^ 18446744073709551615u64))) | ((w3 ^ sw3).wrapping_sub(72340172838076673u64) & ((w3 ^ sw3) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m3 != 0u64) {
+                    return end.sub(8usize).add(((m3.trailing_zeros() as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = start.add((8usize - ((start as usize) & 7usize)));
+            while (q <= end.sub(8usize)) {
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = (((((w4 ^ sw1).wrapping_sub(72340172838076673u64) & ((w4 ^ sw1) ^ 18446744073709551615u64)) | ((w4 ^ sw2).wrapping_sub(72340172838076673u64) & ((w4 ^ sw2) ^ 18446744073709551615u64))) | ((w4 ^ sw3).wrapping_sub(72340172838076673u64) & ((w4 ^ sw3) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m4 != 0u64) {
+                    return q.add(((m4.trailing_zeros() as usize) >> 3usize));
+                }
+                q = q.add(8usize);
+            }
+            if (q < end) {
+                let w5: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+                let m5: u64 = (((((w5 ^ sw1).wrapping_sub(72340172838076673u64) & ((w5 ^ sw1) ^ 18446744073709551615u64)) | ((w5 ^ sw2).wrapping_sub(72340172838076673u64) & ((w5 ^ sw2) ^ 18446744073709551615u64))) | ((w5 ^ sw3).wrapping_sub(72340172838076673u64) & ((w5 ^ sw3) ^ 18446744073709551615u64))) & 9259542123273814144u64);
+                if (m5 != 0u64) {
+                    return end.sub(8usize).add(((m5.trailing_zeros() as usize) >> 3usize));
+                }
             }
             return core::ptr::null();
         }
@@ -9163,15 +9755,67 @@ pub mod raw {
         }
     }
 
-    /// byte-at-a-time fallback
+    /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
     #[inline(always)]
     pub(crate) unsafe fn nvol_memrchr3_scalar(n1: u8, n2: u8, n3: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
-            let mut p: *const u8 = end;
-            while (p > start) {
-                p = p.sub(1usize);
-                if ((((*p) == n1) || ((*p) == n2)) || ((*p) == n3)) {
-                    return p;
+            let len_: usize = ((end as usize) - (start as usize));
+            if (len_ < 5usize) {
+                let mut p: *const u8 = end;
+                while (p > start) {
+                    p = p.sub(1usize);
+                    if ((((*p) == n1) || ((*p) == n2)) || ((*p) == n3)) {
+                        return p;
+                    }
+                }
+                return core::ptr::null();
+            }
+            if (len_ < 8usize) {
+                let sh1: u32 = (n1 as u32).wrapping_mul(16843009u32);
+                let sh2: u32 = (n2 as u32).wrapping_mul(16843009u32);
+                let sh3: u32 = (n3 as u32).wrapping_mul(16843009u32);
+                let w: u32 = (end.sub(4usize) as *const u32).read_unaligned();
+                let m: u32 = (((((((w ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh1)) & (((w ^ sh2) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh2))) & (((w ^ sh3) & 2139062143u32).wrapping_add(2139062143u32) | (w ^ sh3))) | 2139062143u32) ^ 4294967295u32);
+                if (m != 0u32) {
+                    return end.sub(4usize).add((((31 - m.leading_zeros()) as usize) >> 3usize));
+                }
+                let w1: u32 = (start as *const u32).read_unaligned();
+                let m1: u32 = (((((((w1 ^ sh1) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh1)) & (((w1 ^ sh2) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh2))) & (((w1 ^ sh3) & 2139062143u32).wrapping_add(2139062143u32) | (w1 ^ sh3))) | 2139062143u32) ^ 4294967295u32);
+                if (m1 != 0u32) {
+                    return start.add((((31 - m1.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let sw1: u64 = (n1 as u64).wrapping_mul(72340172838076673u64);
+            let sw2: u64 = (n2 as u64).wrapping_mul(72340172838076673u64);
+            let sw3: u64 = (n3 as u64).wrapping_mul(72340172838076673u64);
+            let w2: u64 = (end.sub(8usize) as *const u64).read_unaligned();
+            let m2: u64 = (((((((w2 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw1)) & (((w2 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw2))) & (((w2 ^ sw3) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w2 ^ sw3))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+            if (m2 != 0u64) {
+                return end.sub(8usize).add((((63 - m2.leading_zeros()) as usize) >> 3usize));
+            }
+            if (len_ <= 16usize) {
+                let w3: u64 = (start as *const u64).read_unaligned();
+                let m3: u64 = (((((((w3 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw1)) & (((w3 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw2))) & (((w3 ^ sw3) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w3 ^ sw3))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m3 != 0u64) {
+                    return start.add((((63 - m3.leading_zeros()) as usize) >> 3usize));
+                }
+                return core::ptr::null();
+            }
+            let mut q: *const u8 = end.sub(((end as usize) & 7usize));
+            while (q >= start.add(8usize)) {
+                q = q.sub(8usize);
+                let w4: u64 = (q as *const u64).read_unaligned();
+                let m4: u64 = (((((((w4 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw1)) & (((w4 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw2))) & (((w4 ^ sw3) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w4 ^ sw3))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m4 != 0u64) {
+                    return q.add((((63 - m4.leading_zeros()) as usize) >> 3usize));
+                }
+            }
+            if (q > start) {
+                let w5: u64 = (start as *const u64).read_unaligned();
+                let m5: u64 = (((((((w5 ^ sw1) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw1)) & (((w5 ^ sw2) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw2))) & (((w5 ^ sw3) & 9187201950435737471u64).wrapping_add(9187201950435737471u64) | (w5 ^ sw3))) | 9187201950435737471u64) ^ 18446744073709551615u64);
+                if (m5 != 0u64) {
+                    return start.add((((63 - m5.leading_zeros()) as usize) >> 3usize));
                 }
             }
             return core::ptr::null();

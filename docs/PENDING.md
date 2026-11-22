@@ -305,6 +305,8 @@ The detail is in "Done".
       | return tails copied (item 17) | first_non_ascii 4 KiB AVX2 / SSE2 | 92.4 / 210.3 → 98.5 / 236.5 | both 32-aligned: 108.7 → 109.2, 237.2 → 234.9 |
       | rare regions out of line (item 17) | first_non_ascii 16 B AVX2 | 14.53 → 15.86 | both 32-aligned: 15.99 → 15.98 |
       | `lea` for `(x << k) + y` (item 17) | memmem 256 B / 4 KiB / 64 B SSE2 | 65.9 / 675 / 35.8 → 73.9 / 763 / 39.0 | both 32-aligned: 70.3 → 71.5, 807 → 779, 36.2 → 37.2 |
+      | SWAR memchr (item 28) | memchr2 16 B AVX2 | 13.7-13.9 → 14.9-15.4 | the vector code is unchanged; HEAD's entry with 665 dead bytes, which put it at the new offset (734): 15.8 |
+      | SWAR memchr (item 28) | Rust memchr 3 B (`smallcount`) | 12.05 → 13.96 | the same 47 instructions per call as HEAD (the byte loop) |
 
       In the 64-aligned layout no function body changed, so each of its rows is position by
       construction. The count_parity control shows the trade: at +48 bytes, the SSE2 path gets
@@ -523,7 +525,7 @@ The detail is in "Done".
       `tedbench` was wall-clock noise), −5.0…+11.6 % from 256 B to 64 KiB. In instructions,
       NVOL is below aho in every row from 64 B up, so the Teddy gap in item 17 is the asm's
       and not the Rust's.
-28. 1.6: memchr with 1-15 bytes **(cause found; 4-6 B and the SWAR path open: [report](benchmarks/2026-11-22-cycle-gaps.md#4-items-27-28-29-and-32)).** Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): NVOL has 4 fewer instructions
+28. ~~1.6: memchr with 1-15 bytes~~ **(closed 2026-11-22: the SWAR kernel, below; [report](benchmarks/2026-11-22-cycle-gaps.md#4-items-27-28-29-and-32)).** Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): NVOL has 4 fewer instructions
     per call (both scan byte by byte, 5 instructions per byte), but from 3 B up it takes 1-2.5
     more cycles: +4…+19 %, the same in 3 rounds.
     - **Cause: the JCC erratum, in LLVM's layout of this binary.** The byte loop is the same
@@ -542,6 +544,40 @@ The detail is in "Done".
       work; the bench's call or the layout. The counters available do not split it further.
     - The layout belongs to the user's build (a rustc flag), not to the generated code: it
       goes to the toolchain log (item 21). Port memchr's SWAR for the path without SIMD.
+    - **Closed by the SWAR kernel (2026-11-22).** `find_scalar`, the dispatch's path under 16
+      bytes and the path without SIMD, is now memchr's word-at-a-time search (`arch/all`)
+      with the short sizes in loads instead of loops. It covers 1-3 bytes one by one (1-4 for
+      three needles), 4-7 bytes in two overlapping u32 loads and 8-16 bytes in two overlapping
+      u64 loads. Longer haystacks take one aligned u64 per iteration plus an overlapping last
+      load. The forward search uses `(x - 0x01..) & !x & 0x80..`, whose lowest bit is exact;
+      the reverse uses the exact form `!(((x & 0x7F..) + 0x7F..) | x | 0x7F..)`. The masks
+      shared by the needles are applied once.
+      - **asm** (`harness/asm/bench.c`, sysv NASM, best of 7, 1-16 B × 6 functions, with an A/A
+        copy): geomean **−22.3 %** of cycles over the 64 rows. Every row from 6-7 B up drops,
+        by −8…−65 % (memchr 15 B 30.8 → 17.6, memchr2 15 B 57.7 → 20.2, memchr3 15 B 61.5 →
+        29.1, memrchr 15 B 26.5 → 17.8).
+      - **Rust against the crate** (`smallcount`, no JCC flag): NVOL is ahead at 1-2 B and at
+        every size from 4 B up. 4-6 B, the open curve above, is now 12.0 against 12.5 / 14.3 /
+        14.6 (HEAD 13.6 / 17.1 / 16.2); 15 B is 14.1 against 23.6.
+      - **Trade-offs recorded:**
+        - memchr3 1 B, +1.5 cycles (11.3 → 12.9). With three needles the u64 check holds 10
+          values, one more than the caller-saved registers, so the function pushes rbx/rbp, and
+          the 1-byte path pays for it. Re-reading the word per needle (the lowering's CSE
+          merges it back) and recomputing `len` from the pointers did not remove it.
+        - memchr / memrchr 4-5 B, +0.5-0.8 cycles in the asm (15.0 → 15.5-15.8). The word path
+          costs about the same as 4-5 byte iterations there, while in Rust the same threshold
+          gives −13…−30 %.
+      - **Placement, logged in item 25:** memchr2 16 B AVX2 (control) and Rust 3 B (same
+        instructions).
+      - **The short path's shape depends on the needle count, by measurement.** The kernel is
+        inlined into each ISA entry, where the extra size test moved memchr2's byte loop across
+        a 64-byte line (2 B: +16.5 %), so two needles use straight-line byte checks. For one
+        needle the straight-line block overflows a µop-cache window instead (memchr 2 B: +52 %,
+        1.5 cycles of DSB-to-MITE switch per call), so one and three needles keep the loop.
+      - **Tests:** `test_swar_scalar_kernels` (interpreter) runs the six kernels at every length
+        0-80 and alignment 0-7, with bytes that make SWAR's borrow mark a false byte. Red
+        checks: the inexact mark in the reverse kernel fails 3 of the 6 tests, and dropping the
+        forward tail load fails 3.
 29. ~~1.5: `first_non_ascii` against `bstr`~~ **(closed 2026-11-22, [report](benchmarks/2026-11-22-cycle-gaps.md#4-items-27-28-29-and-32); the "none" semantics stay the maintainer's decision).** Measured with counters ([report](benchmarks/2026-11-21-rust-counters.md)): −20 % cycles at
     256 B, −43 % from 4 KiB, on par at 64 B, but **+2 cycles at 16 B** (11.0 against 9.0, 3
     rounds), to be closed.

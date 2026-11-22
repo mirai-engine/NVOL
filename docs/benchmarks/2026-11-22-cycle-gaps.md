@@ -82,12 +82,12 @@ recorded trade-off: −12…−18 % at 4 KiB, about 3 % at 256-512 B.
 | **memrchr 16-64 KiB** (both paths): asm 5607-5710 against GCC 4796-4925 cycles at 64 KiB SSE2, 504-525 against 445-468 at 16 KiB AVX2, same instructions | 3× the RS-full stalls (`resource_stalls.rs`: 1044 against 365 cycles per call in SSE2) | memory (the same L1 replacements, L2 reads and prefetches); the loads' order; GCC's folded-load operand form (worse: 6062-6101); the JCC erratum; 16/32/64 alignment | the port-level dispatch of the loop (`uops_dispatched_port.*`, 4 per run) against GCC's, and a hand-edited asm in GCC's exact schedule |
 | **memmem SSE2 4 KiB**: 676-807 cycles on placement alone; GCC 660-710 | the same instructions (2916/2918), branches (527) and mispredictions (1.0/1.2); 3.3 against 2.8 cycles per 16-byte iteration in the slow layout | the frontend (MITE ≈ 0); the loads' order; `tzcnt` | a layout where the packed-pair loop sits inside one 32-byte window by construction; a window-aware pad was tried and rejected (below) |
 | **byteset AVX2 4-64 KiB**: +11…+18 % with the same instructions (also in Rust and Odin, PARITY P11) | all µops from the DSB | the JCC erratum; a window-aware pad (below) | a model that predicts the slow layout |
-| **memchr 4-6 B in Rust** (item 28): 16.0 / 17.1 / 14.1 cycles at 4 / 5 / 6 B against 12.5 / 14.9 / 14.5 for the crate, JCC-safe build | fewer µops issued than the crate (45/48/51 against 48/51/54), no MITE, no mispredictions, no recovery cycles, no resource stalls | the JCC erratum (that build is mitigated) | not visible to the counters WSL gives: a native machine, or the SWAR path for 1-15 B (below), which removes the byte loop |
+| ~~**memchr 4-6 B in Rust** (item 28)~~ | closed by the SWAR kernel, which removes the byte loop: 12.0 cycles at 4, 5 and 6 B against the crate's 12.5 / 14.3 / 14.6 | — | — |
 | **rapidjson `pretty`** (14b): +0.0 / +0.8 / +1.5 % cycles in 3 rounds | within the row's own ±1 % spread; DSB +3 %, MITE −6 %, switch penalty −11 % | — | nothing to close at this resolution; kept with its spread recorded |
 | **PARITY P4 / P11**: the languages' rows with the same instructions and +13…+41 % cycles | the same instruction stream | the JCC erratum (2.4) | as above: placement in each compiler's layout, which NVOL does not control |
 
 **One mechanism behind most of the open rows, and the rule that was tried for it.** Except
-memrchr's RS stalls and memchr 4-6 B, every open row looked like placement in the µop cache:
+memrchr's RS stalls, every open row looked like placement in the µop cache:
 a loop or an entry split across 32-byte windows. The generator knows every instruction's
 length (`encode.py`), so a window-aware pad was built and measured on the full matrix.
 
@@ -107,6 +107,6 @@ numbers are in PENDING item 25, "A window-aware loop-head pad, tried and rejecte
 | item | state | evidence |
 |---|---|---|
 | **27** Teddy over short haystacks | **closed** | `nvol_teddy_slow` is aho-corasick's Rabin-Karp: on par in cycles at 8-18 B (−20…+7 %), and equal or below in instructions in all 24 rows; from 64 B up, below aho in instructions in every row ([report](2026-11-21-rust-counters.md)) |
-| **28** memchr 1-15 B | cause found; 4-6 B open (above) | the JCC erratum in LLVM's layout (2.4). Still to build: memchr's SWAR path for 1-15 B and for the path without SIMD, a feature of its own with its measurement |
+| **28** memchr 1-15 B | **closed** | the JCC erratum in LLVM's layout (2.4), then the SWAR kernel: NVOL's Rust memchr is ahead of the crate at 1-2 B and from 4 B up (5 B 12.0 against 14.3, 15 B 14.1 against 23.6), and the asm drops −22.3 % (geomean of 64 rows, 1-16 B), with two recorded trade-offs (PENDING item 28) |
 | **29** `first_non_ascii` against bstr | **closed** | −20 % at 256 B, −43 % from 4 KiB; the +2 cycles at 16 B were the indirect call, fixed for Rust with an inline SSE2 path for 16-31 B (−65 %, with a recorded trade-off at 32 B). The "none" semantics already match bstr's public API (`None`); changing it is the maintainer's decision |
 | **32** ugrep `-c zq` | measured, residual recorded | +0.4…+0.8 % over the process, +17 % in the kernel for a 2-byte needle. The asm-only 2-byte kernel is 14-21 % faster, but ugrep builds the C with GCC, whose general loop is already well scheduled. The residual is GCC's C of the general kernel against ugrep's inline `chars<2>` loop |

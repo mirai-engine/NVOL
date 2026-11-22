@@ -30,23 +30,152 @@ nvol_memchr_scalar:
 L.nvol_memchr_scalar:
 .cfi_startproc
     and w9, w0, #255
+    sub x10, x2, x1
+    cmp x10, #4
+    b.hs .Lnvol_memchr_scalar.L2
     cmp x1, x2
-    b.hs .Lnvol_memchr_scalar.L3
+    b.hs .Lnvol_memchr_scalar.L5
     nop
-.Lnvol_memchr_scalar.L2:
+    nop
+.Lnvol_memchr_scalar.L4:
     ldrb w10, [x1]
     cmp x10, x9
-    b.eq .Lnvol_memchr_scalar.L5
-.Lnvol_memchr_scalar.L4:
+    b.eq .Lnvol_memchr_scalar.L7
+.Lnvol_memchr_scalar.L6:
     add x1, x1, #1
     cmp x1, x2
-    b.lo .Lnvol_memchr_scalar.L2
-.Lnvol_memchr_scalar.L3:
+    b.lo .Lnvol_memchr_scalar.L4
+.Lnvol_memchr_scalar.L5:
+    movz w0, #0
+    ret
+.Lnvol_memchr_scalar.L2:
+    cmp x10, #8
+    b.hs .Lnvol_memchr_scalar.L8
+    orr w10, wzr, #16843009
+    mul w9, w9, w10
+    ldr w10, [x1]
+    eor x10, x10, x9
+    orr w11, wzr, #16843009
+    sub w11, w10, w11
+    eor x10, x10, #4294967295
+    and x10, x11, x10
+    orr w11, wzr, #2155905152
+    and x10, x10, x11
+    cbz x10, .Lnvol_memchr_scalar.L10
+    rbit x9, x10
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memchr_scalar.L10:
+    ldur w10, [x2, #-4]
+    eor x9, x10, x9
+    orr w10, wzr, #16843009
+    sub w10, w9, w10
+    eor x9, x9, #4294967295
+    and x9, x10, x9
+    orr w10, wzr, #2155905152
+    and x9, x9, x10
+    cbz x9, .Lnvol_memchr_scalar.L12
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memchr_scalar.L12:
+    movz w0, #0
+    ret
+.Lnvol_memchr_scalar.L8:
+    orr x11, xzr, #72340172838076673
+    mul x9, x9, x11
+    ldr x11, [x1]
+    eor x11, x11, x9
+    orr x12, xzr, #72340172838076673
+    sub x12, x11, x12
+    movn x13, #0
+    eor x11, x11, x13
+    and x11, x12, x11
+    and x11, x11, #9259542123273814144
+    cbz x11, .Lnvol_memchr_scalar.L14
+    rbit x9, x11
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memchr_scalar.L14:
+    cmp x10, #16
+    b.hi .Lnvol_memchr_scalar.L16
+    ldur x10, [x2, #-8]
+    eor x9, x10, x9
+    orr x10, xzr, #72340172838076673
+    sub x10, x9, x10
+    movn x11, #0
+    eor x9, x9, x11
+    and x9, x10, x9
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr_scalar.L18
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr_scalar.L18:
+    movz w0, #0
+    ret
+.Lnvol_memchr_scalar.L16:
+    and x10, x1, #18446744073709551608
+    add x10, x10, #8
+    sub x11, x2, #8
+    cmp x10, x11
+    b.hi .Lnvol_memchr_scalar.L21
+    nop
+.Lnvol_memchr_scalar.L20:
+    ldr x12, [x10]
+    eor x12, x12, x9
+    orr x13, xzr, #72340172838076673
+    sub x13, x12, x13
+    movn x14, #0
+    eor x12, x12, x14
+    and x12, x13, x12
+    and x12, x12, #9259542123273814144
+    cbnz x12, .Lnvol_memchr_scalar.L23
+.Lnvol_memchr_scalar.L22:
+    add x10, x10, #8
+    cmp x10, x11
+    b.ls .Lnvol_memchr_scalar.L20
+.Lnvol_memchr_scalar.L21:
+    cmp x10, x2
+    b.hs .Lnvol_memchr_scalar.L24
+    ldur x10, [x2, #-8]
+    eor x9, x10, x9
+    orr x10, xzr, #72340172838076673
+    sub x10, x9, x10
+    movn x11, #0
+    eor x9, x9, x11
+    and x9, x10, x9
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr_scalar.L26
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr_scalar.L26:
+.Lnvol_memchr_scalar.L24:
     movz w0, #0
 .Lnvol_memchr_scalar.L1:
     ret
-.Lnvol_memchr_scalar.L5:
+.Lnvol_memchr_scalar.L7:
     mov x0, x1
+    ret
+.Lnvol_memchr_scalar.L23:
+    rbit x9, x12
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x10, x9
     ret
 .cfi_endproc
 .size nvol_memchr_scalar, .-nvol_memchr_scalar
@@ -202,19 +331,140 @@ L.nvol_memchr_raw:
     sub x10, x2, x1
     cmp x10, #16
     b.hs .Lnvol_memchr_raw.L2
+    sub x10, x2, x1
+    cmp x10, #4
+    b.hs .Lnvol_memchr_raw.L4
     cmp x1, x2
-    b.hs .Lnvol_memchr_raw.L5
+    b.hs .Lnvol_memchr_raw.L7
     nop
-    nop
-.Lnvol_memchr_raw.L4:
+.Lnvol_memchr_raw.L6:
     ldrb w10, [x1]
     cmp x10, x9
-    b.eq .Lnvol_memchr_raw.L7
-.Lnvol_memchr_raw.L6:
+    b.eq .Lnvol_memchr_raw.L9
+.Lnvol_memchr_raw.L8:
     add x1, x1, #1
     cmp x1, x2
-    b.lo .Lnvol_memchr_raw.L4
-.Lnvol_memchr_raw.L5:
+    b.lo .Lnvol_memchr_raw.L6
+.Lnvol_memchr_raw.L7:
+    movz w0, #0
+    ret
+.Lnvol_memchr_raw.L4:
+    cmp x10, #8
+    b.hs .Lnvol_memchr_raw.L10
+    orr w10, wzr, #16843009
+    mul w9, w9, w10
+    ldr w10, [x1]
+    eor x10, x10, x9
+    orr w11, wzr, #16843009
+    sub w11, w10, w11
+    eor x10, x10, #4294967295
+    and x10, x11, x10
+    orr w11, wzr, #2155905152
+    and x10, x10, x11
+    cbz x10, .Lnvol_memchr_raw.L12
+    rbit x9, x10
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memchr_raw.L12:
+    ldur w10, [x2, #-4]
+    eor x9, x10, x9
+    orr w10, wzr, #16843009
+    sub w10, w9, w10
+    eor x9, x9, #4294967295
+    and x9, x10, x9
+    orr w10, wzr, #2155905152
+    and x9, x9, x10
+    cbz x9, .Lnvol_memchr_raw.L14
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memchr_raw.L14:
+    movz w0, #0
+    ret
+.Lnvol_memchr_raw.L10:
+    orr x11, xzr, #72340172838076673
+    mul x9, x9, x11
+    ldr x11, [x1]
+    eor x11, x11, x9
+    orr x12, xzr, #72340172838076673
+    sub x12, x11, x12
+    movn x13, #0
+    eor x11, x11, x13
+    and x11, x12, x11
+    and x11, x11, #9259542123273814144
+    cbz x11, .Lnvol_memchr_raw.L16
+    rbit x9, x11
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memchr_raw.L16:
+    cmp x10, #16
+    b.hi .Lnvol_memchr_raw.L18
+    ldur x10, [x2, #-8]
+    eor x9, x10, x9
+    orr x10, xzr, #72340172838076673
+    sub x10, x9, x10
+    movn x11, #0
+    eor x9, x9, x11
+    and x9, x10, x9
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr_raw.L20
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr_raw.L20:
+    movz w0, #0
+    ret
+.Lnvol_memchr_raw.L18:
+    and x10, x1, #18446744073709551608
+    add x10, x10, #8
+    sub x11, x2, #8
+    cmp x10, x11
+    b.hi .Lnvol_memchr_raw.L23
+    nop
+.Lnvol_memchr_raw.L22:
+    ldr x12, [x10]
+    eor x12, x12, x9
+    orr x13, xzr, #72340172838076673
+    sub x13, x12, x13
+    movn x14, #0
+    eor x12, x12, x14
+    and x12, x13, x12
+    and x12, x12, #9259542123273814144
+    cbnz x12, .Lnvol_memchr_raw.L25
+.Lnvol_memchr_raw.L24:
+    add x10, x10, #8
+    cmp x10, x11
+    b.ls .Lnvol_memchr_raw.L22
+.Lnvol_memchr_raw.L23:
+    cmp x10, x2
+    b.hs .Lnvol_memchr_raw.L26
+    ldur x10, [x2, #-8]
+    eor x9, x10, x9
+    orr x10, xzr, #72340172838076673
+    sub x10, x9, x10
+    movn x11, #0
+    eor x9, x9, x11
+    and x9, x10, x9
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr_raw.L28
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr_raw.L28:
+.Lnvol_memchr_raw.L26:
     movz w0, #0
     ret
 .Lnvol_memchr_raw.L2:
@@ -225,21 +475,22 @@ L.nvol_memchr_raw:
     shrn v1.8b, v1.8h, #4
     fmov x9, d1
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memchr_raw.L8
+    cbz x9, .Lnvol_memchr_raw.L30
     rbit x9, x9
     clz x9, x9
     lsr x9, x9, #2
     add x0, x1, x9
     ret
-.Lnvol_memchr_raw.L8:
+.Lnvol_memchr_raw.L30:
     and x9, x1, #18446744073709551600
     add x9, x9, #16
     cmp x10, #64
-    b.lo .Lnvol_memchr_raw.L10
+    b.lo .Lnvol_memchr_raw.L32
     sub x10, x2, #64
     cmp x9, x10
-    b.hi .Lnvol_memchr_raw.L13
-.Lnvol_memchr_raw.L12:
+    b.hi .Lnvol_memchr_raw.L35
+    nop
+.Lnvol_memchr_raw.L34:
     ldr q1, [x9]
     ldr q2, [x9, #16]
     ldr q3, [x9, #32]
@@ -253,86 +504,94 @@ L.nvol_memchr_raw:
     orr v5.16b, v5.16b, v6.16b
     umaxp v5.16b, v5.16b, v5.16b
     fmov x11, d5
-    cbnz x11, .Lnvol_memchr_raw.L15
-.Lnvol_memchr_raw.L14:
+    cbnz x11, .Lnvol_memchr_raw.L37
+.Lnvol_memchr_raw.L36:
     add x9, x9, #64
     cmp x9, x10
-    b.ls .Lnvol_memchr_raw.L12
-.Lnvol_memchr_raw.L13:
-.Lnvol_memchr_raw.L10:
+    b.ls .Lnvol_memchr_raw.L34
+.Lnvol_memchr_raw.L35:
+.Lnvol_memchr_raw.L32:
     sub x10, x2, #16
     cmp x9, x10
-    b.hi .Lnvol_memchr_raw.L23
-.Lnvol_memchr_raw.L22:
+    b.hi .Lnvol_memchr_raw.L45
+    nop
+    nop
+.Lnvol_memchr_raw.L44:
     ldr q1, [x9]
     cmeq v1.16b, v1.16b, v0.16b
     shrn v1.8b, v1.8h, #4
     fmov x11, d1
     and x11, x11, #9838263505978427528
-    cbnz x11, .Lnvol_memchr_raw.L25
-.Lnvol_memchr_raw.L24:
+    cbnz x11, .Lnvol_memchr_raw.L47
+.Lnvol_memchr_raw.L46:
     add x9, x9, #16
     cmp x9, x10
-    b.ls .Lnvol_memchr_raw.L22
-.Lnvol_memchr_raw.L23:
+    b.ls .Lnvol_memchr_raw.L44
+.Lnvol_memchr_raw.L45:
     cmp x9, x2
-    b.hs .Lnvol_memchr_raw.L26
+    b.hs .Lnvol_memchr_raw.L48
     sub x9, x2, #16
     ldr q1, [x9]
     cmeq v0.16b, v1.16b, v0.16b
     shrn v0.8b, v0.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbz x10, .Lnvol_memchr_raw.L28
+    cbz x10, .Lnvol_memchr_raw.L50
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memchr_raw.L28:
-.Lnvol_memchr_raw.L26:
+.Lnvol_memchr_raw.L50:
+.Lnvol_memchr_raw.L48:
     movz w0, #0
 .Lnvol_memchr_raw.L1:
     ret
-.Lnvol_memchr_raw.L7:
+.Lnvol_memchr_raw.L9:
     mov x0, x1
     ret
-.Lnvol_memchr_raw.L17:
+.Lnvol_memchr_raw.L25:
+    rbit x9, x12
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x10, x9
+    ret
+.Lnvol_memchr_raw.L39:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memchr_raw.L19:
+.Lnvol_memchr_raw.L41:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
     ret
-.Lnvol_memchr_raw.L21:
+.Lnvol_memchr_raw.L43:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #32
     ret
-.Lnvol_memchr_raw.L15:
+.Lnvol_memchr_raw.L37:
     shrn v0.8b, v1.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memchr_raw.L17
-.Lnvol_memchr_raw.L16:
+    cbnz x10, .Lnvol_memchr_raw.L39
+.Lnvol_memchr_raw.L38:
     shrn v0.8b, v2.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memchr_raw.L19
-.Lnvol_memchr_raw.L18:
+    cbnz x10, .Lnvol_memchr_raw.L41
+.Lnvol_memchr_raw.L40:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memchr_raw.L21
-.Lnvol_memchr_raw.L20:
+    cbnz x10, .Lnvol_memchr_raw.L43
+.Lnvol_memchr_raw.L42:
     shrn v0.8b, v4.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
@@ -342,7 +601,7 @@ L.nvol_memchr_raw:
     add x9, x9, x10
     add x0, x9, #48
     ret
-.Lnvol_memchr_raw.L25:
+.Lnvol_memchr_raw.L47:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
@@ -351,7 +610,6 @@ L.nvol_memchr_raw:
 .cfi_endproc
 .size nvol_memchr_raw, .-nvol_memchr_raw
 
-    nop
     nop
 .globl nvol_memchr
 .type nvol_memchr, %function
@@ -384,28 +642,161 @@ nvol_memrchr_scalar:
 L.nvol_memrchr_scalar:
 .cfi_startproc
     and w9, w0, #255
+    sub x10, x2, x1
+    cmp x10, #4
+    b.hs .Lnvol_memrchr_scalar.L2
     cmp x2, x1
-    b.ls .Lnvol_memrchr_scalar.L3
+    b.ls .Lnvol_memrchr_scalar.L5
     nop
-.Lnvol_memrchr_scalar.L2:
+    nop
+.Lnvol_memrchr_scalar.L4:
     sub x2, x2, #1
     ldrb w10, [x2]
     cmp x10, x9
-    b.eq .Lnvol_memrchr_scalar.L5
-.Lnvol_memrchr_scalar.L4:
+    b.eq .Lnvol_memrchr_scalar.L7
+.Lnvol_memrchr_scalar.L6:
     cmp x2, x1
-    b.hi .Lnvol_memrchr_scalar.L2
-.Lnvol_memrchr_scalar.L3:
+    b.hi .Lnvol_memrchr_scalar.L4
+.Lnvol_memrchr_scalar.L5:
+    movz w0, #0
+    ret
+.Lnvol_memrchr_scalar.L2:
+    cmp x10, #8
+    b.hs .Lnvol_memrchr_scalar.L8
+    orr w10, wzr, #16843009
+    mul w9, w9, w10
+    ldur w10, [x2, #-4]
+    eor x10, x10, x9
+    orr w11, wzr, #2139062143
+    and x11, x10, x11
+    orr w12, wzr, #2139062143
+    add w11, w11, w12
+    orr x10, x11, x10
+    orr w11, wzr, #2139062143
+    orr x10, x10, x11
+    eor x10, x10, #4294967295
+    cbz x10, .Lnvol_memrchr_scalar.L10
+    clz x9, x10
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memrchr_scalar.L10:
+    ldr w10, [x1]
+    eor x9, x10, x9
+    orr w10, wzr, #2139062143
+    and x10, x9, x10
+    orr w11, wzr, #2139062143
+    add w10, w10, w11
+    orr x9, x10, x9
+    orr w10, wzr, #2139062143
+    orr x9, x9, x10
+    eor x9, x9, #4294967295
+    cbz x9, .Lnvol_memrchr_scalar.L12
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memrchr_scalar.L12:
+    movz w0, #0
+    ret
+.Lnvol_memrchr_scalar.L8:
+    orr x11, xzr, #72340172838076673
+    mul x9, x9, x11
+    ldur x11, [x2, #-8]
+    eor x11, x11, x9
+    and x12, x11, #9187201950435737471
+    orr x13, xzr, #9187201950435737471
+    add x12, x12, x13
+    orr x11, x12, x11
+    orr x11, x11, #9187201950435737471
+    movn x12, #0
+    eor x11, x11, x12
+    cbz x11, .Lnvol_memrchr_scalar.L14
+    clz x9, x11
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memrchr_scalar.L14:
+    cmp x10, #16
+    b.hi .Lnvol_memrchr_scalar.L16
+    ldr x10, [x1]
+    eor x9, x10, x9
+    and x10, x9, #9187201950435737471
+    orr x11, xzr, #9187201950435737471
+    add x10, x10, x11
+    orr x9, x10, x9
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr_scalar.L18
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memrchr_scalar.L18:
+    movz w0, #0
+    ret
+.Lnvol_memrchr_scalar.L16:
+    and x10, x2, #18446744073709551608
+    add x11, x1, #8
+    cmp x10, x11
+    b.lo .Lnvol_memrchr_scalar.L21
+.Lnvol_memrchr_scalar.L20:
+    sub x10, x10, #8
+    ldr x12, [x10]
+    eor x12, x12, x9
+    and x13, x12, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x12, x13, x12
+    orr x12, x12, #9187201950435737471
+    movn x13, #0
+    eor x12, x12, x13
+    cbnz x12, .Lnvol_memrchr_scalar.L23
+.Lnvol_memrchr_scalar.L22:
+    cmp x10, x11
+    b.hs .Lnvol_memrchr_scalar.L20
+.Lnvol_memrchr_scalar.L21:
+    cmp x10, x1
+    b.ls .Lnvol_memrchr_scalar.L24
+    ldr x10, [x1]
+    eor x9, x10, x9
+    and x10, x9, #9187201950435737471
+    orr x11, xzr, #9187201950435737471
+    add x10, x10, x11
+    orr x9, x10, x9
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr_scalar.L26
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memrchr_scalar.L26:
+.Lnvol_memrchr_scalar.L24:
     movz w0, #0
 .Lnvol_memrchr_scalar.L1:
     ret
-.Lnvol_memrchr_scalar.L5:
+.Lnvol_memrchr_scalar.L7:
     mov x0, x2
+    ret
+.Lnvol_memrchr_scalar.L23:
+    clz x9, x12
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x10, x9
     ret
 .cfi_endproc
 .size nvol_memrchr_scalar, .-nvol_memrchr_scalar
 
-    nop
     nop
 .globl nvol_memrchr_neon
 .type nvol_memrchr_neon, %function
@@ -556,19 +947,147 @@ L.nvol_memrchr_raw:
     sub x10, x2, x1
     cmp x10, #16
     b.hs .Lnvol_memrchr_raw.L2
+    sub x10, x2, x1
+    cmp x10, #4
+    b.hs .Lnvol_memrchr_raw.L4
     cmp x2, x1
-    b.ls .Lnvol_memrchr_raw.L5
+    b.ls .Lnvol_memrchr_raw.L7
     nop
-    nop
-.Lnvol_memrchr_raw.L4:
+.Lnvol_memrchr_raw.L6:
     sub x2, x2, #1
     ldrb w10, [x2]
     cmp x10, x9
-    b.eq .Lnvol_memrchr_raw.L7
-.Lnvol_memrchr_raw.L6:
+    b.eq .Lnvol_memrchr_raw.L9
+.Lnvol_memrchr_raw.L8:
     cmp x2, x1
-    b.hi .Lnvol_memrchr_raw.L4
-.Lnvol_memrchr_raw.L5:
+    b.hi .Lnvol_memrchr_raw.L6
+.Lnvol_memrchr_raw.L7:
+    movz w0, #0
+    ret
+.Lnvol_memrchr_raw.L4:
+    cmp x10, #8
+    b.hs .Lnvol_memrchr_raw.L10
+    orr w10, wzr, #16843009
+    mul w9, w9, w10
+    ldur w10, [x2, #-4]
+    eor x10, x10, x9
+    orr w11, wzr, #2139062143
+    and x11, x10, x11
+    orr w12, wzr, #2139062143
+    add w11, w11, w12
+    orr x10, x11, x10
+    orr w11, wzr, #2139062143
+    orr x10, x10, x11
+    eor x10, x10, #4294967295
+    cbz x10, .Lnvol_memrchr_raw.L12
+    clz x9, x10
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memrchr_raw.L12:
+    ldr w10, [x1]
+    eor x9, x10, x9
+    orr w10, wzr, #2139062143
+    and x10, x9, x10
+    orr w11, wzr, #2139062143
+    add w10, w10, w11
+    orr x9, x10, x9
+    orr w10, wzr, #2139062143
+    orr x9, x9, x10
+    eor x9, x9, #4294967295
+    cbz x9, .Lnvol_memrchr_raw.L14
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memrchr_raw.L14:
+    movz w0, #0
+    ret
+.Lnvol_memrchr_raw.L10:
+    orr x11, xzr, #72340172838076673
+    mul x9, x9, x11
+    ldur x11, [x2, #-8]
+    eor x11, x11, x9
+    and x12, x11, #9187201950435737471
+    orr x13, xzr, #9187201950435737471
+    add x12, x12, x13
+    orr x11, x12, x11
+    orr x11, x11, #9187201950435737471
+    movn x12, #0
+    eor x11, x11, x12
+    cbz x11, .Lnvol_memrchr_raw.L16
+    clz x9, x11
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x2, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memrchr_raw.L16:
+    cmp x10, #16
+    b.hi .Lnvol_memrchr_raw.L18
+    ldr x10, [x1]
+    eor x9, x10, x9
+    and x10, x9, #9187201950435737471
+    orr x11, xzr, #9187201950435737471
+    add x10, x10, x11
+    orr x9, x10, x9
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr_raw.L20
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memrchr_raw.L20:
+    movz w0, #0
+    ret
+.Lnvol_memrchr_raw.L18:
+    and x10, x2, #18446744073709551608
+    add x11, x1, #8
+    cmp x10, x11
+    b.lo .Lnvol_memrchr_raw.L23
+    nop
+    nop
+.Lnvol_memrchr_raw.L22:
+    sub x10, x10, #8
+    ldr x12, [x10]
+    eor x12, x12, x9
+    and x13, x12, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x12, x13, x12
+    orr x12, x12, #9187201950435737471
+    movn x13, #0
+    eor x12, x12, x13
+    cbnz x12, .Lnvol_memrchr_raw.L25
+.Lnvol_memrchr_raw.L24:
+    cmp x10, x11
+    b.hs .Lnvol_memrchr_raw.L22
+.Lnvol_memrchr_raw.L23:
+    cmp x10, x1
+    b.ls .Lnvol_memrchr_raw.L26
+    ldr x10, [x1]
+    eor x9, x10, x9
+    and x10, x9, #9187201950435737471
+    orr x11, xzr, #9187201950435737471
+    add x10, x10, x11
+    orr x9, x10, x9
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr_raw.L28
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x1, x9
+    ret
+.Lnvol_memrchr_raw.L28:
+.Lnvol_memrchr_raw.L26:
     movz w0, #0
     ret
 .Lnvol_memrchr_raw.L2:
@@ -579,21 +1098,21 @@ L.nvol_memrchr_raw:
     shrn v1.8b, v1.8h, #4
     fmov x9, d1
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memrchr_raw.L8
+    cbz x9, .Lnvol_memrchr_raw.L30
     clz x9, x9
     eor x9, x9, #63
     lsr x9, x9, #2
     add x9, x2, x9
     sub x0, x9, #16
     ret
-.Lnvol_memrchr_raw.L8:
+.Lnvol_memrchr_raw.L30:
     and x9, x2, #18446744073709551600
     cmp x10, #64
-    b.lo .Lnvol_memrchr_raw.L10
+    b.lo .Lnvol_memrchr_raw.L32
     add x10, x1, #64
     cmp x9, x10
-    b.lo .Lnvol_memrchr_raw.L13
-.Lnvol_memrchr_raw.L12:
+    b.lo .Lnvol_memrchr_raw.L35
+.Lnvol_memrchr_raw.L34:
     sub x9, x9, #64
     ldr q1, [x9]
     ldr q2, [x9, #16]
@@ -608,85 +1127,91 @@ L.nvol_memrchr_raw:
     orr v5.16b, v5.16b, v6.16b
     umaxp v5.16b, v5.16b, v5.16b
     fmov x11, d5
-    cbnz x11, .Lnvol_memrchr_raw.L15
-.Lnvol_memrchr_raw.L14:
+    cbnz x11, .Lnvol_memrchr_raw.L37
+.Lnvol_memrchr_raw.L36:
     cmp x9, x10
-    b.hs .Lnvol_memrchr_raw.L12
-.Lnvol_memrchr_raw.L13:
-.Lnvol_memrchr_raw.L10:
+    b.hs .Lnvol_memrchr_raw.L34
+.Lnvol_memrchr_raw.L35:
+.Lnvol_memrchr_raw.L32:
     add x10, x1, #16
     cmp x9, x10
-    b.lo .Lnvol_memrchr_raw.L23
-.Lnvol_memrchr_raw.L22:
+    b.lo .Lnvol_memrchr_raw.L45
+.Lnvol_memrchr_raw.L44:
     sub x9, x9, #16
     ldr q1, [x9]
     cmeq v1.16b, v1.16b, v0.16b
     shrn v1.8b, v1.8h, #4
     fmov x11, d1
     and x11, x11, #9838263505978427528
-    cbnz x11, .Lnvol_memrchr_raw.L25
-.Lnvol_memrchr_raw.L24:
+    cbnz x11, .Lnvol_memrchr_raw.L47
+.Lnvol_memrchr_raw.L46:
     cmp x9, x10
-    b.hs .Lnvol_memrchr_raw.L22
-.Lnvol_memrchr_raw.L23:
+    b.hs .Lnvol_memrchr_raw.L44
+.Lnvol_memrchr_raw.L45:
     cmp x9, x1
-    b.ls .Lnvol_memrchr_raw.L26
+    b.ls .Lnvol_memrchr_raw.L48
     ldr q1, [x1]
     cmeq v0.16b, v1.16b, v0.16b
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memrchr_raw.L28
+    cbz x9, .Lnvol_memrchr_raw.L50
     clz x9, x9
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x1, x9
     ret
-.Lnvol_memrchr_raw.L28:
-.Lnvol_memrchr_raw.L26:
+.Lnvol_memrchr_raw.L50:
+.Lnvol_memrchr_raw.L48:
     movz w0, #0
 .Lnvol_memrchr_raw.L1:
     ret
-.Lnvol_memrchr_raw.L7:
+.Lnvol_memrchr_raw.L9:
     mov x0, x2
     ret
-.Lnvol_memrchr_raw.L17:
+.Lnvol_memrchr_raw.L25:
+    clz x9, x12
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x10, x9
+    ret
+.Lnvol_memrchr_raw.L39:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #48
     ret
-.Lnvol_memrchr_raw.L19:
+.Lnvol_memrchr_raw.L41:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #32
     ret
-.Lnvol_memrchr_raw.L21:
+.Lnvol_memrchr_raw.L43:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
     ret
-.Lnvol_memrchr_raw.L15:
+.Lnvol_memrchr_raw.L37:
     shrn v0.8b, v4.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memrchr_raw.L17
-.Lnvol_memrchr_raw.L16:
+    cbnz x10, .Lnvol_memrchr_raw.L39
+.Lnvol_memrchr_raw.L38:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memrchr_raw.L19
-.Lnvol_memrchr_raw.L18:
+    cbnz x10, .Lnvol_memrchr_raw.L41
+.Lnvol_memrchr_raw.L40:
     shrn v0.8b, v2.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memrchr_raw.L21
-.Lnvol_memrchr_raw.L20:
+    cbnz x10, .Lnvol_memrchr_raw.L43
+.Lnvol_memrchr_raw.L42:
     shrn v0.8b, v1.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
@@ -695,7 +1220,7 @@ L.nvol_memrchr_raw:
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memrchr_raw.L25:
+.Lnvol_memrchr_raw.L47:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
@@ -704,7 +1229,6 @@ L.nvol_memrchr_raw:
 .cfi_endproc
 .size nvol_memrchr_raw, .-nvol_memrchr_raw
 
-    nop
     nop
     nop
 .globl nvol_memrchr
@@ -739,29 +1263,226 @@ L.nvol_memchr2_scalar:
 .cfi_startproc
     and w9, w0, #255
     and w10, w1, #255
-    cmp x2, x3
-    b.hs .Lnvol_memchr2_scalar.L3
-.Lnvol_memchr2_scalar.L2:
-    ldrb w11, [x2]
-    cmp x11, x9
-    b.eq .Lnvol_memchr2_scalar.L6
-    cmp x11, x10
-    b.ne .Lnvol_memchr2_scalar.L4
-.Lnvol_memchr2_scalar.L6:
-.Lnvol_memchr2_scalar.L5:
-    mov x0, x2
+    sub x11, x3, x2
+    cmp x11, #4
+    b.hs .Lnvol_memchr2_scalar.L2
+    cbnz x11, .Lnvol_memchr2_scalar.L4
+    movz w0, #0
     ret
 .Lnvol_memchr2_scalar.L4:
-    add x2, x2, #1
-    cmp x2, x3
-    b.lo .Lnvol_memchr2_scalar.L2
-.Lnvol_memchr2_scalar.L3:
+    ldrb w12, [x2]
+    cmp x12, x9
+    b.eq .Lnvol_memchr2_scalar.L8
+    cmp x12, x10
+    b.ne .Lnvol_memchr2_scalar.L6
+.Lnvol_memchr2_scalar.L8:
+    mov x0, x2
+    ret
+.Lnvol_memchr2_scalar.L6:
+    cmp x11, #1
+    b.ne .Lnvol_memchr2_scalar.L9
+    movz w0, #0
+    ret
+.Lnvol_memchr2_scalar.L9:
+    ldrb w12, [x2, #1]
+    cmp x12, x9
+    b.eq .Lnvol_memchr2_scalar.L13
+    cmp x12, x10
+    b.ne .Lnvol_memchr2_scalar.L11
+.Lnvol_memchr2_scalar.L13:
+    add x0, x2, #1
+    ret
+.Lnvol_memchr2_scalar.L11:
+    cmp x11, #2
+    b.ne .Lnvol_memchr2_scalar.L14
+    movz w0, #0
+    ret
+.Lnvol_memchr2_scalar.L14:
+    ldrb w11, [x2, #2]
+    cmp x11, x9
+    b.eq .Lnvol_memchr2_scalar.L18
+    cmp x11, x10
+    b.ne .Lnvol_memchr2_scalar.L16
+.Lnvol_memchr2_scalar.L18:
+    add x0, x2, #2
+    ret
+.Lnvol_memchr2_scalar.L16:
+    movz w0, #0
+    ret
+.Lnvol_memchr2_scalar.L2:
+    cmp x11, #8
+    b.hs .Lnvol_memchr2_scalar.L19
+    orr w11, wzr, #16843009
+    mul w9, w9, w11
+    orr w11, wzr, #16843009
+    mul w10, w10, w11
+    ldr w11, [x2]
+    eor x12, x11, x9
+    orr w13, wzr, #16843009
+    sub w13, w12, w13
+    eor x12, x12, #4294967295
+    and x12, x13, x12
+    eor x11, x11, x10
+    orr w13, wzr, #16843009
+    sub w13, w11, w13
+    eor x11, x11, #4294967295
+    and x11, x13, x11
+    orr x11, x12, x11
+    orr w12, wzr, #2155905152
+    and x11, x11, x12
+    cbz x11, .Lnvol_memchr2_scalar.L21
+    rbit x9, x11
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memchr2_scalar.L21:
+    ldur w11, [x3, #-4]
+    eor x9, x11, x9
+    orr w12, wzr, #16843009
+    sub w12, w9, w12
+    eor x9, x9, #4294967295
+    and x9, x12, x9
+    eor x10, x11, x10
+    orr w11, wzr, #16843009
+    sub w11, w10, w11
+    eor x10, x10, #4294967295
+    and x10, x11, x10
+    orr x9, x9, x10
+    orr w10, wzr, #2155905152
+    and x9, x9, x10
+    cbz x9, .Lnvol_memchr2_scalar.L23
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memchr2_scalar.L23:
+    movz w0, #0
+    ret
+.Lnvol_memchr2_scalar.L19:
+    orr x12, xzr, #72340172838076673
+    mul x9, x9, x12
+    orr x12, xzr, #72340172838076673
+    mul x10, x10, x12
+    ldr x12, [x2]
+    eor x13, x12, x9
+    orr x14, xzr, #72340172838076673
+    sub x14, x13, x14
+    movn x15, #0
+    eor x13, x13, x15
+    and x13, x14, x13
+    eor x12, x12, x10
+    orr x14, xzr, #72340172838076673
+    sub x14, x12, x14
+    movn x15, #0
+    eor x12, x12, x15
+    and x12, x14, x12
+    orr x12, x13, x12
+    and x12, x12, #9259542123273814144
+    cbz x12, .Lnvol_memchr2_scalar.L25
+    rbit x9, x12
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memchr2_scalar.L25:
+    cmp x11, #16
+    b.hi .Lnvol_memchr2_scalar.L27
+    ldur x11, [x3, #-8]
+    eor x9, x11, x9
+    orr x12, xzr, #72340172838076673
+    sub x12, x9, x12
+    movn x13, #0
+    eor x9, x9, x13
+    and x9, x12, x9
+    eor x10, x11, x10
+    orr x11, xzr, #72340172838076673
+    sub x11, x10, x11
+    movn x12, #0
+    eor x10, x10, x12
+    and x10, x11, x10
+    orr x9, x9, x10
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr2_scalar.L29
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr2_scalar.L29:
+    movz w0, #0
+    ret
+.Lnvol_memchr2_scalar.L27:
+    and x11, x2, #18446744073709551608
+    add x11, x11, #8
+    sub x12, x3, #8
+    cmp x11, x12
+    b.hi .Lnvol_memchr2_scalar.L32
+.Lnvol_memchr2_scalar.L31:
+    ldr x13, [x11]
+    eor x14, x13, x9
+    orr x15, xzr, #72340172838076673
+    sub x15, x14, x15
+    movn x0, #0
+    eor x14, x14, x0
+    and x14, x15, x14
+    eor x13, x13, x10
+    orr x15, xzr, #72340172838076673
+    sub x15, x13, x15
+    movn x0, #0
+    eor x13, x13, x0
+    and x13, x15, x13
+    orr x13, x14, x13
+    and x13, x13, #9259542123273814144
+    cbnz x13, .Lnvol_memchr2_scalar.L34
+.Lnvol_memchr2_scalar.L33:
+    add x11, x11, #8
+    cmp x11, x12
+    b.ls .Lnvol_memchr2_scalar.L31
+.Lnvol_memchr2_scalar.L32:
+    cmp x11, x3
+    b.hs .Lnvol_memchr2_scalar.L35
+    ldur x11, [x3, #-8]
+    eor x9, x11, x9
+    orr x12, xzr, #72340172838076673
+    sub x12, x9, x12
+    movn x13, #0
+    eor x9, x9, x13
+    and x9, x12, x9
+    eor x10, x11, x10
+    orr x11, xzr, #72340172838076673
+    sub x11, x10, x11
+    movn x12, #0
+    eor x10, x10, x12
+    and x10, x11, x10
+    orr x9, x9, x10
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr2_scalar.L37
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr2_scalar.L37:
+.Lnvol_memchr2_scalar.L35:
     movz w0, #0
 .Lnvol_memchr2_scalar.L1:
+    ret
+.Lnvol_memchr2_scalar.L34:
+    rbit x9, x13
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x11, x9
     ret
 .cfi_endproc
 .size nvol_memchr2_scalar, .-nvol_memchr2_scalar
 
+    nop
+    nop
 .globl nvol_memchr2_neon
 .type nvol_memchr2_neon, %function
 .hidden nvol_memchr2_neon
@@ -892,24 +1613,213 @@ L.nvol_memchr2_raw:
     sub x11, x3, x2
     cmp x11, #16
     b.hs .Lnvol_memchr2_raw.L2
-    cmp x2, x3
-    b.hs .Lnvol_memchr2_raw.L5
-    nop
-.Lnvol_memchr2_raw.L4:
-    ldrb w11, [x2]
-    cmp x11, x9
-    b.eq .Lnvol_memchr2_raw.L8
-    cmp x11, x10
-    b.ne .Lnvol_memchr2_raw.L6
-.Lnvol_memchr2_raw.L8:
-.Lnvol_memchr2_raw.L7:
-    mov x0, x2
+    sub x11, x3, x2
+    cmp x11, #4
+    b.hs .Lnvol_memchr2_raw.L4
+    cbnz x11, .Lnvol_memchr2_raw.L6
+    movz w0, #0
     ret
 .Lnvol_memchr2_raw.L6:
-    add x2, x2, #1
-    cmp x2, x3
-    b.lo .Lnvol_memchr2_raw.L4
-.Lnvol_memchr2_raw.L5:
+    ldrb w12, [x2]
+    cmp x12, x9
+    b.eq .Lnvol_memchr2_raw.L10
+    cmp x12, x10
+    b.ne .Lnvol_memchr2_raw.L8
+.Lnvol_memchr2_raw.L10:
+    mov x0, x2
+    ret
+.Lnvol_memchr2_raw.L8:
+    cmp x11, #1
+    b.ne .Lnvol_memchr2_raw.L11
+    movz w0, #0
+    ret
+.Lnvol_memchr2_raw.L11:
+    ldrb w12, [x2, #1]
+    cmp x12, x9
+    b.eq .Lnvol_memchr2_raw.L15
+    cmp x12, x10
+    b.ne .Lnvol_memchr2_raw.L13
+.Lnvol_memchr2_raw.L15:
+    add x0, x2, #1
+    ret
+.Lnvol_memchr2_raw.L13:
+    cmp x11, #2
+    b.ne .Lnvol_memchr2_raw.L16
+    movz w0, #0
+    ret
+.Lnvol_memchr2_raw.L16:
+    ldrb w11, [x2, #2]
+    cmp x11, x9
+    b.eq .Lnvol_memchr2_raw.L20
+    cmp x11, x10
+    b.ne .Lnvol_memchr2_raw.L18
+.Lnvol_memchr2_raw.L20:
+    add x0, x2, #2
+    ret
+.Lnvol_memchr2_raw.L18:
+    movz w0, #0
+    ret
+.Lnvol_memchr2_raw.L4:
+    cmp x11, #8
+    b.hs .Lnvol_memchr2_raw.L21
+    orr w11, wzr, #16843009
+    mul w9, w9, w11
+    orr w11, wzr, #16843009
+    mul w10, w10, w11
+    ldr w11, [x2]
+    eor x12, x11, x9
+    orr w13, wzr, #16843009
+    sub w13, w12, w13
+    eor x12, x12, #4294967295
+    and x12, x13, x12
+    eor x11, x11, x10
+    orr w13, wzr, #16843009
+    sub w13, w11, w13
+    eor x11, x11, #4294967295
+    and x11, x13, x11
+    orr x11, x12, x11
+    orr w12, wzr, #2155905152
+    and x11, x11, x12
+    cbz x11, .Lnvol_memchr2_raw.L23
+    rbit x9, x11
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memchr2_raw.L23:
+    ldur w11, [x3, #-4]
+    eor x9, x11, x9
+    orr w12, wzr, #16843009
+    sub w12, w9, w12
+    eor x9, x9, #4294967295
+    and x9, x12, x9
+    eor x10, x11, x10
+    orr w11, wzr, #16843009
+    sub w11, w10, w11
+    eor x10, x10, #4294967295
+    and x10, x11, x10
+    orr x9, x9, x10
+    orr w10, wzr, #2155905152
+    and x9, x9, x10
+    cbz x9, .Lnvol_memchr2_raw.L25
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memchr2_raw.L25:
+    movz w0, #0
+    ret
+.Lnvol_memchr2_raw.L21:
+    orr x12, xzr, #72340172838076673
+    mul x9, x9, x12
+    orr x12, xzr, #72340172838076673
+    mul x10, x10, x12
+    ldr x12, [x2]
+    eor x13, x12, x9
+    orr x14, xzr, #72340172838076673
+    sub x14, x13, x14
+    movn x15, #0
+    eor x13, x13, x15
+    and x13, x14, x13
+    eor x12, x12, x10
+    orr x14, xzr, #72340172838076673
+    sub x14, x12, x14
+    movn x15, #0
+    eor x12, x12, x15
+    and x12, x14, x12
+    orr x12, x13, x12
+    and x12, x12, #9259542123273814144
+    cbz x12, .Lnvol_memchr2_raw.L27
+    rbit x9, x12
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memchr2_raw.L27:
+    cmp x11, #16
+    b.hi .Lnvol_memchr2_raw.L29
+    ldur x11, [x3, #-8]
+    eor x9, x11, x9
+    orr x12, xzr, #72340172838076673
+    sub x12, x9, x12
+    movn x13, #0
+    eor x9, x9, x13
+    and x9, x12, x9
+    eor x10, x11, x10
+    orr x11, xzr, #72340172838076673
+    sub x11, x10, x11
+    movn x12, #0
+    eor x10, x10, x12
+    and x10, x11, x10
+    orr x9, x9, x10
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr2_raw.L31
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr2_raw.L31:
+    movz w0, #0
+    ret
+.Lnvol_memchr2_raw.L29:
+    and x11, x2, #18446744073709551608
+    add x11, x11, #8
+    sub x12, x3, #8
+    cmp x11, x12
+    b.hi .Lnvol_memchr2_raw.L34
+    nop
+.Lnvol_memchr2_raw.L33:
+    ldr x13, [x11]
+    eor x14, x13, x9
+    orr x15, xzr, #72340172838076673
+    sub x15, x14, x15
+    movn x0, #0
+    eor x14, x14, x0
+    and x14, x15, x14
+    eor x13, x13, x10
+    orr x15, xzr, #72340172838076673
+    sub x15, x13, x15
+    movn x0, #0
+    eor x13, x13, x0
+    and x13, x15, x13
+    orr x13, x14, x13
+    and x13, x13, #9259542123273814144
+    cbnz x13, .Lnvol_memchr2_raw.L36
+.Lnvol_memchr2_raw.L35:
+    add x11, x11, #8
+    cmp x11, x12
+    b.ls .Lnvol_memchr2_raw.L33
+.Lnvol_memchr2_raw.L34:
+    cmp x11, x3
+    b.hs .Lnvol_memchr2_raw.L37
+    ldur x11, [x3, #-8]
+    eor x9, x11, x9
+    orr x12, xzr, #72340172838076673
+    sub x12, x9, x12
+    movn x13, #0
+    eor x9, x9, x13
+    and x9, x12, x9
+    eor x10, x11, x10
+    orr x11, xzr, #72340172838076673
+    sub x11, x10, x11
+    movn x12, #0
+    eor x10, x10, x12
+    and x10, x11, x10
+    orr x9, x9, x10
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr2_raw.L39
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr2_raw.L39:
+.Lnvol_memchr2_raw.L37:
     movz w0, #0
     ret
 .Lnvol_memchr2_raw.L2:
@@ -923,22 +1833,21 @@ L.nvol_memchr2_raw:
     shrn v2.8b, v2.8h, #4
     fmov x9, d2
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memchr2_raw.L9
+    cbz x9, .Lnvol_memchr2_raw.L41
     rbit x9, x9
     clz x9, x9
     lsr x9, x9, #2
     add x0, x2, x9
     ret
-.Lnvol_memchr2_raw.L9:
+.Lnvol_memchr2_raw.L41:
     and x9, x2, #18446744073709551600
     add x9, x9, #16
     cmp x11, #32
-    b.lo .Lnvol_memchr2_raw.L11
+    b.lo .Lnvol_memchr2_raw.L43
     sub x10, x3, #32
     cmp x9, x10
-    b.hi .Lnvol_memchr2_raw.L14
-    nop
-.Lnvol_memchr2_raw.L13:
+    b.hi .Lnvol_memchr2_raw.L46
+.Lnvol_memchr2_raw.L45:
     ldr q2, [x9]
     ldr q3, [x9, #16]
     cmeq v4.16b, v2.16b, v0.16b
@@ -950,19 +1859,19 @@ L.nvol_memchr2_raw:
     orr v4.16b, v2.16b, v3.16b
     umaxp v4.16b, v4.16b, v4.16b
     fmov x11, d4
-    cbnz x11, .Lnvol_memchr2_raw.L16
-.Lnvol_memchr2_raw.L15:
+    cbnz x11, .Lnvol_memchr2_raw.L48
+.Lnvol_memchr2_raw.L47:
     add x9, x9, #32
     cmp x9, x10
-    b.ls .Lnvol_memchr2_raw.L13
-.Lnvol_memchr2_raw.L14:
-.Lnvol_memchr2_raw.L11:
+    b.ls .Lnvol_memchr2_raw.L45
+.Lnvol_memchr2_raw.L46:
+.Lnvol_memchr2_raw.L43:
     sub x10, x3, #16
     cmp x9, x10
-    b.hi .Lnvol_memchr2_raw.L20
+    b.hi .Lnvol_memchr2_raw.L52
     nop
     nop
-.Lnvol_memchr2_raw.L19:
+.Lnvol_memchr2_raw.L51:
     ldr q2, [x9]
     cmeq v3.16b, v2.16b, v0.16b
     cmeq v2.16b, v2.16b, v1.16b
@@ -970,14 +1879,14 @@ L.nvol_memchr2_raw:
     shrn v2.8b, v2.8h, #4
     fmov x11, d2
     and x11, x11, #9838263505978427528
-    cbnz x11, .Lnvol_memchr2_raw.L22
-.Lnvol_memchr2_raw.L21:
+    cbnz x11, .Lnvol_memchr2_raw.L54
+.Lnvol_memchr2_raw.L53:
     add x9, x9, #16
     cmp x9, x10
-    b.ls .Lnvol_memchr2_raw.L19
-.Lnvol_memchr2_raw.L20:
+    b.ls .Lnvol_memchr2_raw.L51
+.Lnvol_memchr2_raw.L52:
     cmp x9, x3
-    b.hs .Lnvol_memchr2_raw.L23
+    b.hs .Lnvol_memchr2_raw.L55
     sub x9, x3, #16
     ldr q2, [x9]
     cmeq v0.16b, v2.16b, v0.16b
@@ -986,29 +1895,35 @@ L.nvol_memchr2_raw:
     shrn v0.8b, v0.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbz x10, .Lnvol_memchr2_raw.L25
+    cbz x10, .Lnvol_memchr2_raw.L57
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memchr2_raw.L25:
-.Lnvol_memchr2_raw.L23:
+.Lnvol_memchr2_raw.L57:
+.Lnvol_memchr2_raw.L55:
     movz w0, #0
 .Lnvol_memchr2_raw.L1:
     ret
-.Lnvol_memchr2_raw.L18:
+.Lnvol_memchr2_raw.L36:
+    rbit x9, x13
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x11, x9
+    ret
+.Lnvol_memchr2_raw.L50:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memchr2_raw.L16:
+.Lnvol_memchr2_raw.L48:
     shrn v0.8b, v2.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memchr2_raw.L18
-.Lnvol_memchr2_raw.L17:
+    cbnz x10, .Lnvol_memchr2_raw.L50
+.Lnvol_memchr2_raw.L49:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
@@ -1018,7 +1933,7 @@ L.nvol_memchr2_raw:
     add x9, x9, x10
     add x0, x9, #16
     ret
-.Lnvol_memchr2_raw.L22:
+.Lnvol_memchr2_raw.L54:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
@@ -1027,6 +1942,9 @@ L.nvol_memchr2_raw:
 .cfi_endproc
 .size nvol_memchr2_raw, .-nvol_memchr2_raw
 
+    nop
+    nop
+    nop
 .globl nvol_memchr2
 .type nvol_memchr2, %function
 nvol_memchr2:
@@ -1059,29 +1977,230 @@ L.nvol_memrchr2_scalar:
 .cfi_startproc
     and w9, w0, #255
     and w10, w1, #255
-    cmp x3, x2
-    b.ls .Lnvol_memrchr2_scalar.L3
-.Lnvol_memrchr2_scalar.L2:
-    sub x3, x3, #1
-    ldrb w11, [x3]
-    cmp x11, x9
-    b.eq .Lnvol_memrchr2_scalar.L6
-    cmp x11, x10
-    b.ne .Lnvol_memrchr2_scalar.L4
-.Lnvol_memrchr2_scalar.L6:
-.Lnvol_memrchr2_scalar.L5:
-    mov x0, x3
+    sub x11, x3, x2
+    cmp x11, #4
+    b.hs .Lnvol_memrchr2_scalar.L2
+    cbnz x11, .Lnvol_memrchr2_scalar.L4
+    movz w0, #0
     ret
 .Lnvol_memrchr2_scalar.L4:
-    cmp x3, x2
-    b.hi .Lnvol_memrchr2_scalar.L2
-.Lnvol_memrchr2_scalar.L3:
+    ldurb w12, [x3, #-1]
+    cmp x12, x9
+    b.eq .Lnvol_memrchr2_scalar.L8
+    cmp x12, x10
+    b.ne .Lnvol_memrchr2_scalar.L6
+.Lnvol_memrchr2_scalar.L8:
+    sub x0, x3, #1
+    ret
+.Lnvol_memrchr2_scalar.L6:
+    cmp x11, #1
+    b.ne .Lnvol_memrchr2_scalar.L9
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_scalar.L9:
+    ldurb w12, [x3, #-2]
+    cmp x12, x9
+    b.eq .Lnvol_memrchr2_scalar.L13
+    cmp x12, x10
+    b.ne .Lnvol_memrchr2_scalar.L11
+.Lnvol_memrchr2_scalar.L13:
+    sub x0, x3, #2
+    ret
+.Lnvol_memrchr2_scalar.L11:
+    cmp x11, #2
+    b.ne .Lnvol_memrchr2_scalar.L14
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_scalar.L14:
+    ldurb w11, [x3, #-3]
+    cmp x11, x9
+    b.eq .Lnvol_memrchr2_scalar.L18
+    cmp x11, x10
+    b.ne .Lnvol_memrchr2_scalar.L16
+.Lnvol_memrchr2_scalar.L18:
+    sub x0, x3, #3
+    ret
+.Lnvol_memrchr2_scalar.L16:
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_scalar.L2:
+    cmp x11, #8
+    b.hs .Lnvol_memrchr2_scalar.L19
+    orr w11, wzr, #16843009
+    mul w9, w9, w11
+    orr w11, wzr, #16843009
+    mul w10, w10, w11
+    ldur w11, [x3, #-4]
+    eor x12, x11, x9
+    orr w13, wzr, #2139062143
+    and x13, x12, x13
+    orr w14, wzr, #2139062143
+    add w13, w13, w14
+    orr x12, x13, x12
+    eor x11, x11, x10
+    orr w13, wzr, #2139062143
+    and x13, x11, x13
+    orr w14, wzr, #2139062143
+    add w13, w13, w14
+    orr x11, x13, x11
+    and x11, x12, x11
+    orr w12, wzr, #2139062143
+    orr x11, x11, x12
+    eor x11, x11, #4294967295
+    cbz x11, .Lnvol_memrchr2_scalar.L21
+    clz x9, x11
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memrchr2_scalar.L21:
+    ldr w11, [x2]
+    eor x9, x11, x9
+    orr w12, wzr, #2139062143
+    and x12, x9, x12
+    orr w13, wzr, #2139062143
+    add w12, w12, w13
+    orr x9, x12, x9
+    eor x10, x11, x10
+    orr w11, wzr, #2139062143
+    and x11, x10, x11
+    orr w12, wzr, #2139062143
+    add w11, w11, w12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr w10, wzr, #2139062143
+    orr x9, x9, x10
+    eor x9, x9, #4294967295
+    cbz x9, .Lnvol_memrchr2_scalar.L23
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memrchr2_scalar.L23:
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_scalar.L19:
+    orr x12, xzr, #72340172838076673
+    mul x9, x9, x12
+    orr x12, xzr, #72340172838076673
+    mul x10, x10, x12
+    ldur x12, [x3, #-8]
+    eor x13, x12, x9
+    and x14, x13, #9187201950435737471
+    orr x15, xzr, #9187201950435737471
+    add x14, x14, x15
+    orr x13, x14, x13
+    eor x12, x12, x10
+    and x14, x12, #9187201950435737471
+    orr x15, xzr, #9187201950435737471
+    add x14, x14, x15
+    orr x12, x14, x12
+    and x12, x13, x12
+    orr x12, x12, #9187201950435737471
+    movn x13, #0
+    eor x12, x12, x13
+    cbz x12, .Lnvol_memrchr2_scalar.L25
+    clz x9, x12
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memrchr2_scalar.L25:
+    cmp x11, #16
+    b.hi .Lnvol_memrchr2_scalar.L27
+    ldr x11, [x2]
+    eor x9, x11, x9
+    and x12, x9, #9187201950435737471
+    orr x13, xzr, #9187201950435737471
+    add x12, x12, x13
+    orr x9, x12, x9
+    eor x10, x11, x10
+    and x11, x10, #9187201950435737471
+    orr x12, xzr, #9187201950435737471
+    add x11, x11, x12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr2_scalar.L29
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memrchr2_scalar.L29:
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_scalar.L27:
+    and x11, x3, #18446744073709551608
+    add x12, x2, #8
+    cmp x11, x12
+    b.lo .Lnvol_memrchr2_scalar.L32
+    nop
+.Lnvol_memrchr2_scalar.L31:
+    sub x11, x11, #8
+    ldr x13, [x11]
+    eor x14, x13, x9
+    and x15, x14, #9187201950435737471
+    orr x0, xzr, #9187201950435737471
+    add x15, x15, x0
+    orr x14, x15, x14
+    eor x13, x13, x10
+    and x15, x13, #9187201950435737471
+    orr x0, xzr, #9187201950435737471
+    add x15, x15, x0
+    orr x13, x15, x13
+    and x13, x14, x13
+    orr x13, x13, #9187201950435737471
+    movn x14, #0
+    eor x13, x13, x14
+    cbnz x13, .Lnvol_memrchr2_scalar.L34
+.Lnvol_memrchr2_scalar.L33:
+    cmp x11, x12
+    b.hs .Lnvol_memrchr2_scalar.L31
+.Lnvol_memrchr2_scalar.L32:
+    cmp x11, x2
+    b.ls .Lnvol_memrchr2_scalar.L35
+    ldr x11, [x2]
+    eor x9, x11, x9
+    and x12, x9, #9187201950435737471
+    orr x13, xzr, #9187201950435737471
+    add x12, x12, x13
+    orr x9, x12, x9
+    eor x10, x11, x10
+    and x11, x10, #9187201950435737471
+    orr x12, xzr, #9187201950435737471
+    add x11, x11, x12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr2_scalar.L37
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memrchr2_scalar.L37:
+.Lnvol_memrchr2_scalar.L35:
     movz w0, #0
 .Lnvol_memrchr2_scalar.L1:
+    ret
+.Lnvol_memrchr2_scalar.L34:
+    clz x9, x13
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x11, x9
     ret
 .cfi_endproc
 .size nvol_memrchr2_scalar, .-nvol_memrchr2_scalar
 
+    nop
 .globl nvol_memrchr2_neon
 .type nvol_memrchr2_neon, %function
 .hidden nvol_memrchr2_neon
@@ -1212,24 +2331,216 @@ L.nvol_memrchr2_raw:
     sub x11, x3, x2
     cmp x11, #16
     b.hs .Lnvol_memrchr2_raw.L2
-    cmp x3, x2
-    b.ls .Lnvol_memrchr2_raw.L5
-    nop
-.Lnvol_memrchr2_raw.L4:
-    sub x3, x3, #1
-    ldrb w11, [x3]
-    cmp x11, x9
-    b.eq .Lnvol_memrchr2_raw.L8
-    cmp x11, x10
-    b.ne .Lnvol_memrchr2_raw.L6
-.Lnvol_memrchr2_raw.L8:
-.Lnvol_memrchr2_raw.L7:
-    mov x0, x3
+    sub x11, x3, x2
+    cmp x11, #4
+    b.hs .Lnvol_memrchr2_raw.L4
+    cbnz x11, .Lnvol_memrchr2_raw.L6
+    movz w0, #0
     ret
 .Lnvol_memrchr2_raw.L6:
-    cmp x3, x2
-    b.hi .Lnvol_memrchr2_raw.L4
-.Lnvol_memrchr2_raw.L5:
+    ldurb w12, [x3, #-1]
+    cmp x12, x9
+    b.eq .Lnvol_memrchr2_raw.L10
+    cmp x12, x10
+    b.ne .Lnvol_memrchr2_raw.L8
+.Lnvol_memrchr2_raw.L10:
+    sub x0, x3, #1
+    ret
+.Lnvol_memrchr2_raw.L8:
+    cmp x11, #1
+    b.ne .Lnvol_memrchr2_raw.L11
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_raw.L11:
+    ldurb w12, [x3, #-2]
+    cmp x12, x9
+    b.eq .Lnvol_memrchr2_raw.L15
+    cmp x12, x10
+    b.ne .Lnvol_memrchr2_raw.L13
+.Lnvol_memrchr2_raw.L15:
+    sub x0, x3, #2
+    ret
+.Lnvol_memrchr2_raw.L13:
+    cmp x11, #2
+    b.ne .Lnvol_memrchr2_raw.L16
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_raw.L16:
+    ldurb w11, [x3, #-3]
+    cmp x11, x9
+    b.eq .Lnvol_memrchr2_raw.L20
+    cmp x11, x10
+    b.ne .Lnvol_memrchr2_raw.L18
+.Lnvol_memrchr2_raw.L20:
+    sub x0, x3, #3
+    ret
+.Lnvol_memrchr2_raw.L18:
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_raw.L4:
+    cmp x11, #8
+    b.hs .Lnvol_memrchr2_raw.L21
+    orr w11, wzr, #16843009
+    mul w9, w9, w11
+    orr w11, wzr, #16843009
+    mul w10, w10, w11
+    ldur w11, [x3, #-4]
+    eor x12, x11, x9
+    orr w13, wzr, #2139062143
+    and x13, x12, x13
+    orr w14, wzr, #2139062143
+    add w13, w13, w14
+    orr x12, x13, x12
+    eor x11, x11, x10
+    orr w13, wzr, #2139062143
+    and x13, x11, x13
+    orr w14, wzr, #2139062143
+    add w13, w13, w14
+    orr x11, x13, x11
+    and x11, x12, x11
+    orr w12, wzr, #2139062143
+    orr x11, x11, x12
+    eor x11, x11, #4294967295
+    cbz x11, .Lnvol_memrchr2_raw.L23
+    clz x9, x11
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memrchr2_raw.L23:
+    ldr w11, [x2]
+    eor x9, x11, x9
+    orr w12, wzr, #2139062143
+    and x12, x9, x12
+    orr w13, wzr, #2139062143
+    add w12, w12, w13
+    orr x9, x12, x9
+    eor x10, x11, x10
+    orr w11, wzr, #2139062143
+    and x11, x10, x11
+    orr w12, wzr, #2139062143
+    add w11, w11, w12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr w10, wzr, #2139062143
+    orr x9, x9, x10
+    eor x9, x9, #4294967295
+    cbz x9, .Lnvol_memrchr2_raw.L25
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memrchr2_raw.L25:
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_raw.L21:
+    orr x12, xzr, #72340172838076673
+    mul x9, x9, x12
+    orr x12, xzr, #72340172838076673
+    mul x10, x10, x12
+    ldur x12, [x3, #-8]
+    eor x13, x12, x9
+    and x14, x13, #9187201950435737471
+    orr x15, xzr, #9187201950435737471
+    add x14, x14, x15
+    orr x13, x14, x13
+    eor x12, x12, x10
+    and x14, x12, #9187201950435737471
+    orr x15, xzr, #9187201950435737471
+    add x14, x14, x15
+    orr x12, x14, x12
+    and x12, x13, x12
+    orr x12, x12, #9187201950435737471
+    movn x13, #0
+    eor x12, x12, x13
+    cbz x12, .Lnvol_memrchr2_raw.L27
+    clz x9, x12
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x3, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memrchr2_raw.L27:
+    cmp x11, #16
+    b.hi .Lnvol_memrchr2_raw.L29
+    ldr x11, [x2]
+    eor x9, x11, x9
+    and x12, x9, #9187201950435737471
+    orr x13, xzr, #9187201950435737471
+    add x12, x12, x13
+    orr x9, x12, x9
+    eor x10, x11, x10
+    and x11, x10, #9187201950435737471
+    orr x12, xzr, #9187201950435737471
+    add x11, x11, x12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr2_raw.L31
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memrchr2_raw.L31:
+    movz w0, #0
+    ret
+.Lnvol_memrchr2_raw.L29:
+    and x11, x3, #18446744073709551608
+    add x12, x2, #8
+    cmp x11, x12
+    b.lo .Lnvol_memrchr2_raw.L34
+.Lnvol_memrchr2_raw.L33:
+    sub x11, x11, #8
+    ldr x13, [x11]
+    eor x14, x13, x9
+    and x15, x14, #9187201950435737471
+    orr x0, xzr, #9187201950435737471
+    add x15, x15, x0
+    orr x14, x15, x14
+    eor x13, x13, x10
+    and x15, x13, #9187201950435737471
+    orr x0, xzr, #9187201950435737471
+    add x15, x15, x0
+    orr x13, x15, x13
+    and x13, x14, x13
+    orr x13, x13, #9187201950435737471
+    movn x14, #0
+    eor x13, x13, x14
+    cbnz x13, .Lnvol_memrchr2_raw.L36
+.Lnvol_memrchr2_raw.L35:
+    cmp x11, x12
+    b.hs .Lnvol_memrchr2_raw.L33
+.Lnvol_memrchr2_raw.L34:
+    cmp x11, x2
+    b.ls .Lnvol_memrchr2_raw.L37
+    ldr x11, [x2]
+    eor x9, x11, x9
+    and x12, x9, #9187201950435737471
+    orr x13, xzr, #9187201950435737471
+    add x12, x12, x13
+    orr x9, x12, x9
+    eor x10, x11, x10
+    and x11, x10, #9187201950435737471
+    orr x12, xzr, #9187201950435737471
+    add x11, x11, x12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr2_raw.L39
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x2, x9
+    ret
+.Lnvol_memrchr2_raw.L39:
+.Lnvol_memrchr2_raw.L37:
     movz w0, #0
     ret
 .Lnvol_memrchr2_raw.L2:
@@ -1243,22 +2554,22 @@ L.nvol_memrchr2_raw:
     shrn v2.8b, v2.8h, #4
     fmov x9, d2
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memrchr2_raw.L9
+    cbz x9, .Lnvol_memrchr2_raw.L41
     clz x9, x9
     eor x9, x9, #63
     lsr x9, x9, #2
     add x9, x3, x9
     sub x0, x9, #16
     ret
-.Lnvol_memrchr2_raw.L9:
+.Lnvol_memrchr2_raw.L41:
     and x9, x3, #18446744073709551600
     cmp x11, #32
-    b.lo .Lnvol_memrchr2_raw.L11
+    b.lo .Lnvol_memrchr2_raw.L43
     add x10, x2, #32
     cmp x9, x10
-    b.lo .Lnvol_memrchr2_raw.L14
+    b.lo .Lnvol_memrchr2_raw.L46
     nop
-.Lnvol_memrchr2_raw.L13:
+.Lnvol_memrchr2_raw.L45:
     sub x9, x9, #32
     ldr q2, [x9]
     ldr q3, [x9, #16]
@@ -1271,18 +2582,18 @@ L.nvol_memrchr2_raw:
     orr v4.16b, v2.16b, v3.16b
     umaxp v4.16b, v4.16b, v4.16b
     fmov x11, d4
-    cbnz x11, .Lnvol_memrchr2_raw.L16
-.Lnvol_memrchr2_raw.L15:
+    cbnz x11, .Lnvol_memrchr2_raw.L48
+.Lnvol_memrchr2_raw.L47:
     cmp x9, x10
-    b.hs .Lnvol_memrchr2_raw.L13
-.Lnvol_memrchr2_raw.L14:
-.Lnvol_memrchr2_raw.L11:
+    b.hs .Lnvol_memrchr2_raw.L45
+.Lnvol_memrchr2_raw.L46:
+.Lnvol_memrchr2_raw.L43:
     add x10, x2, #16
     cmp x9, x10
-    b.lo .Lnvol_memrchr2_raw.L20
+    b.lo .Lnvol_memrchr2_raw.L52
     nop
     nop
-.Lnvol_memrchr2_raw.L19:
+.Lnvol_memrchr2_raw.L51:
     sub x9, x9, #16
     ldr q2, [x9]
     cmeq v3.16b, v2.16b, v0.16b
@@ -1291,13 +2602,13 @@ L.nvol_memrchr2_raw:
     shrn v2.8b, v2.8h, #4
     fmov x11, d2
     and x11, x11, #9838263505978427528
-    cbnz x11, .Lnvol_memrchr2_raw.L22
-.Lnvol_memrchr2_raw.L21:
+    cbnz x11, .Lnvol_memrchr2_raw.L54
+.Lnvol_memrchr2_raw.L53:
     cmp x9, x10
-    b.hs .Lnvol_memrchr2_raw.L19
-.Lnvol_memrchr2_raw.L20:
+    b.hs .Lnvol_memrchr2_raw.L51
+.Lnvol_memrchr2_raw.L52:
     cmp x9, x2
-    b.ls .Lnvol_memrchr2_raw.L23
+    b.ls .Lnvol_memrchr2_raw.L55
     ldr q2, [x2]
     cmeq v0.16b, v2.16b, v0.16b
     cmeq v1.16b, v2.16b, v1.16b
@@ -1305,30 +2616,36 @@ L.nvol_memrchr2_raw:
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memrchr2_raw.L25
+    cbz x9, .Lnvol_memrchr2_raw.L57
     clz x9, x9
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x2, x9
     ret
-.Lnvol_memrchr2_raw.L25:
-.Lnvol_memrchr2_raw.L23:
+.Lnvol_memrchr2_raw.L57:
+.Lnvol_memrchr2_raw.L55:
     movz w0, #0
 .Lnvol_memrchr2_raw.L1:
     ret
-.Lnvol_memrchr2_raw.L18:
+.Lnvol_memrchr2_raw.L36:
+    clz x9, x13
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x11, x9
+    ret
+.Lnvol_memrchr2_raw.L50:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
     ret
-.Lnvol_memrchr2_raw.L16:
+.Lnvol_memrchr2_raw.L48:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memrchr2_raw.L18
-.Lnvol_memrchr2_raw.L17:
+    cbnz x10, .Lnvol_memrchr2_raw.L50
+.Lnvol_memrchr2_raw.L49:
     shrn v0.8b, v2.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
@@ -1337,7 +2654,7 @@ L.nvol_memrchr2_raw:
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memrchr2_raw.L22:
+.Lnvol_memrchr2_raw.L54:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
@@ -1346,7 +2663,6 @@ L.nvol_memrchr2_raw:
 .cfi_endproc
 .size nvol_memrchr2_raw, .-nvol_memrchr2_raw
 
-    nop
 .globl nvol_memrchr2
 .type nvol_memrchr2, %function
 nvol_memrchr2:
@@ -1380,32 +2696,249 @@ L.nvol_memchr3_scalar:
     and w9, w0, #255
     and w10, w1, #255
     and w11, w2, #255
+    sub x12, x4, x3
+    cmp x12, #5
+    b.hs .Lnvol_memchr3_scalar.L2
     cmp x3, x4
-    b.hs .Lnvol_memchr3_scalar.L3
-    nop
-.Lnvol_memchr3_scalar.L2:
+    b.hs .Lnvol_memchr3_scalar.L5
+.Lnvol_memchr3_scalar.L4:
     ldrb w12, [x3]
     cmp x12, x9
-    b.eq .Lnvol_memchr3_scalar.L6
+    b.eq .Lnvol_memchr3_scalar.L8
     cmp x12, x10
-    b.eq .Lnvol_memchr3_scalar.L6
+    b.eq .Lnvol_memchr3_scalar.L8
     cmp x12, x11
-    b.ne .Lnvol_memchr3_scalar.L4
-.Lnvol_memchr3_scalar.L6:
-.Lnvol_memchr3_scalar.L5:
+    b.ne .Lnvol_memchr3_scalar.L6
+.Lnvol_memchr3_scalar.L8:
+.Lnvol_memchr3_scalar.L7:
     mov x0, x3
     ret
-.Lnvol_memchr3_scalar.L4:
+.Lnvol_memchr3_scalar.L6:
     add x3, x3, #1
     cmp x3, x4
-    b.lo .Lnvol_memchr3_scalar.L2
-.Lnvol_memchr3_scalar.L3:
+    b.lo .Lnvol_memchr3_scalar.L4
+.Lnvol_memchr3_scalar.L5:
+    movz w0, #0
+    ret
+.Lnvol_memchr3_scalar.L2:
+    cmp x12, #8
+    b.hs .Lnvol_memchr3_scalar.L9
+    orr w12, wzr, #16843009
+    mul w9, w9, w12
+    orr w12, wzr, #16843009
+    mul w10, w10, w12
+    orr w12, wzr, #16843009
+    mul w11, w11, w12
+    ldr w12, [x3]
+    eor x13, x12, x9
+    orr w14, wzr, #16843009
+    sub w14, w13, w14
+    eor x13, x13, #4294967295
+    and x13, x14, x13
+    eor x14, x12, x10
+    orr w15, wzr, #16843009
+    sub w15, w14, w15
+    eor x14, x14, #4294967295
+    and x14, x15, x14
+    orr x13, x13, x14
+    eor x12, x12, x11
+    orr w14, wzr, #16843009
+    sub w14, w12, w14
+    eor x12, x12, #4294967295
+    and x12, x14, x12
+    orr x12, x13, x12
+    orr w13, wzr, #2155905152
+    and x12, x12, x13
+    cbz x12, .Lnvol_memchr3_scalar.L11
+    rbit x9, x12
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memchr3_scalar.L11:
+    ldur w12, [x4, #-4]
+    eor x9, x12, x9
+    orr w13, wzr, #16843009
+    sub w13, w9, w13
+    eor x9, x9, #4294967295
+    and x9, x13, x9
+    eor x10, x12, x10
+    orr w13, wzr, #16843009
+    sub w13, w10, w13
+    eor x10, x10, #4294967295
+    and x10, x13, x10
+    orr x9, x9, x10
+    eor x10, x12, x11
+    orr w11, wzr, #16843009
+    sub w11, w10, w11
+    eor x10, x10, #4294967295
+    and x10, x11, x10
+    orr x9, x9, x10
+    orr w10, wzr, #2155905152
+    and x9, x9, x10
+    cbz x9, .Lnvol_memchr3_scalar.L13
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memchr3_scalar.L13:
+    movz w0, #0
+    ret
+.Lnvol_memchr3_scalar.L9:
+    orr x13, xzr, #72340172838076673
+    mul x9, x9, x13
+    orr x13, xzr, #72340172838076673
+    mul x10, x10, x13
+    orr x13, xzr, #72340172838076673
+    mul x11, x11, x13
+    ldr x13, [x3]
+    eor x14, x13, x9
+    orr x15, xzr, #72340172838076673
+    sub x15, x14, x15
+    movn x0, #0
+    eor x14, x14, x0
+    and x14, x15, x14
+    eor x15, x13, x10
+    orr x0, xzr, #72340172838076673
+    sub x0, x15, x0
+    movn x1, #0
+    eor x15, x15, x1
+    and x15, x0, x15
+    orr x14, x14, x15
+    eor x13, x13, x11
+    orr x15, xzr, #72340172838076673
+    sub x15, x13, x15
+    movn x0, #0
+    eor x13, x13, x0
+    and x13, x15, x13
+    orr x13, x14, x13
+    and x13, x13, #9259542123273814144
+    cbz x13, .Lnvol_memchr3_scalar.L15
+    rbit x9, x13
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memchr3_scalar.L15:
+    cmp x12, #16
+    b.hi .Lnvol_memchr3_scalar.L17
+    ldur x12, [x4, #-8]
+    eor x9, x12, x9
+    orr x13, xzr, #72340172838076673
+    sub x13, x9, x13
+    movn x14, #0
+    eor x9, x9, x14
+    and x9, x13, x9
+    eor x10, x12, x10
+    orr x13, xzr, #72340172838076673
+    sub x13, x10, x13
+    movn x14, #0
+    eor x10, x10, x14
+    and x10, x13, x10
+    orr x9, x9, x10
+    eor x10, x12, x11
+    orr x11, xzr, #72340172838076673
+    sub x11, x10, x11
+    movn x12, #0
+    eor x10, x10, x12
+    and x10, x11, x10
+    orr x9, x9, x10
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr3_scalar.L19
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr3_scalar.L19:
+    movz w0, #0
+    ret
+.Lnvol_memchr3_scalar.L17:
+    and x12, x3, #18446744073709551608
+    add x12, x12, #8
+    sub x13, x4, #8
+    cmp x12, x13
+    b.hi .Lnvol_memchr3_scalar.L22
+    nop
+.Lnvol_memchr3_scalar.L21:
+    ldr x14, [x12]
+    eor x15, x14, x9
+    orr x0, xzr, #72340172838076673
+    sub x0, x15, x0
+    movn x1, #0
+    eor x15, x15, x1
+    and x15, x0, x15
+    eor x0, x14, x10
+    orr x1, xzr, #72340172838076673
+    sub x1, x0, x1
+    movn x2, #0
+    eor x0, x0, x2
+    and x0, x1, x0
+    orr x15, x15, x0
+    eor x14, x14, x11
+    orr x0, xzr, #72340172838076673
+    sub x0, x14, x0
+    movn x1, #0
+    eor x14, x14, x1
+    and x14, x0, x14
+    orr x14, x15, x14
+    and x14, x14, #9259542123273814144
+    cbnz x14, .Lnvol_memchr3_scalar.L24
+.Lnvol_memchr3_scalar.L23:
+    add x12, x12, #8
+    cmp x12, x13
+    b.ls .Lnvol_memchr3_scalar.L21
+.Lnvol_memchr3_scalar.L22:
+    cmp x12, x4
+    b.hs .Lnvol_memchr3_scalar.L25
+    ldur x12, [x4, #-8]
+    eor x9, x12, x9
+    orr x13, xzr, #72340172838076673
+    sub x13, x9, x13
+    movn x14, #0
+    eor x9, x9, x14
+    and x9, x13, x9
+    eor x10, x12, x10
+    orr x13, xzr, #72340172838076673
+    sub x13, x10, x13
+    movn x14, #0
+    eor x10, x10, x14
+    and x10, x13, x10
+    orr x9, x9, x10
+    eor x10, x12, x11
+    orr x11, xzr, #72340172838076673
+    sub x11, x10, x11
+    movn x12, #0
+    eor x10, x10, x12
+    and x10, x11, x10
+    orr x9, x9, x10
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr3_scalar.L27
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr3_scalar.L27:
+.Lnvol_memchr3_scalar.L25:
     movz w0, #0
 .Lnvol_memchr3_scalar.L1:
+    ret
+.Lnvol_memchr3_scalar.L24:
+    rbit x9, x14
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x12, x9
     ret
 .cfi_endproc
 .size nvol_memchr3_scalar, .-nvol_memchr3_scalar
 
+    nop
+    nop
 .globl nvol_memchr3_neon
 .type nvol_memchr3_neon, %function
 .hidden nvol_memchr3_neon
@@ -1549,25 +3082,236 @@ L.nvol_memchr3_raw:
     sub x12, x4, x3
     cmp x12, #16
     b.hs .Lnvol_memchr3_raw.L2
+    sub x12, x4, x3
+    cmp x12, #5
+    b.hs .Lnvol_memchr3_raw.L4
     cmp x3, x4
-    b.hs .Lnvol_memchr3_raw.L5
-.Lnvol_memchr3_raw.L4:
+    b.hs .Lnvol_memchr3_raw.L7
+    nop
+.Lnvol_memchr3_raw.L6:
     ldrb w12, [x3]
     cmp x12, x9
-    b.eq .Lnvol_memchr3_raw.L8
+    b.eq .Lnvol_memchr3_raw.L10
     cmp x12, x10
-    b.eq .Lnvol_memchr3_raw.L8
+    b.eq .Lnvol_memchr3_raw.L10
     cmp x12, x11
-    b.ne .Lnvol_memchr3_raw.L6
-.Lnvol_memchr3_raw.L8:
-.Lnvol_memchr3_raw.L7:
+    b.ne .Lnvol_memchr3_raw.L8
+.Lnvol_memchr3_raw.L10:
+.Lnvol_memchr3_raw.L9:
     mov x0, x3
     ret
-.Lnvol_memchr3_raw.L6:
+.Lnvol_memchr3_raw.L8:
     add x3, x3, #1
     cmp x3, x4
-    b.lo .Lnvol_memchr3_raw.L4
-.Lnvol_memchr3_raw.L5:
+    b.lo .Lnvol_memchr3_raw.L6
+.Lnvol_memchr3_raw.L7:
+    movz w0, #0
+    ret
+.Lnvol_memchr3_raw.L4:
+    cmp x12, #8
+    b.hs .Lnvol_memchr3_raw.L11
+    orr w12, wzr, #16843009
+    mul w9, w9, w12
+    orr w12, wzr, #16843009
+    mul w10, w10, w12
+    orr w12, wzr, #16843009
+    mul w11, w11, w12
+    ldr w12, [x3]
+    eor x13, x12, x9
+    orr w14, wzr, #16843009
+    sub w14, w13, w14
+    eor x13, x13, #4294967295
+    and x13, x14, x13
+    eor x14, x12, x10
+    orr w15, wzr, #16843009
+    sub w15, w14, w15
+    eor x14, x14, #4294967295
+    and x14, x15, x14
+    orr x13, x13, x14
+    eor x12, x12, x11
+    orr w14, wzr, #16843009
+    sub w14, w12, w14
+    eor x12, x12, #4294967295
+    and x12, x14, x12
+    orr x12, x13, x12
+    orr w13, wzr, #2155905152
+    and x12, x12, x13
+    cbz x12, .Lnvol_memchr3_raw.L13
+    rbit x9, x12
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memchr3_raw.L13:
+    ldur w12, [x4, #-4]
+    eor x9, x12, x9
+    orr w13, wzr, #16843009
+    sub w13, w9, w13
+    eor x9, x9, #4294967295
+    and x9, x13, x9
+    eor x10, x12, x10
+    orr w13, wzr, #16843009
+    sub w13, w10, w13
+    eor x10, x10, #4294967295
+    and x10, x13, x10
+    orr x9, x9, x10
+    eor x10, x12, x11
+    orr w11, wzr, #16843009
+    sub w11, w10, w11
+    eor x10, x10, #4294967295
+    and x10, x11, x10
+    orr x9, x9, x10
+    orr w10, wzr, #2155905152
+    and x9, x9, x10
+    cbz x9, .Lnvol_memchr3_raw.L15
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memchr3_raw.L15:
+    movz w0, #0
+    ret
+.Lnvol_memchr3_raw.L11:
+    orr x13, xzr, #72340172838076673
+    mul x9, x9, x13
+    orr x13, xzr, #72340172838076673
+    mul x10, x10, x13
+    orr x13, xzr, #72340172838076673
+    mul x11, x11, x13
+    ldr x13, [x3]
+    eor x14, x13, x9
+    orr x15, xzr, #72340172838076673
+    sub x15, x14, x15
+    movn x0, #0
+    eor x14, x14, x0
+    and x14, x15, x14
+    eor x15, x13, x10
+    orr x0, xzr, #72340172838076673
+    sub x0, x15, x0
+    movn x1, #0
+    eor x15, x15, x1
+    and x15, x0, x15
+    orr x14, x14, x15
+    eor x13, x13, x11
+    orr x15, xzr, #72340172838076673
+    sub x15, x13, x15
+    movn x0, #0
+    eor x13, x13, x0
+    and x13, x15, x13
+    orr x13, x14, x13
+    and x13, x13, #9259542123273814144
+    cbz x13, .Lnvol_memchr3_raw.L17
+    rbit x9, x13
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memchr3_raw.L17:
+    cmp x12, #16
+    b.hi .Lnvol_memchr3_raw.L19
+    ldur x12, [x4, #-8]
+    eor x9, x12, x9
+    orr x13, xzr, #72340172838076673
+    sub x13, x9, x13
+    movn x14, #0
+    eor x9, x9, x14
+    and x9, x13, x9
+    eor x10, x12, x10
+    orr x13, xzr, #72340172838076673
+    sub x13, x10, x13
+    movn x14, #0
+    eor x10, x10, x14
+    and x10, x13, x10
+    orr x9, x9, x10
+    eor x10, x12, x11
+    orr x11, xzr, #72340172838076673
+    sub x11, x10, x11
+    movn x12, #0
+    eor x10, x10, x12
+    and x10, x11, x10
+    orr x9, x9, x10
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr3_raw.L21
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr3_raw.L21:
+    movz w0, #0
+    ret
+.Lnvol_memchr3_raw.L19:
+    and x12, x3, #18446744073709551608
+    add x12, x12, #8
+    sub x13, x4, #8
+    cmp x12, x13
+    b.hi .Lnvol_memchr3_raw.L24
+    nop
+.Lnvol_memchr3_raw.L23:
+    ldr x14, [x12]
+    eor x15, x14, x9
+    orr x0, xzr, #72340172838076673
+    sub x0, x15, x0
+    movn x1, #0
+    eor x15, x15, x1
+    and x15, x0, x15
+    eor x0, x14, x10
+    orr x1, xzr, #72340172838076673
+    sub x1, x0, x1
+    movn x2, #0
+    eor x0, x0, x2
+    and x0, x1, x0
+    orr x15, x15, x0
+    eor x14, x14, x11
+    orr x0, xzr, #72340172838076673
+    sub x0, x14, x0
+    movn x1, #0
+    eor x14, x14, x1
+    and x14, x0, x14
+    orr x14, x15, x14
+    and x14, x14, #9259542123273814144
+    cbnz x14, .Lnvol_memchr3_raw.L26
+.Lnvol_memchr3_raw.L25:
+    add x12, x12, #8
+    cmp x12, x13
+    b.ls .Lnvol_memchr3_raw.L23
+.Lnvol_memchr3_raw.L24:
+    cmp x12, x4
+    b.hs .Lnvol_memchr3_raw.L27
+    ldur x12, [x4, #-8]
+    eor x9, x12, x9
+    orr x13, xzr, #72340172838076673
+    sub x13, x9, x13
+    movn x14, #0
+    eor x9, x9, x14
+    and x9, x13, x9
+    eor x10, x12, x10
+    orr x13, xzr, #72340172838076673
+    sub x13, x10, x13
+    movn x14, #0
+    eor x10, x10, x14
+    and x10, x13, x10
+    orr x9, x9, x10
+    eor x10, x12, x11
+    orr x11, xzr, #72340172838076673
+    sub x11, x10, x11
+    movn x12, #0
+    eor x10, x10, x12
+    and x10, x11, x10
+    orr x9, x9, x10
+    and x9, x9, #9259542123273814144
+    cbz x9, .Lnvol_memchr3_raw.L29
+    rbit x9, x9
+    clz x9, x9
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memchr3_raw.L29:
+.Lnvol_memchr3_raw.L27:
     movz w0, #0
     ret
 .Lnvol_memchr3_raw.L2:
@@ -1584,21 +3328,22 @@ L.nvol_memchr3_raw:
     shrn v3.8b, v3.8h, #4
     fmov x9, d3
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memchr3_raw.L9
+    cbz x9, .Lnvol_memchr3_raw.L31
     rbit x9, x9
     clz x9, x9
     lsr x9, x9, #2
     add x0, x3, x9
     ret
-.Lnvol_memchr3_raw.L9:
+.Lnvol_memchr3_raw.L31:
     and x9, x3, #18446744073709551600
     add x9, x9, #16
     cmp x12, #32
-    b.lo .Lnvol_memchr3_raw.L11
+    b.lo .Lnvol_memchr3_raw.L33
     sub x10, x4, #32
     cmp x9, x10
-    b.hi .Lnvol_memchr3_raw.L14
-.Lnvol_memchr3_raw.L13:
+    b.hi .Lnvol_memchr3_raw.L36
+    nop
+.Lnvol_memchr3_raw.L35:
     ldr q3, [x9]
     ldr q4, [x9, #16]
     cmeq v5.16b, v3.16b, v0.16b
@@ -1614,19 +3359,19 @@ L.nvol_memchr3_raw:
     orr v5.16b, v3.16b, v4.16b
     umaxp v5.16b, v5.16b, v5.16b
     fmov x11, d5
-    cbnz x11, .Lnvol_memchr3_raw.L16
-.Lnvol_memchr3_raw.L15:
+    cbnz x11, .Lnvol_memchr3_raw.L38
+.Lnvol_memchr3_raw.L37:
     add x9, x9, #32
     cmp x9, x10
-    b.ls .Lnvol_memchr3_raw.L13
-.Lnvol_memchr3_raw.L14:
-.Lnvol_memchr3_raw.L11:
+    b.ls .Lnvol_memchr3_raw.L35
+.Lnvol_memchr3_raw.L36:
+.Lnvol_memchr3_raw.L33:
     sub x10, x4, #16
     cmp x9, x10
-    b.hi .Lnvol_memchr3_raw.L20
+    b.hi .Lnvol_memchr3_raw.L42
     nop
     nop
-.Lnvol_memchr3_raw.L19:
+.Lnvol_memchr3_raw.L41:
     ldr q3, [x9]
     cmeq v4.16b, v3.16b, v0.16b
     cmeq v5.16b, v3.16b, v1.16b
@@ -1636,14 +3381,14 @@ L.nvol_memchr3_raw:
     shrn v3.8b, v3.8h, #4
     fmov x11, d3
     and x11, x11, #9838263505978427528
-    cbnz x11, .Lnvol_memchr3_raw.L22
-.Lnvol_memchr3_raw.L21:
+    cbnz x11, .Lnvol_memchr3_raw.L44
+.Lnvol_memchr3_raw.L43:
     add x9, x9, #16
     cmp x9, x10
-    b.ls .Lnvol_memchr3_raw.L19
-.Lnvol_memchr3_raw.L20:
+    b.ls .Lnvol_memchr3_raw.L41
+.Lnvol_memchr3_raw.L42:
     cmp x9, x4
-    b.hs .Lnvol_memchr3_raw.L23
+    b.hs .Lnvol_memchr3_raw.L45
     sub x9, x4, #16
     ldr q3, [x9]
     cmeq v0.16b, v3.16b, v0.16b
@@ -1654,29 +3399,35 @@ L.nvol_memchr3_raw:
     shrn v0.8b, v0.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbz x10, .Lnvol_memchr3_raw.L25
+    cbz x10, .Lnvol_memchr3_raw.L47
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memchr3_raw.L25:
-.Lnvol_memchr3_raw.L23:
+.Lnvol_memchr3_raw.L47:
+.Lnvol_memchr3_raw.L45:
     movz w0, #0
 .Lnvol_memchr3_raw.L1:
     ret
-.Lnvol_memchr3_raw.L18:
+.Lnvol_memchr3_raw.L26:
+    rbit x9, x14
+    clz x9, x9
+    lsr x9, x9, #3
+    add x0, x12, x9
+    ret
+.Lnvol_memchr3_raw.L40:
     rbit x10, x10
     clz x10, x10
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memchr3_raw.L16:
+.Lnvol_memchr3_raw.L38:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memchr3_raw.L18
-.Lnvol_memchr3_raw.L17:
+    cbnz x10, .Lnvol_memchr3_raw.L40
+.Lnvol_memchr3_raw.L39:
     shrn v0.8b, v4.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
@@ -1686,7 +3437,7 @@ L.nvol_memchr3_raw:
     add x9, x9, x10
     add x0, x9, #16
     ret
-.Lnvol_memchr3_raw.L22:
+.Lnvol_memchr3_raw.L44:
     rbit x10, x11
     clz x10, x10
     lsr x10, x10, #2
@@ -1695,6 +3446,9 @@ L.nvol_memchr3_raw:
 .cfi_endproc
 .size nvol_memchr3_raw, .-nvol_memchr3_raw
 
+    nop
+    nop
+    nop
 .globl nvol_memchr3
 .type nvol_memchr3, %function
 nvol_memchr3:
@@ -1728,32 +3482,253 @@ L.nvol_memrchr3_scalar:
     and w9, w0, #255
     and w10, w1, #255
     and w11, w2, #255
+    sub x12, x4, x3
+    cmp x12, #5
+    b.hs .Lnvol_memrchr3_scalar.L2
     cmp x4, x3
-    b.ls .Lnvol_memrchr3_scalar.L3
-    nop
-.Lnvol_memrchr3_scalar.L2:
+    b.ls .Lnvol_memrchr3_scalar.L5
+.Lnvol_memrchr3_scalar.L4:
     sub x4, x4, #1
     ldrb w12, [x4]
     cmp x12, x9
-    b.eq .Lnvol_memrchr3_scalar.L6
+    b.eq .Lnvol_memrchr3_scalar.L8
     cmp x12, x10
-    b.eq .Lnvol_memrchr3_scalar.L6
+    b.eq .Lnvol_memrchr3_scalar.L8
     cmp x12, x11
-    b.ne .Lnvol_memrchr3_scalar.L4
-.Lnvol_memrchr3_scalar.L6:
-.Lnvol_memrchr3_scalar.L5:
+    b.ne .Lnvol_memrchr3_scalar.L6
+.Lnvol_memrchr3_scalar.L8:
+.Lnvol_memrchr3_scalar.L7:
     mov x0, x4
     ret
-.Lnvol_memrchr3_scalar.L4:
+.Lnvol_memrchr3_scalar.L6:
     cmp x4, x3
-    b.hi .Lnvol_memrchr3_scalar.L2
-.Lnvol_memrchr3_scalar.L3:
+    b.hi .Lnvol_memrchr3_scalar.L4
+.Lnvol_memrchr3_scalar.L5:
+    movz w0, #0
+    ret
+.Lnvol_memrchr3_scalar.L2:
+    cmp x12, #8
+    b.hs .Lnvol_memrchr3_scalar.L9
+    orr w12, wzr, #16843009
+    mul w9, w9, w12
+    orr w12, wzr, #16843009
+    mul w10, w10, w12
+    orr w12, wzr, #16843009
+    mul w11, w11, w12
+    ldur w12, [x4, #-4]
+    eor x13, x12, x9
+    orr w14, wzr, #2139062143
+    and x14, x13, x14
+    orr w15, wzr, #2139062143
+    add w14, w14, w15
+    orr x13, x14, x13
+    eor x14, x12, x10
+    orr w15, wzr, #2139062143
+    and x15, x14, x15
+    orr w0, wzr, #2139062143
+    add w15, w15, w0
+    orr x14, x15, x14
+    and x13, x13, x14
+    eor x12, x12, x11
+    orr w14, wzr, #2139062143
+    and x14, x12, x14
+    orr w15, wzr, #2139062143
+    add w14, w14, w15
+    orr x12, x14, x12
+    and x12, x13, x12
+    orr w13, wzr, #2139062143
+    orr x12, x12, x13
+    eor x12, x12, #4294967295
+    cbz x12, .Lnvol_memrchr3_scalar.L11
+    clz x9, x12
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memrchr3_scalar.L11:
+    ldr w12, [x3]
+    eor x9, x12, x9
+    orr w13, wzr, #2139062143
+    and x13, x9, x13
+    orr w14, wzr, #2139062143
+    add w13, w13, w14
+    orr x9, x13, x9
+    eor x10, x12, x10
+    orr w13, wzr, #2139062143
+    and x13, x10, x13
+    orr w14, wzr, #2139062143
+    add w13, w13, w14
+    orr x10, x13, x10
+    and x9, x9, x10
+    eor x10, x12, x11
+    orr w11, wzr, #2139062143
+    and x11, x10, x11
+    orr w12, wzr, #2139062143
+    add w11, w11, w12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr w10, wzr, #2139062143
+    orr x9, x9, x10
+    eor x9, x9, #4294967295
+    cbz x9, .Lnvol_memrchr3_scalar.L13
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memrchr3_scalar.L13:
+    movz w0, #0
+    ret
+.Lnvol_memrchr3_scalar.L9:
+    orr x13, xzr, #72340172838076673
+    mul x9, x9, x13
+    orr x13, xzr, #72340172838076673
+    mul x10, x10, x13
+    orr x13, xzr, #72340172838076673
+    mul x11, x11, x13
+    ldur x13, [x4, #-8]
+    eor x14, x13, x9
+    and x15, x14, #9187201950435737471
+    orr x0, xzr, #9187201950435737471
+    add x15, x15, x0
+    orr x14, x15, x14
+    eor x15, x13, x10
+    and x0, x15, #9187201950435737471
+    orr x1, xzr, #9187201950435737471
+    add x0, x0, x1
+    orr x15, x0, x15
+    and x14, x14, x15
+    eor x13, x13, x11
+    and x15, x13, #9187201950435737471
+    orr x0, xzr, #9187201950435737471
+    add x15, x15, x0
+    orr x13, x15, x13
+    and x13, x14, x13
+    orr x13, x13, #9187201950435737471
+    movn x14, #0
+    eor x13, x13, x14
+    cbz x13, .Lnvol_memrchr3_scalar.L15
+    clz x9, x13
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memrchr3_scalar.L15:
+    cmp x12, #16
+    b.hi .Lnvol_memrchr3_scalar.L17
+    ldr x12, [x3]
+    eor x9, x12, x9
+    and x13, x9, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x9, x13, x9
+    eor x10, x12, x10
+    and x13, x10, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x10, x13, x10
+    and x9, x9, x10
+    eor x10, x12, x11
+    and x11, x10, #9187201950435737471
+    orr x12, xzr, #9187201950435737471
+    add x11, x11, x12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr3_scalar.L19
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memrchr3_scalar.L19:
+    movz w0, #0
+    ret
+.Lnvol_memrchr3_scalar.L17:
+    and x12, x4, #18446744073709551608
+    add x13, x3, #8
+    cmp x12, x13
+    b.lo .Lnvol_memrchr3_scalar.L22
+    nop
+    nop
+.Lnvol_memrchr3_scalar.L21:
+    sub x12, x12, #8
+    ldr x14, [x12]
+    eor x15, x14, x9
+    and x0, x15, #9187201950435737471
+    orr x1, xzr, #9187201950435737471
+    add x0, x0, x1
+    orr x15, x0, x15
+    eor x0, x14, x10
+    and x1, x0, #9187201950435737471
+    orr x2, xzr, #9187201950435737471
+    add x1, x1, x2
+    orr x0, x1, x0
+    and x15, x15, x0
+    eor x14, x14, x11
+    and x0, x14, #9187201950435737471
+    orr x1, xzr, #9187201950435737471
+    add x0, x0, x1
+    orr x14, x0, x14
+    and x14, x15, x14
+    orr x14, x14, #9187201950435737471
+    movn x15, #0
+    eor x14, x14, x15
+    cbnz x14, .Lnvol_memrchr3_scalar.L24
+.Lnvol_memrchr3_scalar.L23:
+    cmp x12, x13
+    b.hs .Lnvol_memrchr3_scalar.L21
+.Lnvol_memrchr3_scalar.L22:
+    cmp x12, x3
+    b.ls .Lnvol_memrchr3_scalar.L25
+    ldr x12, [x3]
+    eor x9, x12, x9
+    and x13, x9, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x9, x13, x9
+    eor x10, x12, x10
+    and x13, x10, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x10, x13, x10
+    and x9, x9, x10
+    eor x10, x12, x11
+    and x11, x10, #9187201950435737471
+    orr x12, xzr, #9187201950435737471
+    add x11, x11, x12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr3_scalar.L27
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memrchr3_scalar.L27:
+.Lnvol_memrchr3_scalar.L25:
     movz w0, #0
 .Lnvol_memrchr3_scalar.L1:
+    ret
+.Lnvol_memrchr3_scalar.L24:
+    clz x9, x14
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x12, x9
     ret
 .cfi_endproc
 .size nvol_memrchr3_scalar, .-nvol_memrchr3_scalar
 
+    nop
+    nop
+    nop
 .globl nvol_memrchr3_neon
 .type nvol_memrchr3_neon, %function
 .hidden nvol_memrchr3_neon
@@ -1897,25 +3872,239 @@ L.nvol_memrchr3_raw:
     sub x12, x4, x3
     cmp x12, #16
     b.hs .Lnvol_memrchr3_raw.L2
+    sub x12, x4, x3
+    cmp x12, #5
+    b.hs .Lnvol_memrchr3_raw.L4
     cmp x4, x3
-    b.ls .Lnvol_memrchr3_raw.L5
-.Lnvol_memrchr3_raw.L4:
+    b.ls .Lnvol_memrchr3_raw.L7
+    nop
+.Lnvol_memrchr3_raw.L6:
     sub x4, x4, #1
     ldrb w12, [x4]
     cmp x12, x9
-    b.eq .Lnvol_memrchr3_raw.L8
+    b.eq .Lnvol_memrchr3_raw.L10
     cmp x12, x10
-    b.eq .Lnvol_memrchr3_raw.L8
+    b.eq .Lnvol_memrchr3_raw.L10
     cmp x12, x11
-    b.ne .Lnvol_memrchr3_raw.L6
-.Lnvol_memrchr3_raw.L8:
-.Lnvol_memrchr3_raw.L7:
+    b.ne .Lnvol_memrchr3_raw.L8
+.Lnvol_memrchr3_raw.L10:
+.Lnvol_memrchr3_raw.L9:
     mov x0, x4
     ret
-.Lnvol_memrchr3_raw.L6:
+.Lnvol_memrchr3_raw.L8:
     cmp x4, x3
-    b.hi .Lnvol_memrchr3_raw.L4
-.Lnvol_memrchr3_raw.L5:
+    b.hi .Lnvol_memrchr3_raw.L6
+.Lnvol_memrchr3_raw.L7:
+    movz w0, #0
+    ret
+.Lnvol_memrchr3_raw.L4:
+    cmp x12, #8
+    b.hs .Lnvol_memrchr3_raw.L11
+    orr w12, wzr, #16843009
+    mul w9, w9, w12
+    orr w12, wzr, #16843009
+    mul w10, w10, w12
+    orr w12, wzr, #16843009
+    mul w11, w11, w12
+    ldur w12, [x4, #-4]
+    eor x13, x12, x9
+    orr w14, wzr, #2139062143
+    and x14, x13, x14
+    orr w15, wzr, #2139062143
+    add w14, w14, w15
+    orr x13, x14, x13
+    eor x14, x12, x10
+    orr w15, wzr, #2139062143
+    and x15, x14, x15
+    orr w0, wzr, #2139062143
+    add w15, w15, w0
+    orr x14, x15, x14
+    and x13, x13, x14
+    eor x12, x12, x11
+    orr w14, wzr, #2139062143
+    and x14, x12, x14
+    orr w15, wzr, #2139062143
+    add w14, w14, w15
+    orr x12, x14, x12
+    and x12, x13, x12
+    orr w13, wzr, #2139062143
+    orr x12, x12, x13
+    eor x12, x12, #4294967295
+    cbz x12, .Lnvol_memrchr3_raw.L13
+    clz x9, x12
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #4
+    ret
+.Lnvol_memrchr3_raw.L13:
+    ldr w12, [x3]
+    eor x9, x12, x9
+    orr w13, wzr, #2139062143
+    and x13, x9, x13
+    orr w14, wzr, #2139062143
+    add w13, w13, w14
+    orr x9, x13, x9
+    eor x10, x12, x10
+    orr w13, wzr, #2139062143
+    and x13, x10, x13
+    orr w14, wzr, #2139062143
+    add w13, w13, w14
+    orr x10, x13, x10
+    and x9, x9, x10
+    eor x10, x12, x11
+    orr w11, wzr, #2139062143
+    and x11, x10, x11
+    orr w12, wzr, #2139062143
+    add w11, w11, w12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr w10, wzr, #2139062143
+    orr x9, x9, x10
+    eor x9, x9, #4294967295
+    cbz x9, .Lnvol_memrchr3_raw.L15
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memrchr3_raw.L15:
+    movz w0, #0
+    ret
+.Lnvol_memrchr3_raw.L11:
+    orr x13, xzr, #72340172838076673
+    mul x9, x9, x13
+    orr x13, xzr, #72340172838076673
+    mul x10, x10, x13
+    orr x13, xzr, #72340172838076673
+    mul x11, x11, x13
+    ldur x13, [x4, #-8]
+    eor x14, x13, x9
+    and x15, x14, #9187201950435737471
+    orr x0, xzr, #9187201950435737471
+    add x15, x15, x0
+    orr x14, x15, x14
+    eor x15, x13, x10
+    and x0, x15, #9187201950435737471
+    orr x1, xzr, #9187201950435737471
+    add x0, x0, x1
+    orr x15, x0, x15
+    and x14, x14, x15
+    eor x13, x13, x11
+    and x15, x13, #9187201950435737471
+    orr x0, xzr, #9187201950435737471
+    add x15, x15, x0
+    orr x13, x15, x13
+    and x13, x14, x13
+    orr x13, x13, #9187201950435737471
+    movn x14, #0
+    eor x13, x13, x14
+    cbz x13, .Lnvol_memrchr3_raw.L17
+    clz x9, x13
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x9, x4, x9
+    sub x0, x9, #8
+    ret
+.Lnvol_memrchr3_raw.L17:
+    cmp x12, #16
+    b.hi .Lnvol_memrchr3_raw.L19
+    ldr x12, [x3]
+    eor x9, x12, x9
+    and x13, x9, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x9, x13, x9
+    eor x10, x12, x10
+    and x13, x10, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x10, x13, x10
+    and x9, x9, x10
+    eor x10, x12, x11
+    and x11, x10, #9187201950435737471
+    orr x12, xzr, #9187201950435737471
+    add x11, x11, x12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr3_raw.L21
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memrchr3_raw.L21:
+    movz w0, #0
+    ret
+.Lnvol_memrchr3_raw.L19:
+    and x12, x4, #18446744073709551608
+    add x13, x3, #8
+    cmp x12, x13
+    b.lo .Lnvol_memrchr3_raw.L24
+    nop
+    nop
+.Lnvol_memrchr3_raw.L23:
+    sub x12, x12, #8
+    ldr x14, [x12]
+    eor x15, x14, x9
+    and x0, x15, #9187201950435737471
+    orr x1, xzr, #9187201950435737471
+    add x0, x0, x1
+    orr x15, x0, x15
+    eor x0, x14, x10
+    and x1, x0, #9187201950435737471
+    orr x2, xzr, #9187201950435737471
+    add x1, x1, x2
+    orr x0, x1, x0
+    and x15, x15, x0
+    eor x14, x14, x11
+    and x0, x14, #9187201950435737471
+    orr x1, xzr, #9187201950435737471
+    add x0, x0, x1
+    orr x14, x0, x14
+    and x14, x15, x14
+    orr x14, x14, #9187201950435737471
+    movn x15, #0
+    eor x14, x14, x15
+    cbnz x14, .Lnvol_memrchr3_raw.L26
+.Lnvol_memrchr3_raw.L25:
+    cmp x12, x13
+    b.hs .Lnvol_memrchr3_raw.L23
+.Lnvol_memrchr3_raw.L24:
+    cmp x12, x3
+    b.ls .Lnvol_memrchr3_raw.L27
+    ldr x12, [x3]
+    eor x9, x12, x9
+    and x13, x9, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x9, x13, x9
+    eor x10, x12, x10
+    and x13, x10, #9187201950435737471
+    orr x14, xzr, #9187201950435737471
+    add x13, x13, x14
+    orr x10, x13, x10
+    and x9, x9, x10
+    eor x10, x12, x11
+    and x11, x10, #9187201950435737471
+    orr x12, xzr, #9187201950435737471
+    add x11, x11, x12
+    orr x10, x11, x10
+    and x9, x9, x10
+    orr x9, x9, #9187201950435737471
+    movn x10, #0
+    eor x9, x9, x10
+    cbz x9, .Lnvol_memrchr3_raw.L29
+    clz x9, x9
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x3, x9
+    ret
+.Lnvol_memrchr3_raw.L29:
+.Lnvol_memrchr3_raw.L27:
     movz w0, #0
     ret
 .Lnvol_memrchr3_raw.L2:
@@ -1932,21 +4121,23 @@ L.nvol_memrchr3_raw:
     shrn v3.8b, v3.8h, #4
     fmov x9, d3
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memrchr3_raw.L9
+    cbz x9, .Lnvol_memrchr3_raw.L31
     clz x9, x9
     eor x9, x9, #63
     lsr x9, x9, #2
     add x9, x4, x9
     sub x0, x9, #16
     ret
-.Lnvol_memrchr3_raw.L9:
+.Lnvol_memrchr3_raw.L31:
     and x9, x4, #18446744073709551600
     cmp x12, #32
-    b.lo .Lnvol_memrchr3_raw.L11
+    b.lo .Lnvol_memrchr3_raw.L33
     add x10, x3, #32
     cmp x9, x10
-    b.lo .Lnvol_memrchr3_raw.L14
-.Lnvol_memrchr3_raw.L13:
+    b.lo .Lnvol_memrchr3_raw.L36
+    nop
+    nop
+.Lnvol_memrchr3_raw.L35:
     sub x9, x9, #32
     ldr q3, [x9]
     ldr q4, [x9, #16]
@@ -1963,18 +4154,18 @@ L.nvol_memrchr3_raw:
     orr v5.16b, v3.16b, v4.16b
     umaxp v5.16b, v5.16b, v5.16b
     fmov x11, d5
-    cbnz x11, .Lnvol_memrchr3_raw.L16
-.Lnvol_memrchr3_raw.L15:
+    cbnz x11, .Lnvol_memrchr3_raw.L38
+.Lnvol_memrchr3_raw.L37:
     cmp x9, x10
-    b.hs .Lnvol_memrchr3_raw.L13
-.Lnvol_memrchr3_raw.L14:
-.Lnvol_memrchr3_raw.L11:
+    b.hs .Lnvol_memrchr3_raw.L35
+.Lnvol_memrchr3_raw.L36:
+.Lnvol_memrchr3_raw.L33:
     add x10, x3, #16
     cmp x9, x10
-    b.lo .Lnvol_memrchr3_raw.L20
+    b.lo .Lnvol_memrchr3_raw.L42
     nop
     nop
-.Lnvol_memrchr3_raw.L19:
+.Lnvol_memrchr3_raw.L41:
     sub x9, x9, #16
     ldr q3, [x9]
     cmeq v4.16b, v3.16b, v0.16b
@@ -1985,13 +4176,13 @@ L.nvol_memrchr3_raw:
     shrn v3.8b, v3.8h, #4
     fmov x11, d3
     and x11, x11, #9838263505978427528
-    cbnz x11, .Lnvol_memrchr3_raw.L22
-.Lnvol_memrchr3_raw.L21:
+    cbnz x11, .Lnvol_memrchr3_raw.L44
+.Lnvol_memrchr3_raw.L43:
     cmp x9, x10
-    b.hs .Lnvol_memrchr3_raw.L19
-.Lnvol_memrchr3_raw.L20:
+    b.hs .Lnvol_memrchr3_raw.L41
+.Lnvol_memrchr3_raw.L42:
     cmp x9, x3
-    b.ls .Lnvol_memrchr3_raw.L23
+    b.ls .Lnvol_memrchr3_raw.L45
     ldr q3, [x3]
     cmeq v0.16b, v3.16b, v0.16b
     cmeq v1.16b, v3.16b, v1.16b
@@ -2001,30 +4192,36 @@ L.nvol_memrchr3_raw:
     shrn v0.8b, v0.8h, #4
     fmov x9, d0
     and x9, x9, #9838263505978427528
-    cbz x9, .Lnvol_memrchr3_raw.L25
+    cbz x9, .Lnvol_memrchr3_raw.L47
     clz x9, x9
     eor x9, x9, #63
     lsr x9, x9, #2
     add x0, x3, x9
     ret
-.Lnvol_memrchr3_raw.L25:
-.Lnvol_memrchr3_raw.L23:
+.Lnvol_memrchr3_raw.L47:
+.Lnvol_memrchr3_raw.L45:
     movz w0, #0
 .Lnvol_memrchr3_raw.L1:
     ret
-.Lnvol_memrchr3_raw.L18:
+.Lnvol_memrchr3_raw.L26:
+    clz x9, x14
+    eor x9, x9, #63
+    lsr x9, x9, #3
+    add x0, x12, x9
+    ret
+.Lnvol_memrchr3_raw.L40:
     clz x10, x10
     eor x10, x10, #63
     lsr x10, x10, #2
     add x9, x9, x10
     add x0, x9, #16
     ret
-.Lnvol_memrchr3_raw.L16:
+.Lnvol_memrchr3_raw.L38:
     shrn v0.8b, v4.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
-    cbnz x10, .Lnvol_memrchr3_raw.L18
-.Lnvol_memrchr3_raw.L17:
+    cbnz x10, .Lnvol_memrchr3_raw.L40
+.Lnvol_memrchr3_raw.L39:
     shrn v0.8b, v3.8h, #4
     fmov x10, d0
     and x10, x10, #9838263505978427528
@@ -2033,7 +4230,7 @@ L.nvol_memrchr3_raw:
     lsr x10, x10, #2
     add x0, x9, x10
     ret
-.Lnvol_memrchr3_raw.L22:
+.Lnvol_memrchr3_raw.L44:
     clz x10, x11
     eor x10, x10, #63
     lsr x10, x10, #2
@@ -2042,7 +4239,6 @@ L.nvol_memrchr3_raw:
 .cfi_endproc
 .size nvol_memrchr3_raw, .-nvol_memrchr3_raw
 
-    nop
 .globl nvol_memrchr3
 .type nvol_memrchr3, %function
 nvol_memrchr3:

@@ -143,28 +143,148 @@ section .text align=64
 global nvol_memchr_scalar
 nvol_memchr_scalar:
     movzx ecx, cl
+    mov r9, r8
+    sub r9, rdx
+    cmp r9, 4
+    jae strict short .L2
     cmp rdx, r8
-    jae strict short .L3
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L2:
+    jae strict short .L5
+    db 0xf, 0x1f, 0x40, 0x0
+.L4:
     movzx eax, byte [rdx]
     cmp eax, ecx
-    je strict short .L5
-.L4:
+    je strict near .L7
+.L6:
     add rdx, 1
     cmp rdx, r8
-    jb strict short .L2
-.L3:
+    jb strict short .L4
+.L5:
+    xor eax, eax
+    ret
+.L2:
+    cmp r9, 8
+    jae strict short .L8
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rdx]
+    xor rax, rcx
+    mov r9, rax
+    sub r9d, 16843009
+    not eax
+    and r9, rax
+    and r9d, -2139062144
+    je strict short .L10
+    bsf eax, r9d
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+.L10:
+    mov eax, dword [r8 - 4]
+    xor rax, rcx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    and ecx, -2139062144
+    je strict short .L12
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    ret
+.L12:
+    xor eax, eax
+    ret
+.L8:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 72340172838076673
+    sub r10, r11
+    not rax
+    and r10, rax
+    mov rax, 9259542123273814144
+    and r10, rax
+    je strict short .L14
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+.L14:
+    cmp r9, 16
+    ja strict short .L16
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L18
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    ret
+.L18:
+    xor eax, eax
+    ret
+.L16:
+    and rdx, -8
+    add rdx, 8
+    lea r9, [r8 - 8]
+    cmp rdx, r9
+    ja strict short .L21
+    db 0x66, 0x90
+.L20:
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 72340172838076673
+    sub r10, r11
+    not rax
+    and r10, rax
+    mov rax, 9259542123273814144
+    and r10, rax
+    jne strict short .L23
+.L22:
+    add rdx, 8
+    cmp rdx, r9
+    jbe strict short .L20
+.L21:
+    cmp rdx, r8
+    jae strict short .L24
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L26
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    ret
+.L26:
+.L24:
     xor eax, eax
 .L1:
     ret
-.L5:
+.L7:
     mov rax, rdx
+    ret
+.L23:
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_memchr_sse2
 nvol_memchr_sse2:
     sub rsp, 24
@@ -439,19 +559,158 @@ nvol_memchr_entry_avx2:
     mov r9, r8
     sub r9, rdx
     cmp r9, 16
-    jae strict short .L2
+    jae strict near .L2
+    cmp r9, 4
+    jae strict short .L4
     cmp rdx, r8
-    jae strict short .L5
-    db 0xf, 0x1f, 0x0
-.L4:
+    jae strict short .L7
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
     movzx eax, byte [rdx]
     cmp eax, ecx
-    je strict near .L7
-.L6:
+    je strict near .L9
+.L8:
     add rdx, 1
     cmp rdx, r8
-    jb strict short .L4
-.L5:
+    jb strict short .L6
+.L7:
+    xor eax, eax
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L4:
+    cmp r9, 8
+    jae strict near .L10
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rdx]
+    xor rax, rcx
+    mov r9, rax
+    sub r9d, 16843009
+    not eax
+    and r9, rax
+    and r9d, -2139062144
+    je strict short .L12
+    bsf eax, r9d
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L12:
+    mov eax, dword [r8 - 4]
+    xor rax, rcx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    and ecx, -2139062144
+    je strict short .L14
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L14:
+    xor eax, eax
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L10:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 72340172838076673
+    sub r10, r11
+    not rax
+    and r10, rax
+    mov rax, 9259542123273814144
+    and r10, rax
+    je strict short .L16
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L16:
+    cmp r9, 16
+    ja strict short .L18
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L20
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L20:
+    xor eax, eax
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L18:
+    and rdx, -8
+    add rdx, 8
+    lea r9, [r8 - 8]
+    cmp rdx, r9
+    ja strict short .L23
+    db 0x66, 0x90
+.L22:
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 72340172838076673
+    sub r10, r11
+    not rax
+    and r10, rax
+    mov rax, 9259542123273814144
+    and r10, rax
+    jne strict near .L25
+.L24:
+    add rdx, 8
+    cmp rdx, r9
+    jbe strict short .L22
+.L23:
+    cmp rdx, r8
+    jae strict short .L26
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L28
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L28:
+.L26:
     xor eax, eax
     vzeroupper
     vmovdqu xmm6, [rsp]
@@ -459,84 +718,11 @@ nvol_memchr_entry_avx2:
     ret
 .L2:
     cmp r9, 32
-    jae strict near .L8
+    jae strict near .L30
     vmovd xmm0, ecx
     vpbroadcastb xmm0, xmm0
     vpcmpeqb xmm1, xmm0, [rdx]
     vpmovmskb eax, xmm1
-    test eax, eax
-    je strict short .L10
-    bsf eax, eax
-    lea rax, [rdx + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L10:
-    and rdx, -16
-    add rdx, 16
-    cmp r9, 64
-    jb strict short .L12
-    lea rcx, [r8 - 64]
-    cmp rdx, rcx
-    ja strict short .L15
-    db 0xf, 0x1f, 0x0
-.L14:
-    vpcmpeqb xmm1, xmm0, [rdx]
-    vpcmpeqb xmm2, xmm0, [rdx + 16]
-    vpcmpeqb xmm3, xmm0, [rdx + 32]
-    vpcmpeqb xmm4, xmm0, [rdx + 48]
-    vpor xmm5, xmm1, xmm2
-    vpor xmm6, xmm3, xmm4
-    vpor xmm5, xmm5, xmm6
-    vpmovmskb eax, xmm5
-    test eax, eax
-    jne strict near .L17
-.L16:
-    add rdx, 64
-    cmp rdx, rcx
-    jbe strict short .L14
-.L15:
-.L12:
-    lea rcx, [r8 - 16]
-    cmp rdx, rcx
-    ja strict short .L25
-    db 0xf, 0x1f, 0x0
-.L24:
-    vpcmpeqb xmm1, xmm0, [rdx]
-    vpmovmskb eax, xmm1
-    test eax, eax
-    jne strict near .L27
-.L26:
-    add rdx, 16
-    cmp rdx, rcx
-    jbe strict short .L24
-.L25:
-    cmp rdx, r8
-    jae strict short .L28
-    lea rdx, [r8 - 16]
-    vpcmpeqb xmm0, xmm0, [rdx]
-    vpmovmskb eax, xmm0
-    test eax, eax
-    je strict short .L30
-    bsf eax, eax
-    lea rax, [rdx + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L30:
-.L28:
-    xor eax, eax
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L8:
-    vmovd xmm0, ecx
-    vpbroadcastb ymm0, xmm0
-    vpcmpeqb ymm1, ymm0, [rdx]
-    vpmovmskb eax, ymm1
     test eax, eax
     je strict short .L32
     bsf eax, eax
@@ -546,50 +732,50 @@ nvol_memchr_entry_avx2:
     add rsp, 24
     ret
 .L32:
-    and rdx, -32
-    add rdx, 32
-    cmp r9, 128
+    and rdx, -16
+    add rdx, 16
+    cmp r9, 64
     jb strict short .L34
-    lea rcx, [r8 - 128]
+    lea rcx, [r8 - 64]
     cmp rdx, rcx
     ja strict short .L37
     db 0xf, 0x1f, 0x40, 0x0
 .L36:
-    vpcmpeqb ymm1, ymm0, [rdx]
-    vpcmpeqb ymm2, ymm0, [rdx + 32]
-    vpcmpeqb ymm3, ymm0, [rdx + 64]
-    vpcmpeqb ymm4, ymm0, [rdx + 96]
-    vpor ymm5, ymm1, ymm2
-    vpor ymm6, ymm3, ymm4
-    vpor ymm5, ymm5, ymm6
-    vpmovmskb eax, ymm5
+    vpcmpeqb xmm1, xmm0, [rdx]
+    vpcmpeqb xmm2, xmm0, [rdx + 16]
+    vpcmpeqb xmm3, xmm0, [rdx + 32]
+    vpcmpeqb xmm4, xmm0, [rdx + 48]
+    vpor xmm5, xmm1, xmm2
+    vpor xmm6, xmm3, xmm4
+    vpor xmm5, xmm5, xmm6
+    vpmovmskb eax, xmm5
     test eax, eax
     jne strict near .L39
 .L38:
-    sub rdx, -128
+    add rdx, 64
     cmp rdx, rcx
     jbe strict short .L36
 .L37:
 .L34:
-    lea rcx, [r8 - 32]
+    lea rcx, [r8 - 16]
     cmp rdx, rcx
     ja strict short .L47
     db 0xf, 0x1f, 0x0
 .L46:
-    vpcmpeqb ymm1, ymm0, [rdx]
-    vpmovmskb eax, ymm1
+    vpcmpeqb xmm1, xmm0, [rdx]
+    vpmovmskb eax, xmm1
     test eax, eax
     jne strict near .L49
 .L48:
-    add rdx, 32
+    add rdx, 16
     cmp rdx, rcx
     jbe strict short .L46
 .L47:
     cmp rdx, r8
     jae strict short .L50
-    lea rdx, [r8 - 32]
-    vpcmpeqb ymm0, ymm0, [rdx]
-    vpmovmskb eax, ymm0
+    lea rdx, [r8 - 16]
+    vpcmpeqb xmm0, xmm0, [rdx]
+    vpmovmskb eax, xmm0
     test eax, eax
     je strict short .L52
     bsf eax, eax
@@ -601,60 +787,93 @@ nvol_memchr_entry_avx2:
 .L52:
 .L50:
     xor eax, eax
-.L1:
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L7:
-    mov rax, rdx
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L19:
+.L30:
+    vmovd xmm0, ecx
+    vpbroadcastb ymm0, xmm0
+    vpcmpeqb ymm1, ymm0, [rdx]
+    vpmovmskb eax, ymm1
+    test eax, eax
+    je strict short .L54
     bsf eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L21:
+.L54:
+    and rdx, -32
+    add rdx, 32
+    cmp r9, 128
+    jb strict short .L56
+    lea rcx, [r8 - 128]
+    cmp rdx, rcx
+    ja strict short .L59
+    db 0xf, 0x1f, 0x40, 0x0
+.L58:
+    vpcmpeqb ymm1, ymm0, [rdx]
+    vpcmpeqb ymm2, ymm0, [rdx + 32]
+    vpcmpeqb ymm3, ymm0, [rdx + 64]
+    vpcmpeqb ymm4, ymm0, [rdx + 96]
+    vpor ymm5, ymm1, ymm2
+    vpor ymm6, ymm3, ymm4
+    vpor ymm5, ymm5, ymm6
+    vpmovmskb eax, ymm5
+    test eax, eax
+    jne strict near .L61
+.L60:
+    sub rdx, -128
+    cmp rdx, rcx
+    jbe strict short .L58
+.L59:
+.L56:
+    lea rcx, [r8 - 32]
+    cmp rdx, rcx
+    ja strict short .L69
+    db 0xf, 0x1f, 0x0
+.L68:
+    vpcmpeqb ymm1, ymm0, [rdx]
+    vpmovmskb eax, ymm1
+    test eax, eax
+    jne strict near .L71
+.L70:
+    add rdx, 32
+    cmp rdx, rcx
+    jbe strict short .L68
+.L69:
+    cmp rdx, r8
+    jae strict short .L72
+    lea rdx, [r8 - 32]
+    vpcmpeqb ymm0, ymm0, [rdx]
+    vpmovmskb eax, ymm0
+    test eax, eax
+    je strict short .L74
     bsf eax, eax
-    lea rax, [rdx + rax + 16]
+    lea rax, [rdx + rax]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L23:
-    bsf eax, eax
-    lea rax, [rdx + rax + 32]
+.L74:
+.L72:
+    xor eax, eax
+.L1:
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L17:
-    vpmovmskb eax, xmm1
-    test eax, eax
-    jne strict short .L19
-.L18:
-    vpmovmskb eax, xmm2
-    test eax, eax
-    jne strict short .L21
-.L20:
-    vpmovmskb eax, xmm3
-    test eax, eax
-    jne strict short .L23
-.L22:
-    vpmovmskb eax, xmm4
-    bsf eax, eax
-    lea rax, [rdx + rax + 48]
+.L9:
+    mov rax, rdx
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L27:
-    bsf eax, eax
+.L25:
+    bsf rax, r10
+    shr rax, 3
     lea rax, [rdx + rax]
     vzeroupper
     vmovdqu xmm6, [rsp]
@@ -669,34 +888,34 @@ nvol_memchr_entry_avx2:
     ret
 .L43:
     bsf eax, eax
-    lea rax, [rdx + rax + 32]
+    lea rax, [rdx + rax + 16]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
 .L45:
     bsf eax, eax
-    lea rax, [rdx + rax + 64]
+    lea rax, [rdx + rax + 32]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
 .L39:
-    vpmovmskb eax, ymm1
+    vpmovmskb eax, xmm1
     test eax, eax
     jne strict short .L41
 .L40:
-    vpmovmskb eax, ymm2
+    vpmovmskb eax, xmm2
     test eax, eax
     jne strict short .L43
 .L42:
-    vpmovmskb eax, ymm3
+    vpmovmskb eax, xmm3
     test eax, eax
     jne strict short .L45
 .L44:
-    vpmovmskb eax, ymm4
+    vpmovmskb eax, xmm4
     bsf eax, eax
-    lea rax, [rdx + rax + 96]
+    lea rax, [rdx + rax + 48]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
@@ -708,9 +927,56 @@ nvol_memchr_entry_avx2:
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
+.L63:
+    bsf eax, eax
+    lea rax, [rdx + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L65:
+    bsf eax, eax
+    lea rax, [rdx + rax + 32]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L67:
+    bsf eax, eax
+    lea rax, [rdx + rax + 64]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L61:
+    vpmovmskb eax, ymm1
+    test eax, eax
+    jne strict short .L63
+.L62:
+    vpmovmskb eax, ymm2
+    test eax, eax
+    jne strict short .L65
+.L64:
+    vpmovmskb eax, ymm3
+    test eax, eax
+    jne strict short .L67
+.L66:
+    vpmovmskb eax, ymm4
+    bsf eax, eax
+    lea rax, [rdx + rax + 96]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L71:
+    bsf eax, eax
+    lea rax, [rdx + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
 .unwind_end:
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
@@ -724,19 +990,150 @@ nvol_memchr_entry_sse2:
     mov r9, r8
     sub r9, rdx
     cmp r9, 16
-    jae strict short .L2
+    jae strict near .L2
+    cmp r9, 4
+    jae strict short .L4
     cmp rdx, r8
-    jae strict short .L5
-    db 0xf, 0x1f, 0x0
-.L4:
+    jae strict short .L7
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
     movzx eax, byte [rdx]
     cmp eax, ecx
-    je strict near .L7
-.L6:
+    je strict near .L9
+.L8:
     add rdx, 1
     cmp rdx, r8
-    jb strict short .L4
-.L5:
+    jb strict short .L6
+.L7:
+    xor eax, eax
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L4:
+    cmp r9, 8
+    jae strict short .L10
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [rdx]
+    xor rax, rcx
+    mov r9, rax
+    sub r9d, 16843009
+    not eax
+    and r9, rax
+    and r9d, -2139062144
+    je strict short .L12
+    bsf eax, r9d
+    shr rax, 3
+    lea rax, [rdx + rax]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L12:
+    mov eax, dword [r8 - 4]
+    xor rax, rcx
+    mov rcx, rax
+    sub ecx, 16843009
+    not eax
+    and rcx, rax
+    and ecx, -2139062144
+    je strict short .L14
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L14:
+    xor eax, eax
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L10:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 72340172838076673
+    sub r10, r11
+    not rax
+    and r10, rax
+    mov rax, 9259542123273814144
+    and r10, rax
+    je strict short .L16
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L16:
+    cmp r9, 16
+    ja strict short .L18
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L20
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L20:
+    xor eax, eax
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L18:
+    and rdx, -8
+    add rdx, 8
+    lea r9, [r8 - 8]
+    cmp rdx, r9
+    ja strict short .L23
+    db 0xf, 0x1f, 0x0
+.L22:
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 72340172838076673
+    sub r10, r11
+    not rax
+    and r10, rax
+    mov rax, 9259542123273814144
+    and r10, rax
+    jne strict near .L25
+.L24:
+    add rdx, 8
+    cmp rdx, r9
+    jbe strict short .L22
+.L23:
+    cmp rdx, r8
+    jae strict short .L26
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov rcx, rax
+    mov rdx, 72340172838076673
+    sub rcx, rdx
+    not rax
+    and rcx, rax
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L28
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L28:
+.L26:
     xor eax, eax
     movdqu xmm6, [rsp]
     add rsp, 24
@@ -749,22 +1146,22 @@ nvol_memchr_entry_sse2:
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    je strict short .L8
+    je strict short .L30
     bsf eax, eax
     lea rax, [rdx + rax]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L8:
+.L30:
     and rdx, -16
     add rdx, 16
     cmp r9, 64
-    jb strict short .L10
+    jb strict short .L32
     lea rcx, [r8 - 64]
     cmp rdx, rcx
-    ja strict short .L13
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L12:
+    ja strict short .L35
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+.L34:
     movdqa xmm1, [rdx]
     pcmpeqb xmm1, xmm0
     movdqa xmm2, [rdx + 16]
@@ -780,91 +1177,98 @@ nvol_memchr_entry_sse2:
     por xmm5, xmm6
     pmovmskb eax, xmm5
     test eax, eax
-    jne strict near .L15
-.L14:
+    jne strict near .L37
+.L36:
     add rdx, 64
     cmp rdx, rcx
-    jbe strict short .L12
-.L13:
-.L10:
+    jbe strict short .L34
+.L35:
+.L32:
     lea rcx, [r8 - 16]
     cmp rdx, rcx
-    ja strict short .L23
+    ja strict short .L45
     db 0xf, 0x1f, 0x0
-.L22:
+.L44:
     movdqu xmm1, [rdx]
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    jne strict near .L25
-.L24:
+    jne strict near .L47
+.L46:
     add rdx, 16
     cmp rdx, rcx
-    jbe strict short .L22
-.L23:
+    jbe strict short .L44
+.L45:
     cmp rdx, r8
-    jae strict short .L26
+    jae strict short .L48
     lea rdx, [r8 - 16]
     movdqu xmm1, [rdx]
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    je strict short .L28
+    je strict short .L50
     bsf eax, eax
     lea rax, [rdx + rax]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L28:
-.L26:
+.L50:
+.L48:
     xor eax, eax
 .L1:
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L7:
+.L9:
     mov rax, rdx
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L17:
+.L25:
+    bsf rax, r10
+    shr rax, 3
+    lea rax, [rdx + rax]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L39:
     bsf eax, eax
     lea rax, [rdx + rax]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L19:
+.L41:
     bsf eax, eax
     lea rax, [rdx + rax + 16]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L21:
+.L43:
     bsf eax, eax
     lea rax, [rdx + rax + 32]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L15:
+.L37:
     pmovmskb eax, xmm1
     test eax, eax
-    jne strict short .L17
-.L16:
+    jne strict short .L39
+.L38:
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short .L19
-.L18:
+    jne strict short .L41
+.L40:
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short .L21
-.L20:
+    jne strict short .L43
+.L42:
     pmovmskb eax, xmm4
     bsf eax, eax
     lea rax, [rdx + rax + 48]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L25:
+.L47:
     bsf eax, eax
     lea rax, [rdx + rax]
     movdqu xmm6, [rsp]
@@ -872,7 +1276,10 @@ nvol_memchr_entry_sse2:
     ret
 .unwind_end:
 
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x0
 global nvol_memchr_raw
 nvol_memchr_raw:
     jmp qword [rel nvol_memchr_raw_ptr]
@@ -933,28 +1340,169 @@ nvol_memchr:
 global nvol_memrchr_scalar
 nvol_memrchr_scalar:
     movzx ecx, cl
+    mov r9, r8
+    sub r9, rdx
+    cmp r9, 4
+    jae strict short .L2
     cmp r8, rdx
-    jbe strict short .L3
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L2:
+    jbe strict short .L5
+    db 0xf, 0x1f, 0x40, 0x0
+.L4:
     lea r8, [r8 - 1]
     movzx eax, byte [r8]
     cmp eax, ecx
-    je strict short .L5
-.L4:
+    je strict near .L7
+.L6:
     cmp r8, rdx
-    ja strict short .L2
-.L3:
+    ja strict short .L4
+.L5:
+    xor eax, eax
+    ret
+.L2:
+    cmp r9, 8
+    jae strict short .L8
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [r8 - 4]
+    xor rax, rcx
+    mov r9, rax
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, rax
+    or r9d, 2139062143
+    not r9d
+    test r9d, r9d
+    je strict short .L10
+    bsr eax, r9d
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    ret
+.L10:
+    mov eax, dword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L12
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+.L12:
+    xor eax, eax
+    ret
+.L8:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, rax
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    je strict short .L14
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    ret
+.L14:
+    cmp r9, 16
+    ja strict short .L16
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    mov r8, 9187201950435737471
+    and rcx, r8
+    mov r8, 9187201950435737471
+    add rcx, r8
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L18
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+.L18:
+    xor eax, eax
+    ret
+.L16:
+    and r8, -8
+    lea r9, [rdx + 8]
+    cmp r8, r9
+    jb strict short .L21
+    db 0x66, 0x90
+.L20:
+    lea r8, [r8 - 8]
+    mov rax, qword [r8]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, rax
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    jne strict short .L23
+.L22:
+    cmp r8, r9
+    jae strict short .L20
+.L21:
+    cmp r8, rdx
+    jbe strict short .L24
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    mov r8, 9187201950435737471
+    and rcx, r8
+    mov r8, 9187201950435737471
+    add rcx, r8
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L26
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    ret
+.L26:
+.L24:
     xor eax, eax
 .L1:
     ret
-.L5:
+.L7:
     mov rax, r8
+    ret
+.L23:
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [r8 + rax]
     ret
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memrchr_sse2
 nvol_memrchr_sse2:
     sub rsp, 24
@@ -1351,19 +1899,173 @@ nvol_memrchr_entry_avx2:
     mov r9, r8
     sub r9, rdx
     cmp r9, 16
-    jae strict short .L2
+    jae strict near .L2
+    cmp r9, 4
+    jae strict short .L4
     cmp r8, rdx
-    jbe strict short .L5
-    db 0xf, 0x1f, 0x0
-.L4:
+    jbe strict short .L7
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
     lea r8, [r8 - 1]
     movzx eax, byte [r8]
     cmp eax, ecx
-    je strict near .L7
-.L6:
+    je strict near .L9
+.L8:
     cmp r8, rdx
-    ja strict short .L4
-.L5:
+    ja strict short .L6
+.L7:
+    xor eax, eax
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L4:
+    cmp r9, 8
+    jae strict near .L10
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [r8 - 4]
+    xor rax, rcx
+    mov r9, rax
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, rax
+    or r9d, 2139062143
+    not r9d
+    test r9d, r9d
+    je strict short .L12
+    bsr eax, r9d
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L12:
+    mov eax, dword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L14
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L14:
+    xor eax, eax
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L10:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, rax
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    je strict short .L16
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L16:
+    cmp r9, 16
+    ja strict short .L18
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    mov r8, 9187201950435737471
+    and rcx, r8
+    mov r8, 9187201950435737471
+    add rcx, r8
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L20
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L20:
+    xor eax, eax
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L18:
+    and r8, -8
+    lea r9, [rdx + 8]
+    cmp r8, r9
+    jb strict short .L23
+    db 0x66, 0x90
+.L22:
+    lea r8, [r8 - 8]
+    mov rax, qword [r8]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, rax
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    jne strict near .L25
+.L24:
+    cmp r8, r9
+    jae strict short .L22
+.L23:
+    cmp r8, rdx
+    jbe strict short .L26
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    mov r8, 9187201950435737471
+    and rcx, r8
+    mov r8, 9187201950435737471
+    add rcx, r8
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L28
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L28:
+.L26:
     xor eax, eax
     vzeroupper
     vmovdqu xmm6, [rsp]
@@ -1371,31 +2073,32 @@ nvol_memrchr_entry_avx2:
     ret
 .L2:
     cmp r9, 32
-    jae strict near .L8
+    jae strict near .L30
     vmovd xmm0, ecx
     vpbroadcastb xmm0, xmm0
     vpcmpeqb xmm1, xmm0, [r8 - 16]
     vpmovmskb eax, xmm1
     test eax, eax
-    je strict short .L10
+    je strict short .L32
     bsr eax, eax
     lea rax, [r8 + rax - 16]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L10:
+.L32:
     and r8, -16
     cmp r9, 64
-    jb strict short .L12
+    jb strict short .L34
     lea rcx, [rdx + 64]
     cmp r9, 1024
-    jae strict near .L17
-.L14:
+    jae strict near .L39
+.L36:
     cmp r8, rcx
-    jb strict short .L25
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L24:
+    jb strict short .L47
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+.L46:
     lea r8, [r8 - 64]
     vpcmpeqb xmm1, xmm0, [r8]
     vpcmpeqb xmm2, xmm0, [r8 + 16]
@@ -1406,257 +2109,70 @@ nvol_memrchr_entry_avx2:
     vpor xmm5, xmm5, xmm6
     vpmovmskb eax, xmm5
     test eax, eax
-    jne strict near .L27
-.L26:
+    jne strict near .L49
+.L48:
     cmp r8, rcx
-    jae strict short .L24
-.L25:
-.L12:
+    jae strict short .L46
+.L47:
+.L34:
     lea rcx, [rdx + 16]
     cmp r8, rcx
-    jb strict short .L35
+    jb strict short .L57
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L34:
+.L56:
     lea r8, [r8 - 16]
     vpcmpeqb xmm1, xmm0, [r8]
     vpmovmskb eax, xmm1
-    test eax, eax
-    jne strict near .L37
-.L36:
-    cmp r8, rcx
-    jae strict short .L34
-.L35:
-    cmp r8, rdx
-    jbe strict short .L38
-    vpcmpeqb xmm0, xmm0, [rdx]
-    vpmovmskb eax, xmm0
-    test eax, eax
-    je strict short .L40
-    bsr eax, eax
-    lea rax, [rdx + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L40:
-.L38:
-    xor eax, eax
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L8:
-    vmovd xmm0, ecx
-    vpbroadcastb ymm0, xmm0
-    vpcmpeqb ymm1, ymm0, [r8 - 32]
-    vpmovmskb eax, ymm1
-    test eax, eax
-    je strict short .L42
-    bsr eax, eax
-    lea rax, [r8 + rax - 32]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L42:
-    and r8, -32
-    cmp r9, 128
-    jb strict short .L44
-    lea rcx, [rdx + 128]
-    cmp r9, 4096
-    jae strict near .L49
-.L46:
-    cmp r8, rcx
-    jb strict short .L57
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L56:
-    lea r8, [r8 - 128]
-    vpcmpeqb ymm1, ymm0, [r8]
-    vpcmpeqb ymm2, ymm0, [r8 + 32]
-    vpcmpeqb ymm3, ymm0, [r8 + 64]
-    vpcmpeqb ymm4, ymm0, [r8 + 96]
-    vpor ymm5, ymm1, ymm2
-    vpor ymm6, ymm3, ymm4
-    vpor ymm5, ymm5, ymm6
-    vpmovmskb eax, ymm5
     test eax, eax
     jne strict near .L59
 .L58:
     cmp r8, rcx
     jae strict short .L56
 .L57:
-.L44:
-    lea rcx, [rdx + 32]
-    cmp r8, rcx
-    jb strict short .L67
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L66:
-    lea r8, [r8 - 32]
-    vpcmpeqb ymm1, ymm0, [r8]
-    vpmovmskb eax, ymm1
-    test eax, eax
-    jne strict near .L69
-.L68:
-    cmp r8, rcx
-    jae strict short .L66
-.L67:
     cmp r8, rdx
-    jbe strict short .L70
-    vpcmpeqb ymm0, ymm0, [rdx]
-    vpmovmskb eax, ymm0
+    jbe strict short .L60
+    vpcmpeqb xmm0, xmm0, [rdx]
+    vpmovmskb eax, xmm0
     test eax, eax
-    je strict short .L72
+    je strict short .L62
     bsr eax, eax
     lea rax, [rdx + rax]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L72:
-.L70:
+.L62:
+.L60:
     xor eax, eax
-.L1:
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L7:
-    mov rax, r8
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L19:
-    bsr eax, eax
-    lea rax, [r8 + rax + 48]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L21:
-    bsr eax, eax
-    lea rax, [r8 + rax + 32]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L23:
-    bsr eax, eax
-    lea rax, [r8 + rax + 16]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L17:
-    db 0xf, 0x1f, 0x0
-.L15:
-    cmp r8, rcx
-    jb strict near .L14
-    lea r8, [r8 - 64]
-    vpcmpeqb xmm1, xmm0, [r8]
-    vpcmpeqb xmm2, xmm0, [r8 + 16]
-    vpcmpeqb xmm3, xmm0, [r8 + 32]
-    vpcmpeqb xmm4, xmm0, [r8 + 48]
-    vpor xmm5, xmm1, xmm2
-    vpor xmm6, xmm3, xmm4
-    vpor xmm5, xmm5, xmm6
-    vpmovmskb eax, xmm5
-    test eax, eax
-    je strict short .L15
-    vpmovmskb eax, xmm4
-    test eax, eax
-    jne strict near .L19
-.L18:
-    vpmovmskb eax, xmm3
-    test eax, eax
-    jne strict short .L21
-.L20:
-    vpmovmskb eax, xmm2
-    test eax, eax
-    jne strict short .L23
-.L22:
-    vpmovmskb eax, xmm1
-    bsr eax, eax
-    lea rax, [r8 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-    jmp strict near .L14
-.L29:
-    bsr eax, eax
-    lea rax, [r8 + rax + 48]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L31:
-    bsr eax, eax
-    lea rax, [r8 + rax + 32]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L33:
-    bsr eax, eax
-    lea rax, [r8 + rax + 16]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L27:
-    vpmovmskb eax, xmm4
-    test eax, eax
-    jne strict short .L29
-.L28:
-    vpmovmskb eax, xmm3
-    test eax, eax
-    jne strict short .L31
 .L30:
-    vpmovmskb eax, xmm2
+    vmovd xmm0, ecx
+    vpbroadcastb ymm0, xmm0
+    vpcmpeqb ymm1, ymm0, [r8 - 32]
+    vpmovmskb eax, ymm1
     test eax, eax
-    jne strict short .L33
-.L32:
-    vpmovmskb eax, xmm1
+    je strict short .L64
     bsr eax, eax
-    lea rax, [r8 + rax]
+    lea rax, [r8 + rax - 32]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L37:
-    bsr eax, eax
-    lea rax, [r8 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L51:
-    bsr eax, eax
-    lea rax, [r8 + rax + 96]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L53:
-    bsr eax, eax
-    lea rax, [r8 + rax + 64]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L55:
-    bsr eax, eax
-    lea rax, [r8 + rax + 32]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L49:
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L47:
+.L64:
+    and r8, -32
+    cmp r9, 128
+    jb strict short .L66
+    lea rcx, [rdx + 128]
+    cmp r9, 4096
+    jae strict near .L71
+.L68:
     cmp r8, rcx
-    jb strict near .L46
+    jb strict short .L79
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L78:
     lea r8, [r8 - 128]
     vpcmpeqb ymm1, ymm0, [r8]
     vpcmpeqb ymm2, ymm0, [r8 + 32]
@@ -1667,61 +2183,214 @@ nvol_memrchr_entry_avx2:
     vpor ymm5, ymm5, ymm6
     vpmovmskb eax, ymm5
     test eax, eax
-    je strict short .L47
-    vpmovmskb eax, ymm4
-    test eax, eax
-    jne strict near .L51
-.L50:
-    vpmovmskb eax, ymm3
-    test eax, eax
-    jne strict short .L53
-.L52:
-    vpmovmskb eax, ymm2
-    test eax, eax
-    jne strict short .L55
-.L54:
+    jne strict near .L81
+.L80:
+    cmp r8, rcx
+    jae strict short .L78
+.L79:
+.L66:
+    lea rcx, [rdx + 32]
+    cmp r8, rcx
+    jb strict short .L89
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L88:
+    lea r8, [r8 - 32]
+    vpcmpeqb ymm1, ymm0, [r8]
     vpmovmskb eax, ymm1
+    test eax, eax
+    jne strict near .L91
+.L90:
+    cmp r8, rcx
+    jae strict short .L88
+.L89:
+    cmp r8, rdx
+    jbe strict short .L92
+    vpcmpeqb ymm0, ymm0, [rdx]
+    vpmovmskb eax, ymm0
+    test eax, eax
+    je strict short .L94
     bsr eax, eax
+    lea rax, [rdx + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L94:
+.L92:
+    xor eax, eax
+.L1:
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L9:
+    mov rax, r8
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L25:
+    bsr rax, r10
+    shr rax, 3
     lea rax, [r8 + rax]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-    jmp strict near .L46
-.L61:
+.L41:
     bsr eax, eax
-    lea rax, [r8 + rax + 96]
+    lea rax, [r8 + rax + 48]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L63:
-    bsr eax, eax
-    lea rax, [r8 + rax + 64]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L65:
+.L43:
     bsr eax, eax
     lea rax, [r8 + rax + 32]
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
+.L45:
+    bsr eax, eax
+    lea rax, [r8 + rax + 16]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L39:
+    db 0x66, 0x90
+.L37:
+    cmp r8, rcx
+    jb strict near .L36
+    lea r8, [r8 - 64]
+    vpcmpeqb xmm1, xmm0, [r8]
+    vpcmpeqb xmm2, xmm0, [r8 + 16]
+    vpcmpeqb xmm3, xmm0, [r8 + 32]
+    vpcmpeqb xmm4, xmm0, [r8 + 48]
+    vpor xmm5, xmm1, xmm2
+    vpor xmm6, xmm3, xmm4
+    vpor xmm5, xmm5, xmm6
+    vpmovmskb eax, xmm5
+    test eax, eax
+    je strict short .L37
+    vpmovmskb eax, xmm4
+    test eax, eax
+    jne strict near .L41
+.L40:
+    vpmovmskb eax, xmm3
+    test eax, eax
+    jne strict short .L43
+.L42:
+    vpmovmskb eax, xmm2
+    test eax, eax
+    jne strict short .L45
+.L44:
+    vpmovmskb eax, xmm1
+    bsr eax, eax
+    lea rax, [r8 + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+    jmp strict near .L36
+.L51:
+    bsr eax, eax
+    lea rax, [r8 + rax + 48]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L53:
+    bsr eax, eax
+    lea rax, [r8 + rax + 32]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L55:
+    bsr eax, eax
+    lea rax, [r8 + rax + 16]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L49:
+    vpmovmskb eax, xmm4
+    test eax, eax
+    jne strict short .L51
+.L50:
+    vpmovmskb eax, xmm3
+    test eax, eax
+    jne strict short .L53
+.L52:
+    vpmovmskb eax, xmm2
+    test eax, eax
+    jne strict short .L55
+.L54:
+    vpmovmskb eax, xmm1
+    bsr eax, eax
+    lea rax, [r8 + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
 .L59:
+    bsr eax, eax
+    lea rax, [r8 + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L73:
+    bsr eax, eax
+    lea rax, [r8 + rax + 96]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L75:
+    bsr eax, eax
+    lea rax, [r8 + rax + 64]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L77:
+    bsr eax, eax
+    lea rax, [r8 + rax + 32]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L71:
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+.L69:
+    cmp r8, rcx
+    jb strict near .L68
+    lea r8, [r8 - 128]
+    vpcmpeqb ymm1, ymm0, [r8]
+    vpcmpeqb ymm2, ymm0, [r8 + 32]
+    vpcmpeqb ymm3, ymm0, [r8 + 64]
+    vpcmpeqb ymm4, ymm0, [r8 + 96]
+    vpor ymm5, ymm1, ymm2
+    vpor ymm6, ymm3, ymm4
+    vpor ymm5, ymm5, ymm6
+    vpmovmskb eax, ymm5
+    test eax, eax
+    je strict short .L69
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict short .L61
-.L60:
+    jne strict near .L73
+.L72:
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict short .L63
-.L62:
+    jne strict short .L75
+.L74:
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict short .L65
-.L64:
+    jne strict short .L77
+.L76:
     vpmovmskb eax, ymm1
     bsr eax, eax
     lea rax, [r8 + rax]
@@ -1729,7 +2398,49 @@ nvol_memrchr_entry_avx2:
     vmovdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L69:
+    jmp strict near .L68
+.L83:
+    bsr eax, eax
+    lea rax, [r8 + rax + 96]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L85:
+    bsr eax, eax
+    lea rax, [r8 + rax + 64]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L87:
+    bsr eax, eax
+    lea rax, [r8 + rax + 32]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L81:
+    vpmovmskb eax, ymm4
+    test eax, eax
+    jne strict short .L83
+.L82:
+    vpmovmskb eax, ymm3
+    test eax, eax
+    jne strict short .L85
+.L84:
+    vpmovmskb eax, ymm2
+    test eax, eax
+    jne strict short .L87
+.L86:
+    vpmovmskb eax, ymm1
+    bsr eax, eax
+    lea rax, [r8 + rax]
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L91:
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
@@ -1738,10 +2449,7 @@ nvol_memrchr_entry_avx2:
     ret
 .unwind_end:
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
+    db 0xf, 0x1f, 0x40, 0x0
 global nvol_memrchr_entry_sse2
 nvol_memrchr_entry_sse2:
     sub rsp, 24
@@ -1750,19 +2458,165 @@ nvol_memrchr_entry_sse2:
     mov r9, r8
     sub r9, rdx
     cmp r9, 16
-    jae strict short .L2
+    jae strict near .L2
+    cmp r9, 4
+    jae strict short .L4
     cmp r8, rdx
-    jbe strict short .L5
-    db 0xf, 0x1f, 0x0
-.L4:
+    jbe strict short .L7
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
     lea r8, [r8 - 1]
     movzx eax, byte [r8]
     cmp eax, ecx
-    je strict near .L7
-.L6:
+    je strict near .L9
+.L8:
     cmp r8, rdx
-    ja strict short .L4
-.L5:
+    ja strict short .L6
+.L7:
+    xor eax, eax
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L4:
+    cmp r9, 8
+    jae strict near .L10
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, dword [r8 - 4]
+    xor rax, rcx
+    mov r9, rax
+    and r9d, 2139062143
+    add r9d, 2139062143
+    or r9, rax
+    or r9d, 2139062143
+    not r9d
+    test r9d, r9d
+    je strict short .L12
+    bsr eax, r9d
+    shr rax, 3
+    lea rax, [r8 + rax - 4]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L12:
+    mov eax, dword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, rax
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L14
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L14:
+    xor eax, eax
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L10:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, qword [r8 - 8]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, rax
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    je strict short .L16
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [r8 + rax - 8]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L16:
+    cmp r9, 16
+    ja strict short .L18
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    mov r8, 9187201950435737471
+    and rcx, r8
+    mov r8, 9187201950435737471
+    add rcx, r8
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L20
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L20:
+    xor eax, eax
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L18:
+    and r8, -8
+    lea r9, [rdx + 8]
+    cmp r8, r9
+    jb strict short .L23
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L22:
+    lea r8, [r8 - 8]
+    mov rax, qword [r8]
+    xor rax, rcx
+    mov r10, rax
+    mov r11, 9187201950435737471
+    and r10, r11
+    mov r11, 9187201950435737471
+    add r10, r11
+    or r10, rax
+    mov rax, 9187201950435737471
+    or r10, rax
+    not r10
+    test r10, r10
+    jne strict near .L25
+.L24:
+    cmp r8, r9
+    jae strict short .L22
+.L23:
+    cmp r8, rdx
+    jbe strict short .L26
+    mov rax, qword [rdx]
+    xor rax, rcx
+    mov rcx, rax
+    mov r8, 9187201950435737471
+    and rcx, r8
+    mov r8, 9187201950435737471
+    add rcx, r8
+    or rcx, rax
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L28
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [rdx + rax]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L28:
+.L26:
     xor eax, eax
     movdqu xmm6, [rsp]
     add rsp, 24
@@ -1775,24 +2629,24 @@ nvol_memrchr_entry_sse2:
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    je strict short .L8
+    je strict short .L30
     bsr eax, eax
     lea rax, [r8 + rax - 16]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L8:
+.L30:
     and r8, -16
     cmp r9, 64
-    jb strict short .L10
+    jb strict short .L32
     lea rcx, [rdx + 64]
     cmp r9, 1024
-    jae strict near .L15
-.L12:
+    jae strict near .L37
+.L34:
     cmp r8, rcx
-    jb strict short .L23
-    db 0xf, 0x1f, 0x40, 0x0
-.L22:
+    jb strict short .L45
+    db 0xf, 0x1f, 0x0
+.L44:
     lea r8, [r8 - 64]
     movdqa xmm1, [r8]
     pcmpeqb xmm1, xmm0
@@ -1809,74 +2663,81 @@ nvol_memrchr_entry_sse2:
     por xmm5, xmm6
     pmovmskb eax, xmm5
     test eax, eax
-    jne strict near .L25
-.L24:
+    jne strict near .L47
+.L46:
     cmp r8, rcx
-    jae strict short .L22
-.L23:
-.L10:
+    jae strict short .L44
+.L45:
+.L32:
     lea rcx, [rdx + 16]
     cmp r8, rcx
-    jb strict short .L33
+    jb strict short .L55
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L32:
+.L54:
     lea r8, [r8 - 16]
     movdqu xmm1, [r8]
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    jne strict near .L35
-.L34:
+    jne strict near .L57
+.L56:
     cmp r8, rcx
-    jae strict short .L32
-.L33:
+    jae strict short .L54
+.L55:
     cmp r8, rdx
-    jbe strict short .L36
+    jbe strict short .L58
     movdqu xmm1, [rdx]
     pcmpeqb xmm1, xmm0
     pmovmskb eax, xmm1
     test eax, eax
-    je strict short .L38
+    je strict short .L60
     bsr eax, eax
     lea rax, [rdx + rax]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L38:
-.L36:
+.L60:
+.L58:
     xor eax, eax
 .L1:
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L7:
+.L9:
     mov rax, r8
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L17:
+.L25:
+    bsr rax, r10
+    shr rax, 3
+    lea rax, [r8 + rax]
+    movdqu xmm6, [rsp]
+    add rsp, 24
+    ret
+.L39:
     bsr eax, eax
     lea rax, [r8 + rax + 48]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L19:
+.L41:
     bsr eax, eax
     lea rax, [r8 + rax + 32]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L21:
+.L43:
     bsr eax, eax
     lea rax, [r8 + rax + 16]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L15:
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L13:
+.L37:
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L35:
     cmp r8, rcx
-    jb strict near .L12
+    jb strict near .L34
     lea r8, [r8 - 64]
     movdqa xmm1, [r8]
     pcmpeqb xmm1, xmm0
@@ -1893,64 +2754,64 @@ nvol_memrchr_entry_sse2:
     por xmm5, xmm6
     pmovmskb eax, xmm5
     test eax, eax
-    je strict short .L13
+    je strict short .L35
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict near .L17
-.L16:
+    jne strict near .L39
+.L38:
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict near .L19
-.L18:
+    jne strict near .L41
+.L40:
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict near .L21
-.L20:
+    jne strict near .L43
+.L42:
     pmovmskb eax, xmm1
     bsr eax, eax
     lea rax, [r8 + rax]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-    jmp strict near .L12
-.L27:
+    jmp strict near .L34
+.L49:
     bsr eax, eax
     lea rax, [r8 + rax + 48]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L29:
+.L51:
     bsr eax, eax
     lea rax, [r8 + rax + 32]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L31:
+.L53:
     bsr eax, eax
     lea rax, [r8 + rax + 16]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L25:
+.L47:
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict short .L27
-.L26:
+    jne strict short .L49
+.L48:
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short .L29
-.L28:
+    jne strict short .L51
+.L50:
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short .L31
-.L30:
+    jne strict short .L53
+.L52:
     pmovmskb eax, xmm1
     bsr eax, eax
     lea rax, [r8 + rax]
     movdqu xmm6, [rsp]
     add rsp, 24
     ret
-.L35:
+.L57:
     bsr eax, eax
     lea rax, [r8 + rax]
     movdqu xmm6, [rsp]
@@ -2023,33 +2884,266 @@ nvol_memrchr:
     db 0x66, 0x90
 global nvol_memchr2_scalar
 nvol_memchr2_scalar:
+    push rdi
+    push rsi
     movzx ecx, cl
     movzx edx, dl
-    cmp r8, r9
-    jae strict short .L3
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L2:
-    movzx eax, byte [r8]
-    cmp eax, ecx
-    je strict short .L6
-    cmp eax, edx
+    mov r10, r9
+    sub r10, r8
+    cmp r10, 4
+    jae strict short .L2
+    test r10, r10
     jne strict short .L4
-.L6:
-.L5:
-    mov rax, r8
+    xor eax, eax
+    pop rsi
+    pop rdi
     ret
 .L4:
-    add r8, 1
+    movzx eax, byte [r8]
+    cmp eax, ecx
+    je strict short .L8
+    cmp eax, edx
+    jne strict short .L6
+.L8:
+    mov rax, r8
+    pop rsi
+    pop rdi
+    ret
+.L6:
+    cmp r10, 1
+    jne strict short .L9
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L9:
+    movzx eax, byte [r8 + 1]
+    cmp eax, ecx
+    je strict short .L13
+    cmp eax, edx
+    jne strict short .L11
+.L13:
+    lea rax, [r8 + 1]
+    pop rsi
+    pop rdi
+    ret
+.L11:
+    cmp r10, 2
+    jne strict short .L14
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L14:
+    movzx eax, byte [r8 + 2]
+    cmp eax, ecx
+    je strict short .L18
+    cmp eax, edx
+    jne strict short .L16
+.L18:
+    lea rax, [r8 + 2]
+    pop rsi
+    pop rdi
+    ret
+.L16:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L2:
+    cmp r10, 8
+    jae strict near .L19
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r8]
+    mov r10, rax
+    xor r10, rcx
+    mov r11, r10
+    sub r11d, 16843009
+    not r10d
+    and r11, r10
+    xor rax, rdx
+    mov r10, rax
+    sub r10d, 16843009
+    not eax
+    and r10, rax
+    or r11, r10
+    and r11d, -2139062144
+    je strict short .L21
+    bsf eax, r11d
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L21:
+    mov eax, dword [r9 - 4]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    sub ecx, 16843009
+    not r8d
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rcx, rdx
+    and ecx, -2139062144
+    je strict short .L23
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r9 + rax - 4]
+    pop rsi
+    pop rdi
+    ret
+.L23:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L19:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 72340172838076673
+    sub rsi, rdi
+    not r11
+    and rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 72340172838076673
+    sub r11, rdi
+    not rax
+    and r11, rax
+    or rsi, r11
+    mov rax, 9259542123273814144
+    and rsi, rax
+    je strict short .L25
+    bsf rax, rsi
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L25:
+    cmp r10, 16
+    ja strict short .L27
+    mov rax, qword [r9 - 8]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    mov r10, 72340172838076673
+    sub rcx, r10
+    not r8
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L29
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    pop rsi
+    pop rdi
+    ret
+.L29:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L27:
+    and r8, -8
+    add r8, 8
+    lea r10, [r9 - 8]
+    cmp r8, r10
+    ja strict short .L32
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L31:
+    mov rax, qword [r8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 72340172838076673
+    sub rsi, rdi
+    not r11
+    and rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 72340172838076673
+    sub r11, rdi
+    not rax
+    and r11, rax
+    or rsi, r11
+    mov rax, 9259542123273814144
+    and rsi, rax
+    jne strict short .L34
+.L33:
+    add r8, 8
+    cmp r8, r10
+    jbe strict short .L31
+.L32:
     cmp r8, r9
-    jb strict short .L2
-.L3:
+    jae strict short .L35
+    mov rax, qword [r9 - 8]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    mov r10, 72340172838076673
+    sub rcx, r10
+    not r8
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L37
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    pop rsi
+    pop rdi
+    ret
+.L37:
+.L35:
     xor eax, eax
 .L1:
+    pop rsi
+    pop rdi
     ret
+.L34:
+    bsf rax, rsi
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memchr2_sse2
 nvol_memchr2_sse2:
     movzx eax, cl
@@ -2273,37 +3367,271 @@ nvol_memchr2_avx2:
     db 0xf, 0x1f, 0x0
 global nvol_memchr2_entry_avx2
 nvol_memchr2_entry_avx2:
+    push rdi
+    push rsi
     movzx ecx, cl
     movzx edx, dl
     mov r10, r9
     sub r10, r8
     cmp r10, 16
-    jae strict short .L2
-    cmp r8, r9
-    jae strict short .L5
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L4:
-    movzx eax, byte [r8]
-    cmp eax, ecx
-    je strict short .L8
-    cmp eax, edx
+    jae strict near .L2
+    cmp r10, 4
+    jae strict short .L4
+    test r10, r10
     jne strict short .L6
-.L8:
-.L7:
-    mov rax, r8
-    vzeroupper
-    ret
-.L6:
-    add r8, 1
-    cmp r8, r9
-    jb strict short .L4
-.L5:
     xor eax, eax
     vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L6:
+    movzx eax, byte [r8]
+    cmp eax, ecx
+    je strict short .L10
+    cmp eax, edx
+    jne strict short .L8
+.L10:
+    mov rax, r8
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L8:
+    cmp r10, 1
+    jne strict short .L11
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L11:
+    movzx eax, byte [r8 + 1]
+    cmp eax, ecx
+    je strict short .L15
+    cmp eax, edx
+    jne strict short .L13
+.L15:
+    lea rax, [r8 + 1]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L13:
+    cmp r10, 2
+    jne strict short .L16
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L16:
+    movzx eax, byte [r8 + 2]
+    cmp eax, ecx
+    je strict short .L20
+    cmp eax, edx
+    jne strict short .L18
+.L20:
+    lea rax, [r8 + 2]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L18:
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L4:
+    cmp r10, 8
+    jae strict near .L21
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r8]
+    mov r10, rax
+    xor r10, rcx
+    mov r11, r10
+    sub r11d, 16843009
+    not r10d
+    and r11, r10
+    xor rax, rdx
+    mov r10, rax
+    sub r10d, 16843009
+    not eax
+    and r10, rax
+    or r11, r10
+    and r11d, -2139062144
+    je strict short .L23
+    bsf eax, r11d
+    shr rax, 3
+    lea rax, [r8 + rax]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L23:
+    mov eax, dword [r9 - 4]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    sub ecx, 16843009
+    not r8d
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rcx, rdx
+    and ecx, -2139062144
+    je strict short .L25
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r9 + rax - 4]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L25:
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L21:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 72340172838076673
+    sub rsi, rdi
+    not r11
+    and rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 72340172838076673
+    sub r11, rdi
+    not rax
+    and r11, rax
+    or rsi, r11
+    mov rax, 9259542123273814144
+    and rsi, rax
+    je strict short .L27
+    bsf rax, rsi
+    shr rax, 3
+    lea rax, [r8 + rax]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L27:
+    cmp r10, 16
+    ja strict short .L29
+    mov rax, qword [r9 - 8]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    mov r10, 72340172838076673
+    sub rcx, r10
+    not r8
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L31
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L31:
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L29:
+    and r8, -8
+    add r8, 8
+    lea r10, [r9 - 8]
+    cmp r8, r10
+    ja strict short .L34
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L33:
+    mov rax, qword [r8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 72340172838076673
+    sub rsi, rdi
+    not r11
+    and rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 72340172838076673
+    sub r11, rdi
+    not rax
+    and r11, rax
+    or rsi, r11
+    mov rax, 9259542123273814144
+    and rsi, rax
+    jne strict near .L36
+.L35:
+    add r8, 8
+    cmp r8, r10
+    jbe strict short .L33
+.L34:
+    cmp r8, r9
+    jae strict short .L37
+    mov rax, qword [r9 - 8]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    mov r10, 72340172838076673
+    sub rcx, r10
+    not r8
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L39
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L39:
+.L37:
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
     ret
 .L2:
     cmp r10, 32
-    jae strict near .L9
+    jae strict near .L41
     vmovd xmm0, ecx
     vpbroadcastb xmm0, xmm0
     vmovd xmm1, edx
@@ -2314,21 +3642,23 @@ nvol_memchr2_entry_avx2:
     vpor xmm2, xmm3, xmm2
     vpmovmskb eax, xmm2
     test eax, eax
-    je strict short .L11
+    je strict short .L43
     bsf eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L11:
+.L43:
     and r8, -16
     add r8, 16
     cmp r10, 32
-    jb strict short .L13
+    jb strict short .L45
     lea rcx, [r9 - 32]
     cmp r8, rcx
-    ja strict short .L16
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L15:
+    ja strict short .L48
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+.L47:
     vmovdqa xmm2, [r8]
     vmovdqa xmm3, [r8 + 16]
     vpcmpeqb xmm4, xmm2, xmm0
@@ -2340,32 +3670,32 @@ nvol_memchr2_entry_avx2:
     vpor xmm4, xmm2, xmm3
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict near .L18
-.L17:
+    jne strict near .L50
+.L49:
     add r8, 32
     cmp r8, rcx
-    jbe strict short .L15
-.L16:
-.L13:
+    jbe strict short .L47
+.L48:
+.L45:
     lea rcx, [r9 - 16]
     cmp r8, rcx
-    ja strict short .L22
+    ja strict short .L54
     db 0xf, 0x1f, 0x0
-.L21:
+.L53:
     vmovdqu xmm2, [r8]
     vpcmpeqb xmm3, xmm2, xmm0
     vpcmpeqb xmm2, xmm2, xmm1
     vpor xmm2, xmm3, xmm2
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict near .L24
-.L23:
+    jne strict near .L56
+.L55:
     add r8, 16
     cmp r8, rcx
-    jbe strict short .L21
-.L22:
+    jbe strict short .L53
+.L54:
     cmp r8, r9
-    jae strict short .L25
+    jae strict short .L57
     lea r8, [r9 - 16]
     vmovdqu xmm2, [r8]
     vpcmpeqb xmm0, xmm2, xmm0
@@ -2373,17 +3703,21 @@ nvol_memchr2_entry_avx2:
     vpor xmm0, xmm0, xmm1
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short .L27
+    je strict short .L59
     bsf eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L27:
-.L25:
+.L59:
+.L57:
     xor eax, eax
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L9:
+.L41:
     vmovd xmm0, ecx
     vpbroadcastb ymm0, xmm0
     vmovd xmm1, edx
@@ -2394,21 +3728,23 @@ nvol_memchr2_entry_avx2:
     vpor ymm2, ymm3, ymm2
     vpmovmskb eax, ymm2
     test eax, eax
-    je strict short .L29
+    je strict short .L61
     bsf eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L29:
+.L61:
     and r8, -32
     add r8, 32
     cmp r10, 64
-    jb strict short .L31
+    jb strict short .L63
     lea rcx, [r9 - 64]
     cmp r8, rcx
-    ja strict short .L34
-    db 0x66, 0x90
-.L33:
+    ja strict short .L66
+    db 0xf, 0x1f, 0x40, 0x0
+.L65:
     vmovdqa ymm2, [r8]
     vmovdqa ymm3, [r8 + 32]
     vpcmpeqb ymm4, ymm2, ymm0
@@ -2420,32 +3756,32 @@ nvol_memchr2_entry_avx2:
     vpor ymm4, ymm2, ymm3
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict near .L36
-.L35:
+    jne strict near .L68
+.L67:
     add r8, 64
     cmp r8, rcx
-    jbe strict short .L33
-.L34:
-.L31:
+    jbe strict short .L65
+.L66:
+.L63:
     lea rcx, [r9 - 32]
     cmp r8, rcx
-    ja strict short .L40
+    ja strict short .L72
     db 0xf, 0x1f, 0x0
-.L39:
+.L71:
     vmovdqu ymm2, [r8]
     vpcmpeqb ymm3, ymm2, ymm0
     vpcmpeqb ymm2, ymm2, ymm1
     vpor ymm2, ymm3, ymm2
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict near .L42
-.L41:
+    jne strict near .L74
+.L73:
     add r8, 32
     cmp r8, rcx
-    jbe strict short .L39
-.L40:
+    jbe strict short .L71
+.L72:
     cmp r8, r9
-    jae strict short .L43
+    jae strict short .L75
     lea r8, [r9 - 32]
     vmovdqu ymm2, [r8]
     vpcmpeqb ymm0, ymm2, ymm0
@@ -2453,91 +3789,332 @@ nvol_memchr2_entry_avx2:
     vpor ymm0, ymm0, ymm1
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short .L45
+    je strict short .L77
     bsf eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L45:
-.L43:
+.L77:
+.L75:
     xor eax, eax
 .L1:
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L20:
+.L36:
+    bsf rax, rsi
+    shr rax, 3
+    lea rax, [r8 + rax]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L52:
     bsf eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L18:
+.L50:
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict short .L20
-.L19:
+    jne strict short .L52
+.L51:
     vpmovmskb eax, xmm3
     bsf eax, eax
     lea rax, [r8 + rax + 16]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L24:
+.L56:
     bsf eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L38:
+.L70:
     bsf eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L36:
+.L68:
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict short .L38
-.L37:
+    jne strict short .L70
+.L69:
     vpmovmskb eax, ymm3
     bsf eax, eax
     lea rax, [r8 + rax + 32]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L42:
+.L74:
     bsf eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
+.unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memchr2_entry_sse2
 nvol_memchr2_entry_sse2:
+    push rdi
+    push rsi
     movzx ecx, cl
     movzx edx, dl
     mov r10, r9
     sub r10, r8
     cmp r10, 16
-    jae strict short .L2
-    cmp r8, r9
-    jae strict short .L5
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L4:
-    movzx eax, byte [r8]
-    cmp eax, ecx
-    je strict short .L8
-    cmp eax, edx
+    jae strict near .L2
+    cmp r10, 4
+    jae strict short .L4
+    test r10, r10
     jne strict short .L6
-.L8:
-.L7:
-    mov rax, r8
+    xor eax, eax
+    pop rsi
+    pop rdi
     ret
 .L6:
-    add r8, 1
-    cmp r8, r9
-    jb strict short .L4
-.L5:
+    movzx eax, byte [r8]
+    cmp eax, ecx
+    je strict short .L10
+    cmp eax, edx
+    jne strict short .L8
+.L10:
+    mov rax, r8
+    pop rsi
+    pop rdi
+    ret
+.L8:
+    cmp r10, 1
+    jne strict short .L11
     xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L11:
+    movzx eax, byte [r8 + 1]
+    cmp eax, ecx
+    je strict short .L15
+    cmp eax, edx
+    jne strict short .L13
+.L15:
+    lea rax, [r8 + 1]
+    pop rsi
+    pop rdi
+    ret
+.L13:
+    cmp r10, 2
+    jne strict short .L16
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L16:
+    movzx eax, byte [r8 + 2]
+    cmp eax, ecx
+    je strict short .L20
+    cmp eax, edx
+    jne strict short .L18
+.L20:
+    lea rax, [r8 + 2]
+    pop rsi
+    pop rdi
+    ret
+.L18:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L4:
+    cmp r10, 8
+    jae strict near .L21
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r8]
+    mov r10, rax
+    xor r10, rcx
+    mov r11, r10
+    sub r11d, 16843009
+    not r10d
+    and r11, r10
+    xor rax, rdx
+    mov r10, rax
+    sub r10d, 16843009
+    not eax
+    and r10, rax
+    or r11, r10
+    and r11d, -2139062144
+    je strict short .L23
+    bsf eax, r11d
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L23:
+    mov eax, dword [r9 - 4]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    sub ecx, 16843009
+    not r8d
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rcx, rdx
+    and ecx, -2139062144
+    je strict short .L25
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r9 + rax - 4]
+    pop rsi
+    pop rdi
+    ret
+.L25:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L21:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 72340172838076673
+    sub rsi, rdi
+    not r11
+    and rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 72340172838076673
+    sub r11, rdi
+    not rax
+    and r11, rax
+    or rsi, r11
+    mov rax, 9259542123273814144
+    and rsi, rax
+    je strict short .L27
+    bsf rax, rsi
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L27:
+    cmp r10, 16
+    ja strict short .L29
+    mov rax, qword [r9 - 8]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    mov r10, 72340172838076673
+    sub rcx, r10
+    not r8
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L31
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    pop rsi
+    pop rdi
+    ret
+.L31:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L29:
+    and r8, -8
+    add r8, 8
+    lea r10, [r9 - 8]
+    cmp r8, r10
+    ja strict short .L34
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+.L33:
+    mov rax, qword [r8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 72340172838076673
+    sub rsi, rdi
+    not r11
+    and rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 72340172838076673
+    sub r11, rdi
+    not rax
+    and r11, rax
+    or rsi, r11
+    mov rax, 9259542123273814144
+    and rsi, rax
+    jne strict near .L36
+.L35:
+    add r8, 8
+    cmp r8, r10
+    jbe strict short .L33
+.L34:
+    cmp r8, r9
+    jae strict short .L37
+    mov rax, qword [r9 - 8]
+    mov r8, rax
+    xor r8, rcx
+    mov rcx, r8
+    mov r10, 72340172838076673
+    sub rcx, r10
+    not r8
+    and rcx, r8
+    xor rax, rdx
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L39
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    pop rsi
+    pop rdi
+    ret
+.L39:
+.L37:
+    xor eax, eax
+    pop rsi
+    pop rdi
     ret
 .L2:
     imul eax, ecx, 16843009
@@ -2553,21 +4130,21 @@ nvol_memchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short .L9
+    je strict short .L41
     bsf eax, eax
     lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
     ret
-.L9:
+.L41:
     and r8, -16
     add r8, 16
     cmp r10, 32
-    jb strict short .L11
+    jb strict short .L43
     lea rcx, [r9 - 32]
     cmp r8, rcx
-    ja strict short .L14
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-.L13:
+    ja strict short .L46
+.L45:
     movdqa xmm2, [r8]
     movdqa xmm3, [r8 + 16]
     movdqa xmm4, xmm2
@@ -2582,18 +4159,18 @@ nvol_memchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short .L16
-.L15:
+    jne strict near .L48
+.L47:
     add r8, 32
     cmp r8, rcx
-    jbe strict short .L13
-.L14:
-.L11:
+    jbe strict short .L45
+.L46:
+.L43:
     lea rcx, [r9 - 16]
     cmp r8, rcx
-    ja strict short .L20
-    db 0xf, 0x1f, 0x0
-.L19:
+    ja strict short .L52
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L51:
     movdqu xmm2, [r8]
     movdqa xmm3, xmm2
     pcmpeqb xmm3, xmm0
@@ -2601,14 +4178,14 @@ nvol_memchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short .L22
-.L21:
+    jne strict short .L54
+.L53:
     add r8, 16
     cmp r8, rcx
-    jbe strict short .L19
-.L20:
+    jbe strict short .L51
+.L52:
     cmp r8, r9
-    jae strict short .L23
+    jae strict short .L55
     lea r8, [r9 - 16]
     movdqu xmm2, [r8]
     movdqa xmm3, xmm2
@@ -2617,36 +4194,55 @@ nvol_memchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short .L25
+    je strict short .L57
     bsf eax, eax
     lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
     ret
-.L25:
-.L23:
+.L57:
+.L55:
     xor eax, eax
 .L1:
+    pop rsi
+    pop rdi
     ret
-.L18:
+.L36:
+    bsf rax, rsi
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L50:
     bsf eax, eax
     lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
     ret
-.L16:
+.L48:
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict short .L18
-.L17:
+    jne strict short .L50
+.L49:
     pmovmskb eax, xmm2
     bsf eax, eax
     lea rax, [r8 + rax + 16]
+    pop rsi
+    pop rdi
     ret
-.L22:
+.L54:
     bsf eax, eax
     lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
     ret
+.unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_memchr2_raw
 nvol_memchr2_raw:
     jmp qword [rel nvol_memchr2_raw_ptr]
@@ -2706,33 +4302,285 @@ nvol_memchr2:
     db 0x66, 0x90
 global nvol_memrchr2_scalar
 nvol_memrchr2_scalar:
+    push rdi
+    push rsi
     movzx ecx, cl
     movzx edx, dl
-    cmp r9, r8
-    jbe strict short .L3
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L2:
-    lea r9, [r9 - 1]
-    movzx eax, byte [r9]
-    cmp eax, ecx
-    je strict short .L6
-    cmp eax, edx
+    mov r10, r9
+    sub r10, r8
+    cmp r10, 4
+    jae strict short .L2
+    test r10, r10
     jne strict short .L4
-.L6:
-.L5:
-    mov rax, r9
+    xor eax, eax
+    pop rsi
+    pop rdi
     ret
 .L4:
+    movzx eax, byte [r9 - 1]
+    cmp eax, ecx
+    je strict short .L8
+    cmp eax, edx
+    jne strict short .L6
+.L8:
+    lea rax, [r9 - 1]
+    pop rsi
+    pop rdi
+    ret
+.L6:
+    cmp r10, 1
+    jne strict short .L9
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L9:
+    movzx eax, byte [r9 - 2]
+    cmp eax, ecx
+    je strict short .L13
+    cmp eax, edx
+    jne strict short .L11
+.L13:
+    lea rax, [r9 - 2]
+    pop rsi
+    pop rdi
+    ret
+.L11:
+    cmp r10, 2
+    jne strict short .L14
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L14:
+    movzx eax, byte [r9 - 3]
+    cmp eax, ecx
+    je strict short .L18
+    cmp eax, edx
+    jne strict short .L16
+.L18:
+    lea rax, [r9 - 3]
+    pop rsi
+    pop rdi
+    ret
+.L16:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L2:
+    cmp r10, 8
+    jae strict near .L19
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r9 - 4]
+    mov r10, rax
+    xor r10, rcx
+    mov r11, r10
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, r10
+    xor rax, rdx
+    mov r10, rax
+    and r10d, 2139062143
+    add r10d, 2139062143
+    or r10, rax
+    and r11, r10
+    or r11d, 2139062143
+    not r11d
+    test r11d, r11d
+    je strict short .L21
+    bsr eax, r11d
+    shr rax, 3
+    lea rax, [r9 + rax - 4]
+    pop rsi
+    pop rdi
+    ret
+.L21:
+    mov eax, dword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rcx, rdx
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L23
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L23:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L19:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r9 - 8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 9187201950435737471
+    and rsi, rdi
+    mov rdi, 9187201950435737471
+    add rsi, rdi
+    or rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 9187201950435737471
+    and r11, rdi
+    mov rdi, 9187201950435737471
+    add r11, rdi
+    or r11, rax
+    and rsi, r11
+    mov rax, 9187201950435737471
+    or rsi, rax
+    not rsi
+    test rsi, rsi
+    je strict short .L25
+    bsr rax, rsi
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    pop rsi
+    pop rdi
+    ret
+.L25:
+    cmp r10, 16
+    ja strict short .L27
+    mov rax, qword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r10, 9187201950435737471
+    and rcx, r10
+    mov r10, 9187201950435737471
+    add rcx, r10
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    mov r9, 9187201950435737471
+    and rdx, r9
+    mov r9, 9187201950435737471
+    add rdx, r9
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L29
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L29:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L27:
+    and r9, -8
+    lea r10, [r8 + 8]
+    cmp r9, r10
+    jb strict short .L32
+    db 0xf, 0x1f, 0x40, 0x0
+.L31:
+    lea r9, [r9 - 8]
+    mov rax, qword [r9]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 9187201950435737471
+    and rsi, rdi
+    mov rdi, 9187201950435737471
+    add rsi, rdi
+    or rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 9187201950435737471
+    and r11, rdi
+    mov rdi, 9187201950435737471
+    add r11, rdi
+    or r11, rax
+    and rsi, r11
+    mov rax, 9187201950435737471
+    or rsi, rax
+    not rsi
+    test rsi, rsi
+    jne strict near .L34
+.L33:
+    cmp r9, r10
+    jae strict short .L31
+.L32:
     cmp r9, r8
-    ja strict short .L2
-.L3:
+    jbe strict short .L35
+    mov rax, qword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r10, 9187201950435737471
+    and rcx, r10
+    mov r10, 9187201950435737471
+    add rcx, r10
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    mov r9, 9187201950435737471
+    and rdx, r9
+    mov r9, 9187201950435737471
+    add rdx, r9
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L37
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L37:
+.L35:
     xor eax, eax
 .L1:
+    pop rsi
+    pop rdi
     ret
+.L34:
+    bsr rax, rsi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    pop rsi
+    pop rdi
+    ret
+.unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0x90
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_memrchr2_sse2
 nvol_memrchr2_sse2:
     movzx eax, cl
@@ -3025,37 +4873,290 @@ nvol_memrchr2_avx2:
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 global nvol_memrchr2_entry_avx2
 nvol_memrchr2_entry_avx2:
+    push rdi
+    push rsi
     movzx ecx, cl
     movzx edx, dl
     mov r10, r9
     sub r10, r8
     cmp r10, 16
-    jae strict short .L2
-    cmp r9, r8
-    jbe strict short .L5
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L4:
-    lea r9, [r9 - 1]
-    movzx eax, byte [r9]
-    cmp eax, ecx
-    je strict short .L8
-    cmp eax, edx
+    jae strict near .L2
+    cmp r10, 4
+    jae strict short .L4
+    test r10, r10
     jne strict short .L6
-.L8:
-.L7:
-    mov rax, r9
-    vzeroupper
-    ret
-.L6:
-    cmp r9, r8
-    ja strict short .L4
-.L5:
     xor eax, eax
     vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L6:
+    movzx eax, byte [r9 - 1]
+    cmp eax, ecx
+    je strict short .L10
+    cmp eax, edx
+    jne strict short .L8
+.L10:
+    lea rax, [r9 - 1]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L8:
+    cmp r10, 1
+    jne strict short .L11
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L11:
+    movzx eax, byte [r9 - 2]
+    cmp eax, ecx
+    je strict short .L15
+    cmp eax, edx
+    jne strict short .L13
+.L15:
+    lea rax, [r9 - 2]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L13:
+    cmp r10, 2
+    jne strict short .L16
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L16:
+    movzx eax, byte [r9 - 3]
+    cmp eax, ecx
+    je strict short .L20
+    cmp eax, edx
+    jne strict short .L18
+.L20:
+    lea rax, [r9 - 3]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L18:
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L4:
+    cmp r10, 8
+    jae strict near .L21
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r9 - 4]
+    mov r10, rax
+    xor r10, rcx
+    mov r11, r10
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, r10
+    xor rax, rdx
+    mov r10, rax
+    and r10d, 2139062143
+    add r10d, 2139062143
+    or r10, rax
+    and r11, r10
+    or r11d, 2139062143
+    not r11d
+    test r11d, r11d
+    je strict short .L23
+    bsr eax, r11d
+    shr rax, 3
+    lea rax, [r9 + rax - 4]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L23:
+    mov eax, dword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rcx, rdx
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L25
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L25:
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L21:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r9 - 8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 9187201950435737471
+    and rsi, rdi
+    mov rdi, 9187201950435737471
+    add rsi, rdi
+    or rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 9187201950435737471
+    and r11, rdi
+    mov rdi, 9187201950435737471
+    add r11, rdi
+    or r11, rax
+    and rsi, r11
+    mov rax, 9187201950435737471
+    or rsi, rax
+    not rsi
+    test rsi, rsi
+    je strict short .L27
+    bsr rax, rsi
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L27:
+    cmp r10, 16
+    ja strict short .L29
+    mov rax, qword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r10, 9187201950435737471
+    and rcx, r10
+    mov r10, 9187201950435737471
+    add rcx, r10
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    mov r9, 9187201950435737471
+    and rdx, r9
+    mov r9, 9187201950435737471
+    add rdx, r9
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L31
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L31:
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L29:
+    and r9, -8
+    lea r10, [r8 + 8]
+    cmp r9, r10
+    jb strict short .L34
+    db 0xf, 0x1f, 0x0
+.L33:
+    lea r9, [r9 - 8]
+    mov rax, qword [r9]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 9187201950435737471
+    and rsi, rdi
+    mov rdi, 9187201950435737471
+    add rsi, rdi
+    or rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 9187201950435737471
+    and r11, rdi
+    mov rdi, 9187201950435737471
+    add r11, rdi
+    or r11, rax
+    and rsi, r11
+    mov rax, 9187201950435737471
+    or rsi, rax
+    not rsi
+    test rsi, rsi
+    jne strict near .L36
+.L35:
+    cmp r9, r10
+    jae strict short .L33
+.L34:
+    cmp r9, r8
+    jbe strict short .L37
+    mov rax, qword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r10, 9187201950435737471
+    and rcx, r10
+    mov r10, 9187201950435737471
+    add rcx, r10
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    mov r9, 9187201950435737471
+    and rdx, r9
+    mov r9, 9187201950435737471
+    add rdx, r9
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L39
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L39:
+.L37:
+    xor eax, eax
+    vzeroupper
+    pop rsi
+    pop rdi
     ret
 .L2:
     cmp r10, 32
-    jae strict near .L9
+    jae strict near .L41
     vmovd xmm0, ecx
     vpbroadcastb xmm0, xmm0
     vmovd xmm1, edx
@@ -3066,23 +5167,24 @@ nvol_memrchr2_entry_avx2:
     vpor xmm2, xmm3, xmm2
     vpmovmskb eax, xmm2
     test eax, eax
-    je strict short .L11
+    je strict short .L43
     bsr eax, eax
     lea rax, [r9 + rax - 16]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L11:
+.L43:
     and r9, -16
     cmp r10, 32
-    jb strict short .L13
+    jb strict short .L45
     lea rcx, [r8 + 32]
     cmp r10, 512
-    jae strict near .L18
-.L15:
+    jae strict near .L50
+.L47:
     cmp r9, rcx
-    jb strict short .L22
-    db 0xf, 0x1f, 0x40, 0x0
-.L21:
+    jb strict short .L54
+.L53:
     lea r9, [r9 - 32]
     vmovdqa xmm2, [r9]
     vmovdqa xmm3, [r9 + 16]
@@ -3095,17 +5197,17 @@ nvol_memrchr2_entry_avx2:
     vpor xmm4, xmm2, xmm3
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict near .L24
-.L23:
+    jne strict near .L56
+.L55:
     cmp r9, rcx
-    jae strict short .L21
-.L22:
-.L13:
+    jae strict short .L53
+.L54:
+.L45:
     lea rcx, [r8 + 16]
     cmp r9, rcx
-    jb strict short .L28
+    jb strict short .L60
     db 0xf, 0x1f, 0x0
-.L27:
+.L59:
     lea r9, [r9 - 16]
     vmovdqu xmm2, [r9]
     vpcmpeqb xmm3, xmm2, xmm0
@@ -3113,30 +5215,34 @@ nvol_memrchr2_entry_avx2:
     vpor xmm2, xmm3, xmm2
     vpmovmskb eax, xmm2
     test eax, eax
-    jne strict near .L30
-.L29:
+    jne strict near .L62
+.L61:
     cmp r9, rcx
-    jae strict short .L27
-.L28:
+    jae strict short .L59
+.L60:
     cmp r9, r8
-    jbe strict short .L31
+    jbe strict short .L63
     vmovdqu xmm2, [r8]
     vpcmpeqb xmm0, xmm2, xmm0
     vpcmpeqb xmm1, xmm2, xmm1
     vpor xmm0, xmm0, xmm1
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short .L33
+    je strict short .L65
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L33:
-.L31:
+.L65:
+.L63:
     xor eax, eax
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L9:
+.L41:
     vmovd xmm0, ecx
     vpbroadcastb ymm0, xmm0
     vmovd xmm1, edx
@@ -3147,23 +5253,25 @@ nvol_memrchr2_entry_avx2:
     vpor ymm2, ymm3, ymm2
     vpmovmskb eax, ymm2
     test eax, eax
-    je strict short .L35
+    je strict short .L67
     bsr eax, eax
     lea rax, [r9 + rax - 32]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L35:
+.L67:
     and r9, -32
     cmp r10, 64
-    jb strict short .L37
+    jb strict short .L69
     lea rcx, [r8 + 64]
     cmp r10, 2048
-    jae strict near .L42
-.L39:
+    jae strict near .L74
+.L71:
     cmp r9, rcx
-    jb strict short .L46
-    db 0xf, 0x1f, 0x0
-.L45:
+    jb strict short .L78
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+.L77:
     lea r9, [r9 - 64]
     vmovdqa ymm2, [r9]
     vmovdqa ymm3, [r9 + 32]
@@ -3176,17 +5284,17 @@ nvol_memrchr2_entry_avx2:
     vpor ymm4, ymm2, ymm3
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict near .L48
-.L47:
+    jne strict near .L80
+.L79:
     cmp r9, rcx
-    jae strict short .L45
-.L46:
-.L37:
+    jae strict short .L77
+.L78:
+.L69:
     lea rcx, [r8 + 32]
     cmp r9, rcx
-    jb strict short .L52
+    jb strict short .L84
     db 0xf, 0x1f, 0x0
-.L51:
+.L83:
     lea r9, [r9 - 32]
     vmovdqu ymm2, [r9]
     vpcmpeqb ymm3, ymm2, ymm0
@@ -3194,40 +5302,54 @@ nvol_memrchr2_entry_avx2:
     vpor ymm2, ymm3, ymm2
     vpmovmskb eax, ymm2
     test eax, eax
-    jne strict near .L54
-.L53:
+    jne strict near .L86
+.L85:
     cmp r9, rcx
-    jae strict short .L51
-.L52:
+    jae strict short .L83
+.L84:
     cmp r9, r8
-    jbe strict short .L55
+    jbe strict short .L87
     vmovdqu ymm2, [r8]
     vpcmpeqb ymm0, ymm2, ymm0
     vpcmpeqb ymm1, ymm2, ymm1
     vpor ymm0, ymm0, ymm1
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short .L57
+    je strict short .L89
     bsr eax, eax
     lea rax, [r8 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L57:
-.L55:
+.L89:
+.L87:
     xor eax, eax
 .L1:
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L20:
+.L36:
+    bsr rax, rsi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    vzeroupper
+    pop rsi
+    pop rdi
+    ret
+.L52:
     bsr eax, eax
     lea rax, [r9 + rax + 16]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L18:
+.L50:
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L16:
+.L48:
     cmp r9, rcx
-    jb strict near .L15
+    jb strict near .L47
     lea r9, [r9 - 32]
     vmovdqa xmm2, [r9]
     vmovdqa xmm3, [r9 + 16]
@@ -3240,47 +5362,57 @@ nvol_memrchr2_entry_avx2:
     vpor xmm4, xmm2, xmm3
     vpmovmskb eax, xmm4
     test eax, eax
-    je strict short .L16
+    je strict short .L48
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict short .L20
-.L19:
+    jne strict short .L52
+.L51:
     vpmovmskb eax, xmm2
     bsr eax, eax
     lea rax, [r9 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-    jmp strict near .L15
-.L26:
+    jmp strict near .L47
+.L58:
     bsr eax, eax
     lea rax, [r9 + rax + 16]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L24:
+.L56:
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict short .L26
-.L25:
+    jne strict short .L58
+.L57:
     vpmovmskb eax, xmm2
     bsr eax, eax
     lea rax, [r9 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L30:
+.L62:
     bsr eax, eax
     lea rax, [r9 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L44:
+.L76:
     bsr eax, eax
     lea rax, [r9 + rax + 32]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L42:
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L40:
+.L74:
+    db 0xf, 0x1f, 0x40, 0x0
+.L72:
     cmp r9, rcx
-    jb strict near .L39
+    jb strict near .L71
     lea r9, [r9 - 64]
     vmovdqa ymm2, [r9]
     vmovdqa ymm3, [r9 + 32]
@@ -3293,67 +5425,319 @@ nvol_memrchr2_entry_avx2:
     vpor ymm4, ymm2, ymm3
     vpmovmskb eax, ymm4
     test eax, eax
-    je strict short .L40
+    je strict short .L72
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict short .L44
-.L43:
+    jne strict short .L76
+.L75:
     vpmovmskb eax, ymm2
     bsr eax, eax
     lea rax, [r9 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-    jmp strict near .L39
-.L50:
+    jmp strict near .L71
+.L82:
     bsr eax, eax
     lea rax, [r9 + rax + 32]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L48:
+.L80:
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict short .L50
-.L49:
+    jne strict short .L82
+.L81:
     vpmovmskb eax, ymm2
     bsr eax, eax
     lea rax, [r9 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
-.L54:
+.L86:
     bsr eax, eax
     lea rax, [r9 + rax]
     vzeroupper
+    pop rsi
+    pop rdi
     ret
+.unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memrchr2_entry_sse2
 nvol_memrchr2_entry_sse2:
+    push rdi
+    push rsi
     movzx ecx, cl
     movzx edx, dl
     mov r10, r9
     sub r10, r8
     cmp r10, 16
-    jae strict short .L2
-    cmp r9, r8
-    jbe strict short .L5
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L4:
-    lea r9, [r9 - 1]
-    movzx eax, byte [r9]
-    cmp eax, ecx
-    je strict short .L8
-    cmp eax, edx
+    jae strict near .L2
+    cmp r10, 4
+    jae strict short .L4
+    test r10, r10
     jne strict short .L6
-.L8:
-.L7:
-    mov rax, r9
+    xor eax, eax
+    pop rsi
+    pop rdi
     ret
 .L6:
-    cmp r9, r8
-    ja strict short .L4
-.L5:
+    movzx eax, byte [r9 - 1]
+    cmp eax, ecx
+    je strict short .L10
+    cmp eax, edx
+    jne strict short .L8
+.L10:
+    lea rax, [r9 - 1]
+    pop rsi
+    pop rdi
+    ret
+.L8:
+    cmp r10, 1
+    jne strict short .L11
     xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L11:
+    movzx eax, byte [r9 - 2]
+    cmp eax, ecx
+    je strict short .L15
+    cmp eax, edx
+    jne strict short .L13
+.L15:
+    lea rax, [r9 - 2]
+    pop rsi
+    pop rdi
+    ret
+.L13:
+    cmp r10, 2
+    jne strict short .L16
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L16:
+    movzx eax, byte [r9 - 3]
+    cmp eax, ecx
+    je strict short .L20
+    cmp eax, edx
+    jne strict short .L18
+.L20:
+    lea rax, [r9 - 3]
+    pop rsi
+    pop rdi
+    ret
+.L18:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L4:
+    cmp r10, 8
+    jae strict near .L21
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, dword [r9 - 4]
+    mov r10, rax
+    xor r10, rcx
+    mov r11, r10
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, r10
+    xor rax, rdx
+    mov r10, rax
+    and r10d, 2139062143
+    add r10d, 2139062143
+    or r10, rax
+    and r11, r10
+    or r11d, 2139062143
+    not r11d
+    test r11d, r11d
+    je strict short .L23
+    bsr eax, r11d
+    shr rax, 3
+    lea rax, [r9 + rax - 4]
+    pop rsi
+    pop rdi
+    ret
+.L23:
+    mov eax, dword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rcx, rdx
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L25
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L25:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L21:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, qword [r9 - 8]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 9187201950435737471
+    and rsi, rdi
+    mov rdi, 9187201950435737471
+    add rsi, rdi
+    or rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 9187201950435737471
+    and r11, rdi
+    mov rdi, 9187201950435737471
+    add r11, rdi
+    or r11, rax
+    and rsi, r11
+    mov rax, 9187201950435737471
+    or rsi, rax
+    not rsi
+    test rsi, rsi
+    je strict short .L27
+    bsr rax, rsi
+    shr rax, 3
+    lea rax, [r9 + rax - 8]
+    pop rsi
+    pop rdi
+    ret
+.L27:
+    cmp r10, 16
+    ja strict short .L29
+    mov rax, qword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r10, 9187201950435737471
+    and rcx, r10
+    mov r10, 9187201950435737471
+    add rcx, r10
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    mov r9, 9187201950435737471
+    and rdx, r9
+    mov r9, 9187201950435737471
+    add rdx, r9
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L31
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L31:
+    xor eax, eax
+    pop rsi
+    pop rdi
+    ret
+.L29:
+    and r9, -8
+    lea r10, [r8 + 8]
+    cmp r9, r10
+    jb strict short .L34
+    db 0x66, 0x90
+.L33:
+    lea r9, [r9 - 8]
+    mov rax, qword [r9]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    mov rdi, 9187201950435737471
+    and rsi, rdi
+    mov rdi, 9187201950435737471
+    add rsi, rdi
+    or rsi, r11
+    xor rax, rdx
+    mov r11, rax
+    mov rdi, 9187201950435737471
+    and r11, rdi
+    mov rdi, 9187201950435737471
+    add r11, rdi
+    or r11, rax
+    and rsi, r11
+    mov rax, 9187201950435737471
+    or rsi, rax
+    not rsi
+    test rsi, rsi
+    jne strict near .L36
+.L35:
+    cmp r9, r10
+    jae strict short .L33
+.L34:
+    cmp r9, r8
+    jbe strict short .L37
+    mov rax, qword [r8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r10, 9187201950435737471
+    and rcx, r10
+    mov r10, 9187201950435737471
+    add rcx, r10
+    or rcx, r9
+    xor rax, rdx
+    mov rdx, rax
+    mov r9, 9187201950435737471
+    and rdx, r9
+    mov r9, 9187201950435737471
+    add rdx, r9
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L39
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L39:
+.L37:
+    xor eax, eax
+    pop rsi
+    pop rdi
     ret
 .L2:
     imul eax, ecx, 16843009
@@ -3369,22 +5753,24 @@ nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short .L9
+    je strict short .L41
     bsr eax, eax
     lea rax, [r9 + rax - 16]
+    pop rsi
+    pop rdi
     ret
-.L9:
+.L41:
     and r9, -16
     cmp r10, 32
-    jb strict short .L11
+    jb strict short .L43
     lea rcx, [r8 + 32]
     cmp r10, 512
-    jae strict near .L16
-.L13:
+    jae strict near .L48
+.L45:
     cmp r9, rcx
-    jb strict short .L20
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L19:
+    jb strict short .L52
+    db 0xf, 0x1f, 0x0
+.L51:
     lea r9, [r9 - 32]
     movdqa xmm2, [r9]
     movdqa xmm3, [r9 + 16]
@@ -3400,17 +5786,17 @@ nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict near .L22
-.L21:
+    jne strict near .L54
+.L53:
     cmp r9, rcx
-    jae strict short .L19
-.L20:
-.L11:
+    jae strict short .L51
+.L52:
+.L43:
     lea rcx, [r8 + 16]
     cmp r9, rcx
-    jb strict short .L26
+    jb strict short .L58
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L25:
+.L57:
     lea r9, [r9 - 16]
     movdqu xmm2, [r9]
     movdqa xmm3, xmm2
@@ -3419,13 +5805,13 @@ nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict near .L28
-.L27:
+    jne strict near .L60
+.L59:
     cmp r9, rcx
-    jae strict short .L25
-.L26:
+    jae strict short .L57
+.L58:
     cmp r9, r8
-    jbe strict short .L29
+    jbe strict short .L61
     movdqu xmm2, [r8]
     movdqa xmm3, xmm2
     pcmpeqb xmm3, xmm0
@@ -3433,23 +5819,37 @@ nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short .L31
+    je strict short .L63
     bsr eax, eax
     lea rax, [r8 + rax]
+    pop rsi
+    pop rdi
     ret
-.L31:
-.L29:
+.L63:
+.L61:
     xor eax, eax
 .L1:
+    pop rsi
+    pop rdi
     ret
-.L18:
+.L36:
+    bsr rax, rsi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    pop rsi
+    pop rdi
+    ret
+.L50:
     bsr eax, eax
     lea rax, [r9 + rax + 16]
+    pop rsi
+    pop rdi
     ret
-.L16:
-.L14:
+.L48:
+    db 0xf, 0x1f, 0x0
+.L46:
     cmp r9, rcx
-    jb strict near .L13
+    jb strict near .L45
     lea r9, [r9 - 32]
     movdqa xmm2, [r9]
     movdqa xmm3, [r9 + 16]
@@ -3465,37 +5865,48 @@ nvol_memrchr2_entry_sse2:
     por xmm3, xmm2
     pmovmskb eax, xmm3
     test eax, eax
-    je strict short .L14
+    je strict short .L46
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short .L18
-.L17:
+    jne strict short .L50
+.L49:
     pmovmskb eax, xmm4
     bsr eax, eax
     lea rax, [r9 + rax]
+    pop rsi
+    pop rdi
     ret
-    jmp strict near .L13
-.L24:
+    jmp strict near .L45
+.L56:
     bsr eax, eax
     lea rax, [r9 + rax + 16]
+    pop rsi
+    pop rdi
     ret
-.L22:
+.L54:
     pmovmskb eax, xmm2
     test eax, eax
-    jne strict short .L24
-.L23:
+    jne strict short .L56
+.L55:
     pmovmskb eax, xmm4
     bsr eax, eax
     lea rax, [r9 + rax]
+    pop rsi
+    pop rdi
     ret
-.L28:
+.L60:
     bsr eax, eax
     lea rax, [r9 + rax]
+    pop rsi
+    pop rdi
     ret
+.unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memrchr2_raw
 nvol_memrchr2_raw:
     jmp qword [rel nvol_memrchr2_raw_ptr]
@@ -3555,35 +5966,272 @@ nvol_memrchr2:
     db 0x66, 0x90
 global nvol_memchr3_scalar
 nvol_memchr3_scalar:
+    push rbx
+    push rbp
+    push rdi
+    push rsi
     movzx ecx, cl
     movzx edx, dl
     movzx r8d, r8b
-    mov r10, qword [rsp + 40]
+    mov r10, qword [rsp + 72]
+    mov r11, r10
+    sub r11, r9
+    cmp r11, 5
+    jae strict short .L2
     cmp r9, r10
-    jae strict short .L3
+    jae strict short .L5
     db 0xf, 0x1f, 0x40, 0x0
-.L2:
+.L4:
     movzx eax, byte [r9]
     cmp eax, ecx
-    je strict short .L6
+    je strict short .L8
     cmp eax, edx
-    je strict short .L6
+    je strict short .L8
     cmp eax, r8d
-    jne strict short .L4
-.L6:
-.L5:
+    jne strict short .L6
+.L8:
+.L7:
     mov rax, r9
-    ret
-.L4:
+    jmp strict near .L1
+.L6:
     add r9, 1
     cmp r9, r10
-    jb strict short .L2
-.L3:
+    jb strict short .L4
+.L5:
+    xor eax, eax
+    jmp strict near .L1
+.L2:
+    cmp r11, 8
+    jae strict near .L9
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, 16843009
+    imul r8d, eax
+    mov eax, dword [r9]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    sub esi, 16843009
+    not r11d
+    and rsi, r11
+    mov r11, rax
+    xor r11, rdx
+    mov rdi, r11
+    sub edi, 16843009
+    not r11d
+    and rdi, r11
+    or rsi, rdi
+    xor rax, r8
+    mov r11, rax
+    sub r11d, 16843009
+    not eax
+    and r11, rax
+    or rsi, r11
+    and esi, -2139062144
+    je strict short .L11
+    bsf eax, esi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L11:
+    mov eax, dword [r10 - 4]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    sub ecx, 16843009
+    not r9d
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    sub edx, 16843009
+    not r9d
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rcx, rdx
+    and ecx, -2139062144
+    je strict short .L13
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r10 + rax - 4]
+    jmp strict near .L1
+.L13:
+    xor eax, eax
+    jmp strict near .L1
+.L9:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, 72340172838076673
+    imul r8, rax
+    mov rax, qword [r9]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 72340172838076673
+    sub rdi, rbx
+    not rsi
+    and rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not rsi
+    and rbx, rsi
+    or rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 72340172838076673
+    sub rsi, rbx
+    not rax
+    and rsi, rax
+    or rdi, rsi
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short .L15
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L15:
+    cmp r11, 16
+    ja strict near .L17
+    mov rax, qword [r10 - 8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r11, 72340172838076673
+    sub rcx, r11
+    not r9
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    mov r11, 72340172838076673
+    sub rdx, r11
+    not r9
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L19
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict near .L1
+.L19:
+    xor eax, eax
+    jmp strict near .L1
+.L17:
+    and r9, -8
+    add r9, 8
+    lea r11, [r10 - 8]
+    cmp r9, r11
+    ja strict short .L22
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L21:
+    mov rax, qword [r9]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 72340172838076673
+    sub rdi, rbx
+    not rsi
+    and rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not rsi
+    and rbx, rsi
+    or rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 72340172838076673
+    sub rsi, rbx
+    not rax
+    and rsi, rax
+    or rdi, rsi
+    mov rax, 9259542123273814144
+    and rdi, rax
+    jne strict near .L24
+.L23:
+    add r9, 8
+    cmp r9, r11
+    jbe strict short .L21
+.L22:
+    cmp r9, r10
+    jae strict short .L25
+    mov rax, qword [r10 - 8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r11, 72340172838076673
+    sub rcx, r11
+    not r9
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    mov r11, 72340172838076673
+    sub rdx, r11
+    not r9
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L27
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict short .L1
+.L27:
+.L25:
     xor eax, eax
 .L1:
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
     ret
+.L24:
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict short .L1
+.unwind_end:
 
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
 global nvol_memchr3_sse2
 nvol_memchr3_sse2:
     sub rsp, 24
@@ -3875,47 +6523,259 @@ nvol_memchr3_avx2:
     db 0x90
 global nvol_memchr3_entry_avx2
 nvol_memchr3_entry_avx2:
+    push rbx
+    push rbp
+    push rdi
+    push rsi
     sub rsp, 24
     vmovdqu [rsp], xmm6
     movzx ecx, cl
     movzx edx, dl
     movzx r8d, r8b
-    mov r10, qword [rsp + 64]
+    mov r10, qword [rsp + 96]
     mov r11, r10
     sub r11, r9
     cmp r11, 16
-    jae strict short .L2
+    jae strict near .L2
+    cmp r11, 5
+    jae strict short .L4
     cmp r9, r10
-    jae strict short .L5
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L4:
+    jae strict short .L7
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
     movzx eax, byte [r9]
     cmp eax, ecx
-    je strict short .L8
+    je strict short .L10
     cmp eax, edx
-    je strict short .L8
+    je strict short .L10
     cmp eax, r8d
-    jne strict short .L6
-.L8:
-.L7:
+    jne strict short .L8
+.L10:
+.L9:
     mov rax, r9
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L6:
+    jmp strict near .L1
+.L8:
     add r9, 1
     cmp r9, r10
-    jb strict short .L4
-.L5:
+    jb strict short .L6
+.L7:
     xor eax, eax
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict near .L1
+.L4:
+    cmp r11, 8
+    jae strict near .L11
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, 16843009
+    imul r8d, eax
+    mov eax, dword [r9]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    sub esi, 16843009
+    not r11d
+    and rsi, r11
+    mov r11, rax
+    xor r11, rdx
+    mov rdi, r11
+    sub edi, 16843009
+    not r11d
+    and rdi, r11
+    or rsi, rdi
+    xor rax, r8
+    mov r11, rax
+    sub r11d, 16843009
+    not eax
+    and r11, rax
+    or rsi, r11
+    and esi, -2139062144
+    je strict short .L13
+    bsf eax, esi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L13:
+    mov eax, dword [r10 - 4]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    sub ecx, 16843009
+    not r9d
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    sub edx, 16843009
+    not r9d
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rcx, rdx
+    and ecx, -2139062144
+    je strict short .L15
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r10 + rax - 4]
+    jmp strict near .L1
+.L15:
+    xor eax, eax
+    jmp strict near .L1
+.L11:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, 72340172838076673
+    imul r8, rax
+    mov rax, qword [r9]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 72340172838076673
+    sub rdi, rbx
+    not rsi
+    and rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not rsi
+    and rbx, rsi
+    or rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 72340172838076673
+    sub rsi, rbx
+    not rax
+    and rsi, rax
+    or rdi, rsi
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short .L17
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L17:
+    cmp r11, 16
+    ja strict near .L19
+    mov rax, qword [r10 - 8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r11, 72340172838076673
+    sub rcx, r11
+    not r9
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    mov r11, 72340172838076673
+    sub rdx, r11
+    not r9
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L21
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict near .L1
+.L21:
+    xor eax, eax
+    jmp strict near .L1
+.L19:
+    and r9, -8
+    add r9, 8
+    lea r11, [r10 - 8]
+    cmp r9, r11
+    ja strict short .L24
+.L23:
+    mov rax, qword [r9]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 72340172838076673
+    sub rdi, rbx
+    not rsi
+    and rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not rsi
+    and rbx, rsi
+    or rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 72340172838076673
+    sub rsi, rbx
+    not rax
+    and rsi, rax
+    or rdi, rsi
+    mov rax, 9259542123273814144
+    and rdi, rax
+    jne strict near .L26
+.L25:
+    add r9, 8
+    cmp r9, r11
+    jbe strict short .L23
+.L24:
+    cmp r9, r10
+    jae strict short .L27
+    mov rax, qword [r10 - 8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r11, 72340172838076673
+    sub rcx, r11
+    not r9
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    mov r11, 72340172838076673
+    sub rdx, r11
+    not r9
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L29
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict near .L1
+.L29:
+.L27:
+    xor eax, eax
+    jmp strict near .L1
 .L2:
     cmp r11, 32
-    jae strict near .L9
+    jae strict near .L31
     vmovd xmm0, ecx
     vpbroadcastb xmm0, xmm0
     vmovd xmm1, edx
@@ -3930,23 +6790,20 @@ nvol_memchr3_entry_avx2:
     vpor xmm3, xmm4, xmm3
     vpmovmskb eax, xmm3
     test eax, eax
-    je strict short .L11
+    je strict short .L33
     bsf eax, eax
     lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L11:
+    jmp strict near .L1
+.L33:
     and r9, -16
     add r9, 16
     cmp r11, 32
-    jb strict short .L13
+    jb strict short .L35
     lea rcx, [r10 - 32]
     cmp r9, rcx
-    ja strict short .L16
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L15:
+    ja strict short .L38
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L37:
     vmovdqa xmm3, [r9]
     vmovdqa xmm4, [r9 + 16]
     vpcmpeqb xmm5, xmm3, xmm0
@@ -3962,18 +6819,18 @@ nvol_memchr3_entry_avx2:
     vpor xmm5, xmm3, xmm4
     vpmovmskb eax, xmm5
     test eax, eax
-    jne strict near .L18
-.L17:
+    jne strict near .L40
+.L39:
     add r9, 32
     cmp r9, rcx
-    jbe strict short .L15
-.L16:
-.L13:
+    jbe strict short .L37
+.L38:
+.L35:
     lea rcx, [r10 - 16]
     cmp r9, rcx
-    ja strict short .L22
+    ja strict short .L44
     db 0xf, 0x1f, 0x0
-.L21:
+.L43:
     vmovdqu xmm3, [r9]
     vpcmpeqb xmm4, xmm3, xmm0
     vpcmpeqb xmm5, xmm3, xmm1
@@ -3982,14 +6839,14 @@ nvol_memchr3_entry_avx2:
     vpor xmm3, xmm4, xmm3
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict near .L24
-.L23:
+    jne strict near .L46
+.L45:
     add r9, 16
     cmp r9, rcx
-    jbe strict short .L21
-.L22:
+    jbe strict short .L43
+.L44:
     cmp r9, r10
-    jae strict short .L25
+    jae strict short .L47
     lea r9, [r10 - 16]
     vmovdqu xmm3, [r9]
     vpcmpeqb xmm0, xmm3, xmm0
@@ -3999,21 +6856,15 @@ nvol_memchr3_entry_avx2:
     vpor xmm0, xmm0, xmm1
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short .L27
+    je strict short .L49
     bsf eax, eax
     lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L27:
-.L25:
+    jmp strict near .L1
+.L49:
+.L47:
     xor eax, eax
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L9:
+    jmp strict near .L1
+.L31:
     vmovd xmm0, ecx
     vpbroadcastb ymm0, xmm0
     vmovd xmm1, edx
@@ -4028,23 +6879,20 @@ nvol_memchr3_entry_avx2:
     vpor ymm3, ymm4, ymm3
     vpmovmskb eax, ymm3
     test eax, eax
-    je strict short .L29
+    je strict short .L51
     bsf eax, eax
     lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L29:
+    jmp strict near .L1
+.L51:
     and r9, -32
     add r9, 32
     cmp r11, 64
-    jb strict short .L31
+    jb strict short .L53
     lea rcx, [r10 - 64]
     cmp r9, rcx
-    ja strict short .L34
+    ja strict short .L56
     db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L33:
+.L55:
     vmovdqa ymm3, [r9]
     vmovdqa ymm4, [r9 + 32]
     vpcmpeqb ymm5, ymm3, ymm0
@@ -4060,18 +6908,18 @@ nvol_memchr3_entry_avx2:
     vpor ymm5, ymm3, ymm4
     vpmovmskb eax, ymm5
     test eax, eax
-    jne strict near .L36
-.L35:
+    jne strict near .L58
+.L57:
     add r9, 64
     cmp r9, rcx
-    jbe strict short .L33
-.L34:
-.L31:
+    jbe strict short .L55
+.L56:
+.L53:
     lea rcx, [r10 - 32]
     cmp r9, rcx
-    ja strict short .L40
+    ja strict short .L62
     db 0xf, 0x1f, 0x0
-.L39:
+.L61:
     vmovdqu ymm3, [r9]
     vpcmpeqb ymm4, ymm3, ymm0
     vpcmpeqb ymm5, ymm3, ymm1
@@ -4080,14 +6928,14 @@ nvol_memchr3_entry_avx2:
     vpor ymm3, ymm4, ymm3
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict near .L42
-.L41:
+    jne strict near .L64
+.L63:
     add r9, 32
     cmp r9, rcx
-    jbe strict short .L39
-.L40:
+    jbe strict short .L61
+.L62:
     cmp r9, r10
-    jae strict short .L43
+    jae strict short .L65
     lea r9, [r10 - 32]
     vmovdqu ymm3, [r9]
     vpcmpeqb ymm0, ymm3, ymm0
@@ -4097,73 +6945,61 @@ nvol_memchr3_entry_avx2:
     vpor ymm0, ymm0, ymm1
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short .L45
+    je strict short .L67
     bsf eax, eax
     lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L45:
-.L43:
+    jmp strict short .L1
+.L67:
+.L65:
     xor eax, eax
 .L1:
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
     ret
-.L20:
-    bsf eax, eax
+.L26:
+    bsf rax, rdi
+    shr rax, 3
     lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L18:
-    vpmovmskb eax, xmm3
-    test eax, eax
-    jne strict short .L20
-.L19:
-    vpmovmskb eax, xmm4
-    bsf eax, eax
-    lea rax, [r9 + rax + 16]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L24:
-    bsf eax, eax
-    lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L38:
-    bsf eax, eax
-    lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L36:
-    vpmovmskb eax, ymm3
-    test eax, eax
-    jne strict short .L38
-.L37:
-    vpmovmskb eax, ymm4
-    bsf eax, eax
-    lea rax, [r9 + rax + 32]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict short .L1
 .L42:
     bsf eax, eax
     lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict short .L1
+.L40:
+    vpmovmskb eax, xmm3
+    test eax, eax
+    jne strict short .L42
+.L41:
+    vpmovmskb eax, xmm4
+    bsf eax, eax
+    lea rax, [r9 + rax + 16]
+    jmp strict short .L1
+.L46:
+    bsf eax, eax
+    lea rax, [r9 + rax]
+    jmp strict short .L1
+.L60:
+    bsf eax, eax
+    lea rax, [r9 + rax]
+    jmp strict short .L1
+.L58:
+    vpmovmskb eax, ymm3
+    test eax, eax
+    jne strict short .L60
+.L59:
+    vpmovmskb eax, ymm4
+    bsf eax, eax
+    lea rax, [r9 + rax + 32]
+    jmp strict short .L1
+.L64:
+    bsf eax, eax
+    lea rax, [r9 + rax]
+    jmp strict short .L1
 .unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
@@ -4171,46 +7007,259 @@ nvol_memchr3_entry_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x90
 global nvol_memchr3_entry_sse2
 nvol_memchr3_entry_sse2:
+    push rbx
+    push rbp
+    push rdi
+    push rsi
     sub rsp, 24
     movdqu [rsp], xmm6
     movzx ecx, cl
     movzx edx, dl
     movzx r8d, r8b
-    mov r10, qword [rsp + 64]
+    mov r10, qword [rsp + 96]
     mov r11, r10
     sub r11, r9
     cmp r11, 16
-    jae strict short .L2
+    jae strict near .L2
+    cmp r11, 5
+    jae strict short .L4
     cmp r9, r10
-    jae strict short .L5
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L4:
+    jae strict short .L7
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
     movzx eax, byte [r9]
     cmp eax, ecx
-    je strict short .L8
+    je strict short .L10
     cmp eax, edx
-    je strict short .L8
+    je strict short .L10
     cmp eax, r8d
-    jne strict short .L6
-.L8:
-.L7:
+    jne strict short .L8
+.L10:
+.L9:
     mov rax, r9
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L6:
+    jmp strict near .L1
+.L8:
     add r9, 1
     cmp r9, r10
-    jb strict short .L4
-.L5:
+    jb strict short .L6
+.L7:
     xor eax, eax
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict near .L1
+.L4:
+    cmp r11, 8
+    jae strict near .L11
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, 16843009
+    imul r8d, eax
+    mov eax, dword [r9]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    sub esi, 16843009
+    not r11d
+    and rsi, r11
+    mov r11, rax
+    xor r11, rdx
+    mov rdi, r11
+    sub edi, 16843009
+    not r11d
+    and rdi, r11
+    or rsi, rdi
+    xor rax, r8
+    mov r11, rax
+    sub r11d, 16843009
+    not eax
+    and r11, rax
+    or rsi, r11
+    and esi, -2139062144
+    je strict short .L13
+    bsf eax, esi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L13:
+    mov eax, dword [r10 - 4]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    sub ecx, 16843009
+    not r9d
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    sub edx, 16843009
+    not r9d
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    sub edx, 16843009
+    not eax
+    and rdx, rax
+    or rcx, rdx
+    and ecx, -2139062144
+    je strict short .L15
+    bsf eax, ecx
+    shr rax, 3
+    lea rax, [r10 + rax - 4]
+    jmp strict near .L1
+.L15:
+    xor eax, eax
+    jmp strict near .L1
+.L11:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, 72340172838076673
+    imul r8, rax
+    mov rax, qword [r9]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 72340172838076673
+    sub rdi, rbx
+    not rsi
+    and rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not rsi
+    and rbx, rsi
+    or rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 72340172838076673
+    sub rsi, rbx
+    not rax
+    and rsi, rax
+    or rdi, rsi
+    mov rax, 9259542123273814144
+    and rdi, rax
+    je strict short .L17
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L17:
+    cmp r11, 16
+    ja strict near .L19
+    mov rax, qword [r10 - 8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r11, 72340172838076673
+    sub rcx, r11
+    not r9
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    mov r11, 72340172838076673
+    sub rdx, r11
+    not r9
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L21
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict near .L1
+.L21:
+    xor eax, eax
+    jmp strict near .L1
+.L19:
+    and r9, -8
+    add r9, 8
+    lea r11, [r10 - 8]
+    cmp r9, r11
+    ja strict short .L24
+.L23:
+    mov rax, qword [r9]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 72340172838076673
+    sub rdi, rbx
+    not rsi
+    and rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 72340172838076673
+    sub rbx, rbp
+    not rsi
+    and rbx, rsi
+    or rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 72340172838076673
+    sub rsi, rbx
+    not rax
+    and rsi, rax
+    or rdi, rsi
+    mov rax, 9259542123273814144
+    and rdi, rax
+    jne strict near .L26
+.L25:
+    add r9, 8
+    cmp r9, r11
+    jbe strict short .L23
+.L24:
+    cmp r9, r10
+    jae strict short .L27
+    mov rax, qword [r10 - 8]
+    mov r9, rax
+    xor r9, rcx
+    mov rcx, r9
+    mov r11, 72340172838076673
+    sub rcx, r11
+    not r9
+    and rcx, r9
+    mov r9, rax
+    xor r9, rdx
+    mov rdx, r9
+    mov r11, 72340172838076673
+    sub rdx, r11
+    not r9
+    and rdx, r9
+    or rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 72340172838076673
+    sub rdx, r8
+    not rax
+    and rdx, rax
+    or rcx, rdx
+    mov rax, 9259542123273814144
+    and rcx, rax
+    je strict short .L29
+    bsf rax, rcx
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict near .L1
+.L29:
+.L27:
+    xor eax, eax
+    jmp strict near .L1
 .L2:
     imul eax, ecx, 16843009
     movd xmm0, eax
@@ -4231,22 +7280,20 @@ nvol_memchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short .L9
+    je strict short .L31
     bsf eax, eax
     lea rax, [r9 + rax]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L9:
+    jmp strict near .L1
+.L31:
     and r9, -16
     add r9, 16
     cmp r11, 32
-    jb strict short .L11
+    jb strict short .L33
     lea rcx, [r10 - 32]
     cmp r9, rcx
-    ja strict short .L14
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L13:
+    ja strict short .L36
+    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L35:
     movdqa xmm3, [r9]
     movdqa xmm4, [r9 + 16]
     movdqa xmm5, xmm3
@@ -4267,18 +7314,18 @@ nvol_memchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict near .L16
-.L15:
+    jne strict near .L38
+.L37:
     add r9, 32
     cmp r9, rcx
-    jbe strict short .L13
-.L14:
-.L11:
+    jbe strict short .L35
+.L36:
+.L33:
     lea rcx, [r10 - 16]
     cmp r9, rcx
-    ja strict short .L20
+    ja strict short .L42
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L19:
+.L41:
     movdqu xmm3, [r9]
     movdqa xmm4, xmm3
     pcmpeqb xmm4, xmm0
@@ -4289,14 +7336,14 @@ nvol_memchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict near .L22
-.L21:
+    jne strict near .L44
+.L43:
     add r9, 16
     cmp r9, rcx
-    jbe strict short .L19
-.L20:
+    jbe strict short .L41
+.L42:
     cmp r9, r10
-    jae strict short .L23
+    jae strict short .L45
     lea r9, [r10 - 16]
     movdqu xmm3, [r9]
     movdqa xmm4, xmm3
@@ -4308,48 +7355,46 @@ nvol_memchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short .L25
+    je strict short .L47
     bsf eax, eax
     lea rax, [r9 + rax]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L25:
-.L23:
+    jmp strict short .L1
+.L47:
+.L45:
     xor eax, eax
 .L1:
     movdqu xmm6, [rsp]
     add rsp, 24
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
     ret
-.L18:
+.L26:
+    bsf rax, rdi
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict short .L1
+.L40:
     bsf eax, eax
     lea rax, [r9 + rax]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L16:
+    jmp strict short .L1
+.L38:
     pmovmskb eax, xmm5
     test eax, eax
-    jne strict short .L18
-.L17:
+    jne strict short .L40
+.L39:
     pmovmskb eax, xmm3
     bsf eax, eax
     lea rax, [r9 + rax + 16]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L22:
+    jmp strict short .L1
+.L44:
     bsf eax, eax
     lea rax, [r9 + rax]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict short .L1
 .unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_memchr3_raw
 nvol_memchr3_raw:
     jmp qword [rel nvol_memchr3_raw_ptr]
@@ -4410,34 +7455,289 @@ nvol_memchr3:
     db 0x90
 global nvol_memrchr3_scalar
 nvol_memrchr3_scalar:
+    push rbx
+    push rbp
+    push rdi
+    push rsi
     movzx ecx, cl
     movzx edx, dl
     movzx r8d, r8b
-    mov rax, qword [rsp + 40]
-    cmp rax, r9
-    jbe strict short .L3
+    mov r10, qword [rsp + 72]
+    mov r11, r10
+    sub r11, r9
+    cmp r11, 5
+    jae strict short .L2
+    cmp r10, r9
+    jbe strict short .L5
     db 0xf, 0x1f, 0x40, 0x0
-.L2:
-    lea rax, [rax - 1]
-    movzx r10d, byte [rax]
-    cmp r10d, ecx
-    je strict short .L6
-    cmp r10d, edx
-    je strict short .L6
-    cmp r10d, r8d
-    jne strict short .L4
-.L6:
-.L5:
-    ret
 .L4:
-    cmp rax, r9
-    ja strict short .L2
-.L3:
+    lea r10, [r10 - 1]
+    movzx eax, byte [r10]
+    cmp eax, ecx
+    je strict short .L8
+    cmp eax, edx
+    je strict short .L8
+    cmp eax, r8d
+    jne strict short .L6
+.L8:
+.L7:
+    mov rax, r10
+    jmp strict near .L1
+.L6:
+    cmp r10, r9
+    ja strict short .L4
+.L5:
+    xor eax, eax
+    jmp strict near .L1
+.L2:
+    cmp r11, 8
+    jae strict near .L9
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, 16843009
+    imul r8d, eax
+    mov eax, dword [r10 - 4]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    and esi, 2139062143
+    add esi, 2139062143
+    or rsi, r11
+    mov r11, rax
+    xor r11, rdx
+    mov rdi, r11
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, r11
+    and rsi, rdi
+    xor rax, r8
+    mov r11, rax
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, rax
+    and rsi, r11
+    or esi, 2139062143
+    not esi
+    test esi, esi
+    je strict short .L11
+    bsr eax, esi
+    shr rax, 3
+    lea rax, [r10 + rax - 4]
+    jmp strict near .L1
+.L11:
+    mov eax, dword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rcx, rdx
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L13
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L13:
+    xor eax, eax
+    jmp strict near .L1
+.L9:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, 72340172838076673
+    imul r8, rax
+    mov rax, qword [r10 - 8]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 9187201950435737471
+    and rdi, rbx
+    mov rbx, 9187201950435737471
+    add rdi, rbx
+    or rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, rsi
+    and rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 9187201950435737471
+    and rsi, rbx
+    mov rbx, 9187201950435737471
+    add rsi, rbx
+    or rsi, rax
+    and rdi, rsi
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short .L15
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict near .L1
+.L15:
+    cmp r11, 16
+    ja strict near .L17
+    mov rax, qword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    mov r11, 9187201950435737471
+    and rcx, r11
+    mov r11, 9187201950435737471
+    add rcx, r11
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    mov r11, 9187201950435737471
+    and rdx, r11
+    mov r11, 9187201950435737471
+    add rdx, r11
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 9187201950435737471
+    and rdx, r8
+    mov r8, 9187201950435737471
+    add rdx, r8
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L19
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L19:
+    xor eax, eax
+    jmp strict near .L1
+.L17:
+    and r10, -8
+    lea r11, [r9 + 8]
+    cmp r10, r11
+    jb strict near .L22
+    db 0xf, 0x1f, 0x0
+.L21:
+    lea r10, [r10 - 8]
+    mov rax, qword [r10]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 9187201950435737471
+    and rdi, rbx
+    mov rbx, 9187201950435737471
+    add rdi, rbx
+    or rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, rsi
+    and rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 9187201950435737471
+    and rsi, rbx
+    mov rbx, 9187201950435737471
+    add rsi, rbx
+    or rsi, rax
+    and rdi, rsi
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    jne strict near .L24
+.L23:
+    cmp r10, r11
+    jae strict near .L21
+.L22:
+    cmp r10, r9
+    jbe strict near .L25
+    mov rax, qword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    mov r11, 9187201950435737471
+    and rcx, r11
+    mov r11, 9187201950435737471
+    add rcx, r11
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    mov r11, 9187201950435737471
+    and rdx, r11
+    mov r11, 9187201950435737471
+    add rdx, r11
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 9187201950435737471
+    and rdx, r8
+    mov r8, 9187201950435737471
+    add rdx, r8
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L27
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict short .L1
+.L27:
+.L25:
     xor eax, eax
 .L1:
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
     ret
+.L24:
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [r10 + rax]
+    jmp strict short .L1
+.unwind_end:
 
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 global nvol_memrchr3_sse2
 nvol_memrchr3_sse2:
     sub rsp, 24
@@ -4809,47 +8109,283 @@ nvol_memrchr3_avx2:
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_memrchr3_entry_avx2
 nvol_memrchr3_entry_avx2:
+    push rbx
+    push rbp
+    push rdi
+    push rsi
     sub rsp, 24
     vmovdqu [rsp], xmm6
     movzx ecx, cl
     movzx edx, dl
     movzx r8d, r8b
-    mov r10, qword [rsp + 64]
+    mov r10, qword [rsp + 96]
     mov r11, r10
     sub r11, r9
     cmp r11, 16
-    jae strict short .L2
+    jae strict near .L2
+    cmp r11, 5
+    jae strict short .L4
     cmp r10, r9
-    jbe strict short .L5
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L4:
+    jbe strict short .L7
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
     lea r10, [r10 - 1]
     movzx eax, byte [r10]
     cmp eax, ecx
-    je strict short .L8
+    je strict short .L10
     cmp eax, edx
-    je strict short .L8
+    je strict short .L10
     cmp eax, r8d
-    jne strict short .L6
-.L8:
-.L7:
+    jne strict short .L8
+.L10:
+.L9:
     mov rax, r10
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L6:
+    jmp strict near .L1
+.L8:
     cmp r10, r9
-    ja strict short .L4
-.L5:
+    ja strict short .L6
+.L7:
     xor eax, eax
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict near .L1
+.L4:
+    cmp r11, 8
+    jae strict near .L11
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, 16843009
+    imul r8d, eax
+    mov eax, dword [r10 - 4]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    and esi, 2139062143
+    add esi, 2139062143
+    or rsi, r11
+    mov r11, rax
+    xor r11, rdx
+    mov rdi, r11
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, r11
+    and rsi, rdi
+    xor rax, r8
+    mov r11, rax
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, rax
+    and rsi, r11
+    or esi, 2139062143
+    not esi
+    test esi, esi
+    je strict short .L13
+    bsr eax, esi
+    shr rax, 3
+    lea rax, [r10 + rax - 4]
+    jmp strict near .L1
+.L13:
+    mov eax, dword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rcx, rdx
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L15
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L15:
+    xor eax, eax
+    jmp strict near .L1
+.L11:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, 72340172838076673
+    imul r8, rax
+    mov rax, qword [r10 - 8]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 9187201950435737471
+    and rdi, rbx
+    mov rbx, 9187201950435737471
+    add rdi, rbx
+    or rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, rsi
+    and rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 9187201950435737471
+    and rsi, rbx
+    mov rbx, 9187201950435737471
+    add rsi, rbx
+    or rsi, rax
+    and rdi, rsi
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short .L17
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict near .L1
+.L17:
+    cmp r11, 16
+    ja strict near .L19
+    mov rax, qword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    mov r11, 9187201950435737471
+    and rcx, r11
+    mov r11, 9187201950435737471
+    add rcx, r11
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    mov r11, 9187201950435737471
+    and rdx, r11
+    mov r11, 9187201950435737471
+    add rdx, r11
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 9187201950435737471
+    and rdx, r8
+    mov r8, 9187201950435737471
+    add rdx, r8
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L21
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L21:
+    xor eax, eax
+    jmp strict near .L1
+.L19:
+    and r10, -8
+    lea r11, [r9 + 8]
+    cmp r10, r11
+    jb strict near .L24
+    db 0xf, 0x1f, 0x0
+.L23:
+    lea r10, [r10 - 8]
+    mov rax, qword [r10]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 9187201950435737471
+    and rdi, rbx
+    mov rbx, 9187201950435737471
+    add rdi, rbx
+    or rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, rsi
+    and rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 9187201950435737471
+    and rsi, rbx
+    mov rbx, 9187201950435737471
+    add rsi, rbx
+    or rsi, rax
+    and rdi, rsi
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    jne strict near .L26
+.L25:
+    cmp r10, r11
+    jae strict near .L23
+.L24:
+    cmp r10, r9
+    jbe strict near .L27
+    mov rax, qword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    mov r11, 9187201950435737471
+    and rcx, r11
+    mov r11, 9187201950435737471
+    add rcx, r11
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    mov r11, 9187201950435737471
+    and rdx, r11
+    mov r11, 9187201950435737471
+    add rdx, r11
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 9187201950435737471
+    and rdx, r8
+    mov r8, 9187201950435737471
+    add rdx, r8
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L29
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L29:
+.L27:
+    xor eax, eax
+    jmp strict near .L1
 .L2:
     cmp r11, 32
-    jae strict near .L9
+    jae strict near .L31
     vmovd xmm0, ecx
     vpbroadcastb xmm0, xmm0
     vmovd xmm1, edx
@@ -4864,26 +8400,22 @@ nvol_memrchr3_entry_avx2:
     vpor xmm3, xmm4, xmm3
     vpmovmskb eax, xmm3
     test eax, eax
-    je strict short .L11
+    je strict short .L33
     bsr eax, eax
     lea rax, [r10 + rax - 16]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L11:
+    jmp strict near .L1
+.L33:
     and r10, -16
     cmp r11, 32
-    jb strict short .L13
+    jb strict short .L35
     lea rcx, [r9 + 32]
     cmp r11, 512
-    jae strict near .L18
-.L15:
+    jae strict near .L40
+.L37:
     cmp r10, rcx
-    jb strict short .L22
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-.L21:
+    jb strict short .L44
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L43:
     lea r10, [r10 - 32]
     vmovdqa xmm3, [r10]
     vmovdqa xmm4, [r10 + 16]
@@ -4900,17 +8432,17 @@ nvol_memrchr3_entry_avx2:
     vpor xmm5, xmm3, xmm4
     vpmovmskb eax, xmm5
     test eax, eax
-    jne strict near .L24
-.L23:
+    jne strict near .L46
+.L45:
     cmp r10, rcx
-    jae strict short .L21
-.L22:
-.L13:
+    jae strict short .L43
+.L44:
+.L35:
     lea rcx, [r9 + 16]
     cmp r10, rcx
-    jb strict short .L28
+    jb strict short .L50
     db 0xf, 0x1f, 0x0
-.L27:
+.L49:
     lea r10, [r10 - 16]
     vmovdqu xmm3, [r10]
     vpcmpeqb xmm4, xmm3, xmm0
@@ -4920,13 +8452,13 @@ nvol_memrchr3_entry_avx2:
     vpor xmm3, xmm4, xmm3
     vpmovmskb eax, xmm3
     test eax, eax
-    jne strict near .L30
-.L29:
+    jne strict near .L52
+.L51:
     cmp r10, rcx
-    jae strict short .L27
-.L28:
+    jae strict short .L49
+.L50:
     cmp r10, r9
-    jbe strict short .L31
+    jbe strict short .L53
     vmovdqu xmm3, [r9]
     vpcmpeqb xmm0, xmm3, xmm0
     vpcmpeqb xmm1, xmm3, xmm1
@@ -4935,21 +8467,15 @@ nvol_memrchr3_entry_avx2:
     vpor xmm0, xmm0, xmm1
     vpmovmskb eax, xmm0
     test eax, eax
-    je strict short .L33
+    je strict short .L55
     bsr eax, eax
     lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L33:
-.L31:
+    jmp strict near .L1
+.L55:
+.L53:
     xor eax, eax
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L9:
+    jmp strict near .L1
+.L31:
     vmovd xmm0, ecx
     vpbroadcastb ymm0, xmm0
     vmovd xmm1, edx
@@ -4964,25 +8490,22 @@ nvol_memrchr3_entry_avx2:
     vpor ymm3, ymm4, ymm3
     vpmovmskb eax, ymm3
     test eax, eax
-    je strict short .L35
+    je strict short .L57
     bsr eax, eax
     lea rax, [r10 + rax - 32]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L35:
+    jmp strict near .L1
+.L57:
     and r10, -32
     cmp r11, 64
-    jb strict short .L37
+    jb strict short .L59
     lea rcx, [r9 + 64]
     cmp r11, 2048
-    jae strict near .L42
-.L39:
+    jae strict near .L64
+.L61:
     cmp r10, rcx
-    jb strict short .L46
+    jb strict short .L68
     db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L45:
+.L67:
     lea r10, [r10 - 64]
     vmovdqa ymm3, [r10]
     vmovdqa ymm4, [r10 + 32]
@@ -4999,17 +8522,17 @@ nvol_memrchr3_entry_avx2:
     vpor ymm5, ymm3, ymm4
     vpmovmskb eax, ymm5
     test eax, eax
-    jne strict near .L48
-.L47:
+    jne strict near .L70
+.L69:
     cmp r10, rcx
-    jae strict short .L45
-.L46:
-.L37:
+    jae strict short .L67
+.L68:
+.L59:
     lea rcx, [r9 + 32]
     cmp r10, rcx
-    jb strict short .L52
+    jb strict short .L74
     db 0xf, 0x1f, 0x0
-.L51:
+.L73:
     lea r10, [r10 - 32]
     vmovdqu ymm3, [r10]
     vpcmpeqb ymm4, ymm3, ymm0
@@ -5019,13 +8542,13 @@ nvol_memrchr3_entry_avx2:
     vpor ymm3, ymm4, ymm3
     vpmovmskb eax, ymm3
     test eax, eax
-    jne strict near .L54
-.L53:
+    jne strict near .L76
+.L75:
     cmp r10, rcx
-    jae strict short .L51
-.L52:
+    jae strict short .L73
+.L74:
     cmp r10, r9
-    jbe strict short .L55
+    jbe strict short .L77
     vmovdqu ymm3, [r9]
     vpcmpeqb ymm0, ymm3, ymm0
     vpcmpeqb ymm1, ymm3, ymm1
@@ -5034,33 +8557,35 @@ nvol_memrchr3_entry_avx2:
     vpor ymm0, ymm0, ymm1
     vpmovmskb eax, ymm0
     test eax, eax
-    je strict short .L57
+    je strict short .L79
     bsr eax, eax
     lea rax, [r9 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L57:
-.L55:
+    jmp strict short .L1
+.L79:
+.L77:
     xor eax, eax
 .L1:
     vzeroupper
     vmovdqu xmm6, [rsp]
     add rsp, 24
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
     ret
-.L20:
+.L26:
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [r10 + rax]
+    jmp strict short .L1
+.L42:
     bsr eax, eax
     lea rax, [r10 + rax + 16]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L18:
-    db 0xf, 0x1f, 0x40, 0x0
-.L16:
+    jmp strict short .L1
+.L40:
+.L38:
     cmp r10, rcx
-    jb strict near .L15
+    jb strict near .L37
     lea r10, [r10 - 32]
     vmovdqa xmm3, [r10]
     vmovdqa xmm4, [r10 + 16]
@@ -5077,57 +8602,42 @@ nvol_memrchr3_entry_avx2:
     vpor xmm5, xmm3, xmm4
     vpmovmskb eax, xmm5
     test eax, eax
-    je strict short .L16
+    je strict short .L38
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict short .L20
-.L19:
+    jne strict short .L42
+.L41:
     vpmovmskb eax, xmm3
     bsr eax, eax
     lea rax, [r10 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-    jmp strict near .L15
-.L26:
+    jmp strict near .L1
+    jmp strict near .L37
+.L48:
     bsr eax, eax
     lea rax, [r10 + rax + 16]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L24:
+    jmp strict near .L1
+.L46:
     vpmovmskb eax, xmm4
     test eax, eax
-    jne strict short .L26
-.L25:
+    jne strict short .L48
+.L47:
     vpmovmskb eax, xmm3
     bsr eax, eax
     lea rax, [r10 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L30:
+    jmp strict near .L1
+.L52:
     bsr eax, eax
     lea rax, [r10 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L44:
+    jmp strict near .L1
+.L66:
     bsr eax, eax
     lea rax, [r10 + rax + 32]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L42:
-    db 0x90
-.L40:
+    jmp strict near .L1
+.L64:
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L62:
     cmp r10, rcx
-    jb strict near .L39
+    jb strict near .L61
     lea r10, [r10 - 64]
     vmovdqa ymm3, [r10]
     vmovdqa ymm4, [r10 + 32]
@@ -5144,88 +8654,316 @@ nvol_memrchr3_entry_avx2:
     vpor ymm5, ymm3, ymm4
     vpmovmskb eax, ymm5
     test eax, eax
-    je strict short .L40
+    je strict short .L62
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict short .L44
-.L43:
+    jne strict short .L66
+.L65:
     vpmovmskb eax, ymm3
     bsr eax, eax
     lea rax, [r10 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-    jmp strict near .L39
-.L50:
+    jmp strict near .L1
+    jmp strict near .L61
+.L72:
     bsr eax, eax
     lea rax, [r10 + rax + 32]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L48:
+    jmp strict near .L1
+.L70:
     vpmovmskb eax, ymm4
     test eax, eax
-    jne strict short .L50
-.L49:
+    jne strict short .L72
+.L71:
     vpmovmskb eax, ymm3
     bsr eax, eax
     lea rax, [r10 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L54:
+    jmp strict near .L1
+.L76:
     bsr eax, eax
     lea rax, [r10 + rax]
-    vzeroupper
-    vmovdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict near .L1
 .unwind_end:
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x40, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0x90
 global nvol_memrchr3_entry_sse2
 nvol_memrchr3_entry_sse2:
+    push rbx
+    push rbp
+    push rdi
+    push rsi
     sub rsp, 24
     movdqu [rsp], xmm6
     movzx ecx, cl
     movzx edx, dl
     movzx r8d, r8b
-    mov r10, qword [rsp + 64]
+    mov r10, qword [rsp + 96]
     mov r11, r10
     sub r11, r9
     cmp r11, 16
-    jae strict short .L2
+    jae strict near .L2
+    cmp r11, 5
+    jae strict short .L4
     cmp r10, r9
-    jbe strict short .L5
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L4:
+    jbe strict short .L7
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L6:
     lea r10, [r10 - 1]
     movzx eax, byte [r10]
     cmp eax, ecx
-    je strict short .L8
+    je strict short .L10
     cmp eax, edx
-    je strict short .L8
+    je strict short .L10
     cmp eax, r8d
-    jne strict short .L6
-.L8:
-.L7:
+    jne strict short .L8
+.L10:
+.L9:
     mov rax, r10
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L6:
+    jmp strict near .L1
+.L8:
     cmp r10, r9
-    ja strict short .L4
-.L5:
+    ja strict short .L6
+.L7:
     xor eax, eax
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict near .L1
+.L4:
+    cmp r11, 8
+    jae strict near .L11
+    mov eax, 16843009
+    imul ecx, eax
+    mov eax, 16843009
+    imul edx, eax
+    mov eax, 16843009
+    imul r8d, eax
+    mov eax, dword [r10 - 4]
+    mov r11, rax
+    xor r11, rcx
+    mov rsi, r11
+    and esi, 2139062143
+    add esi, 2139062143
+    or rsi, r11
+    mov r11, rax
+    xor r11, rdx
+    mov rdi, r11
+    and edi, 2139062143
+    add edi, 2139062143
+    or rdi, r11
+    and rsi, rdi
+    xor rax, r8
+    mov r11, rax
+    and r11d, 2139062143
+    add r11d, 2139062143
+    or r11, rax
+    and rsi, r11
+    or esi, 2139062143
+    not esi
+    test esi, esi
+    je strict short .L13
+    bsr eax, esi
+    shr rax, 3
+    lea rax, [r10 + rax - 4]
+    jmp strict near .L1
+.L13:
+    mov eax, dword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    and ecx, 2139062143
+    add ecx, 2139062143
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    and edx, 2139062143
+    add edx, 2139062143
+    or rdx, rax
+    and rcx, rdx
+    or ecx, 2139062143
+    not ecx
+    test ecx, ecx
+    je strict short .L15
+    bsr eax, ecx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L15:
+    xor eax, eax
+    jmp strict near .L1
+.L11:
+    mov rax, 72340172838076673
+    imul rcx, rax
+    mov rax, 72340172838076673
+    imul rdx, rax
+    mov rax, 72340172838076673
+    imul r8, rax
+    mov rax, qword [r10 - 8]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 9187201950435737471
+    and rdi, rbx
+    mov rbx, 9187201950435737471
+    add rdi, rbx
+    or rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, rsi
+    and rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 9187201950435737471
+    and rsi, rbx
+    mov rbx, 9187201950435737471
+    add rsi, rbx
+    or rsi, rax
+    and rdi, rsi
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    je strict short .L17
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [r10 + rax - 8]
+    jmp strict near .L1
+.L17:
+    cmp r11, 16
+    ja strict near .L19
+    mov rax, qword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    mov r11, 9187201950435737471
+    and rcx, r11
+    mov r11, 9187201950435737471
+    add rcx, r11
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    mov r11, 9187201950435737471
+    and rdx, r11
+    mov r11, 9187201950435737471
+    add rdx, r11
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 9187201950435737471
+    and rdx, r8
+    mov r8, 9187201950435737471
+    add rdx, r8
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L21
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L21:
+    xor eax, eax
+    jmp strict near .L1
+.L19:
+    and r10, -8
+    lea r11, [r9 + 8]
+    cmp r10, r11
+    jb strict near .L24
+    db 0xf, 0x1f, 0x0
+.L23:
+    lea r10, [r10 - 8]
+    mov rax, qword [r10]
+    mov rsi, rax
+    xor rsi, rcx
+    mov rdi, rsi
+    mov rbx, 9187201950435737471
+    and rdi, rbx
+    mov rbx, 9187201950435737471
+    add rdi, rbx
+    or rdi, rsi
+    mov rsi, rax
+    xor rsi, rdx
+    mov rbx, rsi
+    mov rbp, 9187201950435737471
+    and rbx, rbp
+    mov rbp, 9187201950435737471
+    add rbx, rbp
+    or rbx, rsi
+    and rdi, rbx
+    xor rax, r8
+    mov rsi, rax
+    mov rbx, 9187201950435737471
+    and rsi, rbx
+    mov rbx, 9187201950435737471
+    add rsi, rbx
+    or rsi, rax
+    and rdi, rsi
+    mov rax, 9187201950435737471
+    or rdi, rax
+    not rdi
+    test rdi, rdi
+    jne strict near .L26
+.L25:
+    cmp r10, r11
+    jae strict near .L23
+.L24:
+    cmp r10, r9
+    jbe strict near .L27
+    mov rax, qword [r9]
+    mov r10, rax
+    xor r10, rcx
+    mov rcx, r10
+    mov r11, 9187201950435737471
+    and rcx, r11
+    mov r11, 9187201950435737471
+    add rcx, r11
+    or rcx, r10
+    mov r10, rax
+    xor r10, rdx
+    mov rdx, r10
+    mov r11, 9187201950435737471
+    and rdx, r11
+    mov r11, 9187201950435737471
+    add rdx, r11
+    or rdx, r10
+    and rcx, rdx
+    xor rax, r8
+    mov rdx, rax
+    mov r8, 9187201950435737471
+    and rdx, r8
+    mov r8, 9187201950435737471
+    add rdx, r8
+    or rdx, rax
+    and rcx, rdx
+    mov rax, 9187201950435737471
+    or rcx, rax
+    not rcx
+    test rcx, rcx
+    je strict short .L29
+    bsr rax, rcx
+    shr rax, 3
+    lea rax, [r9 + rax]
+    jmp strict near .L1
+.L29:
+.L27:
+    xor eax, eax
+    jmp strict near .L1
 .L2:
     imul eax, ecx, 16843009
     movd xmm0, eax
@@ -5246,24 +8984,22 @@ nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short .L9
+    je strict short .L31
     bsr eax, eax
     lea rax, [r10 + rax - 16]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L9:
+    jmp strict near .L1
+.L31:
     and r10, -16
     cmp r11, 32
-    jb strict short .L11
+    jb strict short .L33
     lea rcx, [r9 + 32]
     cmp r11, 512
-    jae strict near .L16
-.L13:
+    jae strict near .L38
+.L35:
     cmp r10, rcx
-    jb strict short .L20
-    db 0xf, 0x1f, 0x0
-.L19:
+    jb strict short .L42
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L41:
     lea r10, [r10 - 32]
     movdqa xmm3, [r10]
     movdqa xmm4, [r10 + 16]
@@ -5285,17 +9021,17 @@ nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict near .L22
-.L21:
+    jne strict near .L44
+.L43:
     cmp r10, rcx
-    jae strict short .L19
-.L20:
-.L11:
+    jae strict short .L41
+.L42:
+.L33:
     lea rcx, [r9 + 16]
     cmp r10, rcx
-    jb strict short .L26
+    jb strict short .L48
     db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L25:
+.L47:
     lea r10, [r10 - 16]
     movdqu xmm3, [r10]
     movdqa xmm4, xmm3
@@ -5307,13 +9043,13 @@ nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    jne strict near .L28
-.L27:
+    jne strict near .L50
+.L49:
     cmp r10, rcx
-    jae strict short .L25
-.L26:
+    jae strict short .L47
+.L48:
     cmp r10, r9
-    jbe strict short .L29
+    jbe strict short .L51
     movdqu xmm3, [r9]
     movdqa xmm4, xmm3
     pcmpeqb xmm4, xmm0
@@ -5324,30 +9060,35 @@ nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short .L31
+    je strict short .L53
     bsr eax, eax
     lea rax, [r9 + rax]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L31:
-.L29:
+    jmp strict short .L1
+.L53:
+.L51:
     xor eax, eax
 .L1:
     movdqu xmm6, [rsp]
     add rsp, 24
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
     ret
-.L18:
+.L26:
+    bsr rax, rdi
+    shr rax, 3
+    lea rax, [r10 + rax]
+    jmp strict short .L1
+.L40:
     bsr eax, eax
     lea rax, [r10 + rax + 16]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L16:
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L14:
+    jmp strict short .L1
+.L38:
+    db 0xf, 0x1f, 0x0
+.L36:
     cmp r10, rcx
-    jb strict near .L13
+    jb strict near .L35
     lea r10, [r10 - 32]
     movdqa xmm3, [r10]
     movdqa xmm4, [r10 + 16]
@@ -5369,44 +9110,42 @@ nvol_memrchr3_entry_sse2:
     por xmm4, xmm3
     pmovmskb eax, xmm4
     test eax, eax
-    je strict short .L14
+    je strict short .L36
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short .L18
-.L17:
+    jne strict short .L40
+.L39:
     pmovmskb eax, xmm5
     bsr eax, eax
     lea rax, [r10 + rax]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-    jmp strict near .L13
-.L24:
+    jmp strict near .L1
+    jmp strict near .L35
+.L46:
     bsr eax, eax
     lea rax, [r10 + rax + 16]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L22:
+    jmp strict near .L1
+.L44:
     pmovmskb eax, xmm3
     test eax, eax
-    jne strict short .L24
-.L23:
+    jne strict short .L46
+.L45:
     pmovmskb eax, xmm5
     bsr eax, eax
     lea rax, [r10 + rax]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
-.L28:
+    jmp strict near .L1
+.L50:
     bsr eax, eax
     lea rax, [r10 + rax]
-    movdqu xmm6, [rsp]
-    add rsp, 24
-    ret
+    jmp strict near .L1
 .unwind_end:
 
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
 global nvol_memrchr3_raw
 nvol_memrchr3_raw:
     jmp qword [rel nvol_memrchr3_raw_ptr]
@@ -50942,17 +54681,38 @@ align 4, db 0
 nvol_unwind_nvol_memrchr:
     db 1, 5, 2, 0, 5, 50, 1, 96
 align 4, db 0
+nvol_unwind_nvol_memchr2_scalar:
+    db 1, 2, 2, 0, 2, 96, 1, 112
+align 4, db 0
+nvol_unwind_nvol_memchr2_entry_avx2:
+    db 1, 2, 2, 0, 2, 96, 1, 112
+align 4, db 0
+nvol_unwind_nvol_memchr2_entry_sse2:
+    db 1, 2, 2, 0, 2, 96, 1, 112
+align 4, db 0
 nvol_unwind_nvol_memchr2_raw_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memchr2:
     db 1, 5, 2, 0, 5, 50, 1, 96
 align 4, db 0
+nvol_unwind_nvol_memrchr2_scalar:
+    db 1, 2, 2, 0, 2, 96, 1, 112
+align 4, db 0
+nvol_unwind_nvol_memrchr2_entry_avx2:
+    db 1, 2, 2, 0, 2, 96, 1, 112
+align 4, db 0
+nvol_unwind_nvol_memrchr2_entry_sse2:
+    db 1, 2, 2, 0, 2, 96, 1, 112
+align 4, db 0
 nvol_unwind_nvol_memrchr2_raw_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memrchr2:
     db 1, 5, 2, 0, 5, 50, 1, 96
+align 4, db 0
+nvol_unwind_nvol_memchr3_scalar:
+    db 1, 4, 4, 0, 4, 96, 3, 112, 2, 80, 1, 48
 align 4, db 0
 nvol_unwind_nvol_memchr3_sse2:
     db 1, 9, 3, 0, 9, 104, 0, 0, 4, 34, 0, 0
@@ -50961,16 +54721,19 @@ nvol_unwind_nvol_memchr3_avx2:
     db 1, 9, 3, 0, 9, 104, 0, 0, 4, 34, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memchr3_entry_avx2:
-    db 1, 9, 3, 0, 9, 104, 0, 0, 4, 34, 0, 0
+    db 1, 13, 7, 0, 13, 104, 0, 0, 8, 34, 4, 96, 3, 112, 2, 80, 1, 48, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memchr3_entry_sse2:
-    db 1, 9, 3, 0, 9, 104, 0, 0, 4, 34, 0, 0
+    db 1, 13, 7, 0, 13, 104, 0, 0, 8, 34, 4, 96, 3, 112, 2, 80, 1, 48, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memchr3_raw_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memchr3:
     db 1, 5, 2, 0, 5, 82, 1, 96
+align 4, db 0
+nvol_unwind_nvol_memrchr3_scalar:
+    db 1, 4, 4, 0, 4, 96, 3, 112, 2, 80, 1, 48
 align 4, db 0
 nvol_unwind_nvol_memrchr3_sse2:
     db 1, 9, 3, 0, 9, 104, 0, 0, 4, 34, 0, 0
@@ -50979,10 +54742,10 @@ nvol_unwind_nvol_memrchr3_avx2:
     db 1, 9, 3, 0, 9, 104, 0, 0, 4, 34, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memrchr3_entry_avx2:
-    db 1, 9, 3, 0, 9, 104, 0, 0, 4, 34, 0, 0
+    db 1, 13, 7, 0, 13, 104, 0, 0, 8, 34, 4, 96, 3, 112, 2, 80, 1, 48, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memrchr3_entry_sse2:
-    db 1, 9, 3, 0, 9, 104, 0, 0, 4, 34, 0, 0
+    db 1, 13, 7, 0, 13, 104, 0, 0, 8, 34, 4, 96, 3, 112, 2, 80, 1, 48, 0, 0
 align 4, db 0
 nvol_unwind_nvol_memrchr3_raw_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
@@ -51393,16 +55156,24 @@ section .pdata rdata align=4
     dd nvol_memrchr_entry_sse2 wrt ..imagebase, nvol_memrchr_entry_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr_entry_sse2 wrt ..imagebase
     dd nvol_memrchr_raw_resolve wrt ..imagebase, nvol_memrchr_raw_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr_raw_resolve wrt ..imagebase
     dd nvol_memrchr wrt ..imagebase, nvol_memrchr.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr wrt ..imagebase
+    dd nvol_memchr2_scalar wrt ..imagebase, nvol_memchr2_scalar.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr2_scalar wrt ..imagebase
+    dd nvol_memchr2_entry_avx2 wrt ..imagebase, nvol_memchr2_entry_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr2_entry_avx2 wrt ..imagebase
+    dd nvol_memchr2_entry_sse2 wrt ..imagebase, nvol_memchr2_entry_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr2_entry_sse2 wrt ..imagebase
     dd nvol_memchr2_raw_resolve wrt ..imagebase, nvol_memchr2_raw_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr2_raw_resolve wrt ..imagebase
     dd nvol_memchr2 wrt ..imagebase, nvol_memchr2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr2 wrt ..imagebase
+    dd nvol_memrchr2_scalar wrt ..imagebase, nvol_memrchr2_scalar.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr2_scalar wrt ..imagebase
+    dd nvol_memrchr2_entry_avx2 wrt ..imagebase, nvol_memrchr2_entry_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr2_entry_avx2 wrt ..imagebase
+    dd nvol_memrchr2_entry_sse2 wrt ..imagebase, nvol_memrchr2_entry_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr2_entry_sse2 wrt ..imagebase
     dd nvol_memrchr2_raw_resolve wrt ..imagebase, nvol_memrchr2_raw_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr2_raw_resolve wrt ..imagebase
     dd nvol_memrchr2 wrt ..imagebase, nvol_memrchr2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr2 wrt ..imagebase
+    dd nvol_memchr3_scalar wrt ..imagebase, nvol_memchr3_scalar.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr3_scalar wrt ..imagebase
     dd nvol_memchr3_sse2 wrt ..imagebase, nvol_memchr3_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr3_sse2 wrt ..imagebase
     dd nvol_memchr3_avx2 wrt ..imagebase, nvol_memchr3_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr3_avx2 wrt ..imagebase
     dd nvol_memchr3_entry_avx2 wrt ..imagebase, nvol_memchr3_entry_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr3_entry_avx2 wrt ..imagebase
     dd nvol_memchr3_entry_sse2 wrt ..imagebase, nvol_memchr3_entry_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr3_entry_sse2 wrt ..imagebase
     dd nvol_memchr3_raw_resolve wrt ..imagebase, nvol_memchr3_raw_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr3_raw_resolve wrt ..imagebase
     dd nvol_memchr3 wrt ..imagebase, nvol_memchr3.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr3 wrt ..imagebase
+    dd nvol_memrchr3_scalar wrt ..imagebase, nvol_memrchr3_scalar.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr3_scalar wrt ..imagebase
     dd nvol_memrchr3_sse2 wrt ..imagebase, nvol_memrchr3_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr3_sse2 wrt ..imagebase
     dd nvol_memrchr3_avx2 wrt ..imagebase, nvol_memrchr3_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr3_avx2 wrt ..imagebase
     dd nvol_memrchr3_entry_avx2 wrt ..imagebase, nvol_memrchr3_entry_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memrchr3_entry_avx2 wrt ..imagebase

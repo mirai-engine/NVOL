@@ -200,14 +200,62 @@ static const uint8_t nvol_tbl_rank[256] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
 };
 
-/* byte-at-a-time fallback */
+/* word-at-a-time (SWAR) search; the dispatch's path under 16 bytes */
 NVOL_INLINE const uint8_t * nvol_memchr_scalar(uint8_t n1, const uint8_t *start, const uint8_t *end) {
-    const uint8_t *p = start;
-    while (p < end) {
-        if ((*(p)) == n1) {
-            return p;
+    const size_t len_ = ((size_t)(end - start));
+    if (len_ < ((size_t)4u)) {
+        const uint8_t *p = start;
+        while (p < end) {
+            if ((*(p)) == n1) {
+                return p;
+            }
+            p = (p + ((size_t)1u));
         }
-        p = (p + ((size_t)1u));
+        return NULL;
+    }
+    if (len_ < ((size_t)8u)) {
+        const uint32_t sh1 = ((uint32_t)(((uint32_t)(n1)) * 16843009u));
+        const uint32_t w = nvol_load32u(start);
+        const uint32_t m = ((((uint32_t)((w ^ sh1) - 16843009u)) & ((w ^ sh1) ^ 4294967295u)) & 2155905152u);
+        if (m != 0u) {
+            return (start + (((size_t)nvol_ctz32(m)) >> ((size_t)3u)));
+        }
+        const uint32_t w1 = nvol_load32u((end - ((size_t)4u)));
+        const uint32_t m1 = ((((uint32_t)((w1 ^ sh1) - 16843009u)) & ((w1 ^ sh1) ^ 4294967295u)) & 2155905152u);
+        if (m1 != 0u) {
+            return ((end - ((size_t)4u)) + (((size_t)nvol_ctz32(m1)) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint64_t sw1 = ((uint64_t)(((uint64_t)(n1)) * UINT64_C(72340172838076673)));
+    const uint64_t w2 = nvol_load64(start);
+    const uint64_t m2 = ((((uint64_t)((w2 ^ sw1) - UINT64_C(72340172838076673))) & ((w2 ^ sw1) ^ UINT64_C(18446744073709551615))) & UINT64_C(9259542123273814144));
+    if (m2 != UINT64_C(0)) {
+        return (start + (((size_t)nvol_ctz64(m2)) >> ((size_t)3u)));
+    }
+    if (len_ <= ((size_t)16u)) {
+        const uint64_t w3 = nvol_load64((end - ((size_t)8u)));
+        const uint64_t m3 = ((((uint64_t)((w3 ^ sw1) - UINT64_C(72340172838076673))) & ((w3 ^ sw1) ^ UINT64_C(18446744073709551615))) & UINT64_C(9259542123273814144));
+        if (m3 != UINT64_C(0)) {
+            return ((end - ((size_t)8u)) + (((size_t)nvol_ctz64(m3)) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint8_t *q = ((const uint8_t *)(((uintptr_t)(start) | (uintptr_t)7u) + 1u));
+    while (q <= (end - ((size_t)8u))) {
+        const uint64_t w4 = nvol_load64(q);
+        const uint64_t m4 = ((((uint64_t)((w4 ^ sw1) - UINT64_C(72340172838076673))) & ((w4 ^ sw1) ^ UINT64_C(18446744073709551615))) & UINT64_C(9259542123273814144));
+        if (m4 != UINT64_C(0)) {
+            return (q + (((size_t)nvol_ctz64(m4)) >> ((size_t)3u)));
+        }
+        q = (q + ((size_t)8u));
+    }
+    if (q < end) {
+        const uint64_t w5 = nvol_load64((end - ((size_t)8u)));
+        const uint64_t m5 = ((((uint64_t)((w5 ^ sw1) - UINT64_C(72340172838076673))) & ((w5 ^ sw1) ^ UINT64_C(18446744073709551615))) & UINT64_C(9259542123273814144));
+        if (m5 != UINT64_C(0)) {
+            return ((end - ((size_t)8u)) + (((size_t)nvol_ctz64(m5)) >> ((size_t)3u)));
+        }
     }
     return NULL;
 }
@@ -288,13 +336,61 @@ NVOL_API size_t nvol_memchr(uint8_t n1, const uint8_t *start, size_t len_) {
     return ((size_t)(p - start));
 }
 
-/* byte-at-a-time fallback */
+/* word-at-a-time (SWAR) search; the dispatch's path under 16 bytes */
 NVOL_INLINE const uint8_t * nvol_memrchr_scalar(uint8_t n1, const uint8_t *start, const uint8_t *end) {
-    const uint8_t *p = end;
-    while (p > start) {
-        p = (p - ((size_t)1u));
-        if ((*(p)) == n1) {
-            return p;
+    const size_t len_ = ((size_t)(end - start));
+    if (len_ < ((size_t)4u)) {
+        const uint8_t *p = end;
+        while (p > start) {
+            p = (p - ((size_t)1u));
+            if ((*(p)) == n1) {
+                return p;
+            }
+        }
+        return NULL;
+    }
+    if (len_ < ((size_t)8u)) {
+        const uint32_t sh1 = ((uint32_t)(((uint32_t)(n1)) * 16843009u));
+        const uint32_t w = nvol_load32u((end - ((size_t)4u)));
+        const uint32_t m = (((((uint32_t)(((w ^ sh1) & 2139062143u) + 2139062143u)) | (w ^ sh1)) | 2139062143u) ^ 4294967295u);
+        if (m != 0u) {
+            return ((end - ((size_t)4u)) + (((size_t)(31u - nvol_clz32(m))) >> ((size_t)3u)));
+        }
+        const uint32_t w1 = nvol_load32u(start);
+        const uint32_t m1 = (((((uint32_t)(((w1 ^ sh1) & 2139062143u) + 2139062143u)) | (w1 ^ sh1)) | 2139062143u) ^ 4294967295u);
+        if (m1 != 0u) {
+            return (start + (((size_t)(31u - nvol_clz32(m1))) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint64_t sw1 = ((uint64_t)(((uint64_t)(n1)) * UINT64_C(72340172838076673)));
+    const uint64_t w2 = nvol_load64((end - ((size_t)8u)));
+    const uint64_t m2 = (((((uint64_t)(((w2 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w2 ^ sw1)) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+    if (m2 != UINT64_C(0)) {
+        return ((end - ((size_t)8u)) + (((size_t)(63u - nvol_clz64(m2))) >> ((size_t)3u)));
+    }
+    if (len_ <= ((size_t)16u)) {
+        const uint64_t w3 = nvol_load64(start);
+        const uint64_t m3 = (((((uint64_t)(((w3 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w3 ^ sw1)) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m3 != UINT64_C(0)) {
+            return (start + (((size_t)(63u - nvol_clz64(m3))) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint8_t *q = ((const uint8_t *)((uintptr_t)(end) & ~(uintptr_t)7u));
+    while (q >= (start + ((size_t)8u))) {
+        q = (q - ((size_t)8u));
+        const uint64_t w4 = nvol_load64(q);
+        const uint64_t m4 = (((((uint64_t)(((w4 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w4 ^ sw1)) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m4 != UINT64_C(0)) {
+            return (q + (((size_t)(63u - nvol_clz64(m4))) >> ((size_t)3u)));
+        }
+    }
+    if (q > start) {
+        const uint64_t w5 = nvol_load64(start);
+        const uint64_t m5 = (((((uint64_t)(((w5 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w5 ^ sw1)) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m5 != UINT64_C(0)) {
+            return (start + (((size_t)(63u - nvol_clz64(m5))) >> ((size_t)3u)));
         }
     }
     return NULL;
@@ -375,14 +471,75 @@ NVOL_API size_t nvol_memrchr(uint8_t n1, const uint8_t *start, size_t len_) {
     return ((size_t)(p - start));
 }
 
-/* byte-at-a-time fallback */
+/* word-at-a-time (SWAR) search; the dispatch's path under 16 bytes */
 NVOL_INLINE const uint8_t * nvol_memchr2_scalar(uint8_t n1, uint8_t n2, const uint8_t *start, const uint8_t *end) {
-    const uint8_t *p = start;
-    while (p < end) {
-        if (((*(p)) == n1) || ((*(p)) == n2)) {
-            return p;
+    const size_t len_ = ((size_t)(end - start));
+    if (len_ < ((size_t)4u)) {
+        if (len_ == ((size_t)0u)) {
+            return NULL;
         }
-        p = (p + ((size_t)1u));
+        if (((*(start)) == n1) || ((*(start)) == n2)) {
+            return start;
+        }
+        if (len_ == ((size_t)1u)) {
+            return NULL;
+        }
+        if (((*((start + ((size_t)1u)))) == n1) || ((*((start + ((size_t)1u)))) == n2)) {
+            return (start + ((size_t)1u));
+        }
+        if (len_ == ((size_t)2u)) {
+            return NULL;
+        }
+        if (((*((start + ((size_t)2u)))) == n1) || ((*((start + ((size_t)2u)))) == n2)) {
+            return (start + ((size_t)2u));
+        }
+        return NULL;
+    }
+    if (len_ < ((size_t)8u)) {
+        const uint32_t sh1 = ((uint32_t)(((uint32_t)(n1)) * 16843009u));
+        const uint32_t sh2 = ((uint32_t)(((uint32_t)(n2)) * 16843009u));
+        const uint32_t w = nvol_load32u(start);
+        const uint32_t m = (((((uint32_t)((w ^ sh1) - 16843009u)) & ((w ^ sh1) ^ 4294967295u)) | (((uint32_t)((w ^ sh2) - 16843009u)) & ((w ^ sh2) ^ 4294967295u))) & 2155905152u);
+        if (m != 0u) {
+            return (start + (((size_t)nvol_ctz32(m)) >> ((size_t)3u)));
+        }
+        const uint32_t w1 = nvol_load32u((end - ((size_t)4u)));
+        const uint32_t m1 = (((((uint32_t)((w1 ^ sh1) - 16843009u)) & ((w1 ^ sh1) ^ 4294967295u)) | (((uint32_t)((w1 ^ sh2) - 16843009u)) & ((w1 ^ sh2) ^ 4294967295u))) & 2155905152u);
+        if (m1 != 0u) {
+            return ((end - ((size_t)4u)) + (((size_t)nvol_ctz32(m1)) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint64_t sw1 = ((uint64_t)(((uint64_t)(n1)) * UINT64_C(72340172838076673)));
+    const uint64_t sw2 = ((uint64_t)(((uint64_t)(n2)) * UINT64_C(72340172838076673)));
+    const uint64_t w2 = nvol_load64(start);
+    const uint64_t m2 = (((((uint64_t)((w2 ^ sw1) - UINT64_C(72340172838076673))) & ((w2 ^ sw1) ^ UINT64_C(18446744073709551615))) | (((uint64_t)((w2 ^ sw2) - UINT64_C(72340172838076673))) & ((w2 ^ sw2) ^ UINT64_C(18446744073709551615)))) & UINT64_C(9259542123273814144));
+    if (m2 != UINT64_C(0)) {
+        return (start + (((size_t)nvol_ctz64(m2)) >> ((size_t)3u)));
+    }
+    if (len_ <= ((size_t)16u)) {
+        const uint64_t w3 = nvol_load64((end - ((size_t)8u)));
+        const uint64_t m3 = (((((uint64_t)((w3 ^ sw1) - UINT64_C(72340172838076673))) & ((w3 ^ sw1) ^ UINT64_C(18446744073709551615))) | (((uint64_t)((w3 ^ sw2) - UINT64_C(72340172838076673))) & ((w3 ^ sw2) ^ UINT64_C(18446744073709551615)))) & UINT64_C(9259542123273814144));
+        if (m3 != UINT64_C(0)) {
+            return ((end - ((size_t)8u)) + (((size_t)nvol_ctz64(m3)) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint8_t *q = ((const uint8_t *)(((uintptr_t)(start) | (uintptr_t)7u) + 1u));
+    while (q <= (end - ((size_t)8u))) {
+        const uint64_t w4 = nvol_load64(q);
+        const uint64_t m4 = (((((uint64_t)((w4 ^ sw1) - UINT64_C(72340172838076673))) & ((w4 ^ sw1) ^ UINT64_C(18446744073709551615))) | (((uint64_t)((w4 ^ sw2) - UINT64_C(72340172838076673))) & ((w4 ^ sw2) ^ UINT64_C(18446744073709551615)))) & UINT64_C(9259542123273814144));
+        if (m4 != UINT64_C(0)) {
+            return (q + (((size_t)nvol_ctz64(m4)) >> ((size_t)3u)));
+        }
+        q = (q + ((size_t)8u));
+    }
+    if (q < end) {
+        const uint64_t w5 = nvol_load64((end - ((size_t)8u)));
+        const uint64_t m5 = (((((uint64_t)((w5 ^ sw1) - UINT64_C(72340172838076673))) & ((w5 ^ sw1) ^ UINT64_C(18446744073709551615))) | (((uint64_t)((w5 ^ sw2) - UINT64_C(72340172838076673))) & ((w5 ^ sw2) ^ UINT64_C(18446744073709551615)))) & UINT64_C(9259542123273814144));
+        if (m5 != UINT64_C(0)) {
+            return ((end - ((size_t)8u)) + (((size_t)nvol_ctz64(m5)) >> ((size_t)3u)));
+        }
     }
     return NULL;
 }
@@ -452,13 +609,74 @@ NVOL_API size_t nvol_memchr2(uint8_t n1, uint8_t n2, const uint8_t *start, size_
     return ((size_t)(p - start));
 }
 
-/* byte-at-a-time fallback */
+/* word-at-a-time (SWAR) search; the dispatch's path under 16 bytes */
 NVOL_INLINE const uint8_t * nvol_memrchr2_scalar(uint8_t n1, uint8_t n2, const uint8_t *start, const uint8_t *end) {
-    const uint8_t *p = end;
-    while (p > start) {
-        p = (p - ((size_t)1u));
-        if (((*(p)) == n1) || ((*(p)) == n2)) {
-            return p;
+    const size_t len_ = ((size_t)(end - start));
+    if (len_ < ((size_t)4u)) {
+        if (len_ == ((size_t)0u)) {
+            return NULL;
+        }
+        if (((*((end - ((size_t)1u)))) == n1) || ((*((end - ((size_t)1u)))) == n2)) {
+            return (end - ((size_t)1u));
+        }
+        if (len_ == ((size_t)1u)) {
+            return NULL;
+        }
+        if (((*((end - ((size_t)2u)))) == n1) || ((*((end - ((size_t)2u)))) == n2)) {
+            return (end - ((size_t)2u));
+        }
+        if (len_ == ((size_t)2u)) {
+            return NULL;
+        }
+        if (((*((end - ((size_t)3u)))) == n1) || ((*((end - ((size_t)3u)))) == n2)) {
+            return (end - ((size_t)3u));
+        }
+        return NULL;
+    }
+    if (len_ < ((size_t)8u)) {
+        const uint32_t sh1 = ((uint32_t)(((uint32_t)(n1)) * 16843009u));
+        const uint32_t sh2 = ((uint32_t)(((uint32_t)(n2)) * 16843009u));
+        const uint32_t w = nvol_load32u((end - ((size_t)4u)));
+        const uint32_t m = ((((((uint32_t)(((w ^ sh1) & 2139062143u) + 2139062143u)) | (w ^ sh1)) & (((uint32_t)(((w ^ sh2) & 2139062143u) + 2139062143u)) | (w ^ sh2))) | 2139062143u) ^ 4294967295u);
+        if (m != 0u) {
+            return ((end - ((size_t)4u)) + (((size_t)(31u - nvol_clz32(m))) >> ((size_t)3u)));
+        }
+        const uint32_t w1 = nvol_load32u(start);
+        const uint32_t m1 = ((((((uint32_t)(((w1 ^ sh1) & 2139062143u) + 2139062143u)) | (w1 ^ sh1)) & (((uint32_t)(((w1 ^ sh2) & 2139062143u) + 2139062143u)) | (w1 ^ sh2))) | 2139062143u) ^ 4294967295u);
+        if (m1 != 0u) {
+            return (start + (((size_t)(31u - nvol_clz32(m1))) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint64_t sw1 = ((uint64_t)(((uint64_t)(n1)) * UINT64_C(72340172838076673)));
+    const uint64_t sw2 = ((uint64_t)(((uint64_t)(n2)) * UINT64_C(72340172838076673)));
+    const uint64_t w2 = nvol_load64((end - ((size_t)8u)));
+    const uint64_t m2 = ((((((uint64_t)(((w2 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w2 ^ sw1)) & (((uint64_t)(((w2 ^ sw2) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w2 ^ sw2))) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+    if (m2 != UINT64_C(0)) {
+        return ((end - ((size_t)8u)) + (((size_t)(63u - nvol_clz64(m2))) >> ((size_t)3u)));
+    }
+    if (len_ <= ((size_t)16u)) {
+        const uint64_t w3 = nvol_load64(start);
+        const uint64_t m3 = ((((((uint64_t)(((w3 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w3 ^ sw1)) & (((uint64_t)(((w3 ^ sw2) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w3 ^ sw2))) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m3 != UINT64_C(0)) {
+            return (start + (((size_t)(63u - nvol_clz64(m3))) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint8_t *q = ((const uint8_t *)((uintptr_t)(end) & ~(uintptr_t)7u));
+    while (q >= (start + ((size_t)8u))) {
+        q = (q - ((size_t)8u));
+        const uint64_t w4 = nvol_load64(q);
+        const uint64_t m4 = ((((((uint64_t)(((w4 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w4 ^ sw1)) & (((uint64_t)(((w4 ^ sw2) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w4 ^ sw2))) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m4 != UINT64_C(0)) {
+            return (q + (((size_t)(63u - nvol_clz64(m4))) >> ((size_t)3u)));
+        }
+    }
+    if (q > start) {
+        const uint64_t w5 = nvol_load64(start);
+        const uint64_t m5 = ((((((uint64_t)(((w5 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w5 ^ sw1)) & (((uint64_t)(((w5 ^ sw2) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w5 ^ sw2))) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m5 != UINT64_C(0)) {
+            return (start + (((size_t)(63u - nvol_clz64(m5))) >> ((size_t)3u)));
         }
     }
     return NULL;
@@ -528,14 +746,66 @@ NVOL_API size_t nvol_memrchr2(uint8_t n1, uint8_t n2, const uint8_t *start, size
     return ((size_t)(p - start));
 }
 
-/* byte-at-a-time fallback */
+/* word-at-a-time (SWAR) search; the dispatch's path under 16 bytes */
 NVOL_INLINE const uint8_t * nvol_memchr3_scalar(uint8_t n1, uint8_t n2, uint8_t n3, const uint8_t *start, const uint8_t *end) {
-    const uint8_t *p = start;
-    while (p < end) {
-        if ((((*(p)) == n1) || ((*(p)) == n2)) || ((*(p)) == n3)) {
-            return p;
+    const size_t len_ = ((size_t)(end - start));
+    if (len_ < ((size_t)5u)) {
+        const uint8_t *p = start;
+        while (p < end) {
+            if ((((*(p)) == n1) || ((*(p)) == n2)) || ((*(p)) == n3)) {
+                return p;
+            }
+            p = (p + ((size_t)1u));
         }
-        p = (p + ((size_t)1u));
+        return NULL;
+    }
+    if (len_ < ((size_t)8u)) {
+        const uint32_t sh1 = ((uint32_t)(((uint32_t)(n1)) * 16843009u));
+        const uint32_t sh2 = ((uint32_t)(((uint32_t)(n2)) * 16843009u));
+        const uint32_t sh3 = ((uint32_t)(((uint32_t)(n3)) * 16843009u));
+        const uint32_t w = nvol_load32u(start);
+        const uint32_t m = ((((((uint32_t)((w ^ sh1) - 16843009u)) & ((w ^ sh1) ^ 4294967295u)) | (((uint32_t)((w ^ sh2) - 16843009u)) & ((w ^ sh2) ^ 4294967295u))) | (((uint32_t)((w ^ sh3) - 16843009u)) & ((w ^ sh3) ^ 4294967295u))) & 2155905152u);
+        if (m != 0u) {
+            return (start + (((size_t)nvol_ctz32(m)) >> ((size_t)3u)));
+        }
+        const uint32_t w1 = nvol_load32u((end - ((size_t)4u)));
+        const uint32_t m1 = ((((((uint32_t)((w1 ^ sh1) - 16843009u)) & ((w1 ^ sh1) ^ 4294967295u)) | (((uint32_t)((w1 ^ sh2) - 16843009u)) & ((w1 ^ sh2) ^ 4294967295u))) | (((uint32_t)((w1 ^ sh3) - 16843009u)) & ((w1 ^ sh3) ^ 4294967295u))) & 2155905152u);
+        if (m1 != 0u) {
+            return ((end - ((size_t)4u)) + (((size_t)nvol_ctz32(m1)) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint64_t sw1 = ((uint64_t)(((uint64_t)(n1)) * UINT64_C(72340172838076673)));
+    const uint64_t sw2 = ((uint64_t)(((uint64_t)(n2)) * UINT64_C(72340172838076673)));
+    const uint64_t sw3 = ((uint64_t)(((uint64_t)(n3)) * UINT64_C(72340172838076673)));
+    const uint64_t w2 = nvol_load64(start);
+    const uint64_t m2 = ((((((uint64_t)((w2 ^ sw1) - UINT64_C(72340172838076673))) & ((w2 ^ sw1) ^ UINT64_C(18446744073709551615))) | (((uint64_t)((w2 ^ sw2) - UINT64_C(72340172838076673))) & ((w2 ^ sw2) ^ UINT64_C(18446744073709551615)))) | (((uint64_t)((w2 ^ sw3) - UINT64_C(72340172838076673))) & ((w2 ^ sw3) ^ UINT64_C(18446744073709551615)))) & UINT64_C(9259542123273814144));
+    if (m2 != UINT64_C(0)) {
+        return (start + (((size_t)nvol_ctz64(m2)) >> ((size_t)3u)));
+    }
+    if (len_ <= ((size_t)16u)) {
+        const uint64_t w3 = nvol_load64((end - ((size_t)8u)));
+        const uint64_t m3 = ((((((uint64_t)((w3 ^ sw1) - UINT64_C(72340172838076673))) & ((w3 ^ sw1) ^ UINT64_C(18446744073709551615))) | (((uint64_t)((w3 ^ sw2) - UINT64_C(72340172838076673))) & ((w3 ^ sw2) ^ UINT64_C(18446744073709551615)))) | (((uint64_t)((w3 ^ sw3) - UINT64_C(72340172838076673))) & ((w3 ^ sw3) ^ UINT64_C(18446744073709551615)))) & UINT64_C(9259542123273814144));
+        if (m3 != UINT64_C(0)) {
+            return ((end - ((size_t)8u)) + (((size_t)nvol_ctz64(m3)) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint8_t *q = ((const uint8_t *)(((uintptr_t)(start) | (uintptr_t)7u) + 1u));
+    while (q <= (end - ((size_t)8u))) {
+        const uint64_t w4 = nvol_load64(q);
+        const uint64_t m4 = ((((((uint64_t)((w4 ^ sw1) - UINT64_C(72340172838076673))) & ((w4 ^ sw1) ^ UINT64_C(18446744073709551615))) | (((uint64_t)((w4 ^ sw2) - UINT64_C(72340172838076673))) & ((w4 ^ sw2) ^ UINT64_C(18446744073709551615)))) | (((uint64_t)((w4 ^ sw3) - UINT64_C(72340172838076673))) & ((w4 ^ sw3) ^ UINT64_C(18446744073709551615)))) & UINT64_C(9259542123273814144));
+        if (m4 != UINT64_C(0)) {
+            return (q + (((size_t)nvol_ctz64(m4)) >> ((size_t)3u)));
+        }
+        q = (q + ((size_t)8u));
+    }
+    if (q < end) {
+        const uint64_t w5 = nvol_load64((end - ((size_t)8u)));
+        const uint64_t m5 = ((((((uint64_t)((w5 ^ sw1) - UINT64_C(72340172838076673))) & ((w5 ^ sw1) ^ UINT64_C(18446744073709551615))) | (((uint64_t)((w5 ^ sw2) - UINT64_C(72340172838076673))) & ((w5 ^ sw2) ^ UINT64_C(18446744073709551615)))) | (((uint64_t)((w5 ^ sw3) - UINT64_C(72340172838076673))) & ((w5 ^ sw3) ^ UINT64_C(18446744073709551615)))) & UINT64_C(9259542123273814144));
+        if (m5 != UINT64_C(0)) {
+            return ((end - ((size_t)8u)) + (((size_t)nvol_ctz64(m5)) >> ((size_t)3u)));
+        }
     }
     return NULL;
 }
@@ -606,13 +876,65 @@ NVOL_API size_t nvol_memchr3(uint8_t n1, uint8_t n2, uint8_t n3, const uint8_t *
     return ((size_t)(p - start));
 }
 
-/* byte-at-a-time fallback */
+/* word-at-a-time (SWAR) search; the dispatch's path under 16 bytes */
 NVOL_INLINE const uint8_t * nvol_memrchr3_scalar(uint8_t n1, uint8_t n2, uint8_t n3, const uint8_t *start, const uint8_t *end) {
-    const uint8_t *p = end;
-    while (p > start) {
-        p = (p - ((size_t)1u));
-        if ((((*(p)) == n1) || ((*(p)) == n2)) || ((*(p)) == n3)) {
-            return p;
+    const size_t len_ = ((size_t)(end - start));
+    if (len_ < ((size_t)5u)) {
+        const uint8_t *p = end;
+        while (p > start) {
+            p = (p - ((size_t)1u));
+            if ((((*(p)) == n1) || ((*(p)) == n2)) || ((*(p)) == n3)) {
+                return p;
+            }
+        }
+        return NULL;
+    }
+    if (len_ < ((size_t)8u)) {
+        const uint32_t sh1 = ((uint32_t)(((uint32_t)(n1)) * 16843009u));
+        const uint32_t sh2 = ((uint32_t)(((uint32_t)(n2)) * 16843009u));
+        const uint32_t sh3 = ((uint32_t)(((uint32_t)(n3)) * 16843009u));
+        const uint32_t w = nvol_load32u((end - ((size_t)4u)));
+        const uint32_t m = (((((((uint32_t)(((w ^ sh1) & 2139062143u) + 2139062143u)) | (w ^ sh1)) & (((uint32_t)(((w ^ sh2) & 2139062143u) + 2139062143u)) | (w ^ sh2))) & (((uint32_t)(((w ^ sh3) & 2139062143u) + 2139062143u)) | (w ^ sh3))) | 2139062143u) ^ 4294967295u);
+        if (m != 0u) {
+            return ((end - ((size_t)4u)) + (((size_t)(31u - nvol_clz32(m))) >> ((size_t)3u)));
+        }
+        const uint32_t w1 = nvol_load32u(start);
+        const uint32_t m1 = (((((((uint32_t)(((w1 ^ sh1) & 2139062143u) + 2139062143u)) | (w1 ^ sh1)) & (((uint32_t)(((w1 ^ sh2) & 2139062143u) + 2139062143u)) | (w1 ^ sh2))) & (((uint32_t)(((w1 ^ sh3) & 2139062143u) + 2139062143u)) | (w1 ^ sh3))) | 2139062143u) ^ 4294967295u);
+        if (m1 != 0u) {
+            return (start + (((size_t)(31u - nvol_clz32(m1))) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint64_t sw1 = ((uint64_t)(((uint64_t)(n1)) * UINT64_C(72340172838076673)));
+    const uint64_t sw2 = ((uint64_t)(((uint64_t)(n2)) * UINT64_C(72340172838076673)));
+    const uint64_t sw3 = ((uint64_t)(((uint64_t)(n3)) * UINT64_C(72340172838076673)));
+    const uint64_t w2 = nvol_load64((end - ((size_t)8u)));
+    const uint64_t m2 = (((((((uint64_t)(((w2 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w2 ^ sw1)) & (((uint64_t)(((w2 ^ sw2) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w2 ^ sw2))) & (((uint64_t)(((w2 ^ sw3) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w2 ^ sw3))) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+    if (m2 != UINT64_C(0)) {
+        return ((end - ((size_t)8u)) + (((size_t)(63u - nvol_clz64(m2))) >> ((size_t)3u)));
+    }
+    if (len_ <= ((size_t)16u)) {
+        const uint64_t w3 = nvol_load64(start);
+        const uint64_t m3 = (((((((uint64_t)(((w3 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w3 ^ sw1)) & (((uint64_t)(((w3 ^ sw2) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w3 ^ sw2))) & (((uint64_t)(((w3 ^ sw3) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w3 ^ sw3))) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m3 != UINT64_C(0)) {
+            return (start + (((size_t)(63u - nvol_clz64(m3))) >> ((size_t)3u)));
+        }
+        return NULL;
+    }
+    const uint8_t *q = ((const uint8_t *)((uintptr_t)(end) & ~(uintptr_t)7u));
+    while (q >= (start + ((size_t)8u))) {
+        q = (q - ((size_t)8u));
+        const uint64_t w4 = nvol_load64(q);
+        const uint64_t m4 = (((((((uint64_t)(((w4 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w4 ^ sw1)) & (((uint64_t)(((w4 ^ sw2) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w4 ^ sw2))) & (((uint64_t)(((w4 ^ sw3) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w4 ^ sw3))) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m4 != UINT64_C(0)) {
+            return (q + (((size_t)(63u - nvol_clz64(m4))) >> ((size_t)3u)));
+        }
+    }
+    if (q > start) {
+        const uint64_t w5 = nvol_load64(start);
+        const uint64_t m5 = (((((((uint64_t)(((w5 ^ sw1) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w5 ^ sw1)) & (((uint64_t)(((w5 ^ sw2) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w5 ^ sw2))) & (((uint64_t)(((w5 ^ sw3) & UINT64_C(9187201950435737471)) + UINT64_C(9187201950435737471))) | (w5 ^ sw3))) | UINT64_C(9187201950435737471)) ^ UINT64_C(18446744073709551615));
+        if (m5 != UINT64_C(0)) {
+            return (start + (((size_t)(63u - nvol_clz64(m5))) >> ((size_t)3u)));
         }
     }
     return NULL;

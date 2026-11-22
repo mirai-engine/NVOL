@@ -150,28 +150,148 @@ nvol_find_byteset_pair_mask_raw_ptr:
 .def nvol_memchr_scalar; .scl 2; .type 32; .endef
 nvol_memchr_scalar:
     movzbl %cl, %ecx
+    mov %r8, %r9
+    sub %rdx, %r9
+    cmp $4, %r9
+    {disp8} jae .Lnvol_memchr_scalar.L2
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_memchr_scalar.L3
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_memchr_scalar.L2:
+    {disp8} jae .Lnvol_memchr_scalar.L5
+    .byte 15, 31, 64, 0
+.Lnvol_memchr_scalar.L4:
     movzbl (%rdx), %eax
     cmp %ecx, %eax
-    {disp8} je .Lnvol_memchr_scalar.L5
-.Lnvol_memchr_scalar.L4:
+    {disp32} je .Lnvol_memchr_scalar.L7
+.Lnvol_memchr_scalar.L6:
     add $1, %rdx
     cmp %r8, %rdx
-    {disp8} jb .Lnvol_memchr_scalar.L2
-.Lnvol_memchr_scalar.L3:
+    {disp8} jb .Lnvol_memchr_scalar.L4
+.Lnvol_memchr_scalar.L5:
+    xor %eax, %eax
+    ret
+.Lnvol_memchr_scalar.L2:
+    cmp $8, %r9
+    {disp8} jae .Lnvol_memchr_scalar.L8
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov (%rdx), %eax
+    xor %rcx, %rax
+    mov %rax, %r9
+    sub $16843009, %r9d
+    not %eax
+    and %rax, %r9
+    and $-2139062144, %r9d
+    {disp8} je .Lnvol_memchr_scalar.L10
+    bsf %r9d, %eax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    ret
+.Lnvol_memchr_scalar.L10:
+    mov -4(%r8), %eax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    sub $16843009, %ecx
+    not %eax
+    and %rax, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr_scalar.L12
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r8,%rax), %rax
+    ret
+.Lnvol_memchr_scalar.L12:
+    xor %eax, %eax
+    ret
+.Lnvol_memchr_scalar.L8:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $72340172838076673, %r11
+    sub %r11, %r10
+    not %rax
+    and %rax, %r10
+    movabsq $9259542123273814144, %rax
+    and %rax, %r10
+    {disp8} je .Lnvol_memchr_scalar.L14
+    bsf %r10, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    ret
+.Lnvol_memchr_scalar.L14:
+    cmp $16, %r9
+    {disp8} ja .Lnvol_memchr_scalar.L16
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $72340172838076673, %rdx
+    sub %rdx, %rcx
+    not %rax
+    and %rax, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr_scalar.L18
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    ret
+.Lnvol_memchr_scalar.L18:
+    xor %eax, %eax
+    ret
+.Lnvol_memchr_scalar.L16:
+    and $-8, %rdx
+    add $8, %rdx
+    lea -8(%r8), %r9
+    cmp %r9, %rdx
+    {disp8} ja .Lnvol_memchr_scalar.L21
+    .byte 102, 144
+.Lnvol_memchr_scalar.L20:
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $72340172838076673, %r11
+    sub %r11, %r10
+    not %rax
+    and %rax, %r10
+    movabsq $9259542123273814144, %rax
+    and %rax, %r10
+    {disp8} jne .Lnvol_memchr_scalar.L23
+.Lnvol_memchr_scalar.L22:
+    add $8, %rdx
+    cmp %r9, %rdx
+    {disp8} jbe .Lnvol_memchr_scalar.L20
+.Lnvol_memchr_scalar.L21:
+    cmp %r8, %rdx
+    {disp8} jae .Lnvol_memchr_scalar.L24
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $72340172838076673, %rdx
+    sub %rdx, %rcx
+    not %rax
+    and %rax, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr_scalar.L26
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    ret
+.Lnvol_memchr_scalar.L26:
+.Lnvol_memchr_scalar.L24:
     xor %eax, %eax
 .Lnvol_memchr_scalar.L1:
     ret
-.Lnvol_memchr_scalar.L5:
+.Lnvol_memchr_scalar.L7:
     mov %rdx, %rax
+    ret
+.Lnvol_memchr_scalar.L23:
+    bsf %r10, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
     ret
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memchr_sse2
 .def nvol_memchr_sse2; .scl 2; .type 32; .endef
 nvol_memchr_sse2:
@@ -461,19 +581,158 @@ nvol_memchr_entry_avx2:
     mov %r8, %r9
     sub %rdx, %r9
     cmp $16, %r9
-    {disp8} jae .Lnvol_memchr_entry_avx2.L2
+    {disp32} jae .Lnvol_memchr_entry_avx2.L2
+    cmp $4, %r9
+    {disp8} jae .Lnvol_memchr_entry_avx2.L4
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_memchr_entry_avx2.L5
-    .byte 15, 31, 0
-.Lnvol_memchr_entry_avx2.L4:
+    {disp8} jae .Lnvol_memchr_entry_avx2.L7
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memchr_entry_avx2.L6:
     movzbl (%rdx), %eax
     cmp %ecx, %eax
-    {disp32} je .Lnvol_memchr_entry_avx2.L7
-.Lnvol_memchr_entry_avx2.L6:
+    {disp32} je .Lnvol_memchr_entry_avx2.L9
+.Lnvol_memchr_entry_avx2.L8:
     add $1, %rdx
     cmp %r8, %rdx
-    {disp8} jb .Lnvol_memchr_entry_avx2.L4
-.Lnvol_memchr_entry_avx2.L5:
+    {disp8} jb .Lnvol_memchr_entry_avx2.L6
+.Lnvol_memchr_entry_avx2.L7:
+    xor %eax, %eax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L4:
+    cmp $8, %r9
+    {disp32} jae .Lnvol_memchr_entry_avx2.L10
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov (%rdx), %eax
+    xor %rcx, %rax
+    mov %rax, %r9
+    sub $16843009, %r9d
+    not %eax
+    and %rax, %r9
+    and $-2139062144, %r9d
+    {disp8} je .Lnvol_memchr_entry_avx2.L12
+    bsf %r9d, %eax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L12:
+    mov -4(%r8), %eax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    sub $16843009, %ecx
+    not %eax
+    and %rax, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr_entry_avx2.L14
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L14:
+    xor %eax, %eax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L10:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $72340172838076673, %r11
+    sub %r11, %r10
+    not %rax
+    and %rax, %r10
+    movabsq $9259542123273814144, %rax
+    and %rax, %r10
+    {disp8} je .Lnvol_memchr_entry_avx2.L16
+    bsf %r10, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L16:
+    cmp $16, %r9
+    {disp8} ja .Lnvol_memchr_entry_avx2.L18
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $72340172838076673, %rdx
+    sub %rdx, %rcx
+    not %rax
+    and %rax, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr_entry_avx2.L20
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L20:
+    xor %eax, %eax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L18:
+    and $-8, %rdx
+    add $8, %rdx
+    lea -8(%r8), %r9
+    cmp %r9, %rdx
+    {disp8} ja .Lnvol_memchr_entry_avx2.L23
+    .byte 102, 144
+.Lnvol_memchr_entry_avx2.L22:
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $72340172838076673, %r11
+    sub %r11, %r10
+    not %rax
+    and %rax, %r10
+    movabsq $9259542123273814144, %rax
+    and %rax, %r10
+    {disp32} jne .Lnvol_memchr_entry_avx2.L25
+.Lnvol_memchr_entry_avx2.L24:
+    add $8, %rdx
+    cmp %r9, %rdx
+    {disp8} jbe .Lnvol_memchr_entry_avx2.L22
+.Lnvol_memchr_entry_avx2.L23:
+    cmp %r8, %rdx
+    {disp8} jae .Lnvol_memchr_entry_avx2.L26
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $72340172838076673, %rdx
+    sub %rdx, %rcx
+    not %rax
+    and %rax, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr_entry_avx2.L28
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L28:
+.Lnvol_memchr_entry_avx2.L26:
     xor %eax, %eax
     vzeroupper
     vmovdqu (%rsp), %xmm6
@@ -481,84 +740,11 @@ nvol_memchr_entry_avx2:
     ret
 .Lnvol_memchr_entry_avx2.L2:
     cmp $32, %r9
-    {disp32} jae .Lnvol_memchr_entry_avx2.L8
+    {disp32} jae .Lnvol_memchr_entry_avx2.L30
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %xmm0
     vpcmpeqb (%rdx), %xmm0, %xmm1
     vpmovmskb %xmm1, %eax
-    test %eax, %eax
-    {disp8} je .Lnvol_memchr_entry_avx2.L10
-    bsf %eax, %eax
-    lea (%rdx,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr_entry_avx2.L10:
-    and $-16, %rdx
-    add $16, %rdx
-    cmp $64, %r9
-    {disp8} jb .Lnvol_memchr_entry_avx2.L12
-    lea -64(%r8), %rcx
-    cmp %rcx, %rdx
-    {disp8} ja .Lnvol_memchr_entry_avx2.L15
-    .byte 15, 31, 0
-.Lnvol_memchr_entry_avx2.L14:
-    vpcmpeqb (%rdx), %xmm0, %xmm1
-    vpcmpeqb 16(%rdx), %xmm0, %xmm2
-    vpcmpeqb 32(%rdx), %xmm0, %xmm3
-    vpcmpeqb 48(%rdx), %xmm0, %xmm4
-    vpor %xmm2, %xmm1, %xmm5
-    vpor %xmm4, %xmm3, %xmm6
-    vpor %xmm6, %xmm5, %xmm5
-    vpmovmskb %xmm5, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_memchr_entry_avx2.L17
-.Lnvol_memchr_entry_avx2.L16:
-    add $64, %rdx
-    cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_memchr_entry_avx2.L14
-.Lnvol_memchr_entry_avx2.L15:
-.Lnvol_memchr_entry_avx2.L12:
-    lea -16(%r8), %rcx
-    cmp %rcx, %rdx
-    {disp8} ja .Lnvol_memchr_entry_avx2.L25
-    .byte 15, 31, 0
-.Lnvol_memchr_entry_avx2.L24:
-    vpcmpeqb (%rdx), %xmm0, %xmm1
-    vpmovmskb %xmm1, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_memchr_entry_avx2.L27
-.Lnvol_memchr_entry_avx2.L26:
-    add $16, %rdx
-    cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_memchr_entry_avx2.L24
-.Lnvol_memchr_entry_avx2.L25:
-    cmp %r8, %rdx
-    {disp8} jae .Lnvol_memchr_entry_avx2.L28
-    lea -16(%r8), %rdx
-    vpcmpeqb (%rdx), %xmm0, %xmm0
-    vpmovmskb %xmm0, %eax
-    test %eax, %eax
-    {disp8} je .Lnvol_memchr_entry_avx2.L30
-    bsf %eax, %eax
-    lea (%rdx,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr_entry_avx2.L30:
-.Lnvol_memchr_entry_avx2.L28:
-    xor %eax, %eax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr_entry_avx2.L8:
-    vmovd %ecx, %xmm0
-    vpbroadcastb %xmm0, %ymm0
-    vpcmpeqb (%rdx), %ymm0, %ymm1
-    vpmovmskb %ymm1, %eax
     test %eax, %eax
     {disp8} je .Lnvol_memchr_entry_avx2.L32
     bsf %eax, %eax
@@ -568,50 +754,50 @@ nvol_memchr_entry_avx2:
     add $24, %rsp
     ret
 .Lnvol_memchr_entry_avx2.L32:
-    and $-32, %rdx
-    add $32, %rdx
-    cmp $128, %r9
+    and $-16, %rdx
+    add $16, %rdx
+    cmp $64, %r9
     {disp8} jb .Lnvol_memchr_entry_avx2.L34
-    lea -128(%r8), %rcx
+    lea -64(%r8), %rcx
     cmp %rcx, %rdx
     {disp8} ja .Lnvol_memchr_entry_avx2.L37
     .byte 15, 31, 64, 0
 .Lnvol_memchr_entry_avx2.L36:
-    vpcmpeqb (%rdx), %ymm0, %ymm1
-    vpcmpeqb 32(%rdx), %ymm0, %ymm2
-    vpcmpeqb 64(%rdx), %ymm0, %ymm3
-    vpcmpeqb 96(%rdx), %ymm0, %ymm4
-    vpor %ymm2, %ymm1, %ymm5
-    vpor %ymm4, %ymm3, %ymm6
-    vpor %ymm6, %ymm5, %ymm5
-    vpmovmskb %ymm5, %eax
+    vpcmpeqb (%rdx), %xmm0, %xmm1
+    vpcmpeqb 16(%rdx), %xmm0, %xmm2
+    vpcmpeqb 32(%rdx), %xmm0, %xmm3
+    vpcmpeqb 48(%rdx), %xmm0, %xmm4
+    vpor %xmm2, %xmm1, %xmm5
+    vpor %xmm4, %xmm3, %xmm6
+    vpor %xmm6, %xmm5, %xmm5
+    vpmovmskb %xmm5, %eax
     test %eax, %eax
     {disp32} jne .Lnvol_memchr_entry_avx2.L39
 .Lnvol_memchr_entry_avx2.L38:
-    sub $-128, %rdx
+    add $64, %rdx
     cmp %rcx, %rdx
     {disp8} jbe .Lnvol_memchr_entry_avx2.L36
 .Lnvol_memchr_entry_avx2.L37:
 .Lnvol_memchr_entry_avx2.L34:
-    lea -32(%r8), %rcx
+    lea -16(%r8), %rcx
     cmp %rcx, %rdx
     {disp8} ja .Lnvol_memchr_entry_avx2.L47
     .byte 15, 31, 0
 .Lnvol_memchr_entry_avx2.L46:
-    vpcmpeqb (%rdx), %ymm0, %ymm1
-    vpmovmskb %ymm1, %eax
+    vpcmpeqb (%rdx), %xmm0, %xmm1
+    vpmovmskb %xmm1, %eax
     test %eax, %eax
     {disp32} jne .Lnvol_memchr_entry_avx2.L49
 .Lnvol_memchr_entry_avx2.L48:
-    add $32, %rdx
+    add $16, %rdx
     cmp %rcx, %rdx
     {disp8} jbe .Lnvol_memchr_entry_avx2.L46
 .Lnvol_memchr_entry_avx2.L47:
     cmp %r8, %rdx
     {disp8} jae .Lnvol_memchr_entry_avx2.L50
-    lea -32(%r8), %rdx
-    vpcmpeqb (%rdx), %ymm0, %ymm0
-    vpmovmskb %ymm0, %eax
+    lea -16(%r8), %rdx
+    vpcmpeqb (%rdx), %xmm0, %xmm0
+    vpmovmskb %xmm0, %eax
     test %eax, %eax
     {disp8} je .Lnvol_memchr_entry_avx2.L52
     bsf %eax, %eax
@@ -623,60 +809,93 @@ nvol_memchr_entry_avx2:
 .Lnvol_memchr_entry_avx2.L52:
 .Lnvol_memchr_entry_avx2.L50:
     xor %eax, %eax
-.Lnvol_memchr_entry_avx2.L1:
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_avx2.L7:
-    mov %rdx, %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr_entry_avx2.L19:
+.Lnvol_memchr_entry_avx2.L30:
+    vmovd %ecx, %xmm0
+    vpbroadcastb %xmm0, %ymm0
+    vpcmpeqb (%rdx), %ymm0, %ymm1
+    vpmovmskb %ymm1, %eax
+    test %eax, %eax
+    {disp8} je .Lnvol_memchr_entry_avx2.L54
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_avx2.L21:
+.Lnvol_memchr_entry_avx2.L54:
+    and $-32, %rdx
+    add $32, %rdx
+    cmp $128, %r9
+    {disp8} jb .Lnvol_memchr_entry_avx2.L56
+    lea -128(%r8), %rcx
+    cmp %rcx, %rdx
+    {disp8} ja .Lnvol_memchr_entry_avx2.L59
+    .byte 15, 31, 64, 0
+.Lnvol_memchr_entry_avx2.L58:
+    vpcmpeqb (%rdx), %ymm0, %ymm1
+    vpcmpeqb 32(%rdx), %ymm0, %ymm2
+    vpcmpeqb 64(%rdx), %ymm0, %ymm3
+    vpcmpeqb 96(%rdx), %ymm0, %ymm4
+    vpor %ymm2, %ymm1, %ymm5
+    vpor %ymm4, %ymm3, %ymm6
+    vpor %ymm6, %ymm5, %ymm5
+    vpmovmskb %ymm5, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_memchr_entry_avx2.L61
+.Lnvol_memchr_entry_avx2.L60:
+    sub $-128, %rdx
+    cmp %rcx, %rdx
+    {disp8} jbe .Lnvol_memchr_entry_avx2.L58
+.Lnvol_memchr_entry_avx2.L59:
+.Lnvol_memchr_entry_avx2.L56:
+    lea -32(%r8), %rcx
+    cmp %rcx, %rdx
+    {disp8} ja .Lnvol_memchr_entry_avx2.L69
+    .byte 15, 31, 0
+.Lnvol_memchr_entry_avx2.L68:
+    vpcmpeqb (%rdx), %ymm0, %ymm1
+    vpmovmskb %ymm1, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_memchr_entry_avx2.L71
+.Lnvol_memchr_entry_avx2.L70:
+    add $32, %rdx
+    cmp %rcx, %rdx
+    {disp8} jbe .Lnvol_memchr_entry_avx2.L68
+.Lnvol_memchr_entry_avx2.L69:
+    cmp %r8, %rdx
+    {disp8} jae .Lnvol_memchr_entry_avx2.L72
+    lea -32(%r8), %rdx
+    vpcmpeqb (%rdx), %ymm0, %ymm0
+    vpmovmskb %ymm0, %eax
+    test %eax, %eax
+    {disp8} je .Lnvol_memchr_entry_avx2.L74
     bsf %eax, %eax
-    lea 16(%rdx,%rax), %rax
+    lea (%rdx,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_avx2.L23:
-    bsf %eax, %eax
-    lea 32(%rdx,%rax), %rax
+.Lnvol_memchr_entry_avx2.L74:
+.Lnvol_memchr_entry_avx2.L72:
+    xor %eax, %eax
+.Lnvol_memchr_entry_avx2.L1:
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_avx2.L17:
-    vpmovmskb %xmm1, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memchr_entry_avx2.L19
-.Lnvol_memchr_entry_avx2.L18:
-    vpmovmskb %xmm2, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memchr_entry_avx2.L21
-.Lnvol_memchr_entry_avx2.L20:
-    vpmovmskb %xmm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memchr_entry_avx2.L23
-.Lnvol_memchr_entry_avx2.L22:
-    vpmovmskb %xmm4, %eax
-    bsf %eax, %eax
-    lea 48(%rdx,%rax), %rax
+.Lnvol_memchr_entry_avx2.L9:
+    mov %rdx, %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_avx2.L27:
-    bsf %eax, %eax
+.Lnvol_memchr_entry_avx2.L25:
+    bsf %r10, %rax
+    shr $3, %rax
     lea (%rdx,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
@@ -691,34 +910,34 @@ nvol_memchr_entry_avx2:
     ret
 .Lnvol_memchr_entry_avx2.L43:
     bsf %eax, %eax
-    lea 32(%rdx,%rax), %rax
+    lea 16(%rdx,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
 .Lnvol_memchr_entry_avx2.L45:
     bsf %eax, %eax
-    lea 64(%rdx,%rax), %rax
+    lea 32(%rdx,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
 .Lnvol_memchr_entry_avx2.L39:
-    vpmovmskb %ymm1, %eax
+    vpmovmskb %xmm1, %eax
     test %eax, %eax
     {disp8} jne .Lnvol_memchr_entry_avx2.L41
 .Lnvol_memchr_entry_avx2.L40:
-    vpmovmskb %ymm2, %eax
+    vpmovmskb %xmm2, %eax
     test %eax, %eax
     {disp8} jne .Lnvol_memchr_entry_avx2.L43
 .Lnvol_memchr_entry_avx2.L42:
-    vpmovmskb %ymm3, %eax
+    vpmovmskb %xmm3, %eax
     test %eax, %eax
     {disp8} jne .Lnvol_memchr_entry_avx2.L45
 .Lnvol_memchr_entry_avx2.L44:
-    vpmovmskb %ymm4, %eax
+    vpmovmskb %xmm4, %eax
     bsf %eax, %eax
-    lea 96(%rdx,%rax), %rax
+    lea 48(%rdx,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
@@ -730,9 +949,56 @@ nvol_memchr_entry_avx2:
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
+.Lnvol_memchr_entry_avx2.L63:
+    bsf %eax, %eax
+    lea (%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L65:
+    bsf %eax, %eax
+    lea 32(%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L67:
+    bsf %eax, %eax
+    lea 64(%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L61:
+    vpmovmskb %ymm1, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memchr_entry_avx2.L63
+.Lnvol_memchr_entry_avx2.L62:
+    vpmovmskb %ymm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memchr_entry_avx2.L65
+.Lnvol_memchr_entry_avx2.L64:
+    vpmovmskb %ymm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memchr_entry_avx2.L67
+.Lnvol_memchr_entry_avx2.L66:
+    vpmovmskb %ymm4, %eax
+    bsf %eax, %eax
+    lea 96(%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_avx2.L71:
+    bsf %eax, %eax
+    lea (%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
@@ -751,19 +1017,150 @@ nvol_memchr_entry_sse2:
     mov %r8, %r9
     sub %rdx, %r9
     cmp $16, %r9
-    {disp8} jae .Lnvol_memchr_entry_sse2.L2
+    {disp32} jae .Lnvol_memchr_entry_sse2.L2
+    cmp $4, %r9
+    {disp8} jae .Lnvol_memchr_entry_sse2.L4
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_memchr_entry_sse2.L5
-    .byte 15, 31, 0
-.Lnvol_memchr_entry_sse2.L4:
+    {disp8} jae .Lnvol_memchr_entry_sse2.L7
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memchr_entry_sse2.L6:
     movzbl (%rdx), %eax
     cmp %ecx, %eax
-    {disp32} je .Lnvol_memchr_entry_sse2.L7
-.Lnvol_memchr_entry_sse2.L6:
+    {disp32} je .Lnvol_memchr_entry_sse2.L9
+.Lnvol_memchr_entry_sse2.L8:
     add $1, %rdx
     cmp %r8, %rdx
-    {disp8} jb .Lnvol_memchr_entry_sse2.L4
-.Lnvol_memchr_entry_sse2.L5:
+    {disp8} jb .Lnvol_memchr_entry_sse2.L6
+.Lnvol_memchr_entry_sse2.L7:
+    xor %eax, %eax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L4:
+    cmp $8, %r9
+    {disp8} jae .Lnvol_memchr_entry_sse2.L10
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov (%rdx), %eax
+    xor %rcx, %rax
+    mov %rax, %r9
+    sub $16843009, %r9d
+    not %eax
+    and %rax, %r9
+    and $-2139062144, %r9d
+    {disp8} je .Lnvol_memchr_entry_sse2.L12
+    bsf %r9d, %eax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L12:
+    mov -4(%r8), %eax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    sub $16843009, %ecx
+    not %eax
+    and %rax, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr_entry_sse2.L14
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r8,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L14:
+    xor %eax, %eax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L10:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $72340172838076673, %r11
+    sub %r11, %r10
+    not %rax
+    and %rax, %r10
+    movabsq $9259542123273814144, %rax
+    and %rax, %r10
+    {disp8} je .Lnvol_memchr_entry_sse2.L16
+    bsf %r10, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L16:
+    cmp $16, %r9
+    {disp8} ja .Lnvol_memchr_entry_sse2.L18
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $72340172838076673, %rdx
+    sub %rdx, %rcx
+    not %rax
+    and %rax, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr_entry_sse2.L20
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L20:
+    xor %eax, %eax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L18:
+    and $-8, %rdx
+    add $8, %rdx
+    lea -8(%r8), %r9
+    cmp %r9, %rdx
+    {disp8} ja .Lnvol_memchr_entry_sse2.L23
+    .byte 15, 31, 0
+.Lnvol_memchr_entry_sse2.L22:
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $72340172838076673, %r11
+    sub %r11, %r10
+    not %rax
+    and %rax, %r10
+    movabsq $9259542123273814144, %rax
+    and %rax, %r10
+    {disp32} jne .Lnvol_memchr_entry_sse2.L25
+.Lnvol_memchr_entry_sse2.L24:
+    add $8, %rdx
+    cmp %r9, %rdx
+    {disp8} jbe .Lnvol_memchr_entry_sse2.L22
+.Lnvol_memchr_entry_sse2.L23:
+    cmp %r8, %rdx
+    {disp8} jae .Lnvol_memchr_entry_sse2.L26
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $72340172838076673, %rdx
+    sub %rdx, %rcx
+    not %rax
+    and %rax, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr_entry_sse2.L28
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L28:
+.Lnvol_memchr_entry_sse2.L26:
     xor %eax, %eax
     movdqu (%rsp), %xmm6
     add $24, %rsp
@@ -776,22 +1173,22 @@ nvol_memchr_entry_sse2:
     pcmpeqb %xmm0, %xmm1
     pmovmskb %xmm1, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr_entry_sse2.L8
+    {disp8} je .Lnvol_memchr_entry_sse2.L30
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_sse2.L8:
+.Lnvol_memchr_entry_sse2.L30:
     and $-16, %rdx
     add $16, %rdx
     cmp $64, %r9
-    {disp8} jb .Lnvol_memchr_entry_sse2.L10
+    {disp8} jb .Lnvol_memchr_entry_sse2.L32
     lea -64(%r8), %rcx
     cmp %rcx, %rdx
-    {disp8} ja .Lnvol_memchr_entry_sse2.L13
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_memchr_entry_sse2.L12:
+    {disp8} ja .Lnvol_memchr_entry_sse2.L35
+    .byte 15, 31, 68, 0, 0
+.Lnvol_memchr_entry_sse2.L34:
     movdqa (%rdx), %xmm1
     pcmpeqb %xmm0, %xmm1
     movdqa 16(%rdx), %xmm2
@@ -807,91 +1204,98 @@ nvol_memchr_entry_sse2:
     por %xmm6, %xmm5
     pmovmskb %xmm5, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr_entry_sse2.L15
-.Lnvol_memchr_entry_sse2.L14:
+    {disp32} jne .Lnvol_memchr_entry_sse2.L37
+.Lnvol_memchr_entry_sse2.L36:
     add $64, %rdx
     cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_memchr_entry_sse2.L12
-.Lnvol_memchr_entry_sse2.L13:
-.Lnvol_memchr_entry_sse2.L10:
+    {disp8} jbe .Lnvol_memchr_entry_sse2.L34
+.Lnvol_memchr_entry_sse2.L35:
+.Lnvol_memchr_entry_sse2.L32:
     lea -16(%r8), %rcx
     cmp %rcx, %rdx
-    {disp8} ja .Lnvol_memchr_entry_sse2.L23
+    {disp8} ja .Lnvol_memchr_entry_sse2.L45
     .byte 15, 31, 0
-.Lnvol_memchr_entry_sse2.L22:
+.Lnvol_memchr_entry_sse2.L44:
     movdqu (%rdx), %xmm1
     pcmpeqb %xmm0, %xmm1
     pmovmskb %xmm1, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr_entry_sse2.L25
-.Lnvol_memchr_entry_sse2.L24:
+    {disp32} jne .Lnvol_memchr_entry_sse2.L47
+.Lnvol_memchr_entry_sse2.L46:
     add $16, %rdx
     cmp %rcx, %rdx
-    {disp8} jbe .Lnvol_memchr_entry_sse2.L22
-.Lnvol_memchr_entry_sse2.L23:
+    {disp8} jbe .Lnvol_memchr_entry_sse2.L44
+.Lnvol_memchr_entry_sse2.L45:
     cmp %r8, %rdx
-    {disp8} jae .Lnvol_memchr_entry_sse2.L26
+    {disp8} jae .Lnvol_memchr_entry_sse2.L48
     lea -16(%r8), %rdx
     movdqu (%rdx), %xmm1
     pcmpeqb %xmm0, %xmm1
     pmovmskb %xmm1, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr_entry_sse2.L28
+    {disp8} je .Lnvol_memchr_entry_sse2.L50
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_sse2.L28:
-.Lnvol_memchr_entry_sse2.L26:
+.Lnvol_memchr_entry_sse2.L50:
+.Lnvol_memchr_entry_sse2.L48:
     xor %eax, %eax
 .Lnvol_memchr_entry_sse2.L1:
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_sse2.L7:
+.Lnvol_memchr_entry_sse2.L9:
     mov %rdx, %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_sse2.L17:
+.Lnvol_memchr_entry_sse2.L25:
+    bsf %r10, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memchr_entry_sse2.L39:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_sse2.L19:
+.Lnvol_memchr_entry_sse2.L41:
     bsf %eax, %eax
     lea 16(%rdx,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_sse2.L21:
+.Lnvol_memchr_entry_sse2.L43:
     bsf %eax, %eax
     lea 32(%rdx,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_sse2.L15:
+.Lnvol_memchr_entry_sse2.L37:
     pmovmskb %xmm1, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr_entry_sse2.L17
-.Lnvol_memchr_entry_sse2.L16:
+    {disp8} jne .Lnvol_memchr_entry_sse2.L39
+.Lnvol_memchr_entry_sse2.L38:
     pmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr_entry_sse2.L19
-.Lnvol_memchr_entry_sse2.L18:
+    {disp8} jne .Lnvol_memchr_entry_sse2.L41
+.Lnvol_memchr_entry_sse2.L40:
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr_entry_sse2.L21
-.Lnvol_memchr_entry_sse2.L20:
+    {disp8} jne .Lnvol_memchr_entry_sse2.L43
+.Lnvol_memchr_entry_sse2.L42:
     pmovmskb %xmm4, %eax
     bsf %eax, %eax
     lea 48(%rdx,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memchr_entry_sse2.L25:
+.Lnvol_memchr_entry_sse2.L47:
     bsf %eax, %eax
     lea (%rdx,%rax), %rax
     movdqu (%rsp), %xmm6
@@ -899,7 +1303,10 @@ nvol_memchr_entry_sse2:
     ret
 .seh_endproc
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memchr_raw
 .def nvol_memchr_raw; .scl 2; .type 32; .endef
 nvol_memchr_raw:
@@ -975,28 +1382,169 @@ nvol_memchr:
 .def nvol_memrchr_scalar; .scl 2; .type 32; .endef
 nvol_memrchr_scalar:
     movzbl %cl, %ecx
+    mov %r8, %r9
+    sub %rdx, %r9
+    cmp $4, %r9
+    {disp8} jae .Lnvol_memrchr_scalar.L2
     cmp %rdx, %r8
-    {disp8} jbe .Lnvol_memrchr_scalar.L3
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_memrchr_scalar.L2:
+    {disp8} jbe .Lnvol_memrchr_scalar.L5
+    .byte 15, 31, 64, 0
+.Lnvol_memrchr_scalar.L4:
     lea -1(%r8), %r8
     movzbl (%r8), %eax
     cmp %ecx, %eax
-    {disp8} je .Lnvol_memrchr_scalar.L5
-.Lnvol_memrchr_scalar.L4:
+    {disp32} je .Lnvol_memrchr_scalar.L7
+.Lnvol_memrchr_scalar.L6:
     cmp %rdx, %r8
-    {disp8} ja .Lnvol_memrchr_scalar.L2
-.Lnvol_memrchr_scalar.L3:
+    {disp8} ja .Lnvol_memrchr_scalar.L4
+.Lnvol_memrchr_scalar.L5:
+    xor %eax, %eax
+    ret
+.Lnvol_memrchr_scalar.L2:
+    cmp $8, %r9
+    {disp8} jae .Lnvol_memrchr_scalar.L8
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov -4(%r8), %eax
+    xor %rcx, %rax
+    mov %rax, %r9
+    and $2139062143, %r9d
+    add $2139062143, %r9d
+    or %rax, %r9
+    or $2139062143, %r9d
+    not %r9d
+    test %r9d, %r9d
+    {disp8} je .Lnvol_memrchr_scalar.L10
+    bsr %r9d, %eax
+    shr $3, %rax
+    lea -4(%r8,%rax), %rax
+    ret
+.Lnvol_memrchr_scalar.L10:
+    mov (%rdx), %eax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %rax, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr_scalar.L12
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    ret
+.Lnvol_memrchr_scalar.L12:
+    xor %eax, %eax
+    ret
+.Lnvol_memrchr_scalar.L8:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $9187201950435737471, %r11
+    and %r11, %r10
+    movabsq $9187201950435737471, %r11
+    add %r11, %r10
+    or %rax, %r10
+    movabsq $9187201950435737471, %rax
+    or %rax, %r10
+    not %r10
+    test %r10, %r10
+    {disp8} je .Lnvol_memrchr_scalar.L14
+    bsr %r10, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    ret
+.Lnvol_memrchr_scalar.L14:
+    cmp $16, %r9
+    {disp8} ja .Lnvol_memrchr_scalar.L16
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rcx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rcx
+    or %rax, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr_scalar.L18
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    ret
+.Lnvol_memrchr_scalar.L18:
+    xor %eax, %eax
+    ret
+.Lnvol_memrchr_scalar.L16:
+    and $-8, %r8
+    lea 8(%rdx), %r9
+    cmp %r9, %r8
+    {disp8} jb .Lnvol_memrchr_scalar.L21
+    .byte 102, 144
+.Lnvol_memrchr_scalar.L20:
+    lea -8(%r8), %r8
+    mov (%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $9187201950435737471, %r11
+    and %r11, %r10
+    movabsq $9187201950435737471, %r11
+    add %r11, %r10
+    or %rax, %r10
+    movabsq $9187201950435737471, %rax
+    or %rax, %r10
+    not %r10
+    test %r10, %r10
+    {disp8} jne .Lnvol_memrchr_scalar.L23
+.Lnvol_memrchr_scalar.L22:
+    cmp %r9, %r8
+    {disp8} jae .Lnvol_memrchr_scalar.L20
+.Lnvol_memrchr_scalar.L21:
+    cmp %rdx, %r8
+    {disp8} jbe .Lnvol_memrchr_scalar.L24
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rcx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rcx
+    or %rax, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr_scalar.L26
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    ret
+.Lnvol_memrchr_scalar.L26:
+.Lnvol_memrchr_scalar.L24:
     xor %eax, %eax
 .Lnvol_memrchr_scalar.L1:
     ret
-.Lnvol_memrchr_scalar.L5:
+.Lnvol_memrchr_scalar.L7:
     mov %r8, %rax
+    ret
+.Lnvol_memrchr_scalar.L23:
+    bsr %r10, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
     ret
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memrchr_sse2
 .def nvol_memrchr_sse2; .scl 2; .type 32; .endef
 nvol_memrchr_sse2:
@@ -1408,19 +1956,173 @@ nvol_memrchr_entry_avx2:
     mov %r8, %r9
     sub %rdx, %r9
     cmp $16, %r9
-    {disp8} jae .Lnvol_memrchr_entry_avx2.L2
+    {disp32} jae .Lnvol_memrchr_entry_avx2.L2
+    cmp $4, %r9
+    {disp8} jae .Lnvol_memrchr_entry_avx2.L4
     cmp %rdx, %r8
-    {disp8} jbe .Lnvol_memrchr_entry_avx2.L5
-    .byte 15, 31, 0
-.Lnvol_memrchr_entry_avx2.L4:
+    {disp8} jbe .Lnvol_memrchr_entry_avx2.L7
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memrchr_entry_avx2.L6:
     lea -1(%r8), %r8
     movzbl (%r8), %eax
     cmp %ecx, %eax
-    {disp32} je .Lnvol_memrchr_entry_avx2.L7
-.Lnvol_memrchr_entry_avx2.L6:
+    {disp32} je .Lnvol_memrchr_entry_avx2.L9
+.Lnvol_memrchr_entry_avx2.L8:
     cmp %rdx, %r8
-    {disp8} ja .Lnvol_memrchr_entry_avx2.L4
-.Lnvol_memrchr_entry_avx2.L5:
+    {disp8} ja .Lnvol_memrchr_entry_avx2.L6
+.Lnvol_memrchr_entry_avx2.L7:
+    xor %eax, %eax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L4:
+    cmp $8, %r9
+    {disp32} jae .Lnvol_memrchr_entry_avx2.L10
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov -4(%r8), %eax
+    xor %rcx, %rax
+    mov %rax, %r9
+    and $2139062143, %r9d
+    add $2139062143, %r9d
+    or %rax, %r9
+    or $2139062143, %r9d
+    not %r9d
+    test %r9d, %r9d
+    {disp8} je .Lnvol_memrchr_entry_avx2.L12
+    bsr %r9d, %eax
+    shr $3, %rax
+    lea -4(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L12:
+    mov (%rdx), %eax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %rax, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr_entry_avx2.L14
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L14:
+    xor %eax, %eax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L10:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $9187201950435737471, %r11
+    and %r11, %r10
+    movabsq $9187201950435737471, %r11
+    add %r11, %r10
+    or %rax, %r10
+    movabsq $9187201950435737471, %rax
+    or %rax, %r10
+    not %r10
+    test %r10, %r10
+    {disp8} je .Lnvol_memrchr_entry_avx2.L16
+    bsr %r10, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L16:
+    cmp $16, %r9
+    {disp8} ja .Lnvol_memrchr_entry_avx2.L18
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rcx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rcx
+    or %rax, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr_entry_avx2.L20
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L20:
+    xor %eax, %eax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L18:
+    and $-8, %r8
+    lea 8(%rdx), %r9
+    cmp %r9, %r8
+    {disp8} jb .Lnvol_memrchr_entry_avx2.L23
+    .byte 102, 144
+.Lnvol_memrchr_entry_avx2.L22:
+    lea -8(%r8), %r8
+    mov (%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $9187201950435737471, %r11
+    and %r11, %r10
+    movabsq $9187201950435737471, %r11
+    add %r11, %r10
+    or %rax, %r10
+    movabsq $9187201950435737471, %rax
+    or %rax, %r10
+    not %r10
+    test %r10, %r10
+    {disp32} jne .Lnvol_memrchr_entry_avx2.L25
+.Lnvol_memrchr_entry_avx2.L24:
+    cmp %r9, %r8
+    {disp8} jae .Lnvol_memrchr_entry_avx2.L22
+.Lnvol_memrchr_entry_avx2.L23:
+    cmp %rdx, %r8
+    {disp8} jbe .Lnvol_memrchr_entry_avx2.L26
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rcx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rcx
+    or %rax, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr_entry_avx2.L28
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L28:
+.Lnvol_memrchr_entry_avx2.L26:
     xor %eax, %eax
     vzeroupper
     vmovdqu (%rsp), %xmm6
@@ -1428,31 +2130,32 @@ nvol_memrchr_entry_avx2:
     ret
 .Lnvol_memrchr_entry_avx2.L2:
     cmp $32, %r9
-    {disp32} jae .Lnvol_memrchr_entry_avx2.L8
+    {disp32} jae .Lnvol_memrchr_entry_avx2.L30
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %xmm0
     vpcmpeqb -16(%r8), %xmm0, %xmm1
     vpmovmskb %xmm1, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_avx2.L10
+    {disp8} je .Lnvol_memrchr_entry_avx2.L32
     bsr %eax, %eax
     lea -16(%r8,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_avx2.L10:
+.Lnvol_memrchr_entry_avx2.L32:
     and $-16, %r8
     cmp $64, %r9
-    {disp8} jb .Lnvol_memrchr_entry_avx2.L12
+    {disp8} jb .Lnvol_memrchr_entry_avx2.L34
     lea 64(%rdx), %rcx
     cmp $1024, %r9
-    {disp32} jae .Lnvol_memrchr_entry_avx2.L17
-.Lnvol_memrchr_entry_avx2.L14:
+    {disp32} jae .Lnvol_memrchr_entry_avx2.L39
+.Lnvol_memrchr_entry_avx2.L36:
     cmp %rcx, %r8
-    {disp8} jb .Lnvol_memrchr_entry_avx2.L25
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_memrchr_entry_avx2.L24:
+    {disp8} jb .Lnvol_memrchr_entry_avx2.L47
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
+.Lnvol_memrchr_entry_avx2.L46:
     lea -64(%r8), %r8
     vpcmpeqb (%r8), %xmm0, %xmm1
     vpcmpeqb 16(%r8), %xmm0, %xmm2
@@ -1463,257 +2166,70 @@ nvol_memrchr_entry_avx2:
     vpor %xmm6, %xmm5, %xmm5
     vpmovmskb %xmm5, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_avx2.L27
-.Lnvol_memrchr_entry_avx2.L26:
+    {disp32} jne .Lnvol_memrchr_entry_avx2.L49
+.Lnvol_memrchr_entry_avx2.L48:
     cmp %rcx, %r8
-    {disp8} jae .Lnvol_memrchr_entry_avx2.L24
-.Lnvol_memrchr_entry_avx2.L25:
-.Lnvol_memrchr_entry_avx2.L12:
+    {disp8} jae .Lnvol_memrchr_entry_avx2.L46
+.Lnvol_memrchr_entry_avx2.L47:
+.Lnvol_memrchr_entry_avx2.L34:
     lea 16(%rdx), %rcx
     cmp %rcx, %r8
-    {disp8} jb .Lnvol_memrchr_entry_avx2.L35
+    {disp8} jb .Lnvol_memrchr_entry_avx2.L57
     .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr_entry_avx2.L34:
+.Lnvol_memrchr_entry_avx2.L56:
     lea -16(%r8), %r8
     vpcmpeqb (%r8), %xmm0, %xmm1
     vpmovmskb %xmm1, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_avx2.L37
-.Lnvol_memrchr_entry_avx2.L36:
-    cmp %rcx, %r8
-    {disp8} jae .Lnvol_memrchr_entry_avx2.L34
-.Lnvol_memrchr_entry_avx2.L35:
-    cmp %rdx, %r8
-    {disp8} jbe .Lnvol_memrchr_entry_avx2.L38
-    vpcmpeqb (%rdx), %xmm0, %xmm0
-    vpmovmskb %xmm0, %eax
-    test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_avx2.L40
-    bsr %eax, %eax
-    lea (%rdx,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L40:
-.Lnvol_memrchr_entry_avx2.L38:
-    xor %eax, %eax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L8:
-    vmovd %ecx, %xmm0
-    vpbroadcastb %xmm0, %ymm0
-    vpcmpeqb -32(%r8), %ymm0, %ymm1
-    vpmovmskb %ymm1, %eax
-    test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_avx2.L42
-    bsr %eax, %eax
-    lea -32(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L42:
-    and $-32, %r8
-    cmp $128, %r9
-    {disp8} jb .Lnvol_memrchr_entry_avx2.L44
-    lea 128(%rdx), %rcx
-    cmp $4096, %r9
-    {disp32} jae .Lnvol_memrchr_entry_avx2.L49
-.Lnvol_memrchr_entry_avx2.L46:
-    cmp %rcx, %r8
-    {disp8} jb .Lnvol_memrchr_entry_avx2.L57
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_memrchr_entry_avx2.L56:
-    lea -128(%r8), %r8
-    vpcmpeqb (%r8), %ymm0, %ymm1
-    vpcmpeqb 32(%r8), %ymm0, %ymm2
-    vpcmpeqb 64(%r8), %ymm0, %ymm3
-    vpcmpeqb 96(%r8), %ymm0, %ymm4
-    vpor %ymm2, %ymm1, %ymm5
-    vpor %ymm4, %ymm3, %ymm6
-    vpor %ymm6, %ymm5, %ymm5
-    vpmovmskb %ymm5, %eax
     test %eax, %eax
     {disp32} jne .Lnvol_memrchr_entry_avx2.L59
 .Lnvol_memrchr_entry_avx2.L58:
     cmp %rcx, %r8
     {disp8} jae .Lnvol_memrchr_entry_avx2.L56
 .Lnvol_memrchr_entry_avx2.L57:
-.Lnvol_memrchr_entry_avx2.L44:
-    lea 32(%rdx), %rcx
-    cmp %rcx, %r8
-    {disp8} jb .Lnvol_memrchr_entry_avx2.L67
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr_entry_avx2.L66:
-    lea -32(%r8), %r8
-    vpcmpeqb (%r8), %ymm0, %ymm1
-    vpmovmskb %ymm1, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_avx2.L69
-.Lnvol_memrchr_entry_avx2.L68:
-    cmp %rcx, %r8
-    {disp8} jae .Lnvol_memrchr_entry_avx2.L66
-.Lnvol_memrchr_entry_avx2.L67:
     cmp %rdx, %r8
-    {disp8} jbe .Lnvol_memrchr_entry_avx2.L70
-    vpcmpeqb (%rdx), %ymm0, %ymm0
-    vpmovmskb %ymm0, %eax
+    {disp8} jbe .Lnvol_memrchr_entry_avx2.L60
+    vpcmpeqb (%rdx), %xmm0, %xmm0
+    vpmovmskb %xmm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_avx2.L72
+    {disp8} je .Lnvol_memrchr_entry_avx2.L62
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_avx2.L72:
-.Lnvol_memrchr_entry_avx2.L70:
+.Lnvol_memrchr_entry_avx2.L62:
+.Lnvol_memrchr_entry_avx2.L60:
     xor %eax, %eax
-.Lnvol_memrchr_entry_avx2.L1:
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_avx2.L7:
-    mov %r8, %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L19:
-    bsr %eax, %eax
-    lea 48(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L21:
-    bsr %eax, %eax
-    lea 32(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L23:
-    bsr %eax, %eax
-    lea 16(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L17:
-    .byte 15, 31, 0
-.Lnvol_memrchr_entry_avx2.L15:
-    cmp %rcx, %r8
-    {disp32} jb .Lnvol_memrchr_entry_avx2.L14
-    lea -64(%r8), %r8
-    vpcmpeqb (%r8), %xmm0, %xmm1
-    vpcmpeqb 16(%r8), %xmm0, %xmm2
-    vpcmpeqb 32(%r8), %xmm0, %xmm3
-    vpcmpeqb 48(%r8), %xmm0, %xmm4
-    vpor %xmm2, %xmm1, %xmm5
-    vpor %xmm4, %xmm3, %xmm6
-    vpor %xmm6, %xmm5, %xmm5
-    vpmovmskb %xmm5, %eax
-    test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_avx2.L15
-    vpmovmskb %xmm4, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_avx2.L19
-.Lnvol_memrchr_entry_avx2.L18:
-    vpmovmskb %xmm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L21
-.Lnvol_memrchr_entry_avx2.L20:
-    vpmovmskb %xmm2, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L23
-.Lnvol_memrchr_entry_avx2.L22:
-    vpmovmskb %xmm1, %eax
-    bsr %eax, %eax
-    lea (%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L14
-.Lnvol_memrchr_entry_avx2.L29:
-    bsr %eax, %eax
-    lea 48(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L31:
-    bsr %eax, %eax
-    lea 32(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L33:
-    bsr %eax, %eax
-    lea 16(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L27:
-    vpmovmskb %xmm4, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L29
-.Lnvol_memrchr_entry_avx2.L28:
-    vpmovmskb %xmm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L31
 .Lnvol_memrchr_entry_avx2.L30:
-    vpmovmskb %xmm2, %eax
+    vmovd %ecx, %xmm0
+    vpbroadcastb %xmm0, %ymm0
+    vpcmpeqb -32(%r8), %ymm0, %ymm1
+    vpmovmskb %ymm1, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L33
-.Lnvol_memrchr_entry_avx2.L32:
-    vpmovmskb %xmm1, %eax
+    {disp8} je .Lnvol_memrchr_entry_avx2.L64
     bsr %eax, %eax
-    lea (%r8,%rax), %rax
+    lea -32(%r8,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_avx2.L37:
-    bsr %eax, %eax
-    lea (%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L51:
-    bsr %eax, %eax
-    lea 96(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L53:
-    bsr %eax, %eax
-    lea 64(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L55:
-    bsr %eax, %eax
-    lea 32(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L49:
-    .byte 15, 31, 68, 0, 0
-.Lnvol_memrchr_entry_avx2.L47:
+.Lnvol_memrchr_entry_avx2.L64:
+    and $-32, %r8
+    cmp $128, %r9
+    {disp8} jb .Lnvol_memrchr_entry_avx2.L66
+    lea 128(%rdx), %rcx
+    cmp $4096, %r9
+    {disp32} jae .Lnvol_memrchr_entry_avx2.L71
+.Lnvol_memrchr_entry_avx2.L68:
     cmp %rcx, %r8
-    {disp32} jb .Lnvol_memrchr_entry_avx2.L46
+    {disp8} jb .Lnvol_memrchr_entry_avx2.L79
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memrchr_entry_avx2.L78:
     lea -128(%r8), %r8
     vpcmpeqb (%r8), %ymm0, %ymm1
     vpcmpeqb 32(%r8), %ymm0, %ymm2
@@ -1724,61 +2240,214 @@ nvol_memrchr_entry_avx2:
     vpor %ymm6, %ymm5, %ymm5
     vpmovmskb %ymm5, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_avx2.L47
-    vpmovmskb %ymm4, %eax
-    test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_avx2.L51
-.Lnvol_memrchr_entry_avx2.L50:
-    vpmovmskb %ymm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L53
-.Lnvol_memrchr_entry_avx2.L52:
-    vpmovmskb %ymm2, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L55
-.Lnvol_memrchr_entry_avx2.L54:
+    {disp32} jne .Lnvol_memrchr_entry_avx2.L81
+.Lnvol_memrchr_entry_avx2.L80:
+    cmp %rcx, %r8
+    {disp8} jae .Lnvol_memrchr_entry_avx2.L78
+.Lnvol_memrchr_entry_avx2.L79:
+.Lnvol_memrchr_entry_avx2.L66:
+    lea 32(%rdx), %rcx
+    cmp %rcx, %r8
+    {disp8} jb .Lnvol_memrchr_entry_avx2.L89
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_memrchr_entry_avx2.L88:
+    lea -32(%r8), %r8
+    vpcmpeqb (%r8), %ymm0, %ymm1
     vpmovmskb %ymm1, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_memrchr_entry_avx2.L91
+.Lnvol_memrchr_entry_avx2.L90:
+    cmp %rcx, %r8
+    {disp8} jae .Lnvol_memrchr_entry_avx2.L88
+.Lnvol_memrchr_entry_avx2.L89:
+    cmp %rdx, %r8
+    {disp8} jbe .Lnvol_memrchr_entry_avx2.L92
+    vpcmpeqb (%rdx), %ymm0, %ymm0
+    vpmovmskb %ymm0, %eax
+    test %eax, %eax
+    {disp8} je .Lnvol_memrchr_entry_avx2.L94
     bsr %eax, %eax
+    lea (%rdx,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L94:
+.Lnvol_memrchr_entry_avx2.L92:
+    xor %eax, %eax
+.Lnvol_memrchr_entry_avx2.L1:
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L9:
+    mov %r8, %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L25:
+    bsr %r10, %rax
+    shr $3, %rax
     lea (%r8,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-    {disp32} jmp .Lnvol_memrchr_entry_avx2.L46
-.Lnvol_memrchr_entry_avx2.L61:
+.Lnvol_memrchr_entry_avx2.L41:
     bsr %eax, %eax
-    lea 96(%r8,%rax), %rax
+    lea 48(%r8,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_avx2.L63:
-    bsr %eax, %eax
-    lea 64(%r8,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr_entry_avx2.L65:
+.Lnvol_memrchr_entry_avx2.L43:
     bsr %eax, %eax
     lea 32(%r8,%rax), %rax
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
+.Lnvol_memrchr_entry_avx2.L45:
+    bsr %eax, %eax
+    lea 16(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L39:
+    .byte 102, 144
+.Lnvol_memrchr_entry_avx2.L37:
+    cmp %rcx, %r8
+    {disp32} jb .Lnvol_memrchr_entry_avx2.L36
+    lea -64(%r8), %r8
+    vpcmpeqb (%r8), %xmm0, %xmm1
+    vpcmpeqb 16(%r8), %xmm0, %xmm2
+    vpcmpeqb 32(%r8), %xmm0, %xmm3
+    vpcmpeqb 48(%r8), %xmm0, %xmm4
+    vpor %xmm2, %xmm1, %xmm5
+    vpor %xmm4, %xmm3, %xmm6
+    vpor %xmm6, %xmm5, %xmm5
+    vpmovmskb %xmm5, %eax
+    test %eax, %eax
+    {disp8} je .Lnvol_memrchr_entry_avx2.L37
+    vpmovmskb %xmm4, %eax
+    test %eax, %eax
+    {disp32} jne .Lnvol_memrchr_entry_avx2.L41
+.Lnvol_memrchr_entry_avx2.L40:
+    vpmovmskb %xmm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L43
+.Lnvol_memrchr_entry_avx2.L42:
+    vpmovmskb %xmm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L45
+.Lnvol_memrchr_entry_avx2.L44:
+    vpmovmskb %xmm1, %eax
+    bsr %eax, %eax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+    {disp32} jmp .Lnvol_memrchr_entry_avx2.L36
+.Lnvol_memrchr_entry_avx2.L51:
+    bsr %eax, %eax
+    lea 48(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L53:
+    bsr %eax, %eax
+    lea 32(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L55:
+    bsr %eax, %eax
+    lea 16(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L49:
+    vpmovmskb %xmm4, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L51
+.Lnvol_memrchr_entry_avx2.L50:
+    vpmovmskb %xmm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L53
+.Lnvol_memrchr_entry_avx2.L52:
+    vpmovmskb %xmm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L55
+.Lnvol_memrchr_entry_avx2.L54:
+    vpmovmskb %xmm1, %eax
+    bsr %eax, %eax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
 .Lnvol_memrchr_entry_avx2.L59:
+    bsr %eax, %eax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L73:
+    bsr %eax, %eax
+    lea 96(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L75:
+    bsr %eax, %eax
+    lea 64(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L77:
+    bsr %eax, %eax
+    lea 32(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L71:
+    .byte 15, 31, 68, 0, 0
+.Lnvol_memrchr_entry_avx2.L69:
+    cmp %rcx, %r8
+    {disp32} jb .Lnvol_memrchr_entry_avx2.L68
+    lea -128(%r8), %r8
+    vpcmpeqb (%r8), %ymm0, %ymm1
+    vpcmpeqb 32(%r8), %ymm0, %ymm2
+    vpcmpeqb 64(%r8), %ymm0, %ymm3
+    vpcmpeqb 96(%r8), %ymm0, %ymm4
+    vpor %ymm2, %ymm1, %ymm5
+    vpor %ymm4, %ymm3, %ymm6
+    vpor %ymm6, %ymm5, %ymm5
+    vpmovmskb %ymm5, %eax
+    test %eax, %eax
+    {disp8} je .Lnvol_memrchr_entry_avx2.L69
     vpmovmskb %ymm4, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L61
-.Lnvol_memrchr_entry_avx2.L60:
+    {disp32} jne .Lnvol_memrchr_entry_avx2.L73
+.Lnvol_memrchr_entry_avx2.L72:
     vpmovmskb %ymm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L63
-.Lnvol_memrchr_entry_avx2.L62:
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L75
+.Lnvol_memrchr_entry_avx2.L74:
     vpmovmskb %ymm2, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_avx2.L65
-.Lnvol_memrchr_entry_avx2.L64:
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L77
+.Lnvol_memrchr_entry_avx2.L76:
     vpmovmskb %ymm1, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
@@ -1786,7 +2455,49 @@ nvol_memrchr_entry_avx2:
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_avx2.L69:
+    {disp32} jmp .Lnvol_memrchr_entry_avx2.L68
+.Lnvol_memrchr_entry_avx2.L83:
+    bsr %eax, %eax
+    lea 96(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L85:
+    bsr %eax, %eax
+    lea 64(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L87:
+    bsr %eax, %eax
+    lea 32(%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L81:
+    vpmovmskb %ymm4, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L83
+.Lnvol_memrchr_entry_avx2.L82:
+    vpmovmskb %ymm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L85
+.Lnvol_memrchr_entry_avx2.L84:
+    vpmovmskb %ymm2, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memrchr_entry_avx2.L87
+.Lnvol_memrchr_entry_avx2.L86:
+    vpmovmskb %ymm1, %eax
+    bsr %eax, %eax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_avx2.L91:
     bsr %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
@@ -1795,10 +2506,7 @@ nvol_memrchr_entry_avx2:
     ret
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr_entry_sse2
 .def nvol_memrchr_entry_sse2; .scl 2; .type 32; .endef
 nvol_memrchr_entry_sse2:
@@ -1812,19 +2520,165 @@ nvol_memrchr_entry_sse2:
     mov %r8, %r9
     sub %rdx, %r9
     cmp $16, %r9
-    {disp8} jae .Lnvol_memrchr_entry_sse2.L2
+    {disp32} jae .Lnvol_memrchr_entry_sse2.L2
+    cmp $4, %r9
+    {disp8} jae .Lnvol_memrchr_entry_sse2.L4
     cmp %rdx, %r8
-    {disp8} jbe .Lnvol_memrchr_entry_sse2.L5
-    .byte 15, 31, 0
-.Lnvol_memrchr_entry_sse2.L4:
+    {disp8} jbe .Lnvol_memrchr_entry_sse2.L7
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memrchr_entry_sse2.L6:
     lea -1(%r8), %r8
     movzbl (%r8), %eax
     cmp %ecx, %eax
-    {disp32} je .Lnvol_memrchr_entry_sse2.L7
-.Lnvol_memrchr_entry_sse2.L6:
+    {disp32} je .Lnvol_memrchr_entry_sse2.L9
+.Lnvol_memrchr_entry_sse2.L8:
     cmp %rdx, %r8
-    {disp8} ja .Lnvol_memrchr_entry_sse2.L4
-.Lnvol_memrchr_entry_sse2.L5:
+    {disp8} ja .Lnvol_memrchr_entry_sse2.L6
+.Lnvol_memrchr_entry_sse2.L7:
+    xor %eax, %eax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L4:
+    cmp $8, %r9
+    {disp32} jae .Lnvol_memrchr_entry_sse2.L10
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov -4(%r8), %eax
+    xor %rcx, %rax
+    mov %rax, %r9
+    and $2139062143, %r9d
+    add $2139062143, %r9d
+    or %rax, %r9
+    or $2139062143, %r9d
+    not %r9d
+    test %r9d, %r9d
+    {disp8} je .Lnvol_memrchr_entry_sse2.L12
+    bsr %r9d, %eax
+    shr $3, %rax
+    lea -4(%r8,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L12:
+    mov (%rdx), %eax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %rax, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr_entry_sse2.L14
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L14:
+    xor %eax, %eax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L10:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    mov -8(%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $9187201950435737471, %r11
+    and %r11, %r10
+    movabsq $9187201950435737471, %r11
+    add %r11, %r10
+    or %rax, %r10
+    movabsq $9187201950435737471, %rax
+    or %rax, %r10
+    not %r10
+    test %r10, %r10
+    {disp8} je .Lnvol_memrchr_entry_sse2.L16
+    bsr %r10, %rax
+    shr $3, %rax
+    lea -8(%r8,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L16:
+    cmp $16, %r9
+    {disp8} ja .Lnvol_memrchr_entry_sse2.L18
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rcx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rcx
+    or %rax, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr_entry_sse2.L20
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L20:
+    xor %eax, %eax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L18:
+    and $-8, %r8
+    lea 8(%rdx), %r9
+    cmp %r9, %r8
+    {disp8} jb .Lnvol_memrchr_entry_sse2.L23
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_memrchr_entry_sse2.L22:
+    lea -8(%r8), %r8
+    mov (%r8), %rax
+    xor %rcx, %rax
+    mov %rax, %r10
+    movabsq $9187201950435737471, %r11
+    and %r11, %r10
+    movabsq $9187201950435737471, %r11
+    add %r11, %r10
+    or %rax, %r10
+    movabsq $9187201950435737471, %rax
+    or %rax, %r10
+    not %r10
+    test %r10, %r10
+    {disp32} jne .Lnvol_memrchr_entry_sse2.L25
+.Lnvol_memrchr_entry_sse2.L24:
+    cmp %r9, %r8
+    {disp8} jae .Lnvol_memrchr_entry_sse2.L22
+.Lnvol_memrchr_entry_sse2.L23:
+    cmp %rdx, %r8
+    {disp8} jbe .Lnvol_memrchr_entry_sse2.L26
+    mov (%rdx), %rax
+    xor %rcx, %rax
+    mov %rax, %rcx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rcx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rcx
+    or %rax, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr_entry_sse2.L28
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%rdx,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L28:
+.Lnvol_memrchr_entry_sse2.L26:
     xor %eax, %eax
     movdqu (%rsp), %xmm6
     add $24, %rsp
@@ -1837,24 +2691,24 @@ nvol_memrchr_entry_sse2:
     pcmpeqb %xmm0, %xmm1
     pmovmskb %xmm1, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_sse2.L8
+    {disp8} je .Lnvol_memrchr_entry_sse2.L30
     bsr %eax, %eax
     lea -16(%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L8:
+.Lnvol_memrchr_entry_sse2.L30:
     and $-16, %r8
     cmp $64, %r9
-    {disp8} jb .Lnvol_memrchr_entry_sse2.L10
+    {disp8} jb .Lnvol_memrchr_entry_sse2.L32
     lea 64(%rdx), %rcx
     cmp $1024, %r9
-    {disp32} jae .Lnvol_memrchr_entry_sse2.L15
-.Lnvol_memrchr_entry_sse2.L12:
+    {disp32} jae .Lnvol_memrchr_entry_sse2.L37
+.Lnvol_memrchr_entry_sse2.L34:
     cmp %rcx, %r8
-    {disp8} jb .Lnvol_memrchr_entry_sse2.L23
-    .byte 15, 31, 64, 0
-.Lnvol_memrchr_entry_sse2.L22:
+    {disp8} jb .Lnvol_memrchr_entry_sse2.L45
+    .byte 15, 31, 0
+.Lnvol_memrchr_entry_sse2.L44:
     lea -64(%r8), %r8
     movdqa (%r8), %xmm1
     pcmpeqb %xmm0, %xmm1
@@ -1871,74 +2725,81 @@ nvol_memrchr_entry_sse2:
     por %xmm6, %xmm5
     pmovmskb %xmm5, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_sse2.L25
-.Lnvol_memrchr_entry_sse2.L24:
+    {disp32} jne .Lnvol_memrchr_entry_sse2.L47
+.Lnvol_memrchr_entry_sse2.L46:
     cmp %rcx, %r8
-    {disp8} jae .Lnvol_memrchr_entry_sse2.L22
-.Lnvol_memrchr_entry_sse2.L23:
-.Lnvol_memrchr_entry_sse2.L10:
+    {disp8} jae .Lnvol_memrchr_entry_sse2.L44
+.Lnvol_memrchr_entry_sse2.L45:
+.Lnvol_memrchr_entry_sse2.L32:
     lea 16(%rdx), %rcx
     cmp %rcx, %r8
-    {disp8} jb .Lnvol_memrchr_entry_sse2.L33
+    {disp8} jb .Lnvol_memrchr_entry_sse2.L55
     .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr_entry_sse2.L32:
+.Lnvol_memrchr_entry_sse2.L54:
     lea -16(%r8), %r8
     movdqu (%r8), %xmm1
     pcmpeqb %xmm0, %xmm1
     pmovmskb %xmm1, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_sse2.L35
-.Lnvol_memrchr_entry_sse2.L34:
+    {disp32} jne .Lnvol_memrchr_entry_sse2.L57
+.Lnvol_memrchr_entry_sse2.L56:
     cmp %rcx, %r8
-    {disp8} jae .Lnvol_memrchr_entry_sse2.L32
-.Lnvol_memrchr_entry_sse2.L33:
+    {disp8} jae .Lnvol_memrchr_entry_sse2.L54
+.Lnvol_memrchr_entry_sse2.L55:
     cmp %rdx, %r8
-    {disp8} jbe .Lnvol_memrchr_entry_sse2.L36
+    {disp8} jbe .Lnvol_memrchr_entry_sse2.L58
     movdqu (%rdx), %xmm1
     pcmpeqb %xmm0, %xmm1
     pmovmskb %xmm1, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_sse2.L38
+    {disp8} je .Lnvol_memrchr_entry_sse2.L60
     bsr %eax, %eax
     lea (%rdx,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L38:
-.Lnvol_memrchr_entry_sse2.L36:
+.Lnvol_memrchr_entry_sse2.L60:
+.Lnvol_memrchr_entry_sse2.L58:
     xor %eax, %eax
 .Lnvol_memrchr_entry_sse2.L1:
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L7:
+.Lnvol_memrchr_entry_sse2.L9:
     mov %r8, %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L17:
+.Lnvol_memrchr_entry_sse2.L25:
+    bsr %r10, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    movdqu (%rsp), %xmm6
+    add $24, %rsp
+    ret
+.Lnvol_memrchr_entry_sse2.L39:
     bsr %eax, %eax
     lea 48(%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L19:
+.Lnvol_memrchr_entry_sse2.L41:
     bsr %eax, %eax
     lea 32(%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L21:
+.Lnvol_memrchr_entry_sse2.L43:
     bsr %eax, %eax
     lea 16(%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L15:
-    .byte 15, 31, 68, 0, 0
-.Lnvol_memrchr_entry_sse2.L13:
+.Lnvol_memrchr_entry_sse2.L37:
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_memrchr_entry_sse2.L35:
     cmp %rcx, %r8
-    {disp32} jb .Lnvol_memrchr_entry_sse2.L12
+    {disp32} jb .Lnvol_memrchr_entry_sse2.L34
     lea -64(%r8), %r8
     movdqa (%r8), %xmm1
     pcmpeqb %xmm0, %xmm1
@@ -1955,64 +2816,64 @@ nvol_memrchr_entry_sse2:
     por %xmm6, %xmm5
     pmovmskb %xmm5, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr_entry_sse2.L13
+    {disp8} je .Lnvol_memrchr_entry_sse2.L35
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_sse2.L17
-.Lnvol_memrchr_entry_sse2.L16:
+    {disp32} jne .Lnvol_memrchr_entry_sse2.L39
+.Lnvol_memrchr_entry_sse2.L38:
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_sse2.L19
-.Lnvol_memrchr_entry_sse2.L18:
+    {disp32} jne .Lnvol_memrchr_entry_sse2.L41
+.Lnvol_memrchr_entry_sse2.L40:
     pmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr_entry_sse2.L21
-.Lnvol_memrchr_entry_sse2.L20:
+    {disp32} jne .Lnvol_memrchr_entry_sse2.L43
+.Lnvol_memrchr_entry_sse2.L42:
     pmovmskb %xmm1, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-    {disp32} jmp .Lnvol_memrchr_entry_sse2.L12
-.Lnvol_memrchr_entry_sse2.L27:
+    {disp32} jmp .Lnvol_memrchr_entry_sse2.L34
+.Lnvol_memrchr_entry_sse2.L49:
     bsr %eax, %eax
     lea 48(%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L29:
+.Lnvol_memrchr_entry_sse2.L51:
     bsr %eax, %eax
     lea 32(%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L31:
+.Lnvol_memrchr_entry_sse2.L53:
     bsr %eax, %eax
     lea 16(%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L25:
+.Lnvol_memrchr_entry_sse2.L47:
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_sse2.L27
-.Lnvol_memrchr_entry_sse2.L26:
+    {disp8} jne .Lnvol_memrchr_entry_sse2.L49
+.Lnvol_memrchr_entry_sse2.L48:
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_sse2.L29
-.Lnvol_memrchr_entry_sse2.L28:
+    {disp8} jne .Lnvol_memrchr_entry_sse2.L51
+.Lnvol_memrchr_entry_sse2.L50:
     pmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr_entry_sse2.L31
-.Lnvol_memrchr_entry_sse2.L30:
+    {disp8} jne .Lnvol_memrchr_entry_sse2.L53
+.Lnvol_memrchr_entry_sse2.L52:
     pmovmskb %xmm1, %eax
     bsr %eax, %eax
     lea (%r8,%rax), %rax
     movdqu (%rsp), %xmm6
     add $24, %rsp
     ret
-.Lnvol_memrchr_entry_sse2.L35:
+.Lnvol_memrchr_entry_sse2.L57:
     bsr %eax, %eax
     lea (%r8,%rax), %rax
     movdqu (%rsp), %xmm6
@@ -2100,33 +2961,270 @@ nvol_memrchr:
 .globl nvol_memchr2_scalar
 .def nvol_memchr2_scalar; .scl 2; .type 32; .endef
 nvol_memchr2_scalar:
+.seh_proc nvol_memchr2_scalar
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+.seh_endprologue
     movzbl %cl, %ecx
     movzbl %dl, %edx
-    cmp %r9, %r8
-    {disp8} jae .Lnvol_memchr2_scalar.L3
-    .byte 15, 31, 68, 0, 0
-.Lnvol_memchr2_scalar.L2:
-    movzbl (%r8), %eax
-    cmp %ecx, %eax
-    {disp8} je .Lnvol_memchr2_scalar.L6
-    cmp %edx, %eax
+    mov %r9, %r10
+    sub %r8, %r10
+    cmp $4, %r10
+    {disp8} jae .Lnvol_memchr2_scalar.L2
+    test %r10, %r10
     {disp8} jne .Lnvol_memchr2_scalar.L4
-.Lnvol_memchr2_scalar.L6:
-.Lnvol_memchr2_scalar.L5:
-    mov %r8, %rax
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
     ret
 .Lnvol_memchr2_scalar.L4:
-    add $1, %r8
+    movzbl (%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_scalar.L8
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_scalar.L6
+.Lnvol_memchr2_scalar.L8:
+    mov %r8, %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L6:
+    cmp $1, %r10
+    {disp8} jne .Lnvol_memchr2_scalar.L9
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L9:
+    movzbl 1(%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_scalar.L13
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_scalar.L11
+.Lnvol_memchr2_scalar.L13:
+    lea 1(%r8), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L11:
+    cmp $2, %r10
+    {disp8} jne .Lnvol_memchr2_scalar.L14
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L14:
+    movzbl 2(%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_scalar.L18
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_scalar.L16
+.Lnvol_memchr2_scalar.L18:
+    lea 2(%r8), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L16:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L2:
+    cmp $8, %r10
+    {disp32} jae .Lnvol_memchr2_scalar.L19
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov (%r8), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %r11
+    sub $16843009, %r11d
+    not %r10d
+    and %r10, %r11
+    xor %rdx, %rax
+    mov %rax, %r10
+    sub $16843009, %r10d
+    not %eax
+    and %rax, %r10
+    or %r10, %r11
+    and $-2139062144, %r11d
+    {disp8} je .Lnvol_memchr2_scalar.L21
+    bsf %r11d, %eax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L21:
+    mov -4(%r9), %eax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    sub $16843009, %ecx
+    not %r8d
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    sub $16843009, %edx
+    not %eax
+    and %rax, %rdx
+    or %rdx, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr2_scalar.L23
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L23:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L19:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    mov (%r8), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %rsi
+    not %r11
+    and %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %r11
+    not %rax
+    and %rax, %r11
+    or %r11, %rsi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rsi
+    {disp8} je .Lnvol_memchr2_scalar.L25
+    bsf %rsi, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L25:
+    cmp $16, %r10
+    {disp8} ja .Lnvol_memchr2_scalar.L27
+    mov -8(%r9), %rax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    movabsq $72340172838076673, %r10
+    sub %r10, %rcx
+    not %r8
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr2_scalar.L29
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L29:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L27:
+    and $-8, %r8
+    add $8, %r8
+    lea -8(%r9), %r10
+    cmp %r10, %r8
+    {disp8} ja .Lnvol_memchr2_scalar.L32
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memchr2_scalar.L31:
+    mov (%r8), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %rsi
+    not %r11
+    and %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %r11
+    not %rax
+    and %rax, %r11
+    or %r11, %rsi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rsi
+    {disp8} jne .Lnvol_memchr2_scalar.L34
+.Lnvol_memchr2_scalar.L33:
+    add $8, %r8
+    cmp %r10, %r8
+    {disp8} jbe .Lnvol_memchr2_scalar.L31
+.Lnvol_memchr2_scalar.L32:
     cmp %r9, %r8
-    {disp8} jb .Lnvol_memchr2_scalar.L2
-.Lnvol_memchr2_scalar.L3:
+    {disp8} jae .Lnvol_memchr2_scalar.L35
+    mov -8(%r9), %rax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    movabsq $72340172838076673, %r10
+    sub %r10, %rcx
+    not %r8
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr2_scalar.L37
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_scalar.L37:
+.Lnvol_memchr2_scalar.L35:
     xor %eax, %eax
 .Lnvol_memchr2_scalar.L1:
+    pop %rsi
+    pop %rdi
     ret
+.Lnvol_memchr2_scalar.L34:
+    bsf %rsi, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memchr2_sse2
 .def nvol_memchr2_sse2; .scl 2; .type 32; .endef
 nvol_memchr2_sse2:
@@ -2353,37 +3451,275 @@ nvol_memchr2_avx2:
 .globl nvol_memchr2_entry_avx2
 .def nvol_memchr2_entry_avx2; .scl 2; .type 32; .endef
 nvol_memchr2_entry_avx2:
+.seh_proc nvol_memchr2_entry_avx2
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+.seh_endprologue
     movzbl %cl, %ecx
     movzbl %dl, %edx
     mov %r9, %r10
     sub %r8, %r10
     cmp $16, %r10
-    {disp8} jae .Lnvol_memchr2_entry_avx2.L2
-    cmp %r9, %r8
-    {disp8} jae .Lnvol_memchr2_entry_avx2.L5
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_memchr2_entry_avx2.L4:
-    movzbl (%r8), %eax
-    cmp %ecx, %eax
-    {disp8} je .Lnvol_memchr2_entry_avx2.L8
-    cmp %edx, %eax
+    {disp32} jae .Lnvol_memchr2_entry_avx2.L2
+    cmp $4, %r10
+    {disp8} jae .Lnvol_memchr2_entry_avx2.L4
+    test %r10, %r10
     {disp8} jne .Lnvol_memchr2_entry_avx2.L6
-.Lnvol_memchr2_entry_avx2.L8:
-.Lnvol_memchr2_entry_avx2.L7:
-    mov %r8, %rax
-    vzeroupper
-    ret
-.Lnvol_memchr2_entry_avx2.L6:
-    add $1, %r8
-    cmp %r9, %r8
-    {disp8} jb .Lnvol_memchr2_entry_avx2.L4
-.Lnvol_memchr2_entry_avx2.L5:
     xor %eax, %eax
     vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L6:
+    movzbl (%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_entry_avx2.L10
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_entry_avx2.L8
+.Lnvol_memchr2_entry_avx2.L10:
+    mov %r8, %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L8:
+    cmp $1, %r10
+    {disp8} jne .Lnvol_memchr2_entry_avx2.L11
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L11:
+    movzbl 1(%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_entry_avx2.L15
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_entry_avx2.L13
+.Lnvol_memchr2_entry_avx2.L15:
+    lea 1(%r8), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L13:
+    cmp $2, %r10
+    {disp8} jne .Lnvol_memchr2_entry_avx2.L16
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L16:
+    movzbl 2(%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_entry_avx2.L20
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_entry_avx2.L18
+.Lnvol_memchr2_entry_avx2.L20:
+    lea 2(%r8), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L18:
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L4:
+    cmp $8, %r10
+    {disp32} jae .Lnvol_memchr2_entry_avx2.L21
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov (%r8), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %r11
+    sub $16843009, %r11d
+    not %r10d
+    and %r10, %r11
+    xor %rdx, %rax
+    mov %rax, %r10
+    sub $16843009, %r10d
+    not %eax
+    and %rax, %r10
+    or %r10, %r11
+    and $-2139062144, %r11d
+    {disp8} je .Lnvol_memchr2_entry_avx2.L23
+    bsf %r11d, %eax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L23:
+    mov -4(%r9), %eax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    sub $16843009, %ecx
+    not %r8d
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    sub $16843009, %edx
+    not %eax
+    and %rax, %rdx
+    or %rdx, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr2_entry_avx2.L25
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r9,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L25:
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L21:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    mov (%r8), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %rsi
+    not %r11
+    and %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %r11
+    not %rax
+    and %rax, %r11
+    or %r11, %rsi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rsi
+    {disp8} je .Lnvol_memchr2_entry_avx2.L27
+    bsf %rsi, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L27:
+    cmp $16, %r10
+    {disp8} ja .Lnvol_memchr2_entry_avx2.L29
+    mov -8(%r9), %rax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    movabsq $72340172838076673, %r10
+    sub %r10, %rcx
+    not %r8
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr2_entry_avx2.L31
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L31:
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L29:
+    and $-8, %r8
+    add $8, %r8
+    lea -8(%r9), %r10
+    cmp %r10, %r8
+    {disp8} ja .Lnvol_memchr2_entry_avx2.L34
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_memchr2_entry_avx2.L33:
+    mov (%r8), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %rsi
+    not %r11
+    and %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %r11
+    not %rax
+    and %rax, %r11
+    or %r11, %rsi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rsi
+    {disp32} jne .Lnvol_memchr2_entry_avx2.L36
+.Lnvol_memchr2_entry_avx2.L35:
+    add $8, %r8
+    cmp %r10, %r8
+    {disp8} jbe .Lnvol_memchr2_entry_avx2.L33
+.Lnvol_memchr2_entry_avx2.L34:
+    cmp %r9, %r8
+    {disp8} jae .Lnvol_memchr2_entry_avx2.L37
+    mov -8(%r9), %rax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    movabsq $72340172838076673, %r10
+    sub %r10, %rcx
+    not %r8
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr2_entry_avx2.L39
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L39:
+.Lnvol_memchr2_entry_avx2.L37:
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
     ret
 .Lnvol_memchr2_entry_avx2.L2:
     cmp $32, %r10
-    {disp32} jae .Lnvol_memchr2_entry_avx2.L9
+    {disp32} jae .Lnvol_memchr2_entry_avx2.L41
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %xmm0
     vmovd %edx, %xmm1
@@ -2394,21 +3730,23 @@ nvol_memchr2_entry_avx2:
     vpor %xmm2, %xmm3, %xmm2
     vpmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr2_entry_avx2.L11
+    {disp8} je .Lnvol_memchr2_entry_avx2.L43
     bsf %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L11:
+.Lnvol_memchr2_entry_avx2.L43:
     and $-16, %r8
     add $16, %r8
     cmp $32, %r10
-    {disp8} jb .Lnvol_memchr2_entry_avx2.L13
+    {disp8} jb .Lnvol_memchr2_entry_avx2.L45
     lea -32(%r9), %rcx
     cmp %rcx, %r8
-    {disp8} ja .Lnvol_memchr2_entry_avx2.L16
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memchr2_entry_avx2.L15:
+    {disp8} ja .Lnvol_memchr2_entry_avx2.L48
+    .byte 15, 31, 68, 0, 0
+.Lnvol_memchr2_entry_avx2.L47:
     vmovdqa (%r8), %xmm2
     vmovdqa 16(%r8), %xmm3
     vpcmpeqb %xmm0, %xmm2, %xmm4
@@ -2420,32 +3758,32 @@ nvol_memchr2_entry_avx2:
     vpor %xmm3, %xmm2, %xmm4
     vpmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr2_entry_avx2.L18
-.Lnvol_memchr2_entry_avx2.L17:
+    {disp32} jne .Lnvol_memchr2_entry_avx2.L50
+.Lnvol_memchr2_entry_avx2.L49:
     add $32, %r8
     cmp %rcx, %r8
-    {disp8} jbe .Lnvol_memchr2_entry_avx2.L15
-.Lnvol_memchr2_entry_avx2.L16:
-.Lnvol_memchr2_entry_avx2.L13:
+    {disp8} jbe .Lnvol_memchr2_entry_avx2.L47
+.Lnvol_memchr2_entry_avx2.L48:
+.Lnvol_memchr2_entry_avx2.L45:
     lea -16(%r9), %rcx
     cmp %rcx, %r8
-    {disp8} ja .Lnvol_memchr2_entry_avx2.L22
+    {disp8} ja .Lnvol_memchr2_entry_avx2.L54
     .byte 15, 31, 0
-.Lnvol_memchr2_entry_avx2.L21:
+.Lnvol_memchr2_entry_avx2.L53:
     vmovdqu (%r8), %xmm2
     vpcmpeqb %xmm0, %xmm2, %xmm3
     vpcmpeqb %xmm1, %xmm2, %xmm2
     vpor %xmm2, %xmm3, %xmm2
     vpmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr2_entry_avx2.L24
-.Lnvol_memchr2_entry_avx2.L23:
+    {disp32} jne .Lnvol_memchr2_entry_avx2.L56
+.Lnvol_memchr2_entry_avx2.L55:
     add $16, %r8
     cmp %rcx, %r8
-    {disp8} jbe .Lnvol_memchr2_entry_avx2.L21
-.Lnvol_memchr2_entry_avx2.L22:
+    {disp8} jbe .Lnvol_memchr2_entry_avx2.L53
+.Lnvol_memchr2_entry_avx2.L54:
     cmp %r9, %r8
-    {disp8} jae .Lnvol_memchr2_entry_avx2.L25
+    {disp8} jae .Lnvol_memchr2_entry_avx2.L57
     lea -16(%r9), %r8
     vmovdqu (%r8), %xmm2
     vpcmpeqb %xmm0, %xmm2, %xmm0
@@ -2453,17 +3791,21 @@ nvol_memchr2_entry_avx2:
     vpor %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr2_entry_avx2.L27
+    {disp8} je .Lnvol_memchr2_entry_avx2.L59
     bsf %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L27:
-.Lnvol_memchr2_entry_avx2.L25:
+.Lnvol_memchr2_entry_avx2.L59:
+.Lnvol_memchr2_entry_avx2.L57:
     xor %eax, %eax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L9:
+.Lnvol_memchr2_entry_avx2.L41:
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %ymm0
     vmovd %edx, %xmm1
@@ -2474,21 +3816,23 @@ nvol_memchr2_entry_avx2:
     vpor %ymm2, %ymm3, %ymm2
     vpmovmskb %ymm2, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr2_entry_avx2.L29
+    {disp8} je .Lnvol_memchr2_entry_avx2.L61
     bsf %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L29:
+.Lnvol_memchr2_entry_avx2.L61:
     and $-32, %r8
     add $32, %r8
     cmp $64, %r10
-    {disp8} jb .Lnvol_memchr2_entry_avx2.L31
+    {disp8} jb .Lnvol_memchr2_entry_avx2.L63
     lea -64(%r9), %rcx
     cmp %rcx, %r8
-    {disp8} ja .Lnvol_memchr2_entry_avx2.L34
-    .byte 102, 144
-.Lnvol_memchr2_entry_avx2.L33:
+    {disp8} ja .Lnvol_memchr2_entry_avx2.L66
+    .byte 15, 31, 64, 0
+.Lnvol_memchr2_entry_avx2.L65:
     vmovdqa (%r8), %ymm2
     vmovdqa 32(%r8), %ymm3
     vpcmpeqb %ymm0, %ymm2, %ymm4
@@ -2500,32 +3844,32 @@ nvol_memchr2_entry_avx2:
     vpor %ymm3, %ymm2, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr2_entry_avx2.L36
-.Lnvol_memchr2_entry_avx2.L35:
+    {disp32} jne .Lnvol_memchr2_entry_avx2.L68
+.Lnvol_memchr2_entry_avx2.L67:
     add $64, %r8
     cmp %rcx, %r8
-    {disp8} jbe .Lnvol_memchr2_entry_avx2.L33
-.Lnvol_memchr2_entry_avx2.L34:
-.Lnvol_memchr2_entry_avx2.L31:
+    {disp8} jbe .Lnvol_memchr2_entry_avx2.L65
+.Lnvol_memchr2_entry_avx2.L66:
+.Lnvol_memchr2_entry_avx2.L63:
     lea -32(%r9), %rcx
     cmp %rcx, %r8
-    {disp8} ja .Lnvol_memchr2_entry_avx2.L40
+    {disp8} ja .Lnvol_memchr2_entry_avx2.L72
     .byte 15, 31, 0
-.Lnvol_memchr2_entry_avx2.L39:
+.Lnvol_memchr2_entry_avx2.L71:
     vmovdqu (%r8), %ymm2
     vpcmpeqb %ymm0, %ymm2, %ymm3
     vpcmpeqb %ymm1, %ymm2, %ymm2
     vpor %ymm2, %ymm3, %ymm2
     vpmovmskb %ymm2, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr2_entry_avx2.L42
-.Lnvol_memchr2_entry_avx2.L41:
+    {disp32} jne .Lnvol_memchr2_entry_avx2.L74
+.Lnvol_memchr2_entry_avx2.L73:
     add $32, %r8
     cmp %rcx, %r8
-    {disp8} jbe .Lnvol_memchr2_entry_avx2.L39
-.Lnvol_memchr2_entry_avx2.L40:
+    {disp8} jbe .Lnvol_memchr2_entry_avx2.L71
+.Lnvol_memchr2_entry_avx2.L72:
     cmp %r9, %r8
-    {disp8} jae .Lnvol_memchr2_entry_avx2.L43
+    {disp8} jae .Lnvol_memchr2_entry_avx2.L75
     lea -32(%r9), %r8
     vmovdqu (%r8), %ymm2
     vpcmpeqb %ymm0, %ymm2, %ymm0
@@ -2533,92 +3877,337 @@ nvol_memchr2_entry_avx2:
     vpor %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr2_entry_avx2.L45
+    {disp8} je .Lnvol_memchr2_entry_avx2.L77
     bsf %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L45:
-.Lnvol_memchr2_entry_avx2.L43:
+.Lnvol_memchr2_entry_avx2.L77:
+.Lnvol_memchr2_entry_avx2.L75:
     xor %eax, %eax
 .Lnvol_memchr2_entry_avx2.L1:
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L20:
+.Lnvol_memchr2_entry_avx2.L36:
+    bsf %rsi, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_avx2.L52:
     bsf %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L18:
+.Lnvol_memchr2_entry_avx2.L50:
     vpmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr2_entry_avx2.L20
-.Lnvol_memchr2_entry_avx2.L19:
+    {disp8} jne .Lnvol_memchr2_entry_avx2.L52
+.Lnvol_memchr2_entry_avx2.L51:
     vpmovmskb %xmm3, %eax
     bsf %eax, %eax
     lea 16(%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L24:
+.Lnvol_memchr2_entry_avx2.L56:
     bsf %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L38:
+.Lnvol_memchr2_entry_avx2.L70:
     bsf %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L36:
+.Lnvol_memchr2_entry_avx2.L68:
     vpmovmskb %ymm2, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr2_entry_avx2.L38
-.Lnvol_memchr2_entry_avx2.L37:
+    {disp8} jne .Lnvol_memchr2_entry_avx2.L70
+.Lnvol_memchr2_entry_avx2.L69:
     vpmovmskb %ymm3, %eax
     bsf %eax, %eax
     lea 32(%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_avx2.L42:
+.Lnvol_memchr2_entry_avx2.L74:
     bsf %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
+.seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memchr2_entry_sse2
 .def nvol_memchr2_entry_sse2; .scl 2; .type 32; .endef
 nvol_memchr2_entry_sse2:
+.seh_proc nvol_memchr2_entry_sse2
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+.seh_endprologue
     movzbl %cl, %ecx
     movzbl %dl, %edx
     mov %r9, %r10
     sub %r8, %r10
     cmp $16, %r10
-    {disp8} jae .Lnvol_memchr2_entry_sse2.L2
-    cmp %r9, %r8
-    {disp8} jae .Lnvol_memchr2_entry_sse2.L5
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_memchr2_entry_sse2.L4:
-    movzbl (%r8), %eax
-    cmp %ecx, %eax
-    {disp8} je .Lnvol_memchr2_entry_sse2.L8
-    cmp %edx, %eax
+    {disp32} jae .Lnvol_memchr2_entry_sse2.L2
+    cmp $4, %r10
+    {disp8} jae .Lnvol_memchr2_entry_sse2.L4
+    test %r10, %r10
     {disp8} jne .Lnvol_memchr2_entry_sse2.L6
-.Lnvol_memchr2_entry_sse2.L8:
-.Lnvol_memchr2_entry_sse2.L7:
-    mov %r8, %rax
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
     ret
 .Lnvol_memchr2_entry_sse2.L6:
-    add $1, %r8
-    cmp %r9, %r8
-    {disp8} jb .Lnvol_memchr2_entry_sse2.L4
-.Lnvol_memchr2_entry_sse2.L5:
+    movzbl (%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_entry_sse2.L10
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_entry_sse2.L8
+.Lnvol_memchr2_entry_sse2.L10:
+    mov %r8, %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L8:
+    cmp $1, %r10
+    {disp8} jne .Lnvol_memchr2_entry_sse2.L11
     xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L11:
+    movzbl 1(%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_entry_sse2.L15
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_entry_sse2.L13
+.Lnvol_memchr2_entry_sse2.L15:
+    lea 1(%r8), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L13:
+    cmp $2, %r10
+    {disp8} jne .Lnvol_memchr2_entry_sse2.L16
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L16:
+    movzbl 2(%r8), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memchr2_entry_sse2.L20
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memchr2_entry_sse2.L18
+.Lnvol_memchr2_entry_sse2.L20:
+    lea 2(%r8), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L18:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L4:
+    cmp $8, %r10
+    {disp32} jae .Lnvol_memchr2_entry_sse2.L21
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov (%r8), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %r11
+    sub $16843009, %r11d
+    not %r10d
+    and %r10, %r11
+    xor %rdx, %rax
+    mov %rax, %r10
+    sub $16843009, %r10d
+    not %eax
+    and %rax, %r10
+    or %r10, %r11
+    and $-2139062144, %r11d
+    {disp8} je .Lnvol_memchr2_entry_sse2.L23
+    bsf %r11d, %eax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L23:
+    mov -4(%r9), %eax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    sub $16843009, %ecx
+    not %r8d
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    sub $16843009, %edx
+    not %eax
+    and %rax, %rdx
+    or %rdx, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr2_entry_sse2.L25
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L25:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L21:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    mov (%r8), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %rsi
+    not %r11
+    and %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %r11
+    not %rax
+    and %rax, %r11
+    or %r11, %rsi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rsi
+    {disp8} je .Lnvol_memchr2_entry_sse2.L27
+    bsf %rsi, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L27:
+    cmp $16, %r10
+    {disp8} ja .Lnvol_memchr2_entry_sse2.L29
+    mov -8(%r9), %rax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    movabsq $72340172838076673, %r10
+    sub %r10, %rcx
+    not %r8
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr2_entry_sse2.L31
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L31:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L29:
+    and $-8, %r8
+    add $8, %r8
+    lea -8(%r9), %r10
+    cmp %r10, %r8
+    {disp8} ja .Lnvol_memchr2_entry_sse2.L34
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_memchr2_entry_sse2.L33:
+    mov (%r8), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %rsi
+    not %r11
+    and %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $72340172838076673, %rdi
+    sub %rdi, %r11
+    not %rax
+    and %rax, %r11
+    or %r11, %rsi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rsi
+    {disp32} jne .Lnvol_memchr2_entry_sse2.L36
+.Lnvol_memchr2_entry_sse2.L35:
+    add $8, %r8
+    cmp %r10, %r8
+    {disp8} jbe .Lnvol_memchr2_entry_sse2.L33
+.Lnvol_memchr2_entry_sse2.L34:
+    cmp %r9, %r8
+    {disp8} jae .Lnvol_memchr2_entry_sse2.L37
+    mov -8(%r9), %rax
+    mov %rax, %r8
+    xor %rcx, %r8
+    mov %r8, %rcx
+    movabsq $72340172838076673, %r10
+    sub %r10, %rcx
+    not %r8
+    and %r8, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr2_entry_sse2.L39
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L39:
+.Lnvol_memchr2_entry_sse2.L37:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
     ret
 .Lnvol_memchr2_entry_sse2.L2:
     imul $16843009, %ecx, %eax
@@ -2634,21 +4223,21 @@ nvol_memchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr2_entry_sse2.L9
+    {disp8} je .Lnvol_memchr2_entry_sse2.L41
     bsf %eax, %eax
     lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_sse2.L9:
+.Lnvol_memchr2_entry_sse2.L41:
     and $-16, %r8
     add $16, %r8
     cmp $32, %r10
-    {disp8} jb .Lnvol_memchr2_entry_sse2.L11
+    {disp8} jb .Lnvol_memchr2_entry_sse2.L43
     lea -32(%r9), %rcx
     cmp %rcx, %r8
-    {disp8} ja .Lnvol_memchr2_entry_sse2.L14
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
-.Lnvol_memchr2_entry_sse2.L13:
+    {disp8} ja .Lnvol_memchr2_entry_sse2.L46
+.Lnvol_memchr2_entry_sse2.L45:
     movdqa (%r8), %xmm2
     movdqa 16(%r8), %xmm3
     movdqa %xmm2, %xmm4
@@ -2663,18 +4252,18 @@ nvol_memchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr2_entry_sse2.L16
-.Lnvol_memchr2_entry_sse2.L15:
+    {disp32} jne .Lnvol_memchr2_entry_sse2.L48
+.Lnvol_memchr2_entry_sse2.L47:
     add $32, %r8
     cmp %rcx, %r8
-    {disp8} jbe .Lnvol_memchr2_entry_sse2.L13
-.Lnvol_memchr2_entry_sse2.L14:
-.Lnvol_memchr2_entry_sse2.L11:
+    {disp8} jbe .Lnvol_memchr2_entry_sse2.L45
+.Lnvol_memchr2_entry_sse2.L46:
+.Lnvol_memchr2_entry_sse2.L43:
     lea -16(%r9), %rcx
     cmp %rcx, %r8
-    {disp8} ja .Lnvol_memchr2_entry_sse2.L20
-    .byte 15, 31, 0
-.Lnvol_memchr2_entry_sse2.L19:
+    {disp8} ja .Lnvol_memchr2_entry_sse2.L52
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_memchr2_entry_sse2.L51:
     movdqu (%r8), %xmm2
     movdqa %xmm2, %xmm3
     pcmpeqb %xmm0, %xmm3
@@ -2682,14 +4271,14 @@ nvol_memchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr2_entry_sse2.L22
-.Lnvol_memchr2_entry_sse2.L21:
+    {disp8} jne .Lnvol_memchr2_entry_sse2.L54
+.Lnvol_memchr2_entry_sse2.L53:
     add $16, %r8
     cmp %rcx, %r8
-    {disp8} jbe .Lnvol_memchr2_entry_sse2.L19
-.Lnvol_memchr2_entry_sse2.L20:
+    {disp8} jbe .Lnvol_memchr2_entry_sse2.L51
+.Lnvol_memchr2_entry_sse2.L52:
     cmp %r9, %r8
-    {disp8} jae .Lnvol_memchr2_entry_sse2.L23
+    {disp8} jae .Lnvol_memchr2_entry_sse2.L55
     lea -16(%r9), %r8
     movdqu (%r8), %xmm2
     movdqa %xmm2, %xmm3
@@ -2698,36 +4287,55 @@ nvol_memchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr2_entry_sse2.L25
+    {disp8} je .Lnvol_memchr2_entry_sse2.L57
     bsf %eax, %eax
     lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_sse2.L25:
-.Lnvol_memchr2_entry_sse2.L23:
+.Lnvol_memchr2_entry_sse2.L57:
+.Lnvol_memchr2_entry_sse2.L55:
     xor %eax, %eax
 .Lnvol_memchr2_entry_sse2.L1:
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_sse2.L18:
+.Lnvol_memchr2_entry_sse2.L36:
+    bsf %rsi, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memchr2_entry_sse2.L50:
     bsf %eax, %eax
     lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_sse2.L16:
+.Lnvol_memchr2_entry_sse2.L48:
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr2_entry_sse2.L18
-.Lnvol_memchr2_entry_sse2.L17:
+    {disp8} jne .Lnvol_memchr2_entry_sse2.L50
+.Lnvol_memchr2_entry_sse2.L49:
     pmovmskb %xmm2, %eax
     bsf %eax, %eax
     lea 16(%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memchr2_entry_sse2.L22:
+.Lnvol_memchr2_entry_sse2.L54:
     bsf %eax, %eax
     lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
+.seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memchr2_raw
 .def nvol_memchr2_raw; .scl 2; .type 32; .endef
 nvol_memchr2_raw:
@@ -2802,33 +4410,289 @@ nvol_memchr2:
 .globl nvol_memrchr2_scalar
 .def nvol_memrchr2_scalar; .scl 2; .type 32; .endef
 nvol_memrchr2_scalar:
+.seh_proc nvol_memrchr2_scalar
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+.seh_endprologue
     movzbl %cl, %ecx
     movzbl %dl, %edx
-    cmp %r8, %r9
-    {disp8} jbe .Lnvol_memrchr2_scalar.L3
-    .byte 15, 31, 68, 0, 0
-.Lnvol_memrchr2_scalar.L2:
-    lea -1(%r9), %r9
-    movzbl (%r9), %eax
-    cmp %ecx, %eax
-    {disp8} je .Lnvol_memrchr2_scalar.L6
-    cmp %edx, %eax
+    mov %r9, %r10
+    sub %r8, %r10
+    cmp $4, %r10
+    {disp8} jae .Lnvol_memrchr2_scalar.L2
+    test %r10, %r10
     {disp8} jne .Lnvol_memrchr2_scalar.L4
-.Lnvol_memrchr2_scalar.L6:
-.Lnvol_memrchr2_scalar.L5:
-    mov %r9, %rax
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
     ret
 .Lnvol_memrchr2_scalar.L4:
+    movzbl -1(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_scalar.L8
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_scalar.L6
+.Lnvol_memrchr2_scalar.L8:
+    lea -1(%r9), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L6:
+    cmp $1, %r10
+    {disp8} jne .Lnvol_memrchr2_scalar.L9
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L9:
+    movzbl -2(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_scalar.L13
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_scalar.L11
+.Lnvol_memrchr2_scalar.L13:
+    lea -2(%r9), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L11:
+    cmp $2, %r10
+    {disp8} jne .Lnvol_memrchr2_scalar.L14
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L14:
+    movzbl -3(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_scalar.L18
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_scalar.L16
+.Lnvol_memrchr2_scalar.L18:
+    lea -3(%r9), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L16:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L2:
+    cmp $8, %r10
+    {disp32} jae .Lnvol_memrchr2_scalar.L19
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov -4(%r9), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %r11
+    and $2139062143, %r11d
+    add $2139062143, %r11d
+    or %r10, %r11
+    xor %rdx, %rax
+    mov %rax, %r10
+    and $2139062143, %r10d
+    add $2139062143, %r10d
+    or %rax, %r10
+    and %r10, %r11
+    or $2139062143, %r11d
+    not %r11d
+    test %r11d, %r11d
+    {disp8} je .Lnvol_memrchr2_scalar.L21
+    bsr %r11d, %eax
+    shr $3, %rax
+    lea -4(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L21:
+    mov (%r8), %eax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %rax, %rdx
+    and %rdx, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr2_scalar.L23
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L23:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L19:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    mov -8(%r9), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %rsi
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %rsi
+    or %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %r11
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %r11
+    or %rax, %r11
+    and %r11, %rsi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rsi
+    not %rsi
+    test %rsi, %rsi
+    {disp8} je .Lnvol_memrchr2_scalar.L25
+    bsr %rsi, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L25:
+    cmp $16, %r10
+    {disp8} ja .Lnvol_memrchr2_scalar.L27
+    mov (%r8), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $9187201950435737471, %r10
+    and %r10, %rcx
+    movabsq $9187201950435737471, %r10
+    add %r10, %rcx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r9
+    and %r9, %rdx
+    movabsq $9187201950435737471, %r9
+    add %r9, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr2_scalar.L29
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L29:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L27:
+    and $-8, %r9
+    lea 8(%r8), %r10
+    cmp %r10, %r9
+    {disp8} jb .Lnvol_memrchr2_scalar.L32
+    .byte 15, 31, 64, 0
+.Lnvol_memrchr2_scalar.L31:
+    lea -8(%r9), %r9
+    mov (%r9), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %rsi
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %rsi
+    or %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %r11
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %r11
+    or %rax, %r11
+    and %r11, %rsi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rsi
+    not %rsi
+    test %rsi, %rsi
+    {disp32} jne .Lnvol_memrchr2_scalar.L34
+.Lnvol_memrchr2_scalar.L33:
+    cmp %r10, %r9
+    {disp8} jae .Lnvol_memrchr2_scalar.L31
+.Lnvol_memrchr2_scalar.L32:
     cmp %r8, %r9
-    {disp8} ja .Lnvol_memrchr2_scalar.L2
-.Lnvol_memrchr2_scalar.L3:
+    {disp8} jbe .Lnvol_memrchr2_scalar.L35
+    mov (%r8), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $9187201950435737471, %r10
+    and %r10, %rcx
+    movabsq $9187201950435737471, %r10
+    add %r10, %rcx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r9
+    and %r9, %rdx
+    movabsq $9187201950435737471, %r9
+    add %r9, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr2_scalar.L37
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_scalar.L37:
+.Lnvol_memrchr2_scalar.L35:
     xor %eax, %eax
 .Lnvol_memrchr2_scalar.L1:
+    pop %rsi
+    pop %rdi
     ret
+.Lnvol_memrchr2_scalar.L34:
+    bsr %rsi, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memrchr2_sse2
 .def nvol_memrchr2_sse2; .scl 2; .type 32; .endef
 nvol_memrchr2_sse2:
@@ -3124,37 +4988,294 @@ nvol_memrchr2_avx2:
 .globl nvol_memrchr2_entry_avx2
 .def nvol_memrchr2_entry_avx2; .scl 2; .type 32; .endef
 nvol_memrchr2_entry_avx2:
+.seh_proc nvol_memrchr2_entry_avx2
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+.seh_endprologue
     movzbl %cl, %ecx
     movzbl %dl, %edx
     mov %r9, %r10
     sub %r8, %r10
     cmp $16, %r10
-    {disp8} jae .Lnvol_memrchr2_entry_avx2.L2
-    cmp %r8, %r9
-    {disp8} jbe .Lnvol_memrchr2_entry_avx2.L5
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_memrchr2_entry_avx2.L4:
-    lea -1(%r9), %r9
-    movzbl (%r9), %eax
-    cmp %ecx, %eax
-    {disp8} je .Lnvol_memrchr2_entry_avx2.L8
-    cmp %edx, %eax
+    {disp32} jae .Lnvol_memrchr2_entry_avx2.L2
+    cmp $4, %r10
+    {disp8} jae .Lnvol_memrchr2_entry_avx2.L4
+    test %r10, %r10
     {disp8} jne .Lnvol_memrchr2_entry_avx2.L6
-.Lnvol_memrchr2_entry_avx2.L8:
-.Lnvol_memrchr2_entry_avx2.L7:
-    mov %r9, %rax
-    vzeroupper
-    ret
-.Lnvol_memrchr2_entry_avx2.L6:
-    cmp %r8, %r9
-    {disp8} ja .Lnvol_memrchr2_entry_avx2.L4
-.Lnvol_memrchr2_entry_avx2.L5:
     xor %eax, %eax
     vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L6:
+    movzbl -1(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L10
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L8
+.Lnvol_memrchr2_entry_avx2.L10:
+    lea -1(%r9), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L8:
+    cmp $1, %r10
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L11
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L11:
+    movzbl -2(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L15
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L13
+.Lnvol_memrchr2_entry_avx2.L15:
+    lea -2(%r9), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L13:
+    cmp $2, %r10
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L16
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L16:
+    movzbl -3(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L20
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L18
+.Lnvol_memrchr2_entry_avx2.L20:
+    lea -3(%r9), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L18:
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L4:
+    cmp $8, %r10
+    {disp32} jae .Lnvol_memrchr2_entry_avx2.L21
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov -4(%r9), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %r11
+    and $2139062143, %r11d
+    add $2139062143, %r11d
+    or %r10, %r11
+    xor %rdx, %rax
+    mov %rax, %r10
+    and $2139062143, %r10d
+    add $2139062143, %r10d
+    or %rax, %r10
+    and %r10, %r11
+    or $2139062143, %r11d
+    not %r11d
+    test %r11d, %r11d
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L23
+    bsr %r11d, %eax
+    shr $3, %rax
+    lea -4(%r9,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L23:
+    mov (%r8), %eax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %rax, %rdx
+    and %rdx, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L25
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L25:
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L21:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    mov -8(%r9), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %rsi
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %rsi
+    or %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %r11
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %r11
+    or %rax, %r11
+    and %r11, %rsi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rsi
+    not %rsi
+    test %rsi, %rsi
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L27
+    bsr %rsi, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L27:
+    cmp $16, %r10
+    {disp8} ja .Lnvol_memrchr2_entry_avx2.L29
+    mov (%r8), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $9187201950435737471, %r10
+    and %r10, %rcx
+    movabsq $9187201950435737471, %r10
+    add %r10, %rcx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r9
+    and %r9, %rdx
+    movabsq $9187201950435737471, %r9
+    add %r9, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L31
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L31:
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L29:
+    and $-8, %r9
+    lea 8(%r8), %r10
+    cmp %r10, %r9
+    {disp8} jb .Lnvol_memrchr2_entry_avx2.L34
+    .byte 15, 31, 0
+.Lnvol_memrchr2_entry_avx2.L33:
+    lea -8(%r9), %r9
+    mov (%r9), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %rsi
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %rsi
+    or %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %r11
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %r11
+    or %rax, %r11
+    and %r11, %rsi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rsi
+    not %rsi
+    test %rsi, %rsi
+    {disp32} jne .Lnvol_memrchr2_entry_avx2.L36
+.Lnvol_memrchr2_entry_avx2.L35:
+    cmp %r10, %r9
+    {disp8} jae .Lnvol_memrchr2_entry_avx2.L33
+.Lnvol_memrchr2_entry_avx2.L34:
+    cmp %r8, %r9
+    {disp8} jbe .Lnvol_memrchr2_entry_avx2.L37
+    mov (%r8), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $9187201950435737471, %r10
+    and %r10, %rcx
+    movabsq $9187201950435737471, %r10
+    add %r10, %rcx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r9
+    and %r9, %rdx
+    movabsq $9187201950435737471, %r9
+    add %r9, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L39
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L39:
+.Lnvol_memrchr2_entry_avx2.L37:
+    xor %eax, %eax
+    vzeroupper
+    pop %rsi
+    pop %rdi
     ret
 .Lnvol_memrchr2_entry_avx2.L2:
     cmp $32, %r10
-    {disp32} jae .Lnvol_memrchr2_entry_avx2.L9
+    {disp32} jae .Lnvol_memrchr2_entry_avx2.L41
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %xmm0
     vmovd %edx, %xmm1
@@ -3165,23 +5286,24 @@ nvol_memrchr2_entry_avx2:
     vpor %xmm2, %xmm3, %xmm2
     vpmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_avx2.L11
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L43
     bsr %eax, %eax
     lea -16(%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L11:
+.Lnvol_memrchr2_entry_avx2.L43:
     and $-16, %r9
     cmp $32, %r10
-    {disp8} jb .Lnvol_memrchr2_entry_avx2.L13
+    {disp8} jb .Lnvol_memrchr2_entry_avx2.L45
     lea 32(%r8), %rcx
     cmp $512, %r10
-    {disp32} jae .Lnvol_memrchr2_entry_avx2.L18
-.Lnvol_memrchr2_entry_avx2.L15:
+    {disp32} jae .Lnvol_memrchr2_entry_avx2.L50
+.Lnvol_memrchr2_entry_avx2.L47:
     cmp %rcx, %r9
-    {disp8} jb .Lnvol_memrchr2_entry_avx2.L22
-    .byte 15, 31, 64, 0
-.Lnvol_memrchr2_entry_avx2.L21:
+    {disp8} jb .Lnvol_memrchr2_entry_avx2.L54
+.Lnvol_memrchr2_entry_avx2.L53:
     lea -32(%r9), %r9
     vmovdqa (%r9), %xmm2
     vmovdqa 16(%r9), %xmm3
@@ -3194,17 +5316,17 @@ nvol_memrchr2_entry_avx2:
     vpor %xmm3, %xmm2, %xmm4
     vpmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr2_entry_avx2.L24
-.Lnvol_memrchr2_entry_avx2.L23:
+    {disp32} jne .Lnvol_memrchr2_entry_avx2.L56
+.Lnvol_memrchr2_entry_avx2.L55:
     cmp %rcx, %r9
-    {disp8} jae .Lnvol_memrchr2_entry_avx2.L21
-.Lnvol_memrchr2_entry_avx2.L22:
-.Lnvol_memrchr2_entry_avx2.L13:
+    {disp8} jae .Lnvol_memrchr2_entry_avx2.L53
+.Lnvol_memrchr2_entry_avx2.L54:
+.Lnvol_memrchr2_entry_avx2.L45:
     lea 16(%r8), %rcx
     cmp %rcx, %r9
-    {disp8} jb .Lnvol_memrchr2_entry_avx2.L28
+    {disp8} jb .Lnvol_memrchr2_entry_avx2.L60
     .byte 15, 31, 0
-.Lnvol_memrchr2_entry_avx2.L27:
+.Lnvol_memrchr2_entry_avx2.L59:
     lea -16(%r9), %r9
     vmovdqu (%r9), %xmm2
     vpcmpeqb %xmm0, %xmm2, %xmm3
@@ -3212,30 +5334,34 @@ nvol_memrchr2_entry_avx2:
     vpor %xmm2, %xmm3, %xmm2
     vpmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr2_entry_avx2.L30
-.Lnvol_memrchr2_entry_avx2.L29:
+    {disp32} jne .Lnvol_memrchr2_entry_avx2.L62
+.Lnvol_memrchr2_entry_avx2.L61:
     cmp %rcx, %r9
-    {disp8} jae .Lnvol_memrchr2_entry_avx2.L27
-.Lnvol_memrchr2_entry_avx2.L28:
+    {disp8} jae .Lnvol_memrchr2_entry_avx2.L59
+.Lnvol_memrchr2_entry_avx2.L60:
     cmp %r8, %r9
-    {disp8} jbe .Lnvol_memrchr2_entry_avx2.L31
+    {disp8} jbe .Lnvol_memrchr2_entry_avx2.L63
     vmovdqu (%r8), %xmm2
     vpcmpeqb %xmm0, %xmm2, %xmm0
     vpcmpeqb %xmm1, %xmm2, %xmm1
     vpor %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_avx2.L33
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L65
     bsr %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L33:
-.Lnvol_memrchr2_entry_avx2.L31:
+.Lnvol_memrchr2_entry_avx2.L65:
+.Lnvol_memrchr2_entry_avx2.L63:
     xor %eax, %eax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L9:
+.Lnvol_memrchr2_entry_avx2.L41:
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %ymm0
     vmovd %edx, %xmm1
@@ -3246,23 +5372,25 @@ nvol_memrchr2_entry_avx2:
     vpor %ymm2, %ymm3, %ymm2
     vpmovmskb %ymm2, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_avx2.L35
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L67
     bsr %eax, %eax
     lea -32(%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L35:
+.Lnvol_memrchr2_entry_avx2.L67:
     and $-32, %r9
     cmp $64, %r10
-    {disp8} jb .Lnvol_memrchr2_entry_avx2.L37
+    {disp8} jb .Lnvol_memrchr2_entry_avx2.L69
     lea 64(%r8), %rcx
     cmp $2048, %r10
-    {disp32} jae .Lnvol_memrchr2_entry_avx2.L42
-.Lnvol_memrchr2_entry_avx2.L39:
+    {disp32} jae .Lnvol_memrchr2_entry_avx2.L74
+.Lnvol_memrchr2_entry_avx2.L71:
     cmp %rcx, %r9
-    {disp8} jb .Lnvol_memrchr2_entry_avx2.L46
-    .byte 15, 31, 0
-.Lnvol_memrchr2_entry_avx2.L45:
+    {disp8} jb .Lnvol_memrchr2_entry_avx2.L78
+    .byte 15, 31, 68, 0, 0
+.Lnvol_memrchr2_entry_avx2.L77:
     lea -64(%r9), %r9
     vmovdqa (%r9), %ymm2
     vmovdqa 32(%r9), %ymm3
@@ -3275,17 +5403,17 @@ nvol_memrchr2_entry_avx2:
     vpor %ymm3, %ymm2, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr2_entry_avx2.L48
-.Lnvol_memrchr2_entry_avx2.L47:
+    {disp32} jne .Lnvol_memrchr2_entry_avx2.L80
+.Lnvol_memrchr2_entry_avx2.L79:
     cmp %rcx, %r9
-    {disp8} jae .Lnvol_memrchr2_entry_avx2.L45
-.Lnvol_memrchr2_entry_avx2.L46:
-.Lnvol_memrchr2_entry_avx2.L37:
+    {disp8} jae .Lnvol_memrchr2_entry_avx2.L77
+.Lnvol_memrchr2_entry_avx2.L78:
+.Lnvol_memrchr2_entry_avx2.L69:
     lea 32(%r8), %rcx
     cmp %rcx, %r9
-    {disp8} jb .Lnvol_memrchr2_entry_avx2.L52
+    {disp8} jb .Lnvol_memrchr2_entry_avx2.L84
     .byte 15, 31, 0
-.Lnvol_memrchr2_entry_avx2.L51:
+.Lnvol_memrchr2_entry_avx2.L83:
     lea -32(%r9), %r9
     vmovdqu (%r9), %ymm2
     vpcmpeqb %ymm0, %ymm2, %ymm3
@@ -3293,40 +5421,54 @@ nvol_memrchr2_entry_avx2:
     vpor %ymm2, %ymm3, %ymm2
     vpmovmskb %ymm2, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr2_entry_avx2.L54
-.Lnvol_memrchr2_entry_avx2.L53:
+    {disp32} jne .Lnvol_memrchr2_entry_avx2.L86
+.Lnvol_memrchr2_entry_avx2.L85:
     cmp %rcx, %r9
-    {disp8} jae .Lnvol_memrchr2_entry_avx2.L51
-.Lnvol_memrchr2_entry_avx2.L52:
+    {disp8} jae .Lnvol_memrchr2_entry_avx2.L83
+.Lnvol_memrchr2_entry_avx2.L84:
     cmp %r8, %r9
-    {disp8} jbe .Lnvol_memrchr2_entry_avx2.L55
+    {disp8} jbe .Lnvol_memrchr2_entry_avx2.L87
     vmovdqu (%r8), %ymm2
     vpcmpeqb %ymm0, %ymm2, %ymm0
     vpcmpeqb %ymm1, %ymm2, %ymm1
     vpor %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_avx2.L57
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L89
     bsr %eax, %eax
     lea (%r8,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L57:
-.Lnvol_memrchr2_entry_avx2.L55:
+.Lnvol_memrchr2_entry_avx2.L89:
+.Lnvol_memrchr2_entry_avx2.L87:
     xor %eax, %eax
 .Lnvol_memrchr2_entry_avx2.L1:
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L20:
+.Lnvol_memrchr2_entry_avx2.L36:
+    bsr %rsi, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    vzeroupper
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_avx2.L52:
     bsr %eax, %eax
     lea 16(%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L18:
+.Lnvol_memrchr2_entry_avx2.L50:
     .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr2_entry_avx2.L16:
+.Lnvol_memrchr2_entry_avx2.L48:
     cmp %rcx, %r9
-    {disp32} jb .Lnvol_memrchr2_entry_avx2.L15
+    {disp32} jb .Lnvol_memrchr2_entry_avx2.L47
     lea -32(%r9), %r9
     vmovdqa (%r9), %xmm2
     vmovdqa 16(%r9), %xmm3
@@ -3339,47 +5481,57 @@ nvol_memrchr2_entry_avx2:
     vpor %xmm3, %xmm2, %xmm4
     vpmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_avx2.L16
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L48
     vpmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr2_entry_avx2.L20
-.Lnvol_memrchr2_entry_avx2.L19:
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L52
+.Lnvol_memrchr2_entry_avx2.L51:
     vpmovmskb %xmm2, %eax
     bsr %eax, %eax
     lea (%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L15
-.Lnvol_memrchr2_entry_avx2.L26:
+    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L47
+.Lnvol_memrchr2_entry_avx2.L58:
     bsr %eax, %eax
     lea 16(%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L24:
+.Lnvol_memrchr2_entry_avx2.L56:
     vpmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr2_entry_avx2.L26
-.Lnvol_memrchr2_entry_avx2.L25:
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L58
+.Lnvol_memrchr2_entry_avx2.L57:
     vpmovmskb %xmm2, %eax
     bsr %eax, %eax
     lea (%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L30:
+.Lnvol_memrchr2_entry_avx2.L62:
     bsr %eax, %eax
     lea (%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L44:
+.Lnvol_memrchr2_entry_avx2.L76:
     bsr %eax, %eax
     lea 32(%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L42:
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_memrchr2_entry_avx2.L40:
+.Lnvol_memrchr2_entry_avx2.L74:
+    .byte 15, 31, 64, 0
+.Lnvol_memrchr2_entry_avx2.L72:
     cmp %rcx, %r9
-    {disp32} jb .Lnvol_memrchr2_entry_avx2.L39
+    {disp32} jb .Lnvol_memrchr2_entry_avx2.L71
     lea -64(%r9), %r9
     vmovdqa (%r9), %ymm2
     vmovdqa 32(%r9), %ymm3
@@ -3392,68 +5544,324 @@ nvol_memrchr2_entry_avx2:
     vpor %ymm3, %ymm2, %ymm4
     vpmovmskb %ymm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_avx2.L40
+    {disp8} je .Lnvol_memrchr2_entry_avx2.L72
     vpmovmskb %ymm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr2_entry_avx2.L44
-.Lnvol_memrchr2_entry_avx2.L43:
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L76
+.Lnvol_memrchr2_entry_avx2.L75:
     vpmovmskb %ymm2, %eax
     bsr %eax, %eax
     lea (%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L39
-.Lnvol_memrchr2_entry_avx2.L50:
+    {disp32} jmp .Lnvol_memrchr2_entry_avx2.L71
+.Lnvol_memrchr2_entry_avx2.L82:
     bsr %eax, %eax
     lea 32(%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L48:
+.Lnvol_memrchr2_entry_avx2.L80:
     vpmovmskb %ymm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr2_entry_avx2.L50
-.Lnvol_memrchr2_entry_avx2.L49:
+    {disp8} jne .Lnvol_memrchr2_entry_avx2.L82
+.Lnvol_memrchr2_entry_avx2.L81:
     vpmovmskb %ymm2, %eax
     bsr %eax, %eax
     lea (%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_avx2.L54:
+.Lnvol_memrchr2_entry_avx2.L86:
     bsr %eax, %eax
     lea (%r9,%rax), %rax
     vzeroupper
+    pop %rsi
+    pop %rdi
     ret
+.seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memrchr2_entry_sse2
 .def nvol_memrchr2_entry_sse2; .scl 2; .type 32; .endef
 nvol_memrchr2_entry_sse2:
+.seh_proc nvol_memrchr2_entry_sse2
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+.seh_endprologue
     movzbl %cl, %ecx
     movzbl %dl, %edx
     mov %r9, %r10
     sub %r8, %r10
     cmp $16, %r10
-    {disp8} jae .Lnvol_memrchr2_entry_sse2.L2
-    cmp %r8, %r9
-    {disp8} jbe .Lnvol_memrchr2_entry_sse2.L5
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-.Lnvol_memrchr2_entry_sse2.L4:
-    lea -1(%r9), %r9
-    movzbl (%r9), %eax
-    cmp %ecx, %eax
-    {disp8} je .Lnvol_memrchr2_entry_sse2.L8
-    cmp %edx, %eax
+    {disp32} jae .Lnvol_memrchr2_entry_sse2.L2
+    cmp $4, %r10
+    {disp8} jae .Lnvol_memrchr2_entry_sse2.L4
+    test %r10, %r10
     {disp8} jne .Lnvol_memrchr2_entry_sse2.L6
-.Lnvol_memrchr2_entry_sse2.L8:
-.Lnvol_memrchr2_entry_sse2.L7:
-    mov %r9, %rax
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
     ret
 .Lnvol_memrchr2_entry_sse2.L6:
-    cmp %r8, %r9
-    {disp8} ja .Lnvol_memrchr2_entry_sse2.L4
-.Lnvol_memrchr2_entry_sse2.L5:
+    movzbl -1(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L10
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_entry_sse2.L8
+.Lnvol_memrchr2_entry_sse2.L10:
+    lea -1(%r9), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L8:
+    cmp $1, %r10
+    {disp8} jne .Lnvol_memrchr2_entry_sse2.L11
     xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L11:
+    movzbl -2(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L15
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_entry_sse2.L13
+.Lnvol_memrchr2_entry_sse2.L15:
+    lea -2(%r9), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L13:
+    cmp $2, %r10
+    {disp8} jne .Lnvol_memrchr2_entry_sse2.L16
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L16:
+    movzbl -3(%r9), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L20
+    cmp %edx, %eax
+    {disp8} jne .Lnvol_memrchr2_entry_sse2.L18
+.Lnvol_memrchr2_entry_sse2.L20:
+    lea -3(%r9), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L18:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L4:
+    cmp $8, %r10
+    {disp32} jae .Lnvol_memrchr2_entry_sse2.L21
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov -4(%r9), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %r11
+    and $2139062143, %r11d
+    add $2139062143, %r11d
+    or %r10, %r11
+    xor %rdx, %rax
+    mov %rax, %r10
+    and $2139062143, %r10d
+    add $2139062143, %r10d
+    or %rax, %r10
+    and %r10, %r11
+    or $2139062143, %r11d
+    not %r11d
+    test %r11d, %r11d
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L23
+    bsr %r11d, %eax
+    shr $3, %rax
+    lea -4(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L23:
+    mov (%r8), %eax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %rax, %rdx
+    and %rdx, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L25
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L25:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L21:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    mov -8(%r9), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %rsi
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %rsi
+    or %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %r11
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %r11
+    or %rax, %r11
+    and %r11, %rsi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rsi
+    not %rsi
+    test %rsi, %rsi
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L27
+    bsr %rsi, %rax
+    shr $3, %rax
+    lea -8(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L27:
+    cmp $16, %r10
+    {disp8} ja .Lnvol_memrchr2_entry_sse2.L29
+    mov (%r8), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $9187201950435737471, %r10
+    and %r10, %rcx
+    movabsq $9187201950435737471, %r10
+    add %r10, %rcx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r9
+    and %r9, %rdx
+    movabsq $9187201950435737471, %r9
+    add %r9, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L31
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L31:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L29:
+    and $-8, %r9
+    lea 8(%r8), %r10
+    cmp %r10, %r9
+    {disp8} jb .Lnvol_memrchr2_entry_sse2.L34
+    .byte 102, 144
+.Lnvol_memrchr2_entry_sse2.L33:
+    lea -8(%r9), %r9
+    mov (%r9), %rax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %rsi
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %rsi
+    or %r11, %rsi
+    xor %rdx, %rax
+    mov %rax, %r11
+    movabsq $9187201950435737471, %rdi
+    and %rdi, %r11
+    movabsq $9187201950435737471, %rdi
+    add %rdi, %r11
+    or %rax, %r11
+    and %r11, %rsi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rsi
+    not %rsi
+    test %rsi, %rsi
+    {disp32} jne .Lnvol_memrchr2_entry_sse2.L36
+.Lnvol_memrchr2_entry_sse2.L35:
+    cmp %r10, %r9
+    {disp8} jae .Lnvol_memrchr2_entry_sse2.L33
+.Lnvol_memrchr2_entry_sse2.L34:
+    cmp %r8, %r9
+    {disp8} jbe .Lnvol_memrchr2_entry_sse2.L37
+    mov (%r8), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $9187201950435737471, %r10
+    and %r10, %rcx
+    movabsq $9187201950435737471, %r10
+    add %r10, %rcx
+    or %r9, %rcx
+    xor %rdx, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r9
+    and %r9, %rdx
+    movabsq $9187201950435737471, %r9
+    add %r9, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L39
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L39:
+.Lnvol_memrchr2_entry_sse2.L37:
+    xor %eax, %eax
+    pop %rsi
+    pop %rdi
     ret
 .Lnvol_memrchr2_entry_sse2.L2:
     imul $16843009, %ecx, %eax
@@ -3469,22 +5877,24 @@ nvol_memrchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_sse2.L9
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L41
     bsr %eax, %eax
     lea -16(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_sse2.L9:
+.Lnvol_memrchr2_entry_sse2.L41:
     and $-16, %r9
     cmp $32, %r10
-    {disp8} jb .Lnvol_memrchr2_entry_sse2.L11
+    {disp8} jb .Lnvol_memrchr2_entry_sse2.L43
     lea 32(%r8), %rcx
     cmp $512, %r10
-    {disp32} jae .Lnvol_memrchr2_entry_sse2.L16
-.Lnvol_memrchr2_entry_sse2.L13:
+    {disp32} jae .Lnvol_memrchr2_entry_sse2.L48
+.Lnvol_memrchr2_entry_sse2.L45:
     cmp %rcx, %r9
-    {disp8} jb .Lnvol_memrchr2_entry_sse2.L20
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr2_entry_sse2.L19:
+    {disp8} jb .Lnvol_memrchr2_entry_sse2.L52
+    .byte 15, 31, 0
+.Lnvol_memrchr2_entry_sse2.L51:
     lea -32(%r9), %r9
     movdqa (%r9), %xmm2
     movdqa 16(%r9), %xmm3
@@ -3500,17 +5910,17 @@ nvol_memrchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr2_entry_sse2.L22
-.Lnvol_memrchr2_entry_sse2.L21:
+    {disp32} jne .Lnvol_memrchr2_entry_sse2.L54
+.Lnvol_memrchr2_entry_sse2.L53:
     cmp %rcx, %r9
-    {disp8} jae .Lnvol_memrchr2_entry_sse2.L19
-.Lnvol_memrchr2_entry_sse2.L20:
-.Lnvol_memrchr2_entry_sse2.L11:
+    {disp8} jae .Lnvol_memrchr2_entry_sse2.L51
+.Lnvol_memrchr2_entry_sse2.L52:
+.Lnvol_memrchr2_entry_sse2.L43:
     lea 16(%r8), %rcx
     cmp %rcx, %r9
-    {disp8} jb .Lnvol_memrchr2_entry_sse2.L26
+    {disp8} jb .Lnvol_memrchr2_entry_sse2.L58
     .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr2_entry_sse2.L25:
+.Lnvol_memrchr2_entry_sse2.L57:
     lea -16(%r9), %r9
     movdqu (%r9), %xmm2
     movdqa %xmm2, %xmm3
@@ -3519,13 +5929,13 @@ nvol_memrchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr2_entry_sse2.L28
-.Lnvol_memrchr2_entry_sse2.L27:
+    {disp32} jne .Lnvol_memrchr2_entry_sse2.L60
+.Lnvol_memrchr2_entry_sse2.L59:
     cmp %rcx, %r9
-    {disp8} jae .Lnvol_memrchr2_entry_sse2.L25
-.Lnvol_memrchr2_entry_sse2.L26:
+    {disp8} jae .Lnvol_memrchr2_entry_sse2.L57
+.Lnvol_memrchr2_entry_sse2.L58:
     cmp %r8, %r9
-    {disp8} jbe .Lnvol_memrchr2_entry_sse2.L29
+    {disp8} jbe .Lnvol_memrchr2_entry_sse2.L61
     movdqu (%r8), %xmm2
     movdqa %xmm2, %xmm3
     pcmpeqb %xmm0, %xmm3
@@ -3533,23 +5943,37 @@ nvol_memrchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_sse2.L31
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L63
     bsr %eax, %eax
     lea (%r8,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_sse2.L31:
-.Lnvol_memrchr2_entry_sse2.L29:
+.Lnvol_memrchr2_entry_sse2.L63:
+.Lnvol_memrchr2_entry_sse2.L61:
     xor %eax, %eax
 .Lnvol_memrchr2_entry_sse2.L1:
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_sse2.L18:
+.Lnvol_memrchr2_entry_sse2.L36:
+    bsr %rsi, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
+    ret
+.Lnvol_memrchr2_entry_sse2.L50:
     bsr %eax, %eax
     lea 16(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_sse2.L16:
-.Lnvol_memrchr2_entry_sse2.L14:
+.Lnvol_memrchr2_entry_sse2.L48:
+    .byte 15, 31, 0
+.Lnvol_memrchr2_entry_sse2.L46:
     cmp %rcx, %r9
-    {disp32} jb .Lnvol_memrchr2_entry_sse2.L13
+    {disp32} jb .Lnvol_memrchr2_entry_sse2.L45
     lea -32(%r9), %r9
     movdqa (%r9), %xmm2
     movdqa 16(%r9), %xmm3
@@ -3565,37 +5989,48 @@ nvol_memrchr2_entry_sse2:
     por %xmm2, %xmm3
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr2_entry_sse2.L14
+    {disp8} je .Lnvol_memrchr2_entry_sse2.L46
     pmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr2_entry_sse2.L18
-.Lnvol_memrchr2_entry_sse2.L17:
+    {disp8} jne .Lnvol_memrchr2_entry_sse2.L50
+.Lnvol_memrchr2_entry_sse2.L49:
     pmovmskb %xmm4, %eax
     bsr %eax, %eax
     lea (%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-    {disp32} jmp .Lnvol_memrchr2_entry_sse2.L13
-.Lnvol_memrchr2_entry_sse2.L24:
+    {disp32} jmp .Lnvol_memrchr2_entry_sse2.L45
+.Lnvol_memrchr2_entry_sse2.L56:
     bsr %eax, %eax
     lea 16(%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_sse2.L22:
+.Lnvol_memrchr2_entry_sse2.L54:
     pmovmskb %xmm2, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr2_entry_sse2.L24
-.Lnvol_memrchr2_entry_sse2.L23:
+    {disp8} jne .Lnvol_memrchr2_entry_sse2.L56
+.Lnvol_memrchr2_entry_sse2.L55:
     pmovmskb %xmm4, %eax
     bsr %eax, %eax
     lea (%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
-.Lnvol_memrchr2_entry_sse2.L28:
+.Lnvol_memrchr2_entry_sse2.L60:
     bsr %eax, %eax
     lea (%r9,%rax), %rax
+    pop %rsi
+    pop %rdi
     ret
+.seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memrchr2_raw
 .def nvol_memrchr2_raw; .scl 2; .type 32; .endef
 nvol_memrchr2_raw:
@@ -3670,35 +6105,278 @@ nvol_memrchr2:
 .globl nvol_memchr3_scalar
 .def nvol_memchr3_scalar; .scl 2; .type 32; .endef
 nvol_memchr3_scalar:
+.seh_proc nvol_memchr3_scalar
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+.seh_endprologue
     movzbl %cl, %ecx
     movzbl %dl, %edx
     movzbl %r8b, %r8d
-    mov 40(%rsp), %r10
+    mov 72(%rsp), %r10
+    mov %r10, %r11
+    sub %r9, %r11
+    cmp $5, %r11
+    {disp8} jae .Lnvol_memchr3_scalar.L2
     cmp %r10, %r9
-    {disp8} jae .Lnvol_memchr3_scalar.L3
+    {disp8} jae .Lnvol_memchr3_scalar.L5
     .byte 15, 31, 64, 0
-.Lnvol_memchr3_scalar.L2:
+.Lnvol_memchr3_scalar.L4:
     movzbl (%r9), %eax
     cmp %ecx, %eax
-    {disp8} je .Lnvol_memchr3_scalar.L6
+    {disp8} je .Lnvol_memchr3_scalar.L8
     cmp %edx, %eax
-    {disp8} je .Lnvol_memchr3_scalar.L6
+    {disp8} je .Lnvol_memchr3_scalar.L8
     cmp %r8d, %eax
-    {disp8} jne .Lnvol_memchr3_scalar.L4
-.Lnvol_memchr3_scalar.L6:
-.Lnvol_memchr3_scalar.L5:
+    {disp8} jne .Lnvol_memchr3_scalar.L6
+.Lnvol_memchr3_scalar.L8:
+.Lnvol_memchr3_scalar.L7:
     mov %r9, %rax
-    ret
-.Lnvol_memchr3_scalar.L4:
+    {disp32} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L6:
     add $1, %r9
     cmp %r10, %r9
-    {disp8} jb .Lnvol_memchr3_scalar.L2
-.Lnvol_memchr3_scalar.L3:
+    {disp8} jb .Lnvol_memchr3_scalar.L4
+.Lnvol_memchr3_scalar.L5:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L2:
+    cmp $8, %r11
+    {disp32} jae .Lnvol_memchr3_scalar.L9
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov $16843009, %eax
+    imul %eax, %r8d
+    mov (%r9), %eax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    sub $16843009, %esi
+    not %r11d
+    and %r11, %rsi
+    mov %rax, %r11
+    xor %rdx, %r11
+    mov %r11, %rdi
+    sub $16843009, %edi
+    not %r11d
+    and %r11, %rdi
+    or %rdi, %rsi
+    xor %r8, %rax
+    mov %rax, %r11
+    sub $16843009, %r11d
+    not %eax
+    and %rax, %r11
+    or %r11, %rsi
+    and $-2139062144, %esi
+    {disp8} je .Lnvol_memchr3_scalar.L11
+    bsf %esi, %eax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L11:
+    mov -4(%r10), %eax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    sub $16843009, %ecx
+    not %r9d
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    sub $16843009, %edx
+    not %r9d
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    sub $16843009, %edx
+    not %eax
+    and %rax, %rdx
+    or %rdx, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr3_scalar.L13
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L13:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L9:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    movabsq $72340172838076673, %rax
+    imul %rax, %r8
+    mov (%r9), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rdi
+    not %rsi
+    and %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $72340172838076673, %rbp
+    sub %rbp, %rbx
+    not %rsi
+    and %rsi, %rbx
+    or %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rsi
+    not %rax
+    and %rax, %rsi
+    or %rsi, %rdi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rdi
+    {disp8} je .Lnvol_memchr3_scalar.L15
+    bsf %rdi, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L15:
+    cmp $16, %r11
+    {disp32} ja .Lnvol_memchr3_scalar.L17
+    mov -8(%r10), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rcx
+    not %r9
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rdx
+    not %r9
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr3_scalar.L19
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L19:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L17:
+    and $-8, %r9
+    add $8, %r9
+    lea -8(%r10), %r11
+    cmp %r11, %r9
+    {disp8} ja .Lnvol_memchr3_scalar.L22
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memchr3_scalar.L21:
+    mov (%r9), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rdi
+    not %rsi
+    and %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $72340172838076673, %rbp
+    sub %rbp, %rbx
+    not %rsi
+    and %rsi, %rbx
+    or %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rsi
+    not %rax
+    and %rax, %rsi
+    or %rsi, %rdi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rdi
+    {disp32} jne .Lnvol_memchr3_scalar.L24
+.Lnvol_memchr3_scalar.L23:
+    add $8, %r9
+    cmp %r11, %r9
+    {disp8} jbe .Lnvol_memchr3_scalar.L21
+.Lnvol_memchr3_scalar.L22:
+    cmp %r10, %r9
+    {disp8} jae .Lnvol_memchr3_scalar.L25
+    mov -8(%r10), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rcx
+    not %r9
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rdx
+    not %r9
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr3_scalar.L27
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp8} jmp .Lnvol_memchr3_scalar.L1
+.Lnvol_memchr3_scalar.L27:
+.Lnvol_memchr3_scalar.L25:
     xor %eax, %eax
 .Lnvol_memchr3_scalar.L1:
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
     ret
+.Lnvol_memchr3_scalar.L24:
+    bsf %rdi, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp8} jmp .Lnvol_memchr3_scalar.L1
+.seh_endproc
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_memchr3_sse2
 .def nvol_memchr3_sse2; .scl 2; .type 32; .endef
 nvol_memchr3_sse2:
@@ -4002,6 +6680,14 @@ nvol_memchr3_avx2:
 .def nvol_memchr3_entry_avx2; .scl 2; .type 32; .endef
 nvol_memchr3_entry_avx2:
 .seh_proc nvol_memchr3_entry_avx2
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
     sub $24, %rsp
 .seh_stackalloc 24
     vmovdqu %xmm6, (%rsp)
@@ -4010,42 +6696,250 @@ nvol_memchr3_entry_avx2:
     movzbl %cl, %ecx
     movzbl %dl, %edx
     movzbl %r8b, %r8d
-    mov 64(%rsp), %r10
+    mov 96(%rsp), %r10
     mov %r10, %r11
     sub %r9, %r11
     cmp $16, %r11
-    {disp8} jae .Lnvol_memchr3_entry_avx2.L2
+    {disp32} jae .Lnvol_memchr3_entry_avx2.L2
+    cmp $5, %r11
+    {disp8} jae .Lnvol_memchr3_entry_avx2.L4
     cmp %r10, %r9
-    {disp8} jae .Lnvol_memchr3_entry_avx2.L5
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memchr3_entry_avx2.L4:
+    {disp8} jae .Lnvol_memchr3_entry_avx2.L7
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memchr3_entry_avx2.L6:
     movzbl (%r9), %eax
     cmp %ecx, %eax
-    {disp8} je .Lnvol_memchr3_entry_avx2.L8
+    {disp8} je .Lnvol_memchr3_entry_avx2.L10
     cmp %edx, %eax
-    {disp8} je .Lnvol_memchr3_entry_avx2.L8
+    {disp8} je .Lnvol_memchr3_entry_avx2.L10
     cmp %r8d, %eax
-    {disp8} jne .Lnvol_memchr3_entry_avx2.L6
-.Lnvol_memchr3_entry_avx2.L8:
-.Lnvol_memchr3_entry_avx2.L7:
+    {disp8} jne .Lnvol_memchr3_entry_avx2.L8
+.Lnvol_memchr3_entry_avx2.L10:
+.Lnvol_memchr3_entry_avx2.L9:
     mov %r9, %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L6:
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L8:
     add $1, %r9
     cmp %r10, %r9
-    {disp8} jb .Lnvol_memchr3_entry_avx2.L4
-.Lnvol_memchr3_entry_avx2.L5:
+    {disp8} jb .Lnvol_memchr3_entry_avx2.L6
+.Lnvol_memchr3_entry_avx2.L7:
     xor %eax, %eax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L4:
+    cmp $8, %r11
+    {disp32} jae .Lnvol_memchr3_entry_avx2.L11
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov $16843009, %eax
+    imul %eax, %r8d
+    mov (%r9), %eax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    sub $16843009, %esi
+    not %r11d
+    and %r11, %rsi
+    mov %rax, %r11
+    xor %rdx, %r11
+    mov %r11, %rdi
+    sub $16843009, %edi
+    not %r11d
+    and %r11, %rdi
+    or %rdi, %rsi
+    xor %r8, %rax
+    mov %rax, %r11
+    sub $16843009, %r11d
+    not %eax
+    and %rax, %r11
+    or %r11, %rsi
+    and $-2139062144, %esi
+    {disp8} je .Lnvol_memchr3_entry_avx2.L13
+    bsf %esi, %eax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L13:
+    mov -4(%r10), %eax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    sub $16843009, %ecx
+    not %r9d
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    sub $16843009, %edx
+    not %r9d
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    sub $16843009, %edx
+    not %eax
+    and %rax, %rdx
+    or %rdx, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr3_entry_avx2.L15
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L15:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L11:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    movabsq $72340172838076673, %rax
+    imul %rax, %r8
+    mov (%r9), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rdi
+    not %rsi
+    and %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $72340172838076673, %rbp
+    sub %rbp, %rbx
+    not %rsi
+    and %rsi, %rbx
+    or %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rsi
+    not %rax
+    and %rax, %rsi
+    or %rsi, %rdi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rdi
+    {disp8} je .Lnvol_memchr3_entry_avx2.L17
+    bsf %rdi, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L17:
+    cmp $16, %r11
+    {disp32} ja .Lnvol_memchr3_entry_avx2.L19
+    mov -8(%r10), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rcx
+    not %r9
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rdx
+    not %r9
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr3_entry_avx2.L21
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L21:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L19:
+    and $-8, %r9
+    add $8, %r9
+    lea -8(%r10), %r11
+    cmp %r11, %r9
+    {disp8} ja .Lnvol_memchr3_entry_avx2.L24
+.Lnvol_memchr3_entry_avx2.L23:
+    mov (%r9), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rdi
+    not %rsi
+    and %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $72340172838076673, %rbp
+    sub %rbp, %rbx
+    not %rsi
+    and %rsi, %rbx
+    or %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rsi
+    not %rax
+    and %rax, %rsi
+    or %rsi, %rdi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rdi
+    {disp32} jne .Lnvol_memchr3_entry_avx2.L26
+.Lnvol_memchr3_entry_avx2.L25:
+    add $8, %r9
+    cmp %r11, %r9
+    {disp8} jbe .Lnvol_memchr3_entry_avx2.L23
+.Lnvol_memchr3_entry_avx2.L24:
+    cmp %r10, %r9
+    {disp8} jae .Lnvol_memchr3_entry_avx2.L27
+    mov -8(%r10), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rcx
+    not %r9
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rdx
+    not %r9
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr3_entry_avx2.L29
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L29:
+.Lnvol_memchr3_entry_avx2.L27:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
 .Lnvol_memchr3_entry_avx2.L2:
     cmp $32, %r11
-    {disp32} jae .Lnvol_memchr3_entry_avx2.L9
+    {disp32} jae .Lnvol_memchr3_entry_avx2.L31
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %xmm0
     vmovd %edx, %xmm1
@@ -4060,23 +6954,20 @@ nvol_memchr3_entry_avx2:
     vpor %xmm3, %xmm4, %xmm3
     vpmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr3_entry_avx2.L11
+    {disp8} je .Lnvol_memchr3_entry_avx2.L33
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L11:
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L33:
     and $-16, %r9
     add $16, %r9
     cmp $32, %r11
-    {disp8} jb .Lnvol_memchr3_entry_avx2.L13
+    {disp8} jb .Lnvol_memchr3_entry_avx2.L35
     lea -32(%r10), %rcx
     cmp %rcx, %r9
-    {disp8} ja .Lnvol_memchr3_entry_avx2.L16
-    .byte 15, 31, 68, 0, 0
-.Lnvol_memchr3_entry_avx2.L15:
+    {disp8} ja .Lnvol_memchr3_entry_avx2.L38
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memchr3_entry_avx2.L37:
     vmovdqa (%r9), %xmm3
     vmovdqa 16(%r9), %xmm4
     vpcmpeqb %xmm0, %xmm3, %xmm5
@@ -4092,18 +6983,18 @@ nvol_memchr3_entry_avx2:
     vpor %xmm4, %xmm3, %xmm5
     vpmovmskb %xmm5, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr3_entry_avx2.L18
-.Lnvol_memchr3_entry_avx2.L17:
+    {disp32} jne .Lnvol_memchr3_entry_avx2.L40
+.Lnvol_memchr3_entry_avx2.L39:
     add $32, %r9
     cmp %rcx, %r9
-    {disp8} jbe .Lnvol_memchr3_entry_avx2.L15
-.Lnvol_memchr3_entry_avx2.L16:
-.Lnvol_memchr3_entry_avx2.L13:
+    {disp8} jbe .Lnvol_memchr3_entry_avx2.L37
+.Lnvol_memchr3_entry_avx2.L38:
+.Lnvol_memchr3_entry_avx2.L35:
     lea -16(%r10), %rcx
     cmp %rcx, %r9
-    {disp8} ja .Lnvol_memchr3_entry_avx2.L22
+    {disp8} ja .Lnvol_memchr3_entry_avx2.L44
     .byte 15, 31, 0
-.Lnvol_memchr3_entry_avx2.L21:
+.Lnvol_memchr3_entry_avx2.L43:
     vmovdqu (%r9), %xmm3
     vpcmpeqb %xmm0, %xmm3, %xmm4
     vpcmpeqb %xmm1, %xmm3, %xmm5
@@ -4112,14 +7003,14 @@ nvol_memchr3_entry_avx2:
     vpor %xmm3, %xmm4, %xmm3
     vpmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr3_entry_avx2.L24
-.Lnvol_memchr3_entry_avx2.L23:
+    {disp32} jne .Lnvol_memchr3_entry_avx2.L46
+.Lnvol_memchr3_entry_avx2.L45:
     add $16, %r9
     cmp %rcx, %r9
-    {disp8} jbe .Lnvol_memchr3_entry_avx2.L21
-.Lnvol_memchr3_entry_avx2.L22:
+    {disp8} jbe .Lnvol_memchr3_entry_avx2.L43
+.Lnvol_memchr3_entry_avx2.L44:
     cmp %r10, %r9
-    {disp8} jae .Lnvol_memchr3_entry_avx2.L25
+    {disp8} jae .Lnvol_memchr3_entry_avx2.L47
     lea -16(%r10), %r9
     vmovdqu (%r9), %xmm3
     vpcmpeqb %xmm0, %xmm3, %xmm0
@@ -4129,21 +7020,15 @@ nvol_memchr3_entry_avx2:
     vpor %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr3_entry_avx2.L27
+    {disp8} je .Lnvol_memchr3_entry_avx2.L49
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L27:
-.Lnvol_memchr3_entry_avx2.L25:
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L49:
+.Lnvol_memchr3_entry_avx2.L47:
     xor %eax, %eax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L9:
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L31:
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %ymm0
     vmovd %edx, %xmm1
@@ -4158,23 +7043,20 @@ nvol_memchr3_entry_avx2:
     vpor %ymm3, %ymm4, %ymm3
     vpmovmskb %ymm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr3_entry_avx2.L29
+    {disp8} je .Lnvol_memchr3_entry_avx2.L51
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L29:
+    {disp32} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L51:
     and $-32, %r9
     add $32, %r9
     cmp $64, %r11
-    {disp8} jb .Lnvol_memchr3_entry_avx2.L31
+    {disp8} jb .Lnvol_memchr3_entry_avx2.L53
     lea -64(%r10), %rcx
     cmp %rcx, %r9
-    {disp8} ja .Lnvol_memchr3_entry_avx2.L34
+    {disp8} ja .Lnvol_memchr3_entry_avx2.L56
     .byte 15, 31, 68, 0, 0
-.Lnvol_memchr3_entry_avx2.L33:
+.Lnvol_memchr3_entry_avx2.L55:
     vmovdqa (%r9), %ymm3
     vmovdqa 32(%r9), %ymm4
     vpcmpeqb %ymm0, %ymm3, %ymm5
@@ -4190,18 +7072,18 @@ nvol_memchr3_entry_avx2:
     vpor %ymm4, %ymm3, %ymm5
     vpmovmskb %ymm5, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr3_entry_avx2.L36
-.Lnvol_memchr3_entry_avx2.L35:
+    {disp32} jne .Lnvol_memchr3_entry_avx2.L58
+.Lnvol_memchr3_entry_avx2.L57:
     add $64, %r9
     cmp %rcx, %r9
-    {disp8} jbe .Lnvol_memchr3_entry_avx2.L33
-.Lnvol_memchr3_entry_avx2.L34:
-.Lnvol_memchr3_entry_avx2.L31:
+    {disp8} jbe .Lnvol_memchr3_entry_avx2.L55
+.Lnvol_memchr3_entry_avx2.L56:
+.Lnvol_memchr3_entry_avx2.L53:
     lea -32(%r10), %rcx
     cmp %rcx, %r9
-    {disp8} ja .Lnvol_memchr3_entry_avx2.L40
+    {disp8} ja .Lnvol_memchr3_entry_avx2.L62
     .byte 15, 31, 0
-.Lnvol_memchr3_entry_avx2.L39:
+.Lnvol_memchr3_entry_avx2.L61:
     vmovdqu (%r9), %ymm3
     vpcmpeqb %ymm0, %ymm3, %ymm4
     vpcmpeqb %ymm1, %ymm3, %ymm5
@@ -4210,14 +7092,14 @@ nvol_memchr3_entry_avx2:
     vpor %ymm3, %ymm4, %ymm3
     vpmovmskb %ymm3, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr3_entry_avx2.L42
-.Lnvol_memchr3_entry_avx2.L41:
+    {disp32} jne .Lnvol_memchr3_entry_avx2.L64
+.Lnvol_memchr3_entry_avx2.L63:
     add $32, %r9
     cmp %rcx, %r9
-    {disp8} jbe .Lnvol_memchr3_entry_avx2.L39
-.Lnvol_memchr3_entry_avx2.L40:
+    {disp8} jbe .Lnvol_memchr3_entry_avx2.L61
+.Lnvol_memchr3_entry_avx2.L62:
     cmp %r10, %r9
-    {disp8} jae .Lnvol_memchr3_entry_avx2.L43
+    {disp8} jae .Lnvol_memchr3_entry_avx2.L65
     lea -32(%r10), %r9
     vmovdqu (%r9), %ymm3
     vpcmpeqb %ymm0, %ymm3, %ymm0
@@ -4227,73 +7109,61 @@ nvol_memchr3_entry_avx2:
     vpor %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr3_entry_avx2.L45
+    {disp8} je .Lnvol_memchr3_entry_avx2.L67
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L45:
-.Lnvol_memchr3_entry_avx2.L43:
+    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L67:
+.Lnvol_memchr3_entry_avx2.L65:
     xor %eax, %eax
 .Lnvol_memchr3_entry_avx2.L1:
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
     ret
-.Lnvol_memchr3_entry_avx2.L20:
-    bsf %eax, %eax
+.Lnvol_memchr3_entry_avx2.L26:
+    bsf %rdi, %rax
+    shr $3, %rax
     lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L18:
-    vpmovmskb %xmm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memchr3_entry_avx2.L20
-.Lnvol_memchr3_entry_avx2.L19:
-    vpmovmskb %xmm4, %eax
-    bsf %eax, %eax
-    lea 16(%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L24:
-    bsf %eax, %eax
-    lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L38:
-    bsf %eax, %eax
-    lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_avx2.L36:
-    vpmovmskb %ymm3, %eax
-    test %eax, %eax
-    {disp8} jne .Lnvol_memchr3_entry_avx2.L38
-.Lnvol_memchr3_entry_avx2.L37:
-    vpmovmskb %ymm4, %eax
-    bsf %eax, %eax
-    lea 32(%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
 .Lnvol_memchr3_entry_avx2.L42:
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L40:
+    vpmovmskb %xmm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memchr3_entry_avx2.L42
+.Lnvol_memchr3_entry_avx2.L41:
+    vpmovmskb %xmm4, %eax
+    bsf %eax, %eax
+    lea 16(%r9,%rax), %rax
+    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L46:
+    bsf %eax, %eax
+    lea (%r9,%rax), %rax
+    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L60:
+    bsf %eax, %eax
+    lea (%r9,%rax), %rax
+    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L58:
+    vpmovmskb %ymm3, %eax
+    test %eax, %eax
+    {disp8} jne .Lnvol_memchr3_entry_avx2.L60
+.Lnvol_memchr3_entry_avx2.L59:
+    vpmovmskb %ymm4, %eax
+    bsf %eax, %eax
+    lea 32(%r9,%rax), %rax
+    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
+.Lnvol_memchr3_entry_avx2.L64:
+    bsf %eax, %eax
+    lea (%r9,%rax), %rax
+    {disp8} jmp .Lnvol_memchr3_entry_avx2.L1
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
@@ -4301,12 +7171,19 @@ nvol_memchr3_entry_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 144
 .globl nvol_memchr3_entry_sse2
 .def nvol_memchr3_entry_sse2; .scl 2; .type 32; .endef
 nvol_memchr3_entry_sse2:
 .seh_proc nvol_memchr3_entry_sse2
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
     sub $24, %rsp
 .seh_stackalloc 24
     movdqu %xmm6, (%rsp)
@@ -4315,37 +7192,247 @@ nvol_memchr3_entry_sse2:
     movzbl %cl, %ecx
     movzbl %dl, %edx
     movzbl %r8b, %r8d
-    mov 64(%rsp), %r10
+    mov 96(%rsp), %r10
     mov %r10, %r11
     sub %r9, %r11
     cmp $16, %r11
-    {disp8} jae .Lnvol_memchr3_entry_sse2.L2
+    {disp32} jae .Lnvol_memchr3_entry_sse2.L2
+    cmp $5, %r11
+    {disp8} jae .Lnvol_memchr3_entry_sse2.L4
     cmp %r10, %r9
-    {disp8} jae .Lnvol_memchr3_entry_sse2.L5
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memchr3_entry_sse2.L4:
+    {disp8} jae .Lnvol_memchr3_entry_sse2.L7
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memchr3_entry_sse2.L6:
     movzbl (%r9), %eax
     cmp %ecx, %eax
-    {disp8} je .Lnvol_memchr3_entry_sse2.L8
+    {disp8} je .Lnvol_memchr3_entry_sse2.L10
     cmp %edx, %eax
-    {disp8} je .Lnvol_memchr3_entry_sse2.L8
+    {disp8} je .Lnvol_memchr3_entry_sse2.L10
     cmp %r8d, %eax
-    {disp8} jne .Lnvol_memchr3_entry_sse2.L6
-.Lnvol_memchr3_entry_sse2.L8:
-.Lnvol_memchr3_entry_sse2.L7:
+    {disp8} jne .Lnvol_memchr3_entry_sse2.L8
+.Lnvol_memchr3_entry_sse2.L10:
+.Lnvol_memchr3_entry_sse2.L9:
     mov %r9, %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_sse2.L6:
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L8:
     add $1, %r9
     cmp %r10, %r9
-    {disp8} jb .Lnvol_memchr3_entry_sse2.L4
-.Lnvol_memchr3_entry_sse2.L5:
+    {disp8} jb .Lnvol_memchr3_entry_sse2.L6
+.Lnvol_memchr3_entry_sse2.L7:
     xor %eax, %eax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L4:
+    cmp $8, %r11
+    {disp32} jae .Lnvol_memchr3_entry_sse2.L11
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov $16843009, %eax
+    imul %eax, %r8d
+    mov (%r9), %eax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    sub $16843009, %esi
+    not %r11d
+    and %r11, %rsi
+    mov %rax, %r11
+    xor %rdx, %r11
+    mov %r11, %rdi
+    sub $16843009, %edi
+    not %r11d
+    and %r11, %rdi
+    or %rdi, %rsi
+    xor %r8, %rax
+    mov %rax, %r11
+    sub $16843009, %r11d
+    not %eax
+    and %rax, %r11
+    or %r11, %rsi
+    and $-2139062144, %esi
+    {disp8} je .Lnvol_memchr3_entry_sse2.L13
+    bsf %esi, %eax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L13:
+    mov -4(%r10), %eax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    sub $16843009, %ecx
+    not %r9d
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    sub $16843009, %edx
+    not %r9d
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    sub $16843009, %edx
+    not %eax
+    and %rax, %rdx
+    or %rdx, %rcx
+    and $-2139062144, %ecx
+    {disp8} je .Lnvol_memchr3_entry_sse2.L15
+    bsf %ecx, %eax
+    shr $3, %rax
+    lea -4(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L15:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L11:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    movabsq $72340172838076673, %rax
+    imul %rax, %r8
+    mov (%r9), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rdi
+    not %rsi
+    and %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $72340172838076673, %rbp
+    sub %rbp, %rbx
+    not %rsi
+    and %rsi, %rbx
+    or %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rsi
+    not %rax
+    and %rax, %rsi
+    or %rsi, %rdi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rdi
+    {disp8} je .Lnvol_memchr3_entry_sse2.L17
+    bsf %rdi, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L17:
+    cmp $16, %r11
+    {disp32} ja .Lnvol_memchr3_entry_sse2.L19
+    mov -8(%r10), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rcx
+    not %r9
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rdx
+    not %r9
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr3_entry_sse2.L21
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L21:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L19:
+    and $-8, %r9
+    add $8, %r9
+    lea -8(%r10), %r11
+    cmp %r11, %r9
+    {disp8} ja .Lnvol_memchr3_entry_sse2.L24
+.Lnvol_memchr3_entry_sse2.L23:
+    mov (%r9), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rdi
+    not %rsi
+    and %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $72340172838076673, %rbp
+    sub %rbp, %rbx
+    not %rsi
+    and %rsi, %rbx
+    or %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $72340172838076673, %rbx
+    sub %rbx, %rsi
+    not %rax
+    and %rax, %rsi
+    or %rsi, %rdi
+    movabsq $9259542123273814144, %rax
+    and %rax, %rdi
+    {disp32} jne .Lnvol_memchr3_entry_sse2.L26
+.Lnvol_memchr3_entry_sse2.L25:
+    add $8, %r9
+    cmp %r11, %r9
+    {disp8} jbe .Lnvol_memchr3_entry_sse2.L23
+.Lnvol_memchr3_entry_sse2.L24:
+    cmp %r10, %r9
+    {disp8} jae .Lnvol_memchr3_entry_sse2.L27
+    mov -8(%r10), %rax
+    mov %rax, %r9
+    xor %rcx, %r9
+    mov %r9, %rcx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rcx
+    not %r9
+    and %r9, %rcx
+    mov %rax, %r9
+    xor %rdx, %r9
+    mov %r9, %rdx
+    movabsq $72340172838076673, %r11
+    sub %r11, %rdx
+    not %r9
+    and %r9, %rdx
+    or %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $72340172838076673, %r8
+    sub %r8, %rdx
+    not %rax
+    and %rax, %rdx
+    or %rdx, %rcx
+    movabsq $9259542123273814144, %rax
+    and %rax, %rcx
+    {disp8} je .Lnvol_memchr3_entry_sse2.L29
+    bsf %rcx, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L29:
+.Lnvol_memchr3_entry_sse2.L27:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
 .Lnvol_memchr3_entry_sse2.L2:
     imul $16843009, %ecx, %eax
     movd %eax, %xmm0
@@ -4366,22 +7453,20 @@ nvol_memchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr3_entry_sse2.L9
+    {disp8} je .Lnvol_memchr3_entry_sse2.L31
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_sse2.L9:
+    {disp32} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L31:
     and $-16, %r9
     add $16, %r9
     cmp $32, %r11
-    {disp8} jb .Lnvol_memchr3_entry_sse2.L11
+    {disp8} jb .Lnvol_memchr3_entry_sse2.L33
     lea -32(%r10), %rcx
     cmp %rcx, %r9
-    {disp8} ja .Lnvol_memchr3_entry_sse2.L14
-    .byte 102, 15, 31, 68, 0, 0
-.Lnvol_memchr3_entry_sse2.L13:
+    {disp8} ja .Lnvol_memchr3_entry_sse2.L36
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memchr3_entry_sse2.L35:
     movdqa (%r9), %xmm3
     movdqa 16(%r9), %xmm4
     movdqa %xmm3, %xmm5
@@ -4402,18 +7487,18 @@ nvol_memchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr3_entry_sse2.L16
-.Lnvol_memchr3_entry_sse2.L15:
+    {disp32} jne .Lnvol_memchr3_entry_sse2.L38
+.Lnvol_memchr3_entry_sse2.L37:
     add $32, %r9
     cmp %rcx, %r9
-    {disp8} jbe .Lnvol_memchr3_entry_sse2.L13
-.Lnvol_memchr3_entry_sse2.L14:
-.Lnvol_memchr3_entry_sse2.L11:
+    {disp8} jbe .Lnvol_memchr3_entry_sse2.L35
+.Lnvol_memchr3_entry_sse2.L36:
+.Lnvol_memchr3_entry_sse2.L33:
     lea -16(%r10), %rcx
     cmp %rcx, %r9
-    {disp8} ja .Lnvol_memchr3_entry_sse2.L20
+    {disp8} ja .Lnvol_memchr3_entry_sse2.L42
     .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memchr3_entry_sse2.L19:
+.Lnvol_memchr3_entry_sse2.L41:
     movdqu (%r9), %xmm3
     movdqa %xmm3, %xmm4
     pcmpeqb %xmm0, %xmm4
@@ -4424,14 +7509,14 @@ nvol_memchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memchr3_entry_sse2.L22
-.Lnvol_memchr3_entry_sse2.L21:
+    {disp32} jne .Lnvol_memchr3_entry_sse2.L44
+.Lnvol_memchr3_entry_sse2.L43:
     add $16, %r9
     cmp %rcx, %r9
-    {disp8} jbe .Lnvol_memchr3_entry_sse2.L19
-.Lnvol_memchr3_entry_sse2.L20:
+    {disp8} jbe .Lnvol_memchr3_entry_sse2.L41
+.Lnvol_memchr3_entry_sse2.L42:
     cmp %r10, %r9
-    {disp8} jae .Lnvol_memchr3_entry_sse2.L23
+    {disp8} jae .Lnvol_memchr3_entry_sse2.L45
     lea -16(%r10), %r9
     movdqu (%r9), %xmm3
     movdqa %xmm3, %xmm4
@@ -4443,48 +7528,46 @@ nvol_memchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memchr3_entry_sse2.L25
+    {disp8} je .Lnvol_memchr3_entry_sse2.L47
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_sse2.L25:
-.Lnvol_memchr3_entry_sse2.L23:
+    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L47:
+.Lnvol_memchr3_entry_sse2.L45:
     xor %eax, %eax
 .Lnvol_memchr3_entry_sse2.L1:
     movdqu (%rsp), %xmm6
     add $24, %rsp
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
     ret
-.Lnvol_memchr3_entry_sse2.L18:
+.Lnvol_memchr3_entry_sse2.L26:
+    bsf %rdi, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L40:
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_sse2.L16:
+    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L38:
     pmovmskb %xmm5, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memchr3_entry_sse2.L18
-.Lnvol_memchr3_entry_sse2.L17:
+    {disp8} jne .Lnvol_memchr3_entry_sse2.L40
+.Lnvol_memchr3_entry_sse2.L39:
     pmovmskb %xmm3, %eax
     bsf %eax, %eax
     lea 16(%r9,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memchr3_entry_sse2.L22:
+    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
+.Lnvol_memchr3_entry_sse2.L44:
     bsf %eax, %eax
     lea (%r9,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp8} jmp .Lnvol_memchr3_entry_sse2.L1
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memchr3_raw
 .def nvol_memchr3_raw; .scl 2; .type 32; .endef
 nvol_memchr3_raw:
@@ -4560,34 +7643,295 @@ nvol_memchr3:
 .globl nvol_memrchr3_scalar
 .def nvol_memrchr3_scalar; .scl 2; .type 32; .endef
 nvol_memrchr3_scalar:
+.seh_proc nvol_memrchr3_scalar
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+.seh_endprologue
     movzbl %cl, %ecx
     movzbl %dl, %edx
     movzbl %r8b, %r8d
-    mov 40(%rsp), %rax
-    cmp %r9, %rax
-    {disp8} jbe .Lnvol_memrchr3_scalar.L3
+    mov 72(%rsp), %r10
+    mov %r10, %r11
+    sub %r9, %r11
+    cmp $5, %r11
+    {disp8} jae .Lnvol_memrchr3_scalar.L2
+    cmp %r9, %r10
+    {disp8} jbe .Lnvol_memrchr3_scalar.L5
     .byte 15, 31, 64, 0
-.Lnvol_memrchr3_scalar.L2:
-    lea -1(%rax), %rax
-    movzbl (%rax), %r10d
-    cmp %ecx, %r10d
-    {disp8} je .Lnvol_memrchr3_scalar.L6
-    cmp %edx, %r10d
-    {disp8} je .Lnvol_memrchr3_scalar.L6
-    cmp %r8d, %r10d
-    {disp8} jne .Lnvol_memrchr3_scalar.L4
-.Lnvol_memrchr3_scalar.L6:
-.Lnvol_memrchr3_scalar.L5:
-    ret
 .Lnvol_memrchr3_scalar.L4:
-    cmp %r9, %rax
-    {disp8} ja .Lnvol_memrchr3_scalar.L2
-.Lnvol_memrchr3_scalar.L3:
+    lea -1(%r10), %r10
+    movzbl (%r10), %eax
+    cmp %ecx, %eax
+    {disp8} je .Lnvol_memrchr3_scalar.L8
+    cmp %edx, %eax
+    {disp8} je .Lnvol_memrchr3_scalar.L8
+    cmp %r8d, %eax
+    {disp8} jne .Lnvol_memrchr3_scalar.L6
+.Lnvol_memrchr3_scalar.L8:
+.Lnvol_memrchr3_scalar.L7:
+    mov %r10, %rax
+    {disp32} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L6:
+    cmp %r9, %r10
+    {disp8} ja .Lnvol_memrchr3_scalar.L4
+.Lnvol_memrchr3_scalar.L5:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L2:
+    cmp $8, %r11
+    {disp32} jae .Lnvol_memrchr3_scalar.L9
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov $16843009, %eax
+    imul %eax, %r8d
+    mov -4(%r10), %eax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    and $2139062143, %esi
+    add $2139062143, %esi
+    or %r11, %rsi
+    mov %rax, %r11
+    xor %rdx, %r11
+    mov %r11, %rdi
+    and $2139062143, %edi
+    add $2139062143, %edi
+    or %r11, %rdi
+    and %rdi, %rsi
+    xor %r8, %rax
+    mov %rax, %r11
+    and $2139062143, %r11d
+    add $2139062143, %r11d
+    or %rax, %r11
+    and %r11, %rsi
+    or $2139062143, %esi
+    not %esi
+    test %esi, %esi
+    {disp8} je .Lnvol_memrchr3_scalar.L11
+    bsr %esi, %eax
+    shr $3, %rax
+    lea -4(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L11:
+    mov (%r9), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %rax, %rdx
+    and %rdx, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr3_scalar.L13
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L13:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L9:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    movabsq $72340172838076673, %rax
+    imul %rax, %r8
+    mov -8(%r10), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rdi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rdi
+    or %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $9187201950435737471, %rbp
+    and %rbp, %rbx
+    movabsq $9187201950435737471, %rbp
+    add %rbp, %rbx
+    or %rsi, %rbx
+    and %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rsi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rsi
+    or %rax, %rsi
+    and %rsi, %rdi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rdi
+    not %rdi
+    test %rdi, %rdi
+    {disp8} je .Lnvol_memrchr3_scalar.L15
+    bsr %rdi, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L15:
+    cmp $16, %r11
+    {disp32} ja .Lnvol_memrchr3_scalar.L17
+    mov (%r9), %rax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rcx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rcx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rdx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rdx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rdx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr3_scalar.L19
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L19:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L17:
+    and $-8, %r10
+    lea 8(%r9), %r11
+    cmp %r11, %r10
+    {disp32} jb .Lnvol_memrchr3_scalar.L22
+    .byte 15, 31, 0
+.Lnvol_memrchr3_scalar.L21:
+    lea -8(%r10), %r10
+    mov (%r10), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rdi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rdi
+    or %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $9187201950435737471, %rbp
+    and %rbp, %rbx
+    movabsq $9187201950435737471, %rbp
+    add %rbp, %rbx
+    or %rsi, %rbx
+    and %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rsi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rsi
+    or %rax, %rsi
+    and %rsi, %rdi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rdi
+    not %rdi
+    test %rdi, %rdi
+    {disp32} jne .Lnvol_memrchr3_scalar.L24
+.Lnvol_memrchr3_scalar.L23:
+    cmp %r11, %r10
+    {disp32} jae .Lnvol_memrchr3_scalar.L21
+.Lnvol_memrchr3_scalar.L22:
+    cmp %r9, %r10
+    {disp32} jbe .Lnvol_memrchr3_scalar.L25
+    mov (%r9), %rax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rcx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rcx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rdx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rdx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rdx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr3_scalar.L27
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp8} jmp .Lnvol_memrchr3_scalar.L1
+.Lnvol_memrchr3_scalar.L27:
+.Lnvol_memrchr3_scalar.L25:
     xor %eax, %eax
 .Lnvol_memrchr3_scalar.L1:
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
     ret
+.Lnvol_memrchr3_scalar.L24:
+    bsr %rdi, %rax
+    shr $3, %rax
+    lea (%r10,%rax), %rax
+    {disp8} jmp .Lnvol_memrchr3_scalar.L1
+.seh_endproc
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr3_sse2
 .def nvol_memrchr3_sse2; .scl 2; .type 32; .endef
 nvol_memrchr3_sse2:
@@ -4971,6 +8315,14 @@ nvol_memrchr3_avx2:
 .def nvol_memrchr3_entry_avx2; .scl 2; .type 32; .endef
 nvol_memrchr3_entry_avx2:
 .seh_proc nvol_memrchr3_entry_avx2
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
     sub $24, %rsp
 .seh_stackalloc 24
     vmovdqu %xmm6, (%rsp)
@@ -4979,42 +8331,274 @@ nvol_memrchr3_entry_avx2:
     movzbl %cl, %ecx
     movzbl %dl, %edx
     movzbl %r8b, %r8d
-    mov 64(%rsp), %r10
+    mov 96(%rsp), %r10
     mov %r10, %r11
     sub %r9, %r11
     cmp $16, %r11
-    {disp8} jae .Lnvol_memrchr3_entry_avx2.L2
+    {disp32} jae .Lnvol_memrchr3_entry_avx2.L2
+    cmp $5, %r11
+    {disp8} jae .Lnvol_memrchr3_entry_avx2.L4
     cmp %r9, %r10
-    {disp8} jbe .Lnvol_memrchr3_entry_avx2.L5
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr3_entry_avx2.L4:
+    {disp8} jbe .Lnvol_memrchr3_entry_avx2.L7
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memrchr3_entry_avx2.L6:
     lea -1(%r10), %r10
     movzbl (%r10), %eax
     cmp %ecx, %eax
-    {disp8} je .Lnvol_memrchr3_entry_avx2.L8
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L10
     cmp %edx, %eax
-    {disp8} je .Lnvol_memrchr3_entry_avx2.L8
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L10
     cmp %r8d, %eax
-    {disp8} jne .Lnvol_memrchr3_entry_avx2.L6
-.Lnvol_memrchr3_entry_avx2.L8:
-.Lnvol_memrchr3_entry_avx2.L7:
+    {disp8} jne .Lnvol_memrchr3_entry_avx2.L8
+.Lnvol_memrchr3_entry_avx2.L10:
+.Lnvol_memrchr3_entry_avx2.L9:
     mov %r10, %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L6:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L8:
     cmp %r9, %r10
-    {disp8} ja .Lnvol_memrchr3_entry_avx2.L4
-.Lnvol_memrchr3_entry_avx2.L5:
+    {disp8} ja .Lnvol_memrchr3_entry_avx2.L6
+.Lnvol_memrchr3_entry_avx2.L7:
     xor %eax, %eax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L4:
+    cmp $8, %r11
+    {disp32} jae .Lnvol_memrchr3_entry_avx2.L11
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov $16843009, %eax
+    imul %eax, %r8d
+    mov -4(%r10), %eax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    and $2139062143, %esi
+    add $2139062143, %esi
+    or %r11, %rsi
+    mov %rax, %r11
+    xor %rdx, %r11
+    mov %r11, %rdi
+    and $2139062143, %edi
+    add $2139062143, %edi
+    or %r11, %rdi
+    and %rdi, %rsi
+    xor %r8, %rax
+    mov %rax, %r11
+    and $2139062143, %r11d
+    add $2139062143, %r11d
+    or %rax, %r11
+    and %r11, %rsi
+    or $2139062143, %esi
+    not %esi
+    test %esi, %esi
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L13
+    bsr %esi, %eax
+    shr $3, %rax
+    lea -4(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L13:
+    mov (%r9), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %rax, %rdx
+    and %rdx, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L15
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L15:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L11:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    movabsq $72340172838076673, %rax
+    imul %rax, %r8
+    mov -8(%r10), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rdi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rdi
+    or %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $9187201950435737471, %rbp
+    and %rbp, %rbx
+    movabsq $9187201950435737471, %rbp
+    add %rbp, %rbx
+    or %rsi, %rbx
+    and %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rsi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rsi
+    or %rax, %rsi
+    and %rsi, %rdi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rdi
+    not %rdi
+    test %rdi, %rdi
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L17
+    bsr %rdi, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L17:
+    cmp $16, %r11
+    {disp32} ja .Lnvol_memrchr3_entry_avx2.L19
+    mov (%r9), %rax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rcx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rcx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rdx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rdx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rdx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L21
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L21:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L19:
+    and $-8, %r10
+    lea 8(%r9), %r11
+    cmp %r11, %r10
+    {disp32} jb .Lnvol_memrchr3_entry_avx2.L24
+    .byte 15, 31, 0
+.Lnvol_memrchr3_entry_avx2.L23:
+    lea -8(%r10), %r10
+    mov (%r10), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rdi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rdi
+    or %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $9187201950435737471, %rbp
+    and %rbp, %rbx
+    movabsq $9187201950435737471, %rbp
+    add %rbp, %rbx
+    or %rsi, %rbx
+    and %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rsi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rsi
+    or %rax, %rsi
+    and %rsi, %rdi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rdi
+    not %rdi
+    test %rdi, %rdi
+    {disp32} jne .Lnvol_memrchr3_entry_avx2.L26
+.Lnvol_memrchr3_entry_avx2.L25:
+    cmp %r11, %r10
+    {disp32} jae .Lnvol_memrchr3_entry_avx2.L23
+.Lnvol_memrchr3_entry_avx2.L24:
+    cmp %r9, %r10
+    {disp32} jbe .Lnvol_memrchr3_entry_avx2.L27
+    mov (%r9), %rax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rcx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rcx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rdx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rdx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rdx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L29
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L29:
+.Lnvol_memrchr3_entry_avx2.L27:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
 .Lnvol_memrchr3_entry_avx2.L2:
     cmp $32, %r11
-    {disp32} jae .Lnvol_memrchr3_entry_avx2.L9
+    {disp32} jae .Lnvol_memrchr3_entry_avx2.L31
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %xmm0
     vmovd %edx, %xmm1
@@ -5029,26 +8613,22 @@ nvol_memrchr3_entry_avx2:
     vpor %xmm3, %xmm4, %xmm3
     vpmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_avx2.L11
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L33
     bsr %eax, %eax
     lea -16(%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L11:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L33:
     and $-16, %r10
     cmp $32, %r11
-    {disp8} jb .Lnvol_memrchr3_entry_avx2.L13
+    {disp8} jb .Lnvol_memrchr3_entry_avx2.L35
     lea 32(%r9), %rcx
     cmp $512, %r11
-    {disp32} jae .Lnvol_memrchr3_entry_avx2.L18
-.Lnvol_memrchr3_entry_avx2.L15:
+    {disp32} jae .Lnvol_memrchr3_entry_avx2.L40
+.Lnvol_memrchr3_entry_avx2.L37:
     cmp %rcx, %r10
-    {disp8} jb .Lnvol_memrchr3_entry_avx2.L22
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
-.Lnvol_memrchr3_entry_avx2.L21:
+    {disp8} jb .Lnvol_memrchr3_entry_avx2.L44
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_memrchr3_entry_avx2.L43:
     lea -32(%r10), %r10
     vmovdqa (%r10), %xmm3
     vmovdqa 16(%r10), %xmm4
@@ -5065,17 +8645,17 @@ nvol_memrchr3_entry_avx2:
     vpor %xmm4, %xmm3, %xmm5
     vpmovmskb %xmm5, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr3_entry_avx2.L24
-.Lnvol_memrchr3_entry_avx2.L23:
+    {disp32} jne .Lnvol_memrchr3_entry_avx2.L46
+.Lnvol_memrchr3_entry_avx2.L45:
     cmp %rcx, %r10
-    {disp8} jae .Lnvol_memrchr3_entry_avx2.L21
-.Lnvol_memrchr3_entry_avx2.L22:
-.Lnvol_memrchr3_entry_avx2.L13:
+    {disp8} jae .Lnvol_memrchr3_entry_avx2.L43
+.Lnvol_memrchr3_entry_avx2.L44:
+.Lnvol_memrchr3_entry_avx2.L35:
     lea 16(%r9), %rcx
     cmp %rcx, %r10
-    {disp8} jb .Lnvol_memrchr3_entry_avx2.L28
+    {disp8} jb .Lnvol_memrchr3_entry_avx2.L50
     .byte 15, 31, 0
-.Lnvol_memrchr3_entry_avx2.L27:
+.Lnvol_memrchr3_entry_avx2.L49:
     lea -16(%r10), %r10
     vmovdqu (%r10), %xmm3
     vpcmpeqb %xmm0, %xmm3, %xmm4
@@ -5085,13 +8665,13 @@ nvol_memrchr3_entry_avx2:
     vpor %xmm3, %xmm4, %xmm3
     vpmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr3_entry_avx2.L30
-.Lnvol_memrchr3_entry_avx2.L29:
+    {disp32} jne .Lnvol_memrchr3_entry_avx2.L52
+.Lnvol_memrchr3_entry_avx2.L51:
     cmp %rcx, %r10
-    {disp8} jae .Lnvol_memrchr3_entry_avx2.L27
-.Lnvol_memrchr3_entry_avx2.L28:
+    {disp8} jae .Lnvol_memrchr3_entry_avx2.L49
+.Lnvol_memrchr3_entry_avx2.L50:
     cmp %r9, %r10
-    {disp8} jbe .Lnvol_memrchr3_entry_avx2.L31
+    {disp8} jbe .Lnvol_memrchr3_entry_avx2.L53
     vmovdqu (%r9), %xmm3
     vpcmpeqb %xmm0, %xmm3, %xmm0
     vpcmpeqb %xmm1, %xmm3, %xmm1
@@ -5100,21 +8680,15 @@ nvol_memrchr3_entry_avx2:
     vpor %xmm1, %xmm0, %xmm0
     vpmovmskb %xmm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_avx2.L33
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L55
     bsr %eax, %eax
     lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L33:
-.Lnvol_memrchr3_entry_avx2.L31:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L55:
+.Lnvol_memrchr3_entry_avx2.L53:
     xor %eax, %eax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L9:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L31:
     vmovd %ecx, %xmm0
     vpbroadcastb %xmm0, %ymm0
     vmovd %edx, %xmm1
@@ -5129,25 +8703,22 @@ nvol_memrchr3_entry_avx2:
     vpor %ymm3, %ymm4, %ymm3
     vpmovmskb %ymm3, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_avx2.L35
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L57
     bsr %eax, %eax
     lea -32(%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L35:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L57:
     and $-32, %r10
     cmp $64, %r11
-    {disp8} jb .Lnvol_memrchr3_entry_avx2.L37
+    {disp8} jb .Lnvol_memrchr3_entry_avx2.L59
     lea 64(%r9), %rcx
     cmp $2048, %r11
-    {disp32} jae .Lnvol_memrchr3_entry_avx2.L42
-.Lnvol_memrchr3_entry_avx2.L39:
+    {disp32} jae .Lnvol_memrchr3_entry_avx2.L64
+.Lnvol_memrchr3_entry_avx2.L61:
     cmp %rcx, %r10
-    {disp8} jb .Lnvol_memrchr3_entry_avx2.L46
+    {disp8} jb .Lnvol_memrchr3_entry_avx2.L68
     .byte 102, 15, 31, 68, 0, 0
-.Lnvol_memrchr3_entry_avx2.L45:
+.Lnvol_memrchr3_entry_avx2.L67:
     lea -64(%r10), %r10
     vmovdqa (%r10), %ymm3
     vmovdqa 32(%r10), %ymm4
@@ -5164,17 +8735,17 @@ nvol_memrchr3_entry_avx2:
     vpor %ymm4, %ymm3, %ymm5
     vpmovmskb %ymm5, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr3_entry_avx2.L48
-.Lnvol_memrchr3_entry_avx2.L47:
+    {disp32} jne .Lnvol_memrchr3_entry_avx2.L70
+.Lnvol_memrchr3_entry_avx2.L69:
     cmp %rcx, %r10
-    {disp8} jae .Lnvol_memrchr3_entry_avx2.L45
-.Lnvol_memrchr3_entry_avx2.L46:
-.Lnvol_memrchr3_entry_avx2.L37:
+    {disp8} jae .Lnvol_memrchr3_entry_avx2.L67
+.Lnvol_memrchr3_entry_avx2.L68:
+.Lnvol_memrchr3_entry_avx2.L59:
     lea 32(%r9), %rcx
     cmp %rcx, %r10
-    {disp8} jb .Lnvol_memrchr3_entry_avx2.L52
+    {disp8} jb .Lnvol_memrchr3_entry_avx2.L74
     .byte 15, 31, 0
-.Lnvol_memrchr3_entry_avx2.L51:
+.Lnvol_memrchr3_entry_avx2.L73:
     lea -32(%r10), %r10
     vmovdqu (%r10), %ymm3
     vpcmpeqb %ymm0, %ymm3, %ymm4
@@ -5184,13 +8755,13 @@ nvol_memrchr3_entry_avx2:
     vpor %ymm3, %ymm4, %ymm3
     vpmovmskb %ymm3, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr3_entry_avx2.L54
-.Lnvol_memrchr3_entry_avx2.L53:
+    {disp32} jne .Lnvol_memrchr3_entry_avx2.L76
+.Lnvol_memrchr3_entry_avx2.L75:
     cmp %rcx, %r10
-    {disp8} jae .Lnvol_memrchr3_entry_avx2.L51
-.Lnvol_memrchr3_entry_avx2.L52:
+    {disp8} jae .Lnvol_memrchr3_entry_avx2.L73
+.Lnvol_memrchr3_entry_avx2.L74:
     cmp %r9, %r10
-    {disp8} jbe .Lnvol_memrchr3_entry_avx2.L55
+    {disp8} jbe .Lnvol_memrchr3_entry_avx2.L77
     vmovdqu (%r9), %ymm3
     vpcmpeqb %ymm0, %ymm3, %ymm0
     vpcmpeqb %ymm1, %ymm3, %ymm1
@@ -5199,33 +8770,35 @@ nvol_memrchr3_entry_avx2:
     vpor %ymm1, %ymm0, %ymm0
     vpmovmskb %ymm0, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_avx2.L57
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L79
     bsr %eax, %eax
     lea (%r9,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L57:
-.Lnvol_memrchr3_entry_avx2.L55:
+    {disp8} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L79:
+.Lnvol_memrchr3_entry_avx2.L77:
     xor %eax, %eax
 .Lnvol_memrchr3_entry_avx2.L1:
     vzeroupper
     vmovdqu (%rsp), %xmm6
     add $24, %rsp
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
     ret
-.Lnvol_memrchr3_entry_avx2.L20:
+.Lnvol_memrchr3_entry_avx2.L26:
+    bsr %rdi, %rax
+    shr $3, %rax
+    lea (%r10,%rax), %rax
+    {disp8} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L42:
     bsr %eax, %eax
     lea 16(%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L18:
-    .byte 15, 31, 64, 0
-.Lnvol_memrchr3_entry_avx2.L16:
+    {disp8} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L40:
+.Lnvol_memrchr3_entry_avx2.L38:
     cmp %rcx, %r10
-    {disp32} jb .Lnvol_memrchr3_entry_avx2.L15
+    {disp32} jb .Lnvol_memrchr3_entry_avx2.L37
     lea -32(%r10), %r10
     vmovdqa (%r10), %xmm3
     vmovdqa 16(%r10), %xmm4
@@ -5242,57 +8815,42 @@ nvol_memrchr3_entry_avx2:
     vpor %xmm4, %xmm3, %xmm5
     vpmovmskb %xmm5, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_avx2.L16
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L38
     vpmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr3_entry_avx2.L20
-.Lnvol_memrchr3_entry_avx2.L19:
+    {disp8} jne .Lnvol_memrchr3_entry_avx2.L42
+.Lnvol_memrchr3_entry_avx2.L41:
     vpmovmskb %xmm3, %eax
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L15
-.Lnvol_memrchr3_entry_avx2.L26:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L37
+.Lnvol_memrchr3_entry_avx2.L48:
     bsr %eax, %eax
     lea 16(%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L24:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L46:
     vpmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr3_entry_avx2.L26
-.Lnvol_memrchr3_entry_avx2.L25:
+    {disp8} jne .Lnvol_memrchr3_entry_avx2.L48
+.Lnvol_memrchr3_entry_avx2.L47:
     vpmovmskb %xmm3, %eax
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L30:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L52:
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L44:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L66:
     bsr %eax, %eax
     lea 32(%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L42:
-    .byte 144
-.Lnvol_memrchr3_entry_avx2.L40:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L64:
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memrchr3_entry_avx2.L62:
     cmp %rcx, %r10
-    {disp32} jb .Lnvol_memrchr3_entry_avx2.L39
+    {disp32} jb .Lnvol_memrchr3_entry_avx2.L61
     lea -64(%r10), %r10
     vmovdqa (%r10), %ymm3
     vmovdqa 32(%r10), %ymm4
@@ -5309,54 +8867,52 @@ nvol_memrchr3_entry_avx2:
     vpor %ymm4, %ymm3, %ymm5
     vpmovmskb %ymm5, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_avx2.L40
+    {disp8} je .Lnvol_memrchr3_entry_avx2.L62
     vpmovmskb %ymm4, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr3_entry_avx2.L44
-.Lnvol_memrchr3_entry_avx2.L43:
+    {disp8} jne .Lnvol_memrchr3_entry_avx2.L66
+.Lnvol_memrchr3_entry_avx2.L65:
     vpmovmskb %ymm3, %eax
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L39
-.Lnvol_memrchr3_entry_avx2.L50:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L61
+.Lnvol_memrchr3_entry_avx2.L72:
     bsr %eax, %eax
     lea 32(%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L48:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L70:
     vpmovmskb %ymm4, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr3_entry_avx2.L50
-.Lnvol_memrchr3_entry_avx2.L49:
+    {disp8} jne .Lnvol_memrchr3_entry_avx2.L72
+.Lnvol_memrchr3_entry_avx2.L71:
     vpmovmskb %ymm3, %eax
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_avx2.L54:
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
+.Lnvol_memrchr3_entry_avx2.L76:
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    vzeroupper
-    vmovdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp32} jmp .Lnvol_memrchr3_entry_avx2.L1
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_memrchr3_entry_sse2
 .def nvol_memrchr3_entry_sse2; .scl 2; .type 32; .endef
 nvol_memrchr3_entry_sse2:
 .seh_proc nvol_memrchr3_entry_sse2
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
     sub $24, %rsp
 .seh_stackalloc 24
     movdqu %xmm6, (%rsp)
@@ -5365,37 +8921,271 @@ nvol_memrchr3_entry_sse2:
     movzbl %cl, %ecx
     movzbl %dl, %edx
     movzbl %r8b, %r8d
-    mov 64(%rsp), %r10
+    mov 96(%rsp), %r10
     mov %r10, %r11
     sub %r9, %r11
     cmp $16, %r11
-    {disp8} jae .Lnvol_memrchr3_entry_sse2.L2
+    {disp32} jae .Lnvol_memrchr3_entry_sse2.L2
+    cmp $5, %r11
+    {disp8} jae .Lnvol_memrchr3_entry_sse2.L4
     cmp %r9, %r10
-    {disp8} jbe .Lnvol_memrchr3_entry_sse2.L5
-    .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr3_entry_sse2.L4:
+    {disp8} jbe .Lnvol_memrchr3_entry_sse2.L7
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_memrchr3_entry_sse2.L6:
     lea -1(%r10), %r10
     movzbl (%r10), %eax
     cmp %ecx, %eax
-    {disp8} je .Lnvol_memrchr3_entry_sse2.L8
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L10
     cmp %edx, %eax
-    {disp8} je .Lnvol_memrchr3_entry_sse2.L8
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L10
     cmp %r8d, %eax
-    {disp8} jne .Lnvol_memrchr3_entry_sse2.L6
-.Lnvol_memrchr3_entry_sse2.L8:
-.Lnvol_memrchr3_entry_sse2.L7:
+    {disp8} jne .Lnvol_memrchr3_entry_sse2.L8
+.Lnvol_memrchr3_entry_sse2.L10:
+.Lnvol_memrchr3_entry_sse2.L9:
     mov %r10, %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_sse2.L6:
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L8:
     cmp %r9, %r10
-    {disp8} ja .Lnvol_memrchr3_entry_sse2.L4
-.Lnvol_memrchr3_entry_sse2.L5:
+    {disp8} ja .Lnvol_memrchr3_entry_sse2.L6
+.Lnvol_memrchr3_entry_sse2.L7:
     xor %eax, %eax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L4:
+    cmp $8, %r11
+    {disp32} jae .Lnvol_memrchr3_entry_sse2.L11
+    mov $16843009, %eax
+    imul %eax, %ecx
+    mov $16843009, %eax
+    imul %eax, %edx
+    mov $16843009, %eax
+    imul %eax, %r8d
+    mov -4(%r10), %eax
+    mov %rax, %r11
+    xor %rcx, %r11
+    mov %r11, %rsi
+    and $2139062143, %esi
+    add $2139062143, %esi
+    or %r11, %rsi
+    mov %rax, %r11
+    xor %rdx, %r11
+    mov %r11, %rdi
+    and $2139062143, %edi
+    add $2139062143, %edi
+    or %r11, %rdi
+    and %rdi, %rsi
+    xor %r8, %rax
+    mov %rax, %r11
+    and $2139062143, %r11d
+    add $2139062143, %r11d
+    or %rax, %r11
+    and %r11, %rsi
+    or $2139062143, %esi
+    not %esi
+    test %esi, %esi
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L13
+    bsr %esi, %eax
+    shr $3, %rax
+    lea -4(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L13:
+    mov (%r9), %eax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    and $2139062143, %ecx
+    add $2139062143, %ecx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    and $2139062143, %edx
+    add $2139062143, %edx
+    or %rax, %rdx
+    and %rdx, %rcx
+    or $2139062143, %ecx
+    not %ecx
+    test %ecx, %ecx
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L15
+    bsr %ecx, %eax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L15:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L11:
+    movabsq $72340172838076673, %rax
+    imul %rax, %rcx
+    movabsq $72340172838076673, %rax
+    imul %rax, %rdx
+    movabsq $72340172838076673, %rax
+    imul %rax, %r8
+    mov -8(%r10), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rdi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rdi
+    or %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $9187201950435737471, %rbp
+    and %rbp, %rbx
+    movabsq $9187201950435737471, %rbp
+    add %rbp, %rbx
+    or %rsi, %rbx
+    and %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rsi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rsi
+    or %rax, %rsi
+    and %rsi, %rdi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rdi
+    not %rdi
+    test %rdi, %rdi
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L17
+    bsr %rdi, %rax
+    shr $3, %rax
+    lea -8(%r10,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L17:
+    cmp $16, %r11
+    {disp32} ja .Lnvol_memrchr3_entry_sse2.L19
+    mov (%r9), %rax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rcx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rcx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rdx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rdx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rdx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L21
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L21:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L19:
+    and $-8, %r10
+    lea 8(%r9), %r11
+    cmp %r11, %r10
+    {disp32} jb .Lnvol_memrchr3_entry_sse2.L24
+    .byte 15, 31, 0
+.Lnvol_memrchr3_entry_sse2.L23:
+    lea -8(%r10), %r10
+    mov (%r10), %rax
+    mov %rax, %rsi
+    xor %rcx, %rsi
+    mov %rsi, %rdi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rdi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rdi
+    or %rsi, %rdi
+    mov %rax, %rsi
+    xor %rdx, %rsi
+    mov %rsi, %rbx
+    movabsq $9187201950435737471, %rbp
+    and %rbp, %rbx
+    movabsq $9187201950435737471, %rbp
+    add %rbp, %rbx
+    or %rsi, %rbx
+    and %rbx, %rdi
+    xor %r8, %rax
+    mov %rax, %rsi
+    movabsq $9187201950435737471, %rbx
+    and %rbx, %rsi
+    movabsq $9187201950435737471, %rbx
+    add %rbx, %rsi
+    or %rax, %rsi
+    and %rsi, %rdi
+    movabsq $9187201950435737471, %rax
+    or %rax, %rdi
+    not %rdi
+    test %rdi, %rdi
+    {disp32} jne .Lnvol_memrchr3_entry_sse2.L26
+.Lnvol_memrchr3_entry_sse2.L25:
+    cmp %r11, %r10
+    {disp32} jae .Lnvol_memrchr3_entry_sse2.L23
+.Lnvol_memrchr3_entry_sse2.L24:
+    cmp %r9, %r10
+    {disp32} jbe .Lnvol_memrchr3_entry_sse2.L27
+    mov (%r9), %rax
+    mov %rax, %r10
+    xor %rcx, %r10
+    mov %r10, %rcx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rcx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rcx
+    or %r10, %rcx
+    mov %rax, %r10
+    xor %rdx, %r10
+    mov %r10, %rdx
+    movabsq $9187201950435737471, %r11
+    and %r11, %rdx
+    movabsq $9187201950435737471, %r11
+    add %r11, %rdx
+    or %r10, %rdx
+    and %rdx, %rcx
+    xor %r8, %rax
+    mov %rax, %rdx
+    movabsq $9187201950435737471, %r8
+    and %r8, %rdx
+    movabsq $9187201950435737471, %r8
+    add %r8, %rdx
+    or %rax, %rdx
+    and %rdx, %rcx
+    movabsq $9187201950435737471, %rax
+    or %rax, %rcx
+    not %rcx
+    test %rcx, %rcx
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L29
+    bsr %rcx, %rax
+    shr $3, %rax
+    lea (%r9,%rax), %rax
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L29:
+.Lnvol_memrchr3_entry_sse2.L27:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
 .Lnvol_memrchr3_entry_sse2.L2:
     imul $16843009, %ecx, %eax
     movd %eax, %xmm0
@@ -5416,24 +9206,22 @@ nvol_memrchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_sse2.L9
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L31
     bsr %eax, %eax
     lea -16(%r10,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_sse2.L9:
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L31:
     and $-16, %r10
     cmp $32, %r11
-    {disp8} jb .Lnvol_memrchr3_entry_sse2.L11
+    {disp8} jb .Lnvol_memrchr3_entry_sse2.L33
     lea 32(%r9), %rcx
     cmp $512, %r11
-    {disp32} jae .Lnvol_memrchr3_entry_sse2.L16
-.Lnvol_memrchr3_entry_sse2.L13:
+    {disp32} jae .Lnvol_memrchr3_entry_sse2.L38
+.Lnvol_memrchr3_entry_sse2.L35:
     cmp %rcx, %r10
-    {disp8} jb .Lnvol_memrchr3_entry_sse2.L20
-    .byte 15, 31, 0
-.Lnvol_memrchr3_entry_sse2.L19:
+    {disp8} jb .Lnvol_memrchr3_entry_sse2.L42
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_memrchr3_entry_sse2.L41:
     lea -32(%r10), %r10
     movdqa (%r10), %xmm3
     movdqa 16(%r10), %xmm4
@@ -5455,17 +9243,17 @@ nvol_memrchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr3_entry_sse2.L22
-.Lnvol_memrchr3_entry_sse2.L21:
+    {disp32} jne .Lnvol_memrchr3_entry_sse2.L44
+.Lnvol_memrchr3_entry_sse2.L43:
     cmp %rcx, %r10
-    {disp8} jae .Lnvol_memrchr3_entry_sse2.L19
-.Lnvol_memrchr3_entry_sse2.L20:
-.Lnvol_memrchr3_entry_sse2.L11:
+    {disp8} jae .Lnvol_memrchr3_entry_sse2.L41
+.Lnvol_memrchr3_entry_sse2.L42:
+.Lnvol_memrchr3_entry_sse2.L33:
     lea 16(%r9), %rcx
     cmp %rcx, %r10
-    {disp8} jb .Lnvol_memrchr3_entry_sse2.L26
+    {disp8} jb .Lnvol_memrchr3_entry_sse2.L48
     .byte 15, 31, 128, 0, 0, 0, 0
-.Lnvol_memrchr3_entry_sse2.L25:
+.Lnvol_memrchr3_entry_sse2.L47:
     lea -16(%r10), %r10
     movdqu (%r10), %xmm3
     movdqa %xmm3, %xmm4
@@ -5477,13 +9265,13 @@ nvol_memrchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp32} jne .Lnvol_memrchr3_entry_sse2.L28
-.Lnvol_memrchr3_entry_sse2.L27:
+    {disp32} jne .Lnvol_memrchr3_entry_sse2.L50
+.Lnvol_memrchr3_entry_sse2.L49:
     cmp %rcx, %r10
-    {disp8} jae .Lnvol_memrchr3_entry_sse2.L25
-.Lnvol_memrchr3_entry_sse2.L26:
+    {disp8} jae .Lnvol_memrchr3_entry_sse2.L47
+.Lnvol_memrchr3_entry_sse2.L48:
     cmp %r9, %r10
-    {disp8} jbe .Lnvol_memrchr3_entry_sse2.L29
+    {disp8} jbe .Lnvol_memrchr3_entry_sse2.L51
     movdqu (%r9), %xmm3
     movdqa %xmm3, %xmm4
     pcmpeqb %xmm0, %xmm4
@@ -5494,30 +9282,35 @@ nvol_memrchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_sse2.L31
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L53
     bsr %eax, %eax
     lea (%r9,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_sse2.L31:
-.Lnvol_memrchr3_entry_sse2.L29:
+    {disp8} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L53:
+.Lnvol_memrchr3_entry_sse2.L51:
     xor %eax, %eax
 .Lnvol_memrchr3_entry_sse2.L1:
     movdqu (%rsp), %xmm6
     add $24, %rsp
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
     ret
-.Lnvol_memrchr3_entry_sse2.L18:
+.Lnvol_memrchr3_entry_sse2.L26:
+    bsr %rdi, %rax
+    shr $3, %rax
+    lea (%r10,%rax), %rax
+    {disp8} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L40:
     bsr %eax, %eax
     lea 16(%r10,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_sse2.L16:
-    .byte 15, 31, 68, 0, 0
-.Lnvol_memrchr3_entry_sse2.L14:
+    {disp8} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L38:
+    .byte 15, 31, 0
+.Lnvol_memrchr3_entry_sse2.L36:
     cmp %rcx, %r10
-    {disp32} jb .Lnvol_memrchr3_entry_sse2.L13
+    {disp32} jb .Lnvol_memrchr3_entry_sse2.L35
     lea -32(%r10), %r10
     movdqa (%r10), %xmm3
     movdqa 16(%r10), %xmm4
@@ -5539,44 +9332,42 @@ nvol_memrchr3_entry_sse2:
     por %xmm3, %xmm4
     pmovmskb %xmm4, %eax
     test %eax, %eax
-    {disp8} je .Lnvol_memrchr3_entry_sse2.L14
+    {disp8} je .Lnvol_memrchr3_entry_sse2.L36
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr3_entry_sse2.L18
-.Lnvol_memrchr3_entry_sse2.L17:
+    {disp8} jne .Lnvol_memrchr3_entry_sse2.L40
+.Lnvol_memrchr3_entry_sse2.L39:
     pmovmskb %xmm5, %eax
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L13
-.Lnvol_memrchr3_entry_sse2.L24:
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L35
+.Lnvol_memrchr3_entry_sse2.L46:
     bsr %eax, %eax
     lea 16(%r10,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_sse2.L22:
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L44:
     pmovmskb %xmm3, %eax
     test %eax, %eax
-    {disp8} jne .Lnvol_memrchr3_entry_sse2.L24
-.Lnvol_memrchr3_entry_sse2.L23:
+    {disp8} jne .Lnvol_memrchr3_entry_sse2.L46
+.Lnvol_memrchr3_entry_sse2.L45:
     pmovmskb %xmm5, %eax
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
-.Lnvol_memrchr3_entry_sse2.L28:
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
+.Lnvol_memrchr3_entry_sse2.L50:
     bsr %eax, %eax
     lea (%r10,%rax), %rax
-    movdqu (%rsp), %xmm6
-    add $24, %rsp
-    ret
+    {disp32} jmp .Lnvol_memrchr3_entry_sse2.L1
 .seh_endproc
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr3_raw
 .def nvol_memrchr3_raw; .scl 2; .type 32; .endef
 nvol_memrchr3_raw:
