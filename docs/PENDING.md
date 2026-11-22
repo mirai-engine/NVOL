@@ -230,9 +230,11 @@ The detail is in "Done".
       `harness/asm/build_msvc.py`: it reads the section and passes the exports to `link.exe`
       in a `.def`. Confirmed by patching the flag to `0x100a00`, which is what NASM and ml64
       write: with that, `link.exe` exports them (item 12).
-22. **C and C++** against the asm, with GCC, Clang and MSVC, including the full suite with
-    Clang (2.5) and with MSVC (2.4). *(In progress.)* ~~The suites~~ (done 2026-11-22, see Done);
-    the open parity rows P5-P7 of `docs/PARITY.md` remain.
+22. ~~**C and C++** against the asm, with GCC, Clang and MSVC, including the full suite with
+    Clang (2.5) and with MSVC (2.4)~~ **(closed 2026-11-22).** The suites run in `verify.sh`
+    (`c-clang`, `c-msvc`). Every C/C++ row of `docs/PARITY.md` has its cause: P1 and P5 fixed
+    in the generator, P2-P3 and P6-P8 accepted with the reason, P4 (the same instructions, more
+    cycles) goes on with item 25.
 23. **Rust** against the asm (`#[target_feature]`, `#[inline(always)]`, LTO).
 24. **Odin** against the asm (LLVM without `inbounds`: 2.1b).
 

@@ -221,7 +221,7 @@ NVOL_INLINE const uint8_t * nvol_memchr_neon(uint8_t n1, const uint8_t *start, c
     if (mask != UINT64_C(0)) {
         return (start + ((size_t)(nvol_ctz64(mask) >> 2)));
     }
-    const uint8_t *cur = (start + (((size_t)16u) - (((size_t)(uintptr_t)(start)) & ((size_t)15u))));
+    const uint8_t *cur = ((const uint8_t *)(((uintptr_t)(start) | (uintptr_t)15u) + 1u));
     if (len_ >= ((size_t)64u)) {
         while (cur <= (end - ((size_t)64u))) {
             const uint8x16_t ld = vld1q_u8(cur);
@@ -309,7 +309,7 @@ NVOL_INLINE const uint8_t * nvol_memrchr_neon(uint8_t n1, const uint8_t *start, 
     if (mask != UINT64_C(0)) {
         return ((end - ((size_t)16u)) + ((size_t)((63u - nvol_clz64(mask)) >> 2)));
     }
-    const uint8_t *cur = (end - (((size_t)(uintptr_t)(end)) & ((size_t)15u)));
+    const uint8_t *cur = ((const uint8_t *)((uintptr_t)(end) & ~(uintptr_t)15u));
     if (len_ >= ((size_t)64u)) {
         while (cur >= (start + ((size_t)64u))) {
             cur = (cur - ((size_t)64u));
@@ -397,7 +397,7 @@ NVOL_INLINE const uint8_t * nvol_memchr2_neon(uint8_t n1, uint8_t n2, const uint
     if (mask != UINT64_C(0)) {
         return (start + ((size_t)(nvol_ctz64(mask) >> 2)));
     }
-    const uint8_t *cur = (start + (((size_t)16u) - (((size_t)(uintptr_t)(start)) & ((size_t)15u))));
+    const uint8_t *cur = ((const uint8_t *)(((uintptr_t)(start) | (uintptr_t)15u) + 1u));
     if (len_ >= ((size_t)32u)) {
         while (cur <= (end - ((size_t)32u))) {
             const uint8x16_t ld = vld1q_u8(cur);
@@ -474,7 +474,7 @@ NVOL_INLINE const uint8_t * nvol_memrchr2_neon(uint8_t n1, uint8_t n2, const uin
     if (mask != UINT64_C(0)) {
         return ((end - ((size_t)16u)) + ((size_t)((63u - nvol_clz64(mask)) >> 2)));
     }
-    const uint8_t *cur = (end - (((size_t)(uintptr_t)(end)) & ((size_t)15u)));
+    const uint8_t *cur = ((const uint8_t *)((uintptr_t)(end) & ~(uintptr_t)15u));
     if (len_ >= ((size_t)32u)) {
         while (cur >= (start + ((size_t)32u))) {
             cur = (cur - ((size_t)32u));
@@ -551,7 +551,7 @@ NVOL_INLINE const uint8_t * nvol_memchr3_neon(uint8_t n1, uint8_t n2, uint8_t n3
     if (mask != UINT64_C(0)) {
         return (start + ((size_t)(nvol_ctz64(mask) >> 2)));
     }
-    const uint8_t *cur = (start + (((size_t)16u) - (((size_t)(uintptr_t)(start)) & ((size_t)15u))));
+    const uint8_t *cur = ((const uint8_t *)(((uintptr_t)(start) | (uintptr_t)15u) + 1u));
     if (len_ >= ((size_t)32u)) {
         while (cur <= (end - ((size_t)32u))) {
             const uint8x16_t ld = vld1q_u8(cur);
@@ -629,7 +629,7 @@ NVOL_INLINE const uint8_t * nvol_memrchr3_neon(uint8_t n1, uint8_t n2, uint8_t n
     if (mask != UINT64_C(0)) {
         return ((end - ((size_t)16u)) + ((size_t)((63u - nvol_clz64(mask)) >> 2)));
     }
-    const uint8_t *cur = (end - (((size_t)(uintptr_t)(end)) & ((size_t)15u)));
+    const uint8_t *cur = ((const uint8_t *)((uintptr_t)(end) & ~(uintptr_t)15u));
     if (len_ >= ((size_t)32u)) {
         while (cur >= (start + ((size_t)32u))) {
             cur = (cur - ((size_t)32u));
@@ -701,7 +701,7 @@ NVOL_INLINE size_t nvol_count_scalar(uint8_t n1, const uint8_t *start, const uin
 NVOL_INLINE size_t nvol_count_parity_neon(uint8_t n1, const uint8_t *start, const uint8_t *end) {
     const size_t len_ = ((size_t)(end - start));
     const uint8x16_t v1 = vdupq_n_u8((uint8_t)(n1));
-    const uint8_t *cur = (start + (((size_t)16u) - (((size_t)(uintptr_t)(start)) & ((size_t)15u))));
+    const uint8_t *cur = ((const uint8_t *)(((uintptr_t)(start) | (uintptr_t)15u) + 1u));
     size_t count = ((size_t)0u);
     const uint8_t *p = start;
     while (p < cur) {
@@ -826,7 +826,7 @@ NVOL_INLINE const uint8_t * nvol_first_non_ascii_neon(const uint8_t *start, cons
     if (mask != UINT64_C(0)) {
         return (start + ((size_t)(nvol_ctz64(mask) >> 2)));
     }
-    const uint8_t *cur = (start + (((size_t)16u) - (((size_t)(uintptr_t)(start)) & ((size_t)15u))));
+    const uint8_t *cur = ((const uint8_t *)(((uintptr_t)(start) | (uintptr_t)15u) + 1u));
     if (len_ >= ((size_t)64u)) {
         while (cur <= (end - ((size_t)64u))) {
             const uint8x16_t ld = vld1q_u8(cur);

@@ -259,6 +259,19 @@ class CPrinter(Printer):
         return out
 
     def visit(self, cb, at, mask): return f"({cb}->fn({cb}->ctx, {at}, {mask}) != 0)"
+    def e(self, x) -> str:
+        # an aligned pointer from the address bits (Printer.aligned): Clang otherwise keeps
+        # two induction variables in the loop that walks it (docs/PARITY.md, P5)
+        if type(x) in (ir.PtrAdd, ir.PtrSub):
+            a = self.aligned(x)
+            if a is not None:
+                kind, p, m = a
+                cast = "uint8_t *" if x.ty is ir.MPTR else "const uint8_t *"
+                if kind == "up":
+                    return f"(({cast})(((uintptr_t)({self.e(p)}) | (uintptr_t){m}u) + 1u))"
+                return f"(({cast})((uintptr_t)({self.e(p)}) & ~(uintptr_t){m}u))"
+        return super().e(x)
+
     def ptr_add(self, p, n): return f"({p} + {n})"
     def ptr_sub(self, p, n): return f"({p} - {n})"
     def ptr_diff(self, a, b): return f"((size_t)({a} - {b}))"

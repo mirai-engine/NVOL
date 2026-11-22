@@ -44,6 +44,30 @@ class Printer:
         return f"{fn}({', '.join(args)})"
 
     # -- expressions --------------------------------------------------------
+    @staticmethod
+    def aligned(x):
+        """("up", p, m) for `p + (m+1 - (addr(p) & m))` and ("down", p, m) for
+        `p - (addr(p) & m)`, m + 1 a power of two (the kernels' vector alignment); else None.
+        A backend may build those from the address (`(addr | m) + 1`, `addr & ~m`): as
+        pointer arithmetic on p, LLVM ties the aligned pointer to p and LSR keeps two
+        induction variables in the loop that walks it (Odin: T2 in docs/TOOLCHAINS.md; Clang
+        on the C: P5 in docs/PARITY.md)."""
+        def addr_and(e, p):
+            if (type(e) is ir.Bin and e.op == "and" and type(e.a) is ir.PtrAddr and e.a.p is p
+                    and type(e.b) is ir.Const and e.b.value is not None):
+                return e.b.value
+            return None
+        n = x.n
+        if type(x) is ir.PtrAdd and type(n) is ir.Bin and n.op == "sub" and type(n.a) is ir.Const:
+            m = addr_and(n.b, x.p)
+            if m is not None and n.a.value == m + 1 and m & (m + 1) == 0:
+                return ("up", x.p, m)
+        if type(x) is ir.PtrSub:
+            m = addr_and(n, x.p)
+            if m is not None and m & (m + 1) == 0:
+                return ("down", x.p, m)
+        return None
+
     def e(self, x) -> str:
         t = type(x)
         if t is ir.Var:

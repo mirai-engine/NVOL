@@ -232,27 +232,18 @@ class OdinPrinter(Printer):
         return super().e(x)
 
     def align(self, x):
-        """`p + (V - (addr(p) & (V-1)))` and `p - (addr(p) & m)` from the address bits.
-
-        Odin's pointer arithmetic is a GEP without `inbounds`, so as a GEP of `p` LLVM 20's
-        SCEV ties the aligned pointer to `p`; LSR then rebases the loop on `p` and keeps two
-        induction variables (memchr: 14 instead of 11 uops per 128-byte block, and 5 extra
-        instructions per call). Built from the address it is a fresh base, as in Rust/C."""
-        def addr_and(e, p):
-            if (type(e) is ir.Bin and e.op == "and" and type(e.a) is ir.PtrAddr and e.a.p is p
-                    and type(e.b) is ir.Const and e.b.value is not None):
-                return e.b.value
+        """The aligned pointers of `Printer.aligned` from the address bits: Odin's pointer
+        arithmetic is a GEP without `inbounds`, so as a GEP of `p` LLVM 20's SCEV ties the
+        aligned pointer to `p`; LSR then rebases the loop on `p` and keeps two induction
+        variables (memchr: 14 instead of 11 uops per 128-byte block, and 5 extra instructions
+        per call). Built from the address it is a fresh base, as in Rust/C."""
+        a = self.aligned(x)
+        if a is None:
             return None
-        n = x.n
-        if type(x) is ir.PtrAdd and type(n) is ir.Bin and n.op == "sub" and type(n.a) is ir.Const:
-            m = addr_and(n.b, x.p)
-            if m is not None and n.a.value == m + 1 and m & (m + 1) == 0:
-                return f"([^]u8)(uintptr((uint(uintptr({self.e(x.p)})) | uint({m})) + uint(1)))"
-        if type(x) is ir.PtrSub:
-            m = addr_and(n, x.p)
-            if m is not None and m & (m + 1) == 0:
-                return f"([^]u8)(uintptr(uint(uintptr({self.e(x.p)})) &~ uint({m})))"
-        return None
+        kind, p, m = a
+        if kind == "up":
+            return f"([^]u8)(uintptr((uint(uintptr({self.e(p)})) | uint({m})) + uint(1)))"
+        return f"([^]u8)(uintptr(uint(uintptr({self.e(p)})) &~ uint({m})))"
 
     # -- statements -----------------------------------------------------------
     def block(self, stmts):
