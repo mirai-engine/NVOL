@@ -143,7 +143,7 @@ ALIGN 8
 PUBLIC nvol_find_byteset_pair_mask_raw_ptr
 nvol_find_byteset_pair_mask_raw_ptr DQ nvol_find_byteset_pair_mask_raw_resolve
 _DATA ENDS
-_TEXT SEGMENT
+_NVOLT SEGMENT ALIGN(64) READ EXECUTE ALIAS(".text") 'CODE'
 
 nvol_memchr_scalar PROC PUBLIC
     movzx ecx, cl
@@ -167,7 +167,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_memchr_scalar ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_memchr_sse2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -289,7 +291,12 @@ L_L19:
 nvol_memchr_sse2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_memchr_avx2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -401,7 +408,10 @@ L_L19:
     jmp SHORT L_L1
 nvol_memchr_avx2 ENDP
 
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_memchr_entry_avx2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -632,7 +642,9 @@ L_L49:
     jmp NEAR PTR L_L1
 nvol_memchr_entry_avx2 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_memchr_entry_sse2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -773,12 +785,19 @@ L_L25:
     jmp SHORT L_L1
 nvol_memchr_entry_sse2 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_memchr_raw PROC PUBLIC
     jmp qword ptr [nvol_memchr_raw_ptr]
 nvol_memchr_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memchr_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -832,7 +851,9 @@ L_L1:
     ret
 nvol_memchr ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memrchr_scalar PROC PUBLIC
     movzx ecx, cl
     cmp r8, rdx
@@ -855,7 +876,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_memrchr_scalar ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_memrchr_sse2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -1028,7 +1051,13 @@ L_L29:
     jmp NEAR PTR L_L1
 nvol_memrchr_sse2 ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memrchr_avx2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -1186,6 +1215,12 @@ L_L29:
     jmp NEAR PTR L_L1
 nvol_memrchr_avx2 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_memrchr_entry_avx2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -1705,7 +1740,12 @@ nvol_memrchr_raw PROC PUBLIC
 nvol_memrchr_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memrchr_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -1759,7 +1799,9 @@ L_L1:
     ret
 nvol_memrchr ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memchr2_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -1786,7 +1828,9 @@ L_L1:
     ret
 nvol_memchr2_scalar ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_memchr2_sse2 PROC PUBLIC
     movzx eax, cl
     movzx ecx, dl
@@ -1999,7 +2043,9 @@ L_L15:
 nvol_memchr2_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memchr2_entry_avx2 PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -2222,6 +2268,12 @@ L_L42:
 nvol_memchr2_entry_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_memchr2_entry_sse2 PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -2360,7 +2412,12 @@ nvol_memchr2_raw PROC PUBLIC
 nvol_memchr2_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memchr2_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -2415,7 +2472,8 @@ L_L1:
     ret
 nvol_memchr2 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_memrchr2_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -2442,7 +2500,9 @@ L_L1:
     ret
 nvol_memrchr2_scalar ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_memrchr2_sse2 PROC PUBLIC
     movzx eax, cl
     movzx ecx, dl
@@ -2587,7 +2647,13 @@ L_L21:
     jmp NEAR PTR L_L1
 nvol_memrchr2_sse2 ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memrchr2_avx2 PROC PUBLIC
     movzx eax, cl
     movzx ecx, dl
@@ -2723,7 +2789,10 @@ L_L21:
 nvol_memrchr2_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_memrchr2_entry_avx2 PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -3182,7 +3251,12 @@ nvol_memrchr2_raw PROC PUBLIC
 nvol_memrchr2_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memrchr2_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -3237,7 +3311,8 @@ L_L1:
     ret
 nvol_memrchr2 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_memchr3_scalar PROC PUBLIC
     movzx ecx, cl
     movzx edx, dl
@@ -3530,7 +3605,9 @@ L_L15:
     jmp SHORT L_L1
 nvol_memchr3_avx2 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memchr3_entry_avx2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -3787,7 +3864,13 @@ L_L42:
     jmp SHORT L_L1
 nvol_memchr3_entry_avx2 ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memchr3_entry_sse2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -3949,13 +4032,20 @@ L_L22:
     jmp SHORT L_L1
 nvol_memchr3_entry_sse2 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_memchr3_raw PROC PUBLIC
     jmp qword ptr [nvol_memchr3_raw_ptr]
 nvol_memchr3_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memchr3_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -4221,7 +4311,12 @@ L_L21:
     jmp NEAR PTR L_L1
 nvol_memrchr3_sse2 ENDP
 
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_memrchr3_avx2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -4711,7 +4806,11 @@ L_L54:
 nvol_memrchr3_entry_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_memrchr3_entry_sse2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -4915,13 +5014,23 @@ L_L28:
 nvol_memrchr3_entry_sse2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memrchr3_raw PROC PUBLIC
     jmp qword ptr [nvol_memrchr3_raw_ptr]
 nvol_memrchr3_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memrchr3_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -5001,7 +5110,9 @@ L_L3:
     ret
 nvol_count_scalar ENDP
 
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_count_parity_sse2 PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -5123,7 +5234,12 @@ L_L13:
     ret
 nvol_count_parity_sse2 ENDP
 
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_count_parity_avx2 PROC PUBLIC
     movzx eax, cl
     mov rcx, r8
@@ -5205,7 +5321,9 @@ L_L13:
     ret
 nvol_count_parity_avx2 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_count_parity_entry_avx2 PROC PUBLIC
     movzx ecx, cl
     mov r9, r8
@@ -5385,7 +5503,11 @@ L_L1:
     ret
 nvol_count_parity_entry_avx2 ENDP
 
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_count_parity_entry_sse2 PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -5526,13 +5648,24 @@ L_L1:
     ret
 nvol_count_parity_entry_sse2 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_count_parity_raw PROC PUBLIC
     jmp qword ptr [nvol_count_parity_raw_ptr]
 nvol_count_parity_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_count_parity_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -5571,7 +5704,12 @@ nvol_count_parity PROC PUBLIC
     ret
 nvol_count_parity ENDP
 
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_count_sad_sse2 PROC PUBLIC
     movzx eax, cl
     imul eax, eax, 16843009
@@ -5762,7 +5900,12 @@ L_L10:
     ret
 nvol_count_sad_avx2 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_count_entry_avx2 PROC PUBLIC
     movzx r9d, cl
     mov rcx, r8
@@ -6072,13 +6215,20 @@ L_L1:
 nvol_count_entry_sse2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_count_raw PROC PUBLIC
     jmp qword ptr [nvol_count_raw_ptr]
 nvol_count_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_count_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -6117,7 +6267,12 @@ nvol_count PROC PUBLIC
     ret
 nvol_count ENDP
 
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_first_non_ascii_scalar PROC PUBLIC
     cmp rcx, rdx
     jae SHORT L_L3
@@ -6140,7 +6295,9 @@ L_L5:
 nvol_first_non_ascii_scalar ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_first_non_ascii_sse2 PROC PUBLIC
     mov r8, rdx
     sub r8, rcx
@@ -6247,7 +6404,12 @@ L_L21:
 nvol_first_non_ascii_sse2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_first_non_ascii_avx2 PROC PUBLIC
     mov r8, rdx
     sub r8, rcx
@@ -6352,7 +6514,13 @@ L_L21:
     jmp SHORT L_L1
 nvol_first_non_ascii_avx2 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_first_non_ascii_entry_avx2 PROC PUBLIC
     mov r8, rdx
     sub r8, rcx
@@ -6577,7 +6745,9 @@ L_L53:
     jmp SHORT L_L1
 nvol_first_non_ascii_entry_avx2 ENDP
 
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_first_non_ascii_entry_sse2 PROC PUBLIC
     mov r8, rdx
     sub r8, rcx
@@ -6709,7 +6879,12 @@ nvol_first_non_ascii_raw PROC PUBLIC
 nvol_first_non_ascii_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_first_non_ascii_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -6762,7 +6937,9 @@ L_L1:
     ret
 nvol_first_non_ascii ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_is_equal PROC PUBLIC
     xor r9d, r9d
     lea rax, [r9 + 4]
@@ -6810,7 +6987,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_is_equal ENDP
 
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_memmem_rk PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -6922,7 +7101,8 @@ L_L24:
 nvol_memmem_rk ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_memmem_rk_oneshot PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -7049,7 +7229,12 @@ L_L28:
 nvol_memmem_rk_oneshot ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_memmem_suffix_min PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -7106,7 +7291,13 @@ L_L3:
     ret
 nvol_memmem_suffix_min ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memmem_suffix_max PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -7163,7 +7354,13 @@ L_L3:
     ret
 nvol_memmem_suffix_max ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memmem_init PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -7473,7 +7670,9 @@ L_L48:
     jmp SHORT L_L44
 nvol_memmem_init ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_memmem_pppre_sse2 PROC PUBLIC
     mov r10, qword ptr [rsp + 40]
     sub r8, rdx
@@ -7539,7 +7738,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_memmem_pppre_sse2 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_memmem_pppre_avx2 PROC PUBLIC
     mov r10, qword ptr [rsp + 40]
     sub r8, rdx
@@ -7600,6 +7804,8 @@ L_L5:
     jmp SHORT L_L1
 nvol_memmem_pppre_avx2 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_memmem_pp_sse2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -7821,7 +8027,10 @@ L_L32:
     jmp SHORT L_L1
 nvol_memmem_pp_sse2 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_memmem_pp2_sse2 PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -7900,7 +8109,10 @@ L_L5:
     jmp SHORT L_L1
 nvol_memmem_pp2_sse2 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_memmem_tw_sse2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -8501,7 +8713,12 @@ L_L32:
 nvol_memmem_pp_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_memmem_pp2_avx2 PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -8576,7 +8793,12 @@ L_L5:
 nvol_memmem_pp2_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_memmem_tw_avx2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -9029,6 +9251,12 @@ L_L69:
     jmp SHORT L_L1
 nvol_memmem_tw_avx2 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_memmem_find_entry_avx2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -10235,7 +10463,11 @@ L_L241:
     jmp NEAR PTR L_L1
 nvol_memmem_find_entry_avx2 ENDP
 
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_memmem_find_entry_sse2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -11120,13 +11352,23 @@ L_L172:
     jmp NEAR PTR L_L1
 nvol_memmem_find_entry_sse2 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_memmem_find_raw PROC PUBLIC
     jmp qword ptr [nvol_memmem_find_raw_ptr]
 nvol_memmem_find_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_memmem_find_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -11226,7 +11468,9 @@ L_L14:
     jmp SHORT L_L1
 nvol_is_equal_ac ENDP
 
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_teddy_verify64_slim PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -11759,7 +12003,12 @@ L_L11:
     jmp NEAR PTR L_L1
 nvol_teddy_slow ENDP
 
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_teddy_init PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -12087,7 +12336,12 @@ L_L1:
 nvol_teddy_init ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_teddy_slim_ssse3_1 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -12742,7 +12996,8 @@ L_L85:
 nvol_teddy_slim_ssse3_1 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_teddy_slim_ssse3_2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -13436,7 +13691,10 @@ L_L85:
 nvol_teddy_slim_ssse3_2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_teddy_slim_ssse3_3 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -14160,7 +14418,10 @@ L_L85:
     jmp NEAR PTR L_L79
 nvol_teddy_slim_ssse3_3 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_teddy_slim_ssse3_4 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -14915,6 +15176,12 @@ L_L85:
 nvol_teddy_slim_ssse3_4 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_teddy_slim_avx2_1 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -17328,7 +17595,9 @@ L_L177:
 nvol_teddy_fat_avx2_1 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_teddy_slim_avx2_2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -19812,7 +20081,8 @@ L_L177:
     jmp NEAR PTR L_L171
 nvol_teddy_fat_avx2_2 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_teddy_slim_avx2_3 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -22359,7 +22629,10 @@ L_L177:
 nvol_teddy_fat_avx2_3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_teddy_slim_avx2_4 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -23666,7 +23939,10 @@ L_L177:
     jmp NEAR PTR L_L171
 nvol_teddy_slim_avx2_4 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_teddy_fat_avx2_4 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -24968,7 +25244,9 @@ L_L177:
     jmp NEAR PTR L_L171
 nvol_teddy_fat_avx2_4 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_teddy_find_raw PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -25003,7 +25281,10 @@ L_L1:
 nvol_teddy_find_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_byteset_init PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -25261,7 +25542,9 @@ L_L38:
 nvol_byteset_init ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_byteset_pair_init PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -25821,7 +26104,12 @@ L_L5:
 nvol_find_byteset_scalar ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_not_byteset_scalar PROC PUBLIC
     cmp rdx, r8
     jae SHORT L_L3
@@ -25853,7 +26141,12 @@ L_L5:
 nvol_find_not_byteset_scalar ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_copy_until_byteset_scalar PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -25892,7 +26185,11 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_scalar ENDP
 
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_find_byteset_pair_scalar PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -25955,6 +26252,8 @@ L_L9:
 nvol_find_byteset_pair_scalar ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_pair_mask_scalar PROC PUBLIC FRAME
     push rdi
     .PUSHREG rdi
@@ -26204,7 +26503,9 @@ L_L5:
 nvol_find_byteset_ssse3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_byteset_ssse3_u PROC PUBLIC
     movdqu xmm0, xmmword ptr [rcx + 64]
     movdqa xmm1, xmmword ptr [NVOL_K1]
@@ -26259,6 +26560,10 @@ L_L5:
 nvol_find_byteset_ssse3_u ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_byteset_pair_ssse3 PROC PUBLIC FRAME
     sub rsp, 120
     .ALLOCSTACK 120
@@ -26394,7 +26699,12 @@ L_L5:
 nvol_find_byteset_pair_ssse3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_sse2_k4 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -26479,7 +26789,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_sse2_k4 ENDP
 
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_sse2_k5 PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -26577,7 +26892,13 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_sse2_k5 ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_find_byteset_sse2_k6 PROC PUBLIC FRAME
     sub rsp, 56
     .ALLOCSTACK 56
@@ -26688,7 +27009,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_sse2_k6 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_not_byteset_ssse3 PROC PUBLIC FRAME
     sub rsp, 72
     .ALLOCSTACK 72
@@ -26780,7 +27106,12 @@ L_L5:
 nvol_find_not_byteset_ssse3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_not_byteset_ssse3_u PROC PUBLIC
     movdqu xmm0, xmmword ptr [rcx + 64]
     movdqa xmm1, xmmword ptr [NVOL_K1]
@@ -26836,7 +27167,10 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_ssse3_u ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_find_not_byteset_sse2_k1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 56]
     imul eax, eax, 16843009
@@ -26887,7 +27221,12 @@ L_L5:
 nvol_find_not_byteset_sse2_k1 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_not_byteset_sse2_k2 PROC PUBLIC
     movzx eax, byte ptr [rcx + 56]
     imul eax, eax, 16843009
@@ -27027,7 +27366,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_sse2_k3 ENDP
 
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_not_byteset_sse2_k4 PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -27118,7 +27459,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_sse2_k4 ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_find_not_byteset_sse2_k5 PROC PUBLIC FRAME
     sub rsp, 56
     .ALLOCSTACK 56
@@ -27222,7 +27565,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_sse2_k5 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_find_not_byteset_sse2_k6 PROC PUBLIC FRAME
     sub rsp, 72
     .ALLOCSTACK 72
@@ -27489,7 +27834,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_ssse3_u ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_copy_until_byteset_sse2_k1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 56]
     imul eax, eax, 16843009
@@ -27543,7 +27890,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_sse2_k1 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_copy_until_byteset_sse2_k2 PROC PUBLIC
     movzx eax, byte ptr [rcx + 56]
     imul eax, eax, 16843009
@@ -27682,6 +28034,8 @@ L_L5:
 nvol_copy_until_byteset_sse2_k3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_copy_until_byteset_sse2_k4 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -27772,7 +28126,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_sse2_k4 ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_copy_until_byteset_sse2_k5 PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -27877,7 +28233,9 @@ L_L5:
 nvol_copy_until_byteset_sse2_k5 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_copy_until_byteset_sse2_k6 PROC PUBLIC FRAME
     sub rsp, 56
     .ALLOCSTACK 56
@@ -27995,7 +28353,8 @@ L_L5:
 nvol_copy_until_byteset_sse2_k6 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_sse2_r0 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     imul eax, eax, 16843009
@@ -28047,7 +28406,13 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_sse2_r0 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_not_byteset_sse2_r0 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     imul eax, eax, 16843009
@@ -28102,7 +28467,11 @@ L_L5:
 nvol_find_not_byteset_sse2_r0 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_copy_until_byteset_sse2_r0 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     imul eax, eax, 16843009
@@ -28160,7 +28529,10 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_sse2_r0 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_find_byteset_sse2_r1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     imul eax, eax, 16843009
@@ -28220,7 +28592,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_sse2_r1 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_not_byteset_sse2_r1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     imul eax, eax, 16843009
@@ -28350,6 +28724,12 @@ L_L5:
 nvol_copy_until_byteset_sse2_r1 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_byteset_sse2_r2 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     imul eax, eax, 16843009
@@ -28419,7 +28799,11 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_sse2_r2 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_not_byteset_sse2_r2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -28576,7 +28960,8 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_sse2_r2 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_sse2_r3 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -28664,7 +29049,11 @@ L_L5:
 nvol_find_byteset_sse2_r3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_not_byteset_sse2_r3 PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -28757,6 +29146,8 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_sse2_r3 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_copy_until_byteset_sse2_r3 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -28849,6 +29240,8 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_sse2_r3 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_pair_ssse3_k1 PROC PUBLIC
     mov r9, qword ptr [rcx + 224]
     mov r10, qword ptr [rcx + 232]
@@ -28913,6 +29306,12 @@ L_L5:
 nvol_find_byteset_pair_ssse3_k1 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_byteset_pair_ssse3_k2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -29003,6 +29402,8 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_ssse3_k2 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_pair_ssse3_k3 PROC PUBLIC FRAME
     sub rsp, 72
     .ALLOCSTACK 72
@@ -29123,7 +29524,12 @@ L_L5:
 nvol_find_byteset_pair_ssse3_k3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_pair_ssse3_k4 PROC PUBLIC FRAME
     sub rsp, 104
     .ALLOCSTACK 104
@@ -29269,7 +29675,10 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_ssse3_k4 ENDP
 
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_pair_ssse3_k5 PROC PUBLIC FRAME
     sub rsp, 136
     .ALLOCSTACK 136
@@ -29442,7 +29851,9 @@ L_L5:
 nvol_find_byteset_pair_ssse3_k5 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_pair_ssse3_k6 PROC PUBLIC FRAME
     sub rsp, 168
     .ALLOCSTACK 168
@@ -29779,7 +30190,11 @@ L_L5:
 nvol_find_byteset_pair_mask_ssse3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_find_byteset_pair_mask_ssse3_k1 PROC PUBLIC
     mov r10, qword ptr [rcx + 224]
     mov r11, qword ptr [rcx + 232]
@@ -29846,7 +30261,10 @@ L_L5:
 nvol_find_byteset_pair_mask_ssse3_k1 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_pair_mask_ssse3_k2 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -30061,6 +30479,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_mask_ssse3_k3 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_byteset_pair_mask_ssse3_k4 PROC PUBLIC FRAME
     sub rsp, 104
     .ALLOCSTACK 104
@@ -30208,7 +30632,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_mask_ssse3_k4 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_find_byteset_pair_mask_ssse3_k5 PROC PUBLIC FRAME
     sub rsp, 136
     .ALLOCSTACK 136
@@ -30382,7 +30808,8 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_mask_ssse3_k5 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_pair_mask_ssse3_k6 PROC PUBLIC FRAME
     sub rsp, 168
     .ALLOCSTACK 168
@@ -30584,7 +31011,12 @@ L_L5:
 nvol_find_byteset_pair_mask_ssse3_k6 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_byteset_pair_visit_ssse3 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -30759,6 +31191,10 @@ L_L7:
     jmp SHORT L_L1
 nvol_find_byteset_pair_visit_ssse3 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_byteset_pair_visit_ssse3_k1 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -30869,7 +31305,9 @@ L_L7:
     jmp SHORT L_L1
 nvol_find_byteset_pair_visit_ssse3_k1 ENDP
 
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_byteset_pair_visit_ssse3_k2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -31361,7 +31799,12 @@ L_L7:
 nvol_find_byteset_pair_visit_ssse3_k4 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_pair_visit_ssse3_k5 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -31576,7 +32019,12 @@ L_L7:
     jmp SHORT L_L1
 nvol_find_byteset_pair_visit_ssse3_k5 ENDP
 
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_byteset_pair_visit_ssse3_k6 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -31905,7 +32353,12 @@ L_L5:
 nvol_find_byteset_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_avx2_u PROC PUBLIC
     vbroadcasti128 ymm0, xmmword ptr [rcx + 64]
     vmovdqa ymm1, ymmword ptr [NVOL_K3]
@@ -31956,7 +32409,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_avx2_u ENDP
 
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_byteset_pair_avx2 PROC PUBLIC FRAME
     sub rsp, 104
     .ALLOCSTACK 104
@@ -32157,7 +32615,8 @@ L_L5:
 nvol_find_byteset_avx2_k4 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_avx2_k5 PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -32243,7 +32702,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_avx2_k5 ENDP
 
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_avx2_k6 PROC PUBLIC FRAME
     sub rsp, 56
     .ALLOCSTACK 56
@@ -32423,7 +32887,10 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_avx2 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_not_byteset_avx2_u PROC PUBLIC
     vbroadcasti128 ymm0, xmmword ptr [rcx + 64]
     vmovdqa ymm1, ymmword ptr [NVOL_K3]
@@ -32478,7 +32945,10 @@ L_L5:
 nvol_find_not_byteset_avx2_u ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_find_not_byteset_avx2_k1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 56]
     vmovd xmm0, eax
@@ -32586,7 +33056,9 @@ L_L5:
 nvol_find_not_byteset_avx2_k2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_not_byteset_avx2_k3 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -32658,7 +33130,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_avx2_k3 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_find_not_byteset_avx2_k4 PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -32833,7 +33310,9 @@ L_L5:
 nvol_find_not_byteset_avx2_k5 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_not_byteset_avx2_k6 PROC PUBLIC FRAME
     sub rsp, 72
     .ALLOCSTACK 72
@@ -32937,6 +33416,10 @@ L_L5:
 nvol_find_not_byteset_avx2_k6 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_copy_until_byteset_avx2 PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -33020,7 +33503,10 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_avx2 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_copy_until_byteset_avx2_u PROC PUBLIC
     vbroadcasti128 ymm0, xmmword ptr [rcx + 64]
     vmovdqa ymm1, ymmword ptr [NVOL_K3]
@@ -33078,7 +33564,9 @@ L_L5:
 nvol_copy_until_byteset_avx2_u ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_copy_until_byteset_avx2_k1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 56]
     vmovd xmm0, eax
@@ -33133,7 +33621,11 @@ L_L5:
 nvol_copy_until_byteset_avx2_k1 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_copy_until_byteset_avx2_k2 PROC PUBLIC
     movzx eax, byte ptr [rcx + 56]
     vmovd xmm0, eax
@@ -33264,7 +33756,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_avx2_k3 ENDP
 
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_copy_until_byteset_avx2_k4 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -33439,7 +33936,9 @@ L_L5:
 nvol_copy_until_byteset_avx2_k5 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_copy_until_byteset_avx2_k6 PROC PUBLIC FRAME
     sub rsp, 56
     .ALLOCSTACK 56
@@ -33541,7 +34040,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_avx2_k6 ENDP
 
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_avx2_r0 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     vmovd xmm0, eax
@@ -33593,7 +34097,12 @@ L_L5:
 nvol_find_byteset_avx2_r0 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_find_not_byteset_avx2_r0 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     vmovd xmm0, eax
@@ -33646,7 +34155,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_avx2_r0 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_copy_until_byteset_avx2_r0 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     vmovd xmm0, eax
@@ -33702,7 +34216,11 @@ L_L5:
     jmp SHORT L_L1
 nvol_copy_until_byteset_avx2_r0 ENDP
 
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_find_byteset_avx2_r1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     vmovd xmm0, eax
@@ -33759,7 +34277,10 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_avx2_r1 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_not_byteset_avx2_r1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     vmovd xmm0, eax
@@ -33819,7 +34340,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_avx2_r1 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_copy_until_byteset_avx2_r1 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     vmovd xmm0, eax
@@ -34022,7 +34545,10 @@ L_L5:
 nvol_find_not_byteset_avx2_r2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_copy_until_byteset_avx2_r2 PROC PUBLIC
     movzx eax, byte ptr [rcx + 81]
     vmovd xmm0, eax
@@ -34093,7 +34619,11 @@ L_L5:
 nvol_copy_until_byteset_avx2_r2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_byteset_avx2_r3 PROC PUBLIC FRAME
     sub rsp, 24
     .ALLOCSTACK 24
@@ -34172,7 +34702,9 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_avx2_r3 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_not_byteset_avx2_r3 PROC PUBLIC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
@@ -34340,7 +34872,12 @@ L_L5:
 nvol_copy_until_byteset_avx2_r3 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_pair_avx2_k1 PROC PUBLIC
     mov r9, qword ptr [rcx + 224]
     mov r10, qword ptr [rcx + 232]
@@ -34485,7 +35022,10 @@ L_L5:
 nvol_find_byteset_pair_avx2_k2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_pair_avx2_k3 PROC PUBLIC FRAME
     sub rsp, 72
     .ALLOCSTACK 72
@@ -34720,7 +35260,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_avx2_k4 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_find_byteset_pair_avx2_k5 PROC PUBLIC FRAME
     sub rsp, 136
     .ALLOCSTACK 136
@@ -35036,7 +35581,9 @@ L_L5:
 nvol_find_byteset_pair_avx2_k6 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_byteset_pair_mask_avx2 PROC PUBLIC FRAME
     sub rsp, 104
     .ALLOCSTACK 104
@@ -35162,7 +35709,12 @@ L_L5:
 nvol_find_byteset_pair_mask_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_pair_mask_avx2_k1 PROC PUBLIC
     mov r10, qword ptr [rcx + 224]
     mov r11, qword ptr [rcx + 232]
@@ -35309,7 +35861,9 @@ L_L5:
 nvol_find_byteset_pair_mask_avx2_k2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_pair_mask_avx2_k3 PROC PUBLIC FRAME
     sub rsp, 72
     .ALLOCSTACK 72
@@ -35419,7 +35973,13 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_mask_avx2_k3 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_byteset_pair_mask_avx2_k4 PROC PUBLIC FRAME
     sub rsp, 104
     .ALLOCSTACK 104
@@ -35548,7 +36108,11 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_mask_avx2_k4 ENDP
 
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_byteset_pair_mask_avx2_k5 PROC PUBLIC FRAME
     sub rsp, 136
     .ALLOCSTACK 136
@@ -35698,7 +36262,12 @@ L_L5:
 nvol_find_byteset_pair_mask_avx2_k5 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_find_byteset_pair_mask_avx2_k6 PROC PUBLIC FRAME
     sub rsp, 168
     .ALLOCSTACK 168
@@ -35867,6 +36436,8 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_byteset_pair_mask_avx2_k6 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_pair_visit_avx2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -36040,7 +36611,10 @@ L_L7:
 nvol_find_byteset_pair_visit_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_pair_visit_avx2_k1 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -36155,7 +36729,13 @@ L_L7:
     jmp SHORT L_L1
 nvol_find_byteset_pair_visit_avx2_k1 ENDP
 
-    DB 15, 31, 128, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_byteset_pair_visit_avx2_k2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -36465,7 +37045,10 @@ L_L7:
     jmp SHORT L_L1
 nvol_find_byteset_pair_visit_avx2_k3 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_pair_visit_avx2_k4 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -36872,7 +37455,10 @@ L_L7:
 nvol_find_byteset_pair_visit_avx2_k5 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_pair_visit_avx2_k6 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -37111,7 +37697,9 @@ L_L7:
     jmp SHORT L_L1
 nvol_find_byteset_pair_visit_avx2_k6 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_find_not_byteset_sse42 PROC PUBLIC
     movdqu xmm0, xmmword ptr [rcx + 96]
     lea r9, [r8 - 16]
@@ -37148,6 +37736,12 @@ L_L5:
     jmp SHORT L_L1
 nvol_find_not_byteset_sse42 ENDP
 
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_byteset_entry_avx2 PROC PUBLIC FRAME
     push rdi
     .PUSHREG rdi
@@ -38375,7 +38969,10 @@ L_L189:
 nvol_find_byteset_entry_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 128, 0, 0, 0, 0
 nvol_find_byteset_entry_base PROC PUBLIC FRAME
     push rdi
     .PUSHREG rdi
@@ -40581,7 +41178,9 @@ L_L243:
 nvol_find_not_byteset_entry_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 0
 nvol_find_not_byteset_entry_base PROC PUBLIC FRAME
     sub rsp, 72
     .ALLOCSTACK 72
@@ -41378,7 +41977,11 @@ L_L113:
     jmp NEAR PTR L_L1
 nvol_find_not_byteset_entry_base ENDP
 
-    DB 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_not_byteset_entry_sse42 PROC PUBLIC FRAME
     sub rsp, 72
     .ALLOCSTACK 72
@@ -45217,7 +45820,10 @@ L_L148:
     jmp NEAR PTR L_L1
 nvol_find_byteset_pair_mask_entry_avx2 ENDP
 
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
 nvol_find_byteset_pair_visit_entry_avx2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -47451,7 +48057,9 @@ L_L204:
 nvol_find_byteset_pair_visit_entry_avx2 ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 15, 31, 64, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
 nvol_copy_until_byteset_entry_avx2 PROC PUBLIC FRAME
     push rdi
     .PUSHREG rdi
@@ -49094,7 +49702,9 @@ L_L241:
     jmp NEAR PTR L_L1
 nvol_copy_until_byteset_entry_avx2 ENDP
 
-    DB 15, 31, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
 nvol_copy_until_byteset_entry_base PROC PUBLIC FRAME
     push rsi
     .PUSHREG rsi
@@ -49928,7 +50538,12 @@ nvol_copy_until_byteset_raw PROC PUBLIC
 nvol_copy_until_byteset_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_copy_until_byteset_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -49965,7 +50580,12 @@ nvol_find_byteset_pair_visit_raw PROC PUBLIC
 nvol_find_byteset_pair_visit_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_pair_visit_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -50002,7 +50622,12 @@ nvol_find_byteset_raw PROC PUBLIC
 nvol_find_byteset_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -50039,7 +50664,12 @@ nvol_find_not_byteset_raw PROC PUBLIC
 nvol_find_not_byteset_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_not_byteset_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -50076,13 +50706,23 @@ L_done:
     jmp qword ptr [nvol_find_not_byteset_raw_ptr]
 nvol_find_not_byteset_raw_resolve ENDP
 
-    DB 102, 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
 nvol_find_byteset_pair_raw PROC PUBLIC
     jmp qword ptr [nvol_find_byteset_pair_raw_ptr]
 nvol_find_byteset_pair_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_pair_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -50119,7 +50759,12 @@ nvol_find_byteset_pair_mask_raw PROC PUBLIC
 nvol_find_byteset_pair_mask_raw ENDP
 
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 144
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_find_byteset_pair_mask_raw_resolve PROC PUBLIC FRAME
     push rcx
     .PUSHREG rcx
@@ -50163,5 +50808,5 @@ nvol_fntbl_teddy DD nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy
     DD nvol_teddy_fat_avx2_2 - nvol_fntbl_teddy
     DD nvol_teddy_fat_avx2_3 - nvol_fntbl_teddy
     DD nvol_teddy_fat_avx2_4 - nvol_fntbl_teddy
-_TEXT ENDS
+_NVOLT ENDS
 END

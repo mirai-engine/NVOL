@@ -181,11 +181,11 @@ def module(functions: list, fmt: str, consts: dict = None, tables: dict = None,
     if fmt == "win64" and exports:
         lines.append('.section .drectve')
         lines += [f'    .ascii " -export:{n}"' for n in exports]
-    lines += [".text", ".p2align 4"]
+    lines += [".text", ".p2align 6"]
     off = 0
     for name, code, public in functions:
         lines.append("")
-        pad = (-off) % 16
+        pad = (-off) % encode.FUNC_ALIGN   # every function 64-aligned, with NVOL's own NOP bytes
         lines += ["    .byte " + ", ".join(str(b) for b in nop) for nop in encode.nops(pad)]
         lines += pr.function(name, code, public, export_all)
         off += pad + encode.code_size(code)

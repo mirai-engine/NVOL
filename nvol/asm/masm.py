@@ -7,7 +7,8 @@ Differences from NASM that matter here:
   (`L_<name>` for the MIR's `.<name>`);
 - exports are `-export:` directives written into a `.drectve` segment, as in NASM: `PROC EXPORT`
   writes `/EXPORT:`, which MSVC's link.exe reads but GNU ld (MinGW) ignores;
-- sections are segments: `_TEXT`, `_DATA`, and the constants in `_NVOLK`, aliased to `.rdata`
+- sections are segments: the code in `_NVOLT`, aliased to `.text` with 64-byte alignment (the
+  predefined `_TEXT` is 16-aligned), `_DATA`, and the constants in `_NVOLK`, aliased to `.rdata`
   with 64-byte alignment (the simplified `.const` segment is only 16-byte aligned);
 - `OPTION CASEMAP:NONE`: symbol names are case-sensitive, like the C side."""
 from __future__ import annotations
@@ -132,18 +133,20 @@ def module(functions: list, fmt: str, consts: dict = None, tables: dict = None,
         for p, target in ptrs.items():
             lines += ["ALIGN 8", f"PUBLIC {p}", f"{p} DQ {target}"]
         lines.append("_DATA ENDS")
-    lines.append("_TEXT SEGMENT")             # (16-aligned: PARA)
+    # functions 64-aligned (encode.FUNC_ALIGN): ml64 predefines _TEXT (16-aligned, which a
+    # redeclaration cannot change), so the code goes in its own segment aliased to .text
+    lines.append("_NVOLT SEGMENT ALIGN(64) READ EXECUTE ALIAS(\".text\") 'CODE'")
     off = 0
     for name, code, public in functions:
         lines.append("")
-        pad = (-off) % 16
+        pad = (-off) % encode.FUNC_ALIGN   # every function 64-aligned, with NVOL's own NOP bytes
         lines += [f"    DB {', '.join(str(b) for b in nop)}" for nop in encode.nops(pad)]
         lines += function(name, code, public, export_all)
         off += pad + encode.code_size(code)
     for name, fns in (fn_tables or {}).items():
         lines += ["", "ALIGN 8", f"nvol_fntbl_{name} DD {fns[0]} - nvol_fntbl_{name}"]
         lines += [f"    DD {fn} - nvol_fntbl_{name}" for fn in fns[1:]]
-    lines += ["_TEXT ENDS", "END"]
+    lines += ["_NVOLT ENDS", "END"]
     return "\n".join(lines) + "\n"
 
 

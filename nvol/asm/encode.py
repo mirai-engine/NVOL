@@ -393,8 +393,19 @@ def relax(code: list) -> list:
     return code
 
 
+FUNC_ALIGN = 64     # every function starts on a cache line (the printers pad to it)
+
+
 def _layout(code: list):
-    """Label offsets and instruction offsets, the alignment padding recomputed."""
+    """Label offsets and instruction offsets, the alignment padding recomputed.
+
+    Offsets count from the function's start, which the printers put on a FUNC_ALIGN boundary,
+    so a function's place in the uop cache's 32-byte windows depends only on its own code: an
+    edit to another function no longer moves it. A loop's place in a window can change its
+    cycles by 30 % (memmem 4 KiB, PENDING item 25), and with 16-byte function alignment every
+    edit redrew that for every function after it. Loop heads keep the cheap rule: 16 when the
+    pad costs at most the align's skip, else 8 (aligning every head to 32 ran up to 31 NOP
+    bytes on each loop entry and grew .text 8 %, for no gain over this one)."""
     labels, pos, off = {}, [], 0
     for ins in code:
         pos.append(off)

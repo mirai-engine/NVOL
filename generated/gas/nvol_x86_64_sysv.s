@@ -161,7 +161,7 @@ L.nvol_find_byteset_pair_mask_raw_ptr:
     .quad L.nvol_find_byteset_pair_mask_raw_resolve
 .section .note.GNU-stack,"",@progbits
 .text
-.p2align 4
+.p2align 6
 
 .globl nvol_memchr_scalar
 .type nvol_memchr_scalar, @function
@@ -191,7 +191,9 @@ L.nvol_memchr_scalar:
 .cfi_endproc
 .size nvol_memchr_scalar, .-nvol_memchr_scalar
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memchr_sse2
 .type nvol_memchr_sse2, @function
 .hidden nvol_memchr_sse2
@@ -423,7 +425,12 @@ L.nvol_memchr_avx2:
 .cfi_endproc
 .size nvol_memchr_avx2, .-nvol_memchr_avx2
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memchr_entry_avx2
 .type nvol_memchr_entry_avx2, @function
 .hidden nvol_memchr_entry_avx2
@@ -653,7 +660,11 @@ L.nvol_memchr_entry_avx2:
 .cfi_endproc
 .size nvol_memchr_entry_avx2, .-nvol_memchr_entry_avx2
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memchr_entry_sse2
 .type nvol_memchr_entry_sse2, @function
 .hidden nvol_memchr_entry_sse2
@@ -793,7 +804,10 @@ L.nvol_memchr_entry_sse2:
 .cfi_endproc
 .size nvol_memchr_entry_sse2, .-nvol_memchr_entry_sse2
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memchr_raw
 .type nvol_memchr_raw, @function
 nvol_memchr_raw:
@@ -804,7 +818,12 @@ L.nvol_memchr_raw:
 .size nvol_memchr_raw, .-nvol_memchr_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memchr_raw_resolve
 .type nvol_memchr_raw_resolve, @function
 .hidden nvol_memchr_raw_resolve
@@ -885,7 +904,8 @@ L.nvol_memchr:
 .size nvol_memchr, .-nvol_memchr
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr_scalar
 .type nvol_memrchr_scalar, @function
 .hidden nvol_memrchr_scalar
@@ -914,7 +934,9 @@ L.nvol_memrchr_scalar:
 .cfi_endproc
 .size nvol_memrchr_scalar, .-nvol_memrchr_scalar
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memrchr_sse2
 .type nvol_memrchr_sse2, @function
 .hidden nvol_memrchr_sse2
@@ -1086,7 +1108,9 @@ L.nvol_memrchr_sse2:
 .cfi_endproc
 .size nvol_memrchr_sse2, .-nvol_memrchr_sse2
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_memrchr_avx2
 .type nvol_memrchr_avx2, @function
 .hidden nvol_memrchr_avx2
@@ -1243,7 +1267,9 @@ L.nvol_memrchr_avx2:
 .cfi_endproc
 .size nvol_memrchr_avx2, .-nvol_memrchr_avx2
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memrchr_entry_avx2
 .type nvol_memrchr_entry_avx2, @function
 .hidden nvol_memrchr_entry_avx2
@@ -1566,7 +1592,10 @@ L.nvol_memrchr_entry_avx2:
 .size nvol_memrchr_entry_avx2, .-nvol_memrchr_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr_entry_sse2
 .type nvol_memrchr_entry_sse2, @function
 .hidden nvol_memrchr_entry_sse2
@@ -1758,7 +1787,10 @@ L.nvol_memrchr_entry_sse2:
 .size nvol_memrchr_entry_sse2, .-nvol_memrchr_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr_raw
 .type nvol_memrchr_raw, @function
 nvol_memrchr_raw:
@@ -1769,7 +1801,12 @@ L.nvol_memrchr_raw:
 .size nvol_memrchr_raw, .-nvol_memrchr_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr_raw_resolve
 .type nvol_memrchr_raw_resolve, @function
 .hidden nvol_memrchr_raw_resolve
@@ -1850,7 +1887,8 @@ L.nvol_memrchr:
 .size nvol_memrchr, .-nvol_memrchr
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memchr2_scalar
 .type nvol_memchr2_scalar, @function
 .hidden nvol_memchr2_scalar
@@ -1883,7 +1921,9 @@ L.nvol_memchr2_scalar:
 .cfi_endproc
 .size nvol_memchr2_scalar, .-nvol_memchr2_scalar
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_memchr2_sse2
 .type nvol_memchr2_sse2, @function
 .hidden nvol_memchr2_sse2
@@ -2108,7 +2148,11 @@ L.nvol_memchr2_avx2:
 .cfi_endproc
 .size nvol_memchr2_avx2, .-nvol_memchr2_avx2
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memchr2_entry_avx2
 .type nvol_memchr2_entry_avx2, @function
 .hidden nvol_memchr2_entry_avx2
@@ -2474,7 +2518,8 @@ L.nvol_memchr2_entry_sse2:
 .cfi_endproc
 .size nvol_memchr2_entry_sse2, .-nvol_memchr2_entry_sse2
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memchr2_raw
 .type nvol_memchr2_raw, @function
 nvol_memchr2_raw:
@@ -2485,7 +2530,12 @@ L.nvol_memchr2_raw:
 .size nvol_memchr2_raw, .-nvol_memchr2_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memchr2_raw_resolve
 .type nvol_memchr2_raw_resolve, @function
 .hidden nvol_memchr2_raw_resolve
@@ -2566,7 +2616,9 @@ L.nvol_memchr2:
 .cfi_endproc
 .size nvol_memchr2, .-nvol_memchr2
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memrchr2_scalar
 .type nvol_memrchr2_scalar, @function
 .hidden nvol_memrchr2_scalar
@@ -2599,7 +2651,9 @@ L.nvol_memrchr2_scalar:
 .cfi_endproc
 .size nvol_memrchr2_scalar, .-nvol_memrchr2_scalar
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_memrchr2_sse2
 .type nvol_memrchr2_sse2, @function
 .hidden nvol_memrchr2_sse2
@@ -2892,7 +2946,11 @@ L.nvol_memrchr2_avx2:
 .cfi_endproc
 .size nvol_memrchr2_avx2, .-nvol_memrchr2_avx2
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_memrchr2_entry_avx2
 .type nvol_memrchr2_entry_avx2, @function
 .hidden nvol_memrchr2_entry_avx2
@@ -3184,7 +3242,9 @@ L.nvol_memrchr2_entry_avx2:
 .cfi_endproc
 .size nvol_memrchr2_entry_avx2, .-nvol_memrchr2_entry_avx2
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memrchr2_entry_sse2
 .type nvol_memrchr2_entry_sse2, @function
 .hidden nvol_memrchr2_entry_sse2
@@ -3357,7 +3417,8 @@ L.nvol_memrchr2_entry_sse2:
 .cfi_endproc
 .size nvol_memrchr2_entry_sse2, .-nvol_memrchr2_entry_sse2
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr2_raw
 .type nvol_memrchr2_raw, @function
 nvol_memrchr2_raw:
@@ -3368,7 +3429,12 @@ L.nvol_memrchr2_raw:
 .size nvol_memrchr2_raw, .-nvol_memrchr2_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr2_raw_resolve
 .type nvol_memrchr2_raw_resolve, @function
 .hidden nvol_memrchr2_raw_resolve
@@ -3449,7 +3515,9 @@ L.nvol_memrchr2:
 .cfi_endproc
 .size nvol_memrchr2, .-nvol_memrchr2
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memchr3_scalar
 .type nvol_memchr3_scalar, @function
 .hidden nvol_memchr3_scalar
@@ -3484,6 +3552,8 @@ L.nvol_memchr3_scalar:
 .cfi_endproc
 .size nvol_memchr3_scalar, .-nvol_memchr3_scalar
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memchr3_sse2
 .type nvol_memchr3_sse2, @function
 .hidden nvol_memchr3_sse2
@@ -3619,7 +3689,10 @@ L.nvol_memchr3_sse2:
 .size nvol_memchr3_sse2, .-nvol_memchr3_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memchr3_avx2
 .type nvol_memchr3_avx2, @function
 .hidden nvol_memchr3_avx2
@@ -3741,7 +3814,13 @@ L.nvol_memchr3_avx2:
 .cfi_endproc
 .size nvol_memchr3_avx2, .-nvol_memchr3_avx2
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_memchr3_entry_avx2
 .type nvol_memchr3_entry_avx2, @function
 .hidden nvol_memchr3_entry_avx2
@@ -3996,7 +4075,10 @@ L.nvol_memchr3_entry_avx2:
 .cfi_endproc
 .size nvol_memchr3_entry_avx2, .-nvol_memchr3_entry_avx2
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memchr3_entry_sse2
 .type nvol_memchr3_entry_sse2, @function
 .hidden nvol_memchr3_entry_sse2
@@ -4157,7 +4239,12 @@ L.nvol_memchr3_entry_sse2:
 .size nvol_memchr3_entry_sse2, .-nvol_memchr3_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memchr3_raw
 .type nvol_memchr3_raw, @function
 nvol_memchr3_raw:
@@ -4168,7 +4255,12 @@ L.nvol_memchr3_raw:
 .size nvol_memchr3_raw, .-nvol_memchr3_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memchr3_raw_resolve
 .type nvol_memchr3_raw_resolve, @function
 .hidden nvol_memchr3_raw_resolve
@@ -4250,7 +4342,9 @@ L.nvol_memchr3:
 .cfi_endproc
 .size nvol_memchr3, .-nvol_memchr3
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_memrchr3_scalar
 .type nvol_memrchr3_scalar, @function
 .hidden nvol_memrchr3_scalar
@@ -4621,7 +4715,10 @@ L.nvol_memrchr3_avx2:
 .cfi_endproc
 .size nvol_memrchr3_avx2, .-nvol_memrchr3_avx2
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memrchr3_entry_avx2
 .type nvol_memrchr3_entry_avx2, @function
 .hidden nvol_memrchr3_entry_avx2
@@ -5149,7 +5246,8 @@ L.nvol_memrchr3_entry_sse2:
 .cfi_endproc
 .size nvol_memrchr3_entry_sse2, .-nvol_memrchr3_entry_sse2
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memrchr3_raw
 .type nvol_memrchr3_raw, @function
 nvol_memrchr3_raw:
@@ -5160,7 +5258,12 @@ L.nvol_memrchr3_raw:
 .size nvol_memrchr3_raw, .-nvol_memrchr3_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memrchr3_raw_resolve
 .type nvol_memrchr3_raw_resolve, @function
 .hidden nvol_memrchr3_raw_resolve
@@ -5242,7 +5345,9 @@ L.nvol_memrchr3:
 .cfi_endproc
 .size nvol_memrchr3, .-nvol_memrchr3
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_count_scalar
 .type nvol_count_scalar, @function
 .hidden nvol_count_scalar
@@ -5270,7 +5375,9 @@ L.nvol_count_scalar:
 .cfi_endproc
 .size nvol_count_scalar, .-nvol_count_scalar
 
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_count_parity_sse2
 .type nvol_count_parity_sse2, @function
 .hidden nvol_count_parity_sse2
@@ -5394,7 +5501,13 @@ L.nvol_count_parity_sse2:
 .cfi_endproc
 .size nvol_count_parity_sse2, .-nvol_count_parity_sse2
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_count_parity_avx2
 .type nvol_count_parity_avx2, @function
 .hidden nvol_count_parity_avx2
@@ -5673,7 +5786,11 @@ L.nvol_count_parity_entry_avx2:
 .cfi_endproc
 .size nvol_count_parity_entry_avx2, .-nvol_count_parity_entry_avx2
 
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_count_parity_entry_sse2
 .type nvol_count_parity_entry_sse2, @function
 .hidden nvol_count_parity_entry_sse2
@@ -5827,7 +5944,12 @@ L.nvol_count_parity_raw:
 .size nvol_count_parity_raw, .-nvol_count_parity_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_count_parity_raw_resolve
 .type nvol_count_parity_raw_resolve, @function
 .hidden nvol_count_parity_raw_resolve
@@ -5894,7 +6016,12 @@ L.nvol_count_parity:
 .cfi_endproc
 .size nvol_count_parity, .-nvol_count_parity
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_count_sad_sse2
 .type nvol_count_sad_sse2, @function
 .hidden nvol_count_sad_sse2
@@ -6010,7 +6137,9 @@ L.nvol_count_sad_sse2:
 .size nvol_count_sad_sse2, .-nvol_count_sad_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_count_sad_avx2
 .type nvol_count_sad_avx2, @function
 .hidden nvol_count_sad_avx2
@@ -6097,7 +6226,12 @@ L.nvol_count_sad_avx2:
 .cfi_endproc
 .size nvol_count_sad_avx2, .-nvol_count_sad_avx2
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_count_entry_avx2
 .type nvol_count_entry_avx2, @function
 .hidden nvol_count_entry_avx2
@@ -6419,7 +6553,11 @@ L.nvol_count_entry_sse2:
 .size nvol_count_entry_sse2, .-nvol_count_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_count_raw
 .type nvol_count_raw, @function
 nvol_count_raw:
@@ -6430,7 +6568,12 @@ L.nvol_count_raw:
 .size nvol_count_raw, .-nvol_count_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_count_raw_resolve
 .type nvol_count_raw_resolve, @function
 .hidden nvol_count_raw_resolve
@@ -6497,7 +6640,12 @@ L.nvol_count:
 .cfi_endproc
 .size nvol_count, .-nvol_count
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_first_non_ascii_scalar
 .type nvol_first_non_ascii_scalar, @function
 .hidden nvol_first_non_ascii_scalar
@@ -6526,7 +6674,9 @@ L.nvol_first_non_ascii_scalar:
 .size nvol_first_non_ascii_scalar, .-nvol_first_non_ascii_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_first_non_ascii_sse2
 .type nvol_first_non_ascii_sse2, @function
 .hidden nvol_first_non_ascii_sse2
@@ -6639,7 +6789,12 @@ L.nvol_first_non_ascii_sse2:
 .size nvol_first_non_ascii_sse2, .-nvol_first_non_ascii_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_first_non_ascii_avx2
 .type nvol_first_non_ascii_avx2, @function
 .hidden nvol_first_non_ascii_avx2
@@ -6750,7 +6905,13 @@ L.nvol_first_non_ascii_avx2:
 .cfi_endproc
 .size nvol_first_non_ascii_avx2, .-nvol_first_non_ascii_avx2
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_first_non_ascii_entry_avx2
 .type nvol_first_non_ascii_entry_avx2, @function
 .hidden nvol_first_non_ascii_entry_avx2
@@ -6981,7 +7142,9 @@ L.nvol_first_non_ascii_entry_avx2:
 .cfi_endproc
 .size nvol_first_non_ascii_entry_avx2, .-nvol_first_non_ascii_entry_avx2
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_first_non_ascii_entry_sse2
 .type nvol_first_non_ascii_entry_sse2, @function
 .hidden nvol_first_non_ascii_entry_sse2
@@ -7124,7 +7287,12 @@ L.nvol_first_non_ascii_raw:
 .size nvol_first_non_ascii_raw, .-nvol_first_non_ascii_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_first_non_ascii_raw_resolve
 .type nvol_first_non_ascii_raw_resolve, @function
 .hidden nvol_first_non_ascii_raw_resolve
@@ -7204,7 +7372,9 @@ L.nvol_first_non_ascii:
 .size nvol_first_non_ascii, .-nvol_first_non_ascii
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_is_equal
 .type nvol_is_equal, @function
 .hidden nvol_is_equal
@@ -7259,6 +7429,8 @@ L.nvol_is_equal:
 .size nvol_is_equal, .-nvol_is_equal
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_memmem_rk
 .type nvol_memmem_rk, @function
 .hidden nvol_memmem_rk
@@ -7371,7 +7543,9 @@ L.nvol_memmem_rk:
 .cfi_endproc
 .size nvol_memmem_rk, .-nvol_memmem_rk
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memmem_rk_oneshot
 .type nvol_memmem_rk_oneshot, @function
 nvol_memmem_rk_oneshot:
@@ -7500,7 +7674,12 @@ L.nvol_memmem_rk_oneshot:
 .size nvol_memmem_rk_oneshot, .-nvol_memmem_rk_oneshot
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memmem_suffix_min
 .type nvol_memmem_suffix_min, @function
 .hidden nvol_memmem_suffix_min
@@ -7560,6 +7739,12 @@ L.nvol_memmem_suffix_min:
 .size nvol_memmem_suffix_min, .-nvol_memmem_suffix_min
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memmem_suffix_max
 .type nvol_memmem_suffix_max, @function
 .hidden nvol_memmem_suffix_max
@@ -7619,6 +7804,12 @@ L.nvol_memmem_suffix_max:
 .size nvol_memmem_suffix_max, .-nvol_memmem_suffix_max
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memmem_init
 .type nvol_memmem_init, @function
 nvol_memmem_init:
@@ -7934,7 +8125,9 @@ L.nvol_memmem_init:
 .cfi_endproc
 .size nvol_memmem_init, .-nvol_memmem_init
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_memmem_pppre_sse2
 .type nvol_memmem_pppre_sse2, @function
 .hidden nvol_memmem_pppre_sse2
@@ -8006,7 +8199,12 @@ L.nvol_memmem_pppre_sse2:
 .size nvol_memmem_pppre_sse2, .-nvol_memmem_pppre_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memmem_pppre_avx2
 .type nvol_memmem_pppre_avx2, @function
 .hidden nvol_memmem_pppre_avx2
@@ -8072,7 +8270,8 @@ L.nvol_memmem_pppre_avx2:
 .cfi_endproc
 .size nvol_memmem_pppre_avx2, .-nvol_memmem_pppre_avx2
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memmem_pp_sse2
 .type nvol_memmem_pp_sse2, @function
 .hidden nvol_memmem_pp_sse2
@@ -8299,6 +8498,12 @@ L.nvol_memmem_pp_sse2:
 .size nvol_memmem_pp_sse2, .-nvol_memmem_pp_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memmem_pp2_sse2
 .type nvol_memmem_pp2_sse2, @function
 .hidden nvol_memmem_pp2_sse2
@@ -8378,7 +8583,11 @@ L.nvol_memmem_pp2_sse2:
 .size nvol_memmem_pp2_sse2, .-nvol_memmem_pp2_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_memmem_tw_sse2
 .type nvol_memmem_tw_sse2, @function
 .hidden nvol_memmem_tw_sse2
@@ -8997,7 +9206,9 @@ L.nvol_memmem_pp_avx2:
 .cfi_endproc
 .size nvol_memmem_pp_avx2, .-nvol_memmem_pp_avx2
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memmem_pp2_avx2
 .type nvol_memmem_pp2_avx2, @function
 .hidden nvol_memmem_pp2_avx2
@@ -9541,7 +9752,11 @@ L.nvol_memmem_tw_avx2:
 .size nvol_memmem_tw_avx2, .-nvol_memmem_tw_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_memmem_find_entry_avx2
 .type nvol_memmem_find_entry_avx2, @function
 .hidden nvol_memmem_find_entry_avx2
@@ -10776,6 +10991,10 @@ L.nvol_memmem_find_entry_avx2:
 .size nvol_memmem_find_entry_avx2, .-nvol_memmem_find_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memmem_find_entry_sse2
 .type nvol_memmem_find_entry_sse2, @function
 .hidden nvol_memmem_find_entry_sse2
@@ -11682,7 +11901,8 @@ L.nvol_memmem_find_entry_sse2:
 .size nvol_memmem_find_entry_sse2, .-nvol_memmem_find_entry_sse2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memmem_find_raw
 .type nvol_memmem_find_raw, @function
 nvol_memmem_find_raw:
@@ -11693,7 +11913,12 @@ L.nvol_memmem_find_raw:
 .size nvol_memmem_find_raw, .-nvol_memmem_find_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_memmem_find_raw_resolve
 .type nvol_memmem_find_raw_resolve, @function
 .hidden nvol_memmem_find_raw_resolve
@@ -11822,7 +12047,9 @@ L.nvol_is_equal_ac:
 .cfi_endproc
 .size nvol_is_equal_ac, .-nvol_is_equal_ac
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_teddy_verify64_slim
 .type nvol_teddy_verify64_slim, @function
 .hidden nvol_teddy_verify64_slim
@@ -12002,6 +12229,8 @@ L.nvol_teddy_verify64_slim:
 .size nvol_teddy_verify64_slim, .-nvol_teddy_verify64_slim
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_teddy_verify64_fat
 .type nvol_teddy_verify64_fat, @function
 .hidden nvol_teddy_verify64_fat
@@ -12181,6 +12410,8 @@ L.nvol_teddy_verify64_fat:
 .size nvol_teddy_verify64_fat, .-nvol_teddy_verify64_fat
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_teddy_slow
 .type nvol_teddy_slow, @function
 .hidden nvol_teddy_slow
@@ -12393,7 +12624,12 @@ L.nvol_teddy_slow:
 .size nvol_teddy_slow, .-nvol_teddy_slow
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_init
 .type nvol_teddy_init, @function
 nvol_teddy_init:
@@ -12737,6 +12973,12 @@ L.nvol_teddy_init:
 .size nvol_teddy_init, .-nvol_teddy_init
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_teddy_slim_ssse3_1
 .type nvol_teddy_slim_ssse3_1, @function
 .hidden nvol_teddy_slim_ssse3_1
@@ -13404,7 +13646,10 @@ L.nvol_teddy_slim_ssse3_1:
 .cfi_endproc
 .size nvol_teddy_slim_ssse3_1, .-nvol_teddy_slim_ssse3_1
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_teddy_slim_ssse3_2
 .type nvol_teddy_slim_ssse3_2, @function
 .hidden nvol_teddy_slim_ssse3_2
@@ -14096,7 +14341,8 @@ L.nvol_teddy_slim_ssse3_2:
 .cfi_endproc
 .size nvol_teddy_slim_ssse3_2, .-nvol_teddy_slim_ssse3_2
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_slim_ssse3_3
 .type nvol_teddy_slim_ssse3_3, @function
 .hidden nvol_teddy_slim_ssse3_3
@@ -14808,7 +15054,8 @@ L.nvol_teddy_slim_ssse3_3:
 .cfi_endproc
 .size nvol_teddy_slim_ssse3_3, .-nvol_teddy_slim_ssse3_3
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_slim_ssse3_4
 .type nvol_teddy_slim_ssse3_4, @function
 .hidden nvol_teddy_slim_ssse3_4
@@ -17989,7 +18236,10 @@ L.nvol_teddy_fat_avx2_1:
 .cfi_endproc
 .size nvol_teddy_fat_avx2_1, .-nvol_teddy_fat_avx2_1
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_slim_avx2_2
 .type nvol_teddy_slim_avx2_2, @function
 .hidden nvol_teddy_slim_avx2_2
@@ -19232,7 +19482,9 @@ L.nvol_teddy_slim_avx2_2:
 .cfi_endproc
 .size nvol_teddy_slim_avx2_2, .-nvol_teddy_slim_avx2_2
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_teddy_fat_avx2_2
 .type nvol_teddy_fat_avx2_2, @function
 .hidden nvol_teddy_fat_avx2_2
@@ -20473,7 +20725,12 @@ L.nvol_teddy_fat_avx2_2:
 .cfi_endproc
 .size nvol_teddy_fat_avx2_2, .-nvol_teddy_fat_avx2_2
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_teddy_slim_avx2_3
 .type nvol_teddy_slim_avx2_3, @function
 .hidden nvol_teddy_slim_avx2_3
@@ -21733,7 +21990,12 @@ L.nvol_teddy_slim_avx2_3:
 .cfi_endproc
 .size nvol_teddy_slim_avx2_3, .-nvol_teddy_slim_avx2_3
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_teddy_fat_avx2_3
 .type nvol_teddy_fat_avx2_3, @function
 .hidden nvol_teddy_fat_avx2_3
@@ -22989,7 +23251,10 @@ L.nvol_teddy_fat_avx2_3:
 .cfi_endproc
 .size nvol_teddy_fat_avx2_3, .-nvol_teddy_fat_avx2_3
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_slim_avx2_4
 .type nvol_teddy_slim_avx2_4, @function
 .hidden nvol_teddy_slim_avx2_4
@@ -24281,7 +24546,9 @@ L.nvol_teddy_slim_avx2_4:
 .cfi_endproc
 .size nvol_teddy_slim_avx2_4, .-nvol_teddy_slim_avx2_4
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_teddy_fat_avx2_4
 .type nvol_teddy_fat_avx2_4, @function
 .hidden nvol_teddy_fat_avx2_4
@@ -25565,7 +25832,9 @@ L.nvol_teddy_fat_avx2_4:
 .cfi_endproc
 .size nvol_teddy_fat_avx2_4, .-nvol_teddy_fat_avx2_4
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_teddy_find_raw
 .type nvol_teddy_find_raw, @function
 nvol_teddy_find_raw:
@@ -25608,7 +25877,10 @@ L.nvol_teddy_find_raw:
 .size nvol_teddy_find_raw, .-nvol_teddy_find_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_byteset_init
 .type nvol_byteset_init, @function
 nvol_byteset_init:
@@ -25871,6 +26143,12 @@ L.nvol_byteset_init:
 .size nvol_byteset_init, .-nvol_byteset_init
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_byteset_pair_init
 .type nvol_byteset_pair_init, @function
 nvol_byteset_pair_init:
@@ -26411,7 +26689,10 @@ L.nvol_byteset_pair_init:
 .cfi_endproc
 .size nvol_byteset_pair_init, .-nvol_byteset_pair_init
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_scalar
 .type nvol_find_byteset_scalar, @function
 .hidden nvol_find_byteset_scalar
@@ -26449,7 +26730,12 @@ L.nvol_find_byteset_scalar:
 .size nvol_find_byteset_scalar, .-nvol_find_byteset_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_not_byteset_scalar
 .type nvol_find_not_byteset_scalar, @function
 .hidden nvol_find_not_byteset_scalar
@@ -26487,7 +26773,12 @@ L.nvol_find_not_byteset_scalar:
 .size nvol_find_not_byteset_scalar, .-nvol_find_not_byteset_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_scalar
 .type nvol_copy_until_byteset_scalar, @function
 .hidden nvol_copy_until_byteset_scalar
@@ -26528,7 +26819,11 @@ L.nvol_copy_until_byteset_scalar:
 .cfi_endproc
 .size nvol_copy_until_byteset_scalar, .-nvol_copy_until_byteset_scalar
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_scalar
 .type nvol_find_byteset_pair_scalar, @function
 .hidden nvol_find_byteset_pair_scalar
@@ -26593,7 +26888,8 @@ L.nvol_find_byteset_pair_scalar:
 .size nvol_find_byteset_pair_scalar, .-nvol_find_byteset_pair_scalar
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_scalar
 .type nvol_find_byteset_pair_mask_scalar, @function
 .hidden nvol_find_byteset_pair_mask_scalar
@@ -26775,7 +27071,8 @@ L.nvol_find_byteset_pair_visit_scalar:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_scalar, .-nvol_find_byteset_pair_visit_scalar
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_ssse3
 .type nvol_find_byteset_ssse3, @function
 .hidden nvol_find_byteset_ssse3
@@ -26915,7 +27212,10 @@ L.nvol_find_byteset_ssse3_u:
 .size nvol_find_byteset_ssse3_u, .-nvol_find_byteset_ssse3_u
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_ssse3
 .type nvol_find_byteset_pair_ssse3, @function
 .hidden nvol_find_byteset_pair_ssse3
@@ -27032,7 +27332,9 @@ L.nvol_find_byteset_pair_ssse3:
 .size nvol_find_byteset_pair_ssse3, .-nvol_find_byteset_pair_ssse3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_sse2_k4
 .type nvol_find_byteset_sse2_k4, @function
 .hidden nvol_find_byteset_sse2_k4
@@ -27211,6 +27513,8 @@ L.nvol_find_byteset_sse2_k5:
 .size nvol_find_byteset_sse2_k5, .-nvol_find_byteset_sse2_k5
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_sse2_k6
 .type nvol_find_byteset_sse2_k6, @function
 .hidden nvol_find_byteset_sse2_k6
@@ -27314,7 +27618,11 @@ L.nvol_find_byteset_sse2_k6:
 .cfi_endproc
 .size nvol_find_byteset_sse2_k6, .-nvol_find_byteset_sse2_k6
 
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_not_byteset_ssse3
 .type nvol_find_not_byteset_ssse3, @function
 .hidden nvol_find_not_byteset_ssse3
@@ -27396,7 +27704,12 @@ L.nvol_find_not_byteset_ssse3:
 .size nvol_find_not_byteset_ssse3, .-nvol_find_not_byteset_ssse3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_ssse3_u
 .type nvol_find_not_byteset_ssse3_u, @function
 .hidden nvol_find_not_byteset_ssse3_u
@@ -27458,7 +27771,10 @@ L.nvol_find_not_byteset_ssse3_u:
 .cfi_endproc
 .size nvol_find_not_byteset_ssse3_u, .-nvol_find_not_byteset_ssse3_u
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_sse2_k1
 .type nvol_find_not_byteset_sse2_k1, @function
 .hidden nvol_find_not_byteset_sse2_k1
@@ -27581,7 +27897,8 @@ L.nvol_find_not_byteset_sse2_k2:
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_k2, .-nvol_find_not_byteset_sse2_k2
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_sse2_k3
 .type nvol_find_not_byteset_sse2_k3, @function
 .hidden nvol_find_not_byteset_sse2_k3
@@ -27659,7 +27976,10 @@ L.nvol_find_not_byteset_sse2_k3:
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_k3, .-nvol_find_not_byteset_sse2_k3
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_sse2_k4
 .type nvol_find_not_byteset_sse2_k4, @function
 .hidden nvol_find_not_byteset_sse2_k4
@@ -27747,6 +28067,12 @@ L.nvol_find_not_byteset_sse2_k4:
 .size nvol_find_not_byteset_sse2_k4, .-nvol_find_not_byteset_sse2_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_not_byteset_sse2_k5
 .type nvol_find_not_byteset_sse2_k5, @function
 .hidden nvol_find_not_byteset_sse2_k5
@@ -28036,7 +28362,12 @@ L.nvol_copy_until_byteset_ssse3:
 .cfi_endproc
 .size nvol_copy_until_byteset_ssse3, .-nvol_copy_until_byteset_ssse3
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_ssse3_u
 .type nvol_copy_until_byteset_ssse3_u, @function
 .hidden nvol_copy_until_byteset_ssse3_u
@@ -28102,7 +28433,9 @@ L.nvol_copy_until_byteset_ssse3_u:
 .cfi_endproc
 .size nvol_copy_until_byteset_ssse3_u, .-nvol_copy_until_byteset_ssse3_u
 
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_copy_until_byteset_sse2_k1
 .type nvol_copy_until_byteset_sse2_k1, @function
 .hidden nvol_copy_until_byteset_sse2_k1
@@ -28164,7 +28497,10 @@ L.nvol_copy_until_byteset_sse2_k1:
 .size nvol_copy_until_byteset_sse2_k1, .-nvol_copy_until_byteset_sse2_k1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_sse2_k2
 .type nvol_copy_until_byteset_sse2_k2, @function
 .hidden nvol_copy_until_byteset_sse2_k2
@@ -28316,7 +28652,9 @@ L.nvol_copy_until_byteset_sse2_k3:
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_k3, .-nvol_copy_until_byteset_sse2_k3
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_copy_until_byteset_sse2_k4
 .type nvol_copy_until_byteset_sse2_k4, @function
 .hidden nvol_copy_until_byteset_sse2_k4
@@ -28408,7 +28746,10 @@ L.nvol_copy_until_byteset_sse2_k4:
 .size nvol_copy_until_byteset_sse2_k4, .-nvol_copy_until_byteset_sse2_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_sse2_k5
 .type nvol_copy_until_byteset_sse2_k5, @function
 .hidden nvol_copy_until_byteset_sse2_k5
@@ -28679,6 +29020,12 @@ L.nvol_find_byteset_sse2_r0:
 .size nvol_find_byteset_sse2_r0, .-nvol_find_byteset_sse2_r0
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_not_byteset_sse2_r0
 .type nvol_find_not_byteset_sse2_r0, @function
 .hidden nvol_find_not_byteset_sse2_r0
@@ -28738,7 +29085,12 @@ L.nvol_find_not_byteset_sse2_r0:
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_r0, .-nvol_find_not_byteset_sse2_r0
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_sse2_r0
 .type nvol_copy_until_byteset_sse2_r0, @function
 .hidden nvol_copy_until_byteset_sse2_r0
@@ -28804,7 +29156,8 @@ L.nvol_copy_until_byteset_sse2_r0:
 .size nvol_copy_until_byteset_sse2_r0, .-nvol_copy_until_byteset_sse2_r0
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_sse2_r1
 .type nvol_find_byteset_sse2_r1, @function
 .hidden nvol_find_byteset_sse2_r1
@@ -28871,6 +29224,8 @@ L.nvol_find_byteset_sse2_r1:
 .size nvol_find_byteset_sse2_r1, .-nvol_find_byteset_sse2_r1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_not_byteset_sse2_r1
 .type nvol_find_not_byteset_sse2_r1, @function
 .hidden nvol_find_not_byteset_sse2_r1
@@ -29013,7 +29368,12 @@ L.nvol_copy_until_byteset_sse2_r1:
 .size nvol_copy_until_byteset_sse2_r1, .-nvol_copy_until_byteset_sse2_r1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_sse2_r2
 .type nvol_find_byteset_sse2_r2, @function
 .hidden nvol_find_byteset_sse2_r2
@@ -29090,6 +29450,10 @@ L.nvol_find_byteset_sse2_r2:
 .size nvol_find_byteset_sse2_r2, .-nvol_find_byteset_sse2_r2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_sse2_r2
 .type nvol_find_not_byteset_sse2_r2, @function
 .hidden nvol_find_not_byteset_sse2_r2
@@ -29170,6 +29534,8 @@ L.nvol_find_not_byteset_sse2_r2:
 .size nvol_find_not_byteset_sse2_r2, .-nvol_find_not_byteset_sse2_r2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_sse2_r2
 .type nvol_copy_until_byteset_sse2_r2, @function
 .hidden nvol_copy_until_byteset_sse2_r2
@@ -29428,7 +29794,12 @@ L.nvol_find_not_byteset_sse2_r3:
 .cfi_endproc
 .size nvol_find_not_byteset_sse2_r3, .-nvol_find_not_byteset_sse2_r3
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_sse2_r3
 .type nvol_copy_until_byteset_sse2_r3, @function
 .hidden nvol_copy_until_byteset_sse2_r3
@@ -29521,7 +29892,10 @@ L.nvol_copy_until_byteset_sse2_r3:
 .cfi_endproc
 .size nvol_copy_until_byteset_sse2_r3, .-nvol_copy_until_byteset_sse2_r3
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_ssse3_k1
 .type nvol_find_byteset_pair_ssse3_k1, @function
 .hidden nvol_find_byteset_pair_ssse3_k1
@@ -29592,6 +29966,12 @@ L.nvol_find_byteset_pair_ssse3_k1:
 .size nvol_find_byteset_pair_ssse3_k1, .-nvol_find_byteset_pair_ssse3_k1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_ssse3_k2
 .type nvol_find_byteset_pair_ssse3_k2, @function
 .hidden nvol_find_byteset_pair_ssse3_k2
@@ -29683,6 +30063,8 @@ L.nvol_find_byteset_pair_ssse3_k2:
 .size nvol_find_byteset_pair_ssse3_k2, .-nvol_find_byteset_pair_ssse3_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_ssse3_k3
 .type nvol_find_byteset_pair_ssse3_k3, @function
 .hidden nvol_find_byteset_pair_ssse3_k3
@@ -29793,7 +30175,12 @@ L.nvol_find_byteset_pair_ssse3_k3:
 .size nvol_find_byteset_pair_ssse3_k3, .-nvol_find_byteset_pair_ssse3_k3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_ssse3_k4
 .type nvol_find_byteset_pair_ssse3_k4, @function
 .hidden nvol_find_byteset_pair_ssse3_k4
@@ -29924,7 +30311,12 @@ L.nvol_find_byteset_pair_ssse3_k4:
 .size nvol_find_byteset_pair_ssse3_k4, .-nvol_find_byteset_pair_ssse3_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_ssse3_k5
 .type nvol_find_byteset_pair_ssse3_k5, @function
 .hidden nvol_find_byteset_pair_ssse3_k5
@@ -30074,7 +30466,9 @@ L.nvol_find_byteset_pair_ssse3_k5:
 .cfi_endproc
 .size nvol_find_byteset_pair_ssse3_k5, .-nvol_find_byteset_pair_ssse3_k5
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_ssse3_k6
 .type nvol_find_byteset_pair_ssse3_k6, @function
 .hidden nvol_find_byteset_pair_ssse3_k6
@@ -30246,6 +30640,10 @@ L.nvol_find_byteset_pair_ssse3_k6:
 .size nvol_find_byteset_pair_ssse3_k6, .-nvol_find_byteset_pair_ssse3_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_ssse3
 .type nvol_find_byteset_pair_mask_ssse3, @function
 .hidden nvol_find_byteset_pair_mask_ssse3
@@ -30364,7 +30762,8 @@ L.nvol_find_byteset_pair_mask_ssse3:
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3, .-nvol_find_byteset_pair_mask_ssse3
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_ssse3_k1
 .type nvol_find_byteset_pair_mask_ssse3_k1, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k1
@@ -30437,7 +30836,10 @@ L.nvol_find_byteset_pair_mask_ssse3_k1:
 .size nvol_find_byteset_pair_mask_ssse3_k1, .-nvol_find_byteset_pair_mask_ssse3_k1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_ssse3_k2
 .type nvol_find_byteset_pair_mask_ssse3_k2, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k2
@@ -30644,7 +31046,11 @@ L.nvol_find_byteset_pair_mask_ssse3_k3:
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_ssse3_k3, .-nvol_find_byteset_pair_mask_ssse3_k3
 
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_mask_ssse3_k4
 .type nvol_find_byteset_pair_mask_ssse3_k4, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k4
@@ -30778,7 +31184,11 @@ L.nvol_find_byteset_pair_mask_ssse3_k4:
 .size nvol_find_byteset_pair_mask_ssse3_k4, .-nvol_find_byteset_pair_mask_ssse3_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_mask_ssse3_k5
 .type nvol_find_byteset_pair_mask_ssse3_k5, @function
 .hidden nvol_find_byteset_pair_mask_ssse3_k5
@@ -31105,7 +31515,8 @@ L.nvol_find_byteset_pair_mask_ssse3_k6:
 .size nvol_find_byteset_pair_mask_ssse3_k6, .-nvol_find_byteset_pair_mask_ssse3_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_ssse3
 .type nvol_find_byteset_pair_visit_ssse3, @function
 .hidden nvol_find_byteset_pair_visit_ssse3
@@ -31294,7 +31705,12 @@ L.nvol_find_byteset_pair_visit_ssse3:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3, .-nvol_find_byteset_pair_visit_ssse3
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k1
 .type nvol_find_byteset_pair_visit_ssse3_k1, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k1
@@ -31428,7 +31844,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k1:
 .size nvol_find_byteset_pair_visit_ssse3_k1, .-nvol_find_byteset_pair_visit_ssse3_k1
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k2
 .type nvol_find_byteset_pair_visit_ssse3_k2, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k2
@@ -31591,7 +32009,11 @@ L.nvol_find_byteset_pair_visit_ssse3_k2:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3_k2, .-nvol_find_byteset_pair_visit_ssse3_k2
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k3
 .type nvol_find_byteset_pair_visit_ssse3_k3, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k3
@@ -31785,7 +32207,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k3:
 .size nvol_find_byteset_pair_visit_ssse3_k3, .-nvol_find_byteset_pair_visit_ssse3_k3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k4
 .type nvol_find_byteset_pair_visit_ssse3_k4, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k4
@@ -32009,7 +32433,8 @@ L.nvol_find_byteset_pair_visit_ssse3_k4:
 .size nvol_find_byteset_pair_visit_ssse3_k4, .-nvol_find_byteset_pair_visit_ssse3_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_visit_ssse3_k5
 .type nvol_find_byteset_pair_visit_ssse3_k5, @function
 .hidden nvol_find_byteset_pair_visit_ssse3_k5
@@ -32547,7 +32972,9 @@ L.nvol_find_byteset_pair_visit_ssse3_k6:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_ssse3_k6, .-nvol_find_byteset_pair_visit_ssse3_k6
 
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_avx2
 .type nvol_find_byteset_avx2, @function
 .hidden nvol_find_byteset_avx2
@@ -32622,7 +33049,9 @@ L.nvol_find_byteset_avx2:
 .size nvol_find_byteset_avx2, .-nvol_find_byteset_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_avx2_u
 .type nvol_find_byteset_avx2_u, @function
 .hidden nvol_find_byteset_avx2_u
@@ -32679,7 +33108,12 @@ L.nvol_find_byteset_avx2_u:
 .cfi_endproc
 .size nvol_find_byteset_avx2_u, .-nvol_find_byteset_avx2_u
 
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_avx2
 .type nvol_find_byteset_pair_avx2, @function
 .hidden nvol_find_byteset_pair_avx2
@@ -32786,7 +33220,9 @@ L.nvol_find_byteset_pair_avx2:
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2, .-nvol_find_byteset_pair_avx2
 
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_avx2_k4
 .type nvol_find_byteset_avx2_k4, @function
 .hidden nvol_find_byteset_avx2_k4
@@ -32861,7 +33297,12 @@ L.nvol_find_byteset_avx2_k4:
 .cfi_endproc
 .size nvol_find_byteset_avx2_k4, .-nvol_find_byteset_avx2_k4
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_avx2_k5
 .type nvol_find_byteset_avx2_k5, @function
 .hidden nvol_find_byteset_avx2_k5
@@ -32943,7 +33384,9 @@ L.nvol_find_byteset_avx2_k5:
 .cfi_endproc
 .size nvol_find_byteset_avx2_k5, .-nvol_find_byteset_avx2_k5
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_avx2_k6
 .type nvol_find_byteset_avx2_k6, @function
 .hidden nvol_find_byteset_avx2_k6
@@ -33032,7 +33475,12 @@ L.nvol_find_byteset_avx2_k6:
 .cfi_endproc
 .size nvol_find_byteset_avx2_k6, .-nvol_find_byteset_avx2_k6
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_avx2
 .type nvol_find_not_byteset_avx2, @function
 .hidden nvol_find_not_byteset_avx2
@@ -33109,7 +33557,9 @@ L.nvol_find_not_byteset_avx2:
 .cfi_endproc
 .size nvol_find_not_byteset_avx2, .-nvol_find_not_byteset_avx2
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_not_byteset_avx2_u
 .type nvol_find_not_byteset_avx2_u, @function
 .hidden nvol_find_not_byteset_avx2_u
@@ -33170,7 +33620,10 @@ L.nvol_find_not_byteset_avx2_u:
 .size nvol_find_not_byteset_avx2_u, .-nvol_find_not_byteset_avx2_u
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_avx2_k1
 .type nvol_find_not_byteset_avx2_k1, @function
 .hidden nvol_find_not_byteset_avx2_k1
@@ -33290,7 +33743,9 @@ L.nvol_find_not_byteset_avx2_k2:
 .size nvol_find_not_byteset_avx2_k2, .-nvol_find_not_byteset_avx2_k2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_not_byteset_avx2_k3
 .type nvol_find_not_byteset_avx2_k3, @function
 .hidden nvol_find_not_byteset_avx2_k3
@@ -33439,7 +33894,11 @@ L.nvol_find_not_byteset_avx2_k4:
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_k4, .-nvol_find_not_byteset_avx2_k4
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_not_byteset_avx2_k5
 .type nvol_find_not_byteset_avx2_k5, @function
 .hidden nvol_find_not_byteset_avx2_k5
@@ -33618,7 +34077,10 @@ L.nvol_find_not_byteset_avx2_k6:
 .size nvol_find_not_byteset_avx2_k6, .-nvol_find_not_byteset_avx2_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_avx2
 .type nvol_copy_until_byteset_avx2, @function
 .hidden nvol_copy_until_byteset_avx2
@@ -33763,7 +34225,9 @@ L.nvol_copy_until_byteset_avx2_u:
 .size nvol_copy_until_byteset_avx2_u, .-nvol_copy_until_byteset_avx2_u
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_copy_until_byteset_avx2_k1
 .type nvol_copy_until_byteset_avx2_k1, @function
 .hidden nvol_copy_until_byteset_avx2_k1
@@ -33824,6 +34288,12 @@ L.nvol_copy_until_byteset_avx2_k1:
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k1, .-nvol_copy_until_byteset_avx2_k1
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_copy_until_byteset_avx2_k2
 .type nvol_copy_until_byteset_avx2_k2, @function
 .hidden nvol_copy_until_byteset_avx2_k2
@@ -33891,6 +34361,8 @@ L.nvol_copy_until_byteset_avx2_k2:
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k2, .-nvol_copy_until_byteset_avx2_k2
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_avx2_k3
 .type nvol_copy_until_byteset_avx2_k3, @function
 .hidden nvol_copy_until_byteset_avx2_k3
@@ -33966,6 +34438,12 @@ L.nvol_copy_until_byteset_avx2_k3:
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k3, .-nvol_copy_until_byteset_avx2_k3
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_copy_until_byteset_avx2_k4
 .type nvol_copy_until_byteset_avx2_k4, @function
 .hidden nvol_copy_until_byteset_avx2_k4
@@ -34047,7 +34525,9 @@ L.nvol_copy_until_byteset_avx2_k4:
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_k4, .-nvol_copy_until_byteset_avx2_k4
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_avx2_k5
 .type nvol_copy_until_byteset_avx2_k5, @function
 .hidden nvol_copy_until_byteset_avx2_k5
@@ -34231,7 +34711,9 @@ L.nvol_copy_until_byteset_avx2_k6:
 .size nvol_copy_until_byteset_avx2_k6, .-nvol_copy_until_byteset_avx2_k6
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_avx2_r0
 .type nvol_find_byteset_avx2_r0, @function
 .hidden nvol_find_byteset_avx2_r0
@@ -34289,7 +34771,12 @@ L.nvol_find_byteset_avx2_r0:
 .size nvol_find_byteset_avx2_r0, .-nvol_find_byteset_avx2_r0
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_avx2_r0
 .type nvol_find_not_byteset_avx2_r0, @function
 .hidden nvol_find_not_byteset_avx2_r0
@@ -34348,7 +34835,12 @@ L.nvol_find_not_byteset_avx2_r0:
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_r0, .-nvol_find_not_byteset_avx2_r0
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_avx2_r0
 .type nvol_copy_until_byteset_avx2_r0, @function
 .hidden nvol_copy_until_byteset_avx2_r0
@@ -34411,7 +34903,11 @@ L.nvol_copy_until_byteset_avx2_r0:
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_r0, .-nvol_copy_until_byteset_avx2_r0
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_avx2_r1
 .type nvol_find_byteset_avx2_r1, @function
 .hidden nvol_find_byteset_avx2_r1
@@ -34474,7 +34970,11 @@ L.nvol_find_byteset_avx2_r1:
 .cfi_endproc
 .size nvol_find_byteset_avx2_r1, .-nvol_find_byteset_avx2_r1
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_not_byteset_avx2_r1
 .type nvol_find_not_byteset_avx2_r1, @function
 .hidden nvol_find_not_byteset_avx2_r1
@@ -34540,7 +35040,9 @@ L.nvol_find_not_byteset_avx2_r1:
 .cfi_endproc
 .size nvol_find_not_byteset_avx2_r1, .-nvol_find_not_byteset_avx2_r1
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_avx2_r1
 .type nvol_copy_until_byteset_avx2_r1, @function
 .hidden nvol_copy_until_byteset_avx2_r1
@@ -34754,7 +35256,12 @@ L.nvol_find_not_byteset_avx2_r2:
 .size nvol_find_not_byteset_avx2_r2, .-nvol_find_not_byteset_avx2_r2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_avx2_r2
 .type nvol_copy_until_byteset_avx2_r2, @function
 .hidden nvol_copy_until_byteset_avx2_r2
@@ -34832,7 +35339,11 @@ L.nvol_copy_until_byteset_avx2_r2:
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_r2, .-nvol_copy_until_byteset_avx2_r2
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_avx2_r3
 .type nvol_find_byteset_avx2_r3, @function
 .hidden nvol_find_byteset_avx2_r3
@@ -34910,7 +35421,11 @@ L.nvol_find_byteset_avx2_r3:
 .size nvol_find_byteset_avx2_r3, .-nvol_find_byteset_avx2_r3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_not_byteset_avx2_r3
 .type nvol_find_not_byteset_avx2_r3, @function
 .hidden nvol_find_not_byteset_avx2_r3
@@ -34991,7 +35506,9 @@ L.nvol_find_not_byteset_avx2_r3:
 .size nvol_find_not_byteset_avx2_r3, .-nvol_find_not_byteset_avx2_r3
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_copy_until_byteset_avx2_r3
 .type nvol_copy_until_byteset_avx2_r3, @function
 .hidden nvol_copy_until_byteset_avx2_r3
@@ -35075,6 +35592,8 @@ L.nvol_copy_until_byteset_avx2_r3:
 .cfi_endproc
 .size nvol_copy_until_byteset_avx2_r3, .-nvol_copy_until_byteset_avx2_r3
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_avx2_k1
 .type nvol_find_byteset_pair_avx2_k1, @function
 .hidden nvol_find_byteset_pair_avx2_k1
@@ -35432,7 +35951,12 @@ L.nvol_find_byteset_pair_avx2_k4:
 .size nvol_find_byteset_pair_avx2_k4, .-nvol_find_byteset_pair_avx2_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_avx2_k5
 .type nvol_find_byteset_pair_avx2_k5, @function
 .hidden nvol_find_byteset_pair_avx2_k5
@@ -35558,7 +36082,12 @@ L.nvol_find_byteset_pair_avx2_k5:
 .size nvol_find_byteset_pair_avx2_k5, .-nvol_find_byteset_pair_avx2_k5
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_avx2_k6
 .type nvol_find_byteset_pair_avx2_k6, @function
 .hidden nvol_find_byteset_pair_avx2_k6
@@ -35698,7 +36227,11 @@ L.nvol_find_byteset_pair_avx2_k6:
 .cfi_endproc
 .size nvol_find_byteset_pair_avx2_k6, .-nvol_find_byteset_pair_avx2_k6
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_mask_avx2
 .type nvol_find_byteset_pair_mask_avx2, @function
 .hidden nvol_find_byteset_pair_mask_avx2
@@ -35961,6 +36494,12 @@ L.nvol_find_byteset_pair_mask_avx2_k2:
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k2, .-nvol_find_byteset_pair_mask_avx2_k2
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_find_byteset_pair_mask_avx2_k3
 .type nvol_find_byteset_pair_mask_avx2_k3, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k3
@@ -36060,7 +36599,12 @@ L.nvol_find_byteset_pair_mask_avx2_k3:
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k3, .-nvol_find_byteset_pair_mask_avx2_k3
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k4
 .type nvol_find_byteset_pair_mask_avx2_k4, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k4
@@ -36175,7 +36719,10 @@ L.nvol_find_byteset_pair_mask_avx2_k4:
 .size nvol_find_byteset_pair_mask_avx2_k4, .-nvol_find_byteset_pair_mask_avx2_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k5
 .type nvol_find_byteset_pair_mask_avx2_k5, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k5
@@ -36303,7 +36850,10 @@ L.nvol_find_byteset_pair_mask_avx2_k5:
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k5, .-nvol_find_byteset_pair_mask_avx2_k5
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_find_byteset_pair_mask_avx2_k6
 .type nvol_find_byteset_pair_mask_avx2_k6, @function
 .hidden nvol_find_byteset_pair_mask_avx2_k6
@@ -36445,7 +36995,9 @@ L.nvol_find_byteset_pair_mask_avx2_k6:
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_avx2_k6, .-nvol_find_byteset_pair_mask_avx2_k6
 
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_visit_avx2
 .type nvol_find_byteset_pair_visit_avx2, @function
 .hidden nvol_find_byteset_pair_visit_avx2
@@ -36921,7 +37473,11 @@ L.nvol_find_byteset_pair_visit_avx2_k2:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2_k2, .-nvol_find_byteset_pair_visit_avx2_k2
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
 .globl nvol_find_byteset_pair_visit_avx2_k3
 .type nvol_find_byteset_pair_visit_avx2_k3, @function
 .hidden nvol_find_byteset_pair_visit_avx2_k3
@@ -37310,7 +37866,10 @@ L.nvol_find_byteset_pair_visit_avx2_k4:
 .size nvol_find_byteset_pair_visit_avx2_k4, .-nvol_find_byteset_pair_visit_avx2_k4
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_visit_avx2_k5
 .type nvol_find_byteset_pair_visit_avx2_k5, @function
 .hidden nvol_find_byteset_pair_visit_avx2_k5
@@ -37795,7 +38354,12 @@ L.nvol_find_byteset_pair_visit_avx2_k6:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_avx2_k6, .-nvol_find_byteset_pair_visit_avx2_k6
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_not_byteset_sse42
 .type nvol_find_not_byteset_sse42, @function
 .hidden nvol_find_not_byteset_sse42
@@ -37838,7 +38402,12 @@ L.nvol_find_not_byteset_sse42:
 .cfi_endproc
 .size nvol_find_not_byteset_sse42, .-nvol_find_not_byteset_sse42
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_entry_avx2
 .type nvol_find_byteset_entry_avx2, @function
 .hidden nvol_find_byteset_entry_avx2
@@ -39031,7 +39600,12 @@ L.nvol_find_byteset_entry_avx2:
 .size nvol_find_byteset_entry_avx2, .-nvol_find_byteset_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_byteset_entry_base
 .type nvol_find_byteset_entry_base, @function
 .hidden nvol_find_byteset_entry_base
@@ -39625,7 +40199,12 @@ L.nvol_find_byteset_entry_base:
 .cfi_endproc
 .size nvol_find_byteset_entry_base, .-nvol_find_byteset_entry_base
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_not_byteset_entry_avx2
 .type nvol_find_not_byteset_entry_avx2, @function
 .hidden nvol_find_not_byteset_entry_avx2
@@ -41180,7 +41759,10 @@ L.nvol_find_not_byteset_entry_avx2:
 .size nvol_find_not_byteset_entry_avx2, .-nvol_find_not_byteset_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_entry_base
 .type nvol_find_not_byteset_entry_base, @function
 .hidden nvol_find_not_byteset_entry_base
@@ -41968,7 +42550,12 @@ L.nvol_find_not_byteset_entry_base:
 .cfi_endproc
 .size nvol_find_not_byteset_entry_base, .-nvol_find_not_byteset_entry_base
 
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_find_not_byteset_entry_sse42
 .type nvol_find_not_byteset_entry_sse42, @function
 .hidden nvol_find_not_byteset_entry_sse42
@@ -42892,7 +43479,9 @@ L.nvol_find_not_byteset_entry_sse42:
 .size nvol_find_not_byteset_entry_sse42, .-nvol_find_not_byteset_entry_sse42
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_entry_avx2
 .type nvol_find_byteset_pair_entry_avx2, @function
 .hidden nvol_find_byteset_pair_entry_avx2
@@ -44297,7 +44886,12 @@ L.nvol_find_byteset_pair_entry_avx2:
 .cfi_endproc
 .size nvol_find_byteset_pair_entry_avx2, .-nvol_find_byteset_pair_entry_avx2
 
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_find_byteset_pair_mask_entry_avx2
 .type nvol_find_byteset_pair_mask_entry_avx2, @function
 .hidden nvol_find_byteset_pair_mask_entry_avx2
@@ -47987,7 +48581,8 @@ L.nvol_find_byteset_pair_visit_entry_avx2:
 .size nvol_find_byteset_pair_visit_entry_avx2, .-nvol_find_byteset_pair_visit_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_copy_until_byteset_entry_avx2
 .type nvol_copy_until_byteset_entry_avx2, @function
 .hidden nvol_copy_until_byteset_entry_avx2
@@ -49618,7 +50213,10 @@ L.nvol_copy_until_byteset_entry_avx2:
 .size nvol_copy_until_byteset_entry_avx2, .-nvol_copy_until_byteset_entry_avx2
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_copy_until_byteset_entry_base
 .type nvol_copy_until_byteset_entry_base, @function
 .hidden nvol_copy_until_byteset_entry_base
@@ -50449,7 +51047,12 @@ L.nvol_copy_until_byteset_raw:
 .size nvol_copy_until_byteset_raw, .-nvol_copy_until_byteset_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_copy_until_byteset_raw_resolve
 .type nvol_copy_until_byteset_raw_resolve, @function
 .hidden nvol_copy_until_byteset_raw_resolve
@@ -50514,7 +51117,12 @@ L.nvol_find_byteset_pair_visit_raw:
 .size nvol_find_byteset_pair_visit_raw, .-nvol_find_byteset_pair_visit_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_visit_raw_resolve
 .type nvol_find_byteset_pair_visit_raw_resolve, @function
 .hidden nvol_find_byteset_pair_visit_raw_resolve
@@ -50579,7 +51187,12 @@ L.nvol_find_byteset_raw:
 .size nvol_find_byteset_raw, .-nvol_find_byteset_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_raw_resolve
 .type nvol_find_byteset_raw_resolve, @function
 .hidden nvol_find_byteset_raw_resolve
@@ -50644,7 +51257,12 @@ L.nvol_find_not_byteset_raw:
 .size nvol_find_not_byteset_raw, .-nvol_find_not_byteset_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_not_byteset_raw_resolve
 .type nvol_find_not_byteset_raw_resolve, @function
 .hidden nvol_find_not_byteset_raw_resolve
@@ -50706,7 +51324,11 @@ L.nvol_find_not_byteset_raw_resolve:
 .size nvol_find_not_byteset_raw_resolve, .-nvol_find_not_byteset_raw_resolve
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .globl nvol_find_byteset_pair_raw
 .type nvol_find_byteset_pair_raw, @function
 nvol_find_byteset_pair_raw:
@@ -50717,7 +51339,12 @@ L.nvol_find_byteset_pair_raw:
 .size nvol_find_byteset_pair_raw, .-nvol_find_byteset_pair_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_raw_resolve
 .type nvol_find_byteset_pair_raw_resolve, @function
 .hidden nvol_find_byteset_pair_raw_resolve
@@ -50782,7 +51409,12 @@ L.nvol_find_byteset_pair_mask_raw:
 .size nvol_find_byteset_pair_mask_raw, .-nvol_find_byteset_pair_mask_raw
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_find_byteset_pair_mask_raw_resolve
 .type nvol_find_byteset_pair_mask_raw_resolve, @function
 .hidden nvol_find_byteset_pair_mask_raw_resolve

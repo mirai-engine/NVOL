@@ -225,6 +225,14 @@ The detail is in "Done".
       | reloads across labels (item 17) | memmem 256 B SSE2 | 71.5 → 72.4 | 70.8 |
       | exit-first memrchr (item 25) | memrchr 256 B AVX2 | 20.0-21.0 → 23.7-24.9 | NOP 22.0-22.4, guard 22.4-23.3 |
       | exit-first memrchr (item 25) | memrchr 512 B AVX2 | 25.6-25.9 → 29.2-29.5 | NOP 26.5-26.7, guard 26.8-28.3 |
+      | functions 64-aligned (item 25) | count_parity 16 / 64 / 256 B SSE2 | 48.7 / 55.1 / 83.8 → 63.2 / 68.2 / 95.1 | entry moved 48 bytes into its line: 48.6 / 54.0 / 84.2 |
+      | functions 64-aligned (item 25) | count_parity 4 KiB SSE2 | 765.8 → 809.9 | same code (bodies byte-identical) |
+      | functions 64-aligned (item 25) | byteset 4 / 64 KiB AVX2 | 344.5 / 6041 → 383.8 / 6705 | same code (bodies byte-identical) |
+      | functions 64-aligned (item 25) | count 64 KiB AVX2, first_non_ascii 64 B AVX2 | 2547 / 17.1 → 2781 / 19.2 | same code (bodies byte-identical) |
+
+      In the 64-aligned layout no function body changed, so each of its rows is position by
+      construction. The count_parity control shows the trade: at +48 bytes, the SSE2 path gets
+      HEAD's cycles back, but the AVX2 path loses its −29 % (81.3 → 116.5 at 64 B).
 
       The last two rows are not all position: of their +3.5-3.8 cycles, the length check
       itself costs 0.4-0.9 (the guard control against the NOP control). That part is a code
@@ -336,6 +344,30 @@ The detail is in "Done".
           (A first version, the least padding that fits rather than keeping 16-alignment,
           moved every loop head and made byteset AVX2 4 KiB +12.7 %.) Both are draws in the
           same position lottery, not a rule that holds. memmem's loop placement stays open.
+        - **Adopted: functions 64-aligned, for stability (2026-11-22).** The aim is not a
+          better draw but that a draw stays put: an edit to one function no longer moves any
+          other. `encode.FUNC_ALIGN = 64`, in all three x86 printers (the sections 64-aligned
+          too). Loop heads keep HEAD's rule, and padding counts from the function's start, so
+          every function body is byte-identical to HEAD's; only the start addresses change.
+          It grows `.text` 170624 → 176432 bytes (+3.4 %). Measured with 13 ops × 5 sizes ×
+          2 paths, best of 5, against an identical copy of HEAD as the noise control:
+          - **Before:** HEAD with 7 dead bytes after its first `ret` moved memmem SSE2
+            64 KiB +33 % (12433 → 16584), 4 KiB +31 %, 256 B +20 %, count 4 KiB AVX2 +26 %,
+            memchr 4 KiB AVX2 −22 %.
+          - **After:** an edit absorbed by the padding moves nothing (no other function
+            changes address). One that crosses a line shifts every later function by 64.
+            That moves no row beyond the noise control, except memchr 4 KiB AVX2
+            (108 → 135, with 108 → 116 in the control itself) and first_non_ascii 4 KiB AVX2
+            (same spread in the control).
+          - **The one-time redraw** against HEAD: geomean −1.09 % (noise −0.12 %), 19 rows
+            better than −5 %, 11 worse than +5 %. Better: memchr2 16 B −17/−23 %,
+            first_non_ascii 4 KiB SSE2 −17 %, memmem 4 KiB AVX2 −10 %, count_parity
+            64-256 B AVX2 −29 %. The worse rows are in the position-loss log above.
+          - **Rejected: every loop head 32-aligned as well.** A loop's window would depend
+            only on its own function's code after it. But rotated loops are entered by
+            falling through, so each entry runs up to 31 NOP bytes, and `.text` grows 8.2 %.
+            Geomean −0.64 %, 16 rows worse than +5 %, against 11 for the 64-aligned functions
+            alone.
       - **memrchr AVX2:** 5 rounds (best of 7 each): asm 129-147, GCC 123-134, Clang
         110-118. The asm is about +20 % against Clang with fewer instructions (465 against
         495), everything from the DSB. It is a fixed cost per call, not the loop. At 64 KiB the

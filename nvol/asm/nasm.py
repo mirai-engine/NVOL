@@ -151,11 +151,11 @@ def module(functions: list, fmt: str, consts: dict = None, tables: dict = None,
         lines.append("section .drectve info")
         for n in exports:
             lines.append(f'    db "-export:{n} "')
-    lines.append("section .text align=16")
+    lines.append("section .text align=64")
     off = 0
     for name, code, public in functions:
         lines.append("")
-        pad = (-off) % 16             # every function 16-aligned, with NVOL's own NOP bytes
+        pad = (-off) % encode.FUNC_ALIGN   # every function 64-aligned, with NVOL's own NOP bytes
         lines += [f"    db {', '.join(hex(b) for b in nop)}" for nop in encode.nops(pad)]
         lines += pr.function(name, code, public, export_all)
         off += pad + encode.code_size(code)
