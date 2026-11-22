@@ -111,8 +111,17 @@ The detail is in "Done".
       4 KiB +14.2 % and 64 KiB +9.2 % (steady-state loops). By construction everything it
       changes is layout, so there is no code benefit to isolate, and 0.2 % of size does not
       pay for the draw. Not taken.
-    - **Win64:** xmm6 is saved in memchr ×4, because the loop uses 7 vector registers.
-      Compare with GCC and MSVC.
+    - ~~**Win64:** xmm6 is saved in memchr ×4~~ **(justified, not changed, 2026-11-22).** The
+      exit test is `(a|b)|(c|d)`, and the four compare vectors stay live for the code that
+      finds the match, so the needle, the four vectors and the two ORs make 7 at peak, one
+      more than Win64's volatile xmm0-5. The C backend's same kernel compiled for Win64:
+      - MSVC 18 (`cl /O2`): saves xmm6 in the SSE2 and the AVX2 entry, like the asm;
+      - MinGW GCC 13.2 (`-O2`): saves xmm6 and xmm7 in SSE2, xmm6 in AVX2.
+
+      The chain `((a|b)|c)|d` needs 6 and no save, for one more OR of latency per iteration.
+      It is untried: the OR tree is in the shared IR (the language backends would change
+      too, as the memrchr dual loop did: Clang +22.5 %), and the save is 4 instructions
+      outside the loop.
     - **Justified, not changed:** `count_parity` is the faithful port of memchr's `count_raw`.
       GCC and Clang autovectorize its scalar head and tail, and the asm does not autovectorize.
     - **aarch64 (item 16): +12.1 % static instructions against Clang -O2** over the 31 public
