@@ -34,6 +34,8 @@ _VOPS = {
     "vcnt8b": ("cnt", "8b", "8b"),
     "movi": ("movi", "16b"),
     "dup": ("dup", "16b", None),
+    "dup2d": ("dup", "2d", None),
+    "vaddp": ("addp", "16b", "16b", "16b"),
 }
 _SCALAR_V = {8: "b", 16: "h", 32: "s", 64: "d", 128: "q"}
 

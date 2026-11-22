@@ -49,7 +49,7 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 | `cmpeq`, `or`, `and`, `movemask`, `testz` | everywhere | `cmpeq`, `vor`, `vand`, `movemask`, `is_zero` | — |
 | vector `xor`, `andnot` | `operator^`, `bit_andnot`, `operator~` | `vxor`, `vandnot` (`a & ~b`, as `bit_andnot`); `~a` is `vxor` with all ones | — |
 | integer `xor`, `andnot` | escape and string scanners | `xor` (since 2026-11-22); no `andnot` | 33 |
-| 64-bit mask of a 64-byte block | `simd8x64::to_bitmask` (two `vpmovmskb`) | a `u32` per vector on x86 (NEON: `u64`) | 33 |
+| 64-bit mask of a 64-byte block | `simd8x64::to_bitmask` (two `vpmovmskb`) | `bmask64x2` (AVX2), `bmask64x4` (SSE, NEON: `and` with the bit weights and three `addp`), for 0x00/0xFF lanes | — |
 | signed `>`/`<`, signed `max`/`min` | `simd8<int8_t>` | none | 33 |
 | saturating `+`/`-` on `u8` | `gt_bits`, `lt_bits` (UTF-8) | none | 33 |
 | byte shift by N with its mask | `shr<N>`, `shl<N>`, `get_bit<N>` | `vshr4` only | 33 |

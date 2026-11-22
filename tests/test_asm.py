@@ -82,6 +82,7 @@ def _neon_prims():
     mod = ir.Module("prims")
     mod.functions += [test_prims._fn_vec("neon", n) for n in NEON_VEC]
     mod.functions += [test_prims._fn_scalar("neon", n) for n in NEON_SCALAR]
+    mod.functions.append(test_prims._fn_block("neon", "bmask64x4"))
     return mod
 
 
@@ -490,7 +491,7 @@ def test_primitive(primlib, name):
         if prim == "skip_set16":
             src = test_prims._set16_operands(rng)
         elif prim in test_prims.MASK_ONLY:
-            src = test_prims._masks(rng, 2 * V)
+            src = test_prims._masks(rng, 64 if prim.startswith("bmask64") else 2 * V)
         else:
             src = test_prims._vectors(rng, 2 * V)
             if prim == "is_zero" and rng.random() < 0.3:

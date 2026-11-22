@@ -573,6 +573,15 @@ class X86Lower(Lower):
             a = self.gen(e.args[0])
             b = self.gen(e.args[1])
             return self.vop(VBIN[n], a, b)
+        if n in ("bmask64x2", "bmask64x4"):
+            # one pmovmskb per vector, each shifted to its byte offset in the block and OR'd
+            step = 64 // len(e.args)
+            m = None
+            for k, v in enumerate(e.args):
+                t = ir.prim("movemask", v).cast(ir.U64)
+                t = t << (step * k) if k else t
+                m = t if m is None else m | t
+            return self.gen(m)
         if n == "movemask":
             a = self.gen(e.args[0])
             d = self.new()

@@ -8372,6 +8372,7 @@ when ODIN_ARCH == .amd64 {
 	@(private, default_calling_convention = "none")
 	foreign _ {
 		@(link_name = "llvm.aarch64.neon.tbl1.v16i8")       nvol_tbl1 :: proc(a, b: V16) -> V16 ---
+		@(link_name = "llvm.aarch64.neon.addp.v16i8")       nvol_addp :: proc(a, b: V16) -> V16 ---
 		@(link_name = "llvm.aarch64.neon.uaddlp.v8i16.v16i8") nvol_uaddlp8 :: proc(a: V16) -> U16x8 ---
 		@(link_name = "llvm.aarch64.neon.uaddlp.v4i32.v8i16") nvol_uaddlp16 :: proc(a: U16x8) -> U32x4 ---
 		@(link_name = "llvm.aarch64.neon.uaddlp.v2i64.v4i32") nvol_uaddlp32 :: proc(a: U32x4) -> U64x2 ---

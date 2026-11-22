@@ -459,6 +459,18 @@ class A64Lower(Lower):
             x = self.new()
             self.emit("fmovxd", [Reg(x, 64), Reg(t, 64)], defs=[x], uses=[t])
             return self.logic("and", x, 0x8888888888888888)
+        if n == "bmask64x4":
+            # simdjson's to_bitmask: AND with the bit weights 1, 2, ..., 128 of each 8-byte half,
+            # then three pairwise adds fold each 8 bytes into one; the low 64 bits are the mask
+            r = self.const(0x8040201008040201)
+            w = self.new("v")
+            self.emit("dup2d", [Reg(w, 128), Reg(r, 64)], defs=[w], uses=[r])
+            t = [self.v2("vand", self.gen(v), w) for v in e.args]
+            s = self.v2("vaddp", self.v2("vaddp", t[0], t[1]), self.v2("vaddp", t[2], t[3]))
+            s = self.v2("vaddp", s, s)
+            x = self.new()
+            self.emit("fmovxd", [Reg(x, 64), Reg(s, 64)], defs=[x], uses=[s])
+            return x
         if n == "sad0":
             a = self.gen(e.args[0])
             for op in ("vuaddlp8h", "vuaddlp4s", "vuaddlp2d"):

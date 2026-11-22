@@ -29,6 +29,7 @@ VEC_TO_SCALAR = {
     "avx2": ["is_zero", "any_nonzero", "movemask", "lane64_0", "lane64_1", "lane64_2", "lane64_3", "hsum64"],
 }
 VEC2_TO_SCALAR = {"sse42": ["skip_set16"]}
+BLOCK = {"ssse3": ["bmask64x4"], "avx2": ["bmask64x2"]}
 
 
 def _fn_vec(isa, name):
@@ -70,6 +71,16 @@ def _fn_scalar2(isa, name):
     return b.build()
 
 
+def _fn_block(isa, name):
+    """A 64-byte block mask: 64 / V vectors loaded from src, the u64 stored to out."""
+    V = ISAS[isa].bytes
+    b = ir.Builder(f"t_{isa}_{name}", ir.VOID, isa=isa, public=True)
+    src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
+    vs = [b.let(f"v{k}", ir.prim("load_u", src + V * k if k else src)) for k in range(64 // V)]
+    b.store64(out, ir.prim(name, *vs))
+    return b.build()
+
+
 def _fn_half(name):
     b = ir.Builder(f"t_avx2_{name}", ir.VOID, isa="avx2", public=True)
     src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
@@ -87,6 +98,8 @@ def _module():
         mod.functions += [_fn_scalar(isa, n) for n in names]
     for isa, names in VEC2_TO_SCALAR.items():
         mod.functions += [_fn_scalar2(isa, n) for n in names]
+    for isa, names in BLOCK.items():
+        mod.functions += [_fn_block(isa, n) for n in names]
     mod.functions.append(_fn_half("load_half_bcast"))
     return mod
 
@@ -133,7 +146,7 @@ def _skip_unless(lib, isa):
 
 
 # primitives whose contract only admits compare masks (lanes 0x00 / 0xFF)
-MASK_ONLY = {"mask_or", "any_nonzero"}
+MASK_ONLY = {"mask_or", "any_nonzero", "bmask64x2", "bmask64x4"}
 
 
 def _masks(rng, n):
@@ -186,14 +199,15 @@ def test_lowerings_match_reference(built, isa):
     _skip_unless(lib, isa)
     rng = random.Random(11)
     V = ISAS[isa].bytes
-    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + (["load_half_bcast"] if isa == "avx2" else [])
+    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + BLOCK[isa] + (["load_half_bcast"] if isa == "avx2" else [])
     for name in names:
         f = mod.fn(f"t_{isa}_{name}")
         cfn = getattr(lib, f.name)
         cfn.argtypes = [ctypes.c_char_p, ctypes.c_void_p]
         cfn.restype = None
         for _ in range(300):
-            src = _masks(rng, 2 * V) if name in MASK_ONLY else _vectors(rng, 2 * V)
+            n = 64 if name in BLOCK[isa] else 2 * V
+            src = _masks(rng, n) if name in MASK_ONLY else _vectors(rng, n)
             if name in ("is_zero",) and rng.random() < 0.3:
                 src = bytes(2 * V)
             out = (ctypes.c_uint8 * V)()

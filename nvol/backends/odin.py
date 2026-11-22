@@ -85,6 +85,7 @@ def _vec_common(n):
 X86_16 = {
     **_vec_common(16),
     "movemask": "transmute(u32)nvol_pmovmskb128({0})",
+    "bmask64x4": "((u64(transmute(u32)nvol_pmovmskb128({0}))) | (u64(transmute(u32)nvol_pmovmskb128({1})) << 16) | (u64(transmute(u32)nvol_pmovmskb128({2})) << 32) | (u64(transmute(u32)nvol_pmovmskb128({3})) << 48))",
     "any_nonzero": "(nvol_pmovmskb128({0}) != 0)",          # memchr: movemask != 0
     "sad0": "transmute(V16)nvol_psadbw128({0}, V16(0))",
     "vshuffle": "nvol_pshufb128({0}, {1})",
@@ -92,6 +93,7 @@ X86_16 = {
 X86_32 = {
     **_vec_common(32),
     "movemask": "transmute(u32)nvol_pmovmskb256({0})",
+    "bmask64x2": "(u64(transmute(u32)nvol_pmovmskb256({0})) | u64(transmute(u32)nvol_pmovmskb256({1})) << 32)",
     # like memchr: movemask != 0 (vpmovmskb + test/jcc fused). The vpsllw that LLVM 20
     # used to add came from the OR being folded into the i1 domain; see mask_or.
     "any_nonzero": "(nvol_pmovmskb256({0}) != 0)",
@@ -112,6 +114,7 @@ NEON_16 = {
     "last_offset": "uint((63 - intrinsics.count_leading_zeros({0})) >> 2)",
     "popcnt": "uint(intrinsics.count_ones({0}))",
     "sad0": "transmute(V16)nvol_uaddlp32(nvol_uaddlp16(nvol_uaddlp8({0})))",
+    "bmask64x4": "intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and({0}, transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and({1}, transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and({2}, transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and({3}, transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and({0}, transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and({1}, transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and({2}, transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and({3}, transmute(V16)U64x2(0x8040201008040201))))), 0)",
     "vshuffle": "nvol_tbl1({0}, {1})",
 }
 X86_16_SSE42 = {**X86_16, "skip_set16": "u32(nvol_pcmpistri128({0}, {1}, 0x10))"}
@@ -161,6 +164,7 @@ FOREIGN = {
     "aarch64": """	@(private, default_calling_convention = "none")
 	foreign _ {
 		@(link_name = "llvm.aarch64.neon.tbl1.v16i8")       nvol_tbl1 :: proc(a, b: V16) -> V16 ---
+		@(link_name = "llvm.aarch64.neon.addp.v16i8")       nvol_addp :: proc(a, b: V16) -> V16 ---
 		@(link_name = "llvm.aarch64.neon.uaddlp.v8i16.v16i8") nvol_uaddlp8 :: proc(a: V16) -> U16x8 ---
 		@(link_name = "llvm.aarch64.neon.uaddlp.v4i32.v8i16") nvol_uaddlp16 :: proc(a: U16x8) -> U32x4 ---
 		@(link_name = "llvm.aarch64.neon.uaddlp.v2i64.v4i32") nvol_uaddlp32 :: proc(a: U32x4) -> U64x2 ---

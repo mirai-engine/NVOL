@@ -49,6 +49,13 @@ def _mask_or(ctx, a, b):
     return tuple(x | y for x, y in zip(a, b))
 
 
+def _bmask64(ctx, *vs):
+    lanes = sum(vs, ())
+    assert len(lanes) == 64, "bmask64: the vectors must cover 64 bytes"
+    assert all(x in (0, 0xFF) for x in lanes), "bmask64: lanes must be 0x00 or 0xFF"
+    return sum(1 << i for i, x in enumerate(lanes) if x)
+
+
 def _any_nonzero(ctx, a):
     assert all(x in (0, 0xFF) for x in a), "any_nonzero: lanes must be 0x00 or 0xFF"
     return any(a)
@@ -109,6 +116,12 @@ _DEFS = [
             "x86: bit i = msb of lane i (u32). NEON: vshrn-based u64, lane i at bit 4i+3 "
             "-- exact for 0x00/0xFF lanes only (odd lanes read bit 3 of the byte)",
             lambda c, a: _movemask(c, a)),
+    PrimDef("bmask64x2", (VEC, VEC), U64,
+            "64-byte block of two 32-byte vectors: bit i = msb of byte i (a holds bytes 0-31)",
+            _bmask64, pre="every lane is 0x00 or 0xFF (NEON reads one bit of each byte)"),
+    PrimDef("bmask64x4", (VEC, VEC, VEC, VEC), U64,
+            "64-byte block of four 16-byte vectors: bit i = msb of byte i (a holds bytes 0-15)",
+            _bmask64, pre="every lane is 0x00 or 0xFF (NEON reads one bit of each byte)"),
     PrimDef("sad0", (VEC,), VEC,
             "for each 8-lane group: u64 lane = sum of its 8 bytes (psadbw vs 0)",
             lambda c, a: _from_u64_lanes([sum(a[i:i + 8]) for i in range(0, len(a), 8)])),
