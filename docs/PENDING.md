@@ -605,36 +605,72 @@ one": no simdjson routine can be replaced with what it generates. A new family i
 block to mask. Each step ships in every backend (C, C++, Rust, Odin, Python and asm) with its
 test against the interpreter.
 
-33. **The IR for 64-bit blocks and masks:**
-    - bitwise `xor` and `andnot` on integers (today there are only `and`, `or` and shifts);
-    - `u64` masks on x86, built from the `movemask` of two AVX2 vectors or four SSE vectors
-      (today the x86 mask is `u32`; NEON already uses `u64`);
-    - several masks per call: output through a pointer (`Store64` over `MPTR`), or one
-      function per mask if inlining merges them.
-34. **New primitives,** with lowering in each language and in asm, and tested like the others
-    in `test_prims`:
-    - carry-less multiplication (`pclmulqdq` on x86, `pmull` on aarch64), with a scalar
-      fallback;
-    - `pmaddubsw`, `pmaddwd` and `packusdw` for the 8 digits;
-    - the classification `pshufb` with its own table (it already exists for byteset's
-      *unique-nibble* sets).
-35. **Stage 1:** the kernels for a 64-byte block, which cover most of simdjson's SIMD work:
-    - `classify`: the masks of whitespace and of `{}[]:,`;
+**Analysis (2026-11-22, simdjson 5.2.0, the current release).** The inventory was checked
+against the per-architecture layer the generic code calls (`include/simdjson/haswell/`:
+`simd.h`, `bitmask.h`, `bitmanipulation.h`, `numberparsing_defs.h`,
+`stringparsing_defs.h`) and against `src/generic/stage1` and `stage2`. Its section "What the
+generic code needs from each architecture" lists every operation, with what NVOL has.
+Two consequences for the design:
+
+- **The block contract.** simdjson reads whole 64-byte blocks past the end of the document
+  because it guarantees `SIMDJSON_PADDING`. NVOL's kernels read only their bytes. The block
+  kernels therefore take a pointer to 64 readable bytes, a precondition like the vector
+  kernels' `end - start >= V`, and the caller (simdjson's `buf_block_reader`) copies the
+  last partial block into a padded buffer, as it already does.
+- **State across blocks.** The string scanner carries `prev_in_string` and the escape scanner
+  `next_is_escaped` from one block to the next. A block kernel reads and writes that state
+  through an `MPTR`, the way `nvol_memmem_init` writes its `Finder`.
+
+**One branch per kind of feature** (the maintainer's rule: phase 6 is developed on
+`feat/<kind>` branches, merged to `main` with the maintainer's approval). In dependency order:
+
+33. **`feat/ir-mask64`: the IR for 64-bit blocks and masks.** Everything else builds on it.
+    - `andnot` on integers and on vectors (`xor` exists since 2026-11-22);
+    - `u64` masks on x86, from the `movemask` of two AVX2 vectors or four SSE vectors (today
+      the x86 mask is `u32`; NEON already uses `u64`);
+    - several masks per call: output through a pointer (`Store64` over `MPTR`), or one function
+      per mask if inlining merges them; and `Store32`, for the index list of 35;
+    - 64-bit scalar operations: `popcnt64` (today `popcnt` takes a `u32`), an arithmetic shift
+      or the sign smear `x >> 63` as `0 - (x >> 63)`, and `blsr` (`x & (x - 1)`, which the IR
+      already expresses);
+    - the vector operations the generic code uses and NVOL lacks: signed `>`/`<` and
+      `max`/`min`, saturating `+`/`-` on `u8`, a byte shift by N with its mask (`shr<N>`,
+      `shl<N>`; today only `vshr4`), and `prev<1..3>` across the two halves of a 64-byte
+      block (NVOL's `shin1-3` cover one vector).
+34. **`feat/clmul`: carry-less multiplication.** `pclmulqdq` (x86) and `pmull` (aarch64), with
+    the scalar `prefix_xor` (six shifts and `xor`s) as the fallback, and the runtime check
+    `cpu_pclmul` (westmere needs SSE4.2 plus PCLMUL). Then `prefix_xor` itself.
+35. **`feat/json-stage1`: the 64-byte block kernels**, which cover most of simdjson's SIMD
+    work:
+    - `classify`: the masks of whitespace and of `{}[]:,`, one `pshufb` + `cmpeq` per class,
+      with simdjson's `| 0x20` that merges `[` with `{` (NVOL's *unique-nibble* byteset already
+      has the single-`pshufb` search, for "first byte");
     - the masks of `"` and `\`;
-    - the escape scanner: which `"` are escaped, with bit arithmetic and additions;
-    - `prefix_xor`: the inside of the strings.
-36. **UTF-8 validation** (1.13): the nibble lookup algorithm (Keiser and Lemire). simdjson and
-    ugrep's `isutf8` need it.
-37. **Stage 2:**
-    - `parse_eight_digits_unrolled`;
-    - the block's `is_ascii`;
-    - a variant of `copy_until` that gives the masks of `\` and `"` (`copy_and_find`).
-38. **Integration and measurement:**
+    - the escape scanner (which `"` are escaped: shifts, `and`/`or`/`andnot`, additions);
+    - the string scanner: `prefix_xor` of the unescaped quotes, carried across blocks;
+    - the structural indexer: the mask to a list of `u32` positions (`popcnt64`, then
+      `tzcnt` and `blsr` unrolled, as `write_indexes` does).
+36. **`feat/utf8-validation`: UTF-8 validation** (1.13), the Keiser–Lemire lookup
+    (`utf8_lookup4_algorithm`: `prev<1..3>`, three `lookup_16`, `shr<4>`, saturating
+    subtraction, `max`). simdjson needs it, and ugrep's `isutf8` too.
+37. **Stage 2**, in two branches:
+    - **`feat/json-numbers`:** `parse_eight_digits_unrolled` (`pmaddubsw`, `pmaddwd`,
+      `packusdw` on 128 bits);
+    - **`feat/json-stage2-strings`:** `copy_and_find` (copy 32 bytes and give the masks of `\`
+      and `"`), a variant of `nvol_copy_until_byteset`, and the block's `is_ascii`.
+38. **`feat/simdjson-e2e`: integration and measurement.**
     - a patch to simdjson, like the one for rapidjson: its generic code calls NVOL's kernels
       instead of its own;
     - the e2e with its tests, `jsonexamples` and the rapidjson corpus;
-    - the end-to-end comparison against its haswell and westmere implementations, with
-      counters.
+    - the end-to-end comparison against its haswell, westmere and fallback implementations,
+      with counters (arm64 under QEMU, labelled emulated).
+
+**Left out of phase 6**, with the reason:
+- the minifier's `compress` (the `thintable_epi8` and `pshufb_combine_table` tables): it is
+  not on the parser's path;
+- `full_multiplication` (64×64→128 bits, for the floating-point numbers): scalar
+  arithmetic, not SIMD;
+- icelake (AVX-512): the i5-7400 does not have it; it goes with item 45, under Intel SDE.
 
 ### Phase 7. What the external reference does and NVOL does not
 

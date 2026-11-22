@@ -35,3 +35,39 @@ up to the first hit:
 5. **8 digits to integer**.
 
 With 1 to 3, simdjson's stage 1 (which does most of the SIMD work) would sit on NVOL.
+
+## What the generic code needs from each architecture
+
+Checked on 2026-11-22 against simdjson 5.2.0 (`a0d5ad9`, still the current release), in the
+haswell layer that `src/generic/` calls: `include/simdjson/haswell/simd.h`, `bitmask.h`,
+`bitmanipulation.h`, `numberparsing_defs.h` and `stringparsing_defs.h`. The haswell code is
+compiled with `avx2,bmi,pclmul,lzcnt,popcnt`. "NVOL" is what the IR and its primitives have
+today; the last column is the PENDING item (phase 6) that adds what is missing.
+
+| operation | where simdjson uses it | NVOL | item |
+|---|---|---|---|
+| `cmpeq`, `or`, `and`, `movemask`, `testz` | everywhere | `cmpeq`, `vor`, `vand`, `movemask`, `is_zero` | — |
+| vector `xor`, `andnot` | `operator^`, `bit_andnot`, `operator~` | neither | 33 |
+| integer `xor`, `andnot` | escape and string scanners | `xor` (since 2026-11-22); no `andnot` | 33 |
+| 64-bit mask of a 64-byte block | `simd8x64::to_bitmask` (two `vpmovmskb`) | a `u32` per vector on x86 (NEON: `u64`) | 33 |
+| signed `>`/`<`, signed `max`/`min` | `simd8<int8_t>` | none | 33 |
+| saturating `+`/`-` on `u8` | `gt_bits`, `lt_bits` (UTF-8) | none | 33 |
+| byte shift by N with its mask | `shr<N>`, `shl<N>`, `get_bit<N>` | `vshr4` only | 33 |
+| `prev<N>` (bytes from the previous block) | UTF-8 (`prev<1..3>`) | `shin1-3`, `hshin1-3` within one vector | 33 |
+| `lookup_16` (`pshufb` on a 16-entry table) | `classify`, UTF-8 | `vshuffle` | — |
+| `popcnt` on `u64` | structural indexer (`count_ones`) | `popcnt` on `u32` | 33 |
+| `tzcnt`, `lzcnt` on `u64` | indexer, `copy_and_find` | `first_offset64`, `last_offset64` | — |
+| `blsr` (`x & (x - 1)`) | indexer (`clear_lowest_bit`) | expressible (`wsub`, `and`) | — |
+| sign smear `int64(x) >> 63` | string scanner (`prev_in_string`) | expressible as `0 - (x >> 63)` | 33 |
+| store of `u32` indices | indexer (`write_index`) | `Store8`, `Store64`, `StoreVec` | 33 |
+| carry-less multiplication | `prefix_xor` (`_mm_clmulepi64_si128` against all ones) | none | 34 |
+| `pmaddubsw`, `pmaddwd`, `packusdw` (128 bits) | `parse_eight_digits_unrolled` | none | 37 |
+| unaligned 32-byte copy plus two masks | `copy_and_find` | `nvol_copy_until_byteset` (copy plus the first member) | 37 |
+| `compress` (`thintable_epi8`, `pshufb_combine_table`) | the minifier | none | not in phase 6 |
+| 64×64→128-bit multiplication | `full_multiplication` (floating-point numbers) | none | not in phase 6 (scalar) |
+
+The block contract differs from NVOL's. simdjson reads whole 64-byte blocks past the end of
+the document because it guarantees `SIMDJSON_PADDING`, while NVOL's kernels read only their
+bytes. So NVOL's block kernels take a pointer to 64 readable bytes, a precondition like the
+vector kernels' `end - start >= V`. The caller, simdjson's `buf_block_reader`, already copies
+the last partial block into a padded buffer.
