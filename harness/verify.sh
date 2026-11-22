@@ -25,7 +25,8 @@
 #   harness/asm/run-sysv.sh               asm-sysv
 #   harness/asm/run-a64.sh                asm-a64
 #   harness/asm/assemble.py, build_msvc.py, smoke.py   asm, asm-sysv, asm-a64
-#   docs/, *.md, harness/*-e2e/, the measurement tools in harness/asm/   nothing
+#   docs/, *.md, archive/ (nothing builds it), harness/*-e2e/, the measurement tools in
+#   harness/asm/ and harness/parity/, harness/c/compile_commands.py       nothing
 #   anything else (harness/verify.sh, pyproject.toml, ...)            every step
 # A generator change regenerates generated/, so the languages it touched show up there.
 # Steps a selection leaves out are "not selected", not failures.
@@ -96,7 +97,7 @@ changed_steps() {
             harness/asm/build_msvc.py)           out+=" asm asm-sysv asm-a64 c-msvc" ;;
             harness/asm/assemble.py|harness/asm/smoke.py)
                                                  out+=" asm asm-sysv asm-a64" ;;
-            docs/*|*.md|harness/*-e2e/*|harness/asm/*) ;;
+            docs/*|*.md|archive/*|harness/*-e2e/*|harness/asm/*|harness/parity/*|harness/c/compile_commands.py) ;;
             *)                                   out+=" $STEPS" ;;
         esac
     done
