@@ -125,6 +125,7 @@ SCALAR = {
     "popcnt": "uint(intrinsics.count_ones({0}))",
     "first_offset64": "uint(intrinsics.count_trailing_zeros({0}))",
     "last_offset64": "uint(63 - intrinsics.count_leading_zeros({0}))",
+    "popcnt64": "uint(intrinsics.count_ones({0}))",
     "load16u": "u32(intrinsics.unaligned_load((^u16)({0})))",
     "load32u": "intrinsics.unaligned_load((^u32)({0}))",
     "load64": "intrinsics.unaligned_load((^u64)({0}))",

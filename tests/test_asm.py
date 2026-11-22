@@ -83,6 +83,7 @@ def _neon_prims():
     mod.functions += [test_prims._fn_vec("neon", n) for n in NEON_VEC]
     mod.functions += [test_prims._fn_scalar("neon", n) for n in NEON_SCALAR]
     mod.functions.append(test_prims._fn_block("neon", "bmask64x4"))
+    mod.functions.append(test_prims._fn_u64("neon", "popcnt64"))
     return mod
 
 

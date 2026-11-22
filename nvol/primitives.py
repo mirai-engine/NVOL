@@ -240,6 +240,8 @@ _DEFS += [
             pre="mask != 0"),
     PrimDef("last_offset64", (U64,), USIZE, "index of most significant set bit of a u64 (63-lzcnt)",
             lambda c, m: m.bit_length() - 1, pre="mask != 0"),
+    PrimDef("popcnt64", (U64,), USIZE, "number of set bits of a u64",
+            lambda c, m: bin(m & MASK64).count("1")),
     PrimDef("cpu_ssse3", (), BOOL, "runtime: CPU supports SSSE3", lambda c: c.cpu.get("ssse3", True)),
     PrimDef("cpu_sse42", (), BOOL, "runtime: CPU supports SSE4.2", lambda c: c.cpu.get("sse42", True)),
     PrimDef("skip_set16", (VEC, VEC), U32,

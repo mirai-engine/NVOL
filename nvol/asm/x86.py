@@ -471,6 +471,8 @@ class X86Lower(Lower):
             x = e.args[0]
             bits16 = isinstance(x, ir.Prim) and x.name == "movemask" and self.vw == 128
             return self.popcnt(self.gen(x), 16 if bits16 else 32)
+        if n == "popcnt64":
+            return self.popcnt(self.gen(e.args[0]), 64)
         if n.startswith("cpu_"):            # the C glue's cached CPU checks
             return self.call_out(Lab(f"nvol_{n}"), [], "int")
         if n in ("is_zero", "any_nonzero"):
@@ -484,10 +486,12 @@ class X86Lower(Lower):
     def popcnt(self, a: VReg, bits: int = 32) -> VReg:
         """POPCNT ships with every CPU that has SSE4.2 or AVX2. Below that, a 256-entry byte
         table (what libgcc's __popcountdi2 does): two lookups for a 16-bit mask (pmovmskb of a
-        128-bit vector), four for 32 bits; 7 or 13 instructions against 16 for the SWAR count."""
+        128-bit vector), four for 32 bits, eight for 64; 7 or 13 instructions against 16 for the
+        SWAR count of 32 bits."""
         d = self.new()
+        w = 64 if bits == 64 else 32
         if any(i and i.name in ("sse42", "avx2") for i in (self.isa, self.outer)):
-            self.emit("popcnt", [Reg(d, 32), Reg(a, 32)], defs=[d], uses=[a])
+            self.emit("popcnt", [Reg(d, w), Reg(a, w)], defs=[d], uses=[a])
             return d
         tbl = self.new()
         self.emit("lea", [Reg(tbl, 64), Mem(sym=self.pool.get(POPCNT8))], defs=[tbl])
@@ -497,8 +501,8 @@ class X86Lower(Lower):
             if k == 0:
                 self.emit("movzx", [Reg(idx, 32), Reg(a, 8)], defs=[idx], uses=[a])
             else:
-                self.emit("mov", [Reg(idx, 32), Reg(a, 32)], defs=[idx], uses=[a])
-                self.emit("shr", [Reg(idx, 32), Imm(8 * k)], defs=[idx], uses=[idx])
+                self.emit("mov", [Reg(idx, w), Reg(a, w)], defs=[idx], uses=[a])
+                self.emit("shr", [Reg(idx, w), Imm(8 * k)], defs=[idx], uses=[idx])
                 if k < bits // 8 - 1:
                     self.emit("movzx", [Reg(idx, 32), Reg(idx, 8)], defs=[idx], uses=[idx])
             if first:

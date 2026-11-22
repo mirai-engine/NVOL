@@ -30,6 +30,9 @@ VEC_TO_SCALAR = {
 }
 VEC2_TO_SCALAR = {"sse42": ["skip_set16"]}
 BLOCK = {"ssse3": ["bmask64x4"], "avx2": ["bmask64x2"]}
+# u64 -> usize, inside an ISA function: the assembly picks popcnt by the ISA (SSE4.2 and AVX2
+# have it; below, a byte table), which the ISA-less fuzzer never reaches
+U64_TO_SCALAR = {"ssse3": ["popcnt64"], "avx2": ["popcnt64"]}
 
 
 def _fn_vec(isa, name):
@@ -81,6 +84,13 @@ def _fn_block(isa, name):
     return b.build()
 
 
+def _fn_u64(isa, name):
+    b = ir.Builder(f"t_{isa}_{name}", ir.VOID, isa=isa, public=True)
+    src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
+    b.store64(out, ir.prim(name, ir.prim("load64", src)).cast(ir.U64))
+    return b.build()
+
+
 def _fn_half(name):
     b = ir.Builder(f"t_avx2_{name}", ir.VOID, isa="avx2", public=True)
     src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
@@ -100,6 +110,8 @@ def _module():
         mod.functions += [_fn_scalar2(isa, n) for n in names]
     for isa, names in BLOCK.items():
         mod.functions += [_fn_block(isa, n) for n in names]
+    for isa, names in U64_TO_SCALAR.items():
+        mod.functions += [_fn_u64(isa, n) for n in names]
     mod.functions.append(_fn_half("load_half_bcast"))
     return mod
 
@@ -199,7 +211,7 @@ def test_lowerings_match_reference(built, isa):
     _skip_unless(lib, isa)
     rng = random.Random(11)
     V = ISAS[isa].bytes
-    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + BLOCK[isa] + (["load_half_bcast"] if isa == "avx2" else [])
+    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + BLOCK[isa] + U64_TO_SCALAR[isa] + (["load_half_bcast"] if isa == "avx2" else [])
     for name in names:
         f = mod.fn(f"t_{isa}_{name}")
         cfn = getattr(lib, f.name)

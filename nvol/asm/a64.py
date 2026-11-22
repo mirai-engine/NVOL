@@ -379,7 +379,7 @@ class A64Lower(Lower):
             if not n.endswith("64") and self.isa is not None and self.isa.name == "neon":
                 d = self.op3("lsr", d, Imm(2))     # 4 mask bits per byte lane
             return d
-        if n == "popcnt":
+        if n in ("popcnt", "popcnt64"):     # cnt + addv count all 64 bits of the register
             return self.popcnt(self.gen(e.args[0]))
         if n.startswith("cpu_"):
             raise Unsupported(f"{self.f.name}: no CPU checks on aarch64 (NEON is the baseline)")

@@ -72,6 +72,7 @@ def _cases() -> list:
                 Ins("mov", [Mem(R["rax"], disp=1, w=8), _g(reg, 8)]),
                 Ins("push", [_g(reg)]), Ins("pop", [_g(reg)]),
                 Ins("bsf", [_g(reg, 32), _g("r9", 32)]), Ins("popcnt", [_g(reg, 32), _g("r9", 32)]),
+                Ins("popcnt", [_g(reg), _g("r9")]),
                 Ins("cmovb", [_g(reg), _g("r9")]), Ins("callind", [_g(reg)])]
     for a, b in itertools.product((0, 6, 9, 14), repeat=2):
         out += [Ins("vmovdqa", [_v(a), _v(b)]), Ins("vmovdqu", [_v(a, 128), _v(b, 128)]),

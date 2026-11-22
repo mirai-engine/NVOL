@@ -55,7 +55,7 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 | byte shift by N with its mask | `shr<N>`, `shl<N>`, `get_bit<N>` | `vshr4` only | 33 |
 | `prev<N>` (bytes from the previous block) | UTF-8 (`prev<1..3>`) | `shin1-3`, `hshin1-3` within one vector | 33 |
 | `lookup_16` (`pshufb` on a 16-entry table) | `classify`, UTF-8 | `vshuffle` | — |
-| `popcnt` on `u64` | structural indexer (`count_ones`) | `popcnt` on `u32` | 33 |
+| `popcnt` on `u64` | structural indexer (`count_ones`) | `popcnt64` | — |
 | `tzcnt`, `lzcnt` on `u64` | indexer, `copy_and_find` | `first_offset64`, `last_offset64` | — |
 | `blsr` (`x & (x - 1)`) | indexer (`clear_lowest_bit`) | expressible (`wsub`, `and`) | — |
 | sign smear `int64(x) >> 63` | string scanner (`prev_in_string`) | expressible as `0 - (x >> 63)` | 33 |

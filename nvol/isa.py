@@ -51,6 +51,8 @@ SCALAR = {
     ("rust", "first_offset64"): "({0}.trailing_zeros() as usize)",
     ("c", "last_offset64"): "((size_t)(63u - nvol_clz64({0})))",
     ("rust", "last_offset64"): "((63 - {0}.leading_zeros()) as usize)",
+    ("c", "popcnt64"): "((size_t)nvol_popcnt64({0}))",
+    ("rust", "popcnt64"): "({0}.count_ones() as usize)",
 }
 
 SSE2 = ISA(
