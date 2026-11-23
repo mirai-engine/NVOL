@@ -41,10 +41,10 @@ when ODIN_ARCH == .amd64 {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override == 1 }
 		return .avx2 in info.cpu_features()
 	}
-	@(private) nvol_cpu_avx2_pclmul :: proc "contextless" () -> bool {
+	@(private) nvol_cpu_avx2_pclmul_bmi1 :: proc "contextless" () -> bool {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override == 1 }
 		f := info.cpu_features()
-		return .avx2 in f && .pclmulqdq in f
+		return .avx2 in f && .pclmulqdq in f && .bmi1 in f
 	}
 	@(private) nvol_cpu_sse42 :: proc "contextless" () -> bool {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override >= 1 }
@@ -8623,7 +8623,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// stage 1, avx2 masks
-	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32,bmi")
 	nvol_json_index_avx2 :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
 		nie: u64 = intrinsics.unaligned_load((^u64)(state))
 		pis: u64 = intrinsics.unaligned_load((^u64)(state[uint(8):]))
@@ -8746,7 +8746,7 @@ when ODIN_ARCH == .amd64 {
 	@(private) nvol_json_index_raw_resolve :: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint {
 		f: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint = nvol_json_index_scalar
 		if (.ssse3 in info.cpu_features()) { f = nvol_json_index_ssse3 }
-		if nvol_cpu_avx2_pclmul() { f = nvol_json_index_avx2 }
+		if nvol_cpu_avx2_pclmul_bmi1() { f = nvol_json_index_avx2 }
 		nvol_json_index_raw_ptr = f
 		return f(state, blocks, nblocks, idx, out)
 	}

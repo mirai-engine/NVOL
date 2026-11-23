@@ -44,8 +44,8 @@ SCALAR = {
     ("rust", "popcnt"): "({0}.count_ones() as usize)",
     ("rust", "cpu_avx2"): "std::is_x86_feature_detected!(\"avx2\")",
     ("c", "cpu_ssse3"): "nvol_cpu_ssse3()",
-    ("c", "cpu_avx2_pclmul"): "nvol_cpu_avx2_pclmul()",
-    ("rust", "cpu_avx2_pclmul"): "(std::is_x86_feature_detected!(\"avx2\") && std::is_x86_feature_detected!(\"pclmulqdq\"))",
+    ("c", "cpu_avx2_pclmul_bmi1"): "nvol_cpu_avx2_pclmul_bmi1()",
+    ("rust", "cpu_avx2_pclmul_bmi1"): "(std::is_x86_feature_detected!(\"avx2\") && std::is_x86_feature_detected!(\"pclmulqdq\") && std::is_x86_feature_detected!(\"bmi1\"))",
     ("rust", "cpu_ssse3"): "std::is_x86_feature_detected!(\"ssse3\")",
     ("c", "cpu_sse42"): "nvol_cpu_sse42()",
     ("rust", "cpu_sse42"): "std::is_x86_feature_detected!(\"sse4.2\")",
@@ -323,8 +323,22 @@ ISAS = {i.name: i for i in (SSE2, SSSE3, SSE42, AVX2, NEON)}
 ARCH_ISAS = {"x86_64": ("sse2", "ssse3", "sse42", "avx2"), "aarch64": ("neon",)}
 
 
-def lowering(isa: "ISA | None", lang: str, prim: str) -> str:
-    """ISA-specific lowering first (NEON overrides first_offset etc.), then scalar."""
+# lowerings for a function with extra target features (ir.Function.features), before its ISA's.
+# tzcnt64 under BMI1 is the intrinsic, not `x ? ctz(x) : 64`: GCC knows that once blsr has
+# cleared the last bit every later tzcnt is 64, and turns an unrolled indexer back into a branch
+# per slot (simdjson's haswell kernel calls _tzcnt_u64 too)
+FEATURE_LOWER = {
+    ("c", "bmi1", "tzcnt64"): "((size_t)_tzcnt_u64({0}))",
+    ("rust", "bmi1", "tzcnt64"): "(_tzcnt_u64({0}) as usize)",
+}
+
+
+def lowering(isa: "ISA | None", lang: str, prim: str, features: tuple = ()) -> str:
+    """The function's features first, then the ISA's lowering (NEON overrides first_offset
+    etc.), then scalar."""
+    for f in features:
+        if (lang, f, prim) in FEATURE_LOWER:
+            return FEATURE_LOWER[(lang, f, prim)]
     key = (lang, prim)
     if isa is not None and key in isa.lower:
         return isa.lower[key]
@@ -351,7 +365,7 @@ def all_lanes_mask(isa: ISA):
 
 def prefix_xor(b, isa: "ISA | None", x):
     """simdjson's prefix_xor of a u64 (bit i = XOR of bits 0..i). One pclmulqdq where the ISA
-    has it (AVX2 functions, which dispatch on cpu_avx2_pclmul); elsewhere the six shift/xor
+    has it (AVX2 functions, which dispatch on cpu_avx2_pclmul_bmi1); elsewhere the six shift/xor
     steps of simdjson's arm64 and fallback kernels, let-bound so no step is computed twice."""
     from .ir import U64, Prim
     if isa is not None and ("c", "prefix_xor64") in isa.lower:

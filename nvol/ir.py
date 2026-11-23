@@ -376,6 +376,9 @@ class Function:
     # a function only NVOL's own assembly emits (reached from asm-only ifs): the language
     # backends drop it (see for_languages)
     asm_only: bool = False
+    # target features beyond the ISA's (only "bmi1"): the function's attribute enables them,
+    # and its dispatch condition must check them
+    features: tuple = ()
 # Builder
 # --------------------------------------------------------------------------
 # Keywords of every target language: a variable never gets one of these names.
@@ -398,8 +401,9 @@ max min len cap abs clamp raw_data make delete new free append swizzle context t
 class Builder:
     def __init__(self, name: str, ret: Ty, isa: Optional[str] = None,
                  public: bool = False, doc: str = "", noinline: bool = False,
-                 asm_only: bool = False):
+                 asm_only: bool = False, features: tuple = ()):
         self.name, self.ret_ty, self.isa, self.public, self.doc = name, ret, isa, public, doc
+        self.features = tuple(features)
         self.noinline = noinline
         self.asm_only = asm_only
         self.params: list = []
@@ -497,7 +501,7 @@ class Builder:
         body = prune_unused_lets(self._stack[0])
         return Function(self.name, self.params, self.ret_ty, body,
                         self.isa, self.public, self.doc, noinline=self.noinline,
-                        asm_only=self.asm_only)
+                        asm_only=self.asm_only, features=self.features)
 
 
 # --------------------------------------------------------------------------

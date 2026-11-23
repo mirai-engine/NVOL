@@ -262,12 +262,13 @@ _DEFS += [
     PrimDef("prefix_xor64", (U64,), U64,
             "bit i = XOR of bits 0..i (simdjson prefix_xor): the low 64 bits of the carry-less "
             "product with all ones (pclmulqdq); AVX2 functions only, which dispatch on "
-            "cpu_avx2_pclmul",
+            "cpu_avx2_pclmul_bmi1",
             _prefix_xor64),
-    PrimDef("cpu_avx2_pclmul", (), BOOL,
-            "runtime: CPU and OS support AVX2, and the CPU has PCLMULQDQ (every AVX2 CPU has it, "
-            "but a hypervisor can hide it; one check keeps a single dispatch condition)",
-            lambda c: c.cpu.get("avx2", True) and c.cpu.get("pclmul", True)),
+    PrimDef("cpu_avx2_pclmul_bmi1", (), BOOL,
+            "runtime: CPU and OS support AVX2, and the CPU has PCLMULQDQ and BMI1 (simdjson's "
+            "haswell kernel needs the same; every AVX2 CPU has both, but a hypervisor can hide "
+            "one; one check keeps a single dispatch condition)",
+            lambda c: c.cpu.get("avx2", True) and c.cpu.get("pclmul", True) and c.cpu.get("bmi1", True)),
     PrimDef("cpu_ssse3", (), BOOL, "runtime: CPU supports SSSE3", lambda c: c.cpu.get("ssse3", True)),
     PrimDef("cpu_sse42", (), BOOL, "runtime: CPU supports SSE4.2", lambda c: c.cpu.get("sse42", True)),
     PrimDef("skip_set16", (VEC, VEC), U32,

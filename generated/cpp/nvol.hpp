@@ -82,6 +82,7 @@ typedef struct nvol_visitor { int (*fn)(void *ctx, const uint8_t *chunk, uint64_
 #include <immintrin.h>
 #if defined(_MSC_VER) && !defined(__clang__)
 #  define NVOL_TARGET_AVX2
+#  define NVOL_TARGET_AVX2_BMI1
 #  define NVOL_TARGET_SSSE3
 #  define NVOL_TARGET_SSE4_2
 inline int nvol_cpu_avx2_detect(void) {
@@ -92,23 +93,26 @@ inline int nvol_cpu_avx2_detect(void) {
 }
 inline int nvol_cpu_ssse3_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 9) & 1; }
 inline int nvol_cpu_sse42_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 20) & 1; }
-inline int nvol_cpu_avx2_pclmul_detect(void) {
+inline int nvol_cpu_avx2_pclmul_bmi1_detect(void) {
     int r[4]; __cpuid(r, 1);
-    return ((r[2] >> 1) & 1) && nvol_cpu_avx2_detect();          /* PCLMULQDQ */
+    if (!((r[2] >> 1) & 1) || !nvol_cpu_avx2_detect()) return 0;  /* PCLMULQDQ */
+    __cpuidex(r, 7, 0); return (r[1] >> 3) & 1;                   /* BMI1 */
 }
 #else
 /* every CPU with AVX2 or SSE4.2 has POPCNT (the dispatch does not check it, nor does the asm):
    without the feature, the bit count in those kernels stays a software count. Every AVX2 CPU
-   also has PCLMULQDQ; the kernels that use it dispatch on nvol_cpu_avx2_pclmul, which checks
+   also has PCLMULQDQ; the kernels that use it dispatch on nvol_cpu_avx2_pclmul_bmi1, which checks
    both (a hypervisor can hide one) */
 #  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt,pclmul")))
+#  define NVOL_TARGET_AVX2_BMI1 __attribute__((target("avx2,popcnt,pclmul,bmi")))
 #  define NVOL_TARGET_SSSE3 __attribute__((target("ssse3")))
 #  define NVOL_TARGET_SSE4_2 __attribute__((target("sse4.2,popcnt")))
 inline int nvol_cpu_avx2_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 inline int nvol_cpu_ssse3_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 inline int nvol_cpu_sse42_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
-inline int nvol_cpu_avx2_pclmul_detect(void) {
-    __builtin_cpu_init(); return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul");
+inline int nvol_cpu_avx2_pclmul_bmi1_detect(void) {
+    __builtin_cpu_init();
+    return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul") && __builtin_cpu_supports("bmi");
 }
 #endif
 inline int nvol_cpu_ssse3_cache = -1;
@@ -129,10 +133,10 @@ inline int nvol_cpu_avx2(void) {
     if (v < 0) { v = nvol_cpu_avx2_detect(); nvol_cpu_avx2_cache = v; }
     return v;
 }
-inline int nvol_cpu_avx2_pclmul_cache = -1;
-inline NVOL_UNUSED int nvol_cpu_avx2_pclmul(void) {   /* no kernel dispatches on it yet */
-    int v = nvol_cpu_avx2_pclmul_cache;
-    if (v < 0) { v = nvol_cpu_avx2_pclmul_detect(); nvol_cpu_avx2_pclmul_cache = v; }
+inline int nvol_cpu_avx2_pclmul_bmi1_cache = -1;
+inline NVOL_UNUSED int nvol_cpu_avx2_pclmul_bmi1(void) {   /* no kernel dispatches on it yet */
+    int v = nvol_cpu_avx2_pclmul_bmi1_cache;
+    if (v < 0) { v = nvol_cpu_avx2_pclmul_bmi1_detect(); nvol_cpu_avx2_pclmul_bmi1_cache = v; }
     return v;
 }
 #elif defined(__aarch64__) || defined(_M_ARM64)
@@ -8576,7 +8580,7 @@ NVOL_TARGET_SSSE3 NVOL_INLINE size_t nvol_json_index_ssse3(uint8_t *state, const
 }
 
 /* stage 1, avx2 masks */
-NVOL_TARGET_AVX2 NVOL_INLINE size_t nvol_json_index_avx2(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+NVOL_TARGET_AVX2_BMI1 NVOL_INLINE size_t nvol_json_index_avx2(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
     uint64_t nie = nvol_load64(state);
     uint64_t pis = nvol_load64((state + ((size_t)8u)));
     uint64_t psc = nvol_load64((state + ((size_t)16u)));
@@ -8615,58 +8619,58 @@ NVOL_TARGET_AVX2 NVOL_INLINE size_t nvol_json_index_avx2(uint8_t *state, const u
         if (bits != UINT64_C(0)) {
             const size_t cnt = ((size_t)nvol_popcnt64(bits));
             uint8_t *const o = (out + (n << ((size_t)2u)));
-            nvol_store32(o, ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+            nvol_store32(o, ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-            nvol_store32((o + ((size_t)4u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+            nvol_store32((o + ((size_t)4u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-            nvol_store32((o + ((size_t)8u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+            nvol_store32((o + ((size_t)8u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-            nvol_store32((o + ((size_t)12u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+            nvol_store32((o + ((size_t)12u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
             if (cnt > ((size_t)4u)) {
-                nvol_store32((o + ((size_t)16u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                nvol_store32((o + ((size_t)16u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                 bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                nvol_store32((o + ((size_t)20u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                nvol_store32((o + ((size_t)20u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                 bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                nvol_store32((o + ((size_t)24u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                nvol_store32((o + ((size_t)24u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                 bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                nvol_store32((o + ((size_t)28u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                nvol_store32((o + ((size_t)28u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                 bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
                 if (cnt > ((size_t)8u)) {
-                    nvol_store32((o + ((size_t)32u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                    nvol_store32((o + ((size_t)32u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                     bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                    nvol_store32((o + ((size_t)36u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                    nvol_store32((o + ((size_t)36u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                     bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                    nvol_store32((o + ((size_t)40u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                    nvol_store32((o + ((size_t)40u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                     bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                    nvol_store32((o + ((size_t)44u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                    nvol_store32((o + ((size_t)44u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                     bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
                     if (cnt > ((size_t)12u)) {
-                        nvol_store32((o + ((size_t)48u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                        nvol_store32((o + ((size_t)48u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                         bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                        nvol_store32((o + ((size_t)52u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                        nvol_store32((o + ((size_t)52u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                         bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                        nvol_store32((o + ((size_t)56u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                        nvol_store32((o + ((size_t)56u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                         bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                        nvol_store32((o + ((size_t)60u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                        nvol_store32((o + ((size_t)60u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                         bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
                         if (cnt > ((size_t)16u)) {
-                            nvol_store32((o + ((size_t)64u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                            nvol_store32((o + ((size_t)64u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                            nvol_store32((o + ((size_t)68u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                            nvol_store32((o + ((size_t)68u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                            nvol_store32((o + ((size_t)72u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                            nvol_store32((o + ((size_t)72u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                            nvol_store32((o + ((size_t)76u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                            nvol_store32((o + ((size_t)76u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
                             if (cnt > ((size_t)20u)) {
-                                nvol_store32((o + ((size_t)80u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                                nvol_store32((o + ((size_t)80u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                                 bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                                nvol_store32((o + ((size_t)84u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                                nvol_store32((o + ((size_t)84u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                                 bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                                nvol_store32((o + ((size_t)88u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                                nvol_store32((o + ((size_t)88u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                                 bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
-                                nvol_store32((o + ((size_t)92u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                                nvol_store32((o + ((size_t)92u)), ((uint32_t)((base + ((size_t)_tzcnt_u64(bits))))));
                                 bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
                                 if (cnt > ((size_t)24u)) {
                                     size_t i = ((size_t)24u);
@@ -8699,7 +8703,7 @@ inline nvol_json_index_raw_fn_t nvol_json_index_raw_ptr = nvol_json_index_raw_re
 inline size_t nvol_json_index_raw_resolve(uint8_t * state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t * out) {
     nvol_json_index_raw_fn_t f = nvol_json_index_scalar;
     if (nvol_cpu_ssse3()) f = nvol_json_index_ssse3;
-    if (nvol_cpu_avx2_pclmul()) f = nvol_json_index_avx2;
+    if (nvol_cpu_avx2_pclmul_bmi1()) f = nvol_json_index_avx2;
     nvol_json_index_raw_ptr = f;
     return f(state, blocks, nblocks, idx, out);
 }

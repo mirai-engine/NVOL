@@ -57,8 +57,9 @@ CPU_C = "int prims_cpu_has(const char *isa) { (void)isa; return 1; }\n" if A64 e
 int nvol_cpu_avx2(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 int nvol_cpu_ssse3(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 int nvol_cpu_sse42(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
-int nvol_cpu_avx2_pclmul(void) {
-    __builtin_cpu_init(); return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul");
+int nvol_cpu_avx2_pclmul_bmi1(void) {
+    __builtin_cpu_init();
+    return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul") && __builtin_cpu_supports("bmi");
 }
 """
 CTX = 0x7E57C0DE0000

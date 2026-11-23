@@ -166,7 +166,7 @@ def _module():
     mod.functions += [_fn_prefix_xor(isa) for isa, names in HELPERS.items() if names]
     mod.functions += [_fn_vtable16(isa) for isa, names in CONSTS.items() if names]
     mod.functions.append(_fn_half("load_half_bcast"))
-    mod.functions.append(_fn_cpu("cpu_avx2_pclmul"))
+    mod.functions.append(_fn_cpu("cpu_avx2_pclmul_bmi1"))
     return mod
 
 
@@ -181,6 +181,7 @@ int prims_cpu_has(const char *isa) {
     if (!strcmp(isa, "sse42")) return __builtin_cpu_supports("sse4.2");
     if (!strcmp(isa, "avx2")) return __builtin_cpu_supports("avx2");
     if (!strcmp(isa, "pclmul")) return __builtin_cpu_supports("pclmul");
+    if (!strcmp(isa, "bmi1")) return __builtin_cpu_supports("bmi");
     return 0;
 }
 """
@@ -287,16 +288,17 @@ def test_lowerings_match_reference(built, isa):
 
 
 
-def test_cpu_avx2_pclmul(built):
-    """The generated check agrees with the compiler's: AVX2 and PCLMULQDQ."""
+def test_cpu_avx2_pclmul_bmi1(built):
+    """The generated check agrees with the compiler's: AVX2, PCLMULQDQ and BMI1."""
     mod, lib = built
     _skip_unless(lib, "avx2")
-    cfn = lib.t_avx2_cpu_avx2_pclmul
+    cfn = lib.t_avx2_cpu_avx2_pclmul_bmi1
     cfn.argtypes = [ctypes.c_char_p, ctypes.c_void_p]
     cfn.restype = None
     out = (ctypes.c_uint8 * 8)()
     cfn(bytes(8), ctypes.addressof(out))
-    assert out[0] == (bool(lib.prims_cpu_has(b"avx2")) and bool(lib.prims_cpu_has(b"pclmul")))
+    assert out[0] == (bool(lib.prims_cpu_has(b"avx2")) and bool(lib.prims_cpu_has(b"pclmul"))
+                      and bool(lib.prims_cpu_has(b"bmi1")))
 
 
 def test_prefix_xor_reference():

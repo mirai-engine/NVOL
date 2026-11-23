@@ -57518,40 +57518,32 @@ nvol_json_index_avx2:
     shl $2, %rcx
     mov 32(%rsp), %r11
     lea (%r11,%rcx), %rcx
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, (%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 4(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 8(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 12(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
@@ -57616,42 +57608,34 @@ nvol_json_index_avx2:
     cmp %rax, %rdx
     {disp8} jb .Lnvol_json_index_avx2.L18
 .Lnvol_json_index_avx2.L19:
-    {disp32} jmp .Lnvol_json_index_avx2.L16
+    {disp8} jmp .Lnvol_json_index_avx2.L16
 .Lnvol_json_index_avx2.Lrare2:
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 80(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 84(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 88(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 92(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
@@ -57661,42 +57645,34 @@ nvol_json_index_avx2:
     cmp $24, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare1
 .Lnvol_json_index_avx2.L16:
-    {disp32} jmp .Lnvol_json_index_avx2.L14
+    {disp8} jmp .Lnvol_json_index_avx2.L14
 .Lnvol_json_index_avx2.Lrare3:
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 64(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 68(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 72(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 76(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
@@ -57706,42 +57682,34 @@ nvol_json_index_avx2:
     cmp $20, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare2
 .Lnvol_json_index_avx2.L14:
-    {disp32} jmp .Lnvol_json_index_avx2.L12
+    {disp8} jmp .Lnvol_json_index_avx2.L12
 .Lnvol_json_index_avx2.Lrare4:
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 48(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 52(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 56(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 60(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
@@ -57751,42 +57719,34 @@ nvol_json_index_avx2:
     cmp $16, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare3
 .Lnvol_json_index_avx2.L12:
-    {disp32} jmp .Lnvol_json_index_avx2.L10
+    {disp8} jmp .Lnvol_json_index_avx2.L10
 .Lnvol_json_index_avx2.Lrare5:
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 32(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 36(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 40(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 44(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
@@ -57796,42 +57756,34 @@ nvol_json_index_avx2:
     cmp $12, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare4
 .Lnvol_json_index_avx2.L10:
-    {disp32} jmp .Lnvol_json_index_avx2.L8
+    {disp8} jmp .Lnvol_json_index_avx2.L8
 .Lnvol_json_index_avx2.Lrare6:
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 16(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 20(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 24(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
     sub $1, %r8
     and %r8, %rdx
     mov %rdx, %r15
-    mov $64, %edx
-    bsf %r15, %r8
-    cmovz %rdx, %r8
-    lea (%r12,%r8), %rdx
+    tzcnt %r15, %rdx
+    lea (%r12,%rdx), %rdx
     mov %edx, 28(%rcx)
     mov %r15, %rdx
     mov %r15, %r8
@@ -57847,6 +57799,8 @@ nvol_json_index_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_json_index_raw
 .def nvol_json_index_raw; .scl 2; .type 32; .endef
 nvol_json_index_raw:
@@ -57874,7 +57828,7 @@ nvol_json_index_raw_resolve:
     sub $40, %rsp
 .seh_stackalloc 40
 .seh_endprologue
-    call nvol_cpu_avx2_pclmul
+    call nvol_cpu_avx2_pclmul_bmi1
     test %eax, %eax
     {disp8} jne .Lnvol_json_index_raw_resolve.T0
     call nvol_cpu_ssse3

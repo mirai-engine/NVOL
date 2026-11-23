@@ -134,7 +134,7 @@ SCALAR = {
     "load32u": "intrinsics.unaligned_load((^u32)({0}))",
     "load64": "intrinsics.unaligned_load((^u64)({0}))",
     "cpu_avx2": "nvol_cpu_avx2()",
-    "cpu_avx2_pclmul": "nvol_cpu_avx2_pclmul()",
+    "cpu_avx2_pclmul_bmi1": "nvol_cpu_avx2_pclmul_bmi1()",
     "cpu_ssse3": "(.ssse3 in info.cpu_features())",
     "cpu_sse42": "nvol_cpu_sse42()",
 }
@@ -159,10 +159,10 @@ FOREIGN = {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override == 1 }
 		return .avx2 in info.cpu_features()
 	}
-	@(private) nvol_cpu_avx2_pclmul :: proc "contextless" () -> bool {
+	@(private) nvol_cpu_avx2_pclmul_bmi1 :: proc "contextless" () -> bool {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override == 1 }
 		f := info.cpu_features()
-		return .avx2 in f && .pclmulqdq in f
+		return .avx2 in f && .pclmulqdq in f && .bmi1 in f
 	}
 	@(private) nvol_cpu_sse42 :: proc "contextless" () -> bool {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override >= 1 }
@@ -306,6 +306,7 @@ class OdinPrinter(Printer):
         if f.ifunc:
             return self.ifunc(f)
         self.isa = self.isa_of(f)
+        self.features = f.features
         attrs = []
         if not f.public:
             attrs.append("private")
@@ -320,6 +321,7 @@ class OdinPrinter(Printer):
                 feat = "avx2,ssse3,pclmul,-slow-unaligned-mem-32"
             elif feat == "sse4.2":
                 feat = "sse4.2,ssse3"
+            feat = ",".join([feat, *("bmi" if x == "bmi1" else x for x in f.features)])
             attrs.append(f'enable_target_feature="{feat}"')
         if f.doc:
             self.line(f"// {f.doc}")

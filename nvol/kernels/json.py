@@ -163,8 +163,9 @@ def _write_indexes(b, bits, base, out, n):
 
 def kernel(isa: ISA | None) -> Function:
     tag = isa.name if isa else "scalar"
+    # AVX2 with BMI1, as simdjson's haswell kernel: tzcnt and blsr in the indexer
     b = Builder(f"nvol_json_index_{tag}", USIZE, isa=isa.name if isa else None,
-                doc=f"stage 1, {tag} masks")
+                doc=f"stage 1, {tag} masks", features=("bmi1",) if tag == "avx2" else ())
     state, blocks, nblocks, idx, out = _params(b)
     st = [b.var(n, prim("load64", state + 8 * k if k else state), U64)
           for k, n in enumerate(("nie", "pis", "psc", "err"))]
@@ -194,7 +195,7 @@ def build(isas: list, mod: Module) -> None:
     else:
         scalar, avx2, ssse3 = kernel(None), kernel(ISAS["avx2"]), kernel(ISAS["ssse3"])
         mod.functions += [scalar, ssse3, avx2]
-        entries = [(prim("cpu_avx2_pclmul"), avx2.name), (prim("cpu_ssse3"), ssse3.name),
+        entries = [(prim("cpu_avx2_pclmul_bmi1"), avx2.name), (prim("cpu_ssse3"), ssse3.name),
                    (None, scalar.name)]
     rb = Builder("nvol_json_index_raw", USIZE, public=True, doc=DOC)
     _params(rb)

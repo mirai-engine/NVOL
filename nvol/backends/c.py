@@ -80,6 +80,7 @@ X86_PRELUDE = r"""
 #include <immintrin.h>
 #if defined(_MSC_VER) && !defined(__clang__)
 #  define NVOL_TARGET_AVX2
+#  define NVOL_TARGET_AVX2_BMI1
 #  define NVOL_TARGET_SSSE3
 #  define NVOL_TARGET_SSE4_2
 static int nvol_cpu_avx2_detect(void) {
@@ -90,23 +91,26 @@ static int nvol_cpu_avx2_detect(void) {
 }
 static int nvol_cpu_ssse3_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 9) & 1; }
 static int nvol_cpu_sse42_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 20) & 1; }
-static int nvol_cpu_avx2_pclmul_detect(void) {
+static int nvol_cpu_avx2_pclmul_bmi1_detect(void) {
     int r[4]; __cpuid(r, 1);
-    return ((r[2] >> 1) & 1) && nvol_cpu_avx2_detect();          /* PCLMULQDQ */
+    if (!((r[2] >> 1) & 1) || !nvol_cpu_avx2_detect()) return 0;  /* PCLMULQDQ */
+    __cpuidex(r, 7, 0); return (r[1] >> 3) & 1;                   /* BMI1 */
 }
 #else
 /* every CPU with AVX2 or SSE4.2 has POPCNT (the dispatch does not check it, nor does the asm):
    without the feature, the bit count in those kernels stays a software count. Every AVX2 CPU
-   also has PCLMULQDQ; the kernels that use it dispatch on nvol_cpu_avx2_pclmul, which checks
+   also has PCLMULQDQ; the kernels that use it dispatch on nvol_cpu_avx2_pclmul_bmi1, which checks
    both (a hypervisor can hide one) */
 #  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt,pclmul")))
+#  define NVOL_TARGET_AVX2_BMI1 __attribute__((target("avx2,popcnt,pclmul,bmi")))
 #  define NVOL_TARGET_SSSE3 __attribute__((target("ssse3")))
 #  define NVOL_TARGET_SSE4_2 __attribute__((target("sse4.2,popcnt")))
 static int nvol_cpu_avx2_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 static int nvol_cpu_ssse3_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 static int nvol_cpu_sse42_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
-static int nvol_cpu_avx2_pclmul_detect(void) {
-    __builtin_cpu_init(); return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul");
+static int nvol_cpu_avx2_pclmul_bmi1_detect(void) {
+    __builtin_cpu_init();
+    return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul") && __builtin_cpu_supports("bmi");
 }
 #endif
 static int nvol_cpu_ssse3_cache = -1;
@@ -127,10 +131,10 @@ static inline int nvol_cpu_avx2(void) {
     if (v < 0) { v = nvol_cpu_avx2_detect(); nvol_cpu_avx2_cache = v; }
     return v;
 }
-static int nvol_cpu_avx2_pclmul_cache = -1;
-static inline NVOL_UNUSED int nvol_cpu_avx2_pclmul(void) {   /* no kernel dispatches on it yet */
-    int v = nvol_cpu_avx2_pclmul_cache;
-    if (v < 0) { v = nvol_cpu_avx2_pclmul_detect(); nvol_cpu_avx2_pclmul_cache = v; }
+static int nvol_cpu_avx2_pclmul_bmi1_cache = -1;
+static inline NVOL_UNUSED int nvol_cpu_avx2_pclmul_bmi1(void) {   /* no kernel dispatches on it yet */
+    int v = nvol_cpu_avx2_pclmul_bmi1_cache;
+    if (v < 0) { v = nvol_cpu_avx2_pclmul_bmi1_detect(); nvol_cpu_avx2_pclmul_bmi1_cache = v; }
     return v;
 }
 """.strip("\n")
@@ -210,7 +214,7 @@ class CPrinter(Printer):
                              "NVOL_API void nvol_test_set_avx2(int v) {"]
                 if arch == "x86_64":
                     self.out.append("    nvol_cpu_avx2_cache = v < 0 ? -1 : v == 1;")
-                    self.out.append("    nvol_cpu_avx2_pclmul_cache = v < 0 ? -1 : v == 1;")
+                    self.out.append("    nvol_cpu_avx2_pclmul_bmi1_cache = v < 0 ? -1 : v == 1;")
                     self.out.append("    nvol_cpu_sse42_cache = v < 0 ? -1 : v >= 1;")
                     self.out += [f"    {f.name}_ptr = {f.name}_resolve;" for f in self.ifuncs]
                 else:
@@ -394,25 +398,31 @@ class CPrinter(Printer):
         self.line()
         self.ifuncs.append(f)
 
+    def target_macro(self, f: ir.Function) -> str:
+        """NVOL_TARGET_<ISA target>[_<feature>...]: the function's target attribute."""
+        return "_".join(["NVOL_TARGET_" + self.isa.target["c"].upper().replace(".", "_")]
+                        + [x.upper() for x in f.features])
+
     def function(self, f: ir.Function):
         if f.ifunc:
             return self.ifunc(f)
         self.emit_fn_tables_for(f)
         self.isa = self.isa_of(f)
+        self.features = f.features
         if f.doc:
             self.line(f"/* {f.doc} */")
         if f.noinline and not f.public:
             attrs = "NVOL_NOINLINE " + ("inline " if self.cpp else "static ")
             if self.isa and self.isa.target["c"]:
-                attrs = f"NVOL_TARGET_{self.isa.target['c'].upper().replace('.', '_')} " + attrs
+                attrs = f"{self.target_macro(f)} " + attrs
         elif "_entry_" in f.name:      # called through a pointer: keep out of line
             attrs = ("inline " if self.cpp else "static ")
             if self.isa and self.isa.target["c"]:
-                attrs = f"NVOL_TARGET_{self.isa.target['c'].upper().replace('.', '_')} " + attrs
+                attrs = f"{self.target_macro(f)} " + attrs
         elif f.public:
             attrs = "inline " if self.cpp else "NVOL_API "
             if self.isa and self.isa.target["c"]:
-                attrs = f"NVOL_TARGET_{self.isa.target['c'].upper().replace('.', '_')} " + attrs
+                attrs = f"{self.target_macro(f)} " + attrs
         else:
             attrs = "NVOL_INLINE "
             if self.isa and self.isa.target["c"]:
@@ -420,7 +430,7 @@ class CPrinter(Printer):
                 # keep ISA kernels out of line even when a caller with the same target
                 # (an entry, or a C++ user calling a kernel directly) wants them inlined
                 # (NVOL_INLINE is static in C, an external-linkage inline in C++)
-                attrs = f"NVOL_TARGET_{self.isa.target['c'].upper().replace('.', '_')} NVOL_INLINE "
+                attrs = f"{self.target_macro(f)} NVOL_INLINE "
         self.line(attrs + self.signature(f) + " {")
         self.depth += 1
         self.block(f.body)

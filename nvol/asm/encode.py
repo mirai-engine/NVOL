@@ -170,7 +170,7 @@ def length(ins) -> int:
         return _legacy(1, a, a[0].w == 64)
     if op in ("bsf", "bsr", "bt") or op.startswith("cmov"):
         return _legacy(2, a, a[0].w == 64)
-    if op == "popcnt":
+    if op in ("popcnt", "tzcnt"):                     # F3 (REX.W) 0F B8 / BC
         return _legacy(2, a, a[0].w == 64, prefix=1)
     if op.startswith("set"):
         return _legacy(2, a)

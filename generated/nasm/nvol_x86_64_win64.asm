@@ -2,7 +2,7 @@
 ; SPDX-License-Identifier: MIT OR Apache-2.0
 default rel
 extern nvol_cpu_avx2
-extern nvol_cpu_avx2_pclmul
+extern nvol_cpu_avx2_pclmul_bmi1
 extern nvol_cpu_sse42
 extern nvol_cpu_ssse3
 section .rdata
@@ -55926,40 +55926,32 @@ nvol_json_index_avx2:
     shl rcx, 2
     mov r11, [rsp + 32]
     lea rcx, [r11 + rcx]
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 4], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 8], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 12], edx
     mov rdx, r15
     mov r8, r15
@@ -56024,42 +56016,34 @@ nvol_json_index_avx2:
     cmp rdx, rax
     jb strict short .L18
 .L19:
-    jmp strict near .L16
+    jmp strict short .L16
 .Lrare2:
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 80], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 84], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 88], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 92], edx
     mov rdx, r15
     mov r8, r15
@@ -56069,42 +56053,34 @@ nvol_json_index_avx2:
     cmp rax, 24
     ja strict near .Lrare1
 .L16:
-    jmp strict near .L14
+    jmp strict short .L14
 .Lrare3:
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 64], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 68], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 72], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 76], edx
     mov rdx, r15
     mov r8, r15
@@ -56114,42 +56090,34 @@ nvol_json_index_avx2:
     cmp rax, 20
     ja strict near .Lrare2
 .L14:
-    jmp strict near .L12
+    jmp strict short .L12
 .Lrare4:
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 48], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 52], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 56], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 60], edx
     mov rdx, r15
     mov r8, r15
@@ -56159,42 +56127,34 @@ nvol_json_index_avx2:
     cmp rax, 16
     ja strict near .Lrare3
 .L12:
-    jmp strict near .L10
+    jmp strict short .L10
 .Lrare5:
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 32], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 36], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 40], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 44], edx
     mov rdx, r15
     mov r8, r15
@@ -56204,42 +56164,34 @@ nvol_json_index_avx2:
     cmp rax, 12
     ja strict near .Lrare4
 .L10:
-    jmp strict near .L8
+    jmp strict short .L8
 .Lrare6:
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 16], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 20], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 24], edx
     mov rdx, r15
     mov r8, r15
     sub r8, 1
     and rdx, r8
     mov r15, rdx
-    mov edx, 64
-    bsf r8, r15
-    cmovz r8, rdx
-    lea rdx, [r12 + r8]
+    tzcnt rdx, r15
+    lea rdx, [r12 + rdx]
     mov dword [rcx + 28], edx
     mov rdx, r15
     mov r8, r15
@@ -56255,6 +56207,8 @@ nvol_json_index_avx2:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_json_index_raw
 nvol_json_index_raw:
     jmp qword [rel nvol_json_index_raw_ptr]
@@ -56273,7 +56227,7 @@ nvol_json_index_raw_resolve:
     push r8
     push r9
     sub rsp, 40
-    call nvol_cpu_avx2_pclmul
+    call nvol_cpu_avx2_pclmul_bmi1
     test eax, eax
     jne strict short .T0
     call nvol_cpu_ssse3

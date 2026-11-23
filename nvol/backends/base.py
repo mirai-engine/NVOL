@@ -16,6 +16,7 @@ class Printer:
     def __init__(self, module: ir.Module):
         self.mod = module
         self.isa = None
+        self.features = ()
         self.out: list = []
         self.depth = 0
 
@@ -95,7 +96,7 @@ class Printer:
         if t is ir.Load8:
             return self.load8(self.e(x.p))
         if t is ir.Prim:
-            tpl = lowering(self.isa, self.lang, x.name)
+            tpl = lowering(self.isa, self.lang, x.name, self.features)
             return tpl.format(*[self.e(a) for a in x.args])
         if t is ir.Call:
             return self.call(x.fn, [self.e(a) for a in x.args])
