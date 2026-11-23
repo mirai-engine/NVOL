@@ -59,6 +59,8 @@ class Expr:
         return Bin("add", self, o, self.ty)
 
     def __sub__(self, o):
+        if self.ty is MPTR:     # no PtrDiff/PtrSub for it: Rust and Odin cannot subtract pointers
+            raise TypeError("MPTR supports only + offset; keep a count or derive it from a PTR")
         if self.ty is PTR:
             if isinstance(o, Expr) and o.ty is PTR:
                 return PtrDiff(self, o)

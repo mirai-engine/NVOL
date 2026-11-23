@@ -40,3 +40,15 @@ def test_swar_scalar_kernels(name):
                 idx = [i for i, c in enumerate(hay) if c in needles]
                 want = 0 if not idx else base + (idx[-1] if rev else idx[0])
                 assert got == want, (name, L, off, needles, hay.hex(), got, want)
+
+
+def test_mptr_subtraction_is_rejected():
+    """Only PTR has PtrDiff/PtrSub: an MPTR difference would print as an integer subtraction of
+    pointers, which C accepts and Rust and Odin reject (the first json_index count did this)."""
+    from nvol import ir
+    b = ir.Builder("t", ir.USIZE)
+    out = b.param("out", ir.MPTR)
+    with pytest.raises(TypeError):
+        out - out
+    with pytest.raises(TypeError):
+        out - 4
