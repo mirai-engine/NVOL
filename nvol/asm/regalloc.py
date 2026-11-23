@@ -704,6 +704,47 @@ def _unsplit(code, bad, parent):
     return [_map(ins, lambda r: m.get(r, r)) for ins in code if id(ins) not in drop]
 
 
+def share_slots(code: list, spilled) -> tuple:
+    """A stack slot for each spilled register, shared by registers whose ranges never overlap:
+    ({register: slot}, number of slots).
+
+    A register's range runs from its first to its last access in layout order, and covers a
+    whole loop (a backward jump's target to the jump) whenever it overlaps one, since a value
+    read at the top of a loop may come from the previous iteration; until nothing grows. Two
+    registers whose ranges do not overlap are never both live, so one slot holds each in turn.
+    Slots are given greedily by start (interval coloring, optimal for intervals)."""
+    at = {ins.args[0].name: i for i, ins in enumerate(code) if ins.op == "label"}
+    loops = [(at[ins.args[0].name], i) for i, ins in enumerate(code)
+             if (ins.op == "jmp" or ins.op in CONDJUMPS) and isinstance(ins.args[0], Lab)
+             and at.get(ins.args[0].name, i) < i]
+    span = {}
+    for i, ins in enumerate(code):
+        for r in ins.uses + ins.defs:
+            if isinstance(r, VReg) and r in spilled:
+                lo, hi = span.get(r, (i, i))
+                span[r] = (min(lo, i), max(hi, i))
+    for r in spilled:
+        span.setdefault(r, (0, len(code)))
+    grew = True
+    while grew:
+        grew = False
+        for r, (lo, hi) in span.items():
+            for h, e in loops:
+                if lo <= e and h <= hi and (h < lo or e > hi):
+                    lo, hi, grew = min(lo, h), max(hi, e), True
+            span[r] = (lo, hi)
+    ends, slot = [], {}
+    for r in sorted(span, key=lambda r: (span[r][0], r.id)):
+        lo, hi = span[r]
+        k = next((k for k, end in enumerate(ends) if end < lo), None)
+        if k is None:
+            k = len(ends)
+            ends.append(hi)
+        ends[k] = hi
+        slot[r] = k
+    return slot, len(ends)
+
+
 def allocate(code: list, abi: ABI, T) -> list:
     """Allocate; then split spilled registers around the loops that only read them, allocate
     again, and undo the splits that spilled anyway, until nothing changes."""

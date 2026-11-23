@@ -19332,20 +19332,19 @@ L.nvol_find_byteset_pair_mask_entry_neon:
 nvol_find_byteset_pair_visit_entry_neon:
 L.nvol_find_byteset_pair_visit_entry_neon:
 .cfi_startproc
-    sub sp, sp, #864
-.cfi_def_cfa_offset 864
-    stp x29, x30, [sp]
-.cfi_offset 29, -864
-.cfi_offset 30, -856
+    stp x29, x30, [sp, #-256]!
+.cfi_def_cfa_offset 256
+.cfi_offset 29, -256
+.cfi_offset 30, -248
     stp x19, x20, [sp, #16]
-.cfi_offset 19, -848
-.cfi_offset 20, -840
+.cfi_offset 19, -240
+.cfi_offset 20, -232
     stp x21, x22, [sp, #32]
-.cfi_offset 21, -832
-.cfi_offset 22, -824
+.cfi_offset 21, -224
+.cfi_offset 22, -216
     stp x23, x24, [sp, #48]
-.cfi_offset 23, -816
-.cfi_offset 24, -808
+.cfi_offset 23, -208
+.cfi_offset 24, -200
     mov x19, x0
     mov x20, x3
     ldr x21, [x19, #240]
@@ -19376,6 +19375,7 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     mov x24, x1
     cmp x24, x23
     b.hi .Lnvol_find_byteset_pair_visit_entry_neon.L10
+    nop
 .Lnvol_find_byteset_pair_visit_entry_neon.L9:
     ldrb w9, [x24, x21]
     lsr x10, x9, #7
@@ -19469,16 +19469,16 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     ldr x22, [x19, #232]
     ldrb w9, [x19, #56]
     dup v31.16b, w9
-    str q31, [sp, #96]
+    str q31, [sp, #64]
     ldrb w9, [x19, #57]
     dup v31.16b, w9
-    str q31, [sp, #112]
+    str q31, [sp, #80]
     ldrb w9, [x19, #168]
     dup v31.16b, w9
-    str q31, [sp, #128]
+    str q31, [sp, #96]
     ldrb w9, [x19, #169]
     dup v31.16b, w9
-    str q31, [sp, #144]
+    str q31, [sp, #112]
     cmp x21, x22
     csel x9, x21, x22, hs
     add x9, x9, #16
@@ -19489,15 +19489,15 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     nop
 .Lnvol_find_byteset_pair_visit_entry_neon.L33:
     ldr q0, [x23, x21]
-    ldr q31, [sp, #96]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #112]
+    ldr q31, [sp, #80]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x23, x22]
-    ldr q31, [sp, #128]
+    ldr q31, [sp, #96]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #144]
+    ldr q31, [sp, #112]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -19518,15 +19518,15 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     movn x10, #0
     lsl x9, x10, x9
     ldr q0, [x19, x21]
-    ldr q31, [sp, #96]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #112]
+    ldr q31, [sp, #80]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x19, x22]
-    ldr q31, [sp, #128]
+    ldr q31, [sp, #96]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #144]
+    ldr q31, [sp, #112]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -19556,22 +19556,22 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     ldr x22, [x19, #232]
     ldrb w9, [x19, #56]
     dup v31.16b, w9
-    str q31, [sp, #160]
+    str q31, [sp, #64]
     ldrb w9, [x19, #57]
     dup v31.16b, w9
-    str q31, [sp, #176]
+    str q31, [sp, #80]
     ldrb w9, [x19, #58]
     dup v31.16b, w9
-    str q31, [sp, #192]
+    str q31, [sp, #96]
     ldrb w9, [x19, #168]
     dup v31.16b, w9
-    str q31, [sp, #208]
+    str q31, [sp, #112]
     ldrb w9, [x19, #169]
     dup v31.16b, w9
-    str q31, [sp, #224]
+    str q31, [sp, #128]
     ldrb w9, [x19, #170]
     dup v31.16b, w9
-    str q31, [sp, #240]
+    str q31, [sp, #144]
     cmp x21, x22
     csel x9, x21, x22, hs
     add x9, x9, #16
@@ -19582,21 +19582,21 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     nop
 .Lnvol_find_byteset_pair_visit_entry_neon.L47:
     ldr q0, [x23, x21]
-    ldr q31, [sp, #160]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #176]
+    ldr q31, [sp, #80]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #192]
+    ldr q31, [sp, #96]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x23, x22]
-    ldr q31, [sp, #208]
+    ldr q31, [sp, #112]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #224]
+    ldr q31, [sp, #128]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #240]
+    ldr q31, [sp, #144]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -19617,21 +19617,21 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     movn x10, #0
     lsl x9, x10, x9
     ldr q0, [x19, x21]
-    ldr q31, [sp, #160]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #176]
+    ldr q31, [sp, #80]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #192]
+    ldr q31, [sp, #96]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x19, x22]
-    ldr q31, [sp, #208]
+    ldr q31, [sp, #112]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #224]
+    ldr q31, [sp, #128]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #240]
+    ldr q31, [sp, #144]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -19661,28 +19661,28 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     ldr x22, [x19, #232]
     ldrb w9, [x19, #56]
     dup v31.16b, w9
-    str q31, [sp, #256]
+    str q31, [sp, #64]
     ldrb w9, [x19, #57]
     dup v31.16b, w9
-    str q31, [sp, #272]
+    str q31, [sp, #80]
     ldrb w9, [x19, #58]
     dup v31.16b, w9
-    str q31, [sp, #288]
+    str q31, [sp, #96]
     ldrb w9, [x19, #59]
     dup v31.16b, w9
-    str q31, [sp, #304]
+    str q31, [sp, #112]
     ldrb w9, [x19, #168]
     dup v31.16b, w9
-    str q31, [sp, #320]
+    str q31, [sp, #128]
     ldrb w9, [x19, #169]
     dup v31.16b, w9
-    str q31, [sp, #336]
+    str q31, [sp, #144]
     ldrb w9, [x19, #170]
     dup v31.16b, w9
-    str q31, [sp, #352]
+    str q31, [sp, #160]
     ldrb w9, [x19, #171]
     dup v31.16b, w9
-    str q31, [sp, #368]
+    str q31, [sp, #176]
     cmp x21, x22
     csel x9, x21, x22, hs
     add x9, x9, #16
@@ -19693,27 +19693,27 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     nop
 .Lnvol_find_byteset_pair_visit_entry_neon.L61:
     ldr q0, [x23, x21]
-    ldr q31, [sp, #256]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #272]
+    ldr q31, [sp, #80]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #288]
+    ldr q31, [sp, #96]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #304]
+    ldr q31, [sp, #112]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x23, x22]
-    ldr q31, [sp, #320]
+    ldr q31, [sp, #128]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #336]
+    ldr q31, [sp, #144]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #352]
+    ldr q31, [sp, #160]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #368]
+    ldr q31, [sp, #176]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -19734,27 +19734,27 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     movn x10, #0
     lsl x9, x10, x9
     ldr q0, [x19, x21]
-    ldr q31, [sp, #256]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #272]
+    ldr q31, [sp, #80]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #288]
+    ldr q31, [sp, #96]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #304]
+    ldr q31, [sp, #112]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x19, x22]
-    ldr q31, [sp, #320]
+    ldr q31, [sp, #128]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #336]
+    ldr q31, [sp, #144]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #352]
+    ldr q31, [sp, #160]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #368]
+    ldr q31, [sp, #176]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -19784,34 +19784,34 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     ldr x22, [x19, #232]
     ldrb w9, [x19, #56]
     dup v31.16b, w9
-    str q31, [sp, #384]
+    str q31, [sp, #64]
     ldrb w9, [x19, #57]
     dup v31.16b, w9
-    str q31, [sp, #400]
+    str q31, [sp, #80]
     ldrb w9, [x19, #58]
     dup v31.16b, w9
-    str q31, [sp, #416]
+    str q31, [sp, #96]
     ldrb w9, [x19, #59]
     dup v31.16b, w9
-    str q31, [sp, #432]
+    str q31, [sp, #112]
     ldrb w9, [x19, #60]
     dup v31.16b, w9
-    str q31, [sp, #448]
+    str q31, [sp, #128]
     ldrb w9, [x19, #168]
     dup v31.16b, w9
-    str q31, [sp, #464]
+    str q31, [sp, #144]
     ldrb w9, [x19, #169]
     dup v31.16b, w9
-    str q31, [sp, #480]
+    str q31, [sp, #160]
     ldrb w9, [x19, #170]
     dup v31.16b, w9
-    str q31, [sp, #496]
+    str q31, [sp, #176]
     ldrb w9, [x19, #171]
     dup v31.16b, w9
-    str q31, [sp, #512]
+    str q31, [sp, #192]
     ldrb w9, [x19, #172]
     dup v31.16b, w9
-    str q31, [sp, #528]
+    str q31, [sp, #208]
     cmp x21, x22
     csel x9, x21, x22, hs
     add x9, x9, #16
@@ -19822,33 +19822,33 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     nop
 .Lnvol_find_byteset_pair_visit_entry_neon.L75:
     ldr q0, [x23, x21]
-    ldr q31, [sp, #384]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #400]
+    ldr q31, [sp, #80]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #416]
+    ldr q31, [sp, #96]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #432]
+    ldr q31, [sp, #112]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #448]
+    ldr q31, [sp, #128]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x23, x22]
-    ldr q31, [sp, #464]
+    ldr q31, [sp, #144]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #480]
+    ldr q31, [sp, #160]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #496]
+    ldr q31, [sp, #176]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #512]
+    ldr q31, [sp, #192]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #528]
+    ldr q31, [sp, #208]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -19869,33 +19869,33 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     movn x10, #0
     lsl x9, x10, x9
     ldr q0, [x19, x21]
-    ldr q31, [sp, #384]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #400]
+    ldr q31, [sp, #80]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #416]
+    ldr q31, [sp, #96]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #432]
+    ldr q31, [sp, #112]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #448]
+    ldr q31, [sp, #128]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x19, x22]
-    ldr q31, [sp, #464]
+    ldr q31, [sp, #144]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #480]
+    ldr q31, [sp, #160]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #496]
+    ldr q31, [sp, #176]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #512]
+    ldr q31, [sp, #192]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #528]
+    ldr q31, [sp, #208]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -19925,40 +19925,40 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     ldr x22, [x19, #232]
     ldrb w9, [x19, #56]
     dup v31.16b, w9
-    str q31, [sp, #544]
+    str q31, [sp, #64]
     ldrb w9, [x19, #57]
     dup v31.16b, w9
-    str q31, [sp, #560]
+    str q31, [sp, #80]
     ldrb w9, [x19, #58]
     dup v31.16b, w9
-    str q31, [sp, #576]
+    str q31, [sp, #96]
     ldrb w9, [x19, #59]
     dup v31.16b, w9
-    str q31, [sp, #592]
+    str q31, [sp, #112]
     ldrb w9, [x19, #60]
     dup v31.16b, w9
-    str q31, [sp, #608]
+    str q31, [sp, #128]
     ldrb w9, [x19, #61]
     dup v31.16b, w9
-    str q31, [sp, #624]
+    str q31, [sp, #144]
     ldrb w9, [x19, #168]
     dup v31.16b, w9
-    str q31, [sp, #640]
+    str q31, [sp, #160]
     ldrb w9, [x19, #169]
     dup v31.16b, w9
-    str q31, [sp, #656]
+    str q31, [sp, #176]
     ldrb w9, [x19, #170]
     dup v31.16b, w9
-    str q31, [sp, #672]
+    str q31, [sp, #192]
     ldrb w9, [x19, #171]
     dup v31.16b, w9
-    str q31, [sp, #688]
+    str q31, [sp, #208]
     ldrb w9, [x19, #172]
     dup v31.16b, w9
-    str q31, [sp, #704]
+    str q31, [sp, #224]
     ldrb w9, [x19, #173]
     dup v31.16b, w9
-    str q31, [sp, #720]
+    str q31, [sp, #240]
     cmp x21, x22
     csel x9, x21, x22, hs
     add x9, x9, #16
@@ -19969,39 +19969,39 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     nop
 .Lnvol_find_byteset_pair_visit_entry_neon.L89:
     ldr q0, [x23, x21]
-    ldr q31, [sp, #544]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #560]
+    ldr q31, [sp, #80]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #576]
+    ldr q31, [sp, #96]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #592]
+    ldr q31, [sp, #112]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #608]
+    ldr q31, [sp, #128]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #624]
+    ldr q31, [sp, #144]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x23, x22]
-    ldr q31, [sp, #640]
+    ldr q31, [sp, #160]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #656]
+    ldr q31, [sp, #176]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #672]
+    ldr q31, [sp, #192]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #688]
+    ldr q31, [sp, #208]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #704]
+    ldr q31, [sp, #224]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #720]
+    ldr q31, [sp, #240]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -20022,39 +20022,39 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     movn x10, #0
     lsl x9, x10, x9
     ldr q0, [x19, x21]
-    ldr q31, [sp, #544]
+    ldr q31, [sp, #64]
     cmeq v1.16b, v0.16b, v31.16b
-    ldr q31, [sp, #560]
+    ldr q31, [sp, #80]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #576]
+    ldr q31, [sp, #96]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #592]
+    ldr q31, [sp, #112]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #608]
+    ldr q31, [sp, #128]
     cmeq v2.16b, v0.16b, v31.16b
     orr v1.16b, v1.16b, v2.16b
-    ldr q31, [sp, #624]
+    ldr q31, [sp, #144]
     cmeq v0.16b, v0.16b, v31.16b
     orr v0.16b, v1.16b, v0.16b
     ldr q1, [x19, x22]
-    ldr q31, [sp, #640]
+    ldr q31, [sp, #160]
     cmeq v2.16b, v1.16b, v31.16b
-    ldr q31, [sp, #656]
+    ldr q31, [sp, #176]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #672]
+    ldr q31, [sp, #192]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #688]
+    ldr q31, [sp, #208]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #704]
+    ldr q31, [sp, #224]
     cmeq v3.16b, v1.16b, v31.16b
     orr v2.16b, v2.16b, v3.16b
-    ldr q31, [sp, #720]
+    ldr q31, [sp, #240]
     cmeq v1.16b, v1.16b, v31.16b
     orr v1.16b, v2.16b, v1.16b
     and v0.16b, v0.16b, v1.16b
@@ -20081,21 +20081,21 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     ldr x21, [x19, #224]
     ldr x22, [x19, #232]
     ldr q31, [x19]
-    str q31, [sp, #736]
+    str q31, [sp, #64]
     ldr q31, [x19, #16]
-    str q31, [sp, #752]
+    str q31, [sp, #80]
     ldr q31, [x19, #32]
-    str q31, [sp, #768]
+    str q31, [sp, #96]
     ldr q31, [x19, #112]
-    str q31, [sp, #784]
+    str q31, [sp, #112]
     ldr q31, [x19, #128]
-    str q31, [sp, #800]
+    str q31, [sp, #128]
     ldr q31, [x19, #144]
-    str q31, [sp, #816]
+    str q31, [sp, #144]
     movi v31.16b, #143
-    str q31, [sp, #832]
+    str q31, [sp, #160]
     movi v31.16b, #128
-    str q31, [sp, #848]
+    str q31, [sp, #176]
     cmp x21, x22
     csel x9, x21, x22, hs
     add x9, x9, #16
@@ -20106,31 +20106,31 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     nop
 .Lnvol_find_byteset_pair_visit_entry_neon.L101:
     ldr q0, [x23, x21]
-    ldr q31, [sp, #832]
+    ldr q31, [sp, #160]
     and v1.16b, v0.16b, v31.16b
     ushr v0.16b, v0.16b, #4
-    ldr q31, [sp, #768]
+    ldr q31, [sp, #96]
     tbl v0.16b, {v31.16b}, v0.16b
-    ldr q31, [sp, #736]
+    ldr q31, [sp, #64]
     tbl v2.16b, {v31.16b}, v1.16b
-    ldr q31, [sp, #848]
+    ldr q31, [sp, #176]
     sub v1.16b, v1.16b, v31.16b
-    ldr q31, [sp, #752]
+    ldr q31, [sp, #80]
     tbl v1.16b, {v31.16b}, v1.16b
     orr v1.16b, v2.16b, v1.16b
     and v1.16b, v1.16b, v0.16b
     cmeq v0.16b, v1.16b, v0.16b
     ldr q1, [x23, x22]
-    ldr q31, [sp, #832]
+    ldr q31, [sp, #160]
     and v2.16b, v1.16b, v31.16b
     ushr v1.16b, v1.16b, #4
-    ldr q31, [sp, #816]
+    ldr q31, [sp, #144]
     tbl v1.16b, {v31.16b}, v1.16b
-    ldr q31, [sp, #784]
+    ldr q31, [sp, #112]
     tbl v3.16b, {v31.16b}, v2.16b
-    ldr q31, [sp, #848]
+    ldr q31, [sp, #176]
     sub v2.16b, v2.16b, v31.16b
-    ldr q31, [sp, #800]
+    ldr q31, [sp, #128]
     tbl v2.16b, {v31.16b}, v2.16b
     orr v2.16b, v3.16b, v2.16b
     and v2.16b, v2.16b, v1.16b
@@ -20148,8 +20148,8 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     add x9, x19, #16
     cmp x23, x9
     b.hs .Lnvol_find_byteset_pair_visit_entry_neon.L107
-    ldr q3, [sp, #832]
-    ldr q4, [sp, #848]
+    ldr q3, [sp, #160]
+    ldr q4, [sp, #176]
     sub x9, x23, x19
     lsl x9, x9, #2
     movn x10, #0
@@ -20157,12 +20157,12 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     ldr q0, [x19, x21]
     and v1.16b, v0.16b, v3.16b
     ushr v0.16b, v0.16b, #4
-    ldr q31, [sp, #768]
+    ldr q31, [sp, #96]
     tbl v0.16b, {v31.16b}, v0.16b
-    ldr q31, [sp, #736]
+    ldr q31, [sp, #64]
     tbl v2.16b, {v31.16b}, v1.16b
     sub v1.16b, v1.16b, v4.16b
-    ldr q31, [sp, #752]
+    ldr q31, [sp, #80]
     tbl v1.16b, {v31.16b}, v1.16b
     orr v1.16b, v2.16b, v1.16b
     and v1.16b, v1.16b, v0.16b
@@ -20170,12 +20170,12 @@ L.nvol_find_byteset_pair_visit_entry_neon:
     ldr q1, [x19, x22]
     and v2.16b, v1.16b, v3.16b
     ushr v1.16b, v1.16b, #4
-    ldr q31, [sp, #816]
+    ldr q31, [sp, #144]
     tbl v1.16b, {v31.16b}, v1.16b
-    ldr q31, [sp, #784]
+    ldr q31, [sp, #112]
     tbl v3.16b, {v31.16b}, v2.16b
     sub v2.16b, v2.16b, v4.16b
-    ldr q31, [sp, #800]
+    ldr q31, [sp, #128]
     tbl v2.16b, {v31.16b}, v2.16b
     orr v2.16b, v3.16b, v2.16b
     and v2.16b, v2.16b, v1.16b
@@ -20200,11 +20200,10 @@ L.nvol_find_byteset_pair_visit_entry_neon:
 .Lnvol_find_byteset_pair_visit_entry_neon.L107:
     movz w0, #0
 .Lnvol_find_byteset_pair_visit_entry_neon.L1:
-    ldp x29, x30, [sp]
     ldp x19, x20, [sp, #16]
     ldp x21, x22, [sp, #32]
     ldp x23, x24, [sp, #48]
-    add sp, sp, #864
+    ldp x29, x30, [sp], #256
     ret
 .Lnvol_find_byteset_pair_visit_entry_neon.L16:
     mov x0, x24
@@ -20328,6 +20327,7 @@ L.nvol_find_byteset_pair_visit_entry_neon:
 .cfi_endproc
 .size nvol_find_byteset_pair_visit_entry_neon, .-nvol_find_byteset_pair_visit_entry_neon
 
+    nop
     nop
     nop
 .globl nvol_copy_until_byteset_entry_neon

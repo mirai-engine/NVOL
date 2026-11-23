@@ -18,7 +18,7 @@ from .abi import ABI
 from .lower import CC, NEG, Lower, Unsupported, _bit_test, _const_value, _masked_addr, _same, _target
 from .mir import (CONDJUMPS, PHYS, SP, TERMINATORS, XZR, Imm, Ins, Lab, Mem, Phys, Reg, VReg,
                   regs_in)
-from .regalloc import _subst, copy_back, jump_cleanup, reloads
+from .regalloc import _subst, copy_back, jump_cleanup, reloads, share_slots
 
 X0 = PHYS["x0"]
 # the generic condition codes as A64 spells them
@@ -836,7 +836,7 @@ def rewrite(code, assign, spilled):
     """Physical registers for every virtual one; a spilled register lives in a 16-byte slot,
     loaded into a scratch register before an instruction that reads it and stored after one
     that writes it (`ldr`/`str` x or q)."""
-    slot = {v: k for k, v in enumerate(sorted(spilled, key=lambda r: r.id))}
+    slot, nslots = share_slots(code, spilled)
     out = []
 
     def phys(r):
@@ -877,7 +877,7 @@ def rewrite(code, assign, spilled):
                 if r in ins.defs:
                     post.append(Ins("str", [Mem(spill=slot[r], w=w), Reg(s, w)], [], [s]))
         out += pre + [_subst(ins, local)] + post
-    return reloads(out, "ldr", "str", _STORES), len(slot)
+    return reloads(out, "ldr", "str", _STORES), nslots
 
 
 def peephole(code: list) -> list:

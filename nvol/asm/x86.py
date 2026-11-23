@@ -10,7 +10,7 @@ from .lower import (CC, NEG, Lower, Unsupported, _bit_test, _cmp_width, _const_v
                     _masked_addr, _same, _target)
 from .mir import (CONDJUMPS, PHYS, RSP, TERMINATORS, VECS, Imm, Ins, Lab, Mem, Phys, Reg, VReg,
                   regs_in)
-from .regalloc import _subst, copy_back, jump_cleanup, reloads
+from .regalloc import _subst, copy_back, jump_cleanup, reloads, share_slots
 
 # element-wise vector operations: one instruction each (legacy name; VEX adds "v")
 VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vxor": "pxor", "vsub8": "psubb", "vsubs8": "psubusb",
@@ -940,7 +940,7 @@ def _rewrite(code, assign, spilled):
     """Physical registers for every virtual one; spill code around instructions that touch a
     spilled register (loaded into a scratch register before, stored back after). A move that
     touches one spilled register reads or writes the slot itself."""
-    slot = {v: k for k, v in enumerate(sorted(spilled, key=lambda r: r.id))}
+    slot, nslots = share_slots(code, spilled)
     avx = _avx(code)
     out = []
     for ins in code:
@@ -982,7 +982,7 @@ def _rewrite(code, assign, spilled):
                 if r in ins.defs:
                     post.append(Ins(mop, [Mem(spill=slot[r], w=0), Reg(s, wv)], [], [s]))
         out += pre + [_subst(ins, local)] + post
-    return reloads(out, "mov", "mov", _SPILL_MOVES), len(slot)
+    return reloads(out, "mov", "mov", _SPILL_MOVES), nslots
 
 
 _SPILL_MOVES = {"mov", "movdqu", "vmovdqu"}
