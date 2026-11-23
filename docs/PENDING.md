@@ -681,7 +681,9 @@ Two consequences for the design:
     - the string scanner: `prefix_xor` of the unescaped quotes, carried across blocks;
     - the structural indexer: the mask to a list of `u32` positions (`popcnt64`, then
       `tzcnt` and `blsr` unrolled, as `write_indexes` does).
-36. **`feat/utf8-validation`: UTF-8 validation** (1.13), the Keiser–Lemire lookup
+36. **`feat/utf8-validation`: UTF-8 validation** (1.13), the Keiser–Lemire lookup *(in progress:
+    `nvol_utf8_valid` done (AVX2, SSSE3, NEON, scalar), checked against Python's strict decoder;
+    next, the same check inside `nvol_json_index_raw`, then both measured against simdjson)*
     (`utf8_lookup4_algorithm`: `prev<1..3>`, three `lookup_16`, `shr<4>`, saturating
     subtraction, and `any_bits_set_anywhere`, which is `!is_zero`). simdjson needs it, and ugrep's `isutf8` too.
 37. **Stage 2**, in two branches:

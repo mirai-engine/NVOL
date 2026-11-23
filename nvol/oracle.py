@@ -78,6 +78,15 @@ JSON_WS = b" \t\n\r"
 JSON_OP = {0x3A, 0x7B, 0x2C, 0x7D}
 
 
+def utf8_valid(data: bytes) -> int:
+    """1 when data is valid UTF-8 (RFC 3629), as Python's strict decoder says, else 0."""
+    try:
+        data.decode("utf-8", "strict")
+        return 1
+    except UnicodeDecodeError:
+        return 0
+
+
 def json_index(data: bytes, idx: int = 0, state=(0, 0, 0, 0)):
     """simdjson's stage 1 output, byte by byte, written from the definitions rather than from the
     mask arithmetic: (positions, (next_is_escaped, prev_in_string, prev_scalar, error)).

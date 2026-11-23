@@ -64,6 +64,36 @@ NVOL_K19:
 .p2align 5
 NVOL_K20:
     .byte 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
+.p2align 5
+NVOL_K21:
+    .byte 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+.p2align 5
+NVOL_K22:
+    .byte 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+.p2align 5
+NVOL_K23:
+    .byte 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+.p2align 5
+NVOL_K24:
+    .byte 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+.p2align 5
+NVOL_K25:
+    .byte 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
+.p2align 5
+NVOL_K26:
+    .byte 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73, 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+.p2align 5
+NVOL_K27:
+    .byte 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203, 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+.p2align 5
+NVOL_K28:
+    .byte 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+.p2align 5
+NVOL_K29:
+    .byte 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+.p2align 5
+NVOL_K30:
+    .byte 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
 .p2align 6
 nvol_tbl_rank:
     .byte 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
@@ -151,6 +181,10 @@ nvol_find_byteset_pair_mask_raw_ptr:
 .globl nvol_json_index_raw_ptr
 nvol_json_index_raw_ptr:
     .quad nvol_json_index_raw_resolve
+.p2align 3
+.globl nvol_utf8_valid_ptr
+nvol_utf8_valid_ptr:
+    .quad nvol_utf8_valid_resolve
 .section .drectve
     .ascii " -export:nvol_memchr_raw"
     .ascii " -export:nvol_memchr"
@@ -184,6 +218,7 @@ nvol_json_index_raw_ptr:
     .ascii " -export:nvol_find_byteset_pair_raw"
     .ascii " -export:nvol_find_byteset_pair_mask_raw"
     .ascii " -export:nvol_json_index_raw"
+    .ascii " -export:nvol_utf8_valid"
 .text
 .p2align 6
 
@@ -61754,6 +61789,853 @@ nvol_json_index_raw_resolve:
     pop %rdx
     pop %rcx
     jmp *nvol_json_index_raw_ptr(%rip)
+.seh_endproc
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
+.globl nvol_utf8_valid_scalar
+.def nvol_utf8_valid_scalar; .scl 2; .type 32; .endef
+nvol_utf8_valid_scalar:
+    lea (%rcx,%rdx), %rdx
+    cmp %rdx, %rcx
+    {disp8} jae .Lnvol_utf8_valid_scalar.L3
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_utf8_valid_scalar.L2:
+    mov %rdx, %rax
+    sub %rcx, %rax
+    cmp $8, %rax
+    {disp8} jb .Lnvol_utf8_valid_scalar.L5
+    mov (%rcx), %rax
+    movabsq $9259542123273814144, %r8
+    and %r8, %rax
+    {disp8} jne .Lnvol_utf8_valid_scalar.L5
+    .byte 102, 144
+.Lnvol_utf8_valid_scalar.L4:
+    lea 8(%rcx), %rcx
+    mov %rdx, %rax
+    sub %rcx, %rax
+    cmp $8, %rax
+    {disp8} jb .Lnvol_utf8_valid_scalar.L6
+    mov (%rcx), %rax
+    movabsq $9259542123273814144, %r8
+    and %r8, %rax
+    {disp8} je .Lnvol_utf8_valid_scalar.L4
+.Lnvol_utf8_valid_scalar.L6:
+.Lnvol_utf8_valid_scalar.L5:
+    cmp %rdx, %rcx
+    {disp8} jb .Lnvol_utf8_valid_scalar.Lrare3
+.Lnvol_utf8_valid_scalar.L7:
+    cmp %rdx, %rcx
+    {disp8} jb .Lnvol_utf8_valid_scalar.L2
+.Lnvol_utf8_valid_scalar.L3:
+    mov $1, %eax
+.Lnvol_utf8_valid_scalar.L1:
+    ret
+.Lnvol_utf8_valid_scalar.L27:
+    xor %eax, %eax
+    ret
+.Lnvol_utf8_valid_scalar.L34:
+    xor %eax, %eax
+    ret
+.Lnvol_utf8_valid_scalar.L38:
+    xor %eax, %eax
+    ret
+.Lnvol_utf8_valid_scalar.Lrare1:
+    movzbl 3(%rcx), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_scalar.L38
+.Lnvol_utf8_valid_scalar.L37:
+    {disp8} jmp .Lnvol_utf8_valid_scalar.L35
+.Lnvol_utf8_valid_scalar.Lrare2:
+    movzbl 2(%rcx), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_scalar.L34
+.Lnvol_utf8_valid_scalar.L33:
+    cmp $3, %r9
+    {disp8} ja .Lnvol_utf8_valid_scalar.Lrare1
+.Lnvol_utf8_valid_scalar.L35:
+    {disp32} jmp .Lnvol_utf8_valid_scalar.L31
+.Lnvol_utf8_valid_scalar.Lrare3:
+    movzbl (%rcx), %r8d
+    cmp $128, %r8d
+    {disp8} jae .Lnvol_utf8_valid_scalar.L9
+    lea 1(%rcx), %rcx
+    {disp32} jmp .Lnvol_utf8_valid_scalar.L10
+.Lnvol_utf8_valid_scalar.L9:
+    cmp $194, %r8d
+    {disp8} jb .Lnvol_utf8_valid_scalar.L13
+    cmp $244, %r8d
+    {disp8} jbe .Lnvol_utf8_valid_scalar.L11
+.Lnvol_utf8_valid_scalar.L13:
+.Lnvol_utf8_valid_scalar.L12:
+    xor %eax, %eax
+    ret
+.Lnvol_utf8_valid_scalar.L11:
+    mov $2, %r9d
+    mov $128, %r10d
+    mov $191, %r11d
+    cmp $223, %r8d
+    {disp8} jbe .Lnvol_utf8_valid_scalar.L14
+    mov $3, %r9d
+    cmp $224, %r8d
+    {disp8} jne .Lnvol_utf8_valid_scalar.L16
+    mov $160, %r10d
+.Lnvol_utf8_valid_scalar.L16:
+    cmp $237, %r8d
+    {disp8} jne .Lnvol_utf8_valid_scalar.L18
+    mov $159, %r11d
+.Lnvol_utf8_valid_scalar.L18:
+    cmp $239, %r8d
+    {disp8} jbe .Lnvol_utf8_valid_scalar.L20
+    mov $4, %r9d
+    cmp $240, %r8d
+    {disp8} jne .Lnvol_utf8_valid_scalar.L22
+    mov $144, %r10d
+.Lnvol_utf8_valid_scalar.L22:
+    cmp $244, %r8d
+    {disp8} jne .Lnvol_utf8_valid_scalar.L24
+    mov $143, %r11d
+.Lnvol_utf8_valid_scalar.L24:
+.Lnvol_utf8_valid_scalar.L20:
+.Lnvol_utf8_valid_scalar.L14:
+    mov %rdx, %rax
+    sub %rcx, %rax
+    cmp %r9, %rax
+    {disp32} jb .Lnvol_utf8_valid_scalar.L27
+.Lnvol_utf8_valid_scalar.L26:
+    movzbl 1(%rcx), %eax
+    cmp %r10d, %eax
+    {disp8} jb .Lnvol_utf8_valid_scalar.L30
+    cmp %r11d, %eax
+    {disp8} jbe .Lnvol_utf8_valid_scalar.L28
+.Lnvol_utf8_valid_scalar.L30:
+.Lnvol_utf8_valid_scalar.L29:
+    xor %eax, %eax
+    ret
+.Lnvol_utf8_valid_scalar.L28:
+    cmp $2, %r9
+    {disp32} ja .Lnvol_utf8_valid_scalar.Lrare2
+.Lnvol_utf8_valid_scalar.L31:
+    lea (%rcx,%r9), %rcx
+.Lnvol_utf8_valid_scalar.L10:
+    {disp32} jmp .Lnvol_utf8_valid_scalar.L7
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
+.globl nvol_utf8_valid_ssse3
+.def nvol_utf8_valid_ssse3; .scl 2; .type 32; .endef
+nvol_utf8_valid_ssse3:
+.seh_proc nvol_utf8_valid_ssse3
+    sub $168, %rsp
+.seh_stackalloc 168
+    movdqu %xmm6, (%rsp)
+.seh_savexmm %xmm6, 0
+    movdqu %xmm7, 16(%rsp)
+.seh_savexmm %xmm7, 16
+    movdqu %xmm8, 32(%rsp)
+.seh_savexmm %xmm8, 32
+    movdqu %xmm9, 48(%rsp)
+.seh_savexmm %xmm9, 48
+    movdqu %xmm10, 64(%rsp)
+.seh_savexmm %xmm10, 64
+    movdqu %xmm11, 80(%rsp)
+.seh_savexmm %xmm11, 80
+    movdqu %xmm12, 96(%rsp)
+.seh_savexmm %xmm12, 96
+    movdqu %xmm13, 112(%rsp)
+.seh_savexmm %xmm13, 112
+    movdqu %xmm14, 128(%rsp)
+.seh_savexmm %xmm14, 128
+    movdqu %xmm15, 144(%rsp)
+.seh_savexmm %xmm15, 144
+.seh_endprologue
+    lea (%rcx,%rdx), %r8
+    mov %rcx, %r9
+    movdqa NVOL_K21(%rip), %xmm0
+    movdqa NVOL_K22(%rip), %xmm1
+    movdqa NVOL_K23(%rip), %xmm2
+    movdqa NVOL_K1(%rip), %xmm3
+    movdqa NVOL_K24(%rip), %xmm4
+    movdqa NVOL_K25(%rip), %xmm5
+    movdqa NVOL_K6(%rip), %xmm6
+    shr $6, %rdx
+    shl $6, %rdx
+    lea (%rcx,%rdx), %rax
+    pxor %xmm7, %xmm7
+    pxor %xmm8, %xmm8
+    xor %edx, %edx
+    xor %r10d, %r10d
+    cmp %rax, %r9
+    {disp32} jae .Lnvol_utf8_valid_ssse3.L3
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_utf8_valid_ssse3.L2:
+    movdqu (%r9), %xmm9
+    movdqu 16(%r9), %xmm10
+    movdqu 32(%r9), %xmm11
+    movdqu 48(%r9), %xmm12
+    movdqa %xmm9, %xmm13
+    por %xmm10, %xmm13
+    movdqa %xmm11, %xmm14
+    por %xmm12, %xmm14
+    por %xmm14, %xmm13
+    pmovmskb %xmm13, %r11d
+    test %r11d, %r11d
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L4
+    or %rdx, %r10
+    {disp32} jmp .Lnvol_utf8_valid_ssse3.L5
+.Lnvol_utf8_valid_ssse3.L4:
+    movdqa %xmm9, %xmm13
+    palignr $15, %xmm7, %xmm13
+    movdqa %xmm13, %xmm14
+    psrlw $4, %xmm14
+    pand NVOL_K1(%rip), %xmm14
+    movdqa %xmm0, %xmm15
+    pshufb %xmm14, %xmm15
+    pand %xmm3, %xmm13
+    movdqa %xmm1, %xmm14
+    pshufb %xmm13, %xmm14
+    pand %xmm14, %xmm15
+    movdqa %xmm9, %xmm13
+    psrlw $4, %xmm13
+    pand NVOL_K1(%rip), %xmm13
+    movdqa %xmm2, %xmm14
+    pshufb %xmm13, %xmm14
+    pand %xmm14, %xmm15
+    movdqa %xmm9, %xmm13
+    palignr $14, %xmm7, %xmm13
+    psubusb %xmm4, %xmm13
+    movdqa %xmm9, %xmm14
+    palignr $13, %xmm7, %xmm14
+    psubusb %xmm5, %xmm14
+    por %xmm14, %xmm13
+    pand %xmm6, %xmm13
+    pxor %xmm15, %xmm13
+    por %xmm13, %xmm8
+    movdqa %xmm10, %xmm7
+    palignr $15, %xmm9, %xmm7
+    movdqa %xmm7, %xmm13
+    psrlw $4, %xmm13
+    pand NVOL_K1(%rip), %xmm13
+    movdqa %xmm0, %xmm14
+    pshufb %xmm13, %xmm14
+    pand %xmm3, %xmm7
+    movdqa %xmm1, %xmm13
+    pshufb %xmm7, %xmm13
+    pand %xmm13, %xmm14
+    movdqa %xmm10, %xmm7
+    psrlw $4, %xmm7
+    pand NVOL_K1(%rip), %xmm7
+    movdqa %xmm2, %xmm13
+    pshufb %xmm7, %xmm13
+    pand %xmm13, %xmm14
+    movdqa %xmm10, %xmm7
+    palignr $14, %xmm9, %xmm7
+    psubusb %xmm4, %xmm7
+    movdqa %xmm10, %xmm13
+    palignr $13, %xmm9, %xmm13
+    psubusb %xmm5, %xmm13
+    por %xmm13, %xmm7
+    pand %xmm6, %xmm7
+    pxor %xmm14, %xmm7
+    por %xmm7, %xmm8
+    movdqa %xmm11, %xmm7
+    palignr $15, %xmm10, %xmm7
+    movdqa %xmm7, %xmm9
+    psrlw $4, %xmm9
+    pand NVOL_K1(%rip), %xmm9
+    movdqa %xmm0, %xmm13
+    pshufb %xmm9, %xmm13
+    pand %xmm3, %xmm7
+    movdqa %xmm1, %xmm9
+    pshufb %xmm7, %xmm9
+    pand %xmm9, %xmm13
+    movdqa %xmm11, %xmm7
+    psrlw $4, %xmm7
+    pand NVOL_K1(%rip), %xmm7
+    movdqa %xmm2, %xmm9
+    pshufb %xmm7, %xmm9
+    pand %xmm9, %xmm13
+    movdqa %xmm11, %xmm7
+    palignr $14, %xmm10, %xmm7
+    psubusb %xmm4, %xmm7
+    movdqa %xmm11, %xmm9
+    palignr $13, %xmm10, %xmm9
+    psubusb %xmm5, %xmm9
+    por %xmm9, %xmm7
+    pand %xmm6, %xmm7
+    pxor %xmm13, %xmm7
+    por %xmm7, %xmm8
+    movdqa %xmm12, %xmm7
+    palignr $15, %xmm11, %xmm7
+    movdqa %xmm7, %xmm9
+    psrlw $4, %xmm9
+    pand NVOL_K1(%rip), %xmm9
+    movdqa %xmm0, %xmm10
+    pshufb %xmm9, %xmm10
+    pand %xmm3, %xmm7
+    movdqa %xmm1, %xmm9
+    pshufb %xmm7, %xmm9
+    pand %xmm9, %xmm10
+    movdqa %xmm12, %xmm7
+    psrlw $4, %xmm7
+    pand NVOL_K1(%rip), %xmm7
+    movdqa %xmm2, %xmm9
+    pshufb %xmm7, %xmm9
+    pand %xmm9, %xmm10
+    movdqa %xmm12, %xmm7
+    palignr $14, %xmm11, %xmm7
+    psubusb %xmm4, %xmm7
+    movdqa %xmm12, %xmm9
+    palignr $13, %xmm11, %xmm9
+    psubusb %xmm5, %xmm9
+    por %xmm9, %xmm7
+    pand %xmm6, %xmm7
+    pxor %xmm10, %xmm7
+    por %xmm7, %xmm8
+    xor %edx, %edx
+    movzbl 63(%r9), %r11d
+    cmp $191, %r11d
+    {disp8} ja .Lnvol_utf8_valid_ssse3.L7
+    movzbl 62(%r9), %r11d
+    cmp $223, %r11d
+    {disp8} ja .Lnvol_utf8_valid_ssse3.L7
+    movzbl 61(%r9), %r11d
+    cmp $239, %r11d
+    {disp8} jbe .Lnvol_utf8_valid_ssse3.L6
+.Lnvol_utf8_valid_ssse3.L7:
+    mov $1, %edx
+.Lnvol_utf8_valid_ssse3.L6:
+.Lnvol_utf8_valid_ssse3.L5:
+    movdqa %xmm12, %xmm7
+    add $64, %r9
+    cmp %rax, %r9
+    {disp32} jb .Lnvol_utf8_valid_ssse3.L2
+.Lnvol_utf8_valid_ssse3.L3:
+    test %r10, %r10
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L10
+    pxor %xmm0, %xmm0
+    pcmpeqb %xmm0, %xmm8
+    pmovmskb %xmm8, %eax
+    cmp $65535, %eax
+    {disp8} je .Lnvol_utf8_valid_ssse3.L8
+.Lnvol_utf8_valid_ssse3.L10:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_utf8_valid_ssse3.L1
+.Lnvol_utf8_valid_ssse3.L8:
+    cmp %rcx, %r9
+    {disp8} jbe .Lnvol_utf8_valid_ssse3.L11
+    movzbl -1(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L13
+    lea -1(%r9), %r9
+    movzbl -1(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L15
+    lea -1(%r9), %r9
+    movzbl -1(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L17
+    lea -1(%r9), %r9
+.Lnvol_utf8_valid_ssse3.L17:
+.Lnvol_utf8_valid_ssse3.L15:
+.Lnvol_utf8_valid_ssse3.L13:
+    movzbl -1(%r9), %eax
+    cmp $191, %eax
+    {disp8} jbe .Lnvol_utf8_valid_ssse3.L19
+    lea -1(%r9), %r9
+.Lnvol_utf8_valid_ssse3.L19:
+.Lnvol_utf8_valid_ssse3.L11:
+    cmp %r8, %r9
+    {disp8} jae .Lnvol_utf8_valid_ssse3.L22
+    .byte 15, 31, 68, 0, 0
+.Lnvol_utf8_valid_ssse3.L21:
+    mov %r8, %rax
+    sub %r9, %rax
+    cmp $8, %rax
+    {disp8} jb .Lnvol_utf8_valid_ssse3.L24
+    mov (%r9), %rax
+    movabsq $9259542123273814144, %rcx
+    and %rcx, %rax
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L24
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
+.Lnvol_utf8_valid_ssse3.L23:
+    lea 8(%r9), %r9
+    mov %r8, %rax
+    sub %r9, %rax
+    cmp $8, %rax
+    {disp8} jb .Lnvol_utf8_valid_ssse3.L25
+    mov (%r9), %rax
+    movabsq $9259542123273814144, %rcx
+    and %rcx, %rax
+    {disp8} je .Lnvol_utf8_valid_ssse3.L23
+.Lnvol_utf8_valid_ssse3.L25:
+.Lnvol_utf8_valid_ssse3.L24:
+    cmp %r8, %r9
+    {disp32} jb .Lnvol_utf8_valid_ssse3.Lrare3
+.Lnvol_utf8_valid_ssse3.L26:
+    cmp %r8, %r9
+    {disp8} jb .Lnvol_utf8_valid_ssse3.L21
+.Lnvol_utf8_valid_ssse3.L22:
+    mov $1, %eax
+.Lnvol_utf8_valid_ssse3.L1:
+    movdqu (%rsp), %xmm6
+    movdqu 16(%rsp), %xmm7
+    movdqu 32(%rsp), %xmm8
+    movdqu 48(%rsp), %xmm9
+    movdqu 64(%rsp), %xmm10
+    movdqu 80(%rsp), %xmm11
+    movdqu 96(%rsp), %xmm12
+    movdqu 112(%rsp), %xmm13
+    movdqu 128(%rsp), %xmm14
+    movdqu 144(%rsp), %xmm15
+    add $168, %rsp
+    ret
+.Lnvol_utf8_valid_ssse3.L46:
+    xor %eax, %eax
+    {disp8} jmp .Lnvol_utf8_valid_ssse3.L1
+.Lnvol_utf8_valid_ssse3.L53:
+    xor %eax, %eax
+    {disp8} jmp .Lnvol_utf8_valid_ssse3.L1
+.Lnvol_utf8_valid_ssse3.L57:
+    xor %eax, %eax
+    {disp8} jmp .Lnvol_utf8_valid_ssse3.L1
+.Lnvol_utf8_valid_ssse3.Lrare1:
+    movzbl 3(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L57
+.Lnvol_utf8_valid_ssse3.L56:
+    {disp8} jmp .Lnvol_utf8_valid_ssse3.L54
+.Lnvol_utf8_valid_ssse3.Lrare2:
+    movzbl 2(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L53
+.Lnvol_utf8_valid_ssse3.L52:
+    cmp $3, %rdx
+    {disp8} ja .Lnvol_utf8_valid_ssse3.Lrare1
+.Lnvol_utf8_valid_ssse3.L54:
+    {disp32} jmp .Lnvol_utf8_valid_ssse3.L50
+.Lnvol_utf8_valid_ssse3.Lrare3:
+    movzbl (%r9), %ecx
+    cmp $128, %ecx
+    {disp8} jae .Lnvol_utf8_valid_ssse3.L28
+    lea 1(%r9), %r9
+    {disp32} jmp .Lnvol_utf8_valid_ssse3.L29
+.Lnvol_utf8_valid_ssse3.L28:
+    cmp $194, %ecx
+    {disp8} jb .Lnvol_utf8_valid_ssse3.L32
+    cmp $244, %ecx
+    {disp8} jbe .Lnvol_utf8_valid_ssse3.L30
+.Lnvol_utf8_valid_ssse3.L32:
+.Lnvol_utf8_valid_ssse3.L31:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_utf8_valid_ssse3.L1
+.Lnvol_utf8_valid_ssse3.L30:
+    mov $2, %edx
+    mov $128, %r10d
+    mov $191, %r11d
+    cmp $223, %ecx
+    {disp8} jbe .Lnvol_utf8_valid_ssse3.L33
+    mov $3, %edx
+    cmp $224, %ecx
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L35
+    mov $160, %r10d
+.Lnvol_utf8_valid_ssse3.L35:
+    cmp $237, %ecx
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L37
+    mov $159, %r11d
+.Lnvol_utf8_valid_ssse3.L37:
+    cmp $239, %ecx
+    {disp8} jbe .Lnvol_utf8_valid_ssse3.L39
+    mov $4, %edx
+    cmp $240, %ecx
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L41
+    mov $144, %r10d
+.Lnvol_utf8_valid_ssse3.L41:
+    cmp $244, %ecx
+    {disp8} jne .Lnvol_utf8_valid_ssse3.L43
+    mov $143, %r11d
+.Lnvol_utf8_valid_ssse3.L43:
+.Lnvol_utf8_valid_ssse3.L39:
+.Lnvol_utf8_valid_ssse3.L33:
+    mov %r8, %rax
+    sub %r9, %rax
+    cmp %rdx, %rax
+    {disp32} jb .Lnvol_utf8_valid_ssse3.L46
+.Lnvol_utf8_valid_ssse3.L45:
+    movzbl 1(%r9), %eax
+    cmp %r10d, %eax
+    {disp8} jb .Lnvol_utf8_valid_ssse3.L49
+    cmp %r11d, %eax
+    {disp8} jbe .Lnvol_utf8_valid_ssse3.L47
+.Lnvol_utf8_valid_ssse3.L49:
+.Lnvol_utf8_valid_ssse3.L48:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_utf8_valid_ssse3.L1
+.Lnvol_utf8_valid_ssse3.L47:
+    cmp $2, %rdx
+    {disp32} ja .Lnvol_utf8_valid_ssse3.Lrare2
+.Lnvol_utf8_valid_ssse3.L50:
+    lea (%r9,%rdx), %r9
+.Lnvol_utf8_valid_ssse3.L29:
+    {disp32} jmp .Lnvol_utf8_valid_ssse3.L26
+.seh_endproc
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.globl nvol_utf8_valid_avx2
+.def nvol_utf8_valid_avx2; .scl 2; .type 32; .endef
+nvol_utf8_valid_avx2:
+.seh_proc nvol_utf8_valid_avx2
+    sub $120, %rsp
+.seh_stackalloc 120
+    vmovdqu %xmm6, (%rsp)
+.seh_savexmm %xmm6, 0
+    vmovdqu %xmm7, 16(%rsp)
+.seh_savexmm %xmm7, 16
+    vmovdqu %xmm8, 32(%rsp)
+.seh_savexmm %xmm8, 32
+    vmovdqu %xmm9, 48(%rsp)
+.seh_savexmm %xmm9, 48
+    vmovdqu %xmm10, 64(%rsp)
+.seh_savexmm %xmm10, 64
+    vmovdqu %xmm11, 80(%rsp)
+.seh_savexmm %xmm11, 80
+    vmovdqu %xmm12, 96(%rsp)
+.seh_savexmm %xmm12, 96
+.seh_endprologue
+    lea (%rcx,%rdx), %r8
+    mov %rcx, %r9
+    vmovdqa NVOL_K26(%rip), %ymm0
+    vmovdqa NVOL_K27(%rip), %ymm1
+    vmovdqa NVOL_K28(%rip), %ymm2
+    vmovdqa NVOL_K3(%rip), %ymm3
+    vmovdqa NVOL_K29(%rip), %ymm4
+    vmovdqa NVOL_K30(%rip), %ymm5
+    vmovdqa NVOL_K8(%rip), %ymm6
+    shr $6, %rdx
+    shl $6, %rdx
+    lea (%rcx,%rdx), %rax
+    vpxor %xmm7, %xmm7, %xmm7
+    vpxor %xmm8, %xmm8, %xmm8
+    xor %edx, %edx
+    xor %r10d, %r10d
+    cmp %rax, %r9
+    {disp32} jae .Lnvol_utf8_valid_avx2.L3
+    .byte 144
+.Lnvol_utf8_valid_avx2.L2:
+    vmovdqu (%r9), %ymm9
+    vmovdqu 32(%r9), %ymm10
+    vpor %ymm10, %ymm9, %ymm11
+    vpmovmskb %ymm11, %r11d
+    test %r11d, %r11d
+    {disp8} jne .Lnvol_utf8_valid_avx2.L4
+    or %rdx, %r10
+    {disp32} jmp .Lnvol_utf8_valid_avx2.L5
+.Lnvol_utf8_valid_avx2.L4:
+    vperm2i128 $33, %ymm9, %ymm7, %ymm11
+    vpalignr $15, %ymm11, %ymm9, %ymm11
+    vpsrlw $4, %ymm11, %ymm12
+    vpand NVOL_K3(%rip), %ymm12, %ymm12
+    vpshufb %ymm12, %ymm0, %ymm12
+    vpand %ymm3, %ymm11, %ymm11
+    vpshufb %ymm11, %ymm1, %ymm11
+    vpand %ymm11, %ymm12, %ymm11
+    vpsrlw $4, %ymm9, %ymm12
+    vpand NVOL_K3(%rip), %ymm12, %ymm12
+    vpshufb %ymm12, %ymm2, %ymm12
+    vpand %ymm12, %ymm11, %ymm11
+    vperm2i128 $33, %ymm9, %ymm7, %ymm12
+    vpalignr $14, %ymm12, %ymm9, %ymm12
+    vpsubusb %ymm4, %ymm12, %ymm12
+    vperm2i128 $33, %ymm9, %ymm7, %ymm7
+    vpalignr $13, %ymm7, %ymm9, %ymm7
+    vpsubusb %ymm5, %ymm7, %ymm7
+    vpor %ymm7, %ymm12, %ymm7
+    vpand %ymm6, %ymm7, %ymm7
+    vpxor %ymm11, %ymm7, %ymm7
+    vpor %ymm7, %ymm8, %ymm8
+    vperm2i128 $33, %ymm10, %ymm9, %ymm7
+    vpalignr $15, %ymm7, %ymm10, %ymm7
+    vpsrlw $4, %ymm7, %ymm11
+    vpand NVOL_K3(%rip), %ymm11, %ymm11
+    vpshufb %ymm11, %ymm0, %ymm11
+    vpand %ymm3, %ymm7, %ymm7
+    vpshufb %ymm7, %ymm1, %ymm7
+    vpand %ymm7, %ymm11, %ymm7
+    vpsrlw $4, %ymm10, %ymm11
+    vpand NVOL_K3(%rip), %ymm11, %ymm11
+    vpshufb %ymm11, %ymm2, %ymm11
+    vpand %ymm11, %ymm7, %ymm7
+    vperm2i128 $33, %ymm10, %ymm9, %ymm11
+    vpalignr $14, %ymm11, %ymm10, %ymm11
+    vpsubusb %ymm4, %ymm11, %ymm11
+    vperm2i128 $33, %ymm10, %ymm9, %ymm9
+    vpalignr $13, %ymm9, %ymm10, %ymm9
+    vpsubusb %ymm5, %ymm9, %ymm9
+    vpor %ymm9, %ymm11, %ymm9
+    vpand %ymm6, %ymm9, %ymm9
+    vpxor %ymm7, %ymm9, %ymm7
+    vpor %ymm7, %ymm8, %ymm8
+    xor %edx, %edx
+    movzbl 63(%r9), %r11d
+    cmp $191, %r11d
+    {disp8} ja .Lnvol_utf8_valid_avx2.L7
+    movzbl 62(%r9), %r11d
+    cmp $223, %r11d
+    {disp8} ja .Lnvol_utf8_valid_avx2.L7
+    movzbl 61(%r9), %r11d
+    cmp $239, %r11d
+    {disp8} jbe .Lnvol_utf8_valid_avx2.L6
+.Lnvol_utf8_valid_avx2.L7:
+    mov $1, %edx
+.Lnvol_utf8_valid_avx2.L6:
+.Lnvol_utf8_valid_avx2.L5:
+    vmovdqa %ymm10, %ymm7
+    add $64, %r9
+    cmp %rax, %r9
+    {disp32} jb .Lnvol_utf8_valid_avx2.L2
+.Lnvol_utf8_valid_avx2.L3:
+    test %r10, %r10
+    {disp8} jne .Lnvol_utf8_valid_avx2.L10
+    vptest %ymm8, %ymm8
+    {disp8} je .Lnvol_utf8_valid_avx2.L8
+.Lnvol_utf8_valid_avx2.L10:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_utf8_valid_avx2.L1
+.Lnvol_utf8_valid_avx2.L8:
+    cmp %rcx, %r9
+    {disp8} jbe .Lnvol_utf8_valid_avx2.L11
+    movzbl -1(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_avx2.L13
+    lea -1(%r9), %r9
+    movzbl -1(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_avx2.L15
+    lea -1(%r9), %r9
+    movzbl -1(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_avx2.L17
+    lea -1(%r9), %r9
+.Lnvol_utf8_valid_avx2.L17:
+.Lnvol_utf8_valid_avx2.L15:
+.Lnvol_utf8_valid_avx2.L13:
+    movzbl -1(%r9), %eax
+    cmp $191, %eax
+    {disp8} jbe .Lnvol_utf8_valid_avx2.L19
+    lea -1(%r9), %r9
+.Lnvol_utf8_valid_avx2.L19:
+.Lnvol_utf8_valid_avx2.L11:
+    cmp %r8, %r9
+    {disp8} jae .Lnvol_utf8_valid_avx2.L22
+    .byte 15, 31, 0
+.Lnvol_utf8_valid_avx2.L21:
+    mov %r8, %rax
+    sub %r9, %rax
+    cmp $8, %rax
+    {disp8} jb .Lnvol_utf8_valid_avx2.L24
+    mov (%r9), %rax
+    movabsq $9259542123273814144, %rcx
+    and %rcx, %rax
+    {disp8} jne .Lnvol_utf8_valid_avx2.L24
+    .byte 102, 144
+.Lnvol_utf8_valid_avx2.L23:
+    lea 8(%r9), %r9
+    mov %r8, %rax
+    sub %r9, %rax
+    cmp $8, %rax
+    {disp8} jb .Lnvol_utf8_valid_avx2.L25
+    mov (%r9), %rax
+    movabsq $9259542123273814144, %rcx
+    and %rcx, %rax
+    {disp8} je .Lnvol_utf8_valid_avx2.L23
+.Lnvol_utf8_valid_avx2.L25:
+.Lnvol_utf8_valid_avx2.L24:
+    cmp %r8, %r9
+    {disp8} jb .Lnvol_utf8_valid_avx2.Lrare3
+.Lnvol_utf8_valid_avx2.L26:
+    cmp %r8, %r9
+    {disp8} jb .Lnvol_utf8_valid_avx2.L21
+.Lnvol_utf8_valid_avx2.L22:
+    mov $1, %eax
+.Lnvol_utf8_valid_avx2.L1:
+    vzeroupper
+    vmovdqu (%rsp), %xmm6
+    vmovdqu 16(%rsp), %xmm7
+    vmovdqu 32(%rsp), %xmm8
+    vmovdqu 48(%rsp), %xmm9
+    vmovdqu 64(%rsp), %xmm10
+    vmovdqu 80(%rsp), %xmm11
+    vmovdqu 96(%rsp), %xmm12
+    add $120, %rsp
+    ret
+.Lnvol_utf8_valid_avx2.L46:
+    xor %eax, %eax
+    {disp8} jmp .Lnvol_utf8_valid_avx2.L1
+.Lnvol_utf8_valid_avx2.L53:
+    xor %eax, %eax
+    {disp8} jmp .Lnvol_utf8_valid_avx2.L1
+.Lnvol_utf8_valid_avx2.L57:
+    xor %eax, %eax
+    {disp8} jmp .Lnvol_utf8_valid_avx2.L1
+.Lnvol_utf8_valid_avx2.Lrare1:
+    movzbl 3(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_avx2.L57
+.Lnvol_utf8_valid_avx2.L56:
+    {disp8} jmp .Lnvol_utf8_valid_avx2.L54
+.Lnvol_utf8_valid_avx2.Lrare2:
+    movzbl 2(%r9), %eax
+    and $192, %rax
+    cmp $128, %eax
+    {disp8} jne .Lnvol_utf8_valid_avx2.L53
+.Lnvol_utf8_valid_avx2.L52:
+    cmp $3, %rdx
+    {disp8} ja .Lnvol_utf8_valid_avx2.Lrare1
+.Lnvol_utf8_valid_avx2.L54:
+    {disp32} jmp .Lnvol_utf8_valid_avx2.L50
+.Lnvol_utf8_valid_avx2.Lrare3:
+    movzbl (%r9), %ecx
+    cmp $128, %ecx
+    {disp8} jae .Lnvol_utf8_valid_avx2.L28
+    lea 1(%r9), %r9
+    {disp32} jmp .Lnvol_utf8_valid_avx2.L29
+.Lnvol_utf8_valid_avx2.L28:
+    cmp $194, %ecx
+    {disp8} jb .Lnvol_utf8_valid_avx2.L32
+    cmp $244, %ecx
+    {disp8} jbe .Lnvol_utf8_valid_avx2.L30
+.Lnvol_utf8_valid_avx2.L32:
+.Lnvol_utf8_valid_avx2.L31:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_utf8_valid_avx2.L1
+.Lnvol_utf8_valid_avx2.L30:
+    mov $2, %edx
+    mov $128, %r10d
+    mov $191, %r11d
+    cmp $223, %ecx
+    {disp8} jbe .Lnvol_utf8_valid_avx2.L33
+    mov $3, %edx
+    cmp $224, %ecx
+    {disp8} jne .Lnvol_utf8_valid_avx2.L35
+    mov $160, %r10d
+.Lnvol_utf8_valid_avx2.L35:
+    cmp $237, %ecx
+    {disp8} jne .Lnvol_utf8_valid_avx2.L37
+    mov $159, %r11d
+.Lnvol_utf8_valid_avx2.L37:
+    cmp $239, %ecx
+    {disp8} jbe .Lnvol_utf8_valid_avx2.L39
+    mov $4, %edx
+    cmp $240, %ecx
+    {disp8} jne .Lnvol_utf8_valid_avx2.L41
+    mov $144, %r10d
+.Lnvol_utf8_valid_avx2.L41:
+    cmp $244, %ecx
+    {disp8} jne .Lnvol_utf8_valid_avx2.L43
+    mov $143, %r11d
+.Lnvol_utf8_valid_avx2.L43:
+.Lnvol_utf8_valid_avx2.L39:
+.Lnvol_utf8_valid_avx2.L33:
+    mov %r8, %rax
+    sub %r9, %rax
+    cmp %rdx, %rax
+    {disp32} jb .Lnvol_utf8_valid_avx2.L46
+.Lnvol_utf8_valid_avx2.L45:
+    movzbl 1(%r9), %eax
+    cmp %r10d, %eax
+    {disp8} jb .Lnvol_utf8_valid_avx2.L49
+    cmp %r11d, %eax
+    {disp8} jbe .Lnvol_utf8_valid_avx2.L47
+.Lnvol_utf8_valid_avx2.L49:
+.Lnvol_utf8_valid_avx2.L48:
+    xor %eax, %eax
+    {disp32} jmp .Lnvol_utf8_valid_avx2.L1
+.Lnvol_utf8_valid_avx2.L47:
+    cmp $2, %rdx
+    {disp32} ja .Lnvol_utf8_valid_avx2.Lrare2
+.Lnvol_utf8_valid_avx2.L50:
+    lea (%r9,%rdx), %r9
+.Lnvol_utf8_valid_avx2.L29:
+    {disp32} jmp .Lnvol_utf8_valid_avx2.L26
+.seh_endproc
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
+.globl nvol_utf8_valid
+.def nvol_utf8_valid; .scl 2; .type 32; .endef
+nvol_utf8_valid:
+    jmp *nvol_utf8_valid_ptr(%rip)
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
+.globl nvol_utf8_valid_resolve
+.def nvol_utf8_valid_resolve; .scl 2; .type 32; .endef
+nvol_utf8_valid_resolve:
+.seh_proc nvol_utf8_valid_resolve
+    push %rcx
+.seh_pushreg %rcx
+    push %rdx
+.seh_pushreg %rdx
+    push %r8
+.seh_pushreg %r8
+    push %r9
+.seh_pushreg %r9
+    sub $40, %rsp
+.seh_stackalloc 40
+.seh_endprologue
+    call nvol_cpu_avx2
+    test %eax, %eax
+    {disp8} jne .Lnvol_utf8_valid_resolve.T0
+    call nvol_cpu_ssse3
+    test %eax, %eax
+    {disp8} jne .Lnvol_utf8_valid_resolve.T1
+    lea nvol_utf8_valid_scalar(%rip), %rax
+    {disp8} jmp .Lnvol_utf8_valid_resolve.done
+.Lnvol_utf8_valid_resolve.T0:
+    lea nvol_utf8_valid_avx2(%rip), %rax
+    {disp8} jmp .Lnvol_utf8_valid_resolve.done
+.Lnvol_utf8_valid_resolve.T1:
+    lea nvol_utf8_valid_ssse3(%rip), %rax
+    {disp8} jmp .Lnvol_utf8_valid_resolve.done
+.Lnvol_utf8_valid_resolve.done:
+    mov %rax, nvol_utf8_valid_ptr(%rip)
+    add $40, %rsp
+    pop %r9
+    pop %r8
+    pop %rdx
+    pop %rcx
+    jmp *nvol_utf8_valid_ptr(%rip)
 .seh_endproc
 
 .p2align 3

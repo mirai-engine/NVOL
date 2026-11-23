@@ -38,6 +38,7 @@ _DRECTVE SEGMENT INFO ALIAS(".drectve")
     DB "-export:nvol_find_byteset_pair_raw "
     DB "-export:nvol_find_byteset_pair_mask_raw "
     DB "-export:nvol_json_index_raw "
+    DB "-export:nvol_utf8_valid "
 _DRECTVE ENDS
 _NVOLK SEGMENT ALIGN(64) READ ALIAS(".rdata") 'CONST'
 ALIGN 32
@@ -107,6 +108,31 @@ NVOL_K19 DB 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
 ALIGN 32
 NVOL_K20 DB 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
     DB 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
+ALIGN 32
+NVOL_K21 DB 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+ALIGN 32
+NVOL_K22 DB 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+ALIGN 32
+NVOL_K23 DB 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+ALIGN 32
+NVOL_K24 DB 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+ALIGN 32
+NVOL_K25 DB 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
+ALIGN 32
+NVOL_K26 DB 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+    DB 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+ALIGN 32
+NVOL_K27 DB 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+    DB 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+ALIGN 32
+NVOL_K28 DB 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+    DB 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+ALIGN 32
+NVOL_K29 DB 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+    DB 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+ALIGN 32
+NVOL_K30 DB 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
+    DB 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
 ALIGN 64
 nvol_tbl_rank DB 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
     DB 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28
@@ -177,6 +203,9 @@ nvol_find_byteset_pair_mask_raw_ptr DQ nvol_find_byteset_pair_mask_raw_resolve
 ALIGN 8
 PUBLIC nvol_json_index_raw_ptr
 nvol_json_index_raw_ptr DQ nvol_json_index_raw_resolve
+ALIGN 8
+PUBLIC nvol_utf8_valid_ptr
+nvol_utf8_valid_ptr DQ nvol_utf8_valid_resolve
 _DATA ENDS
 _NVOLT SEGMENT ALIGN(64) READ EXECUTE ALIAS(".text") 'CODE'
 
@@ -61157,6 +61186,842 @@ L_done:
     pop rcx
     jmp qword ptr [nvol_json_index_raw_ptr]
 nvol_json_index_raw_resolve ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
+nvol_utf8_valid_scalar PROC PUBLIC
+    lea rdx, [rcx + rdx]
+    cmp rcx, rdx
+    jae SHORT L_L3
+    DB 15, 31, 128, 0, 0, 0, 0
+L_L2:
+    mov rax, rdx
+    sub rax, rcx
+    cmp rax, 8
+    jb SHORT L_L5
+    mov rax, qword ptr [rcx]
+    mov r8, -9187201950435737472
+    and rax, r8
+    jne SHORT L_L5
+    DB 102, 144
+L_L4:
+    lea rcx, [rcx + 8]
+    mov rax, rdx
+    sub rax, rcx
+    cmp rax, 8
+    jb SHORT L_L6
+    mov rax, qword ptr [rcx]
+    mov r8, -9187201950435737472
+    and rax, r8
+    je SHORT L_L4
+L_L6:
+L_L5:
+    cmp rcx, rdx
+    jb SHORT L_Lrare3
+L_L7:
+    cmp rcx, rdx
+    jb SHORT L_L2
+L_L3:
+    mov eax, 1
+L_L1:
+    ret
+L_L27:
+    xor eax, eax
+    ret
+L_L34:
+    xor eax, eax
+    ret
+L_L38:
+    xor eax, eax
+    ret
+L_Lrare1:
+    movzx eax, byte ptr [rcx + 3]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L38
+L_L37:
+    jmp SHORT L_L35
+L_Lrare2:
+    movzx eax, byte ptr [rcx + 2]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L34
+L_L33:
+    cmp r9, 3
+    ja SHORT L_Lrare1
+L_L35:
+    jmp NEAR PTR L_L31
+L_Lrare3:
+    movzx r8d, byte ptr [rcx]
+    cmp r8d, 128
+    jae SHORT L_L9
+    lea rcx, [rcx + 1]
+    jmp NEAR PTR L_L10
+L_L9:
+    cmp r8d, 194
+    jb SHORT L_L13
+    cmp r8d, 244
+    jbe SHORT L_L11
+L_L13:
+L_L12:
+    xor eax, eax
+    ret
+L_L11:
+    mov r9d, 2
+    mov r10d, 128
+    mov r11d, 191
+    cmp r8d, 223
+    jbe SHORT L_L14
+    mov r9d, 3
+    cmp r8d, 224
+    jne SHORT L_L16
+    mov r10d, 160
+L_L16:
+    cmp r8d, 237
+    jne SHORT L_L18
+    mov r11d, 159
+L_L18:
+    cmp r8d, 239
+    jbe SHORT L_L20
+    mov r9d, 4
+    cmp r8d, 240
+    jne SHORT L_L22
+    mov r10d, 144
+L_L22:
+    cmp r8d, 244
+    jne SHORT L_L24
+    mov r11d, 143
+L_L24:
+L_L20:
+L_L14:
+    mov rax, rdx
+    sub rax, rcx
+    cmp rax, r9
+    jb NEAR PTR L_L27
+L_L26:
+    movzx eax, byte ptr [rcx + 1]
+    cmp eax, r10d
+    jb SHORT L_L30
+    cmp eax, r11d
+    jbe SHORT L_L28
+L_L30:
+L_L29:
+    xor eax, eax
+    ret
+L_L28:
+    cmp r9, 2
+    ja NEAR PTR L_Lrare2
+L_L31:
+    lea rcx, [rcx + r9]
+L_L10:
+    jmp NEAR PTR L_L7
+nvol_utf8_valid_scalar ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
+nvol_utf8_valid_ssse3 PROC PUBLIC FRAME
+    sub rsp, 168
+    .ALLOCSTACK 168
+    movdqu xmmword ptr [rsp], xmm6
+    .SAVEXMM128 xmm6, 0
+    movdqu xmmword ptr [rsp + 16], xmm7
+    .SAVEXMM128 xmm7, 16
+    movdqu xmmword ptr [rsp + 32], xmm8
+    .SAVEXMM128 xmm8, 32
+    movdqu xmmword ptr [rsp + 48], xmm9
+    .SAVEXMM128 xmm9, 48
+    movdqu xmmword ptr [rsp + 64], xmm10
+    .SAVEXMM128 xmm10, 64
+    movdqu xmmword ptr [rsp + 80], xmm11
+    .SAVEXMM128 xmm11, 80
+    movdqu xmmword ptr [rsp + 96], xmm12
+    .SAVEXMM128 xmm12, 96
+    movdqu xmmword ptr [rsp + 112], xmm13
+    .SAVEXMM128 xmm13, 112
+    movdqu xmmword ptr [rsp + 128], xmm14
+    .SAVEXMM128 xmm14, 128
+    movdqu xmmword ptr [rsp + 144], xmm15
+    .SAVEXMM128 xmm15, 144
+    .ENDPROLOG
+    lea r8, [rcx + rdx]
+    mov r9, rcx
+    movdqa xmm0, xmmword ptr [NVOL_K21]
+    movdqa xmm1, xmmword ptr [NVOL_K22]
+    movdqa xmm2, xmmword ptr [NVOL_K23]
+    movdqa xmm3, xmmword ptr [NVOL_K1]
+    movdqa xmm4, xmmword ptr [NVOL_K24]
+    movdqa xmm5, xmmword ptr [NVOL_K25]
+    movdqa xmm6, xmmword ptr [NVOL_K6]
+    shr rdx, 6
+    shl rdx, 6
+    lea rax, [rcx + rdx]
+    pxor xmm7, xmm7
+    pxor xmm8, xmm8
+    xor edx, edx
+    xor r10d, r10d
+    cmp r9, rax
+    jae NEAR PTR L_L3
+    DB 102, 15, 31, 68, 0, 0
+L_L2:
+    movdqu xmm9, xmmword ptr [r9]
+    movdqu xmm10, xmmword ptr [r9 + 16]
+    movdqu xmm11, xmmword ptr [r9 + 32]
+    movdqu xmm12, xmmword ptr [r9 + 48]
+    movdqa xmm13, xmm9
+    por xmm13, xmm10
+    movdqa xmm14, xmm11
+    por xmm14, xmm12
+    por xmm13, xmm14
+    pmovmskb r11d, xmm13
+    test r11d, r11d
+    jne SHORT L_L4
+    or r10, rdx
+    jmp NEAR PTR L_L5
+L_L4:
+    movdqa xmm13, xmm9
+    palignr xmm13, xmm7, 15
+    movdqa xmm14, xmm13
+    psrlw xmm14, 4
+    pand xmm14, xmmword ptr [NVOL_K1]
+    movdqa xmm15, xmm0
+    pshufb xmm15, xmm14
+    pand xmm13, xmm3
+    movdqa xmm14, xmm1
+    pshufb xmm14, xmm13
+    pand xmm15, xmm14
+    movdqa xmm13, xmm9
+    psrlw xmm13, 4
+    pand xmm13, xmmword ptr [NVOL_K1]
+    movdqa xmm14, xmm2
+    pshufb xmm14, xmm13
+    pand xmm15, xmm14
+    movdqa xmm13, xmm9
+    palignr xmm13, xmm7, 14
+    psubusb xmm13, xmm4
+    movdqa xmm14, xmm9
+    palignr xmm14, xmm7, 13
+    psubusb xmm14, xmm5
+    por xmm13, xmm14
+    pand xmm13, xmm6
+    pxor xmm13, xmm15
+    por xmm8, xmm13
+    movdqa xmm7, xmm10
+    palignr xmm7, xmm9, 15
+    movdqa xmm13, xmm7
+    psrlw xmm13, 4
+    pand xmm13, xmmword ptr [NVOL_K1]
+    movdqa xmm14, xmm0
+    pshufb xmm14, xmm13
+    pand xmm7, xmm3
+    movdqa xmm13, xmm1
+    pshufb xmm13, xmm7
+    pand xmm14, xmm13
+    movdqa xmm7, xmm10
+    psrlw xmm7, 4
+    pand xmm7, xmmword ptr [NVOL_K1]
+    movdqa xmm13, xmm2
+    pshufb xmm13, xmm7
+    pand xmm14, xmm13
+    movdqa xmm7, xmm10
+    palignr xmm7, xmm9, 14
+    psubusb xmm7, xmm4
+    movdqa xmm13, xmm10
+    palignr xmm13, xmm9, 13
+    psubusb xmm13, xmm5
+    por xmm7, xmm13
+    pand xmm7, xmm6
+    pxor xmm7, xmm14
+    por xmm8, xmm7
+    movdqa xmm7, xmm11
+    palignr xmm7, xmm10, 15
+    movdqa xmm9, xmm7
+    psrlw xmm9, 4
+    pand xmm9, xmmword ptr [NVOL_K1]
+    movdqa xmm13, xmm0
+    pshufb xmm13, xmm9
+    pand xmm7, xmm3
+    movdqa xmm9, xmm1
+    pshufb xmm9, xmm7
+    pand xmm13, xmm9
+    movdqa xmm7, xmm11
+    psrlw xmm7, 4
+    pand xmm7, xmmword ptr [NVOL_K1]
+    movdqa xmm9, xmm2
+    pshufb xmm9, xmm7
+    pand xmm13, xmm9
+    movdqa xmm7, xmm11
+    palignr xmm7, xmm10, 14
+    psubusb xmm7, xmm4
+    movdqa xmm9, xmm11
+    palignr xmm9, xmm10, 13
+    psubusb xmm9, xmm5
+    por xmm7, xmm9
+    pand xmm7, xmm6
+    pxor xmm7, xmm13
+    por xmm8, xmm7
+    movdqa xmm7, xmm12
+    palignr xmm7, xmm11, 15
+    movdqa xmm9, xmm7
+    psrlw xmm9, 4
+    pand xmm9, xmmword ptr [NVOL_K1]
+    movdqa xmm10, xmm0
+    pshufb xmm10, xmm9
+    pand xmm7, xmm3
+    movdqa xmm9, xmm1
+    pshufb xmm9, xmm7
+    pand xmm10, xmm9
+    movdqa xmm7, xmm12
+    psrlw xmm7, 4
+    pand xmm7, xmmword ptr [NVOL_K1]
+    movdqa xmm9, xmm2
+    pshufb xmm9, xmm7
+    pand xmm10, xmm9
+    movdqa xmm7, xmm12
+    palignr xmm7, xmm11, 14
+    psubusb xmm7, xmm4
+    movdqa xmm9, xmm12
+    palignr xmm9, xmm11, 13
+    psubusb xmm9, xmm5
+    por xmm7, xmm9
+    pand xmm7, xmm6
+    pxor xmm7, xmm10
+    por xmm8, xmm7
+    xor edx, edx
+    movzx r11d, byte ptr [r9 + 63]
+    cmp r11d, 191
+    ja SHORT L_L7
+    movzx r11d, byte ptr [r9 + 62]
+    cmp r11d, 223
+    ja SHORT L_L7
+    movzx r11d, byte ptr [r9 + 61]
+    cmp r11d, 239
+    jbe SHORT L_L6
+L_L7:
+    mov edx, 1
+L_L6:
+L_L5:
+    movdqa xmm7, xmm12
+    add r9, 64
+    cmp r9, rax
+    jb NEAR PTR L_L2
+L_L3:
+    test r10, r10
+    jne SHORT L_L10
+    pxor xmm0, xmm0
+    pcmpeqb xmm8, xmm0
+    pmovmskb eax, xmm8
+    cmp eax, 65535
+    je SHORT L_L8
+L_L10:
+    xor eax, eax
+    jmp NEAR PTR L_L1
+L_L8:
+    cmp r9, rcx
+    jbe SHORT L_L11
+    movzx eax, byte ptr [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L13
+    lea r9, [r9 - 1]
+    movzx eax, byte ptr [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L15
+    lea r9, [r9 - 1]
+    movzx eax, byte ptr [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L17
+    lea r9, [r9 - 1]
+L_L17:
+L_L15:
+L_L13:
+    movzx eax, byte ptr [r9 - 1]
+    cmp eax, 191
+    jbe SHORT L_L19
+    lea r9, [r9 - 1]
+L_L19:
+L_L11:
+    cmp r9, r8
+    jae SHORT L_L22
+    DB 15, 31, 68, 0, 0
+L_L21:
+    mov rax, r8
+    sub rax, r9
+    cmp rax, 8
+    jb SHORT L_L24
+    mov rax, qword ptr [r9]
+    mov rcx, -9187201950435737472
+    and rax, rcx
+    jne SHORT L_L24
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 144
+L_L23:
+    lea r9, [r9 + 8]
+    mov rax, r8
+    sub rax, r9
+    cmp rax, 8
+    jb SHORT L_L25
+    mov rax, qword ptr [r9]
+    mov rcx, -9187201950435737472
+    and rax, rcx
+    je SHORT L_L23
+L_L25:
+L_L24:
+    cmp r9, r8
+    jb NEAR PTR L_Lrare3
+L_L26:
+    cmp r9, r8
+    jb SHORT L_L21
+L_L22:
+    mov eax, 1
+L_L1:
+    movdqu xmm6, xmmword ptr [rsp]
+    movdqu xmm7, xmmword ptr [rsp + 16]
+    movdqu xmm8, xmmword ptr [rsp + 32]
+    movdqu xmm9, xmmword ptr [rsp + 48]
+    movdqu xmm10, xmmword ptr [rsp + 64]
+    movdqu xmm11, xmmword ptr [rsp + 80]
+    movdqu xmm12, xmmword ptr [rsp + 96]
+    movdqu xmm13, xmmword ptr [rsp + 112]
+    movdqu xmm14, xmmword ptr [rsp + 128]
+    movdqu xmm15, xmmword ptr [rsp + 144]
+    add rsp, 168
+    ret
+L_L46:
+    xor eax, eax
+    jmp SHORT L_L1
+L_L53:
+    xor eax, eax
+    jmp SHORT L_L1
+L_L57:
+    xor eax, eax
+    jmp SHORT L_L1
+L_Lrare1:
+    movzx eax, byte ptr [r9 + 3]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L57
+L_L56:
+    jmp SHORT L_L54
+L_Lrare2:
+    movzx eax, byte ptr [r9 + 2]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L53
+L_L52:
+    cmp rdx, 3
+    ja SHORT L_Lrare1
+L_L54:
+    jmp NEAR PTR L_L50
+L_Lrare3:
+    movzx ecx, byte ptr [r9]
+    cmp ecx, 128
+    jae SHORT L_L28
+    lea r9, [r9 + 1]
+    jmp NEAR PTR L_L29
+L_L28:
+    cmp ecx, 194
+    jb SHORT L_L32
+    cmp ecx, 244
+    jbe SHORT L_L30
+L_L32:
+L_L31:
+    xor eax, eax
+    jmp NEAR PTR L_L1
+L_L30:
+    mov edx, 2
+    mov r10d, 128
+    mov r11d, 191
+    cmp ecx, 223
+    jbe SHORT L_L33
+    mov edx, 3
+    cmp ecx, 224
+    jne SHORT L_L35
+    mov r10d, 160
+L_L35:
+    cmp ecx, 237
+    jne SHORT L_L37
+    mov r11d, 159
+L_L37:
+    cmp ecx, 239
+    jbe SHORT L_L39
+    mov edx, 4
+    cmp ecx, 240
+    jne SHORT L_L41
+    mov r10d, 144
+L_L41:
+    cmp ecx, 244
+    jne SHORT L_L43
+    mov r11d, 143
+L_L43:
+L_L39:
+L_L33:
+    mov rax, r8
+    sub rax, r9
+    cmp rax, rdx
+    jb NEAR PTR L_L46
+L_L45:
+    movzx eax, byte ptr [r9 + 1]
+    cmp eax, r10d
+    jb SHORT L_L49
+    cmp eax, r11d
+    jbe SHORT L_L47
+L_L49:
+L_L48:
+    xor eax, eax
+    jmp NEAR PTR L_L1
+L_L47:
+    cmp rdx, 2
+    ja NEAR PTR L_Lrare2
+L_L50:
+    lea r9, [r9 + rdx]
+L_L29:
+    jmp NEAR PTR L_L26
+nvol_utf8_valid_ssse3 ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+nvol_utf8_valid_avx2 PROC PUBLIC FRAME
+    sub rsp, 120
+    .ALLOCSTACK 120
+    vmovdqu xmmword ptr [rsp], xmm6
+    .SAVEXMM128 xmm6, 0
+    vmovdqu xmmword ptr [rsp + 16], xmm7
+    .SAVEXMM128 xmm7, 16
+    vmovdqu xmmword ptr [rsp + 32], xmm8
+    .SAVEXMM128 xmm8, 32
+    vmovdqu xmmword ptr [rsp + 48], xmm9
+    .SAVEXMM128 xmm9, 48
+    vmovdqu xmmword ptr [rsp + 64], xmm10
+    .SAVEXMM128 xmm10, 64
+    vmovdqu xmmword ptr [rsp + 80], xmm11
+    .SAVEXMM128 xmm11, 80
+    vmovdqu xmmword ptr [rsp + 96], xmm12
+    .SAVEXMM128 xmm12, 96
+    .ENDPROLOG
+    lea r8, [rcx + rdx]
+    mov r9, rcx
+    vmovdqa ymm0, ymmword ptr [NVOL_K26]
+    vmovdqa ymm1, ymmword ptr [NVOL_K27]
+    vmovdqa ymm2, ymmword ptr [NVOL_K28]
+    vmovdqa ymm3, ymmword ptr [NVOL_K3]
+    vmovdqa ymm4, ymmword ptr [NVOL_K29]
+    vmovdqa ymm5, ymmword ptr [NVOL_K30]
+    vmovdqa ymm6, ymmword ptr [NVOL_K8]
+    shr rdx, 6
+    shl rdx, 6
+    lea rax, [rcx + rdx]
+    vpxor xmm7, xmm7, xmm7
+    vpxor xmm8, xmm8, xmm8
+    xor edx, edx
+    xor r10d, r10d
+    cmp r9, rax
+    jae NEAR PTR L_L3
+    DB 144
+L_L2:
+    vmovdqu ymm9, ymmword ptr [r9]
+    vmovdqu ymm10, ymmword ptr [r9 + 32]
+    vpor ymm11, ymm9, ymm10
+    vpmovmskb r11d, ymm11
+    test r11d, r11d
+    jne SHORT L_L4
+    or r10, rdx
+    jmp NEAR PTR L_L5
+L_L4:
+    vperm2i128 ymm11, ymm7, ymm9, 33
+    vpalignr ymm11, ymm9, ymm11, 15
+    vpsrlw ymm12, ymm11, 4
+    vpand ymm12, ymm12, ymmword ptr [NVOL_K3]
+    vpshufb ymm12, ymm0, ymm12
+    vpand ymm11, ymm11, ymm3
+    vpshufb ymm11, ymm1, ymm11
+    vpand ymm11, ymm12, ymm11
+    vpsrlw ymm12, ymm9, 4
+    vpand ymm12, ymm12, ymmword ptr [NVOL_K3]
+    vpshufb ymm12, ymm2, ymm12
+    vpand ymm11, ymm11, ymm12
+    vperm2i128 ymm12, ymm7, ymm9, 33
+    vpalignr ymm12, ymm9, ymm12, 14
+    vpsubusb ymm12, ymm12, ymm4
+    vperm2i128 ymm7, ymm7, ymm9, 33
+    vpalignr ymm7, ymm9, ymm7, 13
+    vpsubusb ymm7, ymm7, ymm5
+    vpor ymm7, ymm12, ymm7
+    vpand ymm7, ymm7, ymm6
+    vpxor ymm7, ymm7, ymm11
+    vpor ymm8, ymm8, ymm7
+    vperm2i128 ymm7, ymm9, ymm10, 33
+    vpalignr ymm7, ymm10, ymm7, 15
+    vpsrlw ymm11, ymm7, 4
+    vpand ymm11, ymm11, ymmword ptr [NVOL_K3]
+    vpshufb ymm11, ymm0, ymm11
+    vpand ymm7, ymm7, ymm3
+    vpshufb ymm7, ymm1, ymm7
+    vpand ymm7, ymm11, ymm7
+    vpsrlw ymm11, ymm10, 4
+    vpand ymm11, ymm11, ymmword ptr [NVOL_K3]
+    vpshufb ymm11, ymm2, ymm11
+    vpand ymm7, ymm7, ymm11
+    vperm2i128 ymm11, ymm9, ymm10, 33
+    vpalignr ymm11, ymm10, ymm11, 14
+    vpsubusb ymm11, ymm11, ymm4
+    vperm2i128 ymm9, ymm9, ymm10, 33
+    vpalignr ymm9, ymm10, ymm9, 13
+    vpsubusb ymm9, ymm9, ymm5
+    vpor ymm9, ymm11, ymm9
+    vpand ymm9, ymm9, ymm6
+    vpxor ymm7, ymm9, ymm7
+    vpor ymm8, ymm8, ymm7
+    xor edx, edx
+    movzx r11d, byte ptr [r9 + 63]
+    cmp r11d, 191
+    ja SHORT L_L7
+    movzx r11d, byte ptr [r9 + 62]
+    cmp r11d, 223
+    ja SHORT L_L7
+    movzx r11d, byte ptr [r9 + 61]
+    cmp r11d, 239
+    jbe SHORT L_L6
+L_L7:
+    mov edx, 1
+L_L6:
+L_L5:
+    DB 197, 125, 127, 215    ; vmovdqa ymm7, ymm10
+    add r9, 64
+    cmp r9, rax
+    jb NEAR PTR L_L2
+L_L3:
+    test r10, r10
+    jne SHORT L_L10
+    vptest ymm8, ymm8
+    je SHORT L_L8
+L_L10:
+    xor eax, eax
+    jmp NEAR PTR L_L1
+L_L8:
+    cmp r9, rcx
+    jbe SHORT L_L11
+    movzx eax, byte ptr [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L13
+    lea r9, [r9 - 1]
+    movzx eax, byte ptr [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L15
+    lea r9, [r9 - 1]
+    movzx eax, byte ptr [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L17
+    lea r9, [r9 - 1]
+L_L17:
+L_L15:
+L_L13:
+    movzx eax, byte ptr [r9 - 1]
+    cmp eax, 191
+    jbe SHORT L_L19
+    lea r9, [r9 - 1]
+L_L19:
+L_L11:
+    cmp r9, r8
+    jae SHORT L_L22
+    DB 15, 31, 0
+L_L21:
+    mov rax, r8
+    sub rax, r9
+    cmp rax, 8
+    jb SHORT L_L24
+    mov rax, qword ptr [r9]
+    mov rcx, -9187201950435737472
+    and rax, rcx
+    jne SHORT L_L24
+    DB 102, 144
+L_L23:
+    lea r9, [r9 + 8]
+    mov rax, r8
+    sub rax, r9
+    cmp rax, 8
+    jb SHORT L_L25
+    mov rax, qword ptr [r9]
+    mov rcx, -9187201950435737472
+    and rax, rcx
+    je SHORT L_L23
+L_L25:
+L_L24:
+    cmp r9, r8
+    jb SHORT L_Lrare3
+L_L26:
+    cmp r9, r8
+    jb SHORT L_L21
+L_L22:
+    mov eax, 1
+L_L1:
+    vzeroupper
+    vmovdqu xmm6, xmmword ptr [rsp]
+    vmovdqu xmm7, xmmword ptr [rsp + 16]
+    vmovdqu xmm8, xmmword ptr [rsp + 32]
+    vmovdqu xmm9, xmmword ptr [rsp + 48]
+    vmovdqu xmm10, xmmword ptr [rsp + 64]
+    vmovdqu xmm11, xmmword ptr [rsp + 80]
+    vmovdqu xmm12, xmmword ptr [rsp + 96]
+    add rsp, 120
+    ret
+L_L46:
+    xor eax, eax
+    jmp SHORT L_L1
+L_L53:
+    xor eax, eax
+    jmp SHORT L_L1
+L_L57:
+    xor eax, eax
+    jmp SHORT L_L1
+L_Lrare1:
+    movzx eax, byte ptr [r9 + 3]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L57
+L_L56:
+    jmp SHORT L_L54
+L_Lrare2:
+    movzx eax, byte ptr [r9 + 2]
+    and rax, 192
+    cmp eax, 128
+    jne SHORT L_L53
+L_L52:
+    cmp rdx, 3
+    ja SHORT L_Lrare1
+L_L54:
+    jmp NEAR PTR L_L50
+L_Lrare3:
+    movzx ecx, byte ptr [r9]
+    cmp ecx, 128
+    jae SHORT L_L28
+    lea r9, [r9 + 1]
+    jmp NEAR PTR L_L29
+L_L28:
+    cmp ecx, 194
+    jb SHORT L_L32
+    cmp ecx, 244
+    jbe SHORT L_L30
+L_L32:
+L_L31:
+    xor eax, eax
+    jmp NEAR PTR L_L1
+L_L30:
+    mov edx, 2
+    mov r10d, 128
+    mov r11d, 191
+    cmp ecx, 223
+    jbe SHORT L_L33
+    mov edx, 3
+    cmp ecx, 224
+    jne SHORT L_L35
+    mov r10d, 160
+L_L35:
+    cmp ecx, 237
+    jne SHORT L_L37
+    mov r11d, 159
+L_L37:
+    cmp ecx, 239
+    jbe SHORT L_L39
+    mov edx, 4
+    cmp ecx, 240
+    jne SHORT L_L41
+    mov r10d, 144
+L_L41:
+    cmp ecx, 244
+    jne SHORT L_L43
+    mov r11d, 143
+L_L43:
+L_L39:
+L_L33:
+    mov rax, r8
+    sub rax, r9
+    cmp rax, rdx
+    jb NEAR PTR L_L46
+L_L45:
+    movzx eax, byte ptr [r9 + 1]
+    cmp eax, r10d
+    jb SHORT L_L49
+    cmp eax, r11d
+    jbe SHORT L_L47
+L_L49:
+L_L48:
+    xor eax, eax
+    jmp NEAR PTR L_L1
+L_L47:
+    cmp rdx, 2
+    ja NEAR PTR L_Lrare2
+L_L50:
+    lea r9, [r9 + rdx]
+L_L29:
+    jmp NEAR PTR L_L26
+nvol_utf8_valid_avx2 ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
+nvol_utf8_valid PROC PUBLIC
+    jmp qword ptr [nvol_utf8_valid_ptr]
+nvol_utf8_valid ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
+nvol_utf8_valid_resolve PROC PUBLIC FRAME
+    push rcx
+    .PUSHREG rcx
+    push rdx
+    .PUSHREG rdx
+    push r8
+    .PUSHREG r8
+    push r9
+    .PUSHREG r9
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    call nvol_cpu_avx2
+    test eax, eax
+    jne SHORT L_T0
+    call nvol_cpu_ssse3
+    test eax, eax
+    jne SHORT L_T1
+    lea rax, [nvol_utf8_valid_scalar]
+    jmp SHORT L_done
+L_T0:
+    lea rax, [nvol_utf8_valid_avx2]
+    jmp SHORT L_done
+L_T1:
+    lea rax, [nvol_utf8_valid_ssse3]
+    jmp SHORT L_done
+L_done:
+    mov qword ptr [nvol_utf8_valid_ptr], rax
+    add rsp, 40
+    pop r9
+    pop r8
+    pop rdx
+    pop rcx
+    jmp qword ptr [nvol_utf8_valid_ptr]
+nvol_utf8_valid_resolve ENDP
 
 ALIGN 8
 nvol_fntbl_teddy DD nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy

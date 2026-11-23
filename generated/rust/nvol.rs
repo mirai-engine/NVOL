@@ -10305,6 +10305,319 @@ pub mod raw {
         unsafe { core::mem::transmute::<*mut (), F>(f)(state, blocks, nblocks, idx, out) }
     }
 
+    /// UTF-8 validation, scalar
+    #[inline(always)]
+    pub(crate) unsafe fn nvol_utf8_valid_scalar(p: *const u8, len_: usize) -> usize {
+        unsafe {
+            let end: *const u8 = p.add(len_);
+            let mut cur: *const u8 = p;
+            while (cur < end) {
+                while ((((end as usize) - (cur as usize)) >= 8usize) && (((cur as *const u64).read_unaligned() & 9259542123273814144u64) == 0u64)) {
+                    cur = cur.add(8usize);
+                }
+                if (cur < end) {
+                    let c: u8 = (*cur);
+                    if (c < 128u8) {
+                        cur = cur.add(1usize);
+                    } else {
+                        if ((c < 194u8) || (c > 244u8)) {
+                            return 0usize;
+                        }
+                        let mut n: usize = 2usize;
+                        let mut lo: u8 = 128u8;
+                        let mut hi: u8 = 191u8;
+                        if (c > 223u8) {
+                            n = 3usize;
+                            if (c == 224u8) {
+                                lo = 160u8;
+                            }
+                            if (c == 237u8) {
+                                hi = 159u8;
+                            }
+                            if (c > 239u8) {
+                                n = 4usize;
+                                if (c == 240u8) {
+                                    lo = 144u8;
+                                }
+                                if (c == 244u8) {
+                                    hi = 143u8;
+                                }
+                            }
+                        }
+                        if (((end as usize) - (cur as usize)) < n) {
+                            return 0usize;
+                        }
+                        let c1: u8 = (*cur.add(1usize));
+                        if ((c1 < lo) || (c1 > hi)) {
+                            return 0usize;
+                        }
+                        if (n > 2usize) {
+                            if (((*cur.add(2usize)) & 192u8) != 128u8) {
+                                return 0usize;
+                            }
+                            if (n > 3usize) {
+                                if (((*cur.add(3usize)) & 192u8) != 128u8) {
+                                    return 0usize;
+                                }
+                            }
+                        }
+                        cur = cur.add(n);
+                    }
+                }
+            }
+            return 1usize;
+        }
+    }
+
+    /// UTF-8 validation, ssse3
+    #[target_feature(enable = "ssse3")]
+    #[inline]
+    pub(crate) unsafe fn nvol_utf8_valid_ssse3(p: *const u8, len_: usize) -> usize {
+        unsafe {
+            let end: *const u8 = p.add(len_);
+            let mut cur: *const u8 = p;
+            let t1h: __m128i = _mm_setr_epi8(2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8);
+            let t1l: __m128i = _mm_setr_epi8(231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8);
+            let t2h: __m128i = _mm_setr_epi8(1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8);
+            let k0f: __m128i = _mm_set1_epi8(15u8 as i8);
+            let k60: __m128i = _mm_set1_epi8(96u8 as i8);
+            let k70: __m128i = _mm_set1_epi8(112u8 as i8);
+            let k80: __m128i = _mm_set1_epi8(128u8 as i8);
+            let end64: *const u8 = p.add(((len_ >> 6usize) << 6usize));
+            let mut prev: __m128i = _mm_setzero_si128();
+            let mut err: __m128i = _mm_setzero_si128();
+            let mut inc: u64 = 0u64;
+            let mut bad: u64 = 0u64;
+            while (cur < end64) {
+                let in_: __m128i = _mm_loadu_si128(cur as *const __m128i);
+                let in_1: __m128i = _mm_loadu_si128(cur.add(16usize) as *const __m128i);
+                let in_2: __m128i = _mm_loadu_si128(cur.add(32usize) as *const __m128i);
+                let in_3: __m128i = _mm_loadu_si128(cur.add(48usize) as *const __m128i);
+                if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_, in_1), _mm_or_si128(in_2, in_3))) as u32) == 0u32) {
+                    bad = (bad | inc);
+                } else {
+                    core::hint::cold_path();
+                    let prev1: __m128i = _mm_alignr_epi8::<15>(in_, prev);
+                    let sc: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev1), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev1, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_), _mm_set1_epi8(0x0F))));
+                    err = _mm_or_si128(err, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_, prev), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_, prev), k70)), k80), sc));
+                    let prev11: __m128i = _mm_alignr_epi8::<15>(in_1, in_);
+                    let sc1: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev11), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev11, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_1), _mm_set1_epi8(0x0F))));
+                    err = _mm_or_si128(err, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_1, in_), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_1, in_), k70)), k80), sc1));
+                    let prev12: __m128i = _mm_alignr_epi8::<15>(in_2, in_1);
+                    let sc2: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev12), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev12, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_2), _mm_set1_epi8(0x0F))));
+                    err = _mm_or_si128(err, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_2, in_1), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_2, in_1), k70)), k80), sc2));
+                    let prev13: __m128i = _mm_alignr_epi8::<15>(in_3, in_2);
+                    let sc3: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev13), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev13, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_3), _mm_set1_epi8(0x0F))));
+                    err = _mm_or_si128(err, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_3, in_2), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_3, in_2), k70)), k80), sc3));
+                    inc = (((((*cur.add(63usize)) > 191u8) || ((*cur.add(62usize)) > 223u8)) || ((*cur.add(61usize)) > 239u8)) as u64);
+                }
+                prev = in_3;
+                cur = cur.add(64usize);
+            }
+            if ((bad != 0u64) || (!(_mm_movemask_epi8(_mm_cmpeq_epi8(err, _mm_setzero_si128())) == 0xFFFF))) {
+                return 0usize;
+            }
+            if (cur > p) {
+                if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                    cur = cur.sub(1usize);
+                    if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                        cur = cur.sub(1usize);
+                        if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                            cur = cur.sub(1usize);
+                        }
+                    }
+                }
+                if ((*cur.sub(1usize)) > 191u8) {
+                    cur = cur.sub(1usize);
+                }
+            }
+            while (cur < end) {
+                while ((((end as usize) - (cur as usize)) >= 8usize) && (((cur as *const u64).read_unaligned() & 9259542123273814144u64) == 0u64)) {
+                    cur = cur.add(8usize);
+                }
+                if (cur < end) {
+                    let c: u8 = (*cur);
+                    if (c < 128u8) {
+                        cur = cur.add(1usize);
+                    } else {
+                        if ((c < 194u8) || (c > 244u8)) {
+                            return 0usize;
+                        }
+                        let mut n: usize = 2usize;
+                        let mut lo: u8 = 128u8;
+                        let mut hi: u8 = 191u8;
+                        if (c > 223u8) {
+                            n = 3usize;
+                            if (c == 224u8) {
+                                lo = 160u8;
+                            }
+                            if (c == 237u8) {
+                                hi = 159u8;
+                            }
+                            if (c > 239u8) {
+                                n = 4usize;
+                                if (c == 240u8) {
+                                    lo = 144u8;
+                                }
+                                if (c == 244u8) {
+                                    hi = 143u8;
+                                }
+                            }
+                        }
+                        if (((end as usize) - (cur as usize)) < n) {
+                            return 0usize;
+                        }
+                        let c1: u8 = (*cur.add(1usize));
+                        if ((c1 < lo) || (c1 > hi)) {
+                            return 0usize;
+                        }
+                        if (n > 2usize) {
+                            if (((*cur.add(2usize)) & 192u8) != 128u8) {
+                                return 0usize;
+                            }
+                            if (n > 3usize) {
+                                if (((*cur.add(3usize)) & 192u8) != 128u8) {
+                                    return 0usize;
+                                }
+                            }
+                        }
+                        cur = cur.add(n);
+                    }
+                }
+            }
+            return 1usize;
+        }
+    }
+
+    /// UTF-8 validation, avx2
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
+    #[inline]
+    pub(crate) unsafe fn nvol_utf8_valid_avx2(p: *const u8, len_: usize) -> usize {
+        unsafe {
+            let end: *const u8 = p.add(len_);
+            let mut cur: *const u8 = p;
+            let t1h: __m256i = _mm256_setr_epi8(2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8);
+            let t1l: __m256i = _mm256_setr_epi8(231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8, 231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8);
+            let t2h: __m256i = _mm256_setr_epi8(1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8);
+            let k0f: __m256i = _mm256_set1_epi8(15u8 as i8);
+            let k60: __m256i = _mm256_set1_epi8(96u8 as i8);
+            let k70: __m256i = _mm256_set1_epi8(112u8 as i8);
+            let k80: __m256i = _mm256_set1_epi8(128u8 as i8);
+            let end64: *const u8 = p.add(((len_ >> 6usize) << 6usize));
+            let mut prev: __m256i = _mm256_setzero_si256();
+            let mut err: __m256i = _mm256_setzero_si256();
+            let mut inc: u64 = 0u64;
+            let mut bad: u64 = 0u64;
+            while (cur < end64) {
+                let in_: __m256i = _mm256_loadu_si256(cur as *const __m256i);
+                let in_1: __m256i = _mm256_loadu_si256(cur.add(32usize) as *const __m256i);
+                if ((_mm256_movemask_epi8(_mm256_or_si256(in_, in_1)) as u32) == 0u32) {
+                    bad = (bad | inc);
+                } else {
+                    core::hint::cold_path();
+                    let prev1: __m256i = _mm256_alignr_epi8::<15>(in_, _mm256_permute2x128_si256::<0x21>(prev, in_));
+                    let sc: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev1), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev1, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_), _mm256_set1_epi8(0x0F))));
+                    err = _mm256_or_si256(err, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_, _mm256_permute2x128_si256::<0x21>(prev, in_)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_, _mm256_permute2x128_si256::<0x21>(prev, in_)), k70)), k80), sc));
+                    let prev11: __m256i = _mm256_alignr_epi8::<15>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1));
+                    let sc1: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev11), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev11, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_1), _mm256_set1_epi8(0x0F))));
+                    err = _mm256_or_si256(err, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1)), k70)), k80), sc1));
+                    inc = (((((*cur.add(63usize)) > 191u8) || ((*cur.add(62usize)) > 223u8)) || ((*cur.add(61usize)) > 239u8)) as u64);
+                }
+                prev = in_1;
+                cur = cur.add(64usize);
+            }
+            if ((bad != 0u64) || (!(_mm256_testz_si256(err, err) != 0))) {
+                return 0usize;
+            }
+            if (cur > p) {
+                if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                    cur = cur.sub(1usize);
+                    if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                        cur = cur.sub(1usize);
+                        if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                            cur = cur.sub(1usize);
+                        }
+                    }
+                }
+                if ((*cur.sub(1usize)) > 191u8) {
+                    cur = cur.sub(1usize);
+                }
+            }
+            while (cur < end) {
+                while ((((end as usize) - (cur as usize)) >= 8usize) && (((cur as *const u64).read_unaligned() & 9259542123273814144u64) == 0u64)) {
+                    cur = cur.add(8usize);
+                }
+                if (cur < end) {
+                    let c: u8 = (*cur);
+                    if (c < 128u8) {
+                        cur = cur.add(1usize);
+                    } else {
+                        if ((c < 194u8) || (c > 244u8)) {
+                            return 0usize;
+                        }
+                        let mut n: usize = 2usize;
+                        let mut lo: u8 = 128u8;
+                        let mut hi: u8 = 191u8;
+                        if (c > 223u8) {
+                            n = 3usize;
+                            if (c == 224u8) {
+                                lo = 160u8;
+                            }
+                            if (c == 237u8) {
+                                hi = 159u8;
+                            }
+                            if (c > 239u8) {
+                                n = 4usize;
+                                if (c == 240u8) {
+                                    lo = 144u8;
+                                }
+                                if (c == 244u8) {
+                                    hi = 143u8;
+                                }
+                            }
+                        }
+                        if (((end as usize) - (cur as usize)) < n) {
+                            return 0usize;
+                        }
+                        let c1: u8 = (*cur.add(1usize));
+                        if ((c1 < lo) || (c1 > hi)) {
+                            return 0usize;
+                        }
+                        if (n > 2usize) {
+                            if (((*cur.add(2usize)) & 192u8) != 128u8) {
+                                return 0usize;
+                            }
+                            if (n > 3usize) {
+                                if (((*cur.add(3usize)) & 192u8) != 128u8) {
+                                    return 0usize;
+                                }
+                            }
+                        }
+                        cur = cur.add(n);
+                    }
+                }
+            }
+            return 1usize;
+        }
+    }
+
+    /// 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0
+    #[inline(always)]
+    pub unsafe fn nvol_utf8_valid(p: *const u8, len_: usize) -> usize {
+        use core::sync::atomic::{AtomicPtr, Ordering};
+        type F = unsafe fn(*const u8, usize) -> usize;
+        static FN: AtomicPtr<()> = AtomicPtr::new(resolve as F as *mut ());
+        unsafe fn resolve(p: *const u8, len_: usize) -> usize {
+            let mut f: F = nvol_utf8_valid_scalar;
+            if std::is_x86_feature_detected!("ssse3") { f = nvol_utf8_valid_ssse3; }
+            if std::is_x86_feature_detected!("avx2") { f = nvol_utf8_valid_avx2; }
+            FN.store(f as *mut (), Ordering::Relaxed);
+            unsafe { f(p, len_) }
+        }
+        let f = FN.load(Ordering::Relaxed);
+        unsafe { core::mem::transmute::<*mut (), F>(f)(p, len_) }
+    }
+
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 12] = [
         nvol_teddy_slim_ssse3_1,
         nvol_teddy_slim_ssse3_2,
@@ -15546,6 +15859,129 @@ pub mod raw {
     /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
     #[inline(always)]
     pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize { unsafe { nvol_json_index_neon(state, blocks, nblocks, idx, out) } }
+
+    /// UTF-8 validation, neon
+    #[inline(always)]
+    pub(crate) unsafe fn nvol_utf8_valid_neon(p: *const u8, len_: usize) -> usize {
+        unsafe {
+            let end: *const u8 = p.add(len_);
+            let mut cur: *const u8 = p;
+            let t1h: uint8x16_t = vcombine_u8(vcreate_u8(((2u8 as u64)) | ((2u8 as u64) << 8) | ((2u8 as u64) << 16) | ((2u8 as u64) << 24) | ((2u8 as u64) << 32) | ((2u8 as u64) << 40) | ((2u8 as u64) << 48) | ((2u8 as u64) << 56)), vcreate_u8(((128u8 as u64)) | ((128u8 as u64) << 8) | ((128u8 as u64) << 16) | ((128u8 as u64) << 24) | ((33u8 as u64) << 32) | ((1u8 as u64) << 40) | ((21u8 as u64) << 48) | ((73u8 as u64) << 56)));
+            let t1l: uint8x16_t = vcombine_u8(vcreate_u8(((231u8 as u64)) | ((163u8 as u64) << 8) | ((131u8 as u64) << 16) | ((131u8 as u64) << 24) | ((139u8 as u64) << 32) | ((203u8 as u64) << 40) | ((203u8 as u64) << 48) | ((203u8 as u64) << 56)), vcreate_u8(((203u8 as u64)) | ((203u8 as u64) << 8) | ((203u8 as u64) << 16) | ((203u8 as u64) << 24) | ((203u8 as u64) << 32) | ((219u8 as u64) << 40) | ((203u8 as u64) << 48) | ((203u8 as u64) << 56)));
+            let t2h: uint8x16_t = vcombine_u8(vcreate_u8(((1u8 as u64)) | ((1u8 as u64) << 8) | ((1u8 as u64) << 16) | ((1u8 as u64) << 24) | ((1u8 as u64) << 32) | ((1u8 as u64) << 40) | ((1u8 as u64) << 48) | ((1u8 as u64) << 56)), vcreate_u8(((230u8 as u64)) | ((174u8 as u64) << 8) | ((186u8 as u64) << 16) | ((186u8 as u64) << 24) | ((1u8 as u64) << 32) | ((1u8 as u64) << 40) | ((1u8 as u64) << 48) | ((1u8 as u64) << 56)));
+            let k0f: uint8x16_t = vdupq_n_u8(15u8);
+            let k60: uint8x16_t = vdupq_n_u8(96u8);
+            let k70: uint8x16_t = vdupq_n_u8(112u8);
+            let k80: uint8x16_t = vdupq_n_u8(128u8);
+            let end64: *const u8 = p.add(((len_ >> 6usize) << 6usize));
+            let mut prev: uint8x16_t = vdupq_n_u8(0);
+            let mut err: uint8x16_t = vdupq_n_u8(0);
+            let mut inc: u64 = 0u64;
+            let mut bad: u64 = 0u64;
+            while (cur < end64) {
+                let in_: uint8x16_t = vld1q_u8(cur);
+                let in_1: uint8x16_t = vld1q_u8(cur.add(16usize));
+                let in_2: uint8x16_t = vld1q_u8(cur.add(32usize));
+                let in_3: uint8x16_t = vld1q_u8(cur.add(48usize));
+                if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))))))))) & 0x8888888888888888u64) == 0u64) {
+                    bad = (bad | inc);
+                } else {
+                    core::hint::cold_path();
+                    let prev1: uint8x16_t = vextq_u8::<15>(prev, in_);
+                    let sc: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev1)), vqtbl1q_u8(t1l, vandq_u8(prev1, k0f))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_)));
+                    err = vorrq_u8(err, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(prev, in_), k60), vqsubq_u8(vextq_u8::<13>(prev, in_), k70)), k80), sc));
+                    let prev11: uint8x16_t = vextq_u8::<15>(in_, in_1);
+                    let sc1: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev11)), vqtbl1q_u8(t1l, vandq_u8(prev11, k0f))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_1)));
+                    err = vorrq_u8(err, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_, in_1), k60), vqsubq_u8(vextq_u8::<13>(in_, in_1), k70)), k80), sc1));
+                    let prev12: uint8x16_t = vextq_u8::<15>(in_1, in_2);
+                    let sc2: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev12)), vqtbl1q_u8(t1l, vandq_u8(prev12, k0f))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_2)));
+                    err = vorrq_u8(err, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_1, in_2), k60), vqsubq_u8(vextq_u8::<13>(in_1, in_2), k70)), k80), sc2));
+                    let prev13: uint8x16_t = vextq_u8::<15>(in_2, in_3);
+                    let sc3: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev13)), vqtbl1q_u8(t1l, vandq_u8(prev13, k0f))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_3)));
+                    err = vorrq_u8(err, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_2, in_3), k60), vqsubq_u8(vextq_u8::<13>(in_2, in_3), k70)), k80), sc3));
+                    inc = (((((*cur.add(63usize)) > 191u8) || ((*cur.add(62usize)) > 223u8)) || ((*cur.add(61usize)) > 239u8)) as u64);
+                }
+                prev = in_3;
+                cur = cur.add(64usize);
+            }
+            if ((bad != 0u64) || (!(vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpmaxq_u8(err, err))) == 0))) {
+                return 0usize;
+            }
+            if (cur > p) {
+                if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                    cur = cur.sub(1usize);
+                    if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                        cur = cur.sub(1usize);
+                        if (((*cur.sub(1usize)) & 192u8) == 128u8) {
+                            cur = cur.sub(1usize);
+                        }
+                    }
+                }
+                if ((*cur.sub(1usize)) > 191u8) {
+                    cur = cur.sub(1usize);
+                }
+            }
+            while (cur < end) {
+                while ((((end as usize) - (cur as usize)) >= 8usize) && (((cur as *const u64).read_unaligned() & 9259542123273814144u64) == 0u64)) {
+                    cur = cur.add(8usize);
+                }
+                if (cur < end) {
+                    let c: u8 = (*cur);
+                    if (c < 128u8) {
+                        cur = cur.add(1usize);
+                    } else {
+                        if ((c < 194u8) || (c > 244u8)) {
+                            return 0usize;
+                        }
+                        let mut n: usize = 2usize;
+                        let mut lo: u8 = 128u8;
+                        let mut hi: u8 = 191u8;
+                        if (c > 223u8) {
+                            n = 3usize;
+                            if (c == 224u8) {
+                                lo = 160u8;
+                            }
+                            if (c == 237u8) {
+                                hi = 159u8;
+                            }
+                            if (c > 239u8) {
+                                n = 4usize;
+                                if (c == 240u8) {
+                                    lo = 144u8;
+                                }
+                                if (c == 244u8) {
+                                    hi = 143u8;
+                                }
+                            }
+                        }
+                        if (((end as usize) - (cur as usize)) < n) {
+                            return 0usize;
+                        }
+                        let c1: u8 = (*cur.add(1usize));
+                        if ((c1 < lo) || (c1 > hi)) {
+                            return 0usize;
+                        }
+                        if (n > 2usize) {
+                            if (((*cur.add(2usize)) & 192u8) != 128u8) {
+                                return 0usize;
+                            }
+                            if (n > 3usize) {
+                                if (((*cur.add(3usize)) & 192u8) != 128u8) {
+                                    return 0usize;
+                                }
+                            }
+                        }
+                        cur = cur.add(n);
+                    }
+                }
+            }
+            return 1usize;
+        }
+    }
+
+    /// 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0
+    #[inline(always)]
+    pub unsafe fn nvol_utf8_valid(p: *const u8, len_: usize) -> usize { unsafe { nvol_utf8_valid_neon(p, len_) } }
 
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 4] = [
         nvol_teddy_slim_neon_1,

@@ -40,7 +40,7 @@ from nvol.asm.masm import find_ml64
 from nvol.interp import UB, Interpreter, Memory
 from nvol.isa import ISAS
 from nvol.kernels import build_modules
-from nvol.__main__ import json_cases
+from nvol.__main__ import json_cases, utf8_cases
 from nvol.kernels.byteset import CLASS_BYTES, PAIR_BYTES
 from nvol.kernels.memmem import STATE_WORDS
 from nvol.kernels.teddy import STATE_BYTES as TEDDY_STATE
@@ -443,6 +443,9 @@ def _gen(rng, name, maxlen):
         st = c.region(b"".join(w.to_bytes(8, "little") for w in state))
         h, o = c.region(data), c.region(bytes(4 * len(data)))
         return c, [_ptr(st, 0), _ptr(h, 0), len(data) // 64, rng.randrange(1 << 20), _ptr(o, 0)]
+    if name.startswith("nvol_utf8_valid"):
+        data = next(utf8_cases(rng, 1))
+        return c, [_ptr(c.region(data), 0), len(data)]
     if name.startswith(("nvol_find_byteset", "nvol_find_not_byteset", "nvol_copy_until_byteset")):
         s = _bytes(rng, rng.randrange(0, 20), alpha + list(range(1, 32)))
         cls = c.region(_class(s))

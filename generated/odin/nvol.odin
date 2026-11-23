@@ -9658,6 +9658,303 @@ when ODIN_ARCH == .amd64 {
 	}
 	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_raw_ptr(state, blocks, nblocks, idx, out) }
 
+	// UTF-8 validation, scalar
+	@(private)
+	nvol_utf8_valid_scalar :: #force_inline proc "contextless" (p: [^]u8, len_: uint) -> uint #no_bounds_check {
+		end: [^]u8 = p[len_:]
+		cur: [^]u8 = p
+		for (cur < end) {
+			for ((uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >= uint(8)) && ((intrinsics.unaligned_load((^u64)(cur)) & u64(9259542123273814144)) == u64(0))) {
+				cur = cur[uint(8):]
+			}
+			if (cur < end) {
+				c: u8 = cur[0]
+				if (c < u8(128)) {
+					cur = cur[uint(1):]
+				} else {
+					if ((c < u8(194)) || (c > u8(244))) {
+						return uint(0)
+					}
+					n: uint = uint(2)
+					lo: u8 = u8(128)
+					hi: u8 = u8(191)
+					if (c > u8(223)) {
+						n = uint(3)
+						if (c == u8(224)) {
+							lo = u8(160)
+						}
+						if (c == u8(237)) {
+							hi = u8(159)
+						}
+						if (c > u8(239)) {
+							n = uint(4)
+							if (c == u8(240)) {
+								lo = u8(144)
+							}
+							if (c == u8(244)) {
+								hi = u8(143)
+							}
+						}
+					}
+					if (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) < n) {
+						return uint(0)
+					}
+					c1: u8 = cur[uint(1):][0]
+					if ((c1 < lo) || (c1 > hi)) {
+						return uint(0)
+					}
+					if (n > uint(2)) {
+						if ((cur[uint(2):][0] & u8(192)) != u8(128)) {
+							return uint(0)
+						}
+						if (n > uint(3)) {
+							if ((cur[uint(3):][0] & u8(192)) != u8(128)) {
+								return uint(0)
+							}
+						}
+					}
+					cur = cur[n:]
+				}
+			}
+		}
+		return uint(1)
+	}
+
+	// UTF-8 validation, ssse3
+	@(private, enable_target_feature="ssse3")
+	nvol_utf8_valid_ssse3 :: #force_inline proc "contextless" (p: [^]u8, len_: uint) -> uint #no_bounds_check {
+		end: [^]u8 = p[len_:]
+		cur: [^]u8 = p
+		t1h: V16 = V16{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
+		t1l: V16 = V16{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
+		t2h: V16 = V16{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
+		k0f: V16 = V16(u8(15))
+		k60: V16 = V16(u8(96))
+		k70: V16 = V16(u8(112))
+		k80: V16 = V16(u8(128))
+		end64: [^]u8 = p[((len_ >> uint(6)) << uint(6)):]
+		prev: V16 = V16(0)
+		err: V16 = V16(0)
+		inc: u64 = u64(0)
+		bad: u64 = u64(0)
+		for (cur < end64) {
+			in_: V16 = intrinsics.unaligned_load((^V16)(cur))
+			in_1: V16 = intrinsics.unaligned_load((^V16)(cur[uint(16):]))
+			in_2: V16 = intrinsics.unaligned_load((^V16)(cur[uint(32):]))
+			in_3: V16 = intrinsics.unaligned_load((^V16)(cur[uint(48):]))
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3))) == u32(0)), true) {
+				bad = (bad | inc)
+			} else {
+				prev1: V16 = intrinsics.simd_shuffle(prev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_, V16(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(prev, in_, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(prev, in_, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc))
+				prev11: V16 = intrinsics.simd_shuffle(in_, in_1, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc1: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev11, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev11, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_1, V16(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc1))
+				prev12: V16 = intrinsics.simd_shuffle(in_1, in_2, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc2: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev12, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev12, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_2, V16(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc2))
+				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_3, V16(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
+				inc = u64((((cur[uint(63):][0] > u8(191)) || (cur[uint(62):][0] > u8(223))) || (cur[uint(61):][0] > u8(239))))
+			}
+			prev = in_3
+			cur = cur[uint(64):]
+		}
+		if ((bad != u64(0)) || (!(intrinsics.simd_reduce_or(err) == 0))) {
+			return uint(0)
+		}
+		if (cur > p) {
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+				cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+				if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+					cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+					if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+						cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+					}
+				}
+			}
+			if (([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] > u8(191)) {
+				cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+			}
+		}
+		for (cur < end) {
+			for ((uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >= uint(8)) && ((intrinsics.unaligned_load((^u64)(cur)) & u64(9259542123273814144)) == u64(0))) {
+				cur = cur[uint(8):]
+			}
+			if (cur < end) {
+				c: u8 = cur[0]
+				if (c < u8(128)) {
+					cur = cur[uint(1):]
+				} else {
+					if ((c < u8(194)) || (c > u8(244))) {
+						return uint(0)
+					}
+					n: uint = uint(2)
+					lo: u8 = u8(128)
+					hi: u8 = u8(191)
+					if (c > u8(223)) {
+						n = uint(3)
+						if (c == u8(224)) {
+							lo = u8(160)
+						}
+						if (c == u8(237)) {
+							hi = u8(159)
+						}
+						if (c > u8(239)) {
+							n = uint(4)
+							if (c == u8(240)) {
+								lo = u8(144)
+							}
+							if (c == u8(244)) {
+								hi = u8(143)
+							}
+						}
+					}
+					if (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) < n) {
+						return uint(0)
+					}
+					c1: u8 = cur[uint(1):][0]
+					if ((c1 < lo) || (c1 > hi)) {
+						return uint(0)
+					}
+					if (n > uint(2)) {
+						if ((cur[uint(2):][0] & u8(192)) != u8(128)) {
+							return uint(0)
+						}
+						if (n > uint(3)) {
+							if ((cur[uint(3):][0] & u8(192)) != u8(128)) {
+								return uint(0)
+							}
+						}
+					}
+					cur = cur[n:]
+				}
+			}
+		}
+		return uint(1)
+	}
+
+	// UTF-8 validation, avx2
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
+	nvol_utf8_valid_avx2 :: #force_inline proc "contextless" (p: [^]u8, len_: uint) -> uint #no_bounds_check {
+		end: [^]u8 = p[len_:]
+		cur: [^]u8 = p
+		t1h: V32 = V32{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
+		t1l: V32 = V32{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203), u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
+		t2h: V32 = V32{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
+		k0f: V32 = V32(u8(15))
+		k60: V32 = V32(u8(96))
+		k70: V32 = V32(u8(112))
+		k80: V32 = V32(u8(128))
+		end64: [^]u8 = p[((len_ >> uint(6)) << uint(6)):]
+		prev: V32 = V32(0)
+		err: V32 = V32(0)
+		inc: u64 = u64(0)
+		bad: u64 = u64(0)
+		for (cur < end64) {
+			in_: V32 = intrinsics.unaligned_load((^V32)(cur))
+			in_1: V32 = intrinsics.unaligned_load((^V32)(cur[uint(32):]))
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_, in_1)) == u32(0)), true) {
+				bad = (bad | inc)
+			} else {
+				prev1: V32 = intrinsics.simd_shuffle(prev, in_, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
+				sc: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev1, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_, V32(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(prev, in_, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(prev, in_, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc))
+				prev11: V32 = intrinsics.simd_shuffle(in_, in_1, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
+				sc1: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev11, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev11, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_1, V32(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc1))
+				inc = u64((((cur[uint(63):][0] > u8(191)) || (cur[uint(62):][0] > u8(223))) || (cur[uint(61):][0] > u8(239))))
+			}
+			prev = in_1
+			cur = cur[uint(64):]
+		}
+		if ((bad != u64(0)) || (!(intrinsics.simd_reduce_or(err) == 0))) {
+			return uint(0)
+		}
+		if (cur > p) {
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+				cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+				if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+					cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+					if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+						cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+					}
+				}
+			}
+			if (([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] > u8(191)) {
+				cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+			}
+		}
+		for (cur < end) {
+			for ((uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >= uint(8)) && ((intrinsics.unaligned_load((^u64)(cur)) & u64(9259542123273814144)) == u64(0))) {
+				cur = cur[uint(8):]
+			}
+			if (cur < end) {
+				c: u8 = cur[0]
+				if (c < u8(128)) {
+					cur = cur[uint(1):]
+				} else {
+					if ((c < u8(194)) || (c > u8(244))) {
+						return uint(0)
+					}
+					n: uint = uint(2)
+					lo: u8 = u8(128)
+					hi: u8 = u8(191)
+					if (c > u8(223)) {
+						n = uint(3)
+						if (c == u8(224)) {
+							lo = u8(160)
+						}
+						if (c == u8(237)) {
+							hi = u8(159)
+						}
+						if (c > u8(239)) {
+							n = uint(4)
+							if (c == u8(240)) {
+								lo = u8(144)
+							}
+							if (c == u8(244)) {
+								hi = u8(143)
+							}
+						}
+					}
+					if (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) < n) {
+						return uint(0)
+					}
+					c1: u8 = cur[uint(1):][0]
+					if ((c1 < lo) || (c1 > hi)) {
+						return uint(0)
+					}
+					if (n > uint(2)) {
+						if ((cur[uint(2):][0] & u8(192)) != u8(128)) {
+							return uint(0)
+						}
+						if (n > uint(3)) {
+							if ((cur[uint(3):][0] & u8(192)) != u8(128)) {
+								return uint(0)
+							}
+						}
+					}
+					cur = cur[n:]
+				}
+			}
+		}
+		return uint(1)
+	}
+
+	// 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0
+	@(private) nvol_utf8_valid_ptr: proc "contextless" (p: [^]u8, len_: uint) -> uint = nvol_utf8_valid_resolve
+	@(private) nvol_utf8_valid_resolve :: proc "contextless" (p: [^]u8, len_: uint) -> uint {
+		f: proc "contextless" (p: [^]u8, len_: uint) -> uint = nvol_utf8_valid_scalar
+		if (.ssse3 in info.cpu_features()) { f = nvol_utf8_valid_ssse3 }
+		if nvol_cpu_avx2() { f = nvol_utf8_valid_avx2 }
+		nvol_utf8_valid_ptr = f
+		return f(p, len_)
+	}
+	nvol_utf8_valid :: #force_inline proc "contextless" (p: [^]u8, len_: uint) -> uint { return nvol_utf8_valid_ptr(p, len_) }
+
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {
 		nvol_test_avx2_override = v
@@ -9678,6 +9975,7 @@ when ODIN_ARCH == .amd64 {
 		nvol_find_byteset_pair_raw_ptr = nvol_find_byteset_pair_raw_resolve
 		nvol_find_byteset_pair_mask_raw_ptr = nvol_find_byteset_pair_mask_raw_resolve
 		nvol_json_index_raw_ptr = nvol_json_index_raw_resolve
+		nvol_utf8_valid_ptr = nvol_utf8_valid_resolve
 	}
 } else when ODIN_ARCH == .arm64 {
 	@(private, default_calling_convention = "none")
@@ -14605,6 +14903,125 @@ when ODIN_ARCH == .amd64 {
 
 	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
 	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_neon(state, blocks, nblocks, idx, out) }
+
+	// UTF-8 validation, neon
+	@(private)
+	nvol_utf8_valid_neon :: #force_inline proc "contextless" (p: [^]u8, len_: uint) -> uint #no_bounds_check {
+		end: [^]u8 = p[len_:]
+		cur: [^]u8 = p
+		t1h: V16 = V16{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
+		t1l: V16 = V16{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
+		t2h: V16 = V16{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
+		k0f: V16 = V16(u8(15))
+		k60: V16 = V16(u8(96))
+		k70: V16 = V16(u8(112))
+		k80: V16 = V16(u8(128))
+		end64: [^]u8 = p[((len_ >> uint(6)) << uint(6)):]
+		prev: V16 = V16(0)
+		err: V16 = V16(0)
+		inc: u64 = u64(0)
+		bad: u64 = u64(0)
+		for (cur < end64) {
+			in_: V16 = intrinsics.unaligned_load((^V16)(cur))
+			in_1: V16 = intrinsics.unaligned_load((^V16)(cur[uint(16):]))
+			in_2: V16 = intrinsics.unaligned_load((^V16)(cur[uint(32):]))
+			in_3: V16 = intrinsics.unaligned_load((^V16)(cur[uint(48):]))
+			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
+				bad = (bad | inc)
+			} else {
+				prev1: V16 = intrinsics.simd_shuffle(prev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_tbl1(t2h, intrinsics.simd_shr(in_, V16(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(prev, in_, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(prev, in_, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc))
+				prev11: V16 = intrinsics.simd_shuffle(in_, in_1, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc1: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev11, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev11, k0f))), nvol_tbl1(t2h, intrinsics.simd_shr(in_1, V16(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc1))
+				prev12: V16 = intrinsics.simd_shuffle(in_1, in_2, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc2: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev12, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev12, k0f))), nvol_tbl1(t2h, intrinsics.simd_shr(in_2, V16(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc2))
+				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_tbl1(t2h, intrinsics.simd_shr(in_3, V16(4))))
+				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
+				inc = u64((((cur[uint(63):][0] > u8(191)) || (cur[uint(62):][0] > u8(223))) || (cur[uint(61):][0] > u8(239))))
+			}
+			prev = in_3
+			cur = cur[uint(64):]
+		}
+		if ((bad != u64(0)) || (!(intrinsics.simd_reduce_or(err) == 0))) {
+			return uint(0)
+		}
+		if (cur > p) {
+			if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+				cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+				if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+					cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+					if ((([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] & u8(192)) == u8(128)) {
+						cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+					}
+				}
+			}
+			if (([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))[0] > u8(191)) {
+				cur = ([^]u8)(intrinsics.ptr_offset((^u8)(cur), -int(uint(1))))
+			}
+		}
+		for (cur < end) {
+			for ((uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) >= uint(8)) && ((intrinsics.unaligned_load((^u64)(cur)) & u64(9259542123273814144)) == u64(0))) {
+				cur = cur[uint(8):]
+			}
+			if (cur < end) {
+				c: u8 = cur[0]
+				if (c < u8(128)) {
+					cur = cur[uint(1):]
+				} else {
+					if ((c < u8(194)) || (c > u8(244))) {
+						return uint(0)
+					}
+					n: uint = uint(2)
+					lo: u8 = u8(128)
+					hi: u8 = u8(191)
+					if (c > u8(223)) {
+						n = uint(3)
+						if (c == u8(224)) {
+							lo = u8(160)
+						}
+						if (c == u8(237)) {
+							hi = u8(159)
+						}
+						if (c > u8(239)) {
+							n = uint(4)
+							if (c == u8(240)) {
+								lo = u8(144)
+							}
+							if (c == u8(244)) {
+								hi = u8(143)
+							}
+						}
+					}
+					if (uint(intrinsics.ptr_sub((^u8)(end), (^u8)(cur))) < n) {
+						return uint(0)
+					}
+					c1: u8 = cur[uint(1):][0]
+					if ((c1 < lo) || (c1 > hi)) {
+						return uint(0)
+					}
+					if (n > uint(2)) {
+						if ((cur[uint(2):][0] & u8(192)) != u8(128)) {
+							return uint(0)
+						}
+						if (n > uint(3)) {
+							if ((cur[uint(3):][0] & u8(192)) != u8(128)) {
+								return uint(0)
+							}
+						}
+					}
+					cur = cur[n:]
+				}
+			}
+		}
+		return uint(1)
+	}
+
+	// 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0
+	nvol_utf8_valid :: #force_inline proc "contextless" (p: [^]u8, len_: uint) -> uint { return nvol_utf8_valid_neon(p, len_) }
 
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {

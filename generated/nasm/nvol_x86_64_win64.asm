@@ -48,6 +48,26 @@ align 32, db 0
 NVOL_K19: db 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
 align 32, db 0
 NVOL_K20: db 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
+align 32, db 0
+NVOL_K21: db 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+align 32, db 0
+NVOL_K22: db 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+align 32, db 0
+NVOL_K23: db 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+align 32, db 0
+NVOL_K24: db 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+align 32, db 0
+NVOL_K25: db 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
+align 32, db 0
+NVOL_K26: db 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73, 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+align 32, db 0
+NVOL_K27: db 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203, 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+align 32, db 0
+NVOL_K28: db 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+align 32, db 0
+NVOL_K29: db 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+align 32, db 0
+NVOL_K30: db 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
 align 64, db 0
 nvol_tbl_rank:
     db 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
@@ -135,6 +155,10 @@ align 8, db 0
 global nvol_json_index_raw_ptr
 nvol_json_index_raw_ptr:
     dq nvol_json_index_raw_resolve
+align 8, db 0
+global nvol_utf8_valid_ptr
+nvol_utf8_valid_ptr:
+    dq nvol_utf8_valid_resolve
 section .drectve info
     db "-export:nvol_memchr_raw "
     db "-export:nvol_memchr "
@@ -168,6 +192,7 @@ section .drectve info
     db "-export:nvol_find_byteset_pair_raw "
     db "-export:nvol_find_byteset_pair_mask_raw "
     db "-export:nvol_json_index_raw "
+    db "-export:nvol_utf8_valid "
 section .text align=64
 
 global nvol_memchr_scalar
@@ -60155,6 +60180,818 @@ nvol_json_index_raw_resolve:
     jmp qword [rel nvol_json_index_raw_ptr]
 .unwind_end:
 
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_utf8_valid_scalar
+nvol_utf8_valid_scalar:
+    lea rdx, [rcx + rdx]
+    cmp rcx, rdx
+    jae strict short .L3
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L2:
+    mov rax, rdx
+    sub rax, rcx
+    cmp rax, 8
+    jb strict short .L5
+    mov rax, qword [rcx]
+    mov r8, 9259542123273814144
+    and rax, r8
+    jne strict short .L5
+    db 0x66, 0x90
+.L4:
+    lea rcx, [rcx + 8]
+    mov rax, rdx
+    sub rax, rcx
+    cmp rax, 8
+    jb strict short .L6
+    mov rax, qword [rcx]
+    mov r8, 9259542123273814144
+    and rax, r8
+    je strict short .L4
+.L6:
+.L5:
+    cmp rcx, rdx
+    jb strict short .Lrare3
+.L7:
+    cmp rcx, rdx
+    jb strict short .L2
+.L3:
+    mov eax, 1
+.L1:
+    ret
+.L27:
+    xor eax, eax
+    ret
+.L34:
+    xor eax, eax
+    ret
+.L38:
+    xor eax, eax
+    ret
+.Lrare1:
+    movzx eax, byte [rcx + 3]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L38
+.L37:
+    jmp strict short .L35
+.Lrare2:
+    movzx eax, byte [rcx + 2]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L34
+.L33:
+    cmp r9, 3
+    ja strict short .Lrare1
+.L35:
+    jmp strict near .L31
+.Lrare3:
+    movzx r8d, byte [rcx]
+    cmp r8d, 128
+    jae strict short .L9
+    lea rcx, [rcx + 1]
+    jmp strict near .L10
+.L9:
+    cmp r8d, 194
+    jb strict short .L13
+    cmp r8d, 244
+    jbe strict short .L11
+.L13:
+.L12:
+    xor eax, eax
+    ret
+.L11:
+    mov r9d, 2
+    mov r10d, 128
+    mov r11d, 191
+    cmp r8d, 223
+    jbe strict short .L14
+    mov r9d, 3
+    cmp r8d, 224
+    jne strict short .L16
+    mov r10d, 160
+.L16:
+    cmp r8d, 237
+    jne strict short .L18
+    mov r11d, 159
+.L18:
+    cmp r8d, 239
+    jbe strict short .L20
+    mov r9d, 4
+    cmp r8d, 240
+    jne strict short .L22
+    mov r10d, 144
+.L22:
+    cmp r8d, 244
+    jne strict short .L24
+    mov r11d, 143
+.L24:
+.L20:
+.L14:
+    mov rax, rdx
+    sub rax, rcx
+    cmp rax, r9
+    jb strict near .L27
+.L26:
+    movzx eax, byte [rcx + 1]
+    cmp eax, r10d
+    jb strict short .L30
+    cmp eax, r11d
+    jbe strict short .L28
+.L30:
+.L29:
+    xor eax, eax
+    ret
+.L28:
+    cmp r9, 2
+    ja strict near .Lrare2
+.L31:
+    lea rcx, [rcx + r9]
+.L10:
+    jmp strict near .L7
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+global nvol_utf8_valid_ssse3
+nvol_utf8_valid_ssse3:
+    sub rsp, 168
+    movdqu [rsp], xmm6
+    movdqu [rsp + 16], xmm7
+    movdqu [rsp + 32], xmm8
+    movdqu [rsp + 48], xmm9
+    movdqu [rsp + 64], xmm10
+    movdqu [rsp + 80], xmm11
+    movdqu [rsp + 96], xmm12
+    movdqu [rsp + 112], xmm13
+    movdqu [rsp + 128], xmm14
+    movdqu [rsp + 144], xmm15
+    lea r8, [rcx + rdx]
+    mov r9, rcx
+    movdqa xmm0, [rel NVOL_K21]
+    movdqa xmm1, [rel NVOL_K22]
+    movdqa xmm2, [rel NVOL_K23]
+    movdqa xmm3, [rel NVOL_K1]
+    movdqa xmm4, [rel NVOL_K24]
+    movdqa xmm5, [rel NVOL_K25]
+    movdqa xmm6, [rel NVOL_K6]
+    shr rdx, 6
+    shl rdx, 6
+    lea rax, [rcx + rdx]
+    pxor xmm7, xmm7
+    pxor xmm8, xmm8
+    xor edx, edx
+    xor r10d, r10d
+    cmp r9, rax
+    jae strict near .L3
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+.L2:
+    movdqu xmm9, [r9]
+    movdqu xmm10, [r9 + 16]
+    movdqu xmm11, [r9 + 32]
+    movdqu xmm12, [r9 + 48]
+    movdqa xmm13, xmm9
+    por xmm13, xmm10
+    movdqa xmm14, xmm11
+    por xmm14, xmm12
+    por xmm13, xmm14
+    pmovmskb r11d, xmm13
+    test r11d, r11d
+    jne strict short .L4
+    or r10, rdx
+    jmp strict near .L5
+.L4:
+    movdqa xmm13, xmm9
+    palignr xmm13, xmm7, 15
+    movdqa xmm14, xmm13
+    psrlw xmm14, 4
+    pand xmm14, [rel NVOL_K1]
+    movdqa xmm15, xmm0
+    pshufb xmm15, xmm14
+    pand xmm13, xmm3
+    movdqa xmm14, xmm1
+    pshufb xmm14, xmm13
+    pand xmm15, xmm14
+    movdqa xmm13, xmm9
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqa xmm14, xmm2
+    pshufb xmm14, xmm13
+    pand xmm15, xmm14
+    movdqa xmm13, xmm9
+    palignr xmm13, xmm7, 14
+    psubusb xmm13, xmm4
+    movdqa xmm14, xmm9
+    palignr xmm14, xmm7, 13
+    psubusb xmm14, xmm5
+    por xmm13, xmm14
+    pand xmm13, xmm6
+    pxor xmm13, xmm15
+    por xmm8, xmm13
+    movdqa xmm7, xmm10
+    palignr xmm7, xmm9, 15
+    movdqa xmm13, xmm7
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqa xmm14, xmm0
+    pshufb xmm14, xmm13
+    pand xmm7, xmm3
+    movdqa xmm13, xmm1
+    pshufb xmm13, xmm7
+    pand xmm14, xmm13
+    movdqa xmm7, xmm10
+    psrlw xmm7, 4
+    pand xmm7, [rel NVOL_K1]
+    movdqa xmm13, xmm2
+    pshufb xmm13, xmm7
+    pand xmm14, xmm13
+    movdqa xmm7, xmm10
+    palignr xmm7, xmm9, 14
+    psubusb xmm7, xmm4
+    movdqa xmm13, xmm10
+    palignr xmm13, xmm9, 13
+    psubusb xmm13, xmm5
+    por xmm7, xmm13
+    pand xmm7, xmm6
+    pxor xmm7, xmm14
+    por xmm8, xmm7
+    movdqa xmm7, xmm11
+    palignr xmm7, xmm10, 15
+    movdqa xmm9, xmm7
+    psrlw xmm9, 4
+    pand xmm9, [rel NVOL_K1]
+    movdqa xmm13, xmm0
+    pshufb xmm13, xmm9
+    pand xmm7, xmm3
+    movdqa xmm9, xmm1
+    pshufb xmm9, xmm7
+    pand xmm13, xmm9
+    movdqa xmm7, xmm11
+    psrlw xmm7, 4
+    pand xmm7, [rel NVOL_K1]
+    movdqa xmm9, xmm2
+    pshufb xmm9, xmm7
+    pand xmm13, xmm9
+    movdqa xmm7, xmm11
+    palignr xmm7, xmm10, 14
+    psubusb xmm7, xmm4
+    movdqa xmm9, xmm11
+    palignr xmm9, xmm10, 13
+    psubusb xmm9, xmm5
+    por xmm7, xmm9
+    pand xmm7, xmm6
+    pxor xmm7, xmm13
+    por xmm8, xmm7
+    movdqa xmm7, xmm12
+    palignr xmm7, xmm11, 15
+    movdqa xmm9, xmm7
+    psrlw xmm9, 4
+    pand xmm9, [rel NVOL_K1]
+    movdqa xmm10, xmm0
+    pshufb xmm10, xmm9
+    pand xmm7, xmm3
+    movdqa xmm9, xmm1
+    pshufb xmm9, xmm7
+    pand xmm10, xmm9
+    movdqa xmm7, xmm12
+    psrlw xmm7, 4
+    pand xmm7, [rel NVOL_K1]
+    movdqa xmm9, xmm2
+    pshufb xmm9, xmm7
+    pand xmm10, xmm9
+    movdqa xmm7, xmm12
+    palignr xmm7, xmm11, 14
+    psubusb xmm7, xmm4
+    movdqa xmm9, xmm12
+    palignr xmm9, xmm11, 13
+    psubusb xmm9, xmm5
+    por xmm7, xmm9
+    pand xmm7, xmm6
+    pxor xmm7, xmm10
+    por xmm8, xmm7
+    xor edx, edx
+    movzx r11d, byte [r9 + 63]
+    cmp r11d, 191
+    ja strict short .L7
+    movzx r11d, byte [r9 + 62]
+    cmp r11d, 223
+    ja strict short .L7
+    movzx r11d, byte [r9 + 61]
+    cmp r11d, 239
+    jbe strict short .L6
+.L7:
+    mov edx, 1
+.L6:
+.L5:
+    movdqa xmm7, xmm12
+    add r9, 64
+    cmp r9, rax
+    jb strict near .L2
+.L3:
+    test r10, r10
+    jne strict short .L10
+    pxor xmm0, xmm0
+    pcmpeqb xmm8, xmm0
+    pmovmskb eax, xmm8
+    cmp eax, 65535
+    je strict short .L8
+.L10:
+    xor eax, eax
+    jmp strict near .L1
+.L8:
+    cmp r9, rcx
+    jbe strict short .L11
+    movzx eax, byte [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L13
+    lea r9, [r9 - 1]
+    movzx eax, byte [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L15
+    lea r9, [r9 - 1]
+    movzx eax, byte [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L17
+    lea r9, [r9 - 1]
+.L17:
+.L15:
+.L13:
+    movzx eax, byte [r9 - 1]
+    cmp eax, 191
+    jbe strict short .L19
+    lea r9, [r9 - 1]
+.L19:
+.L11:
+    cmp r9, r8
+    jae strict short .L22
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+.L21:
+    mov rax, r8
+    sub rax, r9
+    cmp rax, 8
+    jb strict short .L24
+    mov rax, qword [r9]
+    mov rcx, 9259542123273814144
+    and rax, rcx
+    jne strict short .L24
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+.L23:
+    lea r9, [r9 + 8]
+    mov rax, r8
+    sub rax, r9
+    cmp rax, 8
+    jb strict short .L25
+    mov rax, qword [r9]
+    mov rcx, 9259542123273814144
+    and rax, rcx
+    je strict short .L23
+.L25:
+.L24:
+    cmp r9, r8
+    jb strict near .Lrare3
+.L26:
+    cmp r9, r8
+    jb strict short .L21
+.L22:
+    mov eax, 1
+.L1:
+    movdqu xmm6, [rsp]
+    movdqu xmm7, [rsp + 16]
+    movdqu xmm8, [rsp + 32]
+    movdqu xmm9, [rsp + 48]
+    movdqu xmm10, [rsp + 64]
+    movdqu xmm11, [rsp + 80]
+    movdqu xmm12, [rsp + 96]
+    movdqu xmm13, [rsp + 112]
+    movdqu xmm14, [rsp + 128]
+    movdqu xmm15, [rsp + 144]
+    add rsp, 168
+    ret
+.L46:
+    xor eax, eax
+    jmp strict short .L1
+.L53:
+    xor eax, eax
+    jmp strict short .L1
+.L57:
+    xor eax, eax
+    jmp strict short .L1
+.Lrare1:
+    movzx eax, byte [r9 + 3]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L57
+.L56:
+    jmp strict short .L54
+.Lrare2:
+    movzx eax, byte [r9 + 2]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L53
+.L52:
+    cmp rdx, 3
+    ja strict short .Lrare1
+.L54:
+    jmp strict near .L50
+.Lrare3:
+    movzx ecx, byte [r9]
+    cmp ecx, 128
+    jae strict short .L28
+    lea r9, [r9 + 1]
+    jmp strict near .L29
+.L28:
+    cmp ecx, 194
+    jb strict short .L32
+    cmp ecx, 244
+    jbe strict short .L30
+.L32:
+.L31:
+    xor eax, eax
+    jmp strict near .L1
+.L30:
+    mov edx, 2
+    mov r10d, 128
+    mov r11d, 191
+    cmp ecx, 223
+    jbe strict short .L33
+    mov edx, 3
+    cmp ecx, 224
+    jne strict short .L35
+    mov r10d, 160
+.L35:
+    cmp ecx, 237
+    jne strict short .L37
+    mov r11d, 159
+.L37:
+    cmp ecx, 239
+    jbe strict short .L39
+    mov edx, 4
+    cmp ecx, 240
+    jne strict short .L41
+    mov r10d, 144
+.L41:
+    cmp ecx, 244
+    jne strict short .L43
+    mov r11d, 143
+.L43:
+.L39:
+.L33:
+    mov rax, r8
+    sub rax, r9
+    cmp rax, rdx
+    jb strict near .L46
+.L45:
+    movzx eax, byte [r9 + 1]
+    cmp eax, r10d
+    jb strict short .L49
+    cmp eax, r11d
+    jbe strict short .L47
+.L49:
+.L48:
+    xor eax, eax
+    jmp strict near .L1
+.L47:
+    cmp rdx, 2
+    ja strict near .Lrare2
+.L50:
+    lea r9, [r9 + rdx]
+.L29:
+    jmp strict near .L26
+.unwind_end:
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+global nvol_utf8_valid_avx2
+nvol_utf8_valid_avx2:
+    sub rsp, 120
+    vmovdqu [rsp], xmm6
+    vmovdqu [rsp + 16], xmm7
+    vmovdqu [rsp + 32], xmm8
+    vmovdqu [rsp + 48], xmm9
+    vmovdqu [rsp + 64], xmm10
+    vmovdqu [rsp + 80], xmm11
+    vmovdqu [rsp + 96], xmm12
+    lea r8, [rcx + rdx]
+    mov r9, rcx
+    vmovdqa ymm0, [rel NVOL_K26]
+    vmovdqa ymm1, [rel NVOL_K27]
+    vmovdqa ymm2, [rel NVOL_K28]
+    vmovdqa ymm3, [rel NVOL_K3]
+    vmovdqa ymm4, [rel NVOL_K29]
+    vmovdqa ymm5, [rel NVOL_K30]
+    vmovdqa ymm6, [rel NVOL_K8]
+    shr rdx, 6
+    shl rdx, 6
+    lea rax, [rcx + rdx]
+    vpxor xmm7, xmm7, xmm7
+    vpxor xmm8, xmm8, xmm8
+    xor edx, edx
+    xor r10d, r10d
+    cmp r9, rax
+    jae strict near .L3
+    db 0x90
+.L2:
+    vmovdqu ymm9, [r9]
+    vmovdqu ymm10, [r9 + 32]
+    vpor ymm11, ymm9, ymm10
+    vpmovmskb r11d, ymm11
+    test r11d, r11d
+    jne strict short .L4
+    or r10, rdx
+    jmp strict near .L5
+.L4:
+    vperm2i128 ymm11, ymm7, ymm9, 33
+    vpalignr ymm11, ymm9, ymm11, 15
+    vpsrlw ymm12, ymm11, 4
+    vpand ymm12, ymm12, [rel NVOL_K3]
+    vpshufb ymm12, ymm0, ymm12
+    vpand ymm11, ymm11, ymm3
+    vpshufb ymm11, ymm1, ymm11
+    vpand ymm11, ymm12, ymm11
+    vpsrlw ymm12, ymm9, 4
+    vpand ymm12, ymm12, [rel NVOL_K3]
+    vpshufb ymm12, ymm2, ymm12
+    vpand ymm11, ymm11, ymm12
+    vperm2i128 ymm12, ymm7, ymm9, 33
+    vpalignr ymm12, ymm9, ymm12, 14
+    vpsubusb ymm12, ymm12, ymm4
+    vperm2i128 ymm7, ymm7, ymm9, 33
+    vpalignr ymm7, ymm9, ymm7, 13
+    vpsubusb ymm7, ymm7, ymm5
+    vpor ymm7, ymm12, ymm7
+    vpand ymm7, ymm7, ymm6
+    vpxor ymm7, ymm7, ymm11
+    vpor ymm8, ymm8, ymm7
+    vperm2i128 ymm7, ymm9, ymm10, 33
+    vpalignr ymm7, ymm10, ymm7, 15
+    vpsrlw ymm11, ymm7, 4
+    vpand ymm11, ymm11, [rel NVOL_K3]
+    vpshufb ymm11, ymm0, ymm11
+    vpand ymm7, ymm7, ymm3
+    vpshufb ymm7, ymm1, ymm7
+    vpand ymm7, ymm11, ymm7
+    vpsrlw ymm11, ymm10, 4
+    vpand ymm11, ymm11, [rel NVOL_K3]
+    vpshufb ymm11, ymm2, ymm11
+    vpand ymm7, ymm7, ymm11
+    vperm2i128 ymm11, ymm9, ymm10, 33
+    vpalignr ymm11, ymm10, ymm11, 14
+    vpsubusb ymm11, ymm11, ymm4
+    vperm2i128 ymm9, ymm9, ymm10, 33
+    vpalignr ymm9, ymm10, ymm9, 13
+    vpsubusb ymm9, ymm9, ymm5
+    vpor ymm9, ymm11, ymm9
+    vpand ymm9, ymm9, ymm6
+    vpxor ymm7, ymm9, ymm7
+    vpor ymm8, ymm8, ymm7
+    xor edx, edx
+    movzx r11d, byte [r9 + 63]
+    cmp r11d, 191
+    ja strict short .L7
+    movzx r11d, byte [r9 + 62]
+    cmp r11d, 223
+    ja strict short .L7
+    movzx r11d, byte [r9 + 61]
+    cmp r11d, 239
+    jbe strict short .L6
+.L7:
+    mov edx, 1
+.L6:
+.L5:
+    db 0xc5, 0x7d, 0x7f, 0xd7    ; vmovdqa ymm7, ymm10
+    add r9, 64
+    cmp r9, rax
+    jb strict near .L2
+.L3:
+    test r10, r10
+    jne strict short .L10
+    vptest ymm8, ymm8
+    je strict short .L8
+.L10:
+    xor eax, eax
+    jmp strict near .L1
+.L8:
+    cmp r9, rcx
+    jbe strict short .L11
+    movzx eax, byte [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L13
+    lea r9, [r9 - 1]
+    movzx eax, byte [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L15
+    lea r9, [r9 - 1]
+    movzx eax, byte [r9 - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L17
+    lea r9, [r9 - 1]
+.L17:
+.L15:
+.L13:
+    movzx eax, byte [r9 - 1]
+    cmp eax, 191
+    jbe strict short .L19
+    lea r9, [r9 - 1]
+.L19:
+.L11:
+    cmp r9, r8
+    jae strict short .L22
+    db 0xf, 0x1f, 0x0
+.L21:
+    mov rax, r8
+    sub rax, r9
+    cmp rax, 8
+    jb strict short .L24
+    mov rax, qword [r9]
+    mov rcx, 9259542123273814144
+    and rax, rcx
+    jne strict short .L24
+    db 0x66, 0x90
+.L23:
+    lea r9, [r9 + 8]
+    mov rax, r8
+    sub rax, r9
+    cmp rax, 8
+    jb strict short .L25
+    mov rax, qword [r9]
+    mov rcx, 9259542123273814144
+    and rax, rcx
+    je strict short .L23
+.L25:
+.L24:
+    cmp r9, r8
+    jb strict short .Lrare3
+.L26:
+    cmp r9, r8
+    jb strict short .L21
+.L22:
+    mov eax, 1
+.L1:
+    vzeroupper
+    vmovdqu xmm6, [rsp]
+    vmovdqu xmm7, [rsp + 16]
+    vmovdqu xmm8, [rsp + 32]
+    vmovdqu xmm9, [rsp + 48]
+    vmovdqu xmm10, [rsp + 64]
+    vmovdqu xmm11, [rsp + 80]
+    vmovdqu xmm12, [rsp + 96]
+    add rsp, 120
+    ret
+.L46:
+    xor eax, eax
+    jmp strict short .L1
+.L53:
+    xor eax, eax
+    jmp strict short .L1
+.L57:
+    xor eax, eax
+    jmp strict short .L1
+.Lrare1:
+    movzx eax, byte [r9 + 3]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L57
+.L56:
+    jmp strict short .L54
+.Lrare2:
+    movzx eax, byte [r9 + 2]
+    and rax, 192
+    cmp eax, 128
+    jne strict short .L53
+.L52:
+    cmp rdx, 3
+    ja strict short .Lrare1
+.L54:
+    jmp strict near .L50
+.Lrare3:
+    movzx ecx, byte [r9]
+    cmp ecx, 128
+    jae strict short .L28
+    lea r9, [r9 + 1]
+    jmp strict near .L29
+.L28:
+    cmp ecx, 194
+    jb strict short .L32
+    cmp ecx, 244
+    jbe strict short .L30
+.L32:
+.L31:
+    xor eax, eax
+    jmp strict near .L1
+.L30:
+    mov edx, 2
+    mov r10d, 128
+    mov r11d, 191
+    cmp ecx, 223
+    jbe strict short .L33
+    mov edx, 3
+    cmp ecx, 224
+    jne strict short .L35
+    mov r10d, 160
+.L35:
+    cmp ecx, 237
+    jne strict short .L37
+    mov r11d, 159
+.L37:
+    cmp ecx, 239
+    jbe strict short .L39
+    mov edx, 4
+    cmp ecx, 240
+    jne strict short .L41
+    mov r10d, 144
+.L41:
+    cmp ecx, 244
+    jne strict short .L43
+    mov r11d, 143
+.L43:
+.L39:
+.L33:
+    mov rax, r8
+    sub rax, r9
+    cmp rax, rdx
+    jb strict near .L46
+.L45:
+    movzx eax, byte [r9 + 1]
+    cmp eax, r10d
+    jb strict short .L49
+    cmp eax, r11d
+    jbe strict short .L47
+.L49:
+.L48:
+    xor eax, eax
+    jmp strict near .L1
+.L47:
+    cmp rdx, 2
+    ja strict near .Lrare2
+.L50:
+    lea r9, [r9 + rdx]
+.L29:
+    jmp strict near .L26
+.unwind_end:
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_utf8_valid
+nvol_utf8_valid:
+    jmp qword [rel nvol_utf8_valid_ptr]
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_utf8_valid_resolve
+nvol_utf8_valid_resolve:
+    push rcx
+    push rdx
+    push r8
+    push r9
+    sub rsp, 40
+    call nvol_cpu_avx2
+    test eax, eax
+    jne strict short .T0
+    call nvol_cpu_ssse3
+    test eax, eax
+    jne strict short .T1
+    lea rax, [rel nvol_utf8_valid_scalar]
+    jmp strict short .done
+.T0:
+    lea rax, [rel nvol_utf8_valid_avx2]
+    jmp strict short .done
+.T1:
+    lea rax, [rel nvol_utf8_valid_ssse3]
+    jmp strict short .done
+.done:
+    mov qword [rel nvol_utf8_valid_ptr], rax
+    add rsp, 40
+    pop r9
+    pop r8
+    pop rdx
+    pop rcx
+    jmp qword [rel nvol_utf8_valid_ptr]
+.unwind_end:
+
 align 8
 nvol_fntbl_teddy:
     dd nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy
@@ -60681,6 +61518,15 @@ nvol_unwind_nvol_json_index_avx2:
 align 4, db 0
 nvol_unwind_nvol_json_index_raw_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
+align 4, db 0
+nvol_unwind_nvol_utf8_valid_ssse3:
+    db 1, 80, 22, 0, 80, 248, 9, 0, 70, 232, 8, 0, 60, 216, 7, 0, 53, 200, 6, 0, 46, 184, 5, 0, 39, 168, 4, 0, 32, 152, 3, 0, 25, 136, 2, 0, 18, 120, 1, 0, 12, 104, 0, 0, 7, 1, 21, 0
+align 4, db 0
+nvol_unwind_nvol_utf8_valid_avx2:
+    db 1, 45, 15, 0, 45, 200, 6, 0, 39, 184, 5, 0, 33, 168, 4, 0, 27, 152, 3, 0, 21, 136, 2, 0, 15, 120, 1, 0, 9, 104, 0, 0, 4, 226, 0, 0
+align 4, db 0
+nvol_unwind_nvol_utf8_valid_resolve:
+    db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
 
 section .pdata rdata align=4
     dd nvol_memchr_sse2 wrt ..imagebase, nvol_memchr_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr_sse2 wrt ..imagebase
@@ -60853,3 +61699,6 @@ section .pdata rdata align=4
     dd nvol_json_index_ssse3 wrt ..imagebase, nvol_json_index_ssse3.unwind_end wrt ..imagebase, nvol_unwind_nvol_json_index_ssse3 wrt ..imagebase
     dd nvol_json_index_avx2 wrt ..imagebase, nvol_json_index_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_json_index_avx2 wrt ..imagebase
     dd nvol_json_index_raw_resolve wrt ..imagebase, nvol_json_index_raw_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_json_index_raw_resolve wrt ..imagebase
+    dd nvol_utf8_valid_ssse3 wrt ..imagebase, nvol_utf8_valid_ssse3.unwind_end wrt ..imagebase, nvol_unwind_nvol_utf8_valid_ssse3 wrt ..imagebase
+    dd nvol_utf8_valid_avx2 wrt ..imagebase, nvol_utf8_valid_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_utf8_valid_avx2 wrt ..imagebase
+    dd nvol_utf8_valid_resolve wrt ..imagebase, nvol_utf8_valid_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_utf8_valid_resolve wrt ..imagebase

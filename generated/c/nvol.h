@@ -84,6 +84,8 @@ NVOL_API const uint8_t * nvol_find_byteset_pair_raw(const uint8_t *st, const uin
 NVOL_API const uint8_t * nvol_find_byteset_pair_mask_raw(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out);
 /* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
 NVOL_API size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out);
+/* 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0 */
+NVOL_API size_t nvol_utf8_valid(const uint8_t *p, size_t len_);
 
 /* Iterator over match positions of 1..3 needles (memchr_iter & co.).
  *   nvol_memchr_iter it; nvol_memchr_iter_init(&it, 2, 'a', 'b', 0, hay, len);

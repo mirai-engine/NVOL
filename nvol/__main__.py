@@ -224,6 +224,66 @@ JSON_SNIPPETS = [b'{"a": 1}', b'[1, 2.5e-3, true, false, null]', b'"x\\"y"', b'"
                  b'"a\x01b"', b'  \t\r\n', b'"\\u00e9"', b'tru e', b'"\xc3\xa9"']
 
 
+# code points near every boundary of UTF-8's validity rules
+UTF8_POINTS = [0x00, 0x24, 0x7F, 0x80, 0xA9, 0x7FF, 0x800, 0x20AC, 0xD7FF, 0xE000, 0xFFFD, 0xFFFF,
+               0x10000, 0x1F600, 0x10FFFF]
+# invalid sequences: overlong 2/3/4-byte, surrogates, above U+10FFFF, lone and extra
+# continuations, truncated leads, bytes never used
+UTF8_BAD = [b"\xc0\x80", b"\xc1\xbf", b"\xe0\x80\x80", b"\xe0\x9f\xbf", b"\xed\xa0\x80",
+            b"\xed\xbf\xbf", b"\xf0\x80\x80\x80", b"\xf0\x8f\xbf\xbf", b"\xf4\x90\x80\x80",
+            b"\xf5\x80\x80\x80", b"\xf8\x88\x80\x80\x80", b"\x80", b"\xbf", b"\xc3\xa9\xa9",
+            b"\xc3", b"\xe2\x82", b"\xf0\x9f\x98", b"\xfe", b"\xff", b"\xe2\x28\xa1"]
+
+
+def utf8_cases(rng, n):
+    """Byte strings around 64-byte boundaries: valid text, then (half the time) one break."""
+    for _ in range(n):
+        pts = []
+        for _ in range(rng.randrange(0, 70)):
+            r = rng.random()
+            cp = (rng.choice(UTF8_POINTS) if r < 0.3 else rng.randrange(0x80) if r < 0.6
+                  else rng.choice([rng.randrange(0x80, 0x800), rng.randrange(0x800, 0xD800),
+                                   rng.randrange(0xE000, 0x10000), rng.randrange(0x10000, 0x110000)]))
+            pts.append(chr(cp))
+        data = bytearray(b"a" * rng.randrange(70) + "".join(pts).encode("utf-8", "surrogatepass"))
+        r = rng.random()
+        if r < 0.3:
+            at = rng.randrange(len(data) + 1)
+            data[at:at] = rng.choice(UTF8_BAD)
+        elif r < 0.4 and data:
+            data[rng.randrange(len(data))] = rng.randrange(256)
+        elif r < 0.5 and data:
+            del data[rng.randrange(len(data)):]
+            data += rng.choice(UTF8_BAD)[:rng.randrange(1, 3)]
+        elif r < 0.6:
+            # a code point cut short at the end of a block, then whole blocks of ASCII
+            # (utf8_checker's prev_incomplete): the cut lands on bytes 61-63
+            data = bytearray(b"a" * (64 * rng.randrange(1, 3) - rng.randrange(1, 4)))
+            data[-1:] = bytes(rng.choice([[0xC3], [0xE2], [0xE2, 0x82], [0xF0], [0xF0, 0x9F, 0x98]]))
+            data += b"b" * rng.randrange(64, 200)
+        yield bytes(data)
+
+
+def check_utf8(mod, cases: int, seed: int) -> int:
+    rng = random.Random(seed)
+    bad = total = 0
+    arch = getattr(mod, "arch", "x86_64")
+    cpus = ([{"avx2": True, "ssse3": True}, {"avx2": False, "ssse3": True},
+             {"avx2": False, "ssse3": False}] if arch == "x86_64" else [{}])
+    for data in utf8_cases(rng, cases):
+        want = oracle.utf8_valid(data)
+        for cpu in cpus:
+            hb = 0x10000 + rng.randrange(64)
+            it = Interpreter(mod, Memory(data, hb), cpu)
+            got = it.call("nvol_utf8_valid", [hb, len(data)])
+            total += 1
+            if got != want:
+                bad += 1
+                print(f"MISMATCH utf8 cpu={cpu} data={data!r} got={got} want={want}")
+    print(f"[{arch}] utf8 interpreter vs oracle: {total - bad}/{total} ok")
+    return 1 if bad else 0
+
+
 def json_cases(rng, n):
     """(blocks, splits, state): 1-6 blocks of JSON-like bytes, the block counts of the calls
     that cover them (the state carried between calls), and the starting state."""
@@ -440,6 +500,7 @@ def check(mod, cases: int, seed: int) -> int:
     rc |= check_teddy(mod, cases * 4, seed) if any(k == "teddy" for k, _, _ in mod.api) else 0
     rc |= check_byteset(mod, cases * 4, seed) if any(f.name == "nvol_find_byteset_raw" for f in mod.functions) else 0
     rc |= check_json(mod, cases, seed) if any(f.name == "nvol_json_index_raw" for f in mod.functions) else 0
+    rc |= check_utf8(mod, cases, seed) if any(f.name == "nvol_utf8_valid" for f in mod.functions) else 0
     return 1 if bad or rc else 0
 
 

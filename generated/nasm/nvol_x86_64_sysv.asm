@@ -48,6 +48,26 @@ align 32, db 0
 NVOL_K19: db 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
 align 32, db 0
 NVOL_K20: db 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
+align 32, db 0
+NVOL_K21: db 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+align 32, db 0
+NVOL_K22: db 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+align 32, db 0
+NVOL_K23: db 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+align 32, db 0
+NVOL_K24: db 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+align 32, db 0
+NVOL_K25: db 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
+align 32, db 0
+NVOL_K26: db 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73, 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+align 32, db 0
+NVOL_K27: db 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203, 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+align 32, db 0
+NVOL_K28: db 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+align 32, db 0
+NVOL_K29: db 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+align 32, db 0
+NVOL_K30: db 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
 align 64, db 0
 nvol_tbl_rank:
     db 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
@@ -152,6 +172,11 @@ global nvol_json_index_raw_ptr:data hidden
 nvol_json_index_raw_ptr:
 L.nvol_json_index_raw_ptr:
     dq L.nvol_json_index_raw_resolve
+align 8, db 0
+global nvol_utf8_valid_ptr:data hidden
+nvol_utf8_valid_ptr:
+L.nvol_utf8_valid_ptr:
+    dq L.nvol_utf8_valid_resolve
 section .note.GNU-stack noalloc noexec nowrite progbits
 section .text align=64
 
@@ -59226,6 +59251,789 @@ L.nvol_json_index_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_json_index_raw_ptr]
 
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+global nvol_utf8_valid_scalar:function hidden 343
+nvol_utf8_valid_scalar:
+L.nvol_utf8_valid_scalar:
+    lea rcx, [rdi + rsi]
+    cmp rdi, rcx
+    jae strict short L.nvol_utf8_valid_scalar + 92
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L2:
+    mov rax, rcx
+    sub rax, rdi
+    cmp rax, 8
+    jb strict short L.nvol_utf8_valid_scalar + 82
+    mov rax, qword [rdi]
+    mov rdx, 9259542123273814144
+    and rax, rdx
+    jne strict short L.nvol_utf8_valid_scalar + 82
+    db 0x66, 0x90
+; .L4:
+    lea rdi, [rdi + 8]
+    mov rax, rcx
+    sub rax, rdi
+    cmp rax, 8
+    jb strict short L.nvol_utf8_valid_scalar + 82
+    mov rax, qword [rdi]
+    mov rdx, 9259542123273814144
+    and rax, rdx
+    je strict short L.nvol_utf8_valid_scalar + 48
+; .L6:
+; .L5:
+    cmp rdi, rcx
+    jb strict short L.nvol_utf8_valid_scalar + 154
+; .L7:
+    cmp rdi, rcx
+    jb strict short L.nvol_utf8_valid_scalar + 16
+; .L3:
+    mov eax, 1
+; .L1:
+    ret
+; .L27:
+    xor eax, eax
+    ret
+; .L34:
+    xor eax, eax
+    ret
+; .L38:
+    xor eax, eax
+    ret
+; .Lrare1:
+    movzx eax, byte [rdi + 3]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_scalar + 104
+; .L37:
+    jmp strict short L.nvol_utf8_valid_scalar + 149
+; .Lrare2:
+    movzx eax, byte [rdi + 2]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_scalar + 101
+; .L33:
+    cmp rsi, 3
+    ja strict short L.nvol_utf8_valid_scalar + 107
+; .L35:
+    jmp strict near L.nvol_utf8_valid_scalar + 334
+; .Lrare3:
+    movzx edx, byte [rdi]
+    cmp edx, 128
+    jae strict short L.nvol_utf8_valid_scalar + 174
+    lea rdi, [rdi + 1]
+    jmp strict near L.nvol_utf8_valid_scalar + 338
+; .L9:
+    cmp edx, 194
+    jb strict short L.nvol_utf8_valid_scalar + 190
+    cmp edx, 244
+    jbe strict short L.nvol_utf8_valid_scalar + 193
+; .L13:
+; .L12:
+    xor eax, eax
+    ret
+; .L11:
+    mov esi, 2
+    mov r8d, 128
+    mov r9d, 191
+    cmp edx, 223
+    jbe strict short L.nvol_utf8_valid_scalar + 292
+    mov esi, 3
+    cmp edx, 224
+    jne strict short L.nvol_utf8_valid_scalar + 237
+    mov r8d, 160
+; .L16:
+    cmp edx, 237
+    jne strict short L.nvol_utf8_valid_scalar + 251
+    mov r9d, 159
+; .L18:
+    cmp edx, 239
+    jbe strict short L.nvol_utf8_valid_scalar + 292
+    mov esi, 4
+    cmp edx, 240
+    jne strict short L.nvol_utf8_valid_scalar + 278
+    mov r8d, 144
+; .L22:
+    cmp edx, 244
+    jne strict short L.nvol_utf8_valid_scalar + 292
+    mov r9d, 143
+; .L24:
+; .L20:
+; .L14:
+    mov rax, rcx
+    sub rax, rdi
+    cmp rax, rsi
+    jb strict near L.nvol_utf8_valid_scalar + 98
+; .L26:
+    movzx eax, byte [rdi + 1]
+    cmp eax, r8d
+    jb strict short L.nvol_utf8_valid_scalar + 321
+    cmp eax, r9d
+    jbe strict short L.nvol_utf8_valid_scalar + 324
+; .L30:
+; .L29:
+    xor eax, eax
+    ret
+; .L28:
+    cmp rsi, 2
+    ja strict near L.nvol_utf8_valid_scalar + 126
+; .L31:
+    lea rdi, [rdi + rsi]
+; .L10:
+    jmp strict near L.nvol_utf8_valid_scalar + 87
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_utf8_valid_ssse3:function hidden 1287
+nvol_utf8_valid_ssse3:
+L.nvol_utf8_valid_ssse3:
+    lea rcx, [rdi + rsi]
+    mov rdx, rdi
+    movdqa xmm0, [rel NVOL_K21]
+    movdqa xmm1, [rel NVOL_K22]
+    movdqa xmm2, [rel NVOL_K23]
+    movdqa xmm3, [rel NVOL_K1]
+    movdqa xmm4, [rel NVOL_K24]
+    movdqa xmm5, [rel NVOL_K25]
+    movdqa xmm6, [rel NVOL_K6]
+    shr rsi, 6
+    shl rsi, 6
+    lea rax, [rdi + rsi]
+    pxor xmm7, xmm7
+    pxor xmm8, xmm8
+    xor esi, esi
+    xor r8d, r8d
+    cmp rdx, rax
+    jae strict near L.nvol_utf8_valid_ssse3 + 838
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L2:
+    movdqu xmm9, [rdx]
+    movdqu xmm10, [rdx + 16]
+    movdqu xmm11, [rdx + 32]
+    movdqu xmm12, [rdx + 48]
+    movdqa xmm13, xmm9
+    por xmm13, xmm10
+    movdqa xmm14, xmm11
+    por xmm14, xmm12
+    por xmm13, xmm14
+    pmovmskb r9d, xmm13
+    test r9d, r9d
+    jne strict short L.nvol_utf8_valid_ssse3 + 170
+    or r8, rsi
+    jmp strict near L.nvol_utf8_valid_ssse3 + 820
+; .L4:
+    movdqa xmm13, xmm9
+    palignr xmm13, xmm7, 15
+    movdqa xmm14, xmm13
+    psrlw xmm14, 4
+    pand xmm14, [rel NVOL_K1]
+    movdqa xmm15, xmm0
+    pshufb xmm15, xmm14
+    pand xmm13, xmm3
+    movdqa xmm14, xmm1
+    pshufb xmm14, xmm13
+    pand xmm15, xmm14
+    movdqa xmm13, xmm9
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqa xmm14, xmm2
+    pshufb xmm14, xmm13
+    pand xmm15, xmm14
+    movdqa xmm13, xmm9
+    palignr xmm13, xmm7, 14
+    psubusb xmm13, xmm4
+    movdqa xmm14, xmm9
+    palignr xmm14, xmm7, 13
+    psubusb xmm14, xmm5
+    por xmm13, xmm14
+    pand xmm13, xmm6
+    pxor xmm13, xmm15
+    por xmm8, xmm13
+    movdqa xmm7, xmm10
+    palignr xmm7, xmm9, 15
+    movdqa xmm13, xmm7
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqa xmm14, xmm0
+    pshufb xmm14, xmm13
+    pand xmm7, xmm3
+    movdqa xmm13, xmm1
+    pshufb xmm13, xmm7
+    pand xmm14, xmm13
+    movdqa xmm7, xmm10
+    psrlw xmm7, 4
+    pand xmm7, [rel NVOL_K1]
+    movdqa xmm13, xmm2
+    pshufb xmm13, xmm7
+    pand xmm14, xmm13
+    movdqa xmm7, xmm10
+    palignr xmm7, xmm9, 14
+    psubusb xmm7, xmm4
+    movdqa xmm13, xmm10
+    palignr xmm13, xmm9, 13
+    psubusb xmm13, xmm5
+    por xmm7, xmm13
+    pand xmm7, xmm6
+    pxor xmm7, xmm14
+    por xmm8, xmm7
+    movdqa xmm7, xmm11
+    palignr xmm7, xmm10, 15
+    movdqa xmm9, xmm7
+    psrlw xmm9, 4
+    pand xmm9, [rel NVOL_K1]
+    movdqa xmm13, xmm0
+    pshufb xmm13, xmm9
+    pand xmm7, xmm3
+    movdqa xmm9, xmm1
+    pshufb xmm9, xmm7
+    pand xmm13, xmm9
+    movdqa xmm7, xmm11
+    psrlw xmm7, 4
+    pand xmm7, [rel NVOL_K1]
+    movdqa xmm9, xmm2
+    pshufb xmm9, xmm7
+    pand xmm13, xmm9
+    movdqa xmm7, xmm11
+    palignr xmm7, xmm10, 14
+    psubusb xmm7, xmm4
+    movdqa xmm9, xmm11
+    palignr xmm9, xmm10, 13
+    psubusb xmm9, xmm5
+    por xmm7, xmm9
+    pand xmm7, xmm6
+    pxor xmm7, xmm13
+    por xmm8, xmm7
+    movdqa xmm7, xmm12
+    palignr xmm7, xmm11, 15
+    movdqa xmm9, xmm7
+    psrlw xmm9, 4
+    pand xmm9, [rel NVOL_K1]
+    movdqa xmm10, xmm0
+    pshufb xmm10, xmm9
+    pand xmm7, xmm3
+    movdqa xmm9, xmm1
+    pshufb xmm9, xmm7
+    pand xmm10, xmm9
+    movdqa xmm7, xmm12
+    psrlw xmm7, 4
+    pand xmm7, [rel NVOL_K1]
+    movdqa xmm9, xmm2
+    pshufb xmm9, xmm7
+    pand xmm10, xmm9
+    movdqa xmm7, xmm12
+    palignr xmm7, xmm11, 14
+    psubusb xmm7, xmm4
+    movdqa xmm9, xmm12
+    palignr xmm9, xmm11, 13
+    psubusb xmm9, xmm5
+    por xmm7, xmm9
+    pand xmm7, xmm6
+    pxor xmm7, xmm10
+    por xmm8, xmm7
+    xor esi, esi
+    movzx r9d, byte [rdx + 63]
+    cmp r9d, 191
+    ja strict short L.nvol_utf8_valid_ssse3 + 815
+    movzx r9d, byte [rdx + 62]
+    cmp r9d, 223
+    ja strict short L.nvol_utf8_valid_ssse3 + 815
+    movzx r9d, byte [rdx + 61]
+    cmp r9d, 239
+    jbe strict short L.nvol_utf8_valid_ssse3 + 820
+; .L7:
+    mov esi, 1
+; .L6:
+; .L5:
+    movdqa xmm7, xmm12
+    add rdx, 64
+    cmp rdx, rax
+    jb strict near L.nvol_utf8_valid_ssse3 + 104
+; .L3:
+    test r8, r8
+    jne strict short L.nvol_utf8_valid_ssse3 + 864
+    pxor xmm0, xmm0
+    pcmpeqb xmm8, xmm0
+    pmovmskb eax, xmm8
+    cmp eax, 65535
+    je strict short L.nvol_utf8_valid_ssse3 + 867
+; .L10:
+    xor eax, eax
+    ret
+; .L8:
+    cmp rdx, rdi
+    jbe strict short L.nvol_utf8_valid_ssse3 + 950
+    movzx eax, byte [rdx - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_ssse3 + 935
+    lea rdx, [rdx - 1]
+    movzx eax, byte [rdx - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_ssse3 + 935
+    lea rdx, [rdx - 1]
+    movzx eax, byte [rdx - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_ssse3 + 935
+    lea rdx, [rdx - 1]
+; .L17:
+; .L15:
+; .L13:
+    movzx eax, byte [rdx - 1]
+    cmp eax, 191
+    jbe strict short L.nvol_utf8_valid_ssse3 + 950
+    lea rdx, [rdx - 1]
+; .L19:
+; .L11:
+    cmp rdx, rcx
+    jae strict short L.nvol_utf8_valid_ssse3 + 1036
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L21:
+    mov rax, rcx
+    sub rax, rdx
+    cmp rax, 8
+    jb strict short L.nvol_utf8_valid_ssse3 + 1026
+    mov rax, qword [rdx]
+    mov rsi, 9259542123273814144
+    and rax, rsi
+    jne strict short L.nvol_utf8_valid_ssse3 + 1026
+    db 0x66, 0x90
+; .L23:
+    lea rdx, [rdx + 8]
+    mov rax, rcx
+    sub rax, rdx
+    cmp rax, 8
+    jb strict short L.nvol_utf8_valid_ssse3 + 1026
+    mov rax, qword [rdx]
+    mov rsi, 9259542123273814144
+    and rax, rsi
+    je strict short L.nvol_utf8_valid_ssse3 + 992
+; .L25:
+; .L24:
+    cmp rdx, rcx
+    jb strict short L.nvol_utf8_valid_ssse3 + 1098
+; .L26:
+    cmp rdx, rcx
+    jb strict short L.nvol_utf8_valid_ssse3 + 960
+; .L22:
+    mov eax, 1
+; .L1:
+    ret
+; .L46:
+    xor eax, eax
+    ret
+; .L53:
+    xor eax, eax
+    ret
+; .L57:
+    xor eax, eax
+    ret
+; .Lrare1:
+    movzx eax, byte [rdx + 3]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_ssse3 + 1048
+; .L56:
+    jmp strict short L.nvol_utf8_valid_ssse3 + 1093
+; .Lrare2:
+    movzx eax, byte [rdx + 2]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_ssse3 + 1045
+; .L52:
+    cmp rdi, 3
+    ja strict short L.nvol_utf8_valid_ssse3 + 1051
+; .L54:
+    jmp strict near L.nvol_utf8_valid_ssse3 + 1278
+; .Lrare3:
+    movzx esi, byte [rdx]
+    cmp esi, 128
+    jae strict short L.nvol_utf8_valid_ssse3 + 1118
+    lea rdx, [rdx + 1]
+    jmp strict near L.nvol_utf8_valid_ssse3 + 1282
+; .L28:
+    cmp esi, 194
+    jb strict short L.nvol_utf8_valid_ssse3 + 1134
+    cmp esi, 244
+    jbe strict short L.nvol_utf8_valid_ssse3 + 1137
+; .L32:
+; .L31:
+    xor eax, eax
+    ret
+; .L30:
+    mov edi, 2
+    mov r8d, 128
+    mov r9d, 191
+    cmp esi, 223
+    jbe strict short L.nvol_utf8_valid_ssse3 + 1236
+    mov edi, 3
+    cmp esi, 224
+    jne strict short L.nvol_utf8_valid_ssse3 + 1181
+    mov r8d, 160
+; .L35:
+    cmp esi, 237
+    jne strict short L.nvol_utf8_valid_ssse3 + 1195
+    mov r9d, 159
+; .L37:
+    cmp esi, 239
+    jbe strict short L.nvol_utf8_valid_ssse3 + 1236
+    mov edi, 4
+    cmp esi, 240
+    jne strict short L.nvol_utf8_valid_ssse3 + 1222
+    mov r8d, 144
+; .L41:
+    cmp esi, 244
+    jne strict short L.nvol_utf8_valid_ssse3 + 1236
+    mov r9d, 143
+; .L43:
+; .L39:
+; .L33:
+    mov rax, rcx
+    sub rax, rdx
+    cmp rax, rdi
+    jb strict near L.nvol_utf8_valid_ssse3 + 1042
+; .L45:
+    movzx eax, byte [rdx + 1]
+    cmp eax, r8d
+    jb strict short L.nvol_utf8_valid_ssse3 + 1265
+    cmp eax, r9d
+    jbe strict short L.nvol_utf8_valid_ssse3 + 1268
+; .L49:
+; .L48:
+    xor eax, eax
+    ret
+; .L47:
+    cmp rdi, 2
+    ja strict near L.nvol_utf8_valid_ssse3 + 1070
+; .L50:
+    lea rdx, [rdx + rdi]
+; .L29:
+    jmp strict near L.nvol_utf8_valid_ssse3 + 1031
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x0
+global nvol_utf8_valid_avx2:function hidden 889
+nvol_utf8_valid_avx2:
+L.nvol_utf8_valid_avx2:
+    lea rcx, [rdi + rsi]
+    mov rdx, rdi
+    vmovdqa ymm0, [rel NVOL_K26]
+    vmovdqa ymm1, [rel NVOL_K27]
+    vmovdqa ymm2, [rel NVOL_K28]
+    vmovdqa ymm3, [rel NVOL_K3]
+    vmovdqa ymm4, [rel NVOL_K29]
+    vmovdqa ymm5, [rel NVOL_K30]
+    vmovdqa ymm6, [rel NVOL_K8]
+    shr rsi, 6
+    shl rsi, 6
+    lea rax, [rdi + rsi]
+    vpxor xmm7, xmm7, xmm7
+    vpxor xmm8, xmm8, xmm8
+    xor esi, esi
+    xor r8d, r8d
+    cmp rdx, rax
+    jae strict near L.nvol_utf8_valid_avx2 + 436
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L2:
+    vmovdqu ymm9, [rdx]
+    vmovdqu ymm10, [rdx + 32]
+    vpor ymm11, ymm9, ymm10
+    vpmovmskb r9d, ymm11
+    test r9d, r9d
+    jne strict short L.nvol_utf8_valid_avx2 + 136
+    or r8, rsi
+    jmp strict near L.nvol_utf8_valid_avx2 + 419
+; .L4:
+    vperm2i128 ymm11, ymm7, ymm9, 33
+    vpalignr ymm11, ymm9, ymm11, 15
+    vpsrlw ymm12, ymm11, 4
+    vpand ymm12, ymm12, [rel NVOL_K3]
+    vpshufb ymm12, ymm0, ymm12
+    vpand ymm11, ymm11, ymm3
+    vpshufb ymm11, ymm1, ymm11
+    vpand ymm11, ymm12, ymm11
+    vpsrlw ymm12, ymm9, 4
+    vpand ymm12, ymm12, [rel NVOL_K3]
+    vpshufb ymm12, ymm2, ymm12
+    vpand ymm11, ymm11, ymm12
+    vperm2i128 ymm12, ymm7, ymm9, 33
+    vpalignr ymm12, ymm9, ymm12, 14
+    vpsubusb ymm12, ymm12, ymm4
+    vperm2i128 ymm7, ymm7, ymm9, 33
+    vpalignr ymm7, ymm9, ymm7, 13
+    vpsubusb ymm7, ymm7, ymm5
+    vpor ymm7, ymm12, ymm7
+    vpand ymm7, ymm7, ymm6
+    vpxor ymm7, ymm7, ymm11
+    vpor ymm8, ymm8, ymm7
+    vperm2i128 ymm7, ymm9, ymm10, 33
+    vpalignr ymm7, ymm10, ymm7, 15
+    vpsrlw ymm11, ymm7, 4
+    vpand ymm11, ymm11, [rel NVOL_K3]
+    vpshufb ymm11, ymm0, ymm11
+    vpand ymm7, ymm7, ymm3
+    vpshufb ymm7, ymm1, ymm7
+    vpand ymm7, ymm11, ymm7
+    vpsrlw ymm11, ymm10, 4
+    vpand ymm11, ymm11, [rel NVOL_K3]
+    vpshufb ymm11, ymm2, ymm11
+    vpand ymm7, ymm7, ymm11
+    vperm2i128 ymm11, ymm9, ymm10, 33
+    vpalignr ymm11, ymm10, ymm11, 14
+    vpsubusb ymm11, ymm11, ymm4
+    vperm2i128 ymm9, ymm9, ymm10, 33
+    vpalignr ymm9, ymm10, ymm9, 13
+    vpsubusb ymm9, ymm9, ymm5
+    vpor ymm9, ymm11, ymm9
+    vpand ymm9, ymm9, ymm6
+    vpxor ymm7, ymm9, ymm7
+    vpor ymm8, ymm8, ymm7
+    xor esi, esi
+    movzx r9d, byte [rdx + 63]
+    cmp r9d, 191
+    ja strict short L.nvol_utf8_valid_avx2 + 414
+    movzx r9d, byte [rdx + 62]
+    cmp r9d, 223
+    ja strict short L.nvol_utf8_valid_avx2 + 414
+    movzx r9d, byte [rdx + 61]
+    cmp r9d, 239
+    jbe strict short L.nvol_utf8_valid_avx2 + 419
+; .L7:
+    mov esi, 1
+; .L6:
+; .L5:
+    db 0xc5, 0x7d, 0x7f, 0xd7    ; vmovdqa ymm7, ymm10
+    add rdx, 64
+    cmp rdx, rax
+    jb strict near L.nvol_utf8_valid_avx2 + 104
+; .L3:
+    test r8, r8
+    jne strict short L.nvol_utf8_valid_avx2 + 448
+    vptest ymm8, ymm8
+    je strict short L.nvol_utf8_valid_avx2 + 454
+; .L10:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L8:
+    cmp rdx, rdi
+    jbe strict short L.nvol_utf8_valid_avx2 + 537
+    movzx eax, byte [rdx - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_avx2 + 522
+    lea rdx, [rdx - 1]
+    movzx eax, byte [rdx - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_avx2 + 522
+    lea rdx, [rdx - 1]
+    movzx eax, byte [rdx - 1]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_avx2 + 522
+    lea rdx, [rdx - 1]
+; .L17:
+; .L15:
+; .L13:
+    movzx eax, byte [rdx - 1]
+    cmp eax, 191
+    jbe strict short L.nvol_utf8_valid_avx2 + 537
+    lea rdx, [rdx - 1]
+; .L19:
+; .L11:
+    cmp rdx, rcx
+    jae strict short L.nvol_utf8_valid_avx2 + 620
+    db 0x66, 0x90
+; .L21:
+    mov rax, rcx
+    sub rax, rdx
+    cmp rax, 8
+    jb strict short L.nvol_utf8_valid_avx2 + 610
+    mov rax, qword [rdx]
+    mov rsi, 9259542123273814144
+    and rax, rsi
+    jne strict short L.nvol_utf8_valid_avx2 + 610
+    db 0x66, 0x90
+; .L23:
+    lea rdx, [rdx + 8]
+    mov rax, rcx
+    sub rax, rdx
+    cmp rax, 8
+    jb strict short L.nvol_utf8_valid_avx2 + 610
+    mov rax, qword [rdx]
+    mov rsi, 9259542123273814144
+    and rax, rsi
+    je strict short L.nvol_utf8_valid_avx2 + 576
+; .L25:
+; .L24:
+    cmp rdx, rcx
+    jb strict short L.nvol_utf8_valid_avx2 + 694
+; .L26:
+    cmp rdx, rcx
+    jb strict short L.nvol_utf8_valid_avx2 + 544
+; .L22:
+    mov eax, 1
+; .L1:
+    vzeroupper
+    ret
+; .L46:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L53:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L57:
+    xor eax, eax
+    vzeroupper
+    ret
+; .Lrare1:
+    movzx eax, byte [rdx + 3]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_avx2 + 641
+; .L56:
+    jmp strict short L.nvol_utf8_valid_avx2 + 689
+; .Lrare2:
+    movzx eax, byte [rdx + 2]
+    and rax, 192
+    cmp eax, 128
+    jne strict short L.nvol_utf8_valid_avx2 + 635
+; .L52:
+    cmp rdi, 3
+    ja strict short L.nvol_utf8_valid_avx2 + 647
+; .L54:
+    jmp strict near L.nvol_utf8_valid_avx2 + 880
+; .Lrare3:
+    movzx esi, byte [rdx]
+    cmp esi, 128
+    jae strict short L.nvol_utf8_valid_avx2 + 714
+    lea rdx, [rdx + 1]
+    jmp strict near L.nvol_utf8_valid_avx2 + 884
+; .L28:
+    cmp esi, 194
+    jb strict short L.nvol_utf8_valid_avx2 + 730
+    cmp esi, 244
+    jbe strict short L.nvol_utf8_valid_avx2 + 736
+; .L32:
+; .L31:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L30:
+    mov edi, 2
+    mov r8d, 128
+    mov r9d, 191
+    cmp esi, 223
+    jbe strict short L.nvol_utf8_valid_avx2 + 835
+    mov edi, 3
+    cmp esi, 224
+    jne strict short L.nvol_utf8_valid_avx2 + 780
+    mov r8d, 160
+; .L35:
+    cmp esi, 237
+    jne strict short L.nvol_utf8_valid_avx2 + 794
+    mov r9d, 159
+; .L37:
+    cmp esi, 239
+    jbe strict short L.nvol_utf8_valid_avx2 + 835
+    mov edi, 4
+    cmp esi, 240
+    jne strict short L.nvol_utf8_valid_avx2 + 821
+    mov r8d, 144
+; .L41:
+    cmp esi, 244
+    jne strict short L.nvol_utf8_valid_avx2 + 835
+    mov r9d, 143
+; .L43:
+; .L39:
+; .L33:
+    mov rax, rcx
+    sub rax, rdx
+    cmp rax, rdi
+    jb strict near L.nvol_utf8_valid_avx2 + 629
+; .L45:
+    movzx eax, byte [rdx + 1]
+    cmp eax, r8d
+    jb strict short L.nvol_utf8_valid_avx2 + 864
+    cmp eax, r9d
+    jbe strict short L.nvol_utf8_valid_avx2 + 870
+; .L49:
+; .L48:
+    xor eax, eax
+    vzeroupper
+    ret
+; .L47:
+    cmp rdi, 2
+    ja strict near L.nvol_utf8_valid_avx2 + 666
+; .L50:
+    lea rdx, [rdx + rdi]
+; .L29:
+    jmp strict near L.nvol_utf8_valid_avx2 + 615
+
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+global nvol_utf8_valid:function 6
+nvol_utf8_valid:
+L.nvol_utf8_valid:
+    jmp qword [rel L.nvol_utf8_valid_ptr]
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_utf8_valid_resolve:function hidden 82
+nvol_utf8_valid_resolve:
+L.nvol_utf8_valid_resolve:
+    push rdi
+    push rsi
+    push rdx
+    push rcx
+    push r8
+    push r9
+    sub rsp, 8
+    call nvol_cpu_avx2 wrt ..plt
+    test eax, eax
+    jne strict short L.nvol_utf8_valid_resolve + 39
+    call nvol_cpu_ssse3 wrt ..plt
+    test eax, eax
+    jne strict short L.nvol_utf8_valid_resolve + 48
+    lea rax, [rel L.nvol_utf8_valid_scalar]
+    jmp strict short L.nvol_utf8_valid_resolve + 57
+; .T0:
+    lea rax, [rel L.nvol_utf8_valid_avx2]
+    jmp strict short L.nvol_utf8_valid_resolve + 57
+; .T1:
+    lea rax, [rel L.nvol_utf8_valid_ssse3]
+    jmp strict short L.nvol_utf8_valid_resolve + 57
+; .done:
+    mov qword [rel L.nvol_utf8_valid_ptr], rax
+    add rsp, 8
+    pop r9
+    pop r8
+    pop rcx
+    pop rdx
+    pop rsi
+    pop rdi
+    jmp qword [rel L.nvol_utf8_valid_ptr]
+
 align 8
 nvol_fntbl_teddy:
     dd L.nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy
@@ -60494,8 +61302,33 @@ nvol_cie:
     dd L.nvol_json_index_raw - $
     dd 6
     db 0, 0, 0, 0
-    dd 72
+    dd 68
     dd $ - nvol_cie
     dd L.nvol_json_index_raw_resolve - $
+    dd 82
+    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 120, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_utf8_valid_scalar - $
+    dd 343
+    db 0, 0, 0, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_utf8_valid_ssse3 - $
+    dd 1287
+    db 0, 0, 0, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_utf8_valid_avx2 - $
+    dd 889
+    db 0, 0, 0, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_utf8_valid - $
+    dd 6
+    db 0, 0, 0, 0
+    dd 72
+    dd $ - nvol_cie
+    dd L.nvol_utf8_valid_resolve - $
     dd 82
     db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 120, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0, 0, 0, 0, 0

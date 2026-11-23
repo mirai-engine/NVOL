@@ -7,6 +7,15 @@ NVOL_K0:
 .p2align 5
 NVOL_K1:
     .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 123, 44, 125, 0, 0
+.p2align 5
+NVOL_K2:
+    .byte 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+.p2align 5
+NVOL_K3:
+    .byte 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+.p2align 5
+NVOL_K4:
+    .byte 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
 .p2align 6
 nvol_tbl_rank:
     .byte 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
@@ -22611,6 +22620,312 @@ L.nvol_json_index_raw:
     b L.nvol_json_index_neon
 .cfi_endproc
 .size nvol_json_index_raw, .-nvol_json_index_raw
+
+    nop
+    nop
+    nop
+.globl nvol_utf8_valid_neon
+.type nvol_utf8_valid_neon, %function
+.hidden nvol_utf8_valid_neon
+nvol_utf8_valid_neon:
+L.nvol_utf8_valid_neon:
+.cfi_startproc
+    add x9, x0, x1
+    mov x10, x0
+    adrp x11, NVOL_K2
+    add x11, x11, :lo12:NVOL_K2
+    ldr q0, [x11]
+    adrp x11, NVOL_K3
+    add x11, x11, :lo12:NVOL_K3
+    ldr q1, [x11]
+    adrp x11, NVOL_K4
+    add x11, x11, :lo12:NVOL_K4
+    ldr q2, [x11]
+    movi v3.16b, #15
+    movi v4.16b, #96
+    movi v5.16b, #112
+    movi v6.16b, #128
+    lsr x11, x1, #6
+    lsl x11, x11, #6
+    add x11, x0, x11
+    movi v7.16b, #0
+    movi v16.16b, #0
+    movz w12, #0
+    movz w13, #0
+    cmp x10, x11
+    b.hs .Lnvol_utf8_valid_neon.L3
+.Lnvol_utf8_valid_neon.L2:
+    ldr q17, [x10]
+    ldr q18, [x10, #16]
+    ldr q19, [x10, #32]
+    ldr q20, [x10, #48]
+    orr v21.16b, v17.16b, v18.16b
+    orr v22.16b, v19.16b, v20.16b
+    orr v21.16b, v21.16b, v22.16b
+    sshr v21.16b, v21.16b, #7
+    shrn v21.8b, v21.8h, #4
+    fmov x14, d21
+    and x14, x14, #9838263505978427528
+    cbnz x14, .Lnvol_utf8_valid_neon.L4
+    orr x13, x13, x12
+    b .Lnvol_utf8_valid_neon.L5
+.Lnvol_utf8_valid_neon.L4:
+    ext v21.16b, v7.16b, v17.16b, #15
+    ushr v22.16b, v21.16b, #4
+    tbl v22.16b, {v0.16b}, v22.16b
+    and v21.16b, v21.16b, v3.16b
+    tbl v21.16b, {v1.16b}, v21.16b
+    and v21.16b, v22.16b, v21.16b
+    ushr v22.16b, v17.16b, #4
+    tbl v22.16b, {v2.16b}, v22.16b
+    and v21.16b, v21.16b, v22.16b
+    ext v22.16b, v7.16b, v17.16b, #14
+    uqsub v22.16b, v22.16b, v4.16b
+    ext v7.16b, v7.16b, v17.16b, #13
+    uqsub v7.16b, v7.16b, v5.16b
+    orr v7.16b, v22.16b, v7.16b
+    and v7.16b, v7.16b, v6.16b
+    eor v7.16b, v7.16b, v21.16b
+    orr v16.16b, v16.16b, v7.16b
+    ext v7.16b, v17.16b, v18.16b, #15
+    ushr v21.16b, v7.16b, #4
+    tbl v21.16b, {v0.16b}, v21.16b
+    and v7.16b, v7.16b, v3.16b
+    tbl v7.16b, {v1.16b}, v7.16b
+    and v7.16b, v21.16b, v7.16b
+    ushr v21.16b, v18.16b, #4
+    tbl v21.16b, {v2.16b}, v21.16b
+    and v7.16b, v7.16b, v21.16b
+    ext v21.16b, v17.16b, v18.16b, #14
+    uqsub v21.16b, v21.16b, v4.16b
+    ext v17.16b, v17.16b, v18.16b, #13
+    uqsub v17.16b, v17.16b, v5.16b
+    orr v17.16b, v21.16b, v17.16b
+    and v17.16b, v17.16b, v6.16b
+    eor v7.16b, v17.16b, v7.16b
+    orr v16.16b, v16.16b, v7.16b
+    ext v7.16b, v18.16b, v19.16b, #15
+    ushr v17.16b, v7.16b, #4
+    tbl v17.16b, {v0.16b}, v17.16b
+    and v7.16b, v7.16b, v3.16b
+    tbl v7.16b, {v1.16b}, v7.16b
+    and v7.16b, v17.16b, v7.16b
+    ushr v17.16b, v19.16b, #4
+    tbl v17.16b, {v2.16b}, v17.16b
+    and v7.16b, v7.16b, v17.16b
+    ext v17.16b, v18.16b, v19.16b, #14
+    uqsub v17.16b, v17.16b, v4.16b
+    ext v18.16b, v18.16b, v19.16b, #13
+    uqsub v18.16b, v18.16b, v5.16b
+    orr v17.16b, v17.16b, v18.16b
+    and v17.16b, v17.16b, v6.16b
+    eor v7.16b, v17.16b, v7.16b
+    orr v16.16b, v16.16b, v7.16b
+    ext v7.16b, v19.16b, v20.16b, #15
+    ushr v17.16b, v7.16b, #4
+    tbl v17.16b, {v0.16b}, v17.16b
+    and v7.16b, v7.16b, v3.16b
+    tbl v7.16b, {v1.16b}, v7.16b
+    and v7.16b, v17.16b, v7.16b
+    ushr v17.16b, v20.16b, #4
+    tbl v17.16b, {v2.16b}, v17.16b
+    and v7.16b, v7.16b, v17.16b
+    ext v17.16b, v19.16b, v20.16b, #14
+    uqsub v17.16b, v17.16b, v4.16b
+    ext v18.16b, v19.16b, v20.16b, #13
+    uqsub v18.16b, v18.16b, v5.16b
+    orr v17.16b, v17.16b, v18.16b
+    and v17.16b, v17.16b, v6.16b
+    eor v7.16b, v17.16b, v7.16b
+    orr v16.16b, v16.16b, v7.16b
+    movz w12, #0
+    ldrb w14, [x10, #63]
+    cmp x14, #191
+    b.hi .Lnvol_utf8_valid_neon.L7
+    ldrb w14, [x10, #62]
+    cmp x14, #223
+    b.hi .Lnvol_utf8_valid_neon.L7
+    ldrb w14, [x10, #61]
+    cmp x14, #239
+    b.ls .Lnvol_utf8_valid_neon.L6
+.Lnvol_utf8_valid_neon.L7:
+    orr w12, wzr, #1
+.Lnvol_utf8_valid_neon.L6:
+.Lnvol_utf8_valid_neon.L5:
+    mov v7.16b, v20.16b
+    add x10, x10, #64
+    cmp x10, x11
+    b.lo .Lnvol_utf8_valid_neon.L2
+.Lnvol_utf8_valid_neon.L3:
+    cbnz x13, .Lnvol_utf8_valid_neon.L10
+    umaxp v0.16b, v16.16b, v16.16b
+    fmov x11, d0
+    cbz x11, .Lnvol_utf8_valid_neon.L8
+.Lnvol_utf8_valid_neon.L10:
+    movz w0, #0
+    ret
+.Lnvol_utf8_valid_neon.L8:
+    cmp x10, x0
+    b.ls .Lnvol_utf8_valid_neon.L11
+    ldurb w11, [x10, #-1]
+    and x11, x11, #192
+    cmp x11, #128
+    b.ne .Lnvol_utf8_valid_neon.L13
+    sub x10, x10, #1
+    ldurb w11, [x10, #-1]
+    and x11, x11, #192
+    cmp x11, #128
+    b.ne .Lnvol_utf8_valid_neon.L15
+    sub x10, x10, #1
+    ldurb w11, [x10, #-1]
+    and x11, x11, #192
+    cmp x11, #128
+    b.ne .Lnvol_utf8_valid_neon.L17
+    sub x10, x10, #1
+.Lnvol_utf8_valid_neon.L17:
+.Lnvol_utf8_valid_neon.L15:
+.Lnvol_utf8_valid_neon.L13:
+    ldurb w11, [x10, #-1]
+    cmp x11, #191
+    b.ls .Lnvol_utf8_valid_neon.L19
+    sub x10, x10, #1
+.Lnvol_utf8_valid_neon.L19:
+.Lnvol_utf8_valid_neon.L11:
+    cmp x10, x9
+    b.hs .Lnvol_utf8_valid_neon.L22
+    nop
+    nop
+.Lnvol_utf8_valid_neon.L21:
+    sub x11, x9, x10
+    cmp x11, #8
+    b.lo .Lnvol_utf8_valid_neon.L24
+    ldr x11, [x10]
+    and x11, x11, #9259542123273814144
+    cbnz x11, .Lnvol_utf8_valid_neon.L24
+    nop
+    nop
+.Lnvol_utf8_valid_neon.L23:
+    add x10, x10, #8
+    sub x11, x9, x10
+    cmp x11, #8
+    b.lo .Lnvol_utf8_valid_neon.L25
+    ldr x11, [x10]
+    and x11, x11, #9259542123273814144
+    cbz x11, .Lnvol_utf8_valid_neon.L23
+.Lnvol_utf8_valid_neon.L25:
+.Lnvol_utf8_valid_neon.L24:
+    cmp x10, x9
+    b.lo .Lnvol_utf8_valid_neon.Lrare3
+.Lnvol_utf8_valid_neon.L26:
+    cmp x10, x9
+    b.lo .Lnvol_utf8_valid_neon.L21
+.Lnvol_utf8_valid_neon.L22:
+    orr w0, wzr, #1
+.Lnvol_utf8_valid_neon.L1:
+    ret
+.Lnvol_utf8_valid_neon.L46:
+    movz w0, #0
+    ret
+.Lnvol_utf8_valid_neon.L53:
+    movz w0, #0
+    ret
+.Lnvol_utf8_valid_neon.L57:
+    movz w0, #0
+    ret
+.Lnvol_utf8_valid_neon.Lrare1:
+    ldrb w11, [x10, #3]
+    and x11, x11, #192
+    cmp x11, #128
+    b.ne .Lnvol_utf8_valid_neon.L57
+.Lnvol_utf8_valid_neon.L56:
+    b .Lnvol_utf8_valid_neon.L54
+.Lnvol_utf8_valid_neon.Lrare2:
+    ldrb w11, [x10, #2]
+    and x11, x11, #192
+    cmp x11, #128
+    b.ne .Lnvol_utf8_valid_neon.L53
+.Lnvol_utf8_valid_neon.L52:
+    cmp x12, #3
+    b.hi .Lnvol_utf8_valid_neon.Lrare1
+.Lnvol_utf8_valid_neon.L54:
+    b .Lnvol_utf8_valid_neon.L50
+.Lnvol_utf8_valid_neon.Lrare3:
+    ldrb w11, [x10]
+    cmp x11, #128
+    b.hs .Lnvol_utf8_valid_neon.L28
+    add x10, x10, #1
+    b .Lnvol_utf8_valid_neon.L29
+.Lnvol_utf8_valid_neon.L28:
+    cmp x11, #194
+    b.lo .Lnvol_utf8_valid_neon.L32
+    cmp x11, #244
+    b.ls .Lnvol_utf8_valid_neon.L30
+.Lnvol_utf8_valid_neon.L32:
+.Lnvol_utf8_valid_neon.L31:
+    movz w0, #0
+    ret
+.Lnvol_utf8_valid_neon.L30:
+    orr w12, wzr, #2
+    orr w13, wzr, #128
+    movz w14, #191
+    cmp x11, #223
+    b.ls .Lnvol_utf8_valid_neon.L33
+    orr w12, wzr, #3
+    cmp x11, #224
+    b.ne .Lnvol_utf8_valid_neon.L35
+    movz w13, #160
+.Lnvol_utf8_valid_neon.L35:
+    cmp x11, #237
+    b.ne .Lnvol_utf8_valid_neon.L37
+    movz w14, #159
+.Lnvol_utf8_valid_neon.L37:
+    cmp x11, #239
+    b.ls .Lnvol_utf8_valid_neon.L39
+    orr w12, wzr, #4
+    cmp x11, #240
+    b.ne .Lnvol_utf8_valid_neon.L41
+    movz w13, #144
+.Lnvol_utf8_valid_neon.L41:
+    cmp x11, #244
+    b.ne .Lnvol_utf8_valid_neon.L43
+    movz w14, #143
+.Lnvol_utf8_valid_neon.L43:
+.Lnvol_utf8_valid_neon.L39:
+.Lnvol_utf8_valid_neon.L33:
+    sub x11, x9, x10
+    cmp x11, x12
+    b.lo .Lnvol_utf8_valid_neon.L46
+.Lnvol_utf8_valid_neon.L45:
+    ldrb w11, [x10, #1]
+    cmp x11, x13
+    b.lo .Lnvol_utf8_valid_neon.L49
+    cmp x11, x14
+    b.ls .Lnvol_utf8_valid_neon.L47
+.Lnvol_utf8_valid_neon.L49:
+.Lnvol_utf8_valid_neon.L48:
+    movz w0, #0
+    ret
+.Lnvol_utf8_valid_neon.L47:
+    cmp x12, #2
+    b.hi .Lnvol_utf8_valid_neon.Lrare2
+.Lnvol_utf8_valid_neon.L50:
+    add x10, x10, x12
+.Lnvol_utf8_valid_neon.L29:
+    b .Lnvol_utf8_valid_neon.L26
+.cfi_endproc
+.size nvol_utf8_valid_neon, .-nvol_utf8_valid_neon
+
+    nop
+    nop
+    nop
+.globl nvol_utf8_valid
+.type nvol_utf8_valid, %function
+nvol_utf8_valid:
+L.nvol_utf8_valid:
+.cfi_startproc
+    b L.nvol_utf8_valid_neon
+.cfi_endproc
+.size nvol_utf8_valid, .-nvol_utf8_valid
 
 .p2align 3
 nvol_fntbl_teddy:
