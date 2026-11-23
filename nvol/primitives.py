@@ -252,6 +252,9 @@ _DEFS += [
     PrimDef("unpackhi8", (VEC, VEC), VEC, "per 128-bit lane interleave of the high 8 bytes", _unpack(True)),
     PrimDef("first_offset64", (U64,), USIZE, "index of least significant set bit of a u64", _first64,
             pre="mask != 0"),
+    PrimDef("tzcnt64", (U64,), USIZE, "index of least significant set bit of a u64, 64 when it "
+            "is 0 (tzcnt): defined for every input",
+            lambda c, m: 64 if m & MASK64 == 0 else _first64(c, m)),
     PrimDef("last_offset64", (U64,), USIZE, "index of most significant set bit of a u64 (63-lzcnt)",
             lambda c, m: m.bit_length() - 1, pre="mask != 0"),
     PrimDef("popcnt64", (U64,), USIZE, "number of set bits of a u64",

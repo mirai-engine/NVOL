@@ -97,10 +97,10 @@ class Gen:
             return ir.TableLoad("fz", self.expr(U8, d - 1).cast(USIZE))
         if k == 7 and ty is USIZE:
             name = r.choice(["popcnt", "popcnt64", "first_offset", "last_offset", "first_offset64",
-                             "last_offset64"])
+                             "last_offset64", "tzcnt64"])
             mt, mw = (U64, 64) if name.endswith("64") else (U32, 32)
             m = self.expr(mt, d - 1)
-            if not name.startswith("popcnt"):
+            if not name.startswith(("popcnt", "tzcnt")):
                 m = ir.Bin("or", m, ir.Const(1 << r.randrange(mw), mt), mt)
             return ir.prim(name, m)
         if k == 8 and self.helpers and d >= 2:

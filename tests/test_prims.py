@@ -32,7 +32,9 @@ VEC2_TO_SCALAR = {"sse42": ["skip_set16"]}
 BLOCK = {"ssse3": ["bmask64x4"], "avx2": ["bmask64x2"]}
 # u64 -> usize, inside an ISA function: the assembly picks popcnt by the ISA (SSE4.2 and AVX2
 # have it; below, a byte table), which the ISA-less fuzzer never reaches
-U64_TO_SCALAR = {"ssse3": ["popcnt64"], "avx2": ["popcnt64", "prefix_xor64"]}
+U64_TO_SCALAR = {"ssse3": ["popcnt64", "tzcnt64"], "avx2": ["popcnt64", "prefix_xor64", "tzcnt64"]}
+# primitives whose all-zero input is a case of its own
+ZERO_CASE = {"is_zero", "tzcnt64"}
 # statements, not primitives: t_<isa>_store32 (a register and an immediate, at odd offsets)
 STORES = {"ssse3": ["store32"], "avx2": []}
 # IR helpers of nvol.isa, not primitives: t_<isa>_prefix_xor (the shift/xor steps without PCLMUL)
@@ -273,7 +275,7 @@ def test_lowerings_match_reference(built, isa):
         for _ in range(300):
             n = 64 if name in BLOCK[isa] else 2 * V
             src = _masks(rng, n) if name in MASK_ONLY else _vectors(rng, n)
-            if name in ("is_zero",) and rng.random() < 0.3:
+            if name in ZERO_CASE and rng.random() < 0.3:
                 src = bytes(2 * V)
             out = (ctypes.c_uint8 * V)()
             cfn(src, ctypes.addressof(out))

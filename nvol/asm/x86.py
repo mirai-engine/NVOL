@@ -467,6 +467,13 @@ class X86Lower(Lower):
             self.emit("bsr" if n.startswith("last") else "bsf", [Reg(d, w), Reg(a, w)],
                       defs=[d], uses=[a])
             return d
+        if n == "tzcnt64":                  # bsf leaves its destination undefined on 0: cmovz 64
+            a = self.gen(e.args[0])
+            k = self.const(64)
+            d = self.new()
+            self.emit("bsf", [Reg(d, 64), Reg(a, 64)], defs=[d], uses=[a])
+            self.emit("cmovz", [Reg(d, 64), Reg(k, 64)], defs=[d], uses=[d, k])
+            return d
         if n == "popcnt":
             x = e.args[0]
             bits16 = isinstance(x, ir.Prim) and x.name == "movemask" and self.vw == 128

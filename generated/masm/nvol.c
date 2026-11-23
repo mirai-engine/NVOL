@@ -14,6 +14,7 @@
 static __forceinline uint32_t nvol_ctz32(uint32_t x) { unsigned long i; _BitScanForward(&i, x); return (uint32_t)i; }
 static __forceinline uint32_t nvol_clz32(uint32_t x) { unsigned long i; _BitScanReverse(&i, x); return 31u - (uint32_t)i; }
 static __forceinline uint32_t nvol_ctz64(uint64_t x) { unsigned long i; _BitScanForward64(&i, x); return (uint32_t)i; }
+static __forceinline uint32_t nvol_tzcnt64(uint64_t x) { unsigned long i; return _BitScanForward64(&i, x) ? (uint32_t)i : 64u; }
 static __forceinline uint32_t nvol_clz64(uint64_t x) { unsigned long i; _BitScanReverse64(&i, x); return 63u - (uint32_t)i; }
 static __forceinline uint32_t nvol_popcnt32(uint32_t x) {
     x = x - ((x >> 1) & 0x55555555u); x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
@@ -33,6 +34,10 @@ static __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((
 #  define nvol_ctz32(x) ((uint32_t)__builtin_ctz(x))
 #  define nvol_clz32(x) ((uint32_t)__builtin_clz(x))
 #  define nvol_ctz64(x) ((uint32_t)__builtin_ctzll(x))
+/* 64 at 0, no UB: GCC and Clang make it one tzcnt where the target has BMI1, else bsf and cmov */
+static inline NVOL_FORCE_INLINE NVOL_UNUSED uint32_t nvol_tzcnt64(uint64_t x) {
+    return x ? (uint32_t)__builtin_ctzll(x) : 64u;
+}
 #  define nvol_clz64(x) ((uint32_t)__builtin_clzll(x))
 /* the bit count as the SWAR idiom, not __builtin_popcount: GCC and Clang turn it into POPCNT in
    a function whose target has it (AVX2, SSE4.2, and what is inlined there) and keep it inline

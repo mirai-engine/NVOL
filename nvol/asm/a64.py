@@ -365,7 +365,7 @@ class A64Lower(Lower):
             op, w = {2: ("ldrh", 32), 4: ("ldr", 32), 8: ("ldr", 64)}[size]
             self.emit(op, [Reg(d, w), m], defs=[d], uses=regs_in(m))
             return d
-        if n in ("first_offset", "first_offset64", "last_offset", "last_offset64"):
+        if n in ("first_offset", "first_offset64", "tzcnt64", "last_offset", "last_offset64"):
             a = self.gen(e.args[0])
             d = self.new()
             if n.startswith("last"):
