@@ -29,7 +29,7 @@ pub mod raw {
     pub const NVOL_BYTESET_PAIR_REACH: usize = 248;
 
     /// bytes of the nvol_json_index_raw state
-    pub const NVOL_JSON_STATE_BYTES: usize = 32;
+    pub const NVOL_JSON_STATE_BYTES: usize = 80;
 
     pub(crate) static NVOL_TBL_RANK: [u8; 256] = [55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28, 255, 148, 164, 149, 136, 160, 155, 173, 221, 222, 134, 122, 232, 202, 215, 224, 208, 220, 204, 187, 183, 179, 177, 168, 178, 200, 226, 195, 154, 184, 174, 126, 120, 191, 157, 194, 170, 189, 162, 161, 150, 193, 142, 137, 171, 176, 185, 167, 186, 112, 175, 192, 188, 156, 140, 143, 123, 133, 128, 147, 138, 146, 114, 223, 151, 249, 216, 238, 236, 253, 227, 218, 230, 247, 135, 180, 241, 233, 246, 244, 231, 139, 245, 243, 251, 235, 201, 196, 240, 214, 152, 182, 205, 181, 127, 27, 212, 211, 210, 213, 228, 197, 169, 159, 131, 172, 105, 80, 98, 96, 97, 81, 207, 145, 116, 115, 144, 130, 153, 121, 107, 132, 109, 110, 124, 111, 82, 108, 118, 141, 113, 129, 119, 125, 165, 117, 92, 106, 83, 72, 99, 93, 65, 79, 166, 237, 163, 199, 190, 225, 209, 203, 198, 217, 219, 206, 234, 248, 158, 239, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255];
 
@@ -8990,6 +8990,11 @@ pub mod raw {
             let mut base: usize = idx;
             let end: *const u8 = blocks.add((nblocks << 6usize));
             let mut n: usize = 0usize;
+            let mut uerr: u64 = (state.add(32usize) as *const u64).read_unaligned();
+            let mut uinc: u64 = (state.add(40usize) as *const u64).read_unaligned();
+            let mut p1: u64 = ((*state.add(79usize)) as u64);
+            let mut p2: u64 = ((*state.add(78usize)) as u64);
+            let mut p3: u64 = ((*state.add(77usize)) as u64);
             let mut prev: u64 = 0u64;
             let mut pbase: usize = idx;
             let end2: *const u8 = blocks.add(((nblocks >> 1usize) << 7usize));
@@ -9047,7 +9052,39 @@ pub mod raw {
                 psc = (nqs >> 63u64);
                 let bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
                 err = (err | (ctl & in_string));
-                let mut bits1: u64 = bits;
+                let mut sbits: u64 = bits;
+                let mut ui: usize = 0usize;
+                while (ui < 64usize) {
+                    let uc: u64 = ((*blk.add(ui)) as u64);
+                    let mut tw: u64 = 144680345676153346u64;
+                    if ((p1 >> 4u64) > 7u64) {
+                        tw = 5266116582681116800u64;
+                    }
+                    let mut tw1: u64 = 14685054810038969319u64;
+                    if ((p1 & 15u64) > 7u64) {
+                        tw1 = 14685072678315609035u64;
+                    }
+                    let mut tw2: u64 = 72340172838076673u64;
+                    if ((uc >> 4u64) > 7u64) {
+                        tw2 = 72340175954030310u64;
+                    }
+                    let usc: u64 = ((((tw >> (((p1 >> 4u64) & 7u64) << 3u64)) & 255u64) & ((tw1 >> (((p1 & 15u64) & 7u64) << 3u64)) & 255u64)) & ((tw2 >> (((uc >> 4u64) & 7u64) << 3u64)) & 255u64));
+                    let mut ss: u64 = 0u64;
+                    if (p2 > 96u64) {
+                        ss = (p2 - 96u64);
+                    }
+                    let mut ss1: u64 = 0u64;
+                    if (p3 > 112u64) {
+                        ss1 = (p3 - 112u64);
+                    }
+                    let m23: u64 = (ss | ss1);
+                    uerr = (uerr | ((m23 & 128u64) ^ usc));
+                    p3 = p2;
+                    p2 = p1;
+                    p1 = uc;
+                    ui = (ui + 1usize);
+                }
+                uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
                 let mut bs1: u64 = 0u64;
                 let mut qt1: u64 = 0u64;
                 let mut ws1: u64 = 0u64;
@@ -9099,8 +9136,41 @@ pub mod raw {
                 let nqs1: u64 = (scalar1 & (quote1 ^ 18446744073709551615u64));
                 let follows1: u64 = ((nqs1 << 1u64) | psc);
                 psc = (nqs1 >> 63u64);
-                let bits2: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
+                let bits1: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
                 err = (err | (ctl1 & in_string1));
+                let mut sbits1: u64 = bits1;
+                let mut ui1: usize = 0usize;
+                while (ui1 < 64usize) {
+                    let uc1: u64 = ((*blk.add(64usize).add(ui1)) as u64);
+                    let mut tw3: u64 = 144680345676153346u64;
+                    if ((p1 >> 4u64) > 7u64) {
+                        tw3 = 5266116582681116800u64;
+                    }
+                    let mut tw4: u64 = 14685054810038969319u64;
+                    if ((p1 & 15u64) > 7u64) {
+                        tw4 = 14685072678315609035u64;
+                    }
+                    let mut tw5: u64 = 72340172838076673u64;
+                    if ((uc1 >> 4u64) > 7u64) {
+                        tw5 = 72340175954030310u64;
+                    }
+                    let usc1: u64 = ((((tw3 >> (((p1 >> 4u64) & 7u64) << 3u64)) & 255u64) & ((tw4 >> (((p1 & 15u64) & 7u64) << 3u64)) & 255u64)) & ((tw5 >> (((uc1 >> 4u64) & 7u64) << 3u64)) & 255u64));
+                    let mut ss2: u64 = 0u64;
+                    if (p2 > 96u64) {
+                        ss2 = (p2 - 96u64);
+                    }
+                    let mut ss3: u64 = 0u64;
+                    if (p3 > 112u64) {
+                        ss3 = (p3 - 112u64);
+                    }
+                    let m231: u64 = (ss2 | ss3);
+                    uerr = (uerr | ((m231 & 128u64) ^ usc1));
+                    p3 = p2;
+                    p2 = p1;
+                    p1 = uc1;
+                    ui1 = (ui1 + 1usize);
+                }
+                uinc = (((((*blk.add(64usize).add(63usize)) > 191u8) || ((*blk.add(64usize).add(62usize)) > 223u8)) || ((*blk.add(64usize).add(61usize)) > 239u8)) as u64);
                 if (prev != 0u64) {
                     let cnt: usize = (prev.count_ones() as usize);
                     let o: *mut u8 = out.add((n << 2usize));
@@ -9172,67 +9242,67 @@ pub mod raw {
                     }
                     n = (n + cnt);
                 }
-                if (bits1 != 0u64) {
-                    let cnt1: usize = (bits1.count_ones() as usize);
+                if (sbits != 0u64) {
+                    let cnt1: usize = (sbits.count_ones() as usize);
                     let o1: *mut u8 = out.add((n << 2usize));
-                    (o1 as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                    (o1 as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
                     if (cnt1 > 4usize) {
-                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
                         if (cnt1 > 8usize) {
-                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
                             if (cnt1 > 12usize) {
-                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
                                 if (cnt1 > 16usize) {
-                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
                                     if (cnt1 > 20usize) {
-                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
                                         if (cnt1 > 24usize) {
                                             let mut i3: usize = 24usize;
                                             while (i3 < cnt1) {
-                                                (o1.add((i3 << 2usize)) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                                (o1.add((i3 << 2usize)) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                                sbits = (sbits & sbits.wrapping_sub(1u64));
                                                 i3 = (i3 + 1usize);
                                             }
                                         }
@@ -9243,7 +9313,7 @@ pub mod raw {
                     }
                     n = (n + cnt1);
                 }
-                prev = bits2;
+                prev = sbits1;
                 pbase = (base + 64usize);
                 blk = blk.add(128usize);
                 base = (base + 128usize);
@@ -9300,8 +9370,41 @@ pub mod raw {
                 let nqs2: u64 = (scalar2 & (quote2 ^ 18446744073709551615u64));
                 let follows2: u64 = ((nqs2 << 1u64) | psc);
                 psc = (nqs2 >> 63u64);
-                let bits3: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
+                let bits2: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
                 err = (err | (ctl2 & in_string2));
+                let mut sbits2: u64 = bits2;
+                let mut ui2: usize = 0usize;
+                while (ui2 < 64usize) {
+                    let uc2: u64 = ((*blk.add(ui2)) as u64);
+                    let mut tw6: u64 = 144680345676153346u64;
+                    if ((p1 >> 4u64) > 7u64) {
+                        tw6 = 5266116582681116800u64;
+                    }
+                    let mut tw7: u64 = 14685054810038969319u64;
+                    if ((p1 & 15u64) > 7u64) {
+                        tw7 = 14685072678315609035u64;
+                    }
+                    let mut tw8: u64 = 72340172838076673u64;
+                    if ((uc2 >> 4u64) > 7u64) {
+                        tw8 = 72340175954030310u64;
+                    }
+                    let usc2: u64 = ((((tw6 >> (((p1 >> 4u64) & 7u64) << 3u64)) & 255u64) & ((tw7 >> (((p1 & 15u64) & 7u64) << 3u64)) & 255u64)) & ((tw8 >> (((uc2 >> 4u64) & 7u64) << 3u64)) & 255u64));
+                    let mut ss4: u64 = 0u64;
+                    if (p2 > 96u64) {
+                        ss4 = (p2 - 96u64);
+                    }
+                    let mut ss5: u64 = 0u64;
+                    if (p3 > 112u64) {
+                        ss5 = (p3 - 112u64);
+                    }
+                    let m232: u64 = (ss4 | ss5);
+                    uerr = (uerr | ((m232 & 128u64) ^ usc2));
+                    p3 = p2;
+                    p2 = p1;
+                    p1 = uc2;
+                    ui2 = (ui2 + 1usize);
+                }
+                uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
                 if (prev != 0u64) {
                     let cnt2: usize = (prev.count_ones() as usize);
                     let o2: *mut u8 = out.add((n << 2usize));
@@ -9373,7 +9476,7 @@ pub mod raw {
                     }
                     n = (n + cnt2);
                 }
-                prev = bits3;
+                prev = sbits2;
                 pbase = base;
             }
             if (prev != 0u64) {
@@ -9451,6 +9554,11 @@ pub mod raw {
             (state.add(8usize) as *mut u64).write_unaligned(pis);
             (state.add(16usize) as *mut u64).write_unaligned(psc);
             (state.add(24usize) as *mut u64).write_unaligned(err);
+            (state.add(32usize) as *mut u64).write_unaligned(uerr);
+            *(state.add(79usize)) = ((p1 as u8)) as u8;
+            *(state.add(78usize)) = ((p2 as u8)) as u8;
+            *(state.add(77usize)) = ((p3 as u8)) as u8;
+            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             return n;
         }
     }
@@ -9474,6 +9582,18 @@ pub mod raw {
             let k_qt: __m128i = _mm_set1_epi8(34u8 as i8);
             let k20: __m128i = _mm_set1_epi8(32u8 as i8);
             let k1f: __m128i = _mm_set1_epi8(31u8 as i8);
+            let mut uerr: u64 = (state.add(32usize) as *const u64).read_unaligned();
+            let mut uinc: u64 = (state.add(40usize) as *const u64).read_unaligned();
+            let t1h: __m128i = _mm_setr_epi8(2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8);
+            let t1l: __m128i = _mm_setr_epi8(231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8);
+            let t2h: __m128i = _mm_setr_epi8(1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8);
+            let k0f: __m128i = _mm_set1_epi8(15u8 as i8);
+            let k60: __m128i = _mm_set1_epi8(96u8 as i8);
+            let k70: __m128i = _mm_set1_epi8(112u8 as i8);
+            let k80: __m128i = _mm_set1_epi8(128u8 as i8);
+            let mut uprev: __m128i = _mm_loadu_si128(state.add(64usize) as *const __m128i);
+            let mut verr: __m128i = _mm_setzero_si128();
+            let mut ubad: u64 = 0u64;
             let mut prev: u64 = 0u64;
             let mut pbase: usize = idx;
             let end2: *const u8 = blocks.add(((nblocks >> 1usize) << 7usize));
@@ -9513,7 +9633,26 @@ pub mod raw {
                 psc = (nqs >> 63u64);
                 let bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
                 err = (err | (ctl & in_string));
-                let mut bits1: u64 = bits;
+                let mut sbits: u64 = bits;
+                if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_, in_1), _mm_or_si128(in_2, in_3))) as u32) == 0u32) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev1: __m128i = _mm_alignr_epi8::<15>(in_, uprev);
+                    let sc: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev1), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev1, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_, uprev), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_, uprev), k70)), k80), sc));
+                    let prev11: __m128i = _mm_alignr_epi8::<15>(in_1, in_);
+                    let sc1: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev11), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev11, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_1), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_1, in_), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_1, in_), k70)), k80), sc1));
+                    let prev12: __m128i = _mm_alignr_epi8::<15>(in_2, in_1);
+                    let sc2: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev12), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev12, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_2), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_2, in_1), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_2, in_1), k70)), k80), sc2));
+                    let prev13: __m128i = _mm_alignr_epi8::<15>(in_3, in_2);
+                    let sc3: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev13), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev13, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_3), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_3, in_2), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_3, in_2), k70)), k80), sc3));
+                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_3;
                 let in_4: __m128i = _mm_loadu_si128(blk.add(64usize) as *const __m128i);
                 let in_5: __m128i = _mm_loadu_si128(blk.add(64usize).add(16usize) as *const __m128i);
                 let in_6: __m128i = _mm_loadu_si128(blk.add(64usize).add(32usize) as *const __m128i);
@@ -9547,8 +9686,28 @@ pub mod raw {
                 let nqs1: u64 = (scalar1 & (quote1 ^ 18446744073709551615u64));
                 let follows1: u64 = ((nqs1 << 1u64) | psc);
                 psc = (nqs1 >> 63u64);
-                let bits2: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
+                let bits1: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
                 err = (err | (ctl1 & in_string1));
+                let mut sbits1: u64 = bits1;
+                if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_4, in_5), _mm_or_si128(in_6, in_7))) as u32) == 0u32) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev14: __m128i = _mm_alignr_epi8::<15>(in_4, uprev);
+                    let sc4: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev14), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev14, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_4), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_4, uprev), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_4, uprev), k70)), k80), sc4));
+                    let prev15: __m128i = _mm_alignr_epi8::<15>(in_5, in_4);
+                    let sc5: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev15), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev15, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_5), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_5, in_4), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_5, in_4), k70)), k80), sc5));
+                    let prev16: __m128i = _mm_alignr_epi8::<15>(in_6, in_5);
+                    let sc6: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev16), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev16, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_6), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_6, in_5), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_6, in_5), k70)), k80), sc6));
+                    let prev17: __m128i = _mm_alignr_epi8::<15>(in_7, in_6);
+                    let sc7: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev17), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev17, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_7), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_7, in_6), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_7, in_6), k70)), k80), sc7));
+                    uinc = (((((*blk.add(64usize).add(63usize)) > 191u8) || ((*blk.add(64usize).add(62usize)) > 223u8)) || ((*blk.add(64usize).add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_7;
                 if (prev != 0u64) {
                     let cnt: usize = (prev.count_ones() as usize);
                     let o: *mut u8 = out.add((n << 2usize));
@@ -9620,67 +9779,67 @@ pub mod raw {
                     }
                     n = (n + cnt);
                 }
-                if (bits1 != 0u64) {
-                    let cnt1: usize = (bits1.count_ones() as usize);
+                if (sbits != 0u64) {
+                    let cnt1: usize = (sbits.count_ones() as usize);
                     let o1: *mut u8 = out.add((n << 2usize));
-                    (o1 as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                    (o1 as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
                     if (cnt1 > 4usize) {
-                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
                         if (cnt1 > 8usize) {
-                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
                             if (cnt1 > 12usize) {
-                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
                                 if (cnt1 > 16usize) {
-                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
                                     if (cnt1 > 20usize) {
-                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
                                         if (cnt1 > 24usize) {
                                             let mut i1: usize = 24usize;
                                             while (i1 < cnt1) {
-                                                (o1.add((i1 << 2usize)) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                                (o1.add((i1 << 2usize)) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                                sbits = (sbits & sbits.wrapping_sub(1u64));
                                                 i1 = (i1 + 1usize);
                                             }
                                         }
@@ -9691,7 +9850,7 @@ pub mod raw {
                     }
                     n = (n + cnt1);
                 }
-                prev = bits2;
+                prev = sbits1;
                 pbase = (base + 64usize);
                 blk = blk.add(128usize);
                 base = (base + 128usize);
@@ -9730,8 +9889,28 @@ pub mod raw {
                 let nqs2: u64 = (scalar2 & (quote2 ^ 18446744073709551615u64));
                 let follows2: u64 = ((nqs2 << 1u64) | psc);
                 psc = (nqs2 >> 63u64);
-                let bits3: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
+                let bits2: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
                 err = (err | (ctl2 & in_string2));
+                let mut sbits2: u64 = bits2;
+                if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_8, in_9), _mm_or_si128(in_10, in_11))) as u32) == 0u32) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev18: __m128i = _mm_alignr_epi8::<15>(in_8, uprev);
+                    let sc8: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev18), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev18, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_8), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_8, uprev), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_8, uprev), k70)), k80), sc8));
+                    let prev19: __m128i = _mm_alignr_epi8::<15>(in_9, in_8);
+                    let sc9: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev19), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev19, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_9), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_9, in_8), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_9, in_8), k70)), k80), sc9));
+                    let prev110: __m128i = _mm_alignr_epi8::<15>(in_10, in_9);
+                    let sc10: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev110), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev110, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_10), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_10, in_9), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_10, in_9), k70)), k80), sc10));
+                    let prev111: __m128i = _mm_alignr_epi8::<15>(in_11, in_10);
+                    let sc11: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev111), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev111, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_11), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_11, in_10), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_11, in_10), k70)), k80), sc11));
+                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_11;
                 if (prev != 0u64) {
                     let cnt2: usize = (prev.count_ones() as usize);
                     let o2: *mut u8 = out.add((n << 2usize));
@@ -9803,7 +9982,7 @@ pub mod raw {
                     }
                     n = (n + cnt2);
                 }
-                prev = bits3;
+                prev = sbits2;
                 pbase = base;
             }
             if (prev != 0u64) {
@@ -9881,6 +10060,9 @@ pub mod raw {
             (state.add(8usize) as *mut u64).write_unaligned(pis);
             (state.add(16usize) as *mut u64).write_unaligned(psc);
             (state.add(24usize) as *mut u64).write_unaligned(err);
+            (state.add(32usize) as *mut u64).write_unaligned(((uerr | ubad) | ((!(_mm_movemask_epi8(_mm_cmpeq_epi8(verr, _mm_setzero_si128())) == 0xFFFF)) as u64)));
+            _mm_storeu_si128(state.add(64usize) as *mut __m128i, uprev);
+            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             return n;
         }
     }
@@ -9904,6 +10086,18 @@ pub mod raw {
             let k_qt: __m256i = _mm256_set1_epi8(34u8 as i8);
             let k20: __m256i = _mm256_set1_epi8(32u8 as i8);
             let k1f: __m256i = _mm256_set1_epi8(31u8 as i8);
+            let mut uerr: u64 = (state.add(32usize) as *const u64).read_unaligned();
+            let mut uinc: u64 = (state.add(40usize) as *const u64).read_unaligned();
+            let t1h: __m256i = _mm256_setr_epi8(2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8);
+            let t1l: __m256i = _mm256_setr_epi8(231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8, 231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8);
+            let t2h: __m256i = _mm256_setr_epi8(1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8);
+            let k0f: __m256i = _mm256_set1_epi8(15u8 as i8);
+            let k60: __m256i = _mm256_set1_epi8(96u8 as i8);
+            let k70: __m256i = _mm256_set1_epi8(112u8 as i8);
+            let k80: __m256i = _mm256_set1_epi8(128u8 as i8);
+            let mut uprev: __m256i = _mm256_loadu_si256(state.add(48usize) as *const __m256i);
+            let mut verr: __m256i = _mm256_setzero_si256();
+            let mut ubad: u64 = 0u64;
             let mut prev: u64 = 0u64;
             let mut pbase: usize = idx;
             let end2: *const u8 = blocks.add(((nblocks >> 1usize) << 7usize));
@@ -9934,7 +10128,20 @@ pub mod raw {
                 psc = (nqs >> 63u64);
                 let bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
                 err = (err | (ctl & in_string));
-                let mut bits1: u64 = bits;
+                let mut sbits: u64 = bits;
+                if ((_mm256_movemask_epi8(_mm256_or_si256(in_, in_1)) as u32) == 0u32) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev1: __m256i = _mm256_alignr_epi8::<15>(in_, _mm256_permute2x128_si256::<0x21>(uprev, in_));
+                    let sc: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev1), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev1, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_), _mm256_set1_epi8(0x0F))));
+                    verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_, _mm256_permute2x128_si256::<0x21>(uprev, in_)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_, _mm256_permute2x128_si256::<0x21>(uprev, in_)), k70)), k80), sc));
+                    let prev11: __m256i = _mm256_alignr_epi8::<15>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1));
+                    let sc1: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev11), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev11, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_1), _mm256_set1_epi8(0x0F))));
+                    verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1)), k70)), k80), sc1));
+                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_1;
                 let in_2: __m256i = _mm256_loadu_si256(blk.add(64usize) as *const __m256i);
                 let in_3: __m256i = _mm256_loadu_si256(blk.add(64usize).add(32usize) as *const __m256i);
                 let bs1: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_2, k_bs)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_3, k_bs)) as u32 as u64) << 32));
@@ -9959,8 +10166,22 @@ pub mod raw {
                 let nqs1: u64 = (scalar1 & (quote1 ^ 18446744073709551615u64));
                 let follows1: u64 = ((nqs1 << 1u64) | psc);
                 psc = (nqs1 >> 63u64);
-                let bits2: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
+                let bits1: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
                 err = (err | (ctl1 & in_string1));
+                let mut sbits1: u64 = bits1;
+                if ((_mm256_movemask_epi8(_mm256_or_si256(in_2, in_3)) as u32) == 0u32) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev12: __m256i = _mm256_alignr_epi8::<15>(in_2, _mm256_permute2x128_si256::<0x21>(uprev, in_2));
+                    let sc2: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev12), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev12, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_2), _mm256_set1_epi8(0x0F))));
+                    verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_2, _mm256_permute2x128_si256::<0x21>(uprev, in_2)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_2, _mm256_permute2x128_si256::<0x21>(uprev, in_2)), k70)), k80), sc2));
+                    let prev13: __m256i = _mm256_alignr_epi8::<15>(in_3, _mm256_permute2x128_si256::<0x21>(in_2, in_3));
+                    let sc3: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev13), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev13, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_3), _mm256_set1_epi8(0x0F))));
+                    verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_3, _mm256_permute2x128_si256::<0x21>(in_2, in_3)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_3, _mm256_permute2x128_si256::<0x21>(in_2, in_3)), k70)), k80), sc3));
+                    uinc = (((((*blk.add(64usize).add(63usize)) > 191u8) || ((*blk.add(64usize).add(62usize)) > 223u8)) || ((*blk.add(64usize).add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_3;
                 if (prev != 0u64) {
                     let cnt: usize = (prev.count_ones() as usize);
                     let o: *mut u8 = out.add((n << 2usize));
@@ -10032,67 +10253,67 @@ pub mod raw {
                     }
                     n = (n + cnt);
                 }
-                if (bits1 != 0u64) {
-                    let cnt1: usize = (bits1.count_ones() as usize);
+                if (sbits != 0u64) {
+                    let cnt1: usize = (sbits.count_ones() as usize);
                     let o1: *mut u8 = out.add((n << 2usize));
-                    (o1 as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                    (o1 as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
                     if (cnt1 > 4usize) {
-                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
                         if (cnt1 > 8usize) {
-                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
                             if (cnt1 > 12usize) {
-                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
                                 if (cnt1 > 16usize) {
-                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
                                     if (cnt1 > 20usize) {
-                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(bits1) as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (_tzcnt_u64(sbits) as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
                                         if (cnt1 > 24usize) {
                                             let mut i1: usize = 24usize;
                                             while (i1 < cnt1) {
-                                                (o1.add((i1 << 2usize)) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                                (o1.add((i1 << 2usize)) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                                sbits = (sbits & sbits.wrapping_sub(1u64));
                                                 i1 = (i1 + 1usize);
                                             }
                                         }
@@ -10103,7 +10324,7 @@ pub mod raw {
                     }
                     n = (n + cnt1);
                 }
-                prev = bits2;
+                prev = sbits1;
                 pbase = (base + 64usize);
                 blk = blk.add(128usize);
                 base = (base + 128usize);
@@ -10133,8 +10354,22 @@ pub mod raw {
                 let nqs2: u64 = (scalar2 & (quote2 ^ 18446744073709551615u64));
                 let follows2: u64 = ((nqs2 << 1u64) | psc);
                 psc = (nqs2 >> 63u64);
-                let bits3: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
+                let bits2: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
                 err = (err | (ctl2 & in_string2));
+                let mut sbits2: u64 = bits2;
+                if ((_mm256_movemask_epi8(_mm256_or_si256(in_4, in_5)) as u32) == 0u32) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev14: __m256i = _mm256_alignr_epi8::<15>(in_4, _mm256_permute2x128_si256::<0x21>(uprev, in_4));
+                    let sc4: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev14), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev14, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_4), _mm256_set1_epi8(0x0F))));
+                    verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_4, _mm256_permute2x128_si256::<0x21>(uprev, in_4)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_4, _mm256_permute2x128_si256::<0x21>(uprev, in_4)), k70)), k80), sc4));
+                    let prev15: __m256i = _mm256_alignr_epi8::<15>(in_5, _mm256_permute2x128_si256::<0x21>(in_4, in_5));
+                    let sc5: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev15), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev15, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_5), _mm256_set1_epi8(0x0F))));
+                    verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_5, _mm256_permute2x128_si256::<0x21>(in_4, in_5)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_5, _mm256_permute2x128_si256::<0x21>(in_4, in_5)), k70)), k80), sc5));
+                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_5;
                 if (prev != 0u64) {
                     let cnt2: usize = (prev.count_ones() as usize);
                     let o2: *mut u8 = out.add((n << 2usize));
@@ -10206,7 +10441,7 @@ pub mod raw {
                     }
                     n = (n + cnt2);
                 }
-                prev = bits3;
+                prev = sbits2;
                 pbase = base;
             }
             if (prev != 0u64) {
@@ -10284,6 +10519,9 @@ pub mod raw {
             (state.add(8usize) as *mut u64).write_unaligned(pis);
             (state.add(16usize) as *mut u64).write_unaligned(psc);
             (state.add(24usize) as *mut u64).write_unaligned(err);
+            (state.add(32usize) as *mut u64).write_unaligned(((uerr | ubad) | ((!(_mm256_testz_si256(verr, verr) != 0)) as u64)));
+            _mm256_storeu_si256(state.add(48usize) as *mut __m256i, uprev);
+            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             return n;
         }
     }
@@ -10661,7 +10899,7 @@ pub mod raw {
     pub const NVOL_BYTESET_PAIR_REACH: usize = 248;
 
     /// bytes of the nvol_json_index_raw state
-    pub const NVOL_JSON_STATE_BYTES: usize = 32;
+    pub const NVOL_JSON_STATE_BYTES: usize = 80;
 
     pub(crate) static NVOL_TBL_RANK: [u8; 256] = [55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28, 255, 148, 164, 149, 136, 160, 155, 173, 221, 222, 134, 122, 232, 202, 215, 224, 208, 220, 204, 187, 183, 179, 177, 168, 178, 200, 226, 195, 154, 184, 174, 126, 120, 191, 157, 194, 170, 189, 162, 161, 150, 193, 142, 137, 171, 176, 185, 167, 186, 112, 175, 192, 188, 156, 140, 143, 123, 133, 128, 147, 138, 146, 114, 223, 151, 249, 216, 238, 236, 253, 227, 218, 230, 247, 135, 180, 241, 233, 246, 244, 231, 139, 245, 243, 251, 235, 201, 196, 240, 214, 152, 182, 205, 181, 127, 27, 212, 211, 210, 213, 228, 197, 169, 159, 131, 172, 105, 80, 98, 96, 97, 81, 207, 145, 116, 115, 144, 130, 153, 121, 107, 132, 109, 110, 124, 111, 82, 108, 118, 141, 113, 129, 119, 125, 165, 117, 92, 106, 83, 72, 99, 93, 65, 79, 166, 237, 163, 199, 190, 225, 209, 203, 198, 217, 219, 206, 234, 248, 158, 239, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255];
 
@@ -15433,6 +15671,18 @@ pub mod raw {
             let k20: uint8x16_t = vdupq_n_u8(32u8);
             let k1f: uint8x16_t = vdupq_n_u8(31u8);
             let k0f: uint8x16_t = vdupq_n_u8(15u8);
+            let mut uerr: u64 = (state.add(32usize) as *const u64).read_unaligned();
+            let mut uinc: u64 = (state.add(40usize) as *const u64).read_unaligned();
+            let t1h: uint8x16_t = vcombine_u8(vcreate_u8(((2u8 as u64)) | ((2u8 as u64) << 8) | ((2u8 as u64) << 16) | ((2u8 as u64) << 24) | ((2u8 as u64) << 32) | ((2u8 as u64) << 40) | ((2u8 as u64) << 48) | ((2u8 as u64) << 56)), vcreate_u8(((128u8 as u64)) | ((128u8 as u64) << 8) | ((128u8 as u64) << 16) | ((128u8 as u64) << 24) | ((33u8 as u64) << 32) | ((1u8 as u64) << 40) | ((21u8 as u64) << 48) | ((73u8 as u64) << 56)));
+            let t1l: uint8x16_t = vcombine_u8(vcreate_u8(((231u8 as u64)) | ((163u8 as u64) << 8) | ((131u8 as u64) << 16) | ((131u8 as u64) << 24) | ((139u8 as u64) << 32) | ((203u8 as u64) << 40) | ((203u8 as u64) << 48) | ((203u8 as u64) << 56)), vcreate_u8(((203u8 as u64)) | ((203u8 as u64) << 8) | ((203u8 as u64) << 16) | ((203u8 as u64) << 24) | ((203u8 as u64) << 32) | ((219u8 as u64) << 40) | ((203u8 as u64) << 48) | ((203u8 as u64) << 56)));
+            let t2h: uint8x16_t = vcombine_u8(vcreate_u8(((1u8 as u64)) | ((1u8 as u64) << 8) | ((1u8 as u64) << 16) | ((1u8 as u64) << 24) | ((1u8 as u64) << 32) | ((1u8 as u64) << 40) | ((1u8 as u64) << 48) | ((1u8 as u64) << 56)), vcreate_u8(((230u8 as u64)) | ((174u8 as u64) << 8) | ((186u8 as u64) << 16) | ((186u8 as u64) << 24) | ((1u8 as u64) << 32) | ((1u8 as u64) << 40) | ((1u8 as u64) << 48) | ((1u8 as u64) << 56)));
+            let k0f1: uint8x16_t = vdupq_n_u8(15u8);
+            let k60: uint8x16_t = vdupq_n_u8(96u8);
+            let k70: uint8x16_t = vdupq_n_u8(112u8);
+            let k80: uint8x16_t = vdupq_n_u8(128u8);
+            let mut uprev: uint8x16_t = vld1q_u8(state.add(64usize));
+            let mut verr: uint8x16_t = vdupq_n_u8(0);
+            let mut ubad: u64 = 0u64;
             let mut prev: u64 = 0u64;
             let mut pbase: usize = idx;
             let end2: *const u8 = blocks.add(((nblocks >> 1usize) << 7usize));
@@ -15476,7 +15726,26 @@ pub mod raw {
                 psc = (nqs >> 63u64);
                 let bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
                 err = (err | (ctl & in_string));
-                let mut bits1: u64 = bits;
+                let mut sbits: u64 = bits;
+                if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))))))))) & 0x8888888888888888u64) == 0u64) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev1: uint8x16_t = vextq_u8::<15>(uprev, in_);
+                    let sc: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev1)), vqtbl1q_u8(t1l, vandq_u8(prev1, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(uprev, in_), k60), vqsubq_u8(vextq_u8::<13>(uprev, in_), k70)), k80), sc));
+                    let prev11: uint8x16_t = vextq_u8::<15>(in_, in_1);
+                    let sc1: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev11)), vqtbl1q_u8(t1l, vandq_u8(prev11, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_1)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_, in_1), k60), vqsubq_u8(vextq_u8::<13>(in_, in_1), k70)), k80), sc1));
+                    let prev12: uint8x16_t = vextq_u8::<15>(in_1, in_2);
+                    let sc2: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev12)), vqtbl1q_u8(t1l, vandq_u8(prev12, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_2)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_1, in_2), k60), vqsubq_u8(vextq_u8::<13>(in_1, in_2), k70)), k80), sc2));
+                    let prev13: uint8x16_t = vextq_u8::<15>(in_2, in_3);
+                    let sc3: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev13)), vqtbl1q_u8(t1l, vandq_u8(prev13, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_3)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_2, in_3), k60), vqsubq_u8(vextq_u8::<13>(in_2, in_3), k70)), k80), sc3));
+                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_3;
                 let in_4: uint8x16_t = vld1q_u8(blk.add(64usize));
                 let in_5: uint8x16_t = vld1q_u8(blk.add(64usize).add(16usize));
                 let in_6: uint8x16_t = vld1q_u8(blk.add(64usize).add(32usize));
@@ -15514,8 +15783,28 @@ pub mod raw {
                 let nqs1: u64 = (scalar1 & (quote1 ^ 18446744073709551615u64));
                 let follows1: u64 = ((nqs1 << 1u64) | psc);
                 psc = (nqs1 >> 63u64);
-                let bits2: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
+                let bits1: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
                 err = (err | (ctl1 & in_string1));
+                let mut sbits1: u64 = bits1;
+                if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_4, in_5), vorrq_u8(in_6, in_7))))))))) & 0x8888888888888888u64) == 0u64) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev14: uint8x16_t = vextq_u8::<15>(uprev, in_4);
+                    let sc4: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev14)), vqtbl1q_u8(t1l, vandq_u8(prev14, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_4)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(uprev, in_4), k60), vqsubq_u8(vextq_u8::<13>(uprev, in_4), k70)), k80), sc4));
+                    let prev15: uint8x16_t = vextq_u8::<15>(in_4, in_5);
+                    let sc5: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev15)), vqtbl1q_u8(t1l, vandq_u8(prev15, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_5)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_4, in_5), k60), vqsubq_u8(vextq_u8::<13>(in_4, in_5), k70)), k80), sc5));
+                    let prev16: uint8x16_t = vextq_u8::<15>(in_5, in_6);
+                    let sc6: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev16)), vqtbl1q_u8(t1l, vandq_u8(prev16, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_6)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_5, in_6), k60), vqsubq_u8(vextq_u8::<13>(in_5, in_6), k70)), k80), sc6));
+                    let prev17: uint8x16_t = vextq_u8::<15>(in_6, in_7);
+                    let sc7: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev17)), vqtbl1q_u8(t1l, vandq_u8(prev17, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_7)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_6, in_7), k60), vqsubq_u8(vextq_u8::<13>(in_6, in_7), k70)), k80), sc7));
+                    uinc = (((((*blk.add(64usize).add(63usize)) > 191u8) || ((*blk.add(64usize).add(62usize)) > 223u8)) || ((*blk.add(64usize).add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_7;
                 if (prev != 0u64) {
                     let cnt: usize = (prev.count_ones() as usize);
                     let o: *mut u8 = out.add((n << 2usize));
@@ -15587,67 +15876,67 @@ pub mod raw {
                     }
                     n = (n + cnt);
                 }
-                if (bits1 != 0u64) {
-                    let cnt1: usize = (bits1.count_ones() as usize);
+                if (sbits != 0u64) {
+                    let cnt1: usize = (sbits.count_ones() as usize);
                     let o1: *mut u8 = out.add((n << 2usize));
-                    (o1 as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                    (o1 as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
                     if (cnt1 > 4usize) {
-                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
                         if (cnt1 > 8usize) {
-                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                            bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
                             if (cnt1 > 12usize) {
-                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
                                 if (cnt1 > 16usize) {
-                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                    bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
                                     if (cnt1 > 20usize) {
-                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
-                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                        bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
                                         if (cnt1 > 24usize) {
                                             let mut i1: usize = 24usize;
                                             while (i1 < cnt1) {
-                                                (o1.add((i1 << 2usize)) as *mut u32).write_unaligned(((base + (bits1.trailing_zeros() as usize)) as u32));
-                                                bits1 = (bits1 & bits1.wrapping_sub(1u64));
+                                                (o1.add((i1 << 2usize)) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                                sbits = (sbits & sbits.wrapping_sub(1u64));
                                                 i1 = (i1 + 1usize);
                                             }
                                         }
@@ -15658,7 +15947,7 @@ pub mod raw {
                     }
                     n = (n + cnt1);
                 }
-                prev = bits2;
+                prev = sbits1;
                 pbase = (base + 64usize);
                 blk = blk.add(128usize);
                 base = (base + 128usize);
@@ -15701,8 +15990,28 @@ pub mod raw {
                 let nqs2: u64 = (scalar2 & (quote2 ^ 18446744073709551615u64));
                 let follows2: u64 = ((nqs2 << 1u64) | psc);
                 psc = (nqs2 >> 63u64);
-                let bits3: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
+                let bits2: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
                 err = (err | (ctl2 & in_string2));
+                let mut sbits2: u64 = bits2;
+                if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_8, in_9), vorrq_u8(in_10, in_11))))))))) & 0x8888888888888888u64) == 0u64) {
+                    ubad = (ubad | uinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev18: uint8x16_t = vextq_u8::<15>(uprev, in_8);
+                    let sc8: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev18)), vqtbl1q_u8(t1l, vandq_u8(prev18, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_8)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(uprev, in_8), k60), vqsubq_u8(vextq_u8::<13>(uprev, in_8), k70)), k80), sc8));
+                    let prev19: uint8x16_t = vextq_u8::<15>(in_8, in_9);
+                    let sc9: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev19)), vqtbl1q_u8(t1l, vandq_u8(prev19, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_9)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_8, in_9), k60), vqsubq_u8(vextq_u8::<13>(in_8, in_9), k70)), k80), sc9));
+                    let prev110: uint8x16_t = vextq_u8::<15>(in_9, in_10);
+                    let sc10: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev110)), vqtbl1q_u8(t1l, vandq_u8(prev110, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_10)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_9, in_10), k60), vqsubq_u8(vextq_u8::<13>(in_9, in_10), k70)), k80), sc10));
+                    let prev111: uint8x16_t = vextq_u8::<15>(in_10, in_11);
+                    let sc11: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev111)), vqtbl1q_u8(t1l, vandq_u8(prev111, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_11)));
+                    verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_10, in_11), k60), vqsubq_u8(vextq_u8::<13>(in_10, in_11), k70)), k80), sc11));
+                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                }
+                uprev = in_11;
                 if (prev != 0u64) {
                     let cnt2: usize = (prev.count_ones() as usize);
                     let o2: *mut u8 = out.add((n << 2usize));
@@ -15774,7 +16083,7 @@ pub mod raw {
                     }
                     n = (n + cnt2);
                 }
-                prev = bits3;
+                prev = sbits2;
                 pbase = base;
             }
             if (prev != 0u64) {
@@ -15852,6 +16161,9 @@ pub mod raw {
             (state.add(8usize) as *mut u64).write_unaligned(pis);
             (state.add(16usize) as *mut u64).write_unaligned(psc);
             (state.add(24usize) as *mut u64).write_unaligned(err);
+            (state.add(32usize) as *mut u64).write_unaligned(((uerr | ubad) | ((!(vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpmaxq_u8(verr, verr))) == 0)) as u64)));
+            vst1q_u8(state.add(64usize), uprev);
+            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             return n;
         }
     }

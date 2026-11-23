@@ -4,8 +4,7 @@
 //   stage1bench same FILE            both give the same structural positions (exit 1 if not)
 //
 // The document is padded with spaces to a whole number of 64-byte blocks; simdjson gets the
-// unpadded length and its own padding. simdjson's stage 1 also validates UTF-8, which NVOL's
-// does not yet (PENDING 36): its rows carry that work.
+// unpadded length and its own padding. Both validate UTF-8 in the same pass.
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -36,15 +35,20 @@ struct Simdjson {
         const simdjson::implementation *impl = simdjson::get_active_implementation();
         if (impl->create_dom_parser_implementation(len, 1024, p)) { std::fputs("simdjson: alloc\n", stderr); std::exit(2); }
     }
+    simdjson::error_code err = simdjson::SUCCESS;
     size_t run(const uint8_t *buf, size_t len) {
-        if (p->stage1(buf, len, simdjson::stage1_mode::regular)) return 0;
+        err = p->stage1(buf, len, simdjson::stage1_mode::regular);
+        if (err) return 0;
         return p->n_structural_indexes;
     }
 };
 
-static size_t nvol(const uint8_t *buf, size_t len, std::vector<uint32_t> &out) {
-    uint64_t st[4] = {0, 0, 0, 0};
-    return nvol_json_index_raw((uint8_t *)st, buf, (len + 63) / 64, 0, (uint8_t *)out.data());
+// state words 4 and 5: UTF-8 error, ends inside a code point (an error at the end too)
+static size_t nvol(const uint8_t *buf, size_t len, std::vector<uint32_t> &out, bool *utf8_ok = nullptr) {
+    uint64_t st[(NVOL_JSON_STATE_BYTES + 7) / 8] = {0};
+    size_t n = nvol_json_index_raw((uint8_t *)st, buf, (len + 63) / 64, 0, (uint8_t *)out.data());
+    if (utf8_ok) *utf8_ok = st[4] == 0 && st[5] == 0;
+    return n;
 }
 
 int main(int argc, char **argv) {
@@ -52,9 +56,16 @@ int main(int argc, char **argv) {
         size_t len;
         auto buf = load(argv[2], len);
         std::vector<uint32_t> out(len + 64);
-        size_t n = nvol(buf.data(), len, out);
+        bool utf8_ok;
+        size_t n = nvol(buf.data(), len, out, &utf8_ok);
         Simdjson s(len);
         size_t m = s.run(buf.data(), len);
+        if (s.err == simdjson::UTF8_ERROR || !utf8_ok) {
+            bool same = (s.err == simdjson::UTF8_ERROR) == !utf8_ok;
+            std::printf("%s UTF-8 error: nvol %d simdjson %d: %s\n", argv[2], !utf8_ok,
+                        s.err == simdjson::UTF8_ERROR, same ? "same" : "DIFFERENT");
+            return same ? 0 : 1;
+        }
         // simdjson writes len, len, 0 past its last structural; n_structural_indexes leaves them out
         bool ok = m == n && std::memcmp(out.data(), s.p->structural_indexes.get(), n * 4) == 0;
         std::printf("%s nvol %zu simdjson %zu (%s): %s\n", argv[2], n, m,

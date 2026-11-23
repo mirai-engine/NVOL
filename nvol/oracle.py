@@ -3,6 +3,8 @@
 Written as the most obvious possible Python, independent of the IR, so that a
 bug in a kernel and a bug in its spec are unlikely to coincide.
 """
+import codecs
+
 NONE = (1 << 64) - 1
 
 
@@ -114,4 +116,12 @@ def json_index(data: bytes, idx: int = 0, state=(0, 0, 0, 0)):
             err = True
         prev_scalar = 1 if scalar and not quote else 0
     mask = (1 << 64) - 1
-    return out, (esc, mask if in_str else 0, prev_scalar, int(err))
+    # UTF-8 (simdjson's utf8_checker, from the start of the document): an invalid sequence is
+    # an error at once; a code point the bytes end inside is "incomplete"
+    dec = codecs.getincrementaldecoder("utf-8")("strict")
+    try:
+        dec.decode(data, final=False)
+        bad, inc = 0, int(dec.getstate()[0] != b"")
+    except UnicodeDecodeError:
+        bad, inc = 1, 0
+    return out, (esc, mask if in_str else 0, prev_scalar, int(err), bad, inc, data[-3:])

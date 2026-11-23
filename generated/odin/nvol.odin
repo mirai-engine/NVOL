@@ -8365,6 +8365,11 @@ when ODIN_ARCH == .amd64 {
 		base: uint = idx
 		end: [^]u8 = blocks[(nblocks << uint(6)):]
 		n: uint = uint(0)
+		uerr: u64 = intrinsics.unaligned_load((^u64)(state[uint(32):]))
+		uinc: u64 = intrinsics.unaligned_load((^u64)(state[uint(40):]))
+		p1: u64 = u64(state[uint(79):][0])
+		p2: u64 = u64(state[uint(78):][0])
+		p3: u64 = u64(state[uint(77):][0])
 		prev: u64 = u64(0)
 		pbase: uint = idx
 		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
@@ -8421,7 +8426,39 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
-			bits1: u64 = bits
+			sbits: u64 = bits
+			ui: uint = uint(0)
+			for (ui < uint(64)) {
+				uc: u64 = u64(blk[ui:][0])
+				tw: u64 = u64(144680345676153346)
+				if ((p1 >> u64(4)) > u64(7)) {
+					tw = u64(5266116582681116800)
+				}
+				tw1: u64 = u64(14685054810038969319)
+				if ((p1 & u64(15)) > u64(7)) {
+					tw1 = u64(14685072678315609035)
+				}
+				tw2: u64 = u64(72340172838076673)
+				if ((uc >> u64(4)) > u64(7)) {
+					tw2 = u64(72340175954030310)
+				}
+				usc: u64 = ((((tw >> (((p1 >> u64(4)) & u64(7)) << u64(3))) & u64(255)) & ((tw1 >> (((p1 & u64(15)) & u64(7)) << u64(3))) & u64(255))) & ((tw2 >> (((uc >> u64(4)) & u64(7)) << u64(3))) & u64(255)))
+				ss: u64 = u64(0)
+				if (p2 > u64(96)) {
+					ss = (p2 - u64(96))
+				}
+				ss1: u64 = u64(0)
+				if (p3 > u64(112)) {
+					ss1 = (p3 - u64(112))
+				}
+				m23: u64 = (ss | ss1)
+				uerr = (uerr | ((m23 & u64(128)) ~ usc))
+				p3 = p2
+				p2 = p1
+				p1 = uc
+				ui = (ui + uint(1))
+			}
+			uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
 			bs1: u64 = u64(0)
 			qt1: u64 = u64(0)
 			ws1: u64 = u64(0)
@@ -8472,8 +8509,41 @@ when ODIN_ARCH == .amd64 {
 			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
 			follows1: u64 = ((nqs1 << u64(1)) | psc)
 			psc = (nqs1 >> u64(63))
-			bits2: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			bits1: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
 			err = (err | (ctl1 & in_string1))
+			sbits1: u64 = bits1
+			ui1: uint = uint(0)
+			for (ui1 < uint(64)) {
+				uc1: u64 = u64(blk[uint(64):][ui1:][0])
+				tw3: u64 = u64(144680345676153346)
+				if ((p1 >> u64(4)) > u64(7)) {
+					tw3 = u64(5266116582681116800)
+				}
+				tw4: u64 = u64(14685054810038969319)
+				if ((p1 & u64(15)) > u64(7)) {
+					tw4 = u64(14685072678315609035)
+				}
+				tw5: u64 = u64(72340172838076673)
+				if ((uc1 >> u64(4)) > u64(7)) {
+					tw5 = u64(72340175954030310)
+				}
+				usc1: u64 = ((((tw3 >> (((p1 >> u64(4)) & u64(7)) << u64(3))) & u64(255)) & ((tw4 >> (((p1 & u64(15)) & u64(7)) << u64(3))) & u64(255))) & ((tw5 >> (((uc1 >> u64(4)) & u64(7)) << u64(3))) & u64(255)))
+				ss2: u64 = u64(0)
+				if (p2 > u64(96)) {
+					ss2 = (p2 - u64(96))
+				}
+				ss3: u64 = u64(0)
+				if (p3 > u64(112)) {
+					ss3 = (p3 - u64(112))
+				}
+				m231: u64 = (ss2 | ss3)
+				uerr = (uerr | ((m231 & u64(128)) ~ usc1))
+				p3 = p2
+				p2 = p1
+				p1 = uc1
+				ui1 = (ui1 + uint(1))
+			}
+			uinc = u64((((blk[uint(64):][uint(63):][0] > u8(191)) || (blk[uint(64):][uint(62):][0] > u8(223))) || (blk[uint(64):][uint(61):][0] > u8(239))))
 			if (prev != u64(0)) {
 				cnt: uint = uint(intrinsics.count_ones(prev))
 				o: [^]u8 = out[(n << uint(2)):]
@@ -8545,67 +8615,67 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt)
 			}
-			if (bits1 != u64(0)) {
-				cnt1: uint = uint(intrinsics.count_ones(bits1))
+			if (sbits != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(sbits))
 				o1: [^]u8 = out[(n << uint(2)):]
-				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
 				if (cnt1 > uint(4)) {
-					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
 					if (cnt1 > uint(8)) {
-						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
 						if (cnt1 > uint(12)) {
-							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
 							if (cnt1 > uint(16)) {
-								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
 								if (cnt1 > uint(20)) {
-									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
 									if (cnt1 > uint(24)) {
 										i3: uint = uint(24)
 										for (i3 < cnt1) {
-											intrinsics.unaligned_store((^u32)(o1[(i3 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-											bits1 = (bits1 & (bits1 - u64(1)))
+											intrinsics.unaligned_store((^u32)(o1[(i3 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+											sbits = (sbits & (sbits - u64(1)))
 											i3 = (i3 + uint(1))
 										}
 									}
@@ -8616,7 +8686,7 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt1)
 			}
-			prev = bits2
+			prev = sbits1
 			pbase = (base + uint(64))
 			blk = blk[uint(128):]
 			base = (base + uint(128))
@@ -8672,8 +8742,41 @@ when ODIN_ARCH == .amd64 {
 			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
 			follows2: u64 = ((nqs2 << u64(1)) | psc)
 			psc = (nqs2 >> u64(63))
-			bits3: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			bits2: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
 			err = (err | (ctl2 & in_string2))
+			sbits2: u64 = bits2
+			ui2: uint = uint(0)
+			for (ui2 < uint(64)) {
+				uc2: u64 = u64(blk[ui2:][0])
+				tw6: u64 = u64(144680345676153346)
+				if ((p1 >> u64(4)) > u64(7)) {
+					tw6 = u64(5266116582681116800)
+				}
+				tw7: u64 = u64(14685054810038969319)
+				if ((p1 & u64(15)) > u64(7)) {
+					tw7 = u64(14685072678315609035)
+				}
+				tw8: u64 = u64(72340172838076673)
+				if ((uc2 >> u64(4)) > u64(7)) {
+					tw8 = u64(72340175954030310)
+				}
+				usc2: u64 = ((((tw6 >> (((p1 >> u64(4)) & u64(7)) << u64(3))) & u64(255)) & ((tw7 >> (((p1 & u64(15)) & u64(7)) << u64(3))) & u64(255))) & ((tw8 >> (((uc2 >> u64(4)) & u64(7)) << u64(3))) & u64(255)))
+				ss4: u64 = u64(0)
+				if (p2 > u64(96)) {
+					ss4 = (p2 - u64(96))
+				}
+				ss5: u64 = u64(0)
+				if (p3 > u64(112)) {
+					ss5 = (p3 - u64(112))
+				}
+				m232: u64 = (ss4 | ss5)
+				uerr = (uerr | ((m232 & u64(128)) ~ usc2))
+				p3 = p2
+				p2 = p1
+				p1 = uc2
+				ui2 = (ui2 + uint(1))
+			}
+			uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
 			if (prev != u64(0)) {
 				cnt2: uint = uint(intrinsics.count_ones(prev))
 				o2: [^]u8 = out[(n << uint(2)):]
@@ -8745,7 +8848,7 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt2)
 			}
-			prev = bits3
+			prev = sbits2
 			pbase = base
 		}
 		if (prev != u64(0)) {
@@ -8823,6 +8926,11 @@ when ODIN_ARCH == .amd64 {
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
 		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
 		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		intrinsics.unaligned_store((^u64)(state[uint(32):]), uerr)
+		state[uint(79):][0] = u8(u8(p1))
+		state[uint(78):][0] = u8(u8(p2))
+		state[uint(77):][0] = u8(u8(p3))
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		return n
 	}
 
@@ -8843,6 +8951,18 @@ when ODIN_ARCH == .amd64 {
 		k_qt: V16 = V16(u8(34))
 		k20: V16 = V16(u8(32))
 		k1f: V16 = V16(u8(31))
+		uerr: u64 = intrinsics.unaligned_load((^u64)(state[uint(32):]))
+		uinc: u64 = intrinsics.unaligned_load((^u64)(state[uint(40):]))
+		t1h: V16 = V16{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
+		t1l: V16 = V16{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
+		t2h: V16 = V16{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
+		k0f: V16 = V16(u8(15))
+		k60: V16 = V16(u8(96))
+		k70: V16 = V16(u8(112))
+		k80: V16 = V16(u8(128))
+		uprev: V16 = intrinsics.unaligned_load((^V16)(state[uint(64):]))
+		verr: V16 = V16(0)
+		ubad: u64 = u64(0)
 		prev: u64 = u64(0)
 		pbase: uint = idx
 		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
@@ -8881,7 +9001,25 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
-			bits1: u64 = bits
+			sbits: u64 = bits
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3))) == u32(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev1: V16 = intrinsics.simd_shuffle(uprev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc))
+				prev11: V16 = intrinsics.simd_shuffle(in_, in_1, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc1: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev11, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev11, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_1, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc1))
+				prev12: V16 = intrinsics.simd_shuffle(in_1, in_2, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc2: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev12, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev12, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_2, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc2))
+				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_3, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
+				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+			}
+			uprev = in_3
 			in_4: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):]))
 			in_5: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(16):]))
 			in_6: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(32):]))
@@ -8914,8 +9052,27 @@ when ODIN_ARCH == .amd64 {
 			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
 			follows1: u64 = ((nqs1 << u64(1)) | psc)
 			psc = (nqs1 >> u64(63))
-			bits2: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			bits1: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
 			err = (err | (ctl1 & in_string1))
+			sbits1: u64 = bits1
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_4, in_5), intrinsics.simd_bit_or(in_6, in_7))) == u32(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev14: V16 = intrinsics.simd_shuffle(uprev, in_4, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc4: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev14, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev14, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_4, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_4, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_4, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc4))
+				prev15: V16 = intrinsics.simd_shuffle(in_4, in_5, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc5: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev15, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev15, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_5, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc5))
+				prev16: V16 = intrinsics.simd_shuffle(in_5, in_6, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc6: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev16, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev16, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_6, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_5, in_6, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_5, in_6, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc6))
+				prev17: V16 = intrinsics.simd_shuffle(in_6, in_7, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc7: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev17, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev17, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_7, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc7))
+				uinc = u64((((blk[uint(64):][uint(63):][0] > u8(191)) || (blk[uint(64):][uint(62):][0] > u8(223))) || (blk[uint(64):][uint(61):][0] > u8(239))))
+			}
+			uprev = in_7
 			if (prev != u64(0)) {
 				cnt: uint = uint(intrinsics.count_ones(prev))
 				o: [^]u8 = out[(n << uint(2)):]
@@ -8987,67 +9144,67 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt)
 			}
-			if (bits1 != u64(0)) {
-				cnt1: uint = uint(intrinsics.count_ones(bits1))
+			if (sbits != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(sbits))
 				o1: [^]u8 = out[(n << uint(2)):]
-				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
 				if (cnt1 > uint(4)) {
-					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
 					if (cnt1 > uint(8)) {
-						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
 						if (cnt1 > uint(12)) {
-							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
 							if (cnt1 > uint(16)) {
-								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
 								if (cnt1 > uint(20)) {
-									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
 									if (cnt1 > uint(24)) {
 										i1: uint = uint(24)
 										for (i1 < cnt1) {
-											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-											bits1 = (bits1 & (bits1 - u64(1)))
+											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+											sbits = (sbits & (sbits - u64(1)))
 											i1 = (i1 + uint(1))
 										}
 									}
@@ -9058,7 +9215,7 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt1)
 			}
-			prev = bits2
+			prev = sbits1
 			pbase = (base + uint(64))
 			blk = blk[uint(128):]
 			base = (base + uint(128))
@@ -9096,8 +9253,27 @@ when ODIN_ARCH == .amd64 {
 			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
 			follows2: u64 = ((nqs2 << u64(1)) | psc)
 			psc = (nqs2 >> u64(63))
-			bits3: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			bits2: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
 			err = (err | (ctl2 & in_string2))
+			sbits2: u64 = bits2
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_8, in_9), intrinsics.simd_bit_or(in_10, in_11))) == u32(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev18: V16 = intrinsics.simd_shuffle(uprev, in_8, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc8: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev18, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev18, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_8, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_8, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_8, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc8))
+				prev19: V16 = intrinsics.simd_shuffle(in_8, in_9, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc9: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev19, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev19, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_9, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_8, in_9, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_8, in_9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc9))
+				prev110: V16 = intrinsics.simd_shuffle(in_9, in_10, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc10: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev110, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev110, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_10, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_9, in_10, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_9, in_10, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc10))
+				prev111: V16 = intrinsics.simd_shuffle(in_10, in_11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc11: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev111, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev111, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_11, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc11))
+				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+			}
+			uprev = in_11
 			if (prev != u64(0)) {
 				cnt2: uint = uint(intrinsics.count_ones(prev))
 				o2: [^]u8 = out[(n << uint(2)):]
@@ -9169,7 +9345,7 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt2)
 			}
-			prev = bits3
+			prev = sbits2
 			pbase = base
 		}
 		if (prev != u64(0)) {
@@ -9247,6 +9423,9 @@ when ODIN_ARCH == .amd64 {
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
 		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
 		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		intrinsics.unaligned_store((^u64)(state[uint(32):]), ((uerr | ubad) | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^V16)(state[uint(64):]), uprev)
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		return n
 	}
 
@@ -9267,6 +9446,18 @@ when ODIN_ARCH == .amd64 {
 		k_qt: V32 = V32(u8(34))
 		k20: V32 = V32(u8(32))
 		k1f: V32 = V32(u8(31))
+		uerr: u64 = intrinsics.unaligned_load((^u64)(state[uint(32):]))
+		uinc: u64 = intrinsics.unaligned_load((^u64)(state[uint(40):]))
+		t1h: V32 = V32{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
+		t1l: V32 = V32{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203), u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
+		t2h: V32 = V32{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
+		k0f: V32 = V32(u8(15))
+		k60: V32 = V32(u8(96))
+		k70: V32 = V32(u8(112))
+		k80: V32 = V32(u8(128))
+		uprev: V32 = intrinsics.unaligned_load((^V32)(state[uint(48):]))
+		verr: V32 = V32(0)
+		ubad: u64 = u64(0)
 		prev: u64 = u64(0)
 		pbase: uint = idx
 		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
@@ -9296,7 +9487,19 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
-			bits1: u64 = bits
+			sbits: u64 = bits
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_, in_1)) == u32(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev1: V32 = intrinsics.simd_shuffle(uprev, in_, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
+				sc: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev1, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_, V32(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc))
+				prev11: V32 = intrinsics.simd_shuffle(in_, in_1, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
+				sc1: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev11, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev11, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_1, V32(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc1))
+				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+			}
+			uprev = in_1
 			in_2: V32 = intrinsics.unaligned_load((^V32)(blk[uint(64):]))
 			in_3: V32 = intrinsics.unaligned_load((^V32)(blk[uint(64):][uint(32):]))
 			bs1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_2, k_bs))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_3, k_bs))) << 32)
@@ -9320,8 +9523,21 @@ when ODIN_ARCH == .amd64 {
 			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
 			follows1: u64 = ((nqs1 << u64(1)) | psc)
 			psc = (nqs1 >> u64(63))
-			bits2: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			bits1: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
 			err = (err | (ctl1 & in_string1))
+			sbits1: u64 = bits1
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_2, in_3)) == u32(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev12: V32 = intrinsics.simd_shuffle(uprev, in_2, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
+				sc2: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev12, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev12, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_2, V32(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_2, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_2, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc2))
+				prev13: V32 = intrinsics.simd_shuffle(in_2, in_3, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
+				sc3: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev13, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_3, V32(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc3))
+				uinc = u64((((blk[uint(64):][uint(63):][0] > u8(191)) || (blk[uint(64):][uint(62):][0] > u8(223))) || (blk[uint(64):][uint(61):][0] > u8(239))))
+			}
+			uprev = in_3
 			if (prev != u64(0)) {
 				cnt: uint = uint(intrinsics.count_ones(prev))
 				o: [^]u8 = out[(n << uint(2)):]
@@ -9393,67 +9609,67 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt)
 			}
-			if (bits1 != u64(0)) {
-				cnt1: uint = uint(intrinsics.count_ones(bits1))
+			if (sbits != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(sbits))
 				o1: [^]u8 = out[(n << uint(2)):]
-				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
 				if (cnt1 > uint(4)) {
-					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
 					if (cnt1 > uint(8)) {
-						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
 						if (cnt1 > uint(12)) {
-							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
 							if (cnt1 > uint(16)) {
-								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
 								if (cnt1 > uint(20)) {
-									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
 									if (cnt1 > uint(24)) {
 										i1: uint = uint(24)
 										for (i1 < cnt1) {
-											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-											bits1 = (bits1 & (bits1 - u64(1)))
+											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+											sbits = (sbits & (sbits - u64(1)))
 											i1 = (i1 + uint(1))
 										}
 									}
@@ -9464,7 +9680,7 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt1)
 			}
-			prev = bits2
+			prev = sbits1
 			pbase = (base + uint(64))
 			blk = blk[uint(128):]
 			base = (base + uint(128))
@@ -9493,8 +9709,21 @@ when ODIN_ARCH == .amd64 {
 			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
 			follows2: u64 = ((nqs2 << u64(1)) | psc)
 			psc = (nqs2 >> u64(63))
-			bits3: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			bits2: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
 			err = (err | (ctl2 & in_string2))
+			sbits2: u64 = bits2
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_4, in_5)) == u32(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev14: V32 = intrinsics.simd_shuffle(uprev, in_4, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
+				sc4: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev14, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev14, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_4, V32(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_4, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_4, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc4))
+				prev15: V32 = intrinsics.simd_shuffle(in_4, in_5, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
+				sc5: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev15, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev15, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_5, V32(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc5))
+				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+			}
+			uprev = in_5
 			if (prev != u64(0)) {
 				cnt2: uint = uint(intrinsics.count_ones(prev))
 				o2: [^]u8 = out[(n << uint(2)):]
@@ -9566,7 +9795,7 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt2)
 			}
-			prev = bits3
+			prev = sbits2
 			pbase = base
 		}
 		if (prev != u64(0)) {
@@ -9644,6 +9873,9 @@ when ODIN_ARCH == .amd64 {
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
 		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
 		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		intrinsics.unaligned_store((^u64)(state[uint(32):]), ((uerr | ubad) | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^V32)(state[uint(48):]), uprev)
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		return n
 	}
 
@@ -14482,6 +14714,18 @@ when ODIN_ARCH == .amd64 {
 		k20: V16 = V16(u8(32))
 		k1f: V16 = V16(u8(31))
 		k0f: V16 = V16(u8(15))
+		uerr: u64 = intrinsics.unaligned_load((^u64)(state[uint(32):]))
+		uinc: u64 = intrinsics.unaligned_load((^u64)(state[uint(40):]))
+		t1h: V16 = V16{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
+		t1l: V16 = V16{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
+		t2h: V16 = V16{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
+		k0f1: V16 = V16(u8(15))
+		k60: V16 = V16(u8(96))
+		k70: V16 = V16(u8(112))
+		k80: V16 = V16(u8(128))
+		uprev: V16 = intrinsics.unaligned_load((^V16)(state[uint(64):]))
+		verr: V16 = V16(0)
+		ubad: u64 = u64(0)
 		prev: u64 = u64(0)
 		pbase: uint = idx
 		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
@@ -14524,7 +14768,25 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
-			bits1: u64 = bits
+			sbits: u64 = bits
+			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev1: V16 = intrinsics.simd_shuffle(uprev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev1, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc))
+				prev11: V16 = intrinsics.simd_shuffle(in_, in_1, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc1: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev11, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev11, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_1, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc1))
+				prev12: V16 = intrinsics.simd_shuffle(in_1, in_2, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc2: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev12, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev12, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_2, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc2))
+				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev13, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_3, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
+				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+			}
+			uprev = in_3
 			in_4: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):]))
 			in_5: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(16):]))
 			in_6: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(32):]))
@@ -14561,8 +14823,27 @@ when ODIN_ARCH == .amd64 {
 			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
 			follows1: u64 = ((nqs1 << u64(1)) | psc)
 			psc = (nqs1 >> u64(63))
-			bits2: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			bits1: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
 			err = (err | (ctl1 & in_string1))
+			sbits1: u64 = bits1
+			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_4, in_5), intrinsics.simd_bit_or(in_6, in_7)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev14: V16 = intrinsics.simd_shuffle(uprev, in_4, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc4: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev14, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev14, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_4, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_4, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_4, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc4))
+				prev15: V16 = intrinsics.simd_shuffle(in_4, in_5, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc5: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev15, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev15, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_5, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc5))
+				prev16: V16 = intrinsics.simd_shuffle(in_5, in_6, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc6: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev16, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev16, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_6, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_5, in_6, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_5, in_6, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc6))
+				prev17: V16 = intrinsics.simd_shuffle(in_6, in_7, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc7: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev17, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev17, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_7, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc7))
+				uinc = u64((((blk[uint(64):][uint(63):][0] > u8(191)) || (blk[uint(64):][uint(62):][0] > u8(223))) || (blk[uint(64):][uint(61):][0] > u8(239))))
+			}
+			uprev = in_7
 			if (prev != u64(0)) {
 				cnt: uint = uint(intrinsics.count_ones(prev))
 				o: [^]u8 = out[(n << uint(2)):]
@@ -14634,67 +14915,67 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt)
 			}
-			if (bits1 != u64(0)) {
-				cnt1: uint = uint(intrinsics.count_ones(bits1))
+			if (sbits != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(sbits))
 				o1: [^]u8 = out[(n << uint(2)):]
-				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
 				if (cnt1 > uint(4)) {
-					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
 					if (cnt1 > uint(8)) {
-						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
 						if (cnt1 > uint(12)) {
-							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
 							if (cnt1 > uint(16)) {
-								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
 								if (cnt1 > uint(20)) {
-									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
-									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
 									if (cnt1 > uint(24)) {
 										i1: uint = uint(24)
 										for (i1 < cnt1) {
-											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
-											bits1 = (bits1 & (bits1 - u64(1)))
+											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+											sbits = (sbits & (sbits - u64(1)))
 											i1 = (i1 + uint(1))
 										}
 									}
@@ -14705,7 +14986,7 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt1)
 			}
-			prev = bits2
+			prev = sbits1
 			pbase = (base + uint(64))
 			blk = blk[uint(128):]
 			base = (base + uint(128))
@@ -14747,8 +15028,27 @@ when ODIN_ARCH == .amd64 {
 			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
 			follows2: u64 = ((nqs2 << u64(1)) | psc)
 			psc = (nqs2 >> u64(63))
-			bits3: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			bits2: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
 			err = (err | (ctl2 & in_string2))
+			sbits2: u64 = bits2
+			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_8, in_9), intrinsics.simd_bit_or(in_10, in_11)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
+				ubad = (ubad | uinc)
+			} else {
+				prev18: V16 = intrinsics.simd_shuffle(uprev, in_8, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc8: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev18, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev18, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_8, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_8, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_8, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc8))
+				prev19: V16 = intrinsics.simd_shuffle(in_8, in_9, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc9: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev19, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev19, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_9, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_8, in_9, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_8, in_9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc9))
+				prev110: V16 = intrinsics.simd_shuffle(in_9, in_10, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc10: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev110, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev110, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_10, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_9, in_10, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_9, in_10, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc10))
+				prev111: V16 = intrinsics.simd_shuffle(in_10, in_11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc11: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev111, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev111, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_11, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc11))
+				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+			}
+			uprev = in_11
 			if (prev != u64(0)) {
 				cnt2: uint = uint(intrinsics.count_ones(prev))
 				o2: [^]u8 = out[(n << uint(2)):]
@@ -14820,7 +15120,7 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt2)
 			}
-			prev = bits3
+			prev = sbits2
 			pbase = base
 		}
 		if (prev != u64(0)) {
@@ -14898,6 +15198,9 @@ when ODIN_ARCH == .amd64 {
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
 		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
 		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		intrinsics.unaligned_store((^u64)(state[uint(32):]), ((uerr | ubad) | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^V16)(state[uint(64):]), uprev)
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		return n
 	}
 
@@ -15138,7 +15441,7 @@ BYTESET_SET16 :: 96   // 16 bytes in the class: the members in increasing order,
 BYTESET_PAIR_SEL :: 240   // u64 in the pair state: 0 empty, 1..CHAIN_MAX k-compare kernel _k<sel>, CHAIN_MAX + 1 nibble lookup
 BYTESET_PAIR_REACH :: 248   // u64 in the pair state: max(i1, i2)
 
-JSON_STATE_BYTES :: 32   // bytes of the nvol_json_index_raw state
+JSON_STATE_BYTES :: 80   // bytes of the nvol_json_index_raw state
 
 MEMMEM_STATE_WORDS :: 8
 // Substring finder (memchr::memmem::Finder). Borrows the needle.

@@ -37,27 +37,27 @@ NVOL_K13: db 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
 align 32, db 0
 NVOL_K14: db 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
 align 32, db 0
-NVOL_K15: db 32, 100, 100, 100, 17, 100, 113, 2, 100, 9, 10, 112, 100, 13, 100, 100, 32, 100, 100, 100, 17, 100, 113, 2, 100, 9, 10, 112, 100, 13, 100, 100
+NVOL_K15: db 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
 align 32, db 0
-NVOL_K16: db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 123, 44, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 123, 44, 125, 0, 0
+NVOL_K16: db 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
 align 32, db 0
-NVOL_K17: db 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92
+NVOL_K17: db 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
 align 32, db 0
-NVOL_K18: db 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34
+NVOL_K18: db 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
 align 32, db 0
-NVOL_K19: db 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
+NVOL_K19: db 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
 align 32, db 0
-NVOL_K20: db 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
+NVOL_K20: db 32, 100, 100, 100, 17, 100, 113, 2, 100, 9, 10, 112, 100, 13, 100, 100, 32, 100, 100, 100, 17, 100, 113, 2, 100, 9, 10, 112, 100, 13, 100, 100
 align 32, db 0
-NVOL_K21: db 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
+NVOL_K21: db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 123, 44, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 123, 44, 125, 0, 0
 align 32, db 0
-NVOL_K22: db 231, 163, 131, 131, 139, 203, 203, 203, 203, 203, 203, 203, 203, 219, 203, 203
+NVOL_K22: db 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92
 align 32, db 0
-NVOL_K23: db 1, 1, 1, 1, 1, 1, 1, 1, 230, 174, 186, 186, 1, 1, 1, 1
+NVOL_K23: db 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34
 align 32, db 0
-NVOL_K24: db 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96
+NVOL_K24: db 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
 align 32, db 0
-NVOL_K25: db 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
+NVOL_K25: db 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
 align 32, db 0
 NVOL_K26: db 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73, 2, 2, 2, 2, 2, 2, 2, 2, 128, 128, 128, 128, 33, 1, 21, 73
 align 32, db 0
@@ -54680,71 +54680,85 @@ nvol_json_index_scalar:
     push r13
     push r14
     push r15
-    sub rsp, 328
+    sub rsp, 488
     mov qword [rsp], rcx
     mov rax, rcx
-    mov r11, qword [rsp + 432]
+    mov rsi, rdx
+    mov r11, qword [rsp + 592]
     mov [rsp + 32], r11
-    mov rsi, qword [rax]
-    mov r11, qword [rax + 8]
+    mov r11, qword [rax]
     mov [rsp + 64], r11
-    mov r11, qword [rax + 16]
+    mov r11, qword [rax + 8]
     mov [rsp + 96], r11
-    mov r11, qword [rax + 24]
+    mov r11, qword [rax + 16]
     mov [rsp + 128], r11
-    mov r12, rdx
-    mov qword [rsp + 160], r9
+    mov r11, qword [rax + 24]
+    mov [rsp + 160], r11
+    mov rbx, rsi
+    mov qword [rsp + 192], r9
     mov rcx, r8
     shl rcx, 6
-    lea r11, [rdx + rcx]
-    mov [rsp + 192], r11
-    xor r11d, r11d
+    lea r11, [rsi + rcx]
     mov [rsp + 224], r11
-    xor r14d, r14d
+    xor r11d, r11d
+    mov [rsp + 256], r11
+    mov r14, qword [rax + 32]
+    mov r15, qword [rax + 40]
+    movzx r12d, byte [rax + 79]
+    movzx edx, byte [rax + 78]
+    movzx r13d, byte [rax + 77]
+    xor eax, eax
+    mov qword [rsp + 288], r9
     mov rcx, r8
     shr rcx, 1
     shl rcx, 7
-    lea r11, [rdx + rcx]
-    mov [rsp + 256], r11
-    cmp r12, r11
+    lea r11, [rsi + rcx]
+    mov [rsp + 320], r11
+    cmp rbx, r11
     jae strict near .L3
     db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L2:
-    xor r8d, r8d
-    xor eax, eax
     xor r15d, r15d
-    xor edx, edx
-    xor r13d, r13d
     xor ebp, ebp
-    cmp rbp, 64
-    jae strict short .L5
-    db 0xf, 0x1f, 0x0
+    xor r11d, r11d
+    mov [rsp + 352], r11
+    xor esi, esi
+    xor r11d, r11d
+    mov [rsp + 384], r11
+    xor r8d, r8d
+    cmp r8, 64
+    jae strict near .L5
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
 .L4:
-    movzx ebx, byte [r12 + rbp]
-    mov edi, 1
-    mov rcx, rbp
+    movzx r9d, byte [rbx + r8]
+    mov r11d, 1
+    mov [rsp + 416], r11
+    mov rcx, r8
+    mov rdi, r11
     shl rdi, cl
-    cmp ebx, 92
+    cmp r9d, 92
     jne strict short .L6
-    or r8, rdi
+    or r15, rdi
 .L6:
-    cmp ebx, 34
+    cmp r9d, 34
     jne strict short .L8
-    or rax, rdi
+    or rbp, rdi
 .L8:
-    cmp ebx, 32
+    cmp r9d, 32
     je strict short .L12
-    cmp ebx, 9
+    cmp r9d, 9
     je strict short .L12
-    cmp ebx, 10
+    cmp r9d, 10
     je strict short .L13
-    cmp ebx, 13
+    cmp r9d, 13
     jne strict short .L10
 .L13:
 .L12:
-    or r15, rdi
+    mov r11, qword [rsp + 352]
+    or r11, rdi
+    mov [rsp + 352], r11
 .L10:
-    mov rcx, rbx
+    mov rcx, r9
     or rcx, 32
     cmp ecx, 58
     je strict short .L16
@@ -54756,1163 +54770,1544 @@ nvol_json_index_scalar:
     jne strict short .L14
 .L17:
 .L16:
-    or rdx, rdi
+    or rsi, rdi
 .L14:
-    cmp ebx, 31
+    cmp r9d, 31
     ja strict short .L18
-    or r13, rdi
+    mov r11, qword [rsp + 384]
+    or r11, rdi
+    mov [rsp + 384], r11
 .L18:
-    add rbp, 1
-    cmp rbp, 64
-    jb strict short .L4
+    add r8, 1
+    cmp r8, 64
+    jb strict near .L4
 .L5:
-    mov rcx, rsi
-    test r8, r8
+    mov rcx, qword [rsp + 64]
+    test r15, r15
     je strict short .L20
-    mov rcx, r8
-    mov rdi, rsi
-    not rdi
-    and rcx, rdi
-    mov rdi, rcx
-    shl rdi, 1
-    mov rbx, 12297829382473034410
-    or rdi, rbx
-    sub rdi, rcx
+    mov rcx, r15
+    mov r8, qword [rsp + 64]
+    not r8
+    and rcx, r8
+    mov r8, rcx
+    shl r8, 1
+    mov r9, 12297829382473034410
+    or r8, r9
+    sub r8, rcx
     mov rcx, 12297829382473034410
-    xor rdi, rcx
-    mov rcx, rdi
-    mov rbx, r8
-    or rbx, rsi
-    xor rcx, rbx
-    mov rsi, rdi
-    and rsi, r8
-    shr rsi, 63
+    xor r8, rcx
+    mov rcx, r8
+    mov r9, r15
+    mov r11, [rsp + 64]
+    or r9, r11
+    xor rcx, r9
+    mov r11, r8
+    and r11, r15
+    shr r11, 63
+    mov [rsp + 64], r11
     jmp strict short .L21
 .L20:
-    xor esi, esi
+    xor r11d, r11d
+    mov [rsp + 64], r11
 .L21:
     not rcx
-    and rax, rcx
-    mov rcx, rax
+    and rbp, rcx
+    mov rcx, rbp
     mov r8, rcx
-    mov rdi, rcx
-    shl rdi, 1
-    xor r8, rdi
+    mov r9, rcx
+    shl r9, 1
+    xor r8, r9
     mov rcx, r8
-    mov rdi, rcx
-    shl rdi, 2
-    xor r8, rdi
+    mov r9, rcx
+    shl r9, 2
+    xor r8, r9
     mov rcx, r8
-    mov rdi, rcx
-    shl rdi, 4
-    xor r8, rdi
+    mov r9, rcx
+    shl r9, 4
+    xor r8, r9
     mov rcx, r8
-    mov rdi, rcx
-    shl rdi, 8
-    xor r8, rdi
+    mov r9, rcx
+    shl r9, 8
+    xor r8, r9
     mov rcx, r8
-    mov rdi, rcx
-    shl rdi, 16
-    xor r8, rdi
+    mov r9, rcx
+    shl r9, 16
+    xor r8, r9
     mov rcx, r8
-    mov rdi, rcx
-    shl rdi, 32
-    xor r8, rdi
+    mov r9, rcx
+    shl r9, 32
+    xor r8, r9
     mov rcx, r8
-    mov r11, [rsp + 64]
+    mov r11, [rsp + 96]
     xor rcx, r11
     xor r11d, r11d
     mov r8, rcx
     shr r8, 63
     sub r11, r8
-    mov [rsp + 64], r11
-    mov r8, rdx
-    or r8, r15
-    not r8
-    mov rdi, r8
-    mov rbx, rax
-    not rbx
-    and rdi, rbx
-    mov rbx, rdi
-    shl rbx, 1
-    mov r11, [rsp + 96]
-    or rbx, r11
-    mov r11, rdi
-    shr r11, 63
     mov [rsp + 96], r11
-    not rbx
-    and r8, rbx
-    or rdx, r8
-    mov r8, rcx
-    xor r8, rax
+    mov r8, rsi
+    mov r11, [rsp + 352]
+    or r8, r11
     not r8
-    and rdx, r8
-    mov r11, qword [rsp + 128]
-    and r13, rcx
-    or r11, r13
+    mov r9, r8
+    mov rdi, rbp
+    not rdi
+    and r9, rdi
+    mov rdi, r9
+    shl rdi, 1
+    mov r11, [rsp + 128]
+    or rdi, r11
+    mov r11, r9
+    shr r11, 63
     mov [rsp + 128], r11
-    mov qword [rsp + 288], rdx
-    xor eax, eax
+    not rdi
+    and r8, rdi
+    or rsi, r8
+    mov r8, rcx
+    xor r8, rbp
+    not r8
+    and rsi, r8
+    mov r11, qword [rsp + 160]
+    mov r8, qword [rsp + 384]
+    and r8, rcx
+    or r11, r8
+    mov [rsp + 160], r11
+    mov qword [rsp + 352], rsi
     xor r8d, r8d
-    xor edi, edi
-    xor ebx, ebx
-    xor ebp, ebp
-    xor r13d, r13d
-    cmp r13, 64
-    jae strict short .L23
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    cmp r8, 64
+    jae strict near .L23
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 .L22:
-    movzx r15d, byte [r12 + r13 + 64]
-    mov edx, 1
-    mov rcx, r13
-    shl rdx, cl
-    cmp r15d, 92
-    jne strict short .L24
-    or rax, rdx
+    movzx r9d, byte [rbx + r8]
+    mov rdi, 144680345676153346
+    mov rcx, r12
+    shr rcx, 4
+    cmp rcx, 7
+    jbe strict short .L24
+    mov rdi, 5266116582681116800
 .L24:
-    cmp r15d, 34
-    jne strict short .L26
-    or r8, rdx
+    mov rbp, 14685054810038969319
+    mov rcx, r12
+    and rcx, 15
+    cmp rcx, 7
+    jbe strict short .L26
+    mov rbp, 14685072678315609035
 .L26:
-    cmp r15d, 32
-    je strict short .L30
-    cmp r15d, 9
-    je strict short .L30
-    cmp r15d, 10
-    je strict short .L31
-    cmp r15d, 13
-    jne strict short .L28
-.L31:
-.L30:
-    or rdi, rdx
+    mov r15, 72340172838076673
+    mov rcx, r9
+    shr rcx, 4
+    cmp rcx, 7
+    jbe strict short .L28
+    mov r15, 72340175954030310
 .L28:
-    mov rcx, r15
+    mov rcx, r12
+    shr rcx, 4
+    and rcx, 7
+    shl rcx, 3
+    shr rdi, cl
+    and rdi, 255
+    mov rcx, r12
+    and rcx, 15
+    and rcx, 7
+    shl rcx, 3
+    shr rbp, cl
+    and rbp, 255
+    and rdi, rbp
+    mov rcx, r9
+    shr rcx, 4
+    and rcx, 7
+    shl rcx, 3
+    shr r15, cl
+    and r15, 255
+    and rdi, r15
+    xor ecx, ecx
+    cmp rdx, 96
+    jbe strict short .L30
+    lea rcx, [rdx - 96]
+.L30:
+    xor ebp, ebp
+    cmp r13, 112
+    jbe strict short .L32
+    lea rbp, [r13 - 112]
+.L32:
+    or rcx, rbp
+    and rcx, 128
+    xor rcx, rdi
+    or r14, rcx
+    mov r13, rdx
+    mov rdx, r12
+    mov r12, r9
+    add r8, 1
+    cmp r8, 64
+    jb strict near .L22
+.L23:
+    xor r15d, r15d
+    movzx ecx, byte [rbx + 63]
+    cmp ecx, 191
+    ja strict short .L35
+    movzx ecx, byte [rbx + 62]
+    cmp ecx, 223
+    ja strict short .L35
+    movzx ecx, byte [rbx + 61]
+    cmp ecx, 239
+    jbe strict short .L34
+.L35:
+    mov r15d, 1
+.L34:
+    xor r8d, r8d
+    xor r11d, r11d
+    mov [rsp + 384], r11
+    xor r11d, r11d
+    mov [rsp + 416], r11
+    xor ebp, ebp
+    xor r15d, r15d
+    xor esi, esi
+    cmp rsi, 64
+    jae strict near .L37
+    db 0x90
+.L36:
+    movzx r9d, byte [rbx + rsi + 64]
+    mov r11d, 1
+    mov [rsp + 448], r11
+    mov rcx, rsi
+    mov rdi, r11
+    shl rdi, cl
+    cmp r9d, 92
+    jne strict short .L38
+    or r8, rdi
+.L38:
+    cmp r9d, 34
+    jne strict short .L40
+    mov r11, qword [rsp + 384]
+    or r11, rdi
+    mov [rsp + 384], r11
+.L40:
+    cmp r9d, 32
+    je strict short .L44
+    cmp r9d, 9
+    je strict short .L44
+    cmp r9d, 10
+    je strict short .L45
+    cmp r9d, 13
+    jne strict short .L42
+.L45:
+.L44:
+    mov r11, qword [rsp + 416]
+    or r11, rdi
+    mov [rsp + 416], r11
+.L42:
+    mov rcx, r9
     or rcx, 32
     cmp ecx, 58
-    je strict short .L34
+    je strict short .L48
     cmp ecx, 123
-    je strict short .L34
+    je strict short .L48
     cmp ecx, 44
-    je strict short .L35
+    je strict short .L49
     cmp ecx, 125
-    jne strict short .L32
-.L35:
-.L34:
-    or rbx, rdx
-.L32:
-    cmp r15d, 31
-    ja strict short .L36
-    or rbp, rdx
-.L36:
-    add r13, 1
-    cmp r13, 64
-    jb strict short .L22
-.L23:
-    mov rcx, rsi
-    test rax, rax
-    je strict short .L38
-    mov rcx, rax
-    mov rdx, rsi
-    not rdx
-    and rcx, rdx
-    mov rdx, rcx
-    shl rdx, 1
-    mov r13, 12297829382473034410
-    or rdx, r13
-    sub rdx, rcx
+    jne strict short .L46
+.L49:
+.L48:
+    or rbp, rdi
+.L46:
+    cmp r9d, 31
+    ja strict short .L50
+    or r15, rdi
+.L50:
+    add rsi, 1
+    cmp rsi, 64
+    jb strict near .L36
+.L37:
+    mov rcx, qword [rsp + 64]
+    test r8, r8
+    je strict short .L52
+    mov rcx, r8
+    mov r9, qword [rsp + 64]
+    not r9
+    and rcx, r9
+    mov r9, rcx
+    shl r9, 1
+    mov rsi, 12297829382473034410
+    or r9, rsi
+    sub r9, rcx
     mov rcx, 12297829382473034410
-    xor rdx, rcx
-    mov rcx, rdx
-    mov r13, rax
-    or r13, rsi
-    xor rcx, r13
-    mov rsi, rdx
-    and rsi, rax
-    shr rsi, 63
-    jmp strict short .L39
-.L38:
-    xor esi, esi
-.L39:
+    xor r9, rcx
+    mov rcx, r9
+    mov rsi, r8
+    mov r11, [rsp + 64]
+    or rsi, r11
+    xor rcx, rsi
+    mov r11, r9
+    and r11, r8
+    shr r11, 63
+    mov [rsp + 64], r11
+    jmp strict short .L53
+.L52:
+    xor r11d, r11d
+    mov [rsp + 64], r11
+.L53:
+    mov r8, qword [rsp + 384]
     not rcx
     and r8, rcx
-    mov rax, r8
-    mov rcx, rax
-    mov rdx, rax
-    shl rdx, 1
-    xor rcx, rdx
-    mov rax, rcx
-    mov rdx, rax
-    shl rdx, 2
-    xor rcx, rdx
-    mov rax, rcx
-    mov rdx, rax
-    shl rdx, 4
-    xor rcx, rdx
-    mov rax, rcx
-    mov rdx, rax
-    shl rdx, 8
-    xor rcx, rdx
-    mov rax, rcx
-    mov rdx, rax
-    shl rdx, 16
-    xor rcx, rdx
-    mov rax, rcx
-    mov rdx, rax
-    shl rdx, 32
-    xor rcx, rdx
-    mov rax, rcx
-    mov r11, [rsp + 64]
-    xor rax, r11
+    mov rcx, r8
+    mov r9, rcx
+    mov rsi, rcx
+    shl rsi, 1
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 2
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 4
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 8
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 16
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 32
+    xor r9, rsi
+    mov rcx, r9
+    mov r11, [rsp + 96]
+    xor rcx, r11
     xor r11d, r11d
-    mov rcx, rax
-    shr rcx, 63
-    sub r11, rcx
-    mov [rsp + 64], r11
-    mov rcx, rbx
-    or rcx, rdi
-    not rcx
-    mov rdx, rcx
+    mov r9, rcx
+    shr r9, 63
+    sub r11, r9
+    mov [rsp + 96], r11
+    mov r9, rbp
+    mov r11, [rsp + 416]
+    or r9, r11
+    not r9
+    mov rsi, r9
     mov rdi, r8
     not rdi
-    and rdx, rdi
-    mov rdi, rdx
+    and rsi, rdi
+    mov rdi, rsi
     shl rdi, 1
-    mov r11, [rsp + 96]
+    mov r11, [rsp + 128]
     or rdi, r11
-    mov r11, rdx
+    mov r11, rsi
     shr r11, 63
-    mov [rsp + 96], r11
-    not rdi
-    and rcx, rdi
-    or rbx, rcx
-    mov rcx, rax
-    xor rcx, r8
-    not rcx
-    and rbx, rcx
-    mov r11, qword [rsp + 128]
-    and rbp, rax
-    or r11, rbp
     mov [rsp + 128], r11
-    test r14, r14
-    jne strict near .Lrare7
-.L40:
-    mov r11, [rsp + 288]
+    not rdi
+    and r9, rdi
+    or rbp, r9
+    mov r9, rcx
+    xor r9, r8
+    not r9
+    and rbp, r9
+    mov r11, qword [rsp + 160]
+    and r15, rcx
+    or r11, r15
+    mov [rsp + 160], r11
+    xor r8d, r8d
+    cmp r8, 64
+    jae strict near .L55
+    db 0xf, 0x1f, 0x40, 0x0
+.L54:
+    movzx r9d, byte [rbx + r8 + 64]
+    mov rsi, 144680345676153346
+    mov rcx, r12
+    shr rcx, 4
+    cmp rcx, 7
+    jbe strict short .L56
+    mov rsi, 5266116582681116800
+.L56:
+    mov rdi, 14685054810038969319
+    mov rcx, r12
+    and rcx, 15
+    cmp rcx, 7
+    jbe strict short .L58
+    mov rdi, 14685072678315609035
+.L58:
+    mov r15, 72340172838076673
+    mov rcx, r9
+    shr rcx, 4
+    cmp rcx, 7
+    jbe strict short .L60
+    mov r15, 72340175954030310
+.L60:
+    mov rcx, r12
+    shr rcx, 4
+    and rcx, 7
+    shl rcx, 3
+    shr rsi, cl
+    and rsi, 255
+    mov rcx, r12
+    and rcx, 15
+    and rcx, 7
+    shl rcx, 3
+    shr rdi, cl
+    and rdi, 255
+    and rsi, rdi
+    mov rcx, r9
+    shr rcx, 4
+    and rcx, 7
+    shl rcx, 3
+    shr r15, cl
+    and r15, 255
+    and rsi, r15
+    xor ecx, ecx
+    cmp rdx, 96
+    jbe strict short .L62
+    lea rcx, [rdx - 96]
+.L62:
+    xor edi, edi
+    cmp r13, 112
+    jbe strict short .L64
+    lea rdi, [r13 - 112]
+.L64:
+    or rcx, rdi
+    and rcx, 128
+    xor rcx, rsi
+    or r14, rcx
+    mov r13, rdx
+    mov rdx, r12
+    mov r12, r9
+    add r8, 1
+    cmp r8, 64
+    jb strict near .L54
+.L55:
+    xor r15d, r15d
+    movzx ecx, byte [rbx + 127]
+    cmp ecx, 191
+    ja strict short .L67
+    movzx ecx, byte [rbx + 126]
+    cmp ecx, 223
+    ja strict short .L67
+    movzx ecx, byte [rbx + 125]
+    cmp ecx, 239
+    jbe strict short .L66
+.L67:
+    mov r15d, 1
+.L66:
+    test rax, rax
+    je strict near .L68
+    mov rdi, qword [rsp + 288]
+    lea rcx, [rel NVOL_K0]
+    movzx r8d, al
+    movzx r8d, byte [rcx + r8]
+    mov r9, rax
+    shr r9, 8
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 16
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 24
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 32
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 40
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 48
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 56
+    movzx ecx, byte [rcx + r9]
+    add r8d, ecx
+    mov rcx, qword [rsp + 256]
+    shl rcx, 2
+    mov r11, [rsp + 32]
+    lea rcx, [r11 + rcx]
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 4], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 8], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 12], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 4
+    ja strict near .Lrare6
+.L70:
+    mov r11, [rsp + 256]
+    lea r11, [r11 + r8]
+    mov [rsp + 256], r11
+.L68:
+    mov r11, [rsp + 352]
     test r11, r11
-    je strict near .L56
-    mov r9, qword [rsp + 160]
-    mov rdi, r9
+    je strict near .L84
+    mov rsi, qword [rsp + 192]
     lea rax, [rel NVOL_K0]
-    mov r11, [rsp + 288]
+    mov r11, [rsp + 352]
     movzx ecx, r11b
     movzx ecx, byte [rax + rcx]
-    mov rdx, qword [rsp + 288]
-    shr rdx, 8
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 288]
-    shr rdx, 16
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 288]
-    shr rdx, 24
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 288]
-    shr rdx, 32
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 288]
-    shr rdx, 40
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 288]
-    shr rdx, 48
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 288]
-    shr rdx, 56
-    movzx eax, byte [rax + rdx]
+    mov r8, qword [rsp + 352]
+    shr r8, 8
+    movzx r8d, r8b
+    movzx r8d, byte [rax + r8]
+    add ecx, r8d
+    mov r8, qword [rsp + 352]
+    shr r8, 16
+    movzx r8d, r8b
+    movzx r8d, byte [rax + r8]
+    add ecx, r8d
+    mov r8, qword [rsp + 352]
+    shr r8, 24
+    movzx r8d, r8b
+    movzx r8d, byte [rax + r8]
+    add ecx, r8d
+    mov r8, qword [rsp + 352]
+    shr r8, 32
+    movzx r8d, r8b
+    movzx r8d, byte [rax + r8]
+    add ecx, r8d
+    mov r8, qword [rsp + 352]
+    shr r8, 40
+    movzx r8d, r8b
+    movzx r8d, byte [rax + r8]
+    add ecx, r8d
+    mov r8, qword [rsp + 352]
+    shr r8, 48
+    movzx r8d, r8b
+    movzx r8d, byte [rax + r8]
+    add ecx, r8d
+    mov r8, qword [rsp + 352]
+    shr r8, 56
+    movzx eax, byte [rax + r8]
     add ecx, eax
-    mov rax, qword [rsp + 224]
+    mov rax, qword [rsp + 256]
     shl rax, 2
     mov r11, [rsp + 32]
     lea rax, [r11 + rax]
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 4], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 8], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 12], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 4], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 8], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 12], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
     cmp rcx, 4
-    ja strict near .Lrare13
-.L58:
-    mov r11, [rsp + 224]
-    lea r11, [r11 + rcx]
-    mov [rsp + 224], r11
-.L56:
-    mov r14, rbx
-    mov r11, [rsp + 160]
-    lea r9, [r11 + 64]
-    lea r12, [r12 + 128]
-    mov r11, [rsp + 160]
-    lea r11, [r11 + 128]
-    mov [rsp + 160], r11
+    ja strict near .Lrare12
+.L86:
     mov r11, [rsp + 256]
-    cmp r12, r11
+    lea r11, [r11 + rcx]
+    mov [rsp + 256], r11
+.L84:
+    mov rax, rbp
+    mov r11, [rsp + 192]
+    lea r10, [r11 + 64]
+    mov [rsp + 288], r10
+    lea rbx, [rbx + 128]
+    mov r11, [rsp + 192]
+    lea r11, [r11 + 128]
+    mov [rsp + 192], r11
+    mov r11, [rsp + 320]
+    cmp rbx, r11
     jb strict near .L2
 .L3:
-    mov r11, [rsp + 192]
-    cmp r12, r11
-    jae strict near .L72
-    xor eax, eax
-    xor edx, edx
+    mov r11, [rsp + 224]
+    cmp rbx, r11
+    jae strict near .L100
     xor r8d, r8d
+    xor r11d, r11d
+    mov [rsp + 224], r11
+    xor r11d, r11d
+    mov [rsp + 320], r11
     xor edi, edi
-    xor ebx, ebx
     xor ebp, ebp
-    cmp rbp, 64
-    jae strict short .L75
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L74:
-    movzx r13d, byte [r12 + rbp]
-    mov r15d, 1
-    mov rcx, rbp
-    shl r15, cl
-    cmp r13d, 92
-    jne strict short .L76
-    or rax, r15
-.L76:
-    cmp r13d, 34
-    jne strict short .L78
-    or rdx, r15
-.L78:
-    cmp r13d, 32
-    je strict short .L82
-    cmp r13d, 9
-    je strict short .L82
-    cmp r13d, 10
-    je strict short .L83
-    cmp r13d, 13
-    jne strict short .L80
-.L83:
-.L82:
-    or r8, r15
-.L80:
-    mov rcx, r13
+    xor r15d, r15d
+    cmp r15, 64
+    jae strict near .L103
+    db 0xf, 0x1f, 0x40, 0x0
+.L102:
+    movzx r9d, byte [rbx + r15]
+    mov r11d, 1
+    mov [rsp + 352], r11
+    mov rcx, r15
+    mov rsi, r11
+    shl rsi, cl
+    cmp r9d, 92
+    jne strict short .L104
+    or r8, rsi
+.L104:
+    cmp r9d, 34
+    jne strict short .L106
+    mov r11, qword [rsp + 224]
+    or r11, rsi
+    mov [rsp + 224], r11
+.L106:
+    cmp r9d, 32
+    je strict short .L110
+    cmp r9d, 9
+    je strict short .L110
+    cmp r9d, 10
+    je strict short .L111
+    cmp r9d, 13
+    jne strict short .L108
+.L111:
+.L110:
+    mov r11, qword [rsp + 320]
+    or r11, rsi
+    mov [rsp + 320], r11
+.L108:
+    mov rcx, r9
     or rcx, 32
     cmp ecx, 58
-    je strict short .L86
+    je strict short .L114
     cmp ecx, 123
-    je strict short .L86
+    je strict short .L114
     cmp ecx, 44
-    je strict short .L87
+    je strict short .L115
     cmp ecx, 125
-    jne strict short .L84
-.L87:
-.L86:
-    or rdi, r15
-.L84:
-    cmp r13d, 31
-    ja strict short .L88
-    or rbx, r15
-.L88:
-    add rbp, 1
-    cmp rbp, 64
-    jb strict short .L74
-.L75:
-    mov rcx, rsi
-    test rax, rax
-    je strict short .L90
-    mov rcx, rax
-    mov rbp, rsi
-    not rbp
-    and rcx, rbp
-    mov rbp, rcx
-    shl rbp, 1
-    mov r12, 12297829382473034410
-    or rbp, r12
-    sub rbp, rcx
+    jne strict short .L112
+.L115:
+.L114:
+    or rdi, rsi
+.L112:
+    cmp r9d, 31
+    ja strict short .L116
+    or rbp, rsi
+.L116:
+    add r15, 1
+    cmp r15, 64
+    jb strict near .L102
+.L103:
+    mov rcx, qword [rsp + 64]
+    test r8, r8
+    je strict short .L118
+    mov rcx, r8
+    mov r9, qword [rsp + 64]
+    not r9
+    and rcx, r9
+    mov r9, rcx
+    shl r9, 1
+    mov rsi, 12297829382473034410
+    or r9, rsi
+    sub r9, rcx
     mov rcx, 12297829382473034410
-    xor rbp, rcx
-    mov rcx, rbp
-    mov r12, rax
-    or r12, rsi
-    xor rcx, r12
-    mov rsi, rbp
-    and rsi, rax
-    shr rsi, 63
-    jmp strict short .L91
-.L90:
-    xor esi, esi
-.L91:
-    not rcx
-    and rdx, rcx
-    mov rax, rdx
-    mov rcx, rax
-    mov rbp, rax
-    shl rbp, 1
-    xor rcx, rbp
-    mov rax, rcx
-    mov rbp, rax
-    shl rbp, 2
-    xor rcx, rbp
-    mov rax, rcx
-    mov rbp, rax
-    shl rbp, 4
-    xor rcx, rbp
-    mov rax, rcx
-    mov rbp, rax
-    shl rbp, 8
-    xor rcx, rbp
-    mov rax, rcx
-    mov rbp, rax
-    shl rbp, 16
-    xor rcx, rbp
-    mov rax, rcx
-    mov rbp, rax
-    shl rbp, 32
-    xor rcx, rbp
-    mov rax, rcx
+    xor r9, rcx
+    mov rcx, r9
+    mov rsi, r8
     mov r11, [rsp + 64]
-    xor rax, r11
-    xor r11d, r11d
-    mov rcx, rax
-    shr rcx, 63
-    sub r11, rcx
-    mov [rsp + 64], r11
-    mov rcx, rdi
-    or rcx, r8
-    not rcx
-    mov r8, rcx
-    mov rbp, rdx
-    not rbp
-    and r8, rbp
-    mov rbp, r8
-    shl rbp, 1
-    mov r11, [rsp + 96]
-    or rbp, r11
-    mov r11, r8
+    or rsi, r11
+    xor rcx, rsi
+    mov r11, r9
+    and r11, r8
     shr r11, 63
-    mov [rsp + 96], r11
-    not rbp
-    and rcx, rbp
-    or rdi, rcx
-    mov rcx, rax
-    xor rcx, rdx
+    mov [rsp + 64], r11
+    jmp strict short .L119
+.L118:
+    xor r11d, r11d
+    mov [rsp + 64], r11
+.L119:
+    mov r8, qword [rsp + 224]
     not rcx
-    and rdi, rcx
-    mov r11, qword [rsp + 128]
-    and rbx, rax
-    or r11, rbx
+    and r8, rcx
+    mov rcx, r8
+    mov r9, rcx
+    mov rsi, rcx
+    shl rsi, 1
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 2
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 4
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 8
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 16
+    xor r9, rsi
+    mov rcx, r9
+    mov rsi, rcx
+    shl rsi, 32
+    xor r9, rsi
+    mov rcx, r9
+    mov r11, [rsp + 96]
+    xor rcx, r11
+    xor r11d, r11d
+    mov r9, rcx
+    shr r9, 63
+    sub r11, r9
+    mov [rsp + 96], r11
+    mov r9, rdi
+    mov r11, [rsp + 320]
+    or r9, r11
+    not r9
+    mov rsi, r9
+    mov r15, r8
+    not r15
+    and rsi, r15
+    mov r15, rsi
+    shl r15, 1
+    mov r11, [rsp + 128]
+    or r15, r11
+    mov r11, rsi
+    shr r11, 63
     mov [rsp + 128], r11
-    test r14, r14
-    je strict near .L92
-    lea rax, [rel NVOL_K0]
-    movzx ecx, r14b
-    movzx ecx, byte [rax + rcx]
-    mov rdx, r14
-    shr rdx, 8
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 16
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 24
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 32
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 40
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 48
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 56
-    movzx eax, byte [rax + rdx]
-    add ecx, eax
-    mov rax, qword [rsp + 224]
-    shl rax, 2
+    not r15
+    and r9, r15
+    or rdi, r9
+    mov r9, rcx
+    xor r9, r8
+    not r9
+    and rdi, r9
+    mov r11, qword [rsp + 160]
+    and rbp, rcx
+    or r11, rbp
+    mov [rsp + 160], r11
+    xor r8d, r8d
+    cmp r8, 64
+    jae strict near .L121
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+.L120:
+    movzx r9d, byte [rbx + r8]
+    mov rsi, 144680345676153346
+    mov rcx, r12
+    shr rcx, 4
+    cmp rcx, 7
+    jbe strict short .L122
+    mov rsi, 5266116582681116800
+.L122:
+    mov rbp, 14685054810038969319
+    mov rcx, r12
+    and rcx, 15
+    cmp rcx, 7
+    jbe strict short .L124
+    mov rbp, 14685072678315609035
+.L124:
+    mov r15, 72340172838076673
+    mov rcx, r9
+    shr rcx, 4
+    cmp rcx, 7
+    jbe strict short .L126
+    mov r15, 72340175954030310
+.L126:
+    mov rcx, r12
+    shr rcx, 4
+    and rcx, 7
+    shl rcx, 3
+    shr rsi, cl
+    and rsi, 255
+    mov rcx, r12
+    and rcx, 15
+    and rcx, 7
+    shl rcx, 3
+    shr rbp, cl
+    and rbp, 255
+    and rsi, rbp
+    mov rcx, r9
+    shr rcx, 4
+    and rcx, 7
+    shl rcx, 3
+    shr r15, cl
+    and r15, 255
+    and rsi, r15
+    xor ecx, ecx
+    cmp rdx, 96
+    jbe strict short .L128
+    lea rcx, [rdx - 96]
+.L128:
+    xor ebp, ebp
+    cmp r13, 112
+    jbe strict short .L130
+    lea rbp, [r13 - 112]
+.L130:
+    or rcx, rbp
+    and rcx, 128
+    xor rcx, rsi
+    or r14, rcx
+    mov r13, rdx
+    mov rdx, r12
+    mov r12, r9
+    add r8, 1
+    cmp r8, 64
+    jb strict near .L120
+.L121:
+    xor r15d, r15d
+    movzx ecx, byte [rbx + 63]
+    cmp ecx, 191
+    ja strict short .L133
+    movzx ecx, byte [rbx + 62]
+    cmp ecx, 223
+    ja strict short .L133
+    movzx ecx, byte [rbx + 61]
+    cmp ecx, 239
+    jbe strict short .L132
+.L133:
+    mov r15d, 1
+.L132:
+    test rax, rax
+    je strict near .L134
+    mov rbx, qword [rsp + 288]
+    lea rcx, [rel NVOL_K0]
+    movzx r8d, al
+    movzx r8d, byte [rcx + r8]
+    mov r9, rax
+    shr r9, 8
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 16
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 24
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 32
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 40
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 48
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 56
+    movzx ecx, byte [rcx + r9]
+    add r8d, ecx
+    mov rcx, qword [rsp + 256]
+    shl rcx, 2
     mov r11, [rsp + 32]
-    lea rax, [r11 + rax]
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 4], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 8], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 12], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 4
-    jbe strict near .L94
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 16], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 20], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 24], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 28], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 8
-    jbe strict near .L96
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 32], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 36], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 40], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 44], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 12
-    jbe strict near .L98
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 48], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 52], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 56], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 60], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 16
-    jbe strict near .L100
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 64], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 68], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 72], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 76], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 20
-    jbe strict near .L102
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 80], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 84], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 88], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 92], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 24
-    jbe strict short .L104
-    mov edx, 24
-    cmp rdx, rcx
-    jae strict short .L107
-.L106:
-    mov r8, rdx
-    shl r8, 2
-    bsf rbx, r14
-    lea rbx, [r9 + rbx]
-    mov dword [rax + r8], ebx
-    mov r8, r14
-    mov rbx, r14
-    sub rbx, 1
-    and r8, rbx
-    mov r14, r8
-    add rdx, 1
-    cmp rdx, rcx
-    jb strict short .L106
-.L107:
-.L104:
-.L102:
-.L100:
-.L98:
-.L96:
-.L94:
-    mov r11, [rsp + 224]
-    lea r11, [r11 + rcx]
-    mov [rsp + 224], r11
-.L92:
-    mov r14, rdi
-    mov r9, qword [rsp + 160]
-.L72:
-    test r14, r14
-    je strict near .L108
-    lea rax, [rel NVOL_K0]
-    movzx ecx, r14b
-    movzx ecx, byte [rax + rcx]
-    mov rdx, r14
-    shr rdx, 8
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 16
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 24
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 32
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 40
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 48
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 56
-    movzx eax, byte [rax + rdx]
-    add ecx, eax
-    mov rax, qword [rsp + 224]
-    shl rax, 2
-    mov r11, [rsp + 32]
-    lea rax, [r11 + rax]
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 4], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 8], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 12], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 4
-    jbe strict near .L110
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 16], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 20], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 24], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 28], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 8
-    jbe strict near .L112
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 32], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 36], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 40], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 44], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 12
-    jbe strict near .L114
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 48], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 52], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 56], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 60], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 16
-    jbe strict near .L116
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 64], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 68], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 72], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 76], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 20
-    jbe strict near .L118
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 80], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 84], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 88], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 92], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 24
-    jbe strict short .L120
-    mov edx, 24
-    cmp rdx, rcx
-    jae strict short .L123
+    lea rcx, [r11 + rcx]
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 4], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 8], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 12], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 4
+    jbe strict near .L136
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 16], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 20], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 24], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 28], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 8
+    jbe strict near .L138
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 32], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 36], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 40], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 44], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 12
+    jbe strict near .L140
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 48], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 52], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 56], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 60], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 16
+    jbe strict near .L142
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 64], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 68], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 72], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 76], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 20
+    jbe strict near .L144
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 80], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 84], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 88], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 92], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 24
+    jbe strict short .L146
+    mov r9d, 24
+    cmp r9, r8
+    jae strict short .L149
+    mov rbp, qword [rsp + 288]
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x90
-.L122:
-    mov r8, rdx
-    shl r8, 2
-    bsf rdi, r14
-    lea rdi, [r9 + rdi]
-    mov dword [rax + r8], edi
-    mov r8, r14
-    mov rdi, r14
+.L148:
+    mov rsi, r9
+    shl rsi, 2
+    bsf rbx, rax
+    lea rbx, [rbp + rbx]
+    mov dword [rcx + rsi], ebx
+    mov rsi, rax
+    mov rbx, rax
+    sub rbx, 1
+    and rsi, rbx
+    mov rax, rsi
+    add r9, 1
+    cmp r9, r8
+    jb strict short .L148
+.L149:
+.L146:
+.L144:
+.L142:
+.L140:
+.L138:
+.L136:
+    mov r11, [rsp + 256]
+    lea r11, [r11 + r8]
+    mov [rsp + 256], r11
+.L134:
+    mov rax, rdi
+    mov r11, qword [rsp + 192]
+    mov qword [rsp + 288], r11
+.L100:
+    test rax, rax
+    je strict near .L150
+    mov rdi, qword [rsp + 288]
+    mov rbx, rdi
+    lea rcx, [rel NVOL_K0]
+    movzx r8d, al
+    movzx r8d, byte [rcx + r8]
+    mov r9, rax
+    shr r9, 8
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 16
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 24
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 32
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 40
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 48
+    movzx r9d, r9b
+    movzx r9d, byte [rcx + r9]
+    add r8d, r9d
+    mov r9, rax
+    shr r9, 56
+    movzx ecx, byte [rcx + r9]
+    add r8d, ecx
+    mov rcx, qword [rsp + 256]
+    shl rcx, 2
+    mov r11, [rsp + 32]
+    lea rcx, [r11 + rcx]
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 4], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 8], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 12], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 4
+    jbe strict near .L152
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 16], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 20], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 24], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 28], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 8
+    jbe strict near .L154
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 32], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 36], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 40], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 44], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 12
+    jbe strict near .L156
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 48], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 52], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 56], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 60], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 16
+    jbe strict near .L158
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 64], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 68], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 72], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 76], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 20
+    jbe strict near .L160
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 80], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 84], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 88], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rbx + rsi]
+    mov dword [rcx + 92], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 24
+    jbe strict short .L162
+    mov r9d, 24
+    cmp r9, r8
+    jae strict short .L165
+    db 0x90
+.L164:
+    mov rsi, r9
+    shl rsi, 2
+    bsf rdi, rax
+    lea rdi, [rbx + rdi]
+    mov dword [rcx + rsi], edi
+    mov rsi, rax
+    mov rdi, rax
     sub rdi, 1
-    and r8, rdi
-    mov r14, r8
-    add rdx, 1
-    cmp rdx, rcx
-    jb strict short .L122
-.L123:
-.L120:
-.L118:
-.L116:
-.L114:
-.L112:
-.L110:
-    mov r11, [rsp + 224]
-    lea r11, [r11 + rcx]
-    mov [rsp + 224], r11
-.L108:
-    mov r11, [rsp]
-    mov qword [r11], rsi
+    and rsi, rdi
+    mov rax, rsi
+    add r9, 1
+    cmp r9, r8
+    jb strict short .L164
+.L165:
+.L162:
+.L160:
+.L158:
+.L156:
+.L154:
+.L152:
+    mov r11, [rsp + 256]
+    lea r11, [r11 + r8]
+    mov [rsp + 256], r11
+.L150:
     mov r11, [rsp]
     mov r10, [rsp + 64]
-    mov qword [r11 + 8], r10
+    mov qword [r11], r10
     mov r11, [rsp]
     mov r10, [rsp + 96]
-    mov qword [r11 + 16], r10
+    mov qword [r11 + 8], r10
     mov r11, [rsp]
     mov r10, [rsp + 128]
+    mov qword [r11 + 16], r10
+    mov r11, [rsp]
+    mov r10, [rsp + 160]
     mov qword [r11 + 24], r10
-    mov rax, qword [rsp + 224]
-    add rsp, 328
+    mov r11, [rsp]
+    mov qword [r11 + 32], r14
+    mov r11, [rsp]
+    mov byte [r11 + 79], r12b
+    mov r11, [rsp]
+    mov byte [r11 + 78], dl
+    mov r11, [rsp]
+    mov byte [r11 + 77], r13b
+    mov r11, [rsp]
+    mov qword [r11 + 40], r15
+    mov rax, qword [rsp + 256]
+    add rsp, 488
     pop r15
     pop r14
     pop r13
@@ -55923,610 +56318,527 @@ nvol_json_index_scalar:
     pop rbx
     ret
 .Lrare1:
-    mov edx, 24
-    cmp rdx, rcx
-    jae strict short .L55
+    mov r9d, 24
+    cmp r9, r8
+    jae strict short .L83
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L54:
-    mov r8, rdx
-    shl r8, 2
-    bsf rdi, r14
-    lea rdi, [r9 + rdi]
-    mov dword [rax + r8], edi
-    mov r8, r14
-    mov rdi, r14
-    sub rdi, 1
-    and r8, rdi
-    mov r14, r8
-    add rdx, 1
-    cmp rdx, rcx
-    jb strict short .L54
-.L55:
-    jmp strict near .L52
-.Lrare2:
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 80], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 84], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 88], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 92], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 24
-    ja strict near .Lrare1
-.L52:
-    jmp strict near .L50
-.Lrare3:
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 64], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 68], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 72], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 76], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 20
-    ja strict near .Lrare2
-.L50:
-    jmp strict near .L48
-.Lrare4:
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 48], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 52], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 56], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 60], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 16
-    ja strict near .Lrare3
-.L48:
-    jmp strict near .L46
-.Lrare5:
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 32], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 36], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 40], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 44], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 12
-    ja strict near .Lrare4
-.L46:
-    jmp strict near .L44
-.Lrare6:
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 16], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 20], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 24], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 28], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 8
-    ja strict near .Lrare5
-.L44:
-    jmp strict near .L42
-.Lrare7:
-    lea rax, [rel NVOL_K0]
-    movzx ecx, r14b
-    movzx ecx, byte [rax + rcx]
-    mov rdx, r14
-    shr rdx, 8
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 16
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 24
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 32
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 40
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 48
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 56
-    movzx eax, byte [rax + rdx]
-    add ecx, eax
-    mov rax, qword [rsp + 224]
-    shl rax, 2
-    mov r11, [rsp + 32]
-    lea rax, [r11 + rax]
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 4], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 8], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 12], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 4
-    ja strict near .Lrare6
-.L42:
-    mov r11, [rsp + 224]
-    lea r11, [r11 + rcx]
-    mov [rsp + 224], r11
-    jmp strict near .L40
-.Lrare8:
-    mov edx, 24
-    cmp rdx, rcx
-    jae strict short .L71
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L70:
-    mov r8, rdx
-    shl r8, 2
+.L82:
+    mov rsi, r9
+    shl rsi, 2
+    bsf rdi, rax
     mov r11, [rsp + 288]
+    lea rdi, [r11 + rdi]
+    mov dword [rcx + rsi], edi
+    mov rsi, rax
+    mov rdi, rax
+    sub rdi, 1
+    and rsi, rdi
+    mov rax, rsi
+    add r9, 1
+    cmp r9, r8
+    jb strict short .L82
+.L83:
+    jmp strict near .L80
+.Lrare2:
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 80], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 84], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 88], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 92], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 24
+    ja strict near .Lrare1
+.L80:
+    jmp strict near .L78
+.Lrare3:
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 64], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 68], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 72], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 76], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 20
+    ja strict near .Lrare2
+.L78:
+    jmp strict near .L76
+.Lrare4:
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 48], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 52], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 56], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 60], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 16
+    ja strict near .Lrare3
+.L76:
+    jmp strict near .L74
+.Lrare5:
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 32], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 36], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 40], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 44], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 12
+    ja strict near .Lrare4
+.L74:
+    jmp strict near .L72
+.Lrare6:
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 16], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 20], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 24], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    mov r9d, 64
+    bsf rsi, rax
+    cmovz rsi, r9
+    lea r9, [rdi + rsi]
+    mov dword [rcx + 28], r9d
+    mov r9, rax
+    mov rsi, rax
+    sub rsi, 1
+    and r9, rsi
+    mov rax, r9
+    cmp r8, 8
+    ja strict near .Lrare5
+.L72:
+    jmp strict near .L70
+.Lrare7:
+    mov r8d, 24
+    cmp r8, rcx
+    jae strict short .L99
+    mov rdi, qword [rsp + 192]
+    db 0x66, 0x90
+.L98:
+    mov r9, r8
+    shl r9, 2
+    mov r11, [rsp + 352]
+    bsf rsi, r11
+    lea rsi, [rdi + rsi]
+    mov dword [rax + r9], esi
+    mov r9, qword [rsp + 352]
+    mov rsi, qword [rsp + 352]
+    sub rsi, 1
+    and r9, rsi
+    mov qword [rsp + 352], r9
+    add r8, 1
+    cmp r8, rcx
+    jb strict short .L98
+.L99:
+    jmp strict near .L96
+.Lrare8:
+    mov r8d, 64
+    mov r11, [rsp + 352]
     bsf r9, r11
-    lea r9, [rdi + r9]
-    mov dword [rax + r8], r9d
-    mov r8, qword [rsp + 288]
-    mov r9, qword [rsp + 288]
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 80], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
     sub r9, 1
     and r8, r9
-    mov qword [rsp + 288], r8
-    add rdx, 1
-    cmp rdx, rcx
-    jb strict short .L70
-.L71:
-    jmp strict near .L68
-.Lrare9:
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 80], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 84], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 88], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 92], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 84], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 88], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 92], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
     cmp rcx, 24
-    ja strict near .Lrare8
-.L68:
-    jmp strict near .L66
-.Lrare10:
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 64], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 68], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 72], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 76], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
+    ja strict near .Lrare7
+.L96:
+    jmp strict near .L94
+.Lrare9:
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 64], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 68], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 72], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 76], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
     cmp rcx, 20
-    ja strict near .Lrare9
-.L66:
-    jmp strict near .L64
-.Lrare11:
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 48], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 52], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 56], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 60], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
+    ja strict near .Lrare8
+.L94:
+    jmp strict near .L92
+.Lrare10:
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 48], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 52], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 56], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 60], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
     cmp rcx, 16
-    ja strict near .Lrare10
-.L64:
-    jmp strict near .L62
-.Lrare12:
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 32], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 36], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 40], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 44], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
+    ja strict near .Lrare9
+.L92:
+    jmp strict near .L90
+.Lrare11:
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 32], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 36], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 40], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 44], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
     cmp rcx, 12
-    ja strict near .Lrare11
-.L62:
-    jmp strict near .L60
-.Lrare13:
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 16], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 20], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 24], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
-    mov edx, 64
-    mov r11, [rsp + 288]
-    bsf r8, r11
-    cmovz r8, rdx
-    lea rdx, [rdi + r8]
-    mov dword [rax + 28], edx
-    mov rdx, qword [rsp + 288]
-    mov r8, qword [rsp + 288]
-    sub r8, 1
-    and rdx, r8
-    mov qword [rsp + 288], rdx
+    ja strict near .Lrare10
+.L90:
+    jmp strict near .L88
+.Lrare12:
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 16], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 20], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 24], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
+    mov r8d, 64
+    mov r11, [rsp + 352]
+    bsf r9, r11
+    cmovz r9, r8
+    lea r8, [rsi + r9]
+    mov dword [rax + 28], r8d
+    mov r8, qword [rsp + 352]
+    mov r9, qword [rsp + 352]
+    sub r9, 1
+    and r8, r9
+    mov qword [rsp + 352], r8
     cmp rcx, 8
-    ja strict near .Lrare12
-.L60:
-    jmp strict near .L58
+    ja strict near .Lrare11
+.L88:
+    jmp strict near .L86
 .unwind_end:
 
-    db 0x90
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_json_index_ssse3
 nvol_json_index_ssse3:
     push rbx
@@ -56537,1455 +56849,2639 @@ nvol_json_index_ssse3:
     push r13
     push r14
     push r15
-    sub rsp, 456
-    movdqu [rsp + 352], xmm6
-    movdqu [rsp + 368], xmm7
-    movdqu [rsp + 384], xmm8
-    movdqu [rsp + 400], xmm9
-    movdqu [rsp + 416], xmm10
-    movdqu [rsp + 432], xmm11
+    sub rsp, 744
+    movdqu [rsp + 576], xmm6
+    movdqu [rsp + 592], xmm7
+    movdqu [rsp + 608], xmm8
+    movdqu [rsp + 624], xmm9
+    movdqu [rsp + 640], xmm10
+    movdqu [rsp + 656], xmm11
+    movdqu [rsp + 672], xmm12
+    movdqu [rsp + 688], xmm13
+    movdqu [rsp + 704], xmm14
+    movdqu [rsp + 720], xmm15
     mov qword [rsp], rcx
     mov rax, rcx
-    mov r11, qword [rsp + 560]
+    mov rcx, r8
+    mov rbp, r9
+    mov r11, qword [rsp + 848]
     mov [rsp + 32], r11
-    mov rsi, qword [rax]
-    mov rdi, qword [rax + 8]
-    mov rbx, qword [rax + 16]
-    mov rbp, qword [rax + 24]
-    mov r12, rdx
-    mov r13, r9
-    mov r14, r8
-    shl r14, 6
-    lea r11, [rdx + r14]
-    mov [rsp + 64], r11
-    xor r11d, r11d
+    mov r8, qword [rax]
+    mov r9, qword [rax + 8]
+    mov rsi, qword [rax + 16]
+    mov rdi, qword [rax + 24]
+    mov rbx, rdx
+    mov qword [rsp + 64], rbp
+    mov r12, rcx
+    shl r12, 6
+    lea r11, [rdx + r12]
     mov [rsp + 96], r11
-    movdqa xmm0, [rel NVOL_K9]
-    movdqa xmm1, [rel NVOL_K10]
-    movdqa xmm2, [rel NVOL_K11]
-    movdqa xmm3, [rel NVOL_K12]
-    movdqa xmm4, [rel NVOL_K13]
-    movdqa xmm5, [rel NVOL_K14]
-    xor r14d, r14d
-    shr r8, 1
-    shl r8, 7
-    lea r11, [rdx + r8]
+    xor r11d, r11d
     mov [rsp + 128], r11
-    cmp r12, r11
-    jae strict near .L3
-    db 0xf, 0x1f, 0x0
-.L2:
-    movdqu xmm6, [r12]
-    movdqu xmm7, [r12 + 16]
-    movdqu xmm8, [r12 + 32]
-    movdqu xmm9, [r12 + 48]
-    movdqa xmm10, xmm6
-    pcmpeqb xmm10, xmm2
-    pmovmskb r8d, xmm10
-    movdqa xmm10, xmm7
-    pcmpeqb xmm10, xmm2
-    pmovmskb eax, xmm10
-    shl rax, 16
-    or r8, rax
-    movdqa xmm10, xmm8
-    pcmpeqb xmm10, xmm2
-    pmovmskb eax, xmm10
-    shl rax, 32
-    or r8, rax
-    movdqa xmm10, xmm9
-    pcmpeqb xmm10, xmm2
-    pmovmskb eax, xmm10
-    shl rax, 48
-    or r8, rax
-    movdqa xmm10, xmm6
-    pcmpeqb xmm10, xmm3
-    pmovmskb eax, xmm10
-    movdqa xmm10, xmm7
-    pcmpeqb xmm10, xmm3
-    pmovmskb ecx, xmm10
-    shl rcx, 16
-    or rax, rcx
-    movdqa xmm10, xmm8
-    pcmpeqb xmm10, xmm3
-    pmovmskb ecx, xmm10
-    shl rcx, 32
-    or rax, rcx
-    movdqa xmm10, xmm9
-    pcmpeqb xmm10, xmm3
-    pmovmskb ecx, xmm10
-    shl rcx, 48
-    mov r11, rax
-    or r11, rcx
-    mov [rsp + 160], r11
-    movdqa xmm10, xmm0
-    pshufb xmm10, xmm6
-    pcmpeqb xmm10, xmm6
-    pmovmskb ecx, xmm10
-    movdqa xmm10, xmm0
-    pshufb xmm10, xmm7
-    pcmpeqb xmm10, xmm7
-    pmovmskb r15d, xmm10
-    shl r15, 16
-    or rcx, r15
-    movdqa xmm10, xmm0
-    pshufb xmm10, xmm8
-    pcmpeqb xmm10, xmm8
-    pmovmskb r15d, xmm10
-    shl r15, 32
-    or rcx, r15
-    movdqa xmm10, xmm0
-    pshufb xmm10, xmm9
-    pcmpeqb xmm10, xmm9
-    pmovmskb r15d, xmm10
-    shl r15, 48
+    movdqa xmm15, [rel NVOL_K9]
+    movdqu [rsp + 160], xmm15
+    movdqa xmm15, [rel NVOL_K10]
+    movdqu [rsp + 192], xmm15
+    movdqa xmm15, [rel NVOL_K11]
+    movdqu [rsp + 224], xmm15
+    movdqa xmm15, [rel NVOL_K12]
+    movdqu [rsp + 256], xmm15
+    movdqa xmm15, [rel NVOL_K13]
+    movdqu [rsp + 288], xmm15
+    movdqa xmm5, [rel NVOL_K14]
+    mov r11, qword [rax + 32]
+    mov [rsp + 320], r11
+    mov r15, qword [rax + 40]
+    movdqa xmm6, [rel NVOL_K15]
+    movdqa xmm7, [rel NVOL_K16]
+    movdqa xmm8, [rel NVOL_K17]
+    movdqa xmm9, [rel NVOL_K1]
+    movdqa xmm10, [rel NVOL_K18]
+    movdqa xmm11, [rel NVOL_K19]
+    movdqa xmm12, [rel NVOL_K6]
+    movdqu xmm13, [rax + 64]
+    pxor xmm0, xmm0
+    xor r12d, r12d
+    xor r14d, r14d
+    mov rax, rbp
     mov r11, rcx
-    or r11, r15
-    mov [rsp + 192], r11
-    movdqa xmm10, xmm1
-    pshufb xmm10, xmm6
-    movdqa xmm11, xmm6
-    por xmm11, xmm4
-    pcmpeqb xmm10, xmm11
-    pmovmskb r15d, xmm10
-    movdqa xmm10, xmm1
-    pshufb xmm10, xmm7
-    movdqa xmm11, xmm7
-    por xmm11, xmm4
-    pcmpeqb xmm10, xmm11
-    pmovmskb edx, xmm10
+    shr r11, 1
+    shl r11, 7
+    mov [rsp + 384], r11
+    lea r10, [rdx + r11]
+    mov [rsp + 352], r10
+    mov r11, r10
+    cmp rbx, r11
+    jae strict near .L3
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+.L2:
+    movdqu xmm1, [rbx]
+    movdqu xmm2, [rbx + 16]
+    movdqu xmm3, [rbx + 32]
+    movdqu xmm4, [rbx + 48]
+    movdqu [rsp + 384], xmm1
+    movdqu xmm15, [rsp + 384]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 384], xmm15
+    movdqu xmm15, [rsp + 384]
+    pmovmskb r13d, xmm15
+    movdqu [rsp + 384], xmm2
+    movdqu xmm15, [rsp + 384]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 384], xmm15
+    movdqu xmm15, [rsp + 384]
+    pmovmskb ecx, xmm15
+    shl rcx, 16
+    or r13, rcx
+    movdqu [rsp + 384], xmm3
+    movdqu xmm15, [rsp + 384]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 384], xmm15
+    movdqu xmm15, [rsp + 384]
+    pmovmskb ecx, xmm15
+    shl rcx, 32
+    or r13, rcx
+    movdqu [rsp + 384], xmm4
+    movdqu xmm15, [rsp + 384]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 384], xmm15
+    movdqu xmm15, [rsp + 384]
+    pmovmskb ecx, xmm15
+    shl rcx, 48
+    or r13, rcx
+    movdqu [rsp + 384], xmm1
+    movdqu xmm15, [rsp + 384]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 384], xmm15
+    movdqu xmm15, [rsp + 384]
+    pmovmskb ecx, xmm15
+    movdqu [rsp + 384], xmm2
+    movdqu xmm15, [rsp + 384]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 384], xmm15
+    movdqu xmm15, [rsp + 384]
+    pmovmskb edx, xmm15
     shl rdx, 16
-    or r15, rdx
-    movdqa xmm10, xmm1
-    pshufb xmm10, xmm8
-    movdqa xmm11, xmm8
-    por xmm11, xmm4
-    pcmpeqb xmm10, xmm11
-    pmovmskb edx, xmm10
+    or rcx, rdx
+    movdqu [rsp + 384], xmm3
+    movdqu xmm15, [rsp + 384]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 384], xmm15
+    movdqu xmm15, [rsp + 384]
+    pmovmskb edx, xmm15
     shl rdx, 32
-    or r15, rdx
-    movdqa xmm10, xmm1
-    pshufb xmm10, xmm9
-    movdqa xmm11, xmm9
-    por xmm11, xmm4
-    pcmpeqb xmm10, xmm11
-    pmovmskb edx, xmm10
+    or rcx, rdx
+    movdqu [rsp + 416], xmm4
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pmovmskb edx, xmm15
     shl rdx, 48
-    or r15, rdx
-    movdqa xmm10, xmm6
-    pminub xmm10, xmm5
-    pcmpeqb xmm10, xmm6
-    pmovmskb edx, xmm10
-    movdqa xmm6, xmm7
-    pminub xmm6, xmm5
-    pcmpeqb xmm6, xmm7
-    pmovmskb r11d, xmm6
+    mov r11, rcx
+    or r11, rdx
+    mov [rsp + 384], r11
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pshufb xmm15, xmm1
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pcmpeqb xmm15, xmm1
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pmovmskb edx, xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pshufb xmm15, xmm2
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pcmpeqb xmm15, xmm2
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pmovmskb r11d, xmm15
     shl r11, 16
     or rdx, r11
-    movdqa xmm6, xmm8
-    pminub xmm6, xmm5
-    pcmpeqb xmm6, xmm8
-    pmovmskb r11d, xmm6
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pshufb xmm15, xmm3
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pcmpeqb xmm15, xmm3
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pmovmskb r11d, xmm15
     shl r11, 32
     or rdx, r11
-    movdqa xmm6, xmm9
-    pminub xmm6, xmm5
-    pcmpeqb xmm6, xmm9
-    pmovmskb r11d, xmm6
-    mov [rsp + 256], r11
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm4
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pcmpeqb xmm15, xmm4
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pmovmskb r11d, xmm15
     shl r11, 48
-    mov [rsp + 288], r11
+    mov [rsp + 480], r11
     mov r11, rdx
-    mov r10, [rsp + 288]
+    mov r10, [rsp + 480]
     or r11, r10
-    mov [rsp + 224], r11
-    mov rax, rsi
-    test r8, r8
-    je strict short .L4
-    mov rax, r8
-    mov r11, rsi
-    not r11
-    and rax, r11
-    mov r11, rax
-    shl r11, 1
-    mov qword [rsp + 288], r11
-    mov r11, 12297829382473034410
-    mov [rsp + 256], r11
-    mov r11, [rsp + 288]
-    mov r10, [rsp + 256]
+    mov [rsp + 416], r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm1
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 480], xmm1
+    movdqu xmm15, [rsp + 480]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 480]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pmovmskb r11d, xmm15
+    mov qword [rsp + 480], r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm2
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 512], xmm2
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    movdqu xmm14, [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb r11d, xmm15
+    shl r11, 16
+    mov [rsp + 512], r11
+    mov r11, [rsp + 480]
+    mov r10, [rsp + 512]
     or r11, r10
-    mov [rsp + 288], r11
-    sub r11, rax
+    mov qword [rsp + 448], r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pshufb xmm15, xmm3
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 512], xmm3
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    movdqu xmm14, [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb r11d, xmm15
+    shl r11, 32
+    mov [rsp + 512], r11
+    mov r11, [rsp + 448]
+    mov r10, [rsp + 512]
+    or r11, r10
     mov rcx, r11
-    mov rax, 12297829382473034410
-    xor rcx, rax
-    mov rax, rcx
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm4
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 480], xmm4
+    movdqu xmm15, [rsp + 480]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 480]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pmovmskb r11d, xmm15
+    shl r11, 48
+    or rcx, r11
+    movdqu [rsp + 448], xmm1
+    movdqu xmm15, [rsp + 448]
+    pminub xmm15, xmm5
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pcmpeqb xmm15, xmm1
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pmovmskb r11d, xmm15
+    mov qword [rsp + 480], r11
+    movdqu [rsp + 448], xmm2
+    movdqu xmm15, [rsp + 448]
+    pminub xmm15, xmm5
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pcmpeqb xmm15, xmm2
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pmovmskb r11d, xmm15
+    shl r11, 16
+    mov [rsp + 512], r11
+    mov r11, [rsp + 480]
+    mov r10, [rsp + 512]
+    or r11, r10
+    mov qword [rsp + 448], r11
+    movdqu [rsp + 480], xmm3
+    movdqu xmm15, [rsp + 480]
+    pminub xmm15, xmm5
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pcmpeqb xmm15, xmm3
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pmovmskb r11d, xmm15
+    shl r11, 32
+    mov [rsp + 512], r11
+    mov r11, [rsp + 448]
+    mov r10, [rsp + 512]
+    or r11, r10
+    mov qword [rsp + 480], r11
+    movdqu [rsp + 448], xmm4
+    movdqu xmm15, [rsp + 448]
+    pminub xmm15, xmm5
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pcmpeqb xmm15, xmm4
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pmovmskb r11d, xmm15
+    mov [rsp + 448], r11
+    shl r11, 48
+    mov [rsp + 512], r11
+    mov r11, [rsp + 480]
+    mov r10, [rsp + 512]
+    or r11, r10
+    mov [rsp + 480], r11
+    mov rdx, r8
+    test r13, r13
+    je strict short .L4
+    mov rdx, r13
     mov r11, r8
-    or r11, rsi
-    mov [rsp + 256], r11
-    xor rax, r11
-    mov rsi, rcx
-    and rsi, r8
-    shr rsi, 63
+    not r11
+    and rdx, r11
+    mov r11, rdx
+    shl r11, 1
+    mov qword [rsp + 512], r11
+    mov r11, 12297829382473034410
+    mov [rsp + 448], r11
+    mov r11, [rsp + 512]
+    mov r10, [rsp + 448]
+    or r11, r10
+    mov [rsp + 512], r11
+    sub r11, rdx
+    mov rbp, r11
+    mov rdx, 12297829382473034410
+    xor rbp, rdx
+    mov rdx, rbp
+    mov r11, r13
+    or r11, r8
+    mov [rsp + 448], r11
+    xor rdx, r11
+    mov r8, rbp
+    and r8, r13
+    shr r8, 63
     jmp strict short .L5
 .L4:
-    xor esi, esi
+    xor r8d, r8d
 .L5:
-    mov rcx, qword [rsp + 160]
-    not rax
-    and rcx, rax
-    mov rax, rcx
-    mov r8, rax
-    mov r11, rax
-    shl r11, 1
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 2
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 4
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 8
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 16
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 32
-    xor r8, r11
-    mov rax, r8
-    xor rax, rdi
-    xor edi, edi
-    mov r8, rax
-    shr r8, 63
-    sub rdi, r8
-    mov r8, r15
-    mov r11, [rsp + 192]
-    or r8, r11
-    not r8
-    mov rdx, r8
-    mov r11, rcx
-    not r11
-    and rdx, r11
+    mov rbp, qword [rsp + 384]
+    not rdx
+    and rbp, rdx
+    mov rdx, rbp
+    mov r13, rdx
     mov r11, rdx
     shl r11, 1
-    or r11, rbx
-    mov rbx, rdx
-    shr rbx, 63
-    mov rdx, r11
-    not rdx
-    and r8, rdx
-    or r15, r8
-    mov rdx, rax
-    xor rdx, rcx
-    not rdx
-    and r15, rdx
-    mov rcx, qword [rsp + 224]
-    and rcx, rax
-    or rbp, rcx
-    mov qword [rsp + 160], r15
-    movdqu xmm6, [r12 + 64]
-    movdqu xmm7, [r12 + 80]
-    movdqu xmm8, [r12 + 96]
-    movdqu xmm9, [r12 + 112]
-    movdqa xmm10, xmm6
-    pcmpeqb xmm10, xmm2
-    pmovmskb eax, xmm10
-    movdqa xmm10, xmm7
-    pcmpeqb xmm10, xmm2
-    pmovmskb ecx, xmm10
+    xor r13, r11
+    mov rdx, r13
+    mov r11, rdx
+    shl r11, 2
+    xor r13, r11
+    mov rdx, r13
+    mov r11, rdx
+    shl r11, 4
+    xor r13, r11
+    mov rdx, r13
+    mov r11, rdx
+    shl r11, 8
+    xor r13, r11
+    mov rdx, r13
+    mov r11, rdx
+    shl r11, 16
+    xor r13, r11
+    mov rdx, r13
+    mov r11, rdx
+    shl r11, 32
+    xor r13, r11
+    mov rdx, r13
+    xor rdx, r9
+    xor r9d, r9d
+    mov r13, rdx
+    shr r13, 63
+    sub r9, r13
+    mov r13, rcx
+    mov r11, [rsp + 416]
+    or r13, r11
+    not r13
+    mov r11, rbp
+    not r11
+    mov [rsp + 416], r11
+    mov r11, r13
+    mov r10, [rsp + 416]
+    and r11, r10
+    mov [rsp + 384], r11
+    shl r11, 1
+    or r11, rsi
+    mov rsi, qword [rsp + 384]
+    shr rsi, 63
+    not r11
+    and r13, r11
+    or rcx, r13
+    mov r13, rdx
+    xor r13, rbp
+    not r13
+    and rcx, r13
+    mov rbp, qword [rsp + 480]
+    and rbp, rdx
+    or rdi, rbp
+    mov qword [rsp + 384], rcx
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    por xmm15, xmm2
+    movdqu [rsp + 416], xmm15
+    movdqu [rsp + 448], xmm3
+    movdqu xmm15, [rsp + 448]
+    por xmm15, xmm4
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu xmm14, [rsp + 448]
+    por xmm15, xmm14
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pmovmskb edx, xmm15
+    test edx, edx
+    jne strict short .L6
+    or r12, r15
+    jmp strict near .L7
+.L6:
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm13, 15
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    psrlw xmm15, 4
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 448], xmm6
+    movdqu xmm15, [rsp + 448]
+    movdqu xmm14, [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pand xmm15, xmm9
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 416], xmm7
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu xmm14, [rsp + 416]
+    pand xmm15, xmm14
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    psrlw xmm15, 4
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm8
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 448]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu xmm14, [rsp + 416]
+    pand xmm15, xmm14
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm13, 14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    psubusb xmm15, xmm10
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm13, 13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm13, [rsp + 416]
+    psubusb xmm13, xmm11
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    por xmm15, xmm13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm13, [rsp + 416]
+    pand xmm13, xmm12
+    movdqu xmm15, [rsp + 448]
+    pxor xmm13, xmm15
+    por xmm0, xmm13
+    movdqa xmm13, xmm2
+    palignr xmm13, xmm1, 15
+    movdqu [rsp + 416], xmm13
+    movdqu xmm15, [rsp + 416]
+    psrlw xmm15, 4
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm6
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 448]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    pand xmm13, xmm9
+    movdqu [rsp + 448], xmm7
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm13
+    movdqu [rsp + 448], xmm15
+    movdqu xmm13, [rsp + 416]
+    movdqu xmm15, [rsp + 448]
+    pand xmm13, xmm15
+    movdqu [rsp + 416], xmm2
+    movdqu xmm15, [rsp + 416]
+    psrlw xmm15, 4
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm8
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 448]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pand xmm13, xmm15
+    movdqu [rsp + 416], xmm2
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm1, 14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    psubusb xmm15, xmm10
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm2
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm1, 13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm1, [rsp + 416]
+    psubusb xmm1, xmm11
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    por xmm15, xmm1
+    movdqu [rsp + 416], xmm15
+    movdqu xmm1, [rsp + 416]
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    movdqa xmm1, xmm3
+    palignr xmm1, xmm2, 15
+    movdqa xmm13, xmm1
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqu [rsp + 416], xmm6
+    movdqu xmm15, [rsp + 416]
+    pshufb xmm15, xmm13
+    movdqu [rsp + 416], xmm15
+    pand xmm1, xmm9
+    movdqa xmm13, xmm7
+    pshufb xmm13, xmm1
+    movdqu xmm1, [rsp + 416]
+    pand xmm1, xmm13
+    movdqa xmm13, xmm3
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqu [rsp + 416], xmm8
+    movdqu xmm15, [rsp + 416]
+    pshufb xmm15, xmm13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pand xmm1, xmm15
+    movdqa xmm13, xmm3
+    palignr xmm13, xmm2, 14
+    psubusb xmm13, xmm10
+    movdqu [rsp + 416], xmm3
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm2, 13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm2, [rsp + 416]
+    psubusb xmm2, xmm11
+    por xmm13, xmm2
+    pand xmm13, xmm12
+    pxor xmm13, xmm1
+    por xmm0, xmm13
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 15
+    movdqa xmm2, xmm1
+    psrlw xmm2, 4
+    pand xmm2, [rel NVOL_K1]
+    movdqa xmm13, xmm6
+    pshufb xmm13, xmm2
+    pand xmm1, xmm9
+    movdqa xmm2, xmm7
+    pshufb xmm2, xmm1
+    pand xmm13, xmm2
+    movdqa xmm1, xmm4
+    psrlw xmm1, 4
+    pand xmm1, [rel NVOL_K1]
+    movdqa xmm2, xmm8
+    pshufb xmm2, xmm1
+    pand xmm13, xmm2
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 14
+    psubusb xmm1, xmm10
+    movdqa xmm2, xmm4
+    palignr xmm2, xmm3, 13
+    psubusb xmm2, xmm11
+    por xmm1, xmm2
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    xor r15d, r15d
+    movzx edx, byte [rbx + 63]
+    cmp edx, 191
+    ja strict short .L9
+    movzx edx, byte [rbx + 62]
+    cmp edx, 223
+    ja strict short .L9
+    movzx edx, byte [rbx + 61]
+    cmp edx, 239
+    jbe strict short .L8
+.L9:
+    mov r15d, 1
+.L8:
+.L7:
+    movdqa xmm13, xmm4
+    movdqu xmm1, [rbx + 64]
+    movdqu xmm2, [rbx + 80]
+    movdqu xmm3, [rbx + 96]
+    movdqu xmm4, [rbx + 112]
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pmovmskb edx, xmm15
+    movdqu [rsp + 416], xmm2
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pmovmskb ebp, xmm15
+    shl rbp, 16
+    or rdx, rbp
+    movdqu [rsp + 416], xmm3
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pmovmskb ebp, xmm15
+    shl rbp, 32
+    or rdx, rbp
+    movdqu [rsp + 416], xmm4
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pmovmskb ebp, xmm15
+    shl rbp, 48
+    or rdx, rbp
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pmovmskb ebp, xmm15
+    movdqu [rsp + 416], xmm2
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pmovmskb r13d, xmm15
+    shl r13, 16
+    or rbp, r13
+    movdqu [rsp + 416], xmm3
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pmovmskb r13d, xmm15
+    shl r13, 32
+    or rbp, r13
+    movdqu [rsp + 448], xmm4
+    movdqu xmm15, [rsp + 448]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pmovmskb r13d, xmm15
+    shl r13, 48
+    mov r11, rbp
+    or r11, r13
+    mov [rsp + 416], r11
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm1
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pcmpeqb xmm15, xmm1
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pmovmskb r13d, xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm2
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pcmpeqb xmm15, xmm2
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pmovmskb r11d, xmm15
+    mov rcx, r11
     shl rcx, 16
-    or rax, rcx
-    movdqa xmm10, xmm8
-    pcmpeqb xmm10, xmm2
-    pmovmskb ecx, xmm10
+    or r13, rcx
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm3
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pcmpeqb xmm15, xmm3
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pmovmskb ecx, xmm15
     shl rcx, 32
-    or rax, rcx
-    movdqa xmm10, xmm9
-    pcmpeqb xmm10, xmm2
-    pmovmskb ecx, xmm10
+    or r13, rcx
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pshufb xmm15, xmm4
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pcmpeqb xmm15, xmm4
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pmovmskb ecx, xmm15
     shl rcx, 48
-    or rax, rcx
-    movdqa xmm10, xmm6
-    pcmpeqb xmm10, xmm3
-    pmovmskb ecx, xmm10
-    movdqa xmm10, xmm7
-    pcmpeqb xmm10, xmm3
-    pmovmskb edx, xmm10
-    shl rdx, 16
-    or rcx, rdx
-    movdqa xmm10, xmm8
-    pcmpeqb xmm10, xmm3
-    pmovmskb edx, xmm10
-    shl rdx, 32
-    or rcx, rdx
-    movdqa xmm10, xmm9
-    pcmpeqb xmm10, xmm3
-    pmovmskb edx, xmm10
-    shl rdx, 48
-    mov r11, rcx
-    or r11, rdx
-    mov [rsp + 192], r11
-    movdqa xmm10, xmm0
-    pshufb xmm10, xmm6
-    pcmpeqb xmm10, xmm6
-    pmovmskb edx, xmm10
-    movdqa xmm10, xmm0
-    pshufb xmm10, xmm7
-    pcmpeqb xmm10, xmm7
-    pmovmskb r8d, xmm10
-    shl r8, 16
-    or rdx, r8
-    movdqa xmm10, xmm0
-    pshufb xmm10, xmm8
-    pcmpeqb xmm10, xmm8
-    pmovmskb r8d, xmm10
-    shl r8, 32
-    or rdx, r8
-    movdqa xmm10, xmm0
-    pshufb xmm10, xmm9
-    pcmpeqb xmm10, xmm9
-    pmovmskb r8d, xmm10
-    shl r8, 48
+    mov r11, r13
+    or r11, rcx
+    mov [rsp + 448], r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pshufb xmm15, xmm1
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 512], xmm1
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    movdqu xmm14, [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb ecx, xmm15
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pshufb xmm15, xmm2
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 512], xmm2
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    movdqu xmm14, [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb r11d, xmm15
+    shl r11, 16
+    or rcx, r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pshufb xmm15, xmm3
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 512], xmm3
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    movdqu xmm14, [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb r11d, xmm15
+    shl r11, 32
+    or rcx, r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pshufb xmm15, xmm4
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 512], xmm4
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    movdqu xmm14, [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb r11d, xmm15
+    shl r11, 48
+    or rcx, r11
+    movdqu [rsp + 480], xmm1
+    movdqu xmm15, [rsp + 480]
+    pminub xmm15, xmm5
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pcmpeqb xmm15, xmm1
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    pmovmskb r11d, xmm15
+    mov qword [rsp + 512], r11
+    movdqu [rsp + 480], xmm2
+    movdqu xmm15, [rsp + 480]
+    pminub xmm15, xmm5
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pcmpeqb xmm15, xmm2
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb r11d, xmm15
+    shl r11, 16
+    mov [rsp + 544], r11
+    mov r11, [rsp + 512]
+    mov r10, [rsp + 544]
+    or r11, r10
+    mov qword [rsp + 480], r11
+    movdqu [rsp + 512], xmm3
+    movdqu xmm15, [rsp + 512]
+    pminub xmm15, xmm5
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pcmpeqb xmm15, xmm3
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb r11d, xmm15
+    shl r11, 32
+    mov [rsp + 544], r11
+    mov r11, [rsp + 480]
+    mov r10, [rsp + 544]
+    or r11, r10
+    mov qword [rsp + 512], r11
+    movdqu [rsp + 480], xmm4
+    movdqu xmm15, [rsp + 480]
+    pminub xmm15, xmm5
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pcmpeqb xmm15, xmm4
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    pmovmskb r11d, xmm15
+    mov [rsp + 480], r11
+    shl r11, 48
+    mov [rsp + 544], r11
+    mov r11, [rsp + 512]
+    mov r10, [rsp + 544]
+    or r11, r10
+    mov [rsp + 512], r11
+    mov rbp, r8
+    test rdx, rdx
+    je strict short .L10
+    mov rbp, rdx
+    mov r11, r8
+    not r11
+    and rbp, r11
+    mov r11, rbp
+    shl r11, 1
+    mov qword [rsp + 544], r11
+    mov r11, 12297829382473034410
+    mov [rsp + 480], r11
+    mov r11, [rsp + 544]
+    mov r10, [rsp + 480]
+    or r11, r10
+    mov [rsp + 544], r11
+    sub r11, rbp
+    mov r13, r11
+    mov rbp, 12297829382473034410
+    xor r13, rbp
+    mov rbp, r13
     mov r11, rdx
     or r11, r8
-    mov [rsp + 224], r11
-    movdqa xmm10, xmm1
-    pshufb xmm10, xmm6
-    movdqa xmm11, xmm6
-    por xmm11, xmm4
-    pcmpeqb xmm10, xmm11
-    pmovmskb r8d, xmm10
-    movdqa xmm10, xmm1
-    pshufb xmm10, xmm7
-    movdqa xmm11, xmm7
-    por xmm11, xmm4
-    pcmpeqb xmm10, xmm11
-    pmovmskb r11d, xmm10
-    mov r15, r11
-    shl r15, 16
-    or r8, r15
-    movdqa xmm10, xmm1
-    pshufb xmm10, xmm8
-    movdqa xmm11, xmm8
-    por xmm11, xmm4
-    pcmpeqb xmm10, xmm11
-    pmovmskb r15d, xmm10
-    shl r15, 32
-    or r8, r15
-    movdqa xmm10, xmm1
-    pshufb xmm10, xmm9
-    movdqa xmm11, xmm9
-    por xmm11, xmm4
-    pcmpeqb xmm10, xmm11
-    pmovmskb r15d, xmm10
-    shl r15, 48
-    or r8, r15
-    movdqa xmm10, xmm6
-    pminub xmm10, xmm5
-    pcmpeqb xmm10, xmm6
-    pmovmskb r15d, xmm10
-    movdqa xmm6, xmm7
-    pminub xmm6, xmm5
-    pcmpeqb xmm6, xmm7
-    pmovmskb r11d, xmm6
-    shl r11, 16
-    or r15, r11
-    movdqa xmm6, xmm8
-    pminub xmm6, xmm5
-    pcmpeqb xmm6, xmm8
-    pmovmskb r11d, xmm6
-    shl r11, 32
-    or r15, r11
-    movdqa xmm6, xmm9
-    pminub xmm6, xmm5
-    pcmpeqb xmm6, xmm9
-    pmovmskb r11d, xmm6
-    mov [rsp + 288], r11
-    shl r11, 48
-    mov [rsp + 320], r11
-    mov r11, r15
-    mov r10, [rsp + 320]
-    or r11, r10
-    mov [rsp + 256], r11
-    mov rcx, rsi
-    test rax, rax
-    je strict short .L6
-    mov rcx, rax
-    mov r11, rsi
-    not r11
-    and rcx, r11
-    mov r11, rcx
-    shl r11, 1
-    mov qword [rsp + 320], r11
-    mov r11, 12297829382473034410
-    mov [rsp + 288], r11
-    mov r11, [rsp + 320]
-    mov r10, [rsp + 288]
-    or r11, r10
-    mov [rsp + 320], r11
-    sub r11, rcx
-    mov rdx, r11
-    mov rcx, 12297829382473034410
-    xor rdx, rcx
-    mov rcx, rdx
-    mov r11, rax
-    or r11, rsi
-    mov [rsp + 288], r11
-    xor rcx, r11
-    mov rsi, rdx
-    and rsi, rax
-    shr rsi, 63
-    jmp strict short .L7
-.L6:
-    xor esi, esi
-.L7:
-    mov rax, qword [rsp + 192]
-    not rcx
-    and rax, rcx
-    mov rcx, rax
-    mov rdx, rcx
-    mov r11, rcx
-    shl r11, 1
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 2
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 4
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 8
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 16
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 32
-    xor rdx, r11
-    mov rcx, rdx
-    xor rcx, rdi
-    xor edi, edi
-    mov rdx, rcx
-    shr rdx, 63
-    sub rdi, rdx
-    mov rdx, r8
-    mov r11, [rsp + 224]
-    or rdx, r11
-    not rdx
-    mov r15, rdx
-    mov r11, rax
-    not r11
-    and r15, r11
-    mov r11, r15
-    shl r11, 1
-    mov [rsp + 192], r11
-    or r11, rbx
-    mov [rsp + 224], r11
-    mov rbx, r15
-    shr rbx, 63
-    mov r15, r11
-    not r15
-    and rdx, r15
-    or r8, rdx
-    mov rdx, rcx
-    xor rdx, rax
-    not rdx
+    mov [rsp + 480], r11
+    xor rbp, r11
+    mov r8, r13
     and r8, rdx
-    mov rax, qword [rsp + 256]
-    and rax, rcx
-    or rbp, rax
+    shr r8, 63
+    jmp strict short .L11
+.L10:
+    xor r8d, r8d
+.L11:
+    mov rdx, qword [rsp + 416]
+    not rbp
+    and rdx, rbp
+    mov rbp, rdx
+    mov r13, rbp
+    mov r11, rbp
+    shl r11, 1
+    xor r13, r11
+    mov rbp, r13
+    mov r11, rbp
+    shl r11, 2
+    xor r13, r11
+    mov rbp, r13
+    mov r11, rbp
+    shl r11, 4
+    xor r13, r11
+    mov rbp, r13
+    mov r11, rbp
+    shl r11, 8
+    xor r13, r11
+    mov rbp, r13
+    mov r11, rbp
+    shl r11, 16
+    xor r13, r11
+    mov rbp, r13
+    mov r11, rbp
+    shl r11, 32
+    xor r13, r11
+    mov rbp, r13
+    xor rbp, r9
+    xor r9d, r9d
+    mov r13, rbp
+    shr r13, 63
+    sub r9, r13
+    mov r13, rcx
+    mov r11, [rsp + 448]
+    or r13, r11
+    not r13
+    mov r11, rdx
+    not r11
+    mov [rsp + 448], r11
+    mov r11, r13
+    mov r10, [rsp + 448]
+    and r11, r10
+    mov [rsp + 416], r11
+    shl r11, 1
+    or r11, rsi
+    mov rsi, qword [rsp + 416]
+    shr rsi, 63
+    not r11
+    and r13, r11
+    or rcx, r13
+    mov r13, rbp
+    xor r13, rdx
+    not r13
+    and rcx, r13
+    mov rdx, qword [rsp + 512]
+    and rdx, rbp
+    or rdi, rdx
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    por xmm15, xmm2
+    movdqu [rsp + 416], xmm15
+    movdqu [rsp + 448], xmm3
+    movdqu xmm15, [rsp + 448]
+    por xmm15, xmm4
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu xmm14, [rsp + 448]
+    por xmm15, xmm14
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pmovmskb edx, xmm15
+    test edx, edx
+    jne strict short .L12
+    or r12, r15
+    jmp strict near .L13
+.L12:
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm13, 15
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    psrlw xmm15, 4
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 448], xmm6
+    movdqu xmm15, [rsp + 448]
+    movdqu xmm14, [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    pand xmm15, xmm9
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 416], xmm7
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu xmm14, [rsp + 416]
+    pand xmm15, xmm14
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    psrlw xmm15, 4
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm8
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 448]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu xmm14, [rsp + 416]
+    pand xmm15, xmm14
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm13, 14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 480]
+    psubusb xmm15, xmm10
+    movdqu [rsp + 480], xmm15
+    movdqu [rsp + 416], xmm1
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm13, 13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm13, [rsp + 416]
+    psubusb xmm13, xmm11
+    movdqu xmm15, [rsp + 480]
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    por xmm15, xmm13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm13, [rsp + 416]
+    pand xmm13, xmm12
+    movdqu xmm15, [rsp + 448]
+    pxor xmm13, xmm15
+    por xmm0, xmm13
+    movdqa xmm13, xmm2
+    palignr xmm13, xmm1, 15
+    movdqu [rsp + 416], xmm13
+    movdqu xmm15, [rsp + 416]
+    psrlw xmm15, 4
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm6
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 448]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    pand xmm13, xmm9
+    movdqu [rsp + 448], xmm7
+    movdqu xmm15, [rsp + 448]
+    pshufb xmm15, xmm13
+    movdqu [rsp + 448], xmm15
+    movdqu xmm13, [rsp + 416]
+    movdqu xmm15, [rsp + 448]
+    pand xmm13, xmm15
+    movdqu [rsp + 416], xmm2
+    movdqu xmm15, [rsp + 416]
+    psrlw xmm15, 4
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm8
+    movdqu xmm15, [rsp + 416]
+    movdqu xmm14, [rsp + 448]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pand xmm13, xmm15
+    movdqu [rsp + 416], xmm2
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm1, 14
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 448], xmm15
+    movdqu xmm15, [rsp + 448]
+    psubusb xmm15, xmm10
+    movdqu [rsp + 448], xmm15
+    movdqu [rsp + 416], xmm2
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm1, 13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm1, [rsp + 416]
+    psubusb xmm1, xmm11
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    por xmm15, xmm1
+    movdqu [rsp + 416], xmm15
+    movdqu xmm1, [rsp + 416]
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    movdqa xmm1, xmm3
+    palignr xmm1, xmm2, 15
+    movdqa xmm13, xmm1
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqu [rsp + 416], xmm6
+    movdqu xmm15, [rsp + 416]
+    pshufb xmm15, xmm13
+    movdqu [rsp + 416], xmm15
+    pand xmm1, xmm9
+    movdqa xmm13, xmm7
+    pshufb xmm13, xmm1
+    movdqu xmm1, [rsp + 416]
+    pand xmm1, xmm13
+    movdqa xmm13, xmm3
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqu [rsp + 416], xmm8
+    movdqu xmm15, [rsp + 416]
+    pshufb xmm15, xmm13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm15, [rsp + 416]
+    pand xmm1, xmm15
+    movdqa xmm13, xmm3
+    palignr xmm13, xmm2, 14
+    psubusb xmm13, xmm10
+    movdqu [rsp + 416], xmm3
+    movdqu xmm15, [rsp + 416]
+    palignr xmm15, xmm2, 13
+    movdqu [rsp + 416], xmm15
+    movdqu xmm2, [rsp + 416]
+    psubusb xmm2, xmm11
+    por xmm13, xmm2
+    pand xmm13, xmm12
+    pxor xmm13, xmm1
+    por xmm0, xmm13
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 15
+    movdqa xmm2, xmm1
+    psrlw xmm2, 4
+    pand xmm2, [rel NVOL_K1]
+    movdqa xmm13, xmm6
+    pshufb xmm13, xmm2
+    pand xmm1, xmm9
+    movdqa xmm2, xmm7
+    pshufb xmm2, xmm1
+    pand xmm13, xmm2
+    movdqa xmm1, xmm4
+    psrlw xmm1, 4
+    pand xmm1, [rel NVOL_K1]
+    movdqa xmm2, xmm8
+    pshufb xmm2, xmm1
+    pand xmm13, xmm2
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 14
+    psubusb xmm1, xmm10
+    movdqa xmm2, xmm4
+    palignr xmm2, xmm3, 13
+    psubusb xmm2, xmm11
+    por xmm1, xmm2
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    xor r15d, r15d
+    movzx edx, byte [rbx + 127]
+    cmp edx, 191
+    ja strict short .L15
+    movzx edx, byte [rbx + 126]
+    cmp edx, 223
+    ja strict short .L15
+    movzx edx, byte [rbx + 125]
+    cmp edx, 239
+    jbe strict short .L14
+.L15:
+    mov r15d, 1
+.L14:
+.L13:
+    movdqa xmm13, xmm4
     test r14, r14
     jne strict near .Lrare7
-.L8:
-    mov r11, [rsp + 160]
+.L16:
+    mov r11, [rsp + 384]
     test r11, r11
-    je strict near .L24
-    mov r14, r13
+    je strict near .L32
+    mov r14, qword [rsp + 64]
     lea rax, [rel NVOL_K0]
-    mov r11, [rsp + 160]
-    movzx ecx, r11b
-    movzx ecx, byte [rax + rcx]
-    mov rdx, qword [rsp + 160]
-    shr rdx, 8
-    movzx edx, dl
+    mov r11, [rsp + 384]
+    movzx edx, r11b
     movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 160]
-    shr rdx, 16
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 160]
-    shr rdx, 24
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 160]
-    shr rdx, 32
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 160]
-    shr rdx, 40
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 160]
-    shr rdx, 48
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, qword [rsp + 160]
-    shr rdx, 56
-    movzx eax, byte [rax + rdx]
-    add ecx, eax
-    mov rax, qword [rsp + 96]
+    mov rbp, qword [rsp + 384]
+    shr rbp, 8
+    movzx ebp, bpl
+    movzx ebp, byte [rax + rbp]
+    add edx, ebp
+    mov rbp, qword [rsp + 384]
+    shr rbp, 16
+    movzx ebp, bpl
+    movzx ebp, byte [rax + rbp]
+    add edx, ebp
+    mov rbp, qword [rsp + 384]
+    shr rbp, 24
+    movzx ebp, bpl
+    movzx ebp, byte [rax + rbp]
+    add edx, ebp
+    mov rbp, qword [rsp + 384]
+    shr rbp, 32
+    movzx ebp, bpl
+    movzx ebp, byte [rax + rbp]
+    add edx, ebp
+    mov rbp, qword [rsp + 384]
+    shr rbp, 40
+    movzx ebp, bpl
+    movzx ebp, byte [rax + rbp]
+    add edx, ebp
+    mov rbp, qword [rsp + 384]
+    shr rbp, 48
+    movzx ebp, bpl
+    movzx ebp, byte [rax + rbp]
+    add edx, ebp
+    mov rbp, qword [rsp + 384]
+    shr rbp, 56
+    movzx eax, byte [rax + rbp]
+    add edx, eax
+    mov rax, qword [rsp + 128]
     shl rax, 2
     mov r11, [rsp + 32]
     lea rax, [r11 + rax]
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 4], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 8], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 12], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rcx, 4
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 4], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 8], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 12], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    cmp rdx, 4
     ja strict near .Lrare13
-.L26:
-    mov r11, [rsp + 96]
-    lea r11, [r11 + rcx]
-    mov [rsp + 96], r11
-.L24:
-    mov r14, r8
-    lea r9, [r13 + 64]
-    lea r12, [r12 + 128]
-    lea r13, [r13 + 128]
+.L34:
     mov r11, [rsp + 128]
-    cmp r12, r11
+    lea r11, [r11 + rdx]
+    mov [rsp + 128], r11
+.L32:
+    mov r14, rcx
+    mov r11, [rsp + 64]
+    lea rax, [r11 + 64]
+    lea rbx, [rbx + 128]
+    mov r11, [rsp + 64]
+    lea r11, [r11 + 128]
+    mov [rsp + 64], r11
+    mov r11, [rsp + 352]
+    cmp rbx, r11
     jb strict near .L2
 .L3:
-    mov r11, [rsp + 64]
-    cmp r12, r11
-    jae strict near .L40
-    movdqu xmm6, [r12]
-    movdqu xmm7, [r12 + 16]
-    movdqu xmm8, [r12 + 32]
-    movdqu xmm9, [r12 + 48]
-    movdqa xmm10, xmm6
-    pcmpeqb xmm10, xmm2
-    pmovmskb eax, xmm10
-    movdqa xmm10, xmm7
-    pcmpeqb xmm10, xmm2
-    pmovmskb ecx, xmm10
-    shl rcx, 16
-    or rax, rcx
-    movdqa xmm10, xmm8
-    pcmpeqb xmm10, xmm2
-    pmovmskb ecx, xmm10
-    shl rcx, 32
-    or rax, rcx
-    movdqa xmm10, xmm9
-    pcmpeqb xmm10, xmm2
-    pmovmskb ecx, xmm10
-    shl rcx, 48
-    or rax, rcx
-    movdqa xmm2, xmm6
-    pcmpeqb xmm2, xmm3
-    pmovmskb ecx, xmm2
-    movdqa xmm2, xmm7
-    pcmpeqb xmm2, xmm3
-    pmovmskb edx, xmm2
+    mov r11, [rsp + 96]
+    cmp rbx, r11
+    jae strict near .L48
+    movdqu xmm1, [rbx]
+    movdqu xmm2, [rbx + 16]
+    movdqu xmm3, [rbx + 32]
+    movdqu xmm4, [rbx + 48]
+    movdqu [rsp + 96], xmm1
+    movdqu xmm15, [rsp + 96]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 96], xmm15
+    movdqu xmm15, [rsp + 96]
+    pmovmskb ecx, xmm15
+    movdqu [rsp + 96], xmm2
+    movdqu xmm15, [rsp + 96]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 96], xmm15
+    movdqu xmm15, [rsp + 96]
+    pmovmskb edx, xmm15
     shl rdx, 16
     or rcx, rdx
-    movdqa xmm2, xmm8
-    pcmpeqb xmm2, xmm3
-    pmovmskb edx, xmm2
+    movdqu [rsp + 96], xmm3
+    movdqu xmm15, [rsp + 96]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 96], xmm15
+    movdqu xmm15, [rsp + 96]
+    pmovmskb edx, xmm15
     shl rdx, 32
     or rcx, rdx
-    movdqa xmm2, xmm9
-    pcmpeqb xmm2, xmm3
-    pmovmskb edx, xmm2
+    movdqu [rsp + 96], xmm4
+    movdqu xmm15, [rsp + 96]
+    movdqu xmm14, [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 96], xmm15
+    movdqu xmm15, [rsp + 96]
+    pmovmskb edx, xmm15
     shl rdx, 48
-    mov r11, rcx
-    or r11, rdx
-    mov [rsp + 64], r11
-    movdqa xmm2, xmm0
-    pshufb xmm2, xmm6
-    pcmpeqb xmm2, xmm6
-    pmovmskb edx, xmm2
-    movdqa xmm2, xmm0
-    pshufb xmm2, xmm7
-    pcmpeqb xmm2, xmm7
-    pmovmskb r8d, xmm2
-    shl r8, 16
-    or rdx, r8
-    movdqa xmm2, xmm0
-    pshufb xmm2, xmm8
-    pcmpeqb xmm2, xmm8
-    pmovmskb r8d, xmm2
-    shl r8, 32
-    or rdx, r8
-    pshufb xmm0, xmm9
-    pcmpeqb xmm0, xmm9
-    pmovmskb r8d, xmm0
-    shl r8, 48
-    or rdx, r8
-    movdqa xmm0, xmm1
-    pshufb xmm0, xmm6
-    movdqa xmm2, xmm6
-    por xmm2, xmm4
-    pcmpeqb xmm0, xmm2
-    pmovmskb r8d, xmm0
-    movdqa xmm0, xmm1
-    pshufb xmm0, xmm7
-    movdqa xmm2, xmm7
-    por xmm2, xmm4
-    pcmpeqb xmm0, xmm2
-    pmovmskb r12d, xmm0
-    shl r12, 16
-    or r8, r12
-    movdqa xmm0, xmm1
-    pshufb xmm0, xmm8
-    movdqa xmm2, xmm8
-    por xmm2, xmm4
-    pcmpeqb xmm0, xmm2
-    pmovmskb r12d, xmm0
-    shl r12, 32
-    or r8, r12
-    pshufb xmm1, xmm9
-    movdqa xmm0, xmm9
-    por xmm0, xmm4
-    pcmpeqb xmm1, xmm0
-    pmovmskb r12d, xmm1
-    shl r12, 48
-    or r8, r12
-    movdqa xmm0, xmm6
-    pminub xmm0, xmm5
-    pcmpeqb xmm0, xmm6
-    pmovmskb r12d, xmm0
-    movdqa xmm0, xmm7
-    pminub xmm0, xmm5
-    pcmpeqb xmm0, xmm7
-    pmovmskb r15d, xmm0
-    shl r15, 16
-    or r12, r15
-    movdqa xmm0, xmm8
-    pminub xmm0, xmm5
-    pcmpeqb xmm0, xmm8
-    pmovmskb r15d, xmm0
-    shl r15, 32
-    or r12, r15
-    movdqa xmm0, xmm9
-    pminub xmm0, xmm5
-    pcmpeqb xmm0, xmm9
-    pmovmskb r15d, xmm0
-    shl r15, 48
-    or r12, r15
-    mov r15, rsi
-    test rax, rax
-    je strict short .L42
-    mov r15, rax
-    mov r11, rsi
-    not r11
-    and r15, r11
-    mov r11, r15
-    shl r11, 1
-    mov qword [rsp + 160], r11
-    mov r11, 12297829382473034410
-    mov [rsp + 128], r11
-    mov r11, [rsp + 160]
-    mov r10, [rsp + 128]
-    or r11, r10
-    mov [rsp + 160], r11
-    sub r11, r15
-    mov rcx, r11
-    mov r15, 12297829382473034410
-    xor rcx, r15
-    mov r15, rcx
-    mov r11, rax
-    or r11, rsi
-    mov [rsp + 128], r11
-    xor r15, r11
-    mov rsi, rcx
-    and rsi, rax
-    shr rsi, 63
-    jmp strict short .L43
-.L42:
-    xor esi, esi
-.L43:
-    mov rax, qword [rsp + 64]
-    not r15
-    and rax, r15
-    mov rcx, rax
-    mov r15, rcx
-    mov r11, rcx
-    shl r11, 1
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 2
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 4
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 8
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
+    or rcx, rdx
+    movdqu [rsp + 96], xmm1
+    movdqu xmm15, [rsp + 96]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 96], xmm15
+    movdqu xmm15, [rsp + 96]
+    pmovmskb edx, xmm15
+    movdqu [rsp + 96], xmm2
+    movdqu xmm15, [rsp + 96]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 96], xmm15
+    movdqu xmm15, [rsp + 96]
+    pmovmskb ebp, xmm15
+    shl rbp, 16
+    or rdx, rbp
+    movdqu [rsp + 96], xmm3
+    movdqu xmm15, [rsp + 96]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 96], xmm15
+    movdqu xmm15, [rsp + 96]
+    pmovmskb ebp, xmm15
+    shl rbp, 32
+    or rdx, rbp
+    movdqu [rsp + 224], xmm4
+    movdqu xmm15, [rsp + 224]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 224], xmm15
+    movdqu xmm15, [rsp + 224]
+    pmovmskb ebp, xmm15
+    shl rbp, 48
+    mov r11, rdx
+    or r11, rbp
+    mov [rsp + 96], r11
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 224], xmm15
+    movdqu xmm15, [rsp + 224]
+    pshufb xmm15, xmm1
+    movdqu [rsp + 224], xmm15
+    movdqu xmm15, [rsp + 224]
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pcmpeqb xmm15, xmm1
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pmovmskb ebp, xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 224], xmm15
+    movdqu xmm15, [rsp + 224]
+    pshufb xmm15, xmm2
+    movdqu [rsp + 224], xmm15
+    movdqu xmm15, [rsp + 224]
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pcmpeqb xmm15, xmm2
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pmovmskb r13d, xmm15
+    shl r13, 16
+    or rbp, r13
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 224], xmm15
+    movdqu xmm15, [rsp + 224]
+    pshufb xmm15, xmm3
+    movdqu [rsp + 224], xmm15
+    movdqu xmm15, [rsp + 224]
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pcmpeqb xmm15, xmm3
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pmovmskb r13d, xmm15
+    shl r13, 32
+    or rbp, r13
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pshufb xmm15, xmm4
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    pcmpeqb xmm15, xmm4
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    pmovmskb r13d, xmm15
+    shl r13, 48
+    mov r11, rbp
+    or r11, r13
+    mov [rsp + 224], r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    pshufb xmm15, xmm1
+    movdqu [rsp + 160], xmm15
+    movdqu [rsp + 256], xmm1
+    movdqu xmm15, [rsp + 256]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 352], xmm15
+    movdqu xmm15, [rsp + 352]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 352], xmm15
+    movdqu xmm15, [rsp + 352]
+    pmovmskb r13d, xmm15
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    pshufb xmm15, xmm2
+    movdqu [rsp + 160], xmm15
+    movdqu [rsp + 256], xmm2
+    movdqu xmm15, [rsp + 256]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 352], xmm15
+    movdqu xmm15, [rsp + 352]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 352], xmm15
+    movdqu xmm15, [rsp + 352]
+    pmovmskb r11d, xmm15
     shl r11, 16
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
+    or r13, r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    pshufb xmm15, xmm3
+    movdqu [rsp + 160], xmm15
+    movdqu [rsp + 256], xmm3
+    movdqu xmm15, [rsp + 256]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 352], xmm15
+    movdqu xmm15, [rsp + 352]
+    movdqu xmm14, [rsp + 256]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 352], xmm15
+    movdqu xmm15, [rsp + 352]
+    pmovmskb r11d, xmm15
     shl r11, 32
-    xor r15, r11
-    mov rcx, r15
-    xor rcx, rdi
-    xor edi, edi
-    mov r15, rcx
-    shr r15, 63
-    sub rdi, r15
-    mov r15, r8
-    or r15, rdx
-    not r15
-    mov rdx, r15
-    mov r11, rax
+    or r13, r11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    pshufb xmm15, xmm4
+    movdqu [rsp + 160], xmm15
+    movdqu [rsp + 192], xmm4
+    movdqu xmm15, [rsp + 192]
+    movdqu xmm14, [rsp + 288]
+    por xmm15, xmm14
+    movdqu [rsp + 192], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    movdqu xmm14, [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pmovmskb r11d, xmm15
+    shl r11, 48
+    or r13, r11
+    movdqu [rsp + 160], xmm1
+    movdqu xmm15, [rsp + 160]
+    pminub xmm15, xmm5
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 192], xmm15
+    movdqu xmm15, [rsp + 192]
+    pcmpeqb xmm15, xmm1
+    movdqu [rsp + 192], xmm15
+    movdqu xmm15, [rsp + 192]
+    pmovmskb r11d, xmm15
+    mov qword [rsp + 192], r11
+    movdqu [rsp + 160], xmm2
+    movdqu xmm15, [rsp + 160]
+    pminub xmm15, xmm5
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pcmpeqb xmm15, xmm2
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pmovmskb r11d, xmm15
+    shl r11, 16
+    mov [rsp + 256], r11
+    mov r11, [rsp + 192]
+    mov r10, [rsp + 256]
+    or r11, r10
+    mov qword [rsp + 160], r11
+    movdqu [rsp + 192], xmm3
+    movdqu xmm15, [rsp + 192]
+    pminub xmm15, xmm5
+    movdqu [rsp + 192], xmm15
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pcmpeqb xmm15, xmm3
+    movdqu [rsp + 256], xmm15
+    movdqu xmm15, [rsp + 256]
+    pmovmskb r11d, xmm15
+    shl r11, 32
+    mov [rsp + 256], r11
+    mov r11, [rsp + 160]
+    mov r10, [rsp + 256]
+    or r11, r10
+    mov qword [rsp + 192], r11
+    movdqu [rsp + 160], xmm4
+    movdqu xmm15, [rsp + 160]
+    pminub xmm15, xmm5
+    movdqu [rsp + 160], xmm15
+    movdqu xmm5, [rsp + 160]
+    pcmpeqb xmm5, xmm4
+    pmovmskb r11d, xmm5
+    mov [rsp + 160], r11
+    shl r11, 48
+    mov [rsp + 256], r11
+    mov r11, [rsp + 192]
+    mov r10, [rsp + 256]
+    or r11, r10
+    mov [rsp + 192], r11
+    mov rdx, r8
+    test rcx, rcx
+    je strict short .L50
+    mov rdx, rcx
+    mov r11, r8
     not r11
     and rdx, r11
     mov r11, rdx
     shl r11, 1
-    mov [rsp + 64], r11
-    or r11, rbx
-    mov [rsp + 128], r11
-    mov rbx, rdx
-    shr rbx, 63
-    mov rdx, r11
-    not rdx
-    and r15, rdx
-    or r8, r15
-    mov rdx, rcx
-    xor rdx, rax
-    not rdx
-    and r8, rdx
-    and r12, rcx
-    or rbp, r12
-    test r14, r14
-    je strict near .L44
-    lea rax, [rel NVOL_K0]
-    movzx ecx, r14b
-    movzx ecx, byte [rax + rcx]
-    mov rdx, r14
-    shr rdx, 8
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 16
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 24
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 32
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 40
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 48
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 56
-    movzx eax, byte [rax + rdx]
-    add ecx, eax
-    mov rax, qword [rsp + 96]
-    shl rax, 2
-    mov r11, [rsp + 32]
-    lea rax, [r11 + rax]
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 4], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 8], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 12], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rcx, 4
-    jbe strict near .L46
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 16], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 20], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 24], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 28], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rcx, 8
-    jbe strict near .L48
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 32], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 36], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 40], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 44], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rcx, 12
-    jbe strict near .L50
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 48], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 52], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 56], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 60], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rcx, 16
-    jbe strict near .L52
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 64], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 68], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 72], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 76], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rcx, 20
-    jbe strict near .L54
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 80], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 84], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 88], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    mov edx, 64
-    bsf r12, r14
-    cmovz r12, rdx
-    lea rdx, [r9 + r12]
-    mov dword [rax + 92], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rcx, 24
-    jbe strict short .L56
-    mov edx, 24
-    cmp rdx, rcx
-    jae strict short .L59
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
-.L58:
-    mov r12, rdx
-    shl r12, 2
-    bsf r15, r14
-    lea r15, [r9 + r15]
-    mov dword [rax + r12], r15d
-    mov r12, r14
-    mov r15, r14
-    sub r15, 1
-    and r12, r15
-    mov r14, r12
-    add rdx, 1
-    cmp rdx, rcx
-    jb strict short .L58
-.L59:
-.L56:
-.L54:
-.L52:
+    mov qword [rsp + 256], r11
+    mov r11, 12297829382473034410
+    mov [rsp + 160], r11
+    mov r11, [rsp + 256]
+    mov r10, [rsp + 160]
+    or r11, r10
+    mov [rsp + 256], r11
+    sub r11, rdx
+    mov rbp, r11
+    mov rdx, 12297829382473034410
+    xor rbp, rdx
+    mov rdx, rbp
+    mov r11, rcx
+    or r11, r8
+    mov [rsp + 160], r11
+    xor rdx, r11
+    mov r8, rbp
+    and r8, rcx
+    shr r8, 63
+    jmp strict short .L51
 .L50:
-.L48:
-.L46:
-    mov r11, [rsp + 96]
-    lea r11, [r11 + rcx]
+    xor r8d, r8d
+.L51:
+    mov rcx, qword [rsp + 96]
+    not rdx
+    and rcx, rdx
+    mov rdx, rcx
+    mov rbp, rdx
+    mov r11, rdx
+    shl r11, 1
+    xor rbp, r11
+    mov rdx, rbp
+    mov r11, rdx
+    shl r11, 2
+    xor rbp, r11
+    mov rdx, rbp
+    mov r11, rdx
+    shl r11, 4
+    xor rbp, r11
+    mov rdx, rbp
+    mov r11, rdx
+    shl r11, 8
+    xor rbp, r11
+    mov rdx, rbp
+    mov r11, rdx
+    shl r11, 16
+    xor rbp, r11
+    mov rdx, rbp
+    mov r11, rdx
+    shl r11, 32
+    xor rbp, r11
+    mov rdx, rbp
+    xor rdx, r9
+    xor r9d, r9d
+    mov rbp, rdx
+    shr rbp, 63
+    sub r9, rbp
+    mov rbp, r13
+    mov r11, [rsp + 224]
+    or rbp, r11
+    not rbp
+    mov r11, rcx
+    not r11
+    mov [rsp + 160], r11
+    mov r11, rbp
+    mov r10, [rsp + 160]
+    and r11, r10
     mov [rsp + 96], r11
-.L44:
-    mov r14, r8
-    mov r9, r13
-.L40:
+    shl r11, 1
+    or r11, rsi
+    mov [rsp + 224], r11
+    mov rsi, qword [rsp + 96]
+    shr rsi, 63
+    not r11
+    and rbp, r11
+    or r13, rbp
+    mov rbp, rdx
+    xor rbp, rcx
+    not rbp
+    and r13, rbp
+    mov rcx, qword [rsp + 192]
+    and rcx, rdx
+    or rdi, rcx
+    mov qword [rsp + 96], r13
+    movdqa xmm5, xmm1
+    por xmm5, xmm2
+    movdqu [rsp + 160], xmm3
+    movdqu xmm15, [rsp + 160]
+    por xmm15, xmm4
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    por xmm5, xmm15
+    pmovmskb ecx, xmm5
+    test ecx, ecx
+    jne strict short .L52
+    or r12, r15
+    jmp strict near .L53
+.L52:
+    movdqa xmm5, xmm1
+    palignr xmm5, xmm13, 15
+    movdqu [rsp + 160], xmm5
+    movdqu xmm15, [rsp + 160]
+    psrlw xmm15, 4
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 192], xmm15
+    movdqu xmm15, [rsp + 192]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 192], xmm15
+    movdqu [rsp + 160], xmm6
+    movdqu xmm15, [rsp + 160]
+    movdqu xmm14, [rsp + 192]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 160], xmm15
+    pand xmm5, xmm9
+    movdqu [rsp + 192], xmm7
+    movdqu xmm15, [rsp + 192]
+    pshufb xmm15, xmm5
+    movdqu [rsp + 192], xmm15
+    movdqu xmm5, [rsp + 160]
+    movdqu xmm15, [rsp + 192]
+    pand xmm5, xmm15
+    movdqu [rsp + 160], xmm1
+    movdqu xmm15, [rsp + 160]
+    psrlw xmm15, 4
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 192], xmm15
+    movdqu xmm15, [rsp + 192]
+    pand xmm15, [rel NVOL_K1]
+    movdqu [rsp + 192], xmm15
+    movdqu [rsp + 160], xmm8
+    movdqu xmm15, [rsp + 160]
+    movdqu xmm14, [rsp + 192]
+    pshufb xmm15, xmm14
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    pand xmm5, xmm15
+    movdqu [rsp + 160], xmm1
+    movdqu xmm15, [rsp + 160]
+    palignr xmm15, xmm13, 14
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    movdqu [rsp + 192], xmm15
+    movdqu xmm15, [rsp + 192]
+    psubusb xmm15, xmm10
+    movdqu [rsp + 192], xmm15
+    movdqu [rsp + 160], xmm1
+    movdqu xmm15, [rsp + 160]
+    palignr xmm15, xmm13, 13
+    movdqu [rsp + 160], xmm15
+    movdqu xmm13, [rsp + 160]
+    psubusb xmm13, xmm11
+    movdqu xmm15, [rsp + 192]
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    por xmm15, xmm13
+    movdqu [rsp + 160], xmm15
+    movdqu xmm13, [rsp + 160]
+    pand xmm13, xmm12
+    pxor xmm13, xmm5
+    por xmm0, xmm13
+    movdqa xmm5, xmm2
+    palignr xmm5, xmm1, 15
+    movdqa xmm13, xmm5
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqu [rsp + 160], xmm6
+    movdqu xmm15, [rsp + 160]
+    pshufb xmm15, xmm13
+    movdqu [rsp + 160], xmm15
+    pand xmm5, xmm9
+    movdqa xmm13, xmm7
+    pshufb xmm13, xmm5
+    movdqu xmm5, [rsp + 160]
+    pand xmm5, xmm13
+    movdqa xmm13, xmm2
+    psrlw xmm13, 4
+    pand xmm13, [rel NVOL_K1]
+    movdqu [rsp + 160], xmm8
+    movdqu xmm15, [rsp + 160]
+    pshufb xmm15, xmm13
+    movdqu [rsp + 160], xmm15
+    movdqu xmm15, [rsp + 160]
+    pand xmm5, xmm15
+    movdqa xmm13, xmm2
+    palignr xmm13, xmm1, 14
+    psubusb xmm13, xmm10
+    movdqu [rsp + 160], xmm2
+    movdqu xmm15, [rsp + 160]
+    palignr xmm15, xmm1, 13
+    movdqu [rsp + 160], xmm15
+    movdqu xmm1, [rsp + 160]
+    psubusb xmm1, xmm11
+    por xmm13, xmm1
+    pand xmm13, xmm12
+    pxor xmm13, xmm5
+    por xmm0, xmm13
+    movdqa xmm1, xmm3
+    palignr xmm1, xmm2, 15
+    movdqa xmm5, xmm1
+    psrlw xmm5, 4
+    pand xmm5, [rel NVOL_K1]
+    movdqa xmm13, xmm6
+    pshufb xmm13, xmm5
+    pand xmm1, xmm9
+    movdqa xmm5, xmm7
+    pshufb xmm5, xmm1
+    pand xmm13, xmm5
+    movdqa xmm1, xmm3
+    psrlw xmm1, 4
+    pand xmm1, [rel NVOL_K1]
+    movdqa xmm5, xmm8
+    pshufb xmm5, xmm1
+    pand xmm13, xmm5
+    movdqa xmm1, xmm3
+    palignr xmm1, xmm2, 14
+    psubusb xmm1, xmm10
+    movdqa xmm5, xmm3
+    palignr xmm5, xmm2, 13
+    psubusb xmm5, xmm11
+    por xmm1, xmm5
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 15
+    movdqa xmm2, xmm1
+    psrlw xmm2, 4
+    pand xmm2, [rel NVOL_K1]
+    pshufb xmm6, xmm2
+    pand xmm1, xmm9
+    pshufb xmm7, xmm1
+    pand xmm6, xmm7
+    movdqa xmm1, xmm4
+    psrlw xmm1, 4
+    pand xmm1, [rel NVOL_K1]
+    pshufb xmm8, xmm1
+    pand xmm6, xmm8
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 14
+    psubusb xmm1, xmm10
+    movdqa xmm2, xmm4
+    palignr xmm2, xmm3, 13
+    psubusb xmm2, xmm11
+    por xmm1, xmm2
+    pand xmm1, xmm12
+    pxor xmm1, xmm6
+    por xmm0, xmm1
+    xor r15d, r15d
+    movzx ecx, byte [rbx + 63]
+    cmp ecx, 191
+    ja strict short .L55
+    movzx ecx, byte [rbx + 62]
+    cmp ecx, 223
+    ja strict short .L55
+    movzx ecx, byte [rbx + 61]
+    cmp ecx, 239
+    jbe strict short .L54
+.L55:
+    mov r15d, 1
+.L54:
+.L53:
+    movdqa xmm13, xmm4
     test r14, r14
-    je strict near .L60
-    lea rax, [rel NVOL_K0]
-    movzx ecx, r14b
-    movzx ecx, byte [rax + rcx]
-    mov rdx, r14
-    shr rdx, 8
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 16
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 24
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 32
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 40
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 48
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 56
-    movzx eax, byte [rax + rdx]
-    add ecx, eax
-    mov rax, qword [rsp + 96]
-    shl rax, 2
+    je strict near .L56
+    lea rcx, [rel NVOL_K0]
+    movzx edx, r14b
+    movzx edx, byte [rcx + rdx]
+    mov rbx, r14
+    shr rbx, 8
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 16
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 24
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 32
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 40
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 48
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 56
+    movzx ecx, byte [rcx + rbx]
+    add edx, ecx
+    mov rcx, qword [rsp + 128]
+    shl rcx, 2
     mov r11, [rsp + 32]
-    lea rax, [r11 + rax]
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 4], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 8], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 12], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 4
+    lea rcx, [r11 + rcx]
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 4], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 8], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 12], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 4
+    jbe strict near .L58
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 16], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 20], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 24], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 28], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 8
+    jbe strict near .L60
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 32], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 36], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 40], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 44], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 12
     jbe strict near .L62
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 16], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 20], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 24], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 28], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 8
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 48], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 52], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 56], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 60], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 16
     jbe strict near .L64
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 32], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 36], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 40], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 44], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 12
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 64], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 68], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 72], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 76], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 20
     jbe strict near .L66
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 48], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 52], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 56], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 60], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 16
-    jbe strict near .L68
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 64], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 68], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 72], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 76], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 20
-    jbe strict near .L70
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 80], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 84], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 88], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    mov edx, 64
-    bsf r8, r14
-    cmovz r8, rdx
-    lea rdx, [r9 + r8]
-    mov dword [rax + 92], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rcx, 24
-    jbe strict short .L72
-    mov edx, 24
-    cmp rdx, rcx
-    jae strict short .L75
-.L74:
-    mov r8, rdx
-    shl r8, 2
-    bsf r12, r14
-    lea r12, [r9 + r12]
-    mov dword [rax + r8], r12d
-    mov r8, r14
-    mov r12, r14
-    sub r12, 1
-    and r8, r12
-    mov r14, r8
-    add rdx, 1
-    cmp rdx, rcx
-    jb strict short .L74
-.L75:
-.L72:
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 80], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 84], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 88], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 92], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 24
+    jbe strict short .L68
+    mov ebx, 24
+    cmp rbx, rdx
+    jae strict short .L71
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 .L70:
+    mov rbp, rbx
+    shl rbp, 2
+    bsf r13, r14
+    lea r13, [rax + r13]
+    mov dword [rcx + rbp], r13d
+    mov rbp, r14
+    mov r13, r14
+    sub r13, 1
+    and rbp, r13
+    mov r14, rbp
+    add rbx, 1
+    cmp rbx, rdx
+    jb strict short .L70
+.L71:
 .L68:
 .L66:
 .L64:
 .L62:
-    mov r11, [rsp + 96]
-    lea r11, [r11 + rcx]
-    mov [rsp + 96], r11
 .L60:
+.L58:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rdx]
+    mov [rsp + 128], r11
+.L56:
+    mov r14, qword [rsp + 96]
+    mov rax, qword [rsp + 64]
+.L48:
+    test r14, r14
+    je strict near .L72
+    lea rcx, [rel NVOL_K0]
+    movzx edx, r14b
+    movzx edx, byte [rcx + rdx]
+    mov rbx, r14
+    shr rbx, 8
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 16
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 24
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 32
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 40
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 48
+    movzx ebx, bl
+    movzx ebx, byte [rcx + rbx]
+    add edx, ebx
+    mov rbx, r14
+    shr rbx, 56
+    movzx ecx, byte [rcx + rbx]
+    add edx, ecx
+    mov rcx, qword [rsp + 128]
+    shl rcx, 2
+    mov r11, [rsp + 32]
+    lea rcx, [r11 + rcx]
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 4], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 8], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 12], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 4
+    jbe strict near .L74
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 16], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 20], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 24], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 28], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 8
+    jbe strict near .L76
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 32], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 36], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 40], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 44], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 12
+    jbe strict near .L78
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 48], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 52], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 56], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 60], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 16
+    jbe strict near .L80
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 64], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 68], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 72], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 76], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 20
+    jbe strict near .L82
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 80], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 84], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 88], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    mov ebx, 64
+    bsf rbp, r14
+    cmovz rbp, rbx
+    lea rbx, [rax + rbp]
+    mov dword [rcx + 92], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rdx, 24
+    jbe strict short .L84
+    mov ebx, 24
+    cmp rbx, rdx
+    jae strict short .L87
+    db 0xf, 0x1f, 0x0
+.L86:
+    mov rbp, rbx
+    shl rbp, 2
+    bsf r13, r14
+    lea r13, [rax + r13]
+    mov dword [rcx + rbp], r13d
+    mov rbp, r14
+    mov r13, r14
+    sub r13, 1
+    and rbp, r13
+    mov r14, rbp
+    add rbx, 1
+    cmp rbx, rdx
+    jb strict short .L86
+.L87:
+.L84:
+.L82:
+.L80:
+.L78:
+.L76:
+.L74:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rdx]
+    mov [rsp + 128], r11
+.L72:
     mov r11, [rsp]
-    mov qword [r11], rsi
+    mov qword [r11], r8
     mov r11, [rsp]
-    mov qword [r11 + 8], rdi
+    mov qword [r11 + 8], r9
     mov r11, [rsp]
-    mov qword [r11 + 16], rbx
+    mov qword [r11 + 16], rsi
     mov r11, [rsp]
-    mov qword [r11 + 24], rbp
-    mov rax, qword [rsp + 96]
-    movdqu xmm6, [rsp + 352]
-    movdqu xmm7, [rsp + 368]
-    movdqu xmm8, [rsp + 384]
-    movdqu xmm9, [rsp + 400]
-    movdqu xmm10, [rsp + 416]
-    movdqu xmm11, [rsp + 432]
-    add rsp, 456
+    mov qword [r11 + 24], rdi
+    mov rax, qword [rsp + 320]
+    or rax, r12
+    pxor xmm1, xmm1
+    pcmpeqb xmm0, xmm1
+    pmovmskb ecx, xmm0
+    cmp ecx, 65535
+    sete cl
+    movzx ecx, cl
+    xor ecx, 1
+    or rax, rcx
+    mov r11, [rsp]
+    mov qword [r11 + 32], rax
+    mov r11, [rsp]
+    movdqu [r11 + 64], xmm13
+    mov r11, [rsp]
+    mov qword [r11 + 40], r15
+    mov rax, qword [rsp + 128]
+    movdqu xmm6, [rsp + 576]
+    movdqu xmm7, [rsp + 592]
+    movdqu xmm8, [rsp + 608]
+    movdqu xmm9, [rsp + 624]
+    movdqu xmm10, [rsp + 640]
+    movdqu xmm11, [rsp + 656]
+    movdqu xmm12, [rsp + 672]
+    movdqu xmm13, [rsp + 688]
+    movdqu xmm14, [rsp + 704]
+    movdqu xmm15, [rsp + 720]
+    add rsp, 744
     pop r15
     pop r14
     pop r13
@@ -57996,616 +59492,625 @@ nvol_json_index_ssse3:
     pop rbx
     ret
 .Lrare1:
-    mov edx, 24
-    cmp rdx, rcx
-    jae strict short .L23
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-.L22:
-    mov r15, rdx
-    shl r15, 2
+    mov r13d, 24
+    cmp r13, rbp
+    jae strict short .L31
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+.L30:
+    mov r11, r13
+    shl r11, 2
+    mov [rsp + 416], r11
     bsf r11, r14
-    lea r10, [r9 + r11]
-    mov [rsp + 224], r10
-    mov r11, r10
-    mov dword [rax + r15], r11d
-    mov r15, r14
+    lea r10, [rax + r11]
+    mov [rsp + 480], r10
+    mov r11, [rsp + 416]
+    mov dword [rdx + r11], r10d
     mov r11, r14
     sub r11, 1
-    mov [rsp + 192], r11
-    and r15, r11
-    mov r14, r15
-    add rdx, 1
-    cmp rdx, rcx
-    jb strict short .L22
-.L23:
-    jmp strict near .L20
-.Lrare2:
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 80], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 84], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 88], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 92], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rcx, 24
-    ja strict near .Lrare1
-.L20:
-    jmp strict near .L18
-.Lrare3:
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 64], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 68], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 72], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 76], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rcx, 20
-    ja strict near .Lrare2
-.L18:
-    jmp strict near .L16
-.Lrare4:
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 48], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 52], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 56], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 60], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rcx, 16
-    ja strict near .Lrare3
-.L16:
-    jmp strict near .L14
-.Lrare5:
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 32], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 36], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 40], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 44], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rcx, 12
-    ja strict near .Lrare4
-.L14:
-    jmp strict near .L12
-.Lrare6:
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 16], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 20], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 24], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 28], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rcx, 8
-    ja strict near .Lrare5
-.L12:
-    jmp strict near .L10
-.Lrare7:
-    lea rax, [rel NVOL_K0]
-    movzx ecx, r14b
-    movzx ecx, byte [rax + rcx]
-    mov rdx, r14
-    shr rdx, 8
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 16
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 24
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 32
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 40
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 48
-    movzx edx, dl
-    movzx edx, byte [rax + rdx]
-    add ecx, edx
-    mov rdx, r14
-    shr rdx, 56
-    movzx eax, byte [rax + rdx]
-    add ecx, eax
-    mov rax, qword [rsp + 96]
-    shl rax, 2
-    mov r11, [rsp + 32]
-    lea rax, [r11 + rax]
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 4], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 8], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    mov edx, 64
-    bsf r15, r14
-    cmovz r15, rdx
-    lea rdx, [r9 + r15]
-    mov dword [rax + 12], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rcx, 4
-    ja strict near .Lrare6
-.L10:
-    mov r11, [rsp + 96]
-    lea r11, [r11 + rcx]
-    mov [rsp + 96], r11
-    jmp strict near .L8
-.Lrare8:
-    mov edx, 24
-    cmp rdx, rcx
-    jae strict short .L39
-    mov r15, r13
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x90
-.L38:
-    mov r9, rdx
-    shl r9, 2
-    mov r11, [rsp + 160]
-    bsf r14, r11
-    lea r14, [r15 + r14]
-    mov dword [rax + r9], r14d
-    mov r9, qword [rsp + 160]
-    mov r14, qword [rsp + 160]
-    sub r14, 1
-    and r9, r14
-    mov qword [rsp + 160], r9
-    add rdx, 1
-    cmp rdx, rcx
-    jb strict short .L38
-.L39:
-    jmp strict near .L36
-.Lrare9:
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 80], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 84], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 88], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 92], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rcx, 24
-    ja strict near .Lrare8
-.L36:
-    jmp strict near .L34
-.Lrare10:
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 64], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 68], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 72], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 76], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rcx, 20
-    ja strict near .Lrare9
-.L34:
-    jmp strict near .L32
-.Lrare11:
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 48], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 52], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 56], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 60], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rcx, 16
-    ja strict near .Lrare10
-.L32:
-    jmp strict near .L30
-.Lrare12:
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 32], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 36], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 40], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 44], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rcx, 12
-    ja strict near .Lrare11
-.L30:
+    mov [rsp + 448], r11
+    mov r11, r14
+    mov r10, [rsp + 448]
+    and r11, r10
+    mov [rsp + 416], r11
+    mov r14, r11
+    add r13, 1
+    cmp r13, rbp
+    jb strict short .L30
+.L31:
     jmp strict near .L28
-.Lrare13:
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 16], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 20], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 24], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov edx, 64
-    mov r11, [rsp + 160]
-    bsf r9, r11
-    cmovz r9, rdx
-    lea rdx, [r14 + r9]
-    mov dword [rax + 28], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rcx, 8
-    ja strict near .Lrare12
+.Lrare2:
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 80], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 84], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 88], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 92], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 416], r11
+    and r13, r11
+    mov r14, r13
+    cmp rbp, 24
+    ja strict near .Lrare1
 .L28:
     jmp strict near .L26
+.Lrare3:
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 64], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 68], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 72], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 76], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 416], r11
+    and r13, r11
+    mov r14, r13
+    cmp rbp, 20
+    ja strict near .Lrare2
+.L26:
+    jmp strict near .L24
+.Lrare4:
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 48], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 52], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 56], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 60], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 416], r11
+    and r13, r11
+    mov r14, r13
+    cmp rbp, 16
+    ja strict near .Lrare3
+.L24:
+    jmp strict near .L22
+.Lrare5:
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 32], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 36], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 40], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 44], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 416], r11
+    and r13, r11
+    mov r14, r13
+    cmp rbp, 12
+    ja strict near .Lrare4
+.L22:
+    jmp strict near .L20
+.Lrare6:
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 16], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 20], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 24], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 28], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 416], r11
+    and r13, r11
+    mov r14, r13
+    cmp rbp, 8
+    ja strict near .Lrare5
+.L20:
+    jmp strict near .L18
+.Lrare7:
+    lea rdx, [rel NVOL_K0]
+    movzx ebp, r14b
+    movzx ebp, byte [rdx + rbp]
+    mov r13, r14
+    shr r13, 8
+    movzx r13d, r13b
+    movzx r13d, byte [rdx + r13]
+    add ebp, r13d
+    mov r13, r14
+    shr r13, 16
+    movzx r13d, r13b
+    movzx r13d, byte [rdx + r13]
+    add ebp, r13d
+    mov r13, r14
+    shr r13, 24
+    movzx r13d, r13b
+    movzx r13d, byte [rdx + r13]
+    add ebp, r13d
+    mov r13, r14
+    shr r13, 32
+    movzx r13d, r13b
+    movzx r13d, byte [rdx + r13]
+    add ebp, r13d
+    mov r13, r14
+    shr r13, 40
+    movzx r13d, r13b
+    movzx r13d, byte [rdx + r13]
+    add ebp, r13d
+    mov r13, r14
+    shr r13, 48
+    movzx r13d, r13b
+    movzx r13d, byte [rdx + r13]
+    add ebp, r13d
+    mov r13, r14
+    shr r13, 56
+    movzx edx, byte [rdx + r13]
+    add ebp, edx
+    mov rdx, qword [rsp + 128]
+    shl rdx, 2
+    mov r11, [rsp + 32]
+    lea rdx, [r11 + rdx]
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 4], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 8], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    mov r11d, 64
+    bsf r13, r14
+    cmovz r13, r11
+    lea r13, [rax + r13]
+    mov dword [rdx + 12], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 416], r11
+    and r13, r11
+    mov r14, r13
+    cmp rbp, 4
+    ja strict near .Lrare6
+.L18:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rbp]
+    mov [rsp + 128], r11
+    jmp strict near .L16
+.Lrare8:
+    mov ebp, 24
+    cmp rbp, rdx
+    jae strict short .L47
+    db 0xf, 0x1f, 0x40, 0x0
+.L46:
+    mov r13, rbp
+    shl r13, 2
+    mov r11, [rsp + 384]
+    bsf r14, r11
+    mov r11, [rsp + 64]
+    lea r14, [r11 + r14]
+    mov dword [rax + r13], r14d
+    mov r13, qword [rsp + 384]
+    mov r14, qword [rsp + 384]
+    sub r14, 1
+    and r13, r14
+    mov qword [rsp + 384], r13
+    add rbp, 1
+    cmp rbp, rdx
+    jb strict short .L46
+.L47:
+    jmp strict near .L44
+.Lrare9:
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 80], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 84], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 88], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 92], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    cmp rdx, 24
+    ja strict near .Lrare8
+.L44:
+    jmp strict near .L42
+.Lrare10:
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 64], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 68], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 72], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 76], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    cmp rdx, 20
+    ja strict near .Lrare9
+.L42:
+    jmp strict near .L40
+.Lrare11:
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 48], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 52], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 56], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 60], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    cmp rdx, 16
+    ja strict near .Lrare10
+.L40:
+    jmp strict near .L38
+.Lrare12:
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 32], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 36], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 40], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 44], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    cmp rdx, 12
+    ja strict near .Lrare11
+.L38:
+    jmp strict near .L36
+.Lrare13:
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 16], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 20], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 24], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    mov ebp, 64
+    mov r11, [rsp + 384]
+    bsf r13, r11
+    cmovz r13, rbp
+    lea rbp, [r14 + r13]
+    mov dword [rax + 28], ebp
+    mov rbp, qword [rsp + 384]
+    mov r13, qword [rsp + 384]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 384], rbp
+    cmp rdx, 8
+    ja strict near .Lrare12
+.L36:
+    jmp strict near .L34
 .unwind_end:
 
-    db 0x90
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0x90
 global nvol_json_index_avx2
 nvol_json_index_avx2:
     push rbx
@@ -58616,955 +60121,1458 @@ nvol_json_index_avx2:
     push r13
     push r14
     push r15
-    sub rsp, 424
-    vmovdqu [rsp + 352], xmm6
-    vmovdqu [rsp + 368], xmm7
-    vmovdqu [rsp + 384], xmm8
-    vmovdqu [rsp + 400], xmm9
+    sub rsp, 712
+    vmovdqu [rsp + 544], xmm6
+    vmovdqu [rsp + 560], xmm7
+    vmovdqu [rsp + 576], xmm8
+    vmovdqu [rsp + 592], xmm9
+    vmovdqu [rsp + 608], xmm10
+    vmovdqu [rsp + 624], xmm11
+    vmovdqu [rsp + 640], xmm12
+    vmovdqu [rsp + 656], xmm13
+    vmovdqu [rsp + 672], xmm14
+    vmovdqu [rsp + 688], xmm15
     mov qword [rsp], rcx
     mov rax, rcx
-    mov r11, qword [rsp + 528]
+    mov rcx, r8
+    mov rbp, r9
+    mov r11, qword [rsp + 816]
     mov [rsp + 32], r11
-    mov rsi, qword [rax]
-    mov rdi, qword [rax + 8]
-    mov rbx, qword [rax + 16]
-    mov rbp, qword [rax + 24]
-    mov r12, rdx
-    mov r13, r9
-    mov r14, r8
-    shl r14, 6
-    lea r11, [rdx + r14]
-    mov [rsp + 64], r11
-    xor r11d, r11d
+    mov r8, qword [rax]
+    mov r9, qword [rax + 8]
+    mov rsi, qword [rax + 16]
+    mov rdi, qword [rax + 24]
+    mov rbx, rdx
+    mov qword [rsp + 64], rbp
+    mov r12, rcx
+    shl r12, 6
+    lea r11, [rdx + r12]
     mov [rsp + 96], r11
-    vmovdqa ymm0, [rel NVOL_K15]
-    vmovdqa ymm1, [rel NVOL_K16]
-    vmovdqa ymm2, [rel NVOL_K17]
-    vmovdqa ymm3, [rel NVOL_K18]
-    vmovdqa ymm4, [rel NVOL_K19]
-    vmovdqa ymm5, [rel NVOL_K20]
-    xor r14d, r14d
-    shr r8, 1
-    shl r8, 7
-    lea r11, [rdx + r8]
+    xor r11d, r11d
     mov [rsp + 128], r11
-    cmp r12, r11
-    jae strict near .L3
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-.L2:
-    vmovdqu ymm6, [r12]
-    vmovdqu ymm7, [r12 + 32]
-    vpcmpeqb ymm8, ymm6, ymm2
-    vpmovmskb r8d, ymm8
-    vpcmpeqb ymm8, ymm7, ymm2
-    vpmovmskb eax, ymm8
-    shl rax, 32
-    or r8, rax
-    vpcmpeqb ymm8, ymm6, ymm3
-    vpmovmskb eax, ymm8
-    vpcmpeqb ymm8, ymm7, ymm3
-    vpmovmskb ecx, ymm8
-    shl rcx, 32
-    mov r11, rax
-    or r11, rcx
-    mov [rsp + 160], r11
-    vpshufb ymm8, ymm0, ymm6
-    vpcmpeqb ymm8, ymm8, ymm6
-    vpmovmskb ecx, ymm8
-    vpshufb ymm8, ymm0, ymm7
-    vpcmpeqb ymm8, ymm8, ymm7
-    vpmovmskb r15d, ymm8
-    shl r15, 32
+    vmovdqa ymm15, [rel NVOL_K20]
+    vmovdqu [rsp + 160], ymm15
+    vmovdqa ymm15, [rel NVOL_K21]
+    vmovdqu [rsp + 192], ymm15
+    vmovdqa ymm15, [rel NVOL_K22]
+    vmovdqu [rsp + 224], ymm15
+    vmovdqa ymm15, [rel NVOL_K23]
+    vmovdqu [rsp + 256], ymm15
+    vmovdqa ymm4, [rel NVOL_K24]
+    vmovdqa ymm5, [rel NVOL_K25]
+    mov r11, qword [rax + 32]
+    mov [rsp + 288], r11
+    mov r15, qword [rax + 40]
+    vmovdqa ymm6, [rel NVOL_K26]
+    vmovdqa ymm7, [rel NVOL_K27]
+    vmovdqa ymm8, [rel NVOL_K28]
+    vmovdqa ymm9, [rel NVOL_K3]
+    vmovdqa ymm10, [rel NVOL_K29]
+    vmovdqa ymm11, [rel NVOL_K30]
+    vmovdqa ymm12, [rel NVOL_K8]
+    vmovdqu ymm0, [rax + 48]
+    vpxor xmm1, xmm1, xmm1
+    xor r12d, r12d
+    xor r14d, r14d
+    mov rax, rbp
     mov r11, rcx
-    or r11, r15
-    mov [rsp + 192], r11
-    vpshufb ymm8, ymm1, ymm6
-    vpor ymm9, ymm6, ymm4
-    vpcmpeqb ymm8, ymm8, ymm9
-    vpmovmskb r15d, ymm8
-    vpshufb ymm8, ymm1, ymm7
-    vpor ymm9, ymm7, ymm4
-    vpcmpeqb ymm8, ymm8, ymm9
-    vpmovmskb edx, ymm8
+    shr r11, 1
+    shl r11, 7
+    mov [rsp + 352], r11
+    lea r10, [rdx + r11]
+    mov [rsp + 320], r10
+    mov r11, r10
+    cmp rbx, r11
+    jae strict near .L3
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L2:
+    vmovdqu ymm2, [rbx]
+    vmovdqu ymm3, [rbx + 32]
+    vmovdqu ymm15, [rsp + 224]
+    vpcmpeqb ymm14, ymm2, ymm15
+    vmovdqu [rsp + 352], ymm14
+    vmovdqu ymm15, [rsp + 352]
+    vpmovmskb r13d, ymm15
+    vmovdqu ymm15, [rsp + 224]
+    vpcmpeqb ymm14, ymm3, ymm15
+    vmovdqu [rsp + 352], ymm14
+    vmovdqu ymm15, [rsp + 352]
+    vpmovmskb ecx, ymm15
+    shl rcx, 32
+    or r13, rcx
+    vmovdqu ymm15, [rsp + 256]
+    vpcmpeqb ymm14, ymm2, ymm15
+    vmovdqu [rsp + 352], ymm14
+    vmovdqu ymm15, [rsp + 352]
+    vpmovmskb ecx, ymm15
+    vmovdqu ymm15, [rsp + 256]
+    vpcmpeqb ymm14, ymm3, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpmovmskb edx, ymm15
     shl rdx, 32
-    or r15, rdx
-    vpminub ymm8, ymm6, ymm5
-    vpcmpeqb ymm6, ymm8, ymm6
-    vpmovmskb edx, ymm6
-    vpminub ymm6, ymm7, ymm5
-    vpcmpeqb ymm6, ymm6, ymm7
-    vpmovmskb r11d, ymm6
-    mov [rsp + 256], r11
+    mov r11, rcx
+    or r11, rdx
+    mov [rsp + 352], r11
+    vmovdqu ymm15, [rsp + 160]
+    vpshufb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpcmpeqb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpmovmskb edx, ymm15
+    vmovdqu ymm15, [rsp + 160]
+    vpshufb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpcmpeqb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpmovmskb r11d, ymm15
     shl r11, 32
-    mov [rsp + 288], r11
+    mov [rsp + 448], r11
     mov r11, rdx
-    mov r10, [rsp + 288]
+    mov r10, [rsp + 448]
     or r11, r10
-    mov [rsp + 224], r11
-    mov rax, rsi
-    test r8, r8
-    je strict short .L4
-    mov rax, r8
-    mov r11, rsi
-    not r11
-    and rax, r11
-    mov r11, rax
-    shl r11, 1
-    mov qword [rsp + 288], r11
-    mov r11, 12297829382473034410
-    mov [rsp + 256], r11
-    mov r11, [rsp + 288]
-    mov r10, [rsp + 256]
-    or r11, r10
-    mov [rsp + 288], r11
-    sub r11, rax
+    mov [rsp + 384], r11
+    vmovdqu ymm15, [rsp + 192]
+    vpshufb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 416], ymm14
+    vpor ymm15, ymm2, ymm4
+    vmovdqu [rsp + 448], ymm15
+    vmovdqu ymm15, [rsp + 416]
+    vmovdqu ymm14, [rsp + 448]
+    vpcmpeqb ymm13, ymm15, ymm14
+    vmovdqu [rsp + 480], ymm13
+    vmovdqu ymm15, [rsp + 480]
+    vpmovmskb r11d, ymm15
     mov rcx, r11
-    mov rax, 12297829382473034410
-    xor rcx, rax
-    mov rax, rcx
+    vmovdqu ymm15, [rsp + 192]
+    vpshufb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 416], ymm14
+    vpor ymm15, ymm3, ymm4
+    vmovdqu [rsp + 448], ymm15
+    vmovdqu ymm15, [rsp + 416]
+    vmovdqu ymm14, [rsp + 448]
+    vpcmpeqb ymm13, ymm15, ymm14
+    vmovdqu [rsp + 480], ymm13
+    vmovdqu ymm15, [rsp + 480]
+    vpmovmskb r11d, ymm15
+    shl r11, 32
+    or rcx, r11
+    vpminub ymm15, ymm2, ymm5
+    vmovdqu [rsp + 416], ymm15
+    vmovdqu ymm15, [rsp + 416]
+    vpcmpeqb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpmovmskb r11d, ymm15
+    mov qword [rsp + 448], r11
+    vpminub ymm15, ymm3, ymm5
+    vmovdqu [rsp + 416], ymm15
+    vmovdqu ymm15, [rsp + 416]
+    vpcmpeqb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 480], ymm14
+    vmovdqu ymm15, [rsp + 480]
+    vpmovmskb r11d, ymm15
+    mov [rsp + 416], r11
+    shl r11, 32
+    mov [rsp + 480], r11
+    mov r11, [rsp + 448]
+    mov r10, [rsp + 480]
+    or r11, r10
+    mov [rsp + 448], r11
+    mov rdx, r8
+    test r13, r13
+    je strict short .L4
+    mov rdx, r13
     mov r11, r8
-    or r11, rsi
-    mov [rsp + 256], r11
-    xor rax, r11
-    mov rsi, rcx
-    and rsi, r8
-    shr rsi, 63
+    not r11
+    and rdx, r11
+    mov r11, rdx
+    shl r11, 1
+    mov qword [rsp + 480], r11
+    mov r11, 12297829382473034410
+    mov [rsp + 416], r11
+    mov r11, [rsp + 480]
+    mov r10, [rsp + 416]
+    or r11, r10
+    mov [rsp + 480], r11
+    sub r11, rdx
+    mov rbp, r11
+    mov rdx, 12297829382473034410
+    xor rbp, rdx
+    mov rdx, rbp
+    mov r11, r13
+    or r11, r8
+    mov [rsp + 416], r11
+    xor rdx, r11
+    mov r8, rbp
+    and r8, r13
+    shr r8, 63
     jmp strict short .L5
 .L4:
-    xor esi, esi
+    xor r8d, r8d
 .L5:
-    mov rcx, qword [rsp + 160]
-    not rax
-    and rcx, rax
-    vmovq xmm6, rcx
-    vpcmpeqb xmm7, xmm7, xmm7
-    vpclmulqdq xmm6, xmm6, xmm7, 0
-    vmovq rax, xmm6
-    xor rax, rdi
-    xor edi, edi
-    mov r8, rax
-    shr r8, 63
-    sub rdi, r8
-    mov r8, r15
-    mov r11, [rsp + 192]
-    or r8, r11
-    not r8
-    mov rdx, r8
-    mov r11, rcx
+    mov rbp, qword [rsp + 352]
+    not rdx
+    and rbp, rdx
+    vmovq xmm15, rbp
+    vmovdqu [rsp + 352], ymm15
+    vpcmpeqb xmm15, xmm15, xmm15
+    vmovdqu [rsp + 416], ymm15
+    vmovdqu ymm15, [rsp + 352]
+    vmovdqu ymm14, [rsp + 416]
+    vpclmulqdq xmm13, xmm15, xmm14, 0
+    vmovdqu [rsp + 480], ymm13
+    vmovdqu ymm15, [rsp + 480]
+    vmovq rdx, xmm15
+    xor rdx, r9
+    xor r9d, r9d
+    mov r13, rdx
+    shr r13, 63
+    sub r9, r13
+    mov r13, rcx
+    mov r11, [rsp + 384]
+    or r13, r11
+    not r13
+    mov r11, rbp
     not r11
-    and rdx, r11
-    mov r11, rdx
+    mov [rsp + 384], r11
+    mov r11, r13
+    mov r10, [rsp + 384]
+    and r11, r10
+    mov [rsp + 352], r11
     shl r11, 1
-    or r11, rbx
-    mov rbx, rdx
-    shr rbx, 63
-    mov rdx, r11
-    not rdx
-    and r8, rdx
-    or r15, r8
-    mov rdx, rax
-    xor rdx, rcx
-    not rdx
-    and r15, rdx
-    mov rcx, qword [rsp + 224]
-    and rcx, rax
-    or rbp, rcx
-    mov qword [rsp + 160], r15
-    vmovdqu ymm6, [r12 + 64]
-    vmovdqu ymm7, [r12 + 96]
-    vpcmpeqb ymm8, ymm6, ymm2
-    vpmovmskb eax, ymm8
-    vpcmpeqb ymm8, ymm7, ymm2
-    vpmovmskb ecx, ymm8
+    or r11, rsi
+    mov [rsp + 416], r11
+    mov rsi, qword [rsp + 352]
+    shr rsi, 63
+    not r11
+    and r13, r11
+    or rcx, r13
+    mov r13, rdx
+    xor r13, rbp
+    not r13
+    and rcx, r13
+    mov rbp, qword [rsp + 448]
+    and rbp, rdx
+    or rdi, rbp
+    mov qword [rsp + 352], rcx
+    vpor ymm15, ymm2, ymm3
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpmovmskb edx, ymm15
+    test edx, edx
+    jne strict short .L6
+    or r12, r15
+    jmp strict near .L7
+.L6:
+    vperm2i128 ymm15, ymm0, ymm2, 33
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpalignr ymm14, ymm2, ymm15, 15
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpsrlw ymm14, ymm15, 4
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm14, ymm15, [rel NVOL_K3]
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpshufb ymm14, ymm6, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpand ymm14, ymm15, ymm9
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpshufb ymm14, ymm7, ymm15
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vmovdqu ymm14, [rsp + 416]
+    vpand ymm13, ymm15, ymm14
+    vmovdqu [rsp + 448], ymm13
+    vpsrlw ymm15, ymm2, 4
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm14, ymm15, [rel NVOL_K3]
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpshufb ymm14, ymm8, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vmovdqu ymm14, [rsp + 384]
+    vpand ymm13, ymm15, ymm14
+    vmovdqu [rsp + 416], ymm13
+    vperm2i128 ymm15, ymm0, ymm2, 33
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpalignr ymm14, ymm2, ymm15, 14
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpsubusb ymm14, ymm15, ymm10
+    vmovdqu [rsp + 384], ymm14
+    vperm2i128 ymm0, ymm0, ymm2, 33
+    vpalignr ymm0, ymm2, ymm0, 13
+    vpsubusb ymm0, ymm0, ymm11
+    vmovdqu ymm15, [rsp + 384]
+    vpor ymm0, ymm15, ymm0
+    vpand ymm0, ymm0, ymm12
+    vmovdqu ymm15, [rsp + 416]
+    vpxor ymm0, ymm0, ymm15
+    vpor ymm1, ymm1, ymm0
+    vperm2i128 ymm0, ymm2, ymm3, 33
+    vpalignr ymm0, ymm3, ymm0, 15
+    vpsrlw ymm15, ymm0, 4
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm14, ymm15, [rel NVOL_K3]
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpshufb ymm14, ymm6, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vpand ymm0, ymm0, ymm9
+    vpshufb ymm0, ymm7, ymm0
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm0, ymm15, ymm0
+    vpsrlw ymm15, ymm3, 4
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm14, ymm15, [rel NVOL_K3]
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpshufb ymm14, ymm8, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm0, ymm0, ymm15
+    vperm2i128 ymm15, ymm2, ymm3, 33
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpalignr ymm14, ymm3, ymm15, 14
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpsubusb ymm14, ymm15, ymm10
+    vmovdqu [rsp + 384], ymm14
+    vperm2i128 ymm2, ymm2, ymm3, 33
+    vpalignr ymm2, ymm3, ymm2, 13
+    vpsubusb ymm2, ymm2, ymm11
+    vmovdqu ymm15, [rsp + 384]
+    vpor ymm2, ymm15, ymm2
+    vpand ymm2, ymm2, ymm12
+    vpxor ymm0, ymm2, ymm0
+    vpor ymm1, ymm1, ymm0
+    xor r15d, r15d
+    movzx edx, byte [rbx + 63]
+    cmp edx, 191
+    ja strict short .L9
+    movzx edx, byte [rbx + 62]
+    cmp edx, 223
+    ja strict short .L9
+    movzx edx, byte [rbx + 61]
+    cmp edx, 239
+    jbe strict short .L8
+.L9:
+    mov r15d, 1
+.L8:
+.L7:
+    vmovdqa ymm0, ymm3
+    vmovdqu ymm2, [rbx + 64]
+    vmovdqu ymm3, [rbx + 96]
+    vmovdqu ymm15, [rsp + 224]
+    vpcmpeqb ymm14, ymm2, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpmovmskb edx, ymm15
+    vmovdqu ymm15, [rsp + 224]
+    vpcmpeqb ymm14, ymm3, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpmovmskb ebp, ymm15
+    shl rbp, 32
+    or rdx, rbp
+    vmovdqu ymm15, [rsp + 256]
+    vpcmpeqb ymm14, ymm2, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpmovmskb ebp, ymm15
+    vmovdqu ymm15, [rsp + 256]
+    vpcmpeqb ymm14, ymm3, ymm15
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpmovmskb r13d, ymm15
+    shl r13, 32
+    mov r11, rbp
+    or r11, r13
+    mov [rsp + 384], r11
+    vmovdqu ymm15, [rsp + 160]
+    vpshufb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpcmpeqb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpmovmskb r13d, ymm15
+    vmovdqu ymm15, [rsp + 160]
+    vpshufb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpcmpeqb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 480], ymm14
+    vmovdqu ymm15, [rsp + 480]
+    vpmovmskb r11d, ymm15
+    mov rcx, r11
     shl rcx, 32
-    or rax, rcx
-    vpcmpeqb ymm8, ymm6, ymm3
-    vpmovmskb ecx, ymm8
-    vpcmpeqb ymm8, ymm7, ymm3
-    vpmovmskb edx, ymm8
-    shl rdx, 32
-    mov r11, rcx
-    or r11, rdx
-    mov [rsp + 192], r11
-    vpshufb ymm8, ymm0, ymm6
-    vpcmpeqb ymm8, ymm8, ymm6
-    vpmovmskb edx, ymm8
-    vpshufb ymm8, ymm0, ymm7
-    vpcmpeqb ymm8, ymm8, ymm7
-    vpmovmskb r8d, ymm8
-    shl r8, 32
+    mov r11, r13
+    or r11, rcx
+    mov [rsp + 416], r11
+    vmovdqu ymm15, [rsp + 192]
+    vpshufb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 448], ymm14
+    vpor ymm15, ymm2, ymm4
+    vmovdqu [rsp + 480], ymm15
+    vmovdqu ymm15, [rsp + 448]
+    vmovdqu ymm14, [rsp + 480]
+    vpcmpeqb ymm13, ymm15, ymm14
+    vmovdqu [rsp + 512], ymm13
+    vmovdqu ymm15, [rsp + 512]
+    vpmovmskb ecx, ymm15
+    vmovdqu ymm15, [rsp + 192]
+    vpshufb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 448], ymm14
+    vpor ymm15, ymm3, ymm4
+    vmovdqu [rsp + 480], ymm15
+    vmovdqu ymm15, [rsp + 448]
+    vmovdqu ymm14, [rsp + 480]
+    vpcmpeqb ymm13, ymm15, ymm14
+    vmovdqu [rsp + 512], ymm13
+    vmovdqu ymm15, [rsp + 512]
+    vpmovmskb r11d, ymm15
+    shl r11, 32
+    or rcx, r11
+    vpminub ymm15, ymm2, ymm5
+    vmovdqu [rsp + 448], ymm15
+    vmovdqu ymm15, [rsp + 448]
+    vpcmpeqb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 480], ymm14
+    vmovdqu ymm15, [rsp + 480]
+    vpmovmskb r11d, ymm15
+    mov qword [rsp + 480], r11
+    vpminub ymm15, ymm3, ymm5
+    vmovdqu [rsp + 448], ymm15
+    vmovdqu ymm15, [rsp + 448]
+    vpcmpeqb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 512], ymm14
+    vmovdqu ymm15, [rsp + 512]
+    vpmovmskb r11d, ymm15
+    mov [rsp + 448], r11
+    shl r11, 32
+    mov [rsp + 512], r11
+    mov r11, [rsp + 480]
+    mov r10, [rsp + 512]
+    or r11, r10
+    mov [rsp + 480], r11
+    mov rbp, r8
+    test rdx, rdx
+    je strict short .L10
+    mov rbp, rdx
+    mov r11, r8
+    not r11
+    and rbp, r11
+    mov r11, rbp
+    shl r11, 1
+    mov qword [rsp + 512], r11
+    mov r11, 12297829382473034410
+    mov [rsp + 448], r11
+    mov r11, [rsp + 512]
+    mov r10, [rsp + 448]
+    or r11, r10
+    mov [rsp + 512], r11
+    sub r11, rbp
+    mov r13, r11
+    mov rbp, 12297829382473034410
+    xor r13, rbp
+    mov rbp, r13
     mov r11, rdx
     or r11, r8
-    mov [rsp + 224], r11
-    vpshufb ymm8, ymm1, ymm6
-    vpor ymm9, ymm6, ymm4
-    vpcmpeqb ymm8, ymm8, ymm9
-    vpmovmskb r8d, ymm8
-    vpshufb ymm8, ymm1, ymm7
-    vpor ymm9, ymm7, ymm4
-    vpcmpeqb ymm8, ymm8, ymm9
-    vpmovmskb r11d, ymm8
-    mov r15, r11
-    shl r15, 32
-    or r8, r15
-    vpminub ymm8, ymm6, ymm5
-    vpcmpeqb ymm6, ymm8, ymm6
-    vpmovmskb r15d, ymm6
-    vpminub ymm6, ymm7, ymm5
-    vpcmpeqb ymm6, ymm6, ymm7
-    vpmovmskb r11d, ymm6
-    mov [rsp + 288], r11
-    shl r11, 32
-    mov [rsp + 320], r11
-    mov r11, r15
-    mov r10, [rsp + 320]
-    or r11, r10
-    mov [rsp + 256], r11
-    mov rcx, rsi
-    test rax, rax
-    je strict short .L6
-    mov rcx, rax
-    mov r11, rsi
-    not r11
-    and rcx, r11
-    mov r11, rcx
-    shl r11, 1
-    mov qword [rsp + 320], r11
-    mov r11, 12297829382473034410
-    mov [rsp + 288], r11
-    mov r11, [rsp + 320]
-    mov r10, [rsp + 288]
-    or r11, r10
-    mov [rsp + 320], r11
-    sub r11, rcx
-    mov rdx, r11
-    mov rcx, 12297829382473034410
-    xor rdx, rcx
-    mov rcx, rdx
-    mov r11, rax
-    or r11, rsi
-    mov [rsp + 288], r11
-    xor rcx, r11
-    mov rsi, rdx
-    and rsi, rax
-    shr rsi, 63
-    jmp strict short .L7
-.L6:
-    xor esi, esi
-.L7:
-    mov rax, qword [rsp + 192]
-    not rcx
-    and rax, rcx
-    vmovq xmm6, rax
-    vpcmpeqb xmm7, xmm7, xmm7
-    vpclmulqdq xmm6, xmm6, xmm7, 0
-    vmovq rcx, xmm6
-    xor rcx, rdi
-    xor edi, edi
-    mov rdx, rcx
-    shr rdx, 63
-    sub rdi, rdx
-    mov rdx, r8
-    mov r11, [rsp + 224]
-    or rdx, r11
-    not rdx
-    mov r15, rdx
-    mov r11, rax
-    not r11
-    and r15, r11
-    mov r11, r15
-    shl r11, 1
-    mov [rsp + 192], r11
-    or r11, rbx
-    mov [rsp + 224], r11
-    mov rbx, r15
-    shr rbx, 63
-    mov r15, r11
-    not r15
-    and rdx, r15
-    or r8, rdx
-    mov rdx, rcx
-    xor rdx, rax
-    not rdx
+    mov [rsp + 448], r11
+    xor rbp, r11
+    mov r8, r13
     and r8, rdx
-    mov rax, qword [rsp + 256]
-    and rax, rcx
-    or rbp, rax
+    shr r8, 63
+    jmp strict short .L11
+.L10:
+    xor r8d, r8d
+.L11:
+    mov rdx, qword [rsp + 384]
+    not rbp
+    and rdx, rbp
+    vmovq xmm15, rdx
+    vmovdqu [rsp + 384], ymm15
+    vpcmpeqb xmm15, xmm15, xmm15
+    vmovdqu [rsp + 448], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vmovdqu ymm14, [rsp + 448]
+    vpclmulqdq xmm13, xmm15, xmm14, 0
+    vmovdqu [rsp + 512], ymm13
+    vmovdqu ymm15, [rsp + 512]
+    vmovq rbp, xmm15
+    xor rbp, r9
+    xor r9d, r9d
+    mov r13, rbp
+    shr r13, 63
+    sub r9, r13
+    mov r13, rcx
+    mov r11, [rsp + 416]
+    or r13, r11
+    not r13
+    mov r11, rdx
+    not r11
+    mov [rsp + 416], r11
+    mov r11, r13
+    mov r10, [rsp + 416]
+    and r11, r10
+    mov [rsp + 384], r11
+    shl r11, 1
+    mov [rsp + 416], r11
+    or r11, rsi
+    mov [rsp + 448], r11
+    mov rsi, qword [rsp + 384]
+    shr rsi, 63
+    not r11
+    and r13, r11
+    or rcx, r13
+    mov r13, rbp
+    xor r13, rdx
+    not r13
+    and rcx, r13
+    mov rdx, qword [rsp + 480]
+    and rdx, rbp
+    or rdi, rdx
+    vpor ymm15, ymm2, ymm3
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpmovmskb edx, ymm15
+    test edx, edx
+    jne strict short .L12
+    or r12, r15
+    jmp strict near .L13
+.L12:
+    vperm2i128 ymm15, ymm0, ymm2, 33
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpalignr ymm14, ymm2, ymm15, 15
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpsrlw ymm14, ymm15, 4
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm14, ymm15, [rel NVOL_K3]
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpshufb ymm14, ymm6, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpand ymm14, ymm15, ymm9
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpshufb ymm14, ymm7, ymm15
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vmovdqu ymm14, [rsp + 416]
+    vpand ymm13, ymm15, ymm14
+    vmovdqu [rsp + 448], ymm13
+    vpsrlw ymm15, ymm2, 4
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm14, ymm15, [rel NVOL_K3]
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpshufb ymm14, ymm8, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vmovdqu ymm14, [rsp + 384]
+    vpand ymm13, ymm15, ymm14
+    vmovdqu [rsp + 416], ymm13
+    vperm2i128 ymm15, ymm0, ymm2, 33
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpalignr ymm14, ymm2, ymm15, 14
+    vmovdqu [rsp + 448], ymm14
+    vmovdqu ymm15, [rsp + 448]
+    vpsubusb ymm14, ymm15, ymm10
+    vmovdqu [rsp + 384], ymm14
+    vperm2i128 ymm0, ymm0, ymm2, 33
+    vpalignr ymm0, ymm2, ymm0, 13
+    vpsubusb ymm0, ymm0, ymm11
+    vmovdqu ymm15, [rsp + 384]
+    vpor ymm0, ymm15, ymm0
+    vpand ymm0, ymm0, ymm12
+    vmovdqu ymm15, [rsp + 416]
+    vpxor ymm0, ymm0, ymm15
+    vpor ymm1, ymm1, ymm0
+    vperm2i128 ymm0, ymm2, ymm3, 33
+    vpalignr ymm0, ymm3, ymm0, 15
+    vpsrlw ymm15, ymm0, 4
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm14, ymm15, [rel NVOL_K3]
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpshufb ymm14, ymm6, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vpand ymm0, ymm0, ymm9
+    vpshufb ymm0, ymm7, ymm0
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm0, ymm15, ymm0
+    vpsrlw ymm15, ymm3, 4
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm14, ymm15, [rel NVOL_K3]
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpshufb ymm14, ymm8, ymm15
+    vmovdqu [rsp + 384], ymm14
+    vmovdqu ymm15, [rsp + 384]
+    vpand ymm0, ymm0, ymm15
+    vperm2i128 ymm15, ymm2, ymm3, 33
+    vmovdqu [rsp + 384], ymm15
+    vmovdqu ymm15, [rsp + 384]
+    vpalignr ymm14, ymm3, ymm15, 14
+    vmovdqu [rsp + 416], ymm14
+    vmovdqu ymm15, [rsp + 416]
+    vpsubusb ymm14, ymm15, ymm10
+    vmovdqu [rsp + 384], ymm14
+    vperm2i128 ymm2, ymm2, ymm3, 33
+    vpalignr ymm2, ymm3, ymm2, 13
+    vpsubusb ymm2, ymm2, ymm11
+    vmovdqu ymm15, [rsp + 384]
+    vpor ymm2, ymm15, ymm2
+    vpand ymm2, ymm2, ymm12
+    vpxor ymm0, ymm2, ymm0
+    vpor ymm1, ymm1, ymm0
+    xor r15d, r15d
+    movzx edx, byte [rbx + 127]
+    cmp edx, 191
+    ja strict short .L15
+    movzx edx, byte [rbx + 126]
+    cmp edx, 223
+    ja strict short .L15
+    movzx edx, byte [rbx + 125]
+    cmp edx, 239
+    jbe strict short .L14
+.L15:
+    mov r15d, 1
+.L14:
+.L13:
+    vmovdqa ymm0, ymm3
     test r14, r14
     jne strict near .Lrare7
-.L8:
-    mov r11, [rsp + 160]
+.L16:
+    mov r11, [rsp + 352]
     test r11, r11
-    je strict near .L24
-    mov r14, r13
-    mov r11, [rsp + 160]
+    je strict near .L32
+    mov r14, qword [rsp + 64]
+    mov r11, [rsp + 352]
     popcnt rax, r11
-    mov rcx, qword [rsp + 96]
-    shl rcx, 2
+    mov rdx, qword [rsp + 128]
+    shl rdx, 2
     mov r11, [rsp + 32]
-    lea rcx, [r11 + rcx]
-    mov r11, [rsp + 160]
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 4], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 8], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 12], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
+    lea rdx, [r11 + rdx]
+    mov r11, [rsp + 352]
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 4], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 8], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 12], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
     cmp rax, 4
     ja strict near .Lrare13
-.L26:
-    mov r11, [rsp + 96]
-    lea r11, [r11 + rax]
-    mov [rsp + 96], r11
-.L24:
-    mov r14, r8
-    lea r9, [r13 + 64]
-    lea r12, [r12 + 128]
-    lea r13, [r13 + 128]
+.L34:
     mov r11, [rsp + 128]
-    cmp r12, r11
+    lea r11, [r11 + rax]
+    mov [rsp + 128], r11
+.L32:
+    mov r14, rcx
+    mov r11, [rsp + 64]
+    lea rax, [r11 + 64]
+    lea rbx, [rbx + 128]
+    mov r11, [rsp + 64]
+    lea r11, [r11 + 128]
+    mov [rsp + 64], r11
+    mov r11, [rsp + 320]
+    cmp rbx, r11
     jb strict near .L2
 .L3:
-    mov r11, [rsp + 64]
-    cmp r12, r11
-    jae strict near .L40
-    vmovdqu ymm6, [r12]
-    vmovdqu ymm7, [r12 + 32]
-    vpcmpeqb ymm8, ymm6, ymm2
-    vpmovmskb eax, ymm8
-    vpcmpeqb ymm2, ymm7, ymm2
-    vpmovmskb ecx, ymm2
-    shl rcx, 32
-    or rax, rcx
-    vpcmpeqb ymm2, ymm6, ymm3
-    vpmovmskb ecx, ymm2
-    vpcmpeqb ymm2, ymm7, ymm3
-    vpmovmskb edx, ymm2
+    mov r11, [rsp + 96]
+    cmp rbx, r11
+    jae strict near .L48
+    vmovdqu ymm2, [rbx]
+    vmovdqu ymm3, [rbx + 32]
+    vmovdqu ymm15, [rsp + 224]
+    vpcmpeqb ymm14, ymm2, ymm15
+    vmovdqu [rsp + 96], ymm14
+    vmovdqu ymm15, [rsp + 96]
+    vpmovmskb ecx, ymm15
+    vmovdqu ymm15, [rsp + 224]
+    vpcmpeqb ymm14, ymm3, ymm15
+    vmovdqu [rsp + 96], ymm14
+    vmovdqu ymm15, [rsp + 96]
+    vpmovmskb edx, ymm15
     shl rdx, 32
-    mov r11, rcx
-    or r11, rdx
-    mov [rsp + 64], r11
-    vpshufb ymm2, ymm0, ymm6
-    vpcmpeqb ymm2, ymm2, ymm6
-    vpmovmskb edx, ymm2
-    vpshufb ymm0, ymm0, ymm7
-    vpcmpeqb ymm0, ymm0, ymm7
-    vpmovmskb r8d, ymm0
-    shl r8, 32
-    or rdx, r8
-    vpshufb ymm0, ymm1, ymm6
-    vpor ymm2, ymm6, ymm4
-    vpcmpeqb ymm0, ymm0, ymm2
-    vpmovmskb r8d, ymm0
-    vpshufb ymm0, ymm1, ymm7
-    vpor ymm1, ymm7, ymm4
-    vpcmpeqb ymm0, ymm0, ymm1
-    vpmovmskb r12d, ymm0
-    shl r12, 32
-    or r8, r12
-    vpminub ymm0, ymm6, ymm5
-    vpcmpeqb ymm0, ymm0, ymm6
-    vpmovmskb r12d, ymm0
-    vpminub ymm0, ymm7, ymm5
-    vpcmpeqb ymm0, ymm0, ymm7
-    vpmovmskb r15d, ymm0
-    shl r15, 32
-    or r12, r15
-    mov r15, rsi
-    test rax, rax
-    je strict short .L42
-    mov r15, rax
-    mov r11, rsi
-    not r11
-    and r15, r11
-    mov r11, r15
-    shl r11, 1
-    mov qword [rsp + 160], r11
-    mov r11, 12297829382473034410
-    mov [rsp + 128], r11
-    mov r11, [rsp + 160]
-    mov r10, [rsp + 128]
-    or r11, r10
+    or rcx, rdx
+    vmovdqu ymm15, [rsp + 256]
+    vpcmpeqb ymm14, ymm2, ymm15
+    vmovdqu [rsp + 96], ymm14
+    vmovdqu ymm15, [rsp + 96]
+    vpmovmskb edx, ymm15
+    vmovdqu ymm15, [rsp + 256]
+    vpcmpeqb ymm14, ymm3, ymm15
+    vmovdqu [rsp + 224], ymm14
+    vmovdqu ymm15, [rsp + 224]
+    vpmovmskb ebp, ymm15
+    shl rbp, 32
+    mov r11, rdx
+    or r11, rbp
+    mov [rsp + 96], r11
+    vmovdqu ymm15, [rsp + 160]
+    vpshufb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 224], ymm14
+    vmovdqu ymm15, [rsp + 224]
+    vpcmpeqb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 256], ymm14
+    vmovdqu ymm15, [rsp + 256]
+    vpmovmskb ebp, ymm15
+    vmovdqu ymm15, [rsp + 160]
+    vpshufb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 256], ymm14
+    vmovdqu ymm15, [rsp + 256]
+    vpcmpeqb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 160], ymm14
+    vmovdqu ymm15, [rsp + 160]
+    vpmovmskb r13d, ymm15
+    shl r13, 32
+    mov r11, rbp
+    or r11, r13
+    mov [rsp + 224], r11
+    vmovdqu ymm15, [rsp + 192]
+    vpshufb ymm14, ymm15, ymm2
+    vmovdqu [rsp + 160], ymm14
+    vpor ymm15, ymm2, ymm4
+    vmovdqu [rsp + 256], ymm15
+    vmovdqu ymm15, [rsp + 160]
+    vmovdqu ymm14, [rsp + 256]
+    vpcmpeqb ymm13, ymm15, ymm14
+    vmovdqu [rsp + 320], ymm13
+    vmovdqu ymm15, [rsp + 320]
+    vpmovmskb r13d, ymm15
+    vmovdqu ymm15, [rsp + 192]
+    vpshufb ymm14, ymm15, ymm3
+    vmovdqu [rsp + 160], ymm14
+    vpor ymm4, ymm3, ymm4
+    vmovdqu ymm15, [rsp + 160]
+    vpcmpeqb ymm4, ymm15, ymm4
+    vpmovmskb r11d, ymm4
+    shl r11, 32
+    or r13, r11
+    vpminub ymm4, ymm2, ymm5
+    vpcmpeqb ymm4, ymm4, ymm2
+    vpmovmskb r11d, ymm4
+    mov qword [rsp + 192], r11
+    vpminub ymm4, ymm3, ymm5
+    vpcmpeqb ymm4, ymm4, ymm3
+    vpmovmskb r11d, ymm4
     mov [rsp + 160], r11
-    sub r11, r15
-    mov rcx, r11
-    mov r15, 12297829382473034410
-    xor rcx, r15
-    mov r15, rcx
-    mov r11, rax
-    or r11, rsi
-    mov [rsp + 128], r11
-    xor r15, r11
-    mov rsi, rcx
-    and rsi, rax
-    shr rsi, 63
-    jmp strict short .L43
-.L42:
-    xor esi, esi
-.L43:
-    mov rax, qword [rsp + 64]
-    not r15
-    and rax, r15
-    vmovq xmm0, rax
-    vpcmpeqb xmm1, xmm1, xmm1
-    vpclmulqdq xmm0, xmm0, xmm1, 0
-    vmovq rcx, xmm0
-    xor rcx, rdi
-    xor edi, edi
-    mov r15, rcx
-    shr r15, 63
-    sub rdi, r15
-    mov r15, r8
-    or r15, rdx
-    not r15
-    mov rdx, r15
-    mov r11, rax
+    shl r11, 32
+    mov [rsp + 256], r11
+    mov r11, [rsp + 192]
+    mov r10, [rsp + 256]
+    or r11, r10
+    mov [rsp + 192], r11
+    mov rdx, r8
+    test rcx, rcx
+    je strict short .L50
+    mov rdx, rcx
+    mov r11, r8
     not r11
     and rdx, r11
     mov r11, rdx
     shl r11, 1
-    mov [rsp + 64], r11
-    or r11, rbx
-    mov [rsp + 128], r11
-    mov rbx, rdx
-    shr rbx, 63
-    mov rdx, r11
-    not rdx
-    and r15, rdx
-    or r8, r15
-    mov rdx, rcx
-    xor rdx, rax
-    not rdx
-    and r8, rdx
-    and r12, rcx
-    or rbp, r12
-    test r14, r14
-    je strict near .L44
-    popcnt rax, r14
-    mov rcx, qword [rsp + 96]
-    shl rcx, 2
-    mov r11, [rsp + 32]
-    lea rcx, [r11 + rcx]
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 4], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 8], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 12], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rax, 4
-    jbe strict near .L46
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 16], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 20], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 24], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 28], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rax, 8
-    jbe strict near .L48
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 32], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 36], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 40], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 44], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rax, 12
-    jbe strict near .L50
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 48], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 52], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 56], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 60], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rax, 16
-    jbe strict near .L52
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 64], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 68], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 72], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 76], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rax, 20
-    jbe strict near .L54
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 80], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 84], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 88], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 92], edx
-    mov rdx, r14
-    mov r12, r14
-    sub r12, 1
-    and rdx, r12
-    mov r14, rdx
-    cmp rax, 24
-    jbe strict short .L56
-    mov edx, 24
-    cmp rdx, rax
-    jae strict short .L59
-    db 0x90
-.L58:
-    mov r12, rdx
-    shl r12, 2
-    bsf r15, r14
-    lea r15, [r9 + r15]
-    mov dword [rcx + r12], r15d
-    mov r12, r14
-    mov r15, r14
-    sub r15, 1
-    and r12, r15
-    mov r14, r12
-    add rdx, 1
-    cmp rdx, rax
-    jb strict short .L58
-.L59:
-.L56:
-.L54:
-.L52:
+    mov qword [rsp + 256], r11
+    mov r11, 12297829382473034410
+    mov [rsp + 160], r11
+    mov r11, [rsp + 256]
+    mov r10, [rsp + 160]
+    or r11, r10
+    mov [rsp + 256], r11
+    sub r11, rdx
+    mov rbp, r11
+    mov rdx, 12297829382473034410
+    xor rbp, rdx
+    mov rdx, rbp
+    mov r11, rcx
+    or r11, r8
+    mov [rsp + 160], r11
+    xor rdx, r11
+    mov r8, rbp
+    and r8, rcx
+    shr r8, 63
+    jmp strict short .L51
 .L50:
-.L48:
-.L46:
-    mov r11, [rsp + 96]
-    lea r11, [r11 + rax]
-    mov [rsp + 96], r11
-.L44:
-    mov r14, r8
-    mov r9, r13
-.L40:
-    test r14, r14
-    je strict near .L60
-    popcnt rax, r14
+    xor r8d, r8d
+.L51:
     mov rcx, qword [rsp + 96]
-    shl rcx, 2
+    not rdx
+    and rcx, rdx
+    vmovq xmm4, rcx
+    vpcmpeqb xmm5, xmm5, xmm5
+    vpclmulqdq xmm4, xmm4, xmm5, 0
+    vmovq rdx, xmm4
+    xor rdx, r9
+    xor r9d, r9d
+    mov rbp, rdx
+    shr rbp, 63
+    sub r9, rbp
+    mov rbp, r13
+    mov r11, [rsp + 224]
+    or rbp, r11
+    not rbp
+    mov r11, rcx
+    not r11
+    mov [rsp + 160], r11
+    mov r11, rbp
+    mov r10, [rsp + 160]
+    and r11, r10
+    mov [rsp + 96], r11
+    shl r11, 1
+    mov [rsp + 160], r11
+    or r11, rsi
+    mov [rsp + 224], r11
+    mov rsi, qword [rsp + 96]
+    shr rsi, 63
+    not r11
+    and rbp, r11
+    or r13, rbp
+    mov rbp, rdx
+    xor rbp, rcx
+    not rbp
+    and r13, rbp
+    mov rcx, qword [rsp + 192]
+    and rcx, rdx
+    or rdi, rcx
+    mov qword [rsp + 96], r13
+    vpor ymm4, ymm2, ymm3
+    vpmovmskb ecx, ymm4
+    test ecx, ecx
+    jne strict short .L52
+    or r12, r15
+    jmp strict near .L53
+.L52:
+    vperm2i128 ymm4, ymm0, ymm2, 33
+    vpalignr ymm4, ymm2, ymm4, 15
+    vpsrlw ymm5, ymm4, 4
+    vpand ymm5, ymm5, [rel NVOL_K3]
+    vpshufb ymm5, ymm6, ymm5
+    vpand ymm4, ymm4, ymm9
+    vpshufb ymm4, ymm7, ymm4
+    vpand ymm4, ymm5, ymm4
+    vpsrlw ymm5, ymm2, 4
+    vpand ymm5, ymm5, [rel NVOL_K3]
+    vpshufb ymm5, ymm8, ymm5
+    vpand ymm4, ymm4, ymm5
+    vperm2i128 ymm5, ymm0, ymm2, 33
+    vpalignr ymm5, ymm2, ymm5, 14
+    vpsubusb ymm5, ymm5, ymm10
+    vperm2i128 ymm0, ymm0, ymm2, 33
+    vpalignr ymm0, ymm2, ymm0, 13
+    vpsubusb ymm0, ymm0, ymm11
+    vpor ymm0, ymm5, ymm0
+    vpand ymm0, ymm0, ymm12
+    vpxor ymm0, ymm0, ymm4
+    vpor ymm1, ymm1, ymm0
+    vperm2i128 ymm0, ymm2, ymm3, 33
+    vpalignr ymm0, ymm3, ymm0, 15
+    vpsrlw ymm4, ymm0, 4
+    vpand ymm4, ymm4, [rel NVOL_K3]
+    vpshufb ymm4, ymm6, ymm4
+    vpand ymm0, ymm0, ymm9
+    vpshufb ymm0, ymm7, ymm0
+    vpand ymm0, ymm4, ymm0
+    vpsrlw ymm4, ymm3, 4
+    vpand ymm4, ymm4, [rel NVOL_K3]
+    vpshufb ymm4, ymm8, ymm4
+    vpand ymm0, ymm0, ymm4
+    vperm2i128 ymm4, ymm2, ymm3, 33
+    vpalignr ymm4, ymm3, ymm4, 14
+    vpsubusb ymm4, ymm4, ymm10
+    vperm2i128 ymm2, ymm2, ymm3, 33
+    vpalignr ymm2, ymm3, ymm2, 13
+    vpsubusb ymm2, ymm2, ymm11
+    vpor ymm2, ymm4, ymm2
+    vpand ymm2, ymm2, ymm12
+    vpxor ymm0, ymm2, ymm0
+    vpor ymm1, ymm1, ymm0
+    xor r15d, r15d
+    movzx ecx, byte [rbx + 63]
+    cmp ecx, 191
+    ja strict short .L55
+    movzx ecx, byte [rbx + 62]
+    cmp ecx, 223
+    ja strict short .L55
+    movzx ecx, byte [rbx + 61]
+    cmp ecx, 239
+    jbe strict short .L54
+.L55:
+    mov r15d, 1
+.L54:
+.L53:
+    vmovdqa ymm0, ymm3
+    test r14, r14
+    je strict near .L56
+    popcnt rcx, r14
+    mov rdx, qword [rsp + 128]
+    shl rdx, 2
     mov r11, [rsp + 32]
-    lea rcx, [r11 + rcx]
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 4], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 8], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 12], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rax, 4
+    lea rdx, [r11 + rdx]
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 4], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 8], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 12], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 4
+    jbe strict near .L58
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 16], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 20], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 24], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 28], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 8
+    jbe strict near .L60
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 32], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 36], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 40], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 44], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 12
     jbe strict near .L62
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 16], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 20], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 24], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 28], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rax, 8
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 48], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 52], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 56], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 60], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 16
     jbe strict near .L64
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 32], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 36], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 40], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 44], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rax, 12
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 64], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 68], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 72], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 76], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 20
     jbe strict near .L66
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 48], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 52], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 56], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 60], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rax, 16
-    jbe strict near .L68
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 64], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 68], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 72], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 76], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rax, 20
-    jbe strict near .L70
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 80], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 84], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 88], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 92], edx
-    mov rdx, r14
-    mov r8, r14
-    sub r8, 1
-    and rdx, r8
-    mov r14, rdx
-    cmp rax, 24
-    jbe strict short .L72
-    mov edx, 24
-    cmp rdx, rax
-    jae strict short .L75
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-.L74:
-    mov r8, rdx
-    shl r8, 2
-    bsf r12, r14
-    lea r12, [r9 + r12]
-    mov dword [rcx + r8], r12d
-    mov r8, r14
-    mov r12, r14
-    sub r12, 1
-    and r8, r12
-    mov r14, r8
-    add rdx, 1
-    cmp rdx, rax
-    jb strict short .L74
-.L75:
-.L72:
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 80], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 84], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 88], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 92], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 24
+    jbe strict short .L68
+    mov ebx, 24
+    cmp rbx, rcx
+    jae strict short .L71
+    db 0x66, 0x90
 .L70:
+    mov rbp, rbx
+    shl rbp, 2
+    bsf r13, r14
+    lea r13, [rax + r13]
+    mov dword [rdx + rbp], r13d
+    mov rbp, r14
+    mov r13, r14
+    sub r13, 1
+    and rbp, r13
+    mov r14, rbp
+    add rbx, 1
+    cmp rbx, rcx
+    jb strict short .L70
+.L71:
 .L68:
 .L66:
 .L64:
 .L62:
-    mov r11, [rsp + 96]
-    lea r11, [r11 + rax]
-    mov [rsp + 96], r11
 .L60:
+.L58:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rcx]
+    mov [rsp + 128], r11
+.L56:
+    mov r14, qword [rsp + 96]
+    mov rax, qword [rsp + 64]
+.L48:
+    test r14, r14
+    je strict near .L72
+    popcnt rcx, r14
+    mov rdx, qword [rsp + 128]
+    shl rdx, 2
+    mov r11, [rsp + 32]
+    lea rdx, [r11 + rdx]
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 4], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 8], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 12], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 4
+    jbe strict near .L74
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 16], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 20], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 24], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 28], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 8
+    jbe strict near .L76
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 32], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 36], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 40], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 44], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 12
+    jbe strict near .L78
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 48], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 52], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 56], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 60], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 16
+    jbe strict near .L80
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 64], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 68], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 72], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 76], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 20
+    jbe strict near .L82
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 80], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 84], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 88], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    tzcnt rbx, r14
+    lea rbx, [rax + rbx]
+    mov dword [rdx + 92], ebx
+    mov rbx, r14
+    mov rbp, r14
+    sub rbp, 1
+    and rbx, rbp
+    mov r14, rbx
+    cmp rcx, 24
+    jbe strict short .L84
+    mov ebx, 24
+    cmp rbx, rcx
+    jae strict short .L87
+    db 0x66, 0x90
+.L86:
+    mov rbp, rbx
+    shl rbp, 2
+    bsf r13, r14
+    lea r13, [rax + r13]
+    mov dword [rdx + rbp], r13d
+    mov rbp, r14
+    mov r13, r14
+    sub r13, 1
+    and rbp, r13
+    mov r14, rbp
+    add rbx, 1
+    cmp rbx, rcx
+    jb strict short .L86
+.L87:
+.L84:
+.L82:
+.L80:
+.L78:
+.L76:
+.L74:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rcx]
+    mov [rsp + 128], r11
+.L72:
     mov r11, [rsp]
-    mov qword [r11], rsi
+    mov qword [r11], r8
     mov r11, [rsp]
-    mov qword [r11 + 8], rdi
+    mov qword [r11 + 8], r9
     mov r11, [rsp]
-    mov qword [r11 + 16], rbx
+    mov qword [r11 + 16], rsi
     mov r11, [rsp]
-    mov qword [r11 + 24], rbp
-    mov rax, qword [rsp + 96]
+    mov qword [r11 + 24], rdi
+    mov rax, qword [rsp + 288]
+    or rax, r12
+    vptest ymm1, ymm1
+    sete cl
+    movzx ecx, cl
+    xor ecx, 1
+    or rax, rcx
+    mov r11, [rsp]
+    mov qword [r11 + 32], rax
+    mov r11, [rsp]
+    vmovdqu [r11 + 48], ymm0
+    mov r11, [rsp]
+    mov qword [r11 + 40], r15
+    mov rax, qword [rsp + 128]
     vzeroupper
-    vmovdqu xmm6, [rsp + 352]
-    vmovdqu xmm7, [rsp + 368]
-    vmovdqu xmm8, [rsp + 384]
-    vmovdqu xmm9, [rsp + 400]
-    add rsp, 424
+    vmovdqu xmm6, [rsp + 544]
+    vmovdqu xmm7, [rsp + 560]
+    vmovdqu xmm8, [rsp + 576]
+    vmovdqu xmm9, [rsp + 592]
+    vmovdqu xmm10, [rsp + 608]
+    vmovdqu xmm11, [rsp + 624]
+    vmovdqu xmm12, [rsp + 640]
+    vmovdqu xmm13, [rsp + 656]
+    vmovdqu xmm14, [rsp + 672]
+    vmovdqu xmm15, [rsp + 688]
+    add rsp, 712
     pop r15
     pop r14
     pop r13
@@ -59575,489 +61583,498 @@ nvol_json_index_avx2:
     pop rbx
     ret
 .Lrare1:
-    mov edx, 24
-    cmp rdx, rax
-    jae strict short .L23
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-.L22:
-    mov r15, rdx
-    shl r15, 2
+    mov r13d, 24
+    cmp r13, rdx
+    jae strict short .L31
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+.L30:
+    mov r11, r13
+    shl r11, 2
+    mov [rsp + 384], r11
     bsf r11, r14
-    lea r10, [r9 + r11]
-    mov [rsp + 224], r10
-    mov r11, r10
-    mov dword [rcx + r15], r11d
-    mov r15, r14
+    lea r10, [rax + r11]
+    mov [rsp + 448], r10
+    mov r11, [rsp + 384]
+    mov dword [rbp + r11], r10d
     mov r11, r14
     sub r11, 1
-    mov [rsp + 192], r11
-    and r15, r11
-    mov r14, r15
-    add rdx, 1
-    cmp rdx, rax
-    jb strict short .L22
-.L23:
-    jmp strict short .L20
-.Lrare2:
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 80], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 84], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 88], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 92], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rax, 24
-    ja strict near .Lrare1
-.L20:
-    jmp strict short .L18
-.Lrare3:
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 64], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 68], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 72], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 76], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rax, 20
-    ja strict near .Lrare2
-.L18:
-    jmp strict short .L16
-.Lrare4:
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 48], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 52], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 56], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 60], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rax, 16
-    ja strict near .Lrare3
-.L16:
-    jmp strict short .L14
-.Lrare5:
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 32], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 36], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 40], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 44], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rax, 12
-    ja strict near .Lrare4
-.L14:
-    jmp strict short .L12
-.Lrare6:
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 16], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 20], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 24], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 28], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rax, 8
-    ja strict near .Lrare5
-.L12:
-    jmp strict near .L10
-.Lrare7:
-    popcnt rax, r14
-    mov rcx, qword [rsp + 96]
-    shl rcx, 2
-    mov r11, [rsp + 32]
-    lea rcx, [r11 + rcx]
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 4], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 8], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    tzcnt rdx, r14
-    lea rdx, [r9 + rdx]
-    mov dword [rcx + 12], edx
-    mov rdx, r14
-    mov r15, r14
-    sub r15, 1
-    and rdx, r15
-    mov r14, rdx
-    cmp rax, 4
-    ja strict near .Lrare6
-.L10:
-    mov r11, [rsp + 96]
-    lea r11, [r11 + rax]
-    mov [rsp + 96], r11
-    jmp strict near .L8
-.Lrare8:
-    mov edx, 24
-    cmp rdx, rax
-    jae strict short .L39
-    mov r15, r13
-.L38:
-    mov r9, rdx
-    shl r9, 2
-    mov r11, [rsp + 160]
-    bsf r14, r11
-    lea r14, [r15 + r14]
-    mov dword [rcx + r9], r14d
-    mov r9, qword [rsp + 160]
-    mov r14, qword [rsp + 160]
-    sub r14, 1
-    and r9, r14
-    mov qword [rsp + 160], r9
-    add rdx, 1
-    cmp rdx, rax
-    jb strict short .L38
-.L39:
-    jmp strict near .L36
-.Lrare9:
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 80], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 84], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 88], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 92], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rax, 24
-    ja strict near .Lrare8
-.L36:
-    jmp strict near .L34
-.Lrare10:
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 64], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 68], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 72], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 76], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rax, 20
-    ja strict near .Lrare9
-.L34:
-    jmp strict near .L32
-.Lrare11:
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 48], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 52], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 56], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 60], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rax, 16
-    ja strict near .Lrare10
-.L32:
-    jmp strict near .L30
-.Lrare12:
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 32], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 36], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 40], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 44], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rax, 12
-    ja strict near .Lrare11
-.L30:
+    mov [rsp + 416], r11
+    mov r11, r14
+    mov r10, [rsp + 416]
+    and r11, r10
+    mov [rsp + 384], r11
+    mov r14, r11
+    add r13, 1
+    cmp r13, rdx
+    jb strict short .L30
+.L31:
     jmp strict near .L28
-.Lrare13:
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 16], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 20], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 24], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    mov r11, rdx
-    tzcnt rdx, r11
-    lea rdx, [r14 + rdx]
-    mov dword [rcx + 28], edx
-    mov rdx, qword [rsp + 160]
-    mov r9, qword [rsp + 160]
-    sub r9, 1
-    and rdx, r9
-    mov qword [rsp + 160], rdx
-    cmp rax, 8
-    ja strict near .Lrare12
+.Lrare2:
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 80], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 84], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 88], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 92], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 384], r11
+    and r13, r11
+    mov r14, r13
+    cmp rdx, 24
+    ja strict near .Lrare1
 .L28:
     jmp strict near .L26
+.Lrare3:
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 64], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 68], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 72], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 76], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 384], r11
+    and r13, r11
+    mov r14, r13
+    cmp rdx, 20
+    ja strict near .Lrare2
+.L26:
+    jmp strict near .L24
+.Lrare4:
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 48], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 52], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 56], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 60], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 384], r11
+    and r13, r11
+    mov r14, r13
+    cmp rdx, 16
+    ja strict near .Lrare3
+.L24:
+    jmp strict near .L22
+.Lrare5:
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 32], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 36], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 40], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 44], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 384], r11
+    and r13, r11
+    mov r14, r13
+    cmp rdx, 12
+    ja strict near .Lrare4
+.L22:
+    jmp strict near .L20
+.Lrare6:
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 16], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 20], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 24], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 28], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 384], r11
+    and r13, r11
+    mov r14, r13
+    cmp rdx, 8
+    ja strict near .Lrare5
+.L20:
+    jmp strict near .L18
+.Lrare7:
+    popcnt rdx, r14
+    mov rbp, qword [rsp + 128]
+    shl rbp, 2
+    mov r11, [rsp + 32]
+    lea rbp, [r11 + rbp]
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 4], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 8], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    and r13, r11
+    mov r14, r13
+    tzcnt r13, r14
+    lea r13, [rax + r13]
+    mov dword [rbp + 12], r13d
+    mov r13, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 384], r11
+    and r13, r11
+    mov r14, r13
+    cmp rdx, 4
+    ja strict near .Lrare6
+.L18:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rdx]
+    mov [rsp + 128], r11
+    jmp strict near .L16
+.Lrare8:
+    mov ebp, 24
+    cmp rbp, rax
+    jae strict short .L47
+    db 0xf, 0x1f, 0x40, 0x0
+.L46:
+    mov r13, rbp
+    shl r13, 2
+    mov r11, [rsp + 352]
+    bsf r14, r11
+    mov r11, [rsp + 64]
+    lea r14, [r11 + r14]
+    mov dword [rdx + r13], r14d
+    mov r13, qword [rsp + 352]
+    mov r14, qword [rsp + 352]
+    sub r14, 1
+    and r13, r14
+    mov qword [rsp + 352], r13
+    add rbp, 1
+    cmp rbp, rax
+    jb strict short .L46
+.L47:
+    jmp strict near .L44
+.Lrare9:
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 80], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 84], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 88], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 92], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    cmp rax, 24
+    ja strict near .Lrare8
+.L44:
+    jmp strict near .L42
+.Lrare10:
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 64], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 68], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 72], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 76], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    cmp rax, 20
+    ja strict near .Lrare9
+.L42:
+    jmp strict near .L40
+.Lrare11:
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 48], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 52], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 56], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 60], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    cmp rax, 16
+    ja strict near .Lrare10
+.L40:
+    jmp strict near .L38
+.Lrare12:
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 32], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 36], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 40], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 44], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    cmp rax, 12
+    ja strict near .Lrare11
+.L38:
+    jmp strict near .L36
+.Lrare13:
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 16], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 20], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 24], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    mov r11, rbp
+    tzcnt rbp, r11
+    lea rbp, [r14 + rbp]
+    mov dword [rdx + 28], ebp
+    mov rbp, qword [rsp + 352]
+    mov r13, qword [rsp + 352]
+    sub r13, 1
+    and rbp, r13
+    mov qword [rsp + 352], rbp
+    cmp rax, 8
+    ja strict near .Lrare12
+.L36:
+    jmp strict near .L34
 .unwind_end:
 
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
 global nvol_json_index_raw
 nvol_json_index_raw:
     jmp qword [rel nvol_json_index_raw_ptr]
@@ -60253,12 +62270,12 @@ nvol_utf8_valid_ssse3:
     movdqu [rsp + 144], xmm15
     lea r8, [rcx + rdx]
     mov r9, rcx
-    movdqa xmm0, [rel NVOL_K21]
-    movdqa xmm1, [rel NVOL_K22]
-    movdqa xmm2, [rel NVOL_K23]
+    movdqa xmm0, [rel NVOL_K15]
+    movdqa xmm1, [rel NVOL_K16]
+    movdqa xmm2, [rel NVOL_K17]
     movdqa xmm3, [rel NVOL_K1]
-    movdqa xmm4, [rel NVOL_K24]
-    movdqa xmm5, [rel NVOL_K25]
+    movdqa xmm4, [rel NVOL_K18]
+    movdqa xmm5, [rel NVOL_K19]
     movdqa xmm6, [rel NVOL_K6]
     shr rdx, 6
     shl rdx, 6
@@ -61428,13 +63445,13 @@ nvol_unwind_nvol_find_byteset_pair_mask_raw_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
 align 4, db 0
 nvol_unwind_nvol_json_index_scalar:
-    db 1, 19, 10, 0, 19, 1, 41, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
+    db 1, 19, 10, 0, 19, 1, 61, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
 align 4, db 0
 nvol_unwind_nvol_json_index_ssse3:
-    db 1, 77, 22, 0, 77, 184, 27, 0, 67, 168, 26, 0, 57, 152, 25, 0, 47, 136, 24, 0, 37, 120, 23, 0, 28, 104, 22, 0, 19, 1, 57, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
+    db 1, 117, 30, 0, 117, 248, 45, 0, 107, 232, 44, 0, 97, 216, 43, 0, 87, 200, 42, 0, 77, 184, 41, 0, 67, 168, 40, 0, 57, 152, 39, 0, 47, 136, 38, 0, 37, 120, 37, 0, 28, 104, 36, 0, 19, 1, 93, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
 align 4, db 0
 nvol_unwind_nvol_json_index_avx2:
-    db 1, 55, 18, 0, 55, 152, 25, 0, 46, 136, 24, 0, 37, 120, 23, 0, 28, 104, 22, 0, 19, 1, 53, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
+    db 1, 109, 30, 0, 109, 248, 43, 0, 100, 232, 42, 0, 91, 216, 41, 0, 82, 200, 40, 0, 73, 184, 39, 0, 64, 168, 38, 0, 55, 152, 37, 0, 46, 136, 36, 0, 37, 120, 35, 0, 28, 104, 34, 0, 19, 1, 89, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
 align 4, db 0
 nvol_unwind_nvol_json_index_raw_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0

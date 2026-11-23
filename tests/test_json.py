@@ -8,7 +8,8 @@ import pytest
 
 from nvol import oracle
 from nvol.__main__ import json_cases
-from nvol.kernels.json import STATE_BYTES
+from nvol.__main__ import json_same
+from nvol.kernels.json import STATE_BYTES, STATE_WORDS
 from conftest import paths
 
 PATHS = paths({"no-avx2": 0, "avx2": 1})
@@ -29,19 +30,18 @@ def _index(L, data, splits, state, off):
     """Positions and final state words; the blocks sit `off` bytes into their buffer."""
     buf = ctypes.create_string_buffer(off + len(data))
     ctypes.memmove(ctypes.addressof(buf) + off, data, len(data))
-    st = (ctypes.c_uint64 * 4)(*state)
+    st = (ctypes.c_uint64 * (STATE_BYTES // 8))(*state)
     out = (ctypes.c_uint32 * len(data))()
     pos, at = [], 0
     for k in splits:
         n = L.nvol_json_index_raw(st, ctypes.addressof(buf) + off + 64 * at, k, 64 * at, out)
         pos += list(out[:n])
         at += k
-    return pos, tuple(st)
+    return pos, tuple(st[:STATE_WORDS]) + (bytes(st)[-3:],)
 
 
 def _same(got, want):
-    (gp, gs), (wp, ws) = got, want
-    return gp == wp and gs[:3] == ws[:3] and (gs[3] != 0) == (ws[3] != 0)
+    return json_same(got, want)
 
 
 def test_random(lib):
@@ -59,15 +59,30 @@ def test_document(lib):
     data = doc + b" " * (64 - len(doc))
     pos, st = _index(lib, data, [1], (0, 0, 0, 0), 0)
     assert bytes(data[i] for i in pos) == b'{":[1,2,t,"],":n}'
-    assert st == (0, 0, 0, 0)
+    assert st[:6] == (0, 0, 0, 0, 0, 0)
 
 
 def test_state_size():
-    assert STATE_BYTES == 32
+    assert STATE_BYTES == 80
 
 
 def test_unclosed_string_and_control_byte(lib):
     data = b'"ab\x01' + b" " * 60
     pos, st = _index(lib, data, [1], (0, 0, 0, 0), 0)
     assert pos == [0]
-    assert st[1] == (1 << 64) - 1 and st[3] != 0
+    assert st[1] == (1 << 64) - 1 and st[3] != 0 and st[4] == 0
+
+
+def test_utf8(lib):
+    """Valid text, an invalid byte, and a code point cut at the end of the call."""
+    pad = b" " * 64
+    ok = ('["caf' + chr(0xE9) + ' ' + chr(0x20AC) + ' ' + chr(0x1F600) + '"]').encode()
+    _, st = _index(lib, (ok + pad)[:64], [1], (0, 0, 0, 0), 0)
+    assert st[4] == 0 and st[5] == 0
+    _, st = _index(lib, (b'["a' + bytes([0xFF]) + b'"]' + pad)[:64], [1], (0, 0, 0, 0), 0)
+    assert st[4] != 0
+    cut = b" " * 62 + bytes([0xE2, 0x82])
+    _, st = _index(lib, cut, [1], (0, 0, 0, 0), 0)
+    assert st[4] == 0 and st[5] != 0 and st[6] == bytes([0x20, 0xE2, 0x82])
+    _, st = _index(lib, cut + bytes([0xAC]) + b" " * 63, [1, 1], (0, 0, 0, 0), 0)
+    assert st[4] == 0 and st[5] == 0

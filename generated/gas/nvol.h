@@ -108,7 +108,7 @@ NVOL_API size_t nvol_memchr_iter_count(nvol_memchr_iter *it);
 #define NVOL_BYTESET_SET16 96   /* 16 bytes in the class: the members in increasing order, then zeros; the only bytes nvol_find_not_byteset_sse42 reads */
 #define NVOL_BYTESET_PAIR_SEL 240   /* u64 in the pair state: 0 empty, 1..CHAIN_MAX k-compare kernel _k<sel>, CHAIN_MAX + 1 nibble lookup */
 #define NVOL_BYTESET_PAIR_REACH 248   /* u64 in the pair state: max(i1, i2) */
-#define NVOL_JSON_STATE_BYTES 32   /* bytes of the nvol_json_index_raw state */
+#define NVOL_JSON_STATE_BYTES 80   /* bytes of the nvol_json_index_raw state */
 #define NVOL_MEMMEM_STATE_WORDS 8
 /* Substring finder (memchr::memmem::Finder). state words: 0=pair_index1, 1=pair_index2, 2=rk_hash, 3=rk_pow2, 4=tw_byteset, 5=tw_critical_pos, 6=tw_small_period, 7=tw_period_or_shift */
 typedef struct nvol_memmem_finder { const uint8_t *needle; size_t nlen; uint64_t state[NVOL_MEMMEM_STATE_WORDS]; } nvol_memmem_finder;

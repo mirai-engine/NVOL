@@ -44,6 +44,7 @@ from nvol.__main__ import json_cases, utf8_cases
 from nvol.kernels.byteset import CLASS_BYTES, PAIR_BYTES
 from nvol.kernels.memmem import STATE_WORDS
 from nvol.kernels.teddy import STATE_BYTES as TEDDY_STATE
+from nvol.kernels.json import STATE_BYTES as JSON_STATE
 
 ARCH = os.environ.get("NVOL_ARCH", "x86_64")
 A64 = ARCH == "aarch64"
@@ -440,7 +441,7 @@ def _gen(rng, name, maxlen):
         return c, [_ptr(st, 0), _ptr(bl, 0), _ptr(h, a), _ptr(h, b)]
     if name.startswith("nvol_json_index"):
         data, _, state = next(json_cases(rng, 1))
-        st = c.region(b"".join(w.to_bytes(8, "little") for w in state))
+        st = c.region(b"".join(w.to_bytes(8, "little") for w in state).ljust(JSON_STATE, b"\0"))
         h, o = c.region(data), c.region(bytes(4 * len(data)))
         return c, [_ptr(st, 0), _ptr(h, 0), len(data) // 64, rng.randrange(1 << 20), _ptr(o, 0)]
     if name.startswith("nvol_utf8_valid"):

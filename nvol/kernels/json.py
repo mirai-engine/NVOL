@@ -11,18 +11,25 @@ scanners inlined (docs/SIMDJSON_SIMD_INVENTORY.md, "The stage 1 API").
 - `state`: STATE_BYTES, zero before the first block of a document, carried between calls:
   word 0 next_is_escaped (0/1), word 1 prev_in_string (0 or all ones), word 2 prev_scalar
   (0/1), word 3 the OR of the control bytes (<= 0x1F) found inside strings (non-zero: the
-  document is invalid, simdjson's UNESCAPED_CHARS).
+  document is invalid, simdjson's UNESCAPED_CHARS), word 4 non-zero once the bytes are not
+  valid UTF-8 (simdjson's UTF8_ERROR), word 5 non-zero when they end inside a code point (at
+  the end of the document that is an error too: simdjson's check_eof), bytes 48..79 the last
+  bytes of the previous block (UTF-8's prev<1..3>; only the last 3 are read).
 - `idx`: the document position of blocks[0], with idx + 64 * nblocks <= 2^32.
-- `out`: room for 64 * nblocks u32; gets the structural positions in order, exactly `count`
-  of them (simdjson writes in steps of 4 past the count; this kernel writes nothing past it).
+- `out`: room for 64 * nblocks u32; gets the structural positions in order, `count` of them,
+  and the entries past the count may be overwritten (the indexer writes in steps of 4).
+
+UTF-8 is validated in the same pass, as simdjson's utf8_checker (nvol/kernels/utf8.py).
 """
 from __future__ import annotations
 
-from ..ir import MPTR, PTR, U8, U32, U64, USIZE, Builder, Function, Module, lift, lor, prim
+from ..ir import MPTR, PTR, U8, U32, U64, USIZE, Builder, Function, Module, Not, lift, lor, prim
 from ..isa import ISA, ISAS, prefix_xor
+from . import utf8
 
-STATE_WORDS = 4
-STATE_BYTES = 8 * STATE_WORDS
+STATE_WORDS = 6
+PREV_AT, PREV_BYTES = 8 * STATE_WORDS, 32
+STATE_BYTES = PREV_AT + PREV_BYTES
 # exported by every backend as NVOL_JSON_<name> (C, C++, Rust) or JSON_<name> (Odin, Python)
 CONSTANTS = [("STATE_BYTES", STATE_BYTES, "bytes of the nvol_json_index_raw state")]
 M64 = (1 << 64) - 1
@@ -72,6 +79,52 @@ def _masks_scalar(b, blk):
     return ms
 
 
+def _nibble(b, table, x):
+    """table[x] for a 16-entry byte table and x in 0..15, from two u64 constants."""
+    lo = sum(v << (8 * i) for i, v in enumerate(table[:8]))
+    hi = sum(v << (8 * i) for i, v in enumerate(table[8:]))
+    w = b.var("tw", lo, U64)
+    with b.if_(x > 7):
+        b.set(w, hi)
+    return (w >> ((x & 7) << 3)) & 0xFF
+
+
+def _sat_sub(b, x, k):
+    r = b.var("ss", 0, U64)
+    with b.if_(x > k):
+        b.set(r, x - k)
+    return r
+
+
+def _utf8_scalar(b, blk, u):
+    """utf8_checker on one block, one byte at a time: the same lookups and terms as the vector
+    check (so the same error bits), with prev1..3 the three bytes before."""
+    p1, p2, p3 = u["p1"], u["p2"], u["p3"]
+    i = b.var("ui", 0)
+    with b.while_(i < 64):
+        c = b.let("uc", (blk + i).load8().cast(U64))
+        sc = b.let("usc", _nibble(b, utf8.T1H, p1 >> 4) & _nibble(b, utf8.T1L, p1 & 15)
+                   & _nibble(b, utf8.T2H, c >> 4))
+        m23 = b.let("m23", _sat_sub(b, p2, 0xE0 - 0x80) | _sat_sub(b, p3, 0xF0 - 0x80))
+        b.set(u["err"], u["err"] | ((m23 & 0x80) ^ sc))
+        b.set(p3, p2)
+        b.set(p2, p1)
+        b.set(p1, c)
+        b.set(i, i + 1)
+    b.set(u["inc"], utf8.incomplete(blk).cast(U64))
+
+
+def _utf8_vector(b, isa, k, blk, vs, u):
+    """utf8_checker::check_next_input on one block's vectors."""
+    with b.if_(utf8.ascii_block(isa, vs), likely=True):
+        b.set(u["bad"], u["bad"] | u["inc"])
+    with b.else_():
+        for j, v in enumerate(vs):
+            utf8.check_vector(b, isa, k, v, u["prev"] if j == 0 else vs[j - 1], u["verr"])
+        b.set(u["inc"], utf8.incomplete(blk).cast(U64))
+    b.set(u["prev"], vs[-1])
+
+
 def _consts(b, isa):
     """The splats and tables of the vector masks, hoisted out of the block loop."""
     def splat(name, x):
@@ -96,7 +149,7 @@ def _masks_vector(b, isa, blk, k):
 
     def mask(name, f):
         return b.let(name, prim(bm, *[f(v, i) for v, i in zip(vs, idx)]))
-    return [mask("bs", lambda v, i: prim("cmpeq", v, k["bs"])),
+    return vs, [mask("bs", lambda v, i: prim("cmpeq", v, k["bs"])),
             mask("qt", lambda v, i: prim("cmpeq", v, k["qt"])),
             mask("ws", lambda v, i: prim("cmpeq", prim("vshuffle", k["ws_table"], i), v)),
             mask("op", lambda v, i: prim("cmpeq", prim("vshuffle", k["op_table"], i),
@@ -179,20 +232,38 @@ def kernel(isa: ISA | None) -> Function:
     end = b.let("end", blocks + (nblocks << 6))
     n = b.var("n", 0)
     k = _consts(b, isa) if isa else None
+    u = {"err": b.var("uerr", prim("load64", state + 32), U64),
+         "inc": b.var("uinc", prim("load64", state + 40), U64)}
+    if isa:
+        ku = utf8._consts(b, isa)
+        u.update(prev=b.var("uprev", prim("load_u", state + (STATE_BYTES - isa.bytes))),
+                 verr=b.var("verr", prim("vzero")), bad=b.var("ubad", 0, U64))
+    else:
+        u.update({f"p{j}": b.var(f"p{j}", (state + (STATE_BYTES - j)).load8().cast(U64), U64)
+                  for j in (1, 2, 3)})
     # json_structural_indexer::next: a block's positions are written while the next block is
     # scanned, so the indexer's branches wait on the previous block, not on this one's chain
     prev = b.var("prev", 0, U64)
     pbase = b.var("pbase", idx)
 
-    def masks(at):
-        return _masks_vector(b, isa, at, k) if isa else _masks_scalar(b, at)
+    def scan(at):
+        """The block's structural starts, then its UTF-8 check (as simdjson's
+        json_structural_indexer::next)."""
+        if isa:
+            vs, ms = _masks_vector(b, isa, at, k)
+            bits = b.var("sbits", _block(b, isa, st, ms), U64)
+            _utf8_vector(b, isa, ku, at, vs, u)
+        else:
+            bits = b.var("sbits", _block(b, isa, st, _masks_scalar(b, at)), U64)
+            _utf8_scalar(b, at, u)
+        return bits
     # stage1_mode's step<128>: two blocks per iteration, both scanned before either is written
     end2 = b.let("end2", blocks + ((nblocks >> 1) << 7))
     with b.while_(blk < end2):
         # each block's masks right before its scan, as simdjson's json_scanner::next: the
         # masks of both blocks at once outnumber the registers (GCC spilled 6 compares)
-        bits1 = b.var("bits1", _block(b, isa, st, masks(blk)), U64)
-        bits2 = _block(b, isa, st, masks(blk + 64))
+        bits1 = scan(blk)
+        bits2 = scan(blk + 64)
         _write_indexes(b, prev, pbase, out, n)
         _write_indexes(b, bits1, base, out, n)
         b.set(prev, bits2)
@@ -200,13 +271,21 @@ def kernel(isa: ISA | None) -> Function:
         b.set(blk, blk + 128)
         b.set(base, base + 128)
     with b.if_(blk < end):              # an odd last block
-        bits = _block(b, isa, st, masks(blk))
+        bits = scan(blk)
         _write_indexes(b, prev, pbase, out, n)
         b.set(prev, bits)
         b.set(pbase, base)
     _write_indexes(b, prev, pbase, out, n)
     for k, v in enumerate(st):
         b.store64(state + 8 * k if k else state, v)
+    if isa:
+        b.store64(state + 32, u["err"] | u["bad"] | Not(prim("is_zero", u["verr"])).cast(U64))
+        b.store_vec(state + (STATE_BYTES - isa.bytes), u["prev"])
+    else:
+        b.store64(state + 32, u["err"])
+        for j in (1, 2, 3):
+            b.store8(state + (STATE_BYTES - j), u[f"p{j}"].cast(U8))
+    b.store64(state + 40, u["inc"])
     b.ret(n)
     return b.build()
 

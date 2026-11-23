@@ -289,18 +289,41 @@ def json_cases(rng, n):
     that cover them (the state carried between calls), and the starting state."""
     alpha = b'{}[]:,"\\ \t\n\rabc019.-' + bytes([0x01, 0x0C, 0x1A, 0x1F, 0x7F, 0x80, 0xC3, 0xFF])
     heavy = b'\\"\\"\\ab'      # runs of backslashes and quotes, the escape scanner's hard cases
+    ascii = bytes(c for c in alpha if c < 0x80)
     for _ in range(n):
         nb = rng.randint(1, 6)
+        # half the documents are valid UTF-8 (ASCII bytes and whole code points), so that the
+        # UTF-8 state words are tested on text that passes, not only on text that fails
+        text = rng.random() < 0.5
         data = bytearray()
         while len(data) < 64 * nb:
             r = rng.random()
-            if r < 0.3:
+            if text and r < 0.25:
+                data += chr(rng.choice(UTF8_POINTS[3:])).encode("utf-8")
+            elif r < 0.3:
                 data += rng.choice(JSON_SNIPPETS)
             elif r < 0.5:
                 data += bytes(rng.choice(heavy) for _ in range(rng.randint(1, 12)))
             else:
-                data += bytes(rng.choice(alpha) for _ in range(rng.randint(1, 8)))
-        data = bytes(data[:64 * nb])
+                data += bytes(rng.choice(ascii if text else alpha) for _ in range(rng.randint(1, 8)))
+        data = data[:64 * nb]
+        if text and rng.random() < 0.4:
+            # a code point at the end of block k, j of its bytes before the boundary:
+            # finished in the next block, cut and followed by an ASCII block (an error), or cut
+            # at the end of the document (incomplete)
+            cp = chr(rng.choice([0xE9, 0x20AC, 0x1F600])).encode("utf-8")
+            j = rng.randrange(1, len(cp))
+            k = rng.randint(1, nb)
+            at = 64 * k - j
+            kind = rng.randrange(3)
+            if kind == 0 and k < nb:
+                data[at:at + len(cp)] = cp
+            elif kind == 1 and k < nb:
+                data[at:64 * k] = cp[:j]
+                data[64 * k:64 * k + 64] = b" " * 64
+            else:
+                data[64 * nb - j:] = cp[:j]
+        data = bytes(data)
         splits, left = [], nb
         while left:
             k = rng.randint(1, left)
@@ -323,14 +346,19 @@ def json_run(call, mem, data, splits, state, hb, sb, ob):
         n = call([sb, hb + 64 * at, k, 64 * at, ob])
         out += [int.from_bytes(bytes(mem[ob + 4 * i:ob + 4 * i + 4]), "little") for i in range(n)]
         at += k
-    st = tuple(int.from_bytes(bytes(mem[sb + 8 * k:sb + 8 * k + 8]), "little") for k in range(4))
-    return out, st
+    from .kernels.json import STATE_BYTES, STATE_WORDS
+    st = tuple(int.from_bytes(bytes(mem[sb + 8 * k:sb + 8 * k + 8]), "little") for k in range(STATE_WORDS))
+    return out, st + (bytes(mem[sb + STATE_BYTES - 3:sb + STATE_BYTES]),)
 
 
 def json_same(got, want) -> bool:
-    """The error word is any non-zero value; the other words are exact."""
+    """The error words are any non-zero value; the other words are exact. "incomplete" is
+    compared only while the bytes are valid (after an error the kernel may keep a stale one),
+    and the carried bytes only when the call saw 3 or more."""
     (gp, gs), (wp, ws) = got, want
-    return gp == wp and gs[:3] == ws[:3] and (gs[3] != 0) == (ws[3] != 0)
+    return (gp == wp and gs[:3] == ws[:3] and (gs[3] != 0) == (ws[3] != 0)
+            and (gs[4] != 0) == (ws[4] != 0) and (ws[4] or (gs[5] != 0) == (ws[5] != 0))
+            and (len(ws[6]) < 3 or gs[6] == ws[6]))
 
 
 def check_json(mod, cases: int, seed: int) -> int:
