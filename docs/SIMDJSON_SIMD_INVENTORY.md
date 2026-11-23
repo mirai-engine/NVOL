@@ -72,3 +72,29 @@ the document because it guarantees `SIMDJSON_PADDING`, while NVOL's kernels read
 bytes. So NVOL's block kernels take a pointer to 64 readable bytes, a precondition like the
 vector kernels' `end - start >= V`. The caller, simdjson's `buf_block_reader`, already copies
 the last partial block into a padded buffer.
+
+## The stage 1 API
+
+Decided on 2026-11-23 for PENDING 35: NVOL gives simdjson one kernel that runs the whole stage 1
+loop, in place of `json_structural_indexer::index`'s loop over blocks. It takes the padded
+blocks and the state carried from one block to the next, and writes the `u32` positions of the
+structural characters. The scanners (`json_escape_scanner`, `json_string_scanner`,
+`json_character_block::classify`) are IR helpers inlined into that loop, as `prefix_xor` is.
+
+The alternative was one public function per scanner, called once per 64-byte block, that
+returns the block's masks (`classify` gives the whitespace and operator masks, the string
+scanner gives the escaped, quote and in-string masks and updates its carry). It was set aside
+for two reasons:
+
+- **Cost.** simdjson inlines every scanner into one loop, so a block costs no call. The
+  per-block functions cost at least one call per 64 bytes, and some masks go out through memory:
+  a C call returns at most two `u64`s in registers (one on Win64), and the string scanner has three. That makes them worse than the code they
+  replace, which CONTRIBUTING only accepts as a documented deviation.
+- **Reach.** The masks would cross a call boundary that the compiler cannot see through, so it
+  could not interleave two blocks, as simdjson's `step<128>` does to hide the latency of the
+  serial part (the escape scanner and `prefix_xor`).
+
+The per-block functions would still be the right shape for a caller that needs the masks
+themselves and not the positions, such as the minifier (`json_minifier`, which is not in phase 6).
+If such a caller appears, they can be added as thin public wrappers over the same IR helpers,
+without changing the kernel.
