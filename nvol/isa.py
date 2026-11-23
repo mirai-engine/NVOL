@@ -63,6 +63,7 @@ SSE2 = ISA(
     target={"c": "", "rust": "sse2"},
     lower={
         ("c", "splat"): "_mm_set1_epi8((char){0})",
+        ("c", "vtable16"): "_mm_setr_epi8((char){0}, (char){1}, (char){2}, (char){3}, (char){4}, (char){5}, (char){6}, (char){7}, (char){8}, (char){9}, (char){10}, (char){11}, (char){12}, (char){13}, (char){14}, (char){15})",
         ("c", "vzero"): "_mm_setzero_si128()",
         ("c", "load_a"): "_mm_load_si128((const __m128i *)({0}))",
         ("c", "load_u"): "_mm_loadu_si128((const __m128i *)({0}))",
@@ -81,6 +82,7 @@ SSE2 = ISA(
         ("c", "vadd64"): "_mm_add_epi64({0}, {1})",
         ("c", "hsum64"): "((size_t)(_mm_cvtsi128_si64({0}) + _mm_cvtsi128_si64(_mm_unpackhi_epi64({0}, {0}))))",
         ("rust", "splat"): "_mm_set1_epi8({0} as i8)",
+        ("rust", "vtable16"): "_mm_setr_epi8({0} as i8, {1} as i8, {2} as i8, {3} as i8, {4} as i8, {5} as i8, {6} as i8, {7} as i8, {8} as i8, {9} as i8, {10} as i8, {11} as i8, {12} as i8, {13} as i8, {14} as i8, {15} as i8)",
         ("rust", "vzero"): "_mm_setzero_si128()",
         ("rust", "load_a"): "_mm_load_si128({0} as *const __m128i)",
         ("rust", "load_u"): "_mm_loadu_si128({0} as *const __m128i)",
@@ -144,6 +146,7 @@ AVX2 = ISA(
     target={"c": "avx2", "rust": "avx2,popcnt,pclmulqdq"},
     lower={
         ("c", "splat"): "_mm256_set1_epi8((char){0})",
+        ("c", "vtable16"): "_mm256_setr_epi8((char){0}, (char){1}, (char){2}, (char){3}, (char){4}, (char){5}, (char){6}, (char){7}, (char){8}, (char){9}, (char){10}, (char){11}, (char){12}, (char){13}, (char){14}, (char){15}, (char){0}, (char){1}, (char){2}, (char){3}, (char){4}, (char){5}, (char){6}, (char){7}, (char){8}, (char){9}, (char){10}, (char){11}, (char){12}, (char){13}, (char){14}, (char){15})",
         ("c", "vzero"): "_mm256_setzero_si256()",
         ("c", "load_a"): "_mm256_load_si256((const __m256i *)({0}))",
         ("c", "load_u"): "_mm256_loadu_si256((const __m256i *)({0}))",
@@ -163,6 +166,7 @@ AVX2 = ISA(
         ("c", "vadd64"): "_mm256_add_epi64({0}, {1})",
         ("c", "hsum64"): "((size_t)(_mm256_extract_epi64({0}, 0) + _mm256_extract_epi64({0}, 1) + _mm256_extract_epi64({0}, 2) + _mm256_extract_epi64({0}, 3)))",
         ("rust", "splat"): "_mm256_set1_epi8({0} as i8)",
+        ("rust", "vtable16"): "_mm256_setr_epi8({0} as i8, {1} as i8, {2} as i8, {3} as i8, {4} as i8, {5} as i8, {6} as i8, {7} as i8, {8} as i8, {9} as i8, {10} as i8, {11} as i8, {12} as i8, {13} as i8, {14} as i8, {15} as i8, {0} as i8, {1} as i8, {2} as i8, {3} as i8, {4} as i8, {5} as i8, {6} as i8, {7} as i8, {8} as i8, {9} as i8, {10} as i8, {11} as i8, {12} as i8, {13} as i8, {14} as i8, {15} as i8)",
         ("rust", "vzero"): "_mm256_setzero_si256()",
         ("rust", "load_a"): "_mm256_load_si256({0} as *const __m256i)",
         ("rust", "load_u"): "_mm256_loadu_si256({0} as *const __m256i)",
@@ -221,6 +225,7 @@ AVX2 = ISA(
 
 _N_C = {
     "splat": "vdupq_n_u8((uint8_t)({0}))",
+    "vtable16": "vcombine_u8(vcreate_u8((uint64_t)({0}) | (uint64_t)({1}) << 8 | (uint64_t)({2}) << 16 | (uint64_t)({3}) << 24 | (uint64_t)({4}) << 32 | (uint64_t)({5}) << 40 | (uint64_t)({6}) << 48 | (uint64_t)({7}) << 56), vcreate_u8((uint64_t)({8}) | (uint64_t)({9}) << 8 | (uint64_t)({10}) << 16 | (uint64_t)({11}) << 24 | (uint64_t)({12}) << 32 | (uint64_t)({13}) << 40 | (uint64_t)({14}) << 48 | (uint64_t)({15}) << 56))",
     "vzero": "vdupq_n_u8(0)",
     "load_a": "vld1q_u8({0})",
     "load_u": "vld1q_u8({0})",
@@ -254,6 +259,7 @@ _N_C = {
 }
 _N_RUST = {
     "splat": "vdupq_n_u8({0})",
+    "vtable16": "vcombine_u8(vcreate_u8((({0} as u64)) | (({1} as u64) << 8) | (({2} as u64) << 16) | (({3} as u64) << 24) | (({4} as u64) << 32) | (({5} as u64) << 40) | (({6} as u64) << 48) | (({7} as u64) << 56)), vcreate_u8((({8} as u64)) | (({9} as u64) << 8) | (({10} as u64) << 16) | (({11} as u64) << 24) | (({12} as u64) << 32) | (({13} as u64) << 40) | (({14} as u64) << 48) | (({15} as u64) << 56)))",
     "vzero": "vdupq_n_u8(0)",
     "load_a": "vld1q_u8({0})",
     "load_u": "vld1q_u8({0})",

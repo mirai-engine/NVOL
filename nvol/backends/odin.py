@@ -57,6 +57,7 @@ def _vec_common(n):
     u16, u64, i8 = f"U16x{n // 2}", f"U64x{n // 8}", f"I8x{n}"
     return {
         "splat": f"{t}({{0}})",
+        "vtable16": t + "{{" + ", ".join(f"{{{i % 16}}}" for i in range(n)) + "}}",
         "vzero": f"{t}(0)",
         "load_a": f"(^{t})({{0}})^",
         "load_u": f"intrinsics.unaligned_load((^{t})({{0}}))",

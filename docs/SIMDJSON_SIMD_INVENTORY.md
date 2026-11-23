@@ -55,7 +55,7 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 | saturating `+` on `u8`, `lt_bits` | defined, not called by the generic code | not needed | — |
 | byte shift right by 4 | `shr<4>` (UTF-8 lookups); `shl<N>` is not called | `vnib_hi` | — |
 | `prev<N>` (bytes from the previous vector) | UTF-8 (`prev<1..3>`) | `shin1-3(input, prev_input)` (AVX2: across the lanes, as haswell's `prev<N>`) | — |
-| `lookup_16` (`pshufb` on a 16-entry table) | `classify`, UTF-8 | `vshuffle` | — |
+| `lookup_16` (`pshufb` on a 16-entry table) | `classify`, UTF-8 | `vshuffle`, on a constant table from `vtable16` (`.rodata` in the asm) | — |
 | `popcnt` on `u64` | structural indexer (`count_ones`) | `popcnt64` | — |
 | `tzcnt`, `lzcnt` on `u64` | indexer, `copy_and_find` | `first_offset64`, `last_offset64` | — |
 | `blsr` (`x & (x - 1)`) | indexer (`clear_lowest_bit`) | expressible (`wsub`, `and`) | — |

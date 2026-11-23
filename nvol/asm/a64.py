@@ -439,6 +439,13 @@ class A64Lower(Lower):
             d = self.new("v")
             self.emit("movi", [Reg(d, 128), Imm(0)], defs=[d])
             return d
+        if n == "vtable16":         # from .rodata, as Clang does: adrp + add, then ldr q
+            if not all(isinstance(x, ir.Const) for x in e.args):
+                raise Unsupported(f"{self.f.name}: vtable16 of a non-constant byte")
+            base = self.sym_addr(self.pool.get(bytes(_const_value(x) & 0xFF for x in e.args)))
+            d = self.new("v")
+            self.emit("ldr", [Reg(d, 128), Mem(base, w=128)], defs=[d], uses=[base])
+            return d
         if n in ("load_a", "load_u"):
             m = self.addr(e.args[0], 16)
             d = self.new("v")

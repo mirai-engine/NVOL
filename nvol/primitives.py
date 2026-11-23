@@ -90,6 +90,9 @@ def _movemask(ctx, a):
 _DEFS = [
     PrimDef("splat", (U8,), VEC, "every lane = x", lambda c, x: (x,) * c.nbytes),
     PrimDef("vzero", (), VEC, "every lane = 0", lambda c: (0,) * c.nbytes),
+    PrimDef("vtable16", (U8,) * 16, VEC,
+            "the 16 constant bytes c0..c15 in every 128-bit lane (a pshufb/tbl table)",
+            lambda c, *t: tuple(t) * (c.nbytes // 16), pre="every argument is a constant"),
     PrimDef("load_a", (PTR,), VEC, "load nbytes from an nbytes-aligned address",
             lambda c, p: _load(c, p, True), pre="addr % nbytes == 0, [p, p+nbytes) readable"),
     PrimDef("load_u", (PTR,), VEC, "load nbytes from any address",

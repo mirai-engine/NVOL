@@ -37,6 +37,9 @@ U64_TO_SCALAR = {"ssse3": ["popcnt64"], "avx2": ["popcnt64", "prefix_xor64"]}
 STORES = {"ssse3": ["store32"], "avx2": []}
 # IR helpers of nvol.isa, not primitives: t_<isa>_prefix_xor (the shift/xor steps without PCLMUL)
 HELPERS = {"ssse3": ["prefix_xor"], "avx2": []}
+# constant vectors: t_<isa>_vtable16 (the bytes of TABLE16, which ignore src)
+CONSTS = {"ssse3": ["vtable16"], "avx2": ["vtable16"]}
+TABLE16 = (0x20, 0x00, 0x7F, 0x80, 0xFF, 0x11, 0x71, 0x02, 0x64, 0x09, 0x0A, 0x70, 0xC3, 0x0D, 0x01, 0xFE)
 
 
 def _fn_vec(isa, name):
@@ -95,6 +98,17 @@ def _fn_u64(isa, name):
     return b.build()
 
 
+def _fn_vtable16(isa):
+    V = ISAS[isa].bytes
+    b = ir.Builder(f"t_{isa}_vtable16", ir.VOID, isa=isa, public=True)
+    b.param("src", ir.PTR)
+    out = b.param("out", ir.MPTR)
+    r = b.let("r", ir.prim("vtable16", *[ir.lift(x, ir.U8) for x in TABLE16]))
+    for k in range(V // 8):
+        b.store64(out + 8 * k if k else out, ir.prim(f"lane64_{k}", r))
+    return b.build()
+
+
 def _fn_prefix_xor(isa):
     b = ir.Builder(f"t_{isa}_prefix_xor", ir.VOID, isa=isa, public=True)
     src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
@@ -148,6 +162,7 @@ def _module():
         mod.functions += [_fn_u64(isa, n) for n in names]
     mod.functions += [_fn_store32(isa) for isa, names in STORES.items() if names]
     mod.functions += [_fn_prefix_xor(isa) for isa, names in HELPERS.items() if names]
+    mod.functions += [_fn_vtable16(isa) for isa, names in CONSTS.items() if names]
     mod.functions.append(_fn_half("load_half_bcast"))
     mod.functions.append(_fn_cpu("cpu_avx2_pclmul"))
     return mod
@@ -249,7 +264,7 @@ def test_lowerings_match_reference(built, isa):
     _skip_unless(lib, isa)
     rng = random.Random(11)
     V = ISAS[isa].bytes
-    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + BLOCK[isa] + U64_TO_SCALAR[isa] + STORES[isa] + HELPERS[isa] + (["load_half_bcast"] if isa == "avx2" else [])
+    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + BLOCK[isa] + U64_TO_SCALAR[isa] + STORES[isa] + HELPERS[isa] + CONSTS[isa] + (["load_half_bcast"] if isa == "avx2" else [])
     for name in names:
         f = mod.fn(f"t_{isa}_{name}")
         cfn = getattr(lib, f.name)

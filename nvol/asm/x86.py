@@ -557,6 +557,8 @@ class X86Lower(Lower):
             return d
         if n == "vzero":
             return self.vzero()
+        if n == "vtable16":
+            return self.vconst(_table16(self.f.name, e) * (V // 16))
         if n in ("load_a", "load_u"):
             m = self.addr(e.args[0])
             d = self.new("v")
@@ -1130,3 +1132,10 @@ rewrite = _rewrite
 peephole = _peephole
 frame = _frame
 avx = _avx
+
+
+def _table16(fname: str, e: ir.Prim) -> bytes:
+    """The 16 bytes of a vtable16, which must all be constants (they go to .rodata)."""
+    if not all(isinstance(x, ir.Const) for x in e.args):
+        raise Unsupported(f"{fname}: vtable16 of a non-constant byte")
+    return bytes(_const_value(x) & 0xFF for x in e.args)
