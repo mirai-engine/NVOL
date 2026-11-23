@@ -61,7 +61,7 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 | `blsr` (`x & (x - 1)`) | indexer (`clear_lowest_bit`) | expressible (`wsub`, `and`) | — |
 | sign smear `int64(x) >> 63` | string scanner (`prev_in_string`) | expressible as `0 - (x >> 63)` | — |
 | store of `u32` indices | indexer (`write_index`) | `Store32` | — |
-| carry-less multiplication | `prefix_xor` (`_mm_clmulepi64_si128` against all ones) | none | 34 |
+| carry-less multiplication | `prefix_xor` (`_mm_clmulepi64_si128` against all ones) | `prefix_xor64` in AVX2 functions (`vpclmulqdq` against all ones), which dispatch on `cpu_avx2_pclmul`; the scalar form for the other ISAs is missing | 34 |
 | `pmaddubsw`, `pmaddwd`, `packusdw` (128 bits) | `parse_eight_digits_unrolled` | none | 37 |
 | unaligned 32-byte copy plus two masks | `copy_and_find` | `nvol_copy_until_byteset` (copy plus the first member) | 37 |
 | `compress` (`thintable_epi8`, `pshufb_combine_table`) | the minifier | none | not in phase 6 |

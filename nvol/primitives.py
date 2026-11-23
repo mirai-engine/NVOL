@@ -210,6 +210,15 @@ def _skip_set16(c, s, x):
     return 16
 
 
+def _prefix_xor64(c, m):
+    """Bit i is the XOR of bits 0..i: the low 64 bits of the carry-less product m * ~0."""
+    r, acc = 0, 0
+    for i in range(64):
+        acc ^= (m >> i) & 1
+        r |= acc << i
+    return r
+
+
 def _first64(c, m):
     assert m != 0, "first_offset64: mask must be non-zero"
     return (m & -m).bit_length() - 1
@@ -244,6 +253,11 @@ _DEFS += [
             lambda c, m: m.bit_length() - 1, pre="mask != 0"),
     PrimDef("popcnt64", (U64,), USIZE, "number of set bits of a u64",
             lambda c, m: bin(m & MASK64).count("1")),
+    PrimDef("prefix_xor64", (U64,), U64,
+            "bit i = XOR of bits 0..i (simdjson prefix_xor): the low 64 bits of the carry-less "
+            "product with all ones (pclmulqdq); AVX2 functions only, which dispatch on "
+            "cpu_avx2_pclmul",
+            _prefix_xor64),
     PrimDef("cpu_avx2_pclmul", (), BOOL,
             "runtime: CPU and OS support AVX2, and the CPU has PCLMULQDQ (every AVX2 CPU has it, "
             "but a hypervisor can hide it; one check keeps a single dispatch condition)",

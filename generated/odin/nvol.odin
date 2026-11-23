@@ -33,6 +33,7 @@ when ODIN_ARCH == .amd64 {
 		@(link_name = "llvm.x86.avx2.pshuf.b")      nvol_pshufb256 :: proc(a, b: V32) -> V32 ---
 		@(link_name = "llvm.x86.avx.ptestz.256")    nvol_ptestz256 :: proc(a, b: U64x4) -> i32 ---
 		@(link_name = "llvm.x86.sse42.pcmpistri128") nvol_pcmpistri128 :: proc(a, b: V16, imm: i8) -> i32 ---
+		@(link_name = "llvm.x86.pclmulqdq")         nvol_pclmulqdq :: proc(a, b: U64x2, imm: i8) -> U64x2 ---
 	}
 
 	@(private) nvol_test_avx2_override := -1

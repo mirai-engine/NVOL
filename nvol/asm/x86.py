@@ -628,6 +628,16 @@ class X86Lower(Lower):
             d = self.new()
             self.emit("lea", [Reg(d, 64), Mem(lo, hi64)], defs=[d], uses=[lo, hi64])
             return d
+        if n == "prefix_xor64":          # clang's and simdjson's sequence: movq, pcmpeq, pclmulqdq, movq
+            a = self.gen(e.args[0])
+            x, ones = self.new("v"), self.new("v")
+            self.emit(self._v("movq"), [Reg(x, 128), Reg(a, 64)], defs=[x], uses=[a])
+            if self.vex:
+                self.emit("vpcmpeqb", [Reg(ones, 128), Reg(ones, 128), Reg(ones, 128)], defs=[ones])
+            else:
+                self.emit("pcmpeqb", [Reg(ones, 128), Reg(ones, 128)], defs=[ones])
+            p = self.vop("pclmulqdq", x, ones, imm=0, w=128)
+            return self.lane64(p, 0, w=128)
         if n == "skip_set16":
             a, b = self.gen(e.args[0]), self.gen(e.args[1])
             self.emit(self._v("pcmpistri"), [Reg(a, 128), Reg(b, 128), Imm(0x10)],

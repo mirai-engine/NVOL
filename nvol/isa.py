@@ -158,6 +158,7 @@ AVX2 = ISA(
         ("c", "vmin8"): "_mm256_min_epu8({0}, {1})",
         ("c", "movemask"): "((uint32_t)_mm256_movemask_epi8({0}))",
         ("c", "bmask64x2"): "((uint64_t)(uint32_t)_mm256_movemask_epi8({0}) | ((uint64_t)(uint32_t)_mm256_movemask_epi8({1}) << 32))",
+        ("c", "prefix_xor64"): "((uint64_t)_mm_cvtsi128_si64(_mm_clmulepi64_si128(_mm_cvtsi64_si128((long long)({0})), _mm_set1_epi8((char)-1), 0)))",
         ("c", "sad0"): "_mm256_sad_epu8({0}, _mm256_setzero_si256())",
         ("c", "vadd64"): "_mm256_add_epi64({0}, {1})",
         ("c", "hsum64"): "((size_t)(_mm256_extract_epi64({0}, 0) + _mm256_extract_epi64({0}, 1) + _mm256_extract_epi64({0}, 2) + _mm256_extract_epi64({0}, 3)))",
@@ -176,6 +177,7 @@ AVX2 = ISA(
         ("rust", "vmin8"): "_mm256_min_epu8({0}, {1})",
         ("rust", "movemask"): "(_mm256_movemask_epi8({0}) as u32)",
         ("rust", "bmask64x2"): "((_mm256_movemask_epi8({0}) as u32 as u64) | ((_mm256_movemask_epi8({1}) as u32 as u64) << 32))",
+        ("rust", "prefix_xor64"): "(_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128({0} as i64), _mm_set1_epi8(-1))) as u64)",
         ("rust", "sad0"): "_mm256_sad_epu8({0}, _mm256_setzero_si256())",
         ("rust", "vadd64"): "_mm256_add_epi64({0}, {1})",
         # Teddy: shin_k crosses the 128-bit lanes via permute2x128 (b high lane : a low lane)

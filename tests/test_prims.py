@@ -32,7 +32,7 @@ VEC2_TO_SCALAR = {"sse42": ["skip_set16"]}
 BLOCK = {"ssse3": ["bmask64x4"], "avx2": ["bmask64x2"]}
 # u64 -> usize, inside an ISA function: the assembly picks popcnt by the ISA (SSE4.2 and AVX2
 # have it; below, a byte table), which the ISA-less fuzzer never reaches
-U64_TO_SCALAR = {"ssse3": ["popcnt64"], "avx2": ["popcnt64"]}
+U64_TO_SCALAR = {"ssse3": ["popcnt64"], "avx2": ["popcnt64", "prefix_xor64"]}
 # statements, not primitives: t_<isa>_store32 (a register and an immediate, at odd offsets)
 STORES = {"ssse3": ["store32"], "avx2": []}
 
