@@ -108,11 +108,16 @@ def _block(b, isa, st, masks):
     """One block of json_scanner::next on the five masks: its structural starts."""
     nie, pis, psc, err = st
     bs, qt, ws, op, ctl = masks
-    # json_escape_scanner::next (without its no-backslash shortcut, which gives the same masks)
-    pe = b.let("pe", bs & _not(nie))
-    code = b.let("code", ((pe << 1) | ODD_BITS).wsub(pe) ^ ODD_BITS)
-    escaped = b.let("escaped", code ^ (bs | nie))
-    b.set(nie, (code & bs) >> 63)
+    # json_escape_scanner::next, with its shortcut: a block without a backslash escapes only its
+    # first byte (when the last one ended in an odd run of backslashes) and carries nothing
+    escaped = b.var("escaped", nie, U64)
+    with b.if_(bs.ne(0)):
+        pe = b.let("pe", bs & _not(nie))
+        code = b.let("code", ((pe << 1) | ODD_BITS).wsub(pe) ^ ODD_BITS)
+        b.set(escaped, code ^ (bs | nie))
+        b.set(nie, (code & bs) >> 63)
+    with b.else_():
+        b.set(nie, 0)
     # json_string_scanner::next
     quote = b.let("quote", qt & _not(escaped))
     ins = b.let("in_string", prefix_xor(b, isa, quote) ^ pis)

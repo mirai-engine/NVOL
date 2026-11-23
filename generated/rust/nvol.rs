@@ -9021,10 +9021,15 @@ pub mod raw {
                     }
                     i = (i + 1usize);
                 }
-                let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
-                let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
-                let escaped: u64 = (code ^ (bs | nie));
-                nie = ((code & bs) >> 63u64);
+                let mut escaped: u64 = nie;
+                if (bs != 0u64) {
+                    let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                    let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                    escaped = (code ^ (bs | nie));
+                    nie = ((code & bs) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
                 let mut px: u64 = quote;
                 px = (px ^ (px << 1u64));
@@ -9069,10 +9074,15 @@ pub mod raw {
                     }
                     i1 = (i1 + 1usize);
                 }
-                let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
-                let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
-                let escaped1: u64 = (code1 ^ (bs1 | nie));
-                nie = ((code1 & bs1) >> 63u64);
+                let mut escaped1: u64 = nie;
+                if (bs1 != 0u64) {
+                    let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
+                    let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
+                    escaped1 = (code1 ^ (bs1 | nie));
+                    nie = ((code1 & bs1) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote1: u64 = (qt1 & (escaped1 ^ 18446744073709551615u64));
                 let mut px1: u64 = quote1;
                 px1 = (px1 ^ (px1 << 1u64));
@@ -9264,10 +9274,15 @@ pub mod raw {
                     }
                     i4 = (i4 + 1usize);
                 }
-                let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
-                let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
-                let escaped2: u64 = (code2 ^ (bs2 | nie));
-                nie = ((code2 & bs2) >> 63u64);
+                let mut escaped2: u64 = nie;
+                if (bs2 != 0u64) {
+                    let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
+                    let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
+                    escaped2 = (code2 ^ (bs2 | nie));
+                    nie = ((code2 & bs2) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote2: u64 = (qt2 & (escaped2 ^ 18446744073709551615u64));
                 let mut px2: u64 = quote2;
                 px2 = (px2 ^ (px2 << 1u64));
@@ -9469,10 +9484,15 @@ pub mod raw {
                 let ws: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_), in_)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_1), in_1)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_2), in_2)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_3), in_3)) as u32 as u64) << 48));
                 let op: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_), _mm_or_si128(in_, k20))) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_1), _mm_or_si128(in_1, k20))) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_2), _mm_or_si128(in_2, k20))) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_3), _mm_or_si128(in_3, k20))) as u32 as u64) << 48));
                 let ctl: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_, k1f), in_)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_1, k1f), in_1)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_2, k1f), in_2)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_3, k1f), in_3)) as u32 as u64) << 48));
-                let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
-                let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
-                let escaped: u64 = (code ^ (bs | nie));
-                nie = ((code & bs) >> 63u64);
+                let mut escaped: u64 = nie;
+                if (bs != 0u64) {
+                    let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                    let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                    escaped = (code ^ (bs | nie));
+                    nie = ((code & bs) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
                 let mut px: u64 = quote;
                 px = (px ^ (px << 1u64));
@@ -9499,10 +9519,15 @@ pub mod raw {
                 let ws1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_4), in_4)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_5), in_5)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_6), in_6)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_7), in_7)) as u32 as u64) << 48));
                 let op1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_4), _mm_or_si128(in_4, k20))) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_5), _mm_or_si128(in_5, k20))) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_6), _mm_or_si128(in_6, k20))) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_7), _mm_or_si128(in_7, k20))) as u32 as u64) << 48));
                 let ctl1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_4, k1f), in_4)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_5, k1f), in_5)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_6, k1f), in_6)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_7, k1f), in_7)) as u32 as u64) << 48));
-                let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
-                let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
-                let escaped1: u64 = (code1 ^ (bs1 | nie));
-                nie = ((code1 & bs1) >> 63u64);
+                let mut escaped1: u64 = nie;
+                if (bs1 != 0u64) {
+                    let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
+                    let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
+                    escaped1 = (code1 ^ (bs1 | nie));
+                    nie = ((code1 & bs1) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote1: u64 = (qt1 & (escaped1 ^ 18446744073709551615u64));
                 let mut px1: u64 = quote1;
                 px1 = (px1 ^ (px1 << 1u64));
@@ -9676,10 +9701,15 @@ pub mod raw {
                 let ws2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_8), in_8)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_9), in_9)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_10), in_10)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_11), in_11)) as u32 as u64) << 48));
                 let op2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_8), _mm_or_si128(in_8, k20))) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_9), _mm_or_si128(in_9, k20))) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_10), _mm_or_si128(in_10, k20))) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_11), _mm_or_si128(in_11, k20))) as u32 as u64) << 48));
                 let ctl2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_8, k1f), in_8)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_9, k1f), in_9)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_10, k1f), in_10)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_11, k1f), in_11)) as u32 as u64) << 48));
-                let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
-                let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
-                let escaped2: u64 = (code2 ^ (bs2 | nie));
-                nie = ((code2 & bs2) >> 63u64);
+                let mut escaped2: u64 = nie;
+                if (bs2 != 0u64) {
+                    let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
+                    let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
+                    escaped2 = (code2 ^ (bs2 | nie));
+                    nie = ((code2 & bs2) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote2: u64 = (qt2 & (escaped2 ^ 18446744073709551615u64));
                 let mut px2: u64 = quote2;
                 px2 = (px2 ^ (px2 << 1u64));
@@ -9879,10 +9909,15 @@ pub mod raw {
                 let ws: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_), in_)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_1), in_1)) as u32 as u64) << 32));
                 let op: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_), _mm256_or_si256(in_, k20))) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_1), _mm256_or_si256(in_1, k20))) as u32 as u64) << 32));
                 let ctl: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_, k1f), in_)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_1, k1f), in_1)) as u32 as u64) << 32));
-                let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
-                let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
-                let escaped: u64 = (code ^ (bs | nie));
-                nie = ((code & bs) >> 63u64);
+                let mut escaped: u64 = nie;
+                if (bs != 0u64) {
+                    let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                    let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                    escaped = (code ^ (bs | nie));
+                    nie = ((code & bs) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
                 let in_string: u64 = ((_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128(quote as i64), _mm_set1_epi8(-1))) as u64) ^ pis);
                 pis = 0u64.wrapping_sub((in_string >> 63u64));
@@ -9900,10 +9935,15 @@ pub mod raw {
                 let ws1: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_2), in_2)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_3), in_3)) as u32 as u64) << 32));
                 let op1: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_2), _mm256_or_si256(in_2, k20))) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_3), _mm256_or_si256(in_3, k20))) as u32 as u64) << 32));
                 let ctl1: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_2, k1f), in_2)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_3, k1f), in_3)) as u32 as u64) << 32));
-                let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
-                let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
-                let escaped1: u64 = (code1 ^ (bs1 | nie));
-                nie = ((code1 & bs1) >> 63u64);
+                let mut escaped1: u64 = nie;
+                if (bs1 != 0u64) {
+                    let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
+                    let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
+                    escaped1 = (code1 ^ (bs1 | nie));
+                    nie = ((code1 & bs1) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote1: u64 = (qt1 & (escaped1 ^ 18446744073709551615u64));
                 let in_string1: u64 = ((_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128(quote1 as i64), _mm_set1_epi8(-1))) as u64) ^ pis);
                 pis = 0u64.wrapping_sub((in_string1 >> 63u64));
@@ -10068,10 +10108,15 @@ pub mod raw {
                 let ws2: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_4), in_4)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_5), in_5)) as u32 as u64) << 32));
                 let op2: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_4), _mm256_or_si256(in_4, k20))) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_5), _mm256_or_si256(in_5, k20))) as u32 as u64) << 32));
                 let ctl2: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_4, k1f), in_4)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_5, k1f), in_5)) as u32 as u64) << 32));
-                let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
-                let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
-                let escaped2: u64 = (code2 ^ (bs2 | nie));
-                nie = ((code2 & bs2) >> 63u64);
+                let mut escaped2: u64 = nie;
+                if (bs2 != 0u64) {
+                    let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
+                    let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
+                    escaped2 = (code2 ^ (bs2 | nie));
+                    nie = ((code2 & bs2) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote2: u64 = (qt2 & (escaped2 ^ 18446744073709551615u64));
                 let in_string2: u64 = ((_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128(quote2 as i64), _mm_set1_epi8(-1))) as u64) ^ pis);
                 pis = 0u64.wrapping_sub((in_string2 >> 63u64));
@@ -15083,10 +15128,15 @@ pub mod raw {
                 let ws: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo1), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo2), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo3), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo1), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo2), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo3), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let op: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let ctl: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
-                let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
-                let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
-                let escaped: u64 = (code ^ (bs | nie));
-                nie = ((code & bs) >> 63u64);
+                let mut escaped: u64 = nie;
+                if (bs != 0u64) {
+                    let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                    let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                    escaped = (code ^ (bs | nie));
+                    nie = ((code & bs) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
                 let mut px: u64 = quote;
                 px = (px ^ (px << 1u64));
@@ -15117,10 +15167,15 @@ pub mod raw {
                 let ws1: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo4), in_4), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo5), in_5), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo6), in_6), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo7), in_7), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo4), in_4), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo5), in_5), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo6), in_6), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo7), in_7), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let op1: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo4), vorrq_u8(in_4, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo5), vorrq_u8(in_5, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo6), vorrq_u8(in_6, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo7), vorrq_u8(in_7, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo4), vorrq_u8(in_4, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo5), vorrq_u8(in_5, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo6), vorrq_u8(in_6, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo7), vorrq_u8(in_7, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let ctl1: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_4, k1f), in_4), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_5, k1f), in_5), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_6, k1f), in_6), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_7, k1f), in_7), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_4, k1f), in_4), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_5, k1f), in_5), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_6, k1f), in_6), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_7, k1f), in_7), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
-                let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
-                let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
-                let escaped1: u64 = (code1 ^ (bs1 | nie));
-                nie = ((code1 & bs1) >> 63u64);
+                let mut escaped1: u64 = nie;
+                if (bs1 != 0u64) {
+                    let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
+                    let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
+                    escaped1 = (code1 ^ (bs1 | nie));
+                    nie = ((code1 & bs1) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote1: u64 = (qt1 & (escaped1 ^ 18446744073709551615u64));
                 let mut px1: u64 = quote1;
                 px1 = (px1 ^ (px1 << 1u64));
@@ -15298,10 +15353,15 @@ pub mod raw {
                 let ws2: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo8), in_8), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo9), in_9), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo10), in_10), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo11), in_11), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo8), in_8), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo9), in_9), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo10), in_10), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo11), in_11), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let op2: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo8), vorrq_u8(in_8, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo9), vorrq_u8(in_9, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo10), vorrq_u8(in_10, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo11), vorrq_u8(in_11, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo8), vorrq_u8(in_8, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo9), vorrq_u8(in_9, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo10), vorrq_u8(in_10, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo11), vorrq_u8(in_11, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let ctl2: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_8, k1f), in_8), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_9, k1f), in_9), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_10, k1f), in_10), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_11, k1f), in_11), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_8, k1f), in_8), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_9, k1f), in_9), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_10, k1f), in_10), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_11, k1f), in_11), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
-                let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
-                let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
-                let escaped2: u64 = (code2 ^ (bs2 | nie));
-                nie = ((code2 & bs2) >> 63u64);
+                let mut escaped2: u64 = nie;
+                if (bs2 != 0u64) {
+                    let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
+                    let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
+                    escaped2 = (code2 ^ (bs2 | nie));
+                    nie = ((code2 & bs2) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
                 let quote2: u64 = (qt2 & (escaped2 ^ 18446744073709551615u64));
                 let mut px2: u64 = quote2;
                 px2 = (px2 ^ (px2 << 1u64));

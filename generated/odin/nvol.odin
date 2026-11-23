@@ -8396,10 +8396,15 @@ when ODIN_ARCH == .amd64 {
 				}
 				i = (i + uint(1))
 			}
-			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
-			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
-			escaped: u64 = (code ~ (bs | nie))
-			nie = ((code & bs) >> u64(63))
+			escaped: u64 = nie
+			if (bs != u64(0)) {
+				pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+				code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+				escaped = (code ~ (bs | nie))
+				nie = ((code & bs) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
 			px: u64 = quote
 			px = (px ~ (px << u64(1)))
@@ -8444,10 +8449,15 @@ when ODIN_ARCH == .amd64 {
 				}
 				i1 = (i1 + uint(1))
 			}
-			pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
-			code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
-			escaped1: u64 = (code1 ~ (bs1 | nie))
-			nie = ((code1 & bs1) >> u64(63))
+			escaped1: u64 = nie
+			if (bs1 != u64(0)) {
+				pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+				code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+				escaped1 = (code1 ~ (bs1 | nie))
+				nie = ((code1 & bs1) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
 			px1: u64 = quote1
 			px1 = (px1 ~ (px1 << u64(1)))
@@ -8639,10 +8649,15 @@ when ODIN_ARCH == .amd64 {
 				}
 				i4 = (i4 + uint(1))
 			}
-			pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
-			code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
-			escaped2: u64 = (code2 ~ (bs2 | nie))
-			nie = ((code2 & bs2) >> u64(63))
+			escaped2: u64 = nie
+			if (bs2 != u64(0)) {
+				pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+				code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+				escaped2 = (code2 ~ (bs2 | nie))
+				nie = ((code2 & bs2) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
 			px2: u64 = quote2
 			px2 = (px2 ~ (px2 << u64(1)))
@@ -8841,10 +8856,15 @@ when ODIN_ARCH == .amd64 {
 			ws: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_), in_)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_1), in_1))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_2), in_2))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_3), in_3))) << 48))
 			op: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_), intrinsics.simd_bit_or(in_, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_1), intrinsics.simd_bit_or(in_1, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_2), intrinsics.simd_bit_or(in_2, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_3), intrinsics.simd_bit_or(in_3, k20)))) << 48))
 			ctl: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3))) << 48))
-			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
-			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
-			escaped: u64 = (code ~ (bs | nie))
-			nie = ((code & bs) >> u64(63))
+			escaped: u64 = nie
+			if (bs != u64(0)) {
+				pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+				code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+				escaped = (code ~ (bs | nie))
+				nie = ((code & bs) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
 			px: u64 = quote
 			px = (px ~ (px << u64(1)))
@@ -8871,10 +8891,15 @@ when ODIN_ARCH == .amd64 {
 			ws1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_4), in_4)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_5), in_5))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_6), in_6))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_7), in_7))) << 48))
 			op1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_4), intrinsics.simd_bit_or(in_4, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_5), intrinsics.simd_bit_or(in_5, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_6), intrinsics.simd_bit_or(in_6, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_7), intrinsics.simd_bit_or(in_7, k20)))) << 48))
 			ctl1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_6, k1f), in_6))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_7, k1f), in_7))) << 48))
-			pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
-			code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
-			escaped1: u64 = (code1 ~ (bs1 | nie))
-			nie = ((code1 & bs1) >> u64(63))
+			escaped1: u64 = nie
+			if (bs1 != u64(0)) {
+				pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+				code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+				escaped1 = (code1 ~ (bs1 | nie))
+				nie = ((code1 & bs1) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
 			px1: u64 = quote1
 			px1 = (px1 ~ (px1 << u64(1)))
@@ -9048,10 +9073,15 @@ when ODIN_ARCH == .amd64 {
 			ws2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_8), in_8)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_9), in_9))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_10), in_10))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_11), in_11))) << 48))
 			op2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_8), intrinsics.simd_bit_or(in_8, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_9), intrinsics.simd_bit_or(in_9, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_10), intrinsics.simd_bit_or(in_10, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_11), intrinsics.simd_bit_or(in_11, k20)))) << 48))
 			ctl2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_8, k1f), in_8)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_9, k1f), in_9))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_10, k1f), in_10))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_11, k1f), in_11))) << 48))
-			pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
-			code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
-			escaped2: u64 = (code2 ~ (bs2 | nie))
-			nie = ((code2 & bs2) >> u64(63))
+			escaped2: u64 = nie
+			if (bs2 != u64(0)) {
+				pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+				code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+				escaped2 = (code2 ~ (bs2 | nie))
+				nie = ((code2 & bs2) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
 			px2: u64 = quote2
 			px2 = (px2 ~ (px2 << u64(1)))
@@ -9248,10 +9278,15 @@ when ODIN_ARCH == .amd64 {
 			ws: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_), in_))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_1), in_1))) << 32)
 			op: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_), intrinsics.simd_bit_or(in_, k20)))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_1), intrinsics.simd_bit_or(in_1, k20)))) << 32)
 			ctl: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1))) << 32)
-			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
-			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
-			escaped: u64 = (code ~ (bs | nie))
-			nie = ((code & bs) >> u64(63))
+			escaped: u64 = nie
+			if (bs != u64(0)) {
+				pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+				code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+				escaped = (code ~ (bs | nie))
+				nie = ((code & bs) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
 			in_string: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
 			pis = (u64(0) - (in_string >> u64(63)))
@@ -9269,10 +9304,15 @@ when ODIN_ARCH == .amd64 {
 			ws1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_2), in_2))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_3), in_3))) << 32)
 			op1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_2), intrinsics.simd_bit_or(in_2, k20)))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_3), intrinsics.simd_bit_or(in_3, k20)))) << 32)
 			ctl1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3))) << 32)
-			pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
-			code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
-			escaped1: u64 = (code1 ~ (bs1 | nie))
-			nie = ((code1 & bs1) >> u64(63))
+			escaped1: u64 = nie
+			if (bs1 != u64(0)) {
+				pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+				code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+				escaped1 = (code1 ~ (bs1 | nie))
+				nie = ((code1 & bs1) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
 			in_string1: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote1, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
 			pis = (u64(0) - (in_string1 >> u64(63)))
@@ -9437,10 +9477,15 @@ when ODIN_ARCH == .amd64 {
 			ws2: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_4), in_4))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_5), in_5))) << 32)
 			op2: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_4), intrinsics.simd_bit_or(in_4, k20)))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_5), intrinsics.simd_bit_or(in_5, k20)))) << 32)
 			ctl2: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5))) << 32)
-			pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
-			code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
-			escaped2: u64 = (code2 ~ (bs2 | nie))
-			nie = ((code2 & bs2) >> u64(63))
+			escaped2: u64 = nie
+			if (bs2 != u64(0)) {
+				pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+				code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+				escaped2 = (code2 ~ (bs2 | nie))
+				nie = ((code2 & bs2) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
 			in_string2: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote2, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
 			pis = (u64(0) - (in_string2 >> u64(63)))
@@ -14156,10 +14201,15 @@ when ODIN_ARCH == .amd64 {
 			ws: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo1), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo2), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo3), in_3), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo1), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo2), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo3), in_3), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			op: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo), intrinsics.simd_bit_or(in_, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo1), intrinsics.simd_bit_or(in_1, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo2), intrinsics.simd_bit_or(in_2, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo3), intrinsics.simd_bit_or(in_3, k20)), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo), intrinsics.simd_bit_or(in_, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo1), intrinsics.simd_bit_or(in_1, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo2), intrinsics.simd_bit_or(in_2, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo3), intrinsics.simd_bit_or(in_3, k20)), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			ctl: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3), transmute(V16)U64x2(0x8040201008040201))))), 0)
-			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
-			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
-			escaped: u64 = (code ~ (bs | nie))
-			nie = ((code & bs) >> u64(63))
+			escaped: u64 = nie
+			if (bs != u64(0)) {
+				pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+				code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+				escaped = (code ~ (bs | nie))
+				nie = ((code & bs) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
 			px: u64 = quote
 			px = (px ~ (px << u64(1)))
@@ -14190,10 +14240,15 @@ when ODIN_ARCH == .amd64 {
 			ws1: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo4), in_4), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo5), in_5), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo6), in_6), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo7), in_7), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo4), in_4), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo5), in_5), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo6), in_6), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo7), in_7), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			op1: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo4), intrinsics.simd_bit_or(in_4, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo5), intrinsics.simd_bit_or(in_5, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo6), intrinsics.simd_bit_or(in_6, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo7), intrinsics.simd_bit_or(in_7, k20)), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo4), intrinsics.simd_bit_or(in_4, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo5), intrinsics.simd_bit_or(in_5, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo6), intrinsics.simd_bit_or(in_6, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo7), intrinsics.simd_bit_or(in_7, k20)), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			ctl1: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_6, k1f), in_6), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_7, k1f), in_7), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_6, k1f), in_6), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_7, k1f), in_7), transmute(V16)U64x2(0x8040201008040201))))), 0)
-			pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
-			code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
-			escaped1: u64 = (code1 ~ (bs1 | nie))
-			nie = ((code1 & bs1) >> u64(63))
+			escaped1: u64 = nie
+			if (bs1 != u64(0)) {
+				pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+				code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+				escaped1 = (code1 ~ (bs1 | nie))
+				nie = ((code1 & bs1) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
 			px1: u64 = quote1
 			px1 = (px1 ~ (px1 << u64(1)))
@@ -14371,10 +14426,15 @@ when ODIN_ARCH == .amd64 {
 			ws2: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo8), in_8), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo9), in_9), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo10), in_10), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo11), in_11), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo8), in_8), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo9), in_9), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo10), in_10), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo11), in_11), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			op2: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo8), intrinsics.simd_bit_or(in_8, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo9), intrinsics.simd_bit_or(in_9, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo10), intrinsics.simd_bit_or(in_10, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo11), intrinsics.simd_bit_or(in_11, k20)), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo8), intrinsics.simd_bit_or(in_8, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo9), intrinsics.simd_bit_or(in_9, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo10), intrinsics.simd_bit_or(in_10, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo11), intrinsics.simd_bit_or(in_11, k20)), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			ctl2: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_8, k1f), in_8), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_9, k1f), in_9), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_10, k1f), in_10), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_11, k1f), in_11), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_8, k1f), in_8), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_9, k1f), in_9), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_10, k1f), in_10), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_11, k1f), in_11), transmute(V16)U64x2(0x8040201008040201))))), 0)
-			pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
-			code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
-			escaped2: u64 = (code2 ~ (bs2 | nie))
-			nie = ((code2 & bs2) >> u64(63))
+			escaped2: u64 = nie
+			if (bs2 != u64(0)) {
+				pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+				code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+				escaped2 = (code2 ~ (bs2 | nie))
+				nie = ((code2 & bs2) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
 			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
 			px2: u64 = quote2
 			px2 = (px2 ~ (px2 << u64(1)))
