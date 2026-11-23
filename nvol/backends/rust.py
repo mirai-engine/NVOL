@@ -75,11 +75,18 @@ class RustPrinter(Printer):
                 self.depth += 1; self.block(s.body); self.depth -= 1
                 self.line("}")
             elif isinstance(s, ir.If):
+                # the hint: core::hint::cold_path() on the side that almost never runs
                 self.line(f"if {self.e(s.cond)} {{")
-                self.depth += 1; self.block(s.then); self.depth -= 1
-                if s.els:
+                self.depth += 1
+                if s.likely is False:
+                    self.line("core::hint::cold_path();")
+                self.block(s.then); self.depth -= 1
+                if s.els or s.likely:
                     self.line("} else {")
-                    self.depth += 1; self.block(s.els); self.depth -= 1
+                    self.depth += 1
+                    if s.likely:
+                        self.line("core::hint::cold_path();")
+                    self.block(s.els or []); self.depth -= 1
                 self.line("}")
             elif isinstance(s, ir.Return):
                 self.line("return;" if s.value is None else f"return {self.e(s.value)};")

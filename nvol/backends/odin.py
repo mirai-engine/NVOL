@@ -278,7 +278,10 @@ class OdinPrinter(Printer):
                 self.depth += 1; self.block(s.body); self.depth -= 1
                 self.line("}")
             elif isinstance(s, ir.If):
-                self.line(f"if {self.e(s.cond)} {{")
+                c = self.e(s.cond)
+                if s.likely is not None:
+                    c = f"intrinsics.expect({c}, {'true' if s.likely else 'false'})"
+                self.line(f"if {c} {{")
                 self.depth += 1; self.block(s.then); self.depth -= 1
                 if s.els:
                     self.line("} else {")

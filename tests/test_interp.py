@@ -52,3 +52,34 @@ def test_mptr_subtraction_is_rejected():
         out - out
     with pytest.raises(TypeError):
         out - 4
+
+
+def _hinted(likely):
+    """A function with a hinted if, inside a while (for_languages rebuilds both)."""
+    from nvol import ir
+    b = ir.Builder("t_hint", ir.U64, public=True)
+    x = b.param("x", ir.U64)
+    r = b.var("r", 0, ir.U64)
+    with b.while_(x.ne(0)):
+        with b.if_((x & 1).ne(0), likely=likely):
+            b.set(r, r + 1)
+        b.set(x, x >> 1)
+    b.ret(r)
+    return ir.Module("t", [b.build()])
+
+
+@pytest.mark.parametrize("likely", [False, True])
+def test_branch_hint_reaches_each_backend(likely):
+    """If.likely changes no result, and every language backend passes it on: C/C++
+    NVOL_(UN)LIKELY, Rust cold_path() on the rare side, Odin intrinsics.expect."""
+    from nvol import ir
+    from nvol.backends import c as c_backend, odin, rust
+    from nvol.interp import Interpreter, Memory
+    mod = _hinted(likely)
+    assert Interpreter(mod, Memory(b"", 0x1000)).call("t_hint", [0b1011001]) == 4
+    c = "".join(c_backend.generate(mod, "c").values())
+    assert ("NVOL_LIKELY(" if likely else "NVOL_UNLIKELY(") in c.split("t_hint", 1)[1]
+    r = "".join(rust.generate(mod).values())
+    assert "core::hint::cold_path();" in r
+    o = "".join(odin.generate(mod).values())
+    assert f"intrinsics.expect(" in o and ("true)" if likely else "false)") in o

@@ -9023,6 +9023,7 @@ pub mod raw {
                 }
                 let mut escaped: u64 = nie;
                 if (bs != 0u64) {
+                    core::hint::cold_path();
                     let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
                     let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
                     escaped = (code ^ (bs | nie));
@@ -9076,6 +9077,7 @@ pub mod raw {
                 }
                 let mut escaped1: u64 = nie;
                 if (bs1 != 0u64) {
+                    core::hint::cold_path();
                     let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
                     let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
                     escaped1 = (code1 ^ (bs1 | nie));
@@ -9276,6 +9278,7 @@ pub mod raw {
                 }
                 let mut escaped2: u64 = nie;
                 if (bs2 != 0u64) {
+                    core::hint::cold_path();
                     let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
                     let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
                     escaped2 = (code2 ^ (bs2 | nie));
@@ -9486,6 +9489,7 @@ pub mod raw {
                 let ctl: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_, k1f), in_)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_1, k1f), in_1)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_2, k1f), in_2)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_3, k1f), in_3)) as u32 as u64) << 48));
                 let mut escaped: u64 = nie;
                 if (bs != 0u64) {
+                    core::hint::cold_path();
                     let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
                     let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
                     escaped = (code ^ (bs | nie));
@@ -9521,6 +9525,7 @@ pub mod raw {
                 let ctl1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_4, k1f), in_4)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_5, k1f), in_5)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_6, k1f), in_6)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_7, k1f), in_7)) as u32 as u64) << 48));
                 let mut escaped1: u64 = nie;
                 if (bs1 != 0u64) {
+                    core::hint::cold_path();
                     let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
                     let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
                     escaped1 = (code1 ^ (bs1 | nie));
@@ -9703,6 +9708,7 @@ pub mod raw {
                 let ctl2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_8, k1f), in_8)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_9, k1f), in_9)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_10, k1f), in_10)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_11, k1f), in_11)) as u32 as u64) << 48));
                 let mut escaped2: u64 = nie;
                 if (bs2 != 0u64) {
+                    core::hint::cold_path();
                     let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
                     let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
                     escaped2 = (code2 ^ (bs2 | nie));
@@ -9911,6 +9917,7 @@ pub mod raw {
                 let ctl: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_, k1f), in_)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_1, k1f), in_1)) as u32 as u64) << 32));
                 let mut escaped: u64 = nie;
                 if (bs != 0u64) {
+                    core::hint::cold_path();
                     let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
                     let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
                     escaped = (code ^ (bs | nie));
@@ -9937,6 +9944,7 @@ pub mod raw {
                 let ctl1: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_2, k1f), in_2)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_3, k1f), in_3)) as u32 as u64) << 32));
                 let mut escaped1: u64 = nie;
                 if (bs1 != 0u64) {
+                    core::hint::cold_path();
                     let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
                     let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
                     escaped1 = (code1 ^ (bs1 | nie));
@@ -10110,6 +10118,7 @@ pub mod raw {
                 let ctl2: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_4, k1f), in_4)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_5, k1f), in_5)) as u32 as u64) << 32));
                 let mut escaped2: u64 = nie;
                 if (bs2 != 0u64) {
+                    core::hint::cold_path();
                     let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
                     let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
                     escaped2 = (code2 ^ (bs2 | nie));
@@ -15130,6 +15139,7 @@ pub mod raw {
                 let ctl: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let mut escaped: u64 = nie;
                 if (bs != 0u64) {
+                    core::hint::cold_path();
                     let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
                     let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
                     escaped = (code ^ (bs | nie));
@@ -15169,6 +15179,7 @@ pub mod raw {
                 let ctl1: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_4, k1f), in_4), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_5, k1f), in_5), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_6, k1f), in_6), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_7, k1f), in_7), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_4, k1f), in_4), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_5, k1f), in_5), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_6, k1f), in_6), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_7, k1f), in_7), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let mut escaped1: u64 = nie;
                 if (bs1 != 0u64) {
+                    core::hint::cold_path();
                     let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
                     let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
                     escaped1 = (code1 ^ (bs1 | nie));
@@ -15355,6 +15366,7 @@ pub mod raw {
                 let ctl2: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_8, k1f), in_8), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_9, k1f), in_9), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_10, k1f), in_10), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_11, k1f), in_11), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_8, k1f), in_8), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_9, k1f), in_9), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_10, k1f), in_10), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_11, k1f), in_11), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let mut escaped2: u64 = nie;
                 if (bs2 != 0u64) {
+                    core::hint::cold_path();
                     let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
                     let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
                     escaped2 = (code2 ^ (bs2 | nie));

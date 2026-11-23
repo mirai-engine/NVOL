@@ -21,6 +21,8 @@ COMMON_PRELUDE = r"""
 #  define NVOL_INLINE static __forceinline
 #  define NVOL_FORCE_INLINE __forceinline   /* for callers: the attribute alone */
 #  define NVOL_UNUSED
+#  define NVOL_LIKELY(x) (x)
+#  define NVOL_UNLIKELY(x) (x)
 #  define NVOL_MEMCPY memcpy
 static __forceinline uint32_t nvol_ctz32(uint32_t x) { unsigned long i; _BitScanForward(&i, x); return (uint32_t)i; }
 static __forceinline uint32_t nvol_clz32(uint32_t x) { unsigned long i; _BitScanReverse(&i, x); return 31u - (uint32_t)i; }
@@ -39,6 +41,8 @@ static __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((
 /* the memory helpers below: with the kernels in assembly (asm_kernels) nothing may call
    them, and clang warns about an unused static inline function of a .c */
 #  define NVOL_UNUSED __attribute__((unused))
+#  define NVOL_LIKELY(x) __builtin_expect(!!(x), 1)
+#  define NVOL_UNLIKELY(x) __builtin_expect(!!(x), 0)
 /* the builtin, not memcpy: fortify headers (musl, glibc _FORTIFY_SOURCE) wrap memcpy in an
    inline function with overlap checks that stay in the hot loop of every load64/store64 */
 #  define NVOL_MEMCPY __builtin_memcpy
@@ -323,7 +327,10 @@ class CPrinter(Printer):
                 self.line("}")
             elif isinstance(s, ir.If):
                 c = self.e(s.cond)
-                self.line(f"if {c if c.startswith('(') else '(' + c + ')'} {{")
+                if s.likely is not None:
+                    self.line(f"if ({'NVOL_LIKELY' if s.likely else 'NVOL_UNLIKELY'}({c})) {{")
+                else:
+                    self.line(f"if {c if c.startswith('(') else '(' + c + ')'} {{")
                 self.depth += 1; self.block(s.then); self.depth -= 1
                 if s.els:
                     self.line("} else {")

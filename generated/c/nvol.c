@@ -10,6 +10,8 @@
 #  define NVOL_INLINE static __forceinline
 #  define NVOL_FORCE_INLINE __forceinline   /* for callers: the attribute alone */
 #  define NVOL_UNUSED
+#  define NVOL_LIKELY(x) (x)
+#  define NVOL_UNLIKELY(x) (x)
 #  define NVOL_MEMCPY memcpy
 static __forceinline uint32_t nvol_ctz32(uint32_t x) { unsigned long i; _BitScanForward(&i, x); return (uint32_t)i; }
 static __forceinline uint32_t nvol_clz32(uint32_t x) { unsigned long i; _BitScanReverse(&i, x); return 31u - (uint32_t)i; }
@@ -28,6 +30,8 @@ static __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((
 /* the memory helpers below: with the kernels in assembly (asm_kernels) nothing may call
    them, and clang warns about an unused static inline function of a .c */
 #  define NVOL_UNUSED __attribute__((unused))
+#  define NVOL_LIKELY(x) __builtin_expect(!!(x), 1)
+#  define NVOL_UNLIKELY(x) __builtin_expect(!!(x), 0)
 /* the builtin, not memcpy: fortify headers (musl, glibc _FORTIFY_SOURCE) wrap memcpy in an
    inline function with overlap checks that stay in the hot loop of every load64/store64 */
 #  define NVOL_MEMCPY __builtin_memcpy
@@ -8337,7 +8341,7 @@ NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks,
             i = (i + ((size_t)1u));
         }
         uint64_t escaped = nie;
-        if (bs != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs != UINT64_C(0)))) {
             const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
             escaped = (code ^ (bs | nie));
@@ -8390,7 +8394,7 @@ NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks,
             i1 = (i1 + ((size_t)1u));
         }
         uint64_t escaped1 = nie;
-        if (bs1 != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs1 != UINT64_C(0)))) {
             const uint64_t pe1 = (bs1 & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code1 = (((uint64_t)(((pe1 << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe1)) ^ UINT64_C(12297829382473034410));
             escaped1 = (code1 ^ (bs1 | nie));
@@ -8590,7 +8594,7 @@ NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks,
             i4 = (i4 + ((size_t)1u));
         }
         uint64_t escaped2 = nie;
-        if (bs2 != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs2 != UINT64_C(0)))) {
             const uint64_t pe2 = (bs2 & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code2 = (((uint64_t)(((pe2 << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe2)) ^ UINT64_C(12297829382473034410));
             escaped2 = (code2 ^ (bs2 | nie));
@@ -8796,7 +8800,7 @@ NVOL_TARGET_SSSE3 NVOL_INLINE size_t nvol_json_index_ssse3(uint8_t *state, const
         const uint64_t op = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_), _mm_or_si128(in_, k20)))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_1), _mm_or_si128(in_1, k20))) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_2), _mm_or_si128(in_2, k20))) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_3), _mm_or_si128(in_3, k20))) << 48));
         const uint64_t ctl = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_, k1f), in_))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_1, k1f), in_1)) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_2, k1f), in_2)) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_3, k1f), in_3)) << 48));
         uint64_t escaped = nie;
-        if (bs != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs != UINT64_C(0)))) {
             const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
             escaped = (code ^ (bs | nie));
@@ -8831,7 +8835,7 @@ NVOL_TARGET_SSSE3 NVOL_INLINE size_t nvol_json_index_ssse3(uint8_t *state, const
         const uint64_t op1 = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_4), _mm_or_si128(in_4, k20)))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_5), _mm_or_si128(in_5, k20))) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_6), _mm_or_si128(in_6, k20))) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_7), _mm_or_si128(in_7, k20))) << 48));
         const uint64_t ctl1 = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_4, k1f), in_4))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_5, k1f), in_5)) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_6, k1f), in_6)) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_7, k1f), in_7)) << 48));
         uint64_t escaped1 = nie;
-        if (bs1 != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs1 != UINT64_C(0)))) {
             const uint64_t pe1 = (bs1 & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code1 = (((uint64_t)(((pe1 << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe1)) ^ UINT64_C(12297829382473034410));
             escaped1 = (code1 ^ (bs1 | nie));
@@ -9013,7 +9017,7 @@ NVOL_TARGET_SSSE3 NVOL_INLINE size_t nvol_json_index_ssse3(uint8_t *state, const
         const uint64_t op2 = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_8), _mm_or_si128(in_8, k20)))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_9), _mm_or_si128(in_9, k20))) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_10), _mm_or_si128(in_10, k20))) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_11), _mm_or_si128(in_11, k20))) << 48));
         const uint64_t ctl2 = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_8, k1f), in_8))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_9, k1f), in_9)) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_10, k1f), in_10)) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_11, k1f), in_11)) << 48));
         uint64_t escaped2 = nie;
-        if (bs2 != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs2 != UINT64_C(0)))) {
             const uint64_t pe2 = (bs2 & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code2 = (((uint64_t)(((pe2 << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe2)) ^ UINT64_C(12297829382473034410));
             escaped2 = (code2 ^ (bs2 | nie));
@@ -9217,7 +9221,7 @@ NVOL_TARGET_AVX2_BMI1 NVOL_INLINE size_t nvol_json_index_avx2(uint8_t *state, co
         const uint64_t op = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_), _mm256_or_si256(in_, k20))) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_1), _mm256_or_si256(in_1, k20))) << 32));
         const uint64_t ctl = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_, k1f), in_)) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_1, k1f), in_1)) << 32));
         uint64_t escaped = nie;
-        if (bs != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs != UINT64_C(0)))) {
             const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
             escaped = (code ^ (bs | nie));
@@ -9243,7 +9247,7 @@ NVOL_TARGET_AVX2_BMI1 NVOL_INLINE size_t nvol_json_index_avx2(uint8_t *state, co
         const uint64_t op1 = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_2), _mm256_or_si256(in_2, k20))) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_3), _mm256_or_si256(in_3, k20))) << 32));
         const uint64_t ctl1 = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_2, k1f), in_2)) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_3, k1f), in_3)) << 32));
         uint64_t escaped1 = nie;
-        if (bs1 != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs1 != UINT64_C(0)))) {
             const uint64_t pe1 = (bs1 & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code1 = (((uint64_t)(((pe1 << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe1)) ^ UINT64_C(12297829382473034410));
             escaped1 = (code1 ^ (bs1 | nie));
@@ -9416,7 +9420,7 @@ NVOL_TARGET_AVX2_BMI1 NVOL_INLINE size_t nvol_json_index_avx2(uint8_t *state, co
         const uint64_t op2 = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_4), _mm256_or_si256(in_4, k20))) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_5), _mm256_or_si256(in_5, k20))) << 32));
         const uint64_t ctl2 = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_4, k1f), in_4)) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_5, k1f), in_5)) << 32));
         uint64_t escaped2 = nie;
-        if (bs2 != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs2 != UINT64_C(0)))) {
             const uint64_t pe2 = (bs2 & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code2 = (((uint64_t)(((pe2 << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe2)) ^ UINT64_C(12297829382473034410));
             escaped2 = (code2 ^ (bs2 | nie));
@@ -14062,7 +14066,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
         const uint64_t op = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
         const uint64_t ctl = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
         uint64_t escaped = nie;
-        if (bs != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs != UINT64_C(0)))) {
             const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
             escaped = (code ^ (bs | nie));
@@ -14101,7 +14105,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
         const uint64_t op1 = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo4), vorrq_u8(in_4, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo5), vorrq_u8(in_5, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo6), vorrq_u8(in_6, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo7), vorrq_u8(in_7, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo4), vorrq_u8(in_4, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo5), vorrq_u8(in_5, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo6), vorrq_u8(in_6, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo7), vorrq_u8(in_7, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
         const uint64_t ctl1 = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_4, k1f), in_4), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_5, k1f), in_5), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_6, k1f), in_6), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_7, k1f), in_7), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_4, k1f), in_4), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_5, k1f), in_5), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_6, k1f), in_6), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_7, k1f), in_7), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
         uint64_t escaped1 = nie;
-        if (bs1 != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs1 != UINT64_C(0)))) {
             const uint64_t pe1 = (bs1 & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code1 = (((uint64_t)(((pe1 << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe1)) ^ UINT64_C(12297829382473034410));
             escaped1 = (code1 ^ (bs1 | nie));
@@ -14287,7 +14291,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
         const uint64_t op2 = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo8), vorrq_u8(in_8, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo9), vorrq_u8(in_9, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo10), vorrq_u8(in_10, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo11), vorrq_u8(in_11, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo8), vorrq_u8(in_8, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo9), vorrq_u8(in_9, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo10), vorrq_u8(in_10, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo11), vorrq_u8(in_11, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
         const uint64_t ctl2 = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_8, k1f), in_8), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_9, k1f), in_9), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_10, k1f), in_10), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_11, k1f), in_11), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_8, k1f), in_8), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_9, k1f), in_9), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_10, k1f), in_10), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_11, k1f), in_11), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
         uint64_t escaped2 = nie;
-        if (bs2 != UINT64_C(0)) {
+        if (NVOL_UNLIKELY((bs2 != UINT64_C(0)))) {
             const uint64_t pe2 = (bs2 & (nie ^ UINT64_C(18446744073709551615)));
             const uint64_t code2 = (((uint64_t)(((pe2 << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe2)) ^ UINT64_C(12297829382473034410));
             escaped2 = (code2 ^ (bs2 | nie));

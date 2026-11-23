@@ -322,6 +322,10 @@ class If(Stmt):
     # NVOL's own assembly only: the language backends drop this `if` (see for_languages),
     # so it must not change the function's result, only how the asm gets it
     asm_only: bool = False
+    # a branch hint: True = the condition almost always holds, False = it almost never does,
+    # None = no hint. It changes no result; the language backends pass it to the compiler (it
+    # keeps GCC from turning a rare branch into cmovs that compute both sides)
+    likely: Optional[bool] = None
 
 
 @dataclass(eq=False)
@@ -479,12 +483,12 @@ class Builder:
         self.emit(While(cond, body, exit_first))
 
     @contextmanager
-    def if_(self, cond: Expr, asm_only: bool = False):
+    def if_(self, cond: Expr, asm_only: bool = False, likely: Optional[bool] = None):
         body: list = []
         self._stack.append(body)
         yield
         self._stack.pop()
-        self.emit(If(cond, body, None, asm_only))
+        self.emit(If(cond, body, None, asm_only, likely))
 
     @contextmanager
     def else_(self):
@@ -558,7 +562,7 @@ def prune_unused_lets(stmts: list) -> list:
                 if isinstance(s, While):
                     s = While(s.cond, walk(s.body), s.exit_first)
                 elif isinstance(s, If):
-                    s = If(s.cond, walk(s.then), walk(s.els) if s.els else s.els, s.asm_only)
+                    s = If(s.cond, walk(s.then), walk(s.els) if s.els else s.els, s.asm_only, s.likely)
                 out.append(s)
             return out
         stmts = walk(stmts)
@@ -580,7 +584,7 @@ def for_languages(module):
             if isinstance(s, If):
                 if s.asm_only:
                     continue
-                s = If(s.cond, strip(s.then), strip(s.els) if s.els else s.els)
+                s = If(s.cond, strip(s.then), strip(s.els) if s.els else s.els, likely=s.likely)
             elif isinstance(s, While):
                 s = While(s.cond, strip(s.body), s.exit_first)
             out.append(s)

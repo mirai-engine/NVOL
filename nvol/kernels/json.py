@@ -111,7 +111,7 @@ def _block(b, isa, st, masks):
     # json_escape_scanner::next, with its shortcut: a block without a backslash escapes only its
     # first byte (when the last one ended in an odd run of backslashes) and carries nothing
     escaped = b.var("escaped", nie, U64)
-    with b.if_(bs.ne(0)):
+    with b.if_(bs.ne(0), likely=False):
         pe = b.let("pe", bs & _not(nie))
         code = b.let("code", ((pe << 1) | ODD_BITS).wsub(pe) ^ ODD_BITS)
         b.set(escaped, code ^ (bs | nie))
