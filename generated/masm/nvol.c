@@ -4662,10 +4662,76 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
         psc = (nqs >> UINT64_C(63));
         uint64_t bits = ((op | (scalar & (follows ^ UINT64_C(18446744073709551615)))) & ((in_string ^ quote) ^ UINT64_C(18446744073709551615)));
         err = (err | (ctl & in_string));
-        while (bits != UINT64_C(0)) {
-            nvol_store32((out + (n << ((size_t)2u))), ((uint32_t)((base + ((size_t)nvol_ctz64(bits))))));
-            n = (n + ((size_t)1u));
+        if (bits != UINT64_C(0)) {
+            const size_t cnt = ((size_t)nvol_popcnt64(bits));
+            uint8_t *const o = (out + (n << ((size_t)2u)));
+            nvol_store32(o, ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
             bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+            nvol_store32((o + ((size_t)4u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+            nvol_store32((o + ((size_t)8u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+            nvol_store32((o + ((size_t)12u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+            if (cnt > ((size_t)4u)) {
+                nvol_store32((o + ((size_t)16u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                nvol_store32((o + ((size_t)20u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                nvol_store32((o + ((size_t)24u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                nvol_store32((o + ((size_t)28u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                if (cnt > ((size_t)8u)) {
+                    nvol_store32((o + ((size_t)32u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                    bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                    nvol_store32((o + ((size_t)36u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                    bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                    nvol_store32((o + ((size_t)40u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                    bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                    nvol_store32((o + ((size_t)44u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                    bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                    if (cnt > ((size_t)12u)) {
+                        nvol_store32((o + ((size_t)48u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                        bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                        nvol_store32((o + ((size_t)52u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                        bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                        nvol_store32((o + ((size_t)56u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                        bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                        nvol_store32((o + ((size_t)60u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                        bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                        if (cnt > ((size_t)16u)) {
+                            nvol_store32((o + ((size_t)64u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                            nvol_store32((o + ((size_t)68u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                            nvol_store32((o + ((size_t)72u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                            nvol_store32((o + ((size_t)76u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                            if (cnt > ((size_t)20u)) {
+                                nvol_store32((o + ((size_t)80u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                                bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                                nvol_store32((o + ((size_t)84u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                                bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                                nvol_store32((o + ((size_t)88u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                                bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                                nvol_store32((o + ((size_t)92u)), ((uint32_t)((base + ((size_t)nvol_tzcnt64(bits))))));
+                                bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                                if (cnt > ((size_t)24u)) {
+                                    size_t i = ((size_t)24u);
+                                    while (i < cnt) {
+                                        nvol_store32((o + (i << ((size_t)2u))), ((uint32_t)((base + ((size_t)nvol_ctz64(bits))))));
+                                        bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+                                        i = (i + ((size_t)1u));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            n = (n + cnt);
         }
         blk = (blk + ((size_t)64u));
         base = (base + ((size_t)64u));
@@ -4677,7 +4743,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
     return n;
 }
 
-/* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
+/* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
 NVOL_API size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_neon(state, blocks, nblocks, idx, out); }
 
 #ifdef NVOL_TESTING

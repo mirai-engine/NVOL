@@ -9038,10 +9038,76 @@ pub mod raw {
                 psc = (nqs >> 63u64);
                 let mut bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
                 err = (err | (ctl & in_string));
-                while (bits != 0u64) {
-                    (out.add((n << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
-                    n = (n + 1usize);
+                if (bits != 0u64) {
+                    let cnt: usize = (bits.count_ones() as usize);
+                    let o: *mut u8 = out.add((n << 2usize));
+                    (o as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
                     bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(4usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(8usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(12usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    if (cnt > 4usize) {
+                        (o.add(16usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(20usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(24usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(28usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        if (cnt > 8usize) {
+                            (o.add(32usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(36usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(40usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(44usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            if (cnt > 12usize) {
+                                (o.add(48usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(52usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(56usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(60usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                if (cnt > 16usize) {
+                                    (o.add(64usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(68usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(72usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(76usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    if (cnt > 20usize) {
+                                        (o.add(80usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(84usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(88usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(92usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        if (cnt > 24usize) {
+                                            let mut i1: usize = 24usize;
+                                            while (i1 < cnt) {
+                                                (o.add((i1 << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                                bits = (bits & bits.wrapping_sub(1u64));
+                                                i1 = (i1 + 1usize);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    n = (n + cnt);
                 }
                 blk = blk.add(64usize);
                 base = (base + 64usize);
@@ -9103,10 +9169,76 @@ pub mod raw {
                 psc = (nqs >> 63u64);
                 let mut bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
                 err = (err | (ctl & in_string));
-                while (bits != 0u64) {
-                    (out.add((n << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
-                    n = (n + 1usize);
+                if (bits != 0u64) {
+                    let cnt: usize = (bits.count_ones() as usize);
+                    let o: *mut u8 = out.add((n << 2usize));
+                    (o as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
                     bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(4usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(8usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(12usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    if (cnt > 4usize) {
+                        (o.add(16usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(20usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(24usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(28usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        if (cnt > 8usize) {
+                            (o.add(32usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(36usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(40usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(44usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            if (cnt > 12usize) {
+                                (o.add(48usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(52usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(56usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(60usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                if (cnt > 16usize) {
+                                    (o.add(64usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(68usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(72usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(76usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    if (cnt > 20usize) {
+                                        (o.add(80usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(84usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(88usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(92usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        if (cnt > 24usize) {
+                                            let mut i: usize = 24usize;
+                                            while (i < cnt) {
+                                                (o.add((i << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                                bits = (bits & bits.wrapping_sub(1u64));
+                                                i = (i + 1usize);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    n = (n + cnt);
                 }
                 blk = blk.add(64usize);
                 base = (base + 64usize);
@@ -9159,10 +9291,76 @@ pub mod raw {
                 psc = (nqs >> 63u64);
                 let mut bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
                 err = (err | (ctl & in_string));
-                while (bits != 0u64) {
-                    (out.add((n << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
-                    n = (n + 1usize);
+                if (bits != 0u64) {
+                    let cnt: usize = (bits.count_ones() as usize);
+                    let o: *mut u8 = out.add((n << 2usize));
+                    (o as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
                     bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(4usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(8usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(12usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    if (cnt > 4usize) {
+                        (o.add(16usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(20usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(24usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(28usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        if (cnt > 8usize) {
+                            (o.add(32usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(36usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(40usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(44usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            if (cnt > 12usize) {
+                                (o.add(48usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(52usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(56usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(60usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                if (cnt > 16usize) {
+                                    (o.add(64usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(68usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(72usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(76usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    if (cnt > 20usize) {
+                                        (o.add(80usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(84usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(88usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(92usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        if (cnt > 24usize) {
+                                            let mut i: usize = 24usize;
+                                            while (i < cnt) {
+                                                (o.add((i << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                                bits = (bits & bits.wrapping_sub(1u64));
+                                                i = (i + 1usize);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    n = (n + cnt);
                 }
                 blk = blk.add(64usize);
                 base = (base + 64usize);
@@ -9175,7 +9373,7 @@ pub mod raw {
         }
     }
 
-    /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
+    /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
     #[inline(always)]
     pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
         use core::sync::atomic::{AtomicPtr, Ordering};
@@ -14041,10 +14239,76 @@ pub mod raw {
                 psc = (nqs >> 63u64);
                 let mut bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
                 err = (err | (ctl & in_string));
-                while (bits != 0u64) {
-                    (out.add((n << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
-                    n = (n + 1usize);
+                if (bits != 0u64) {
+                    let cnt: usize = (bits.count_ones() as usize);
+                    let o: *mut u8 = out.add((n << 2usize));
+                    (o as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
                     bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(4usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(8usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    (o.add(12usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    bits = (bits & bits.wrapping_sub(1u64));
+                    if (cnt > 4usize) {
+                        (o.add(16usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(20usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(24usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        (o.add(28usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                        bits = (bits & bits.wrapping_sub(1u64));
+                        if (cnt > 8usize) {
+                            (o.add(32usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(36usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(40usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            (o.add(44usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                            bits = (bits & bits.wrapping_sub(1u64));
+                            if (cnt > 12usize) {
+                                (o.add(48usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(52usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(56usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                (o.add(60usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                bits = (bits & bits.wrapping_sub(1u64));
+                                if (cnt > 16usize) {
+                                    (o.add(64usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(68usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(72usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    (o.add(76usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                    bits = (bits & bits.wrapping_sub(1u64));
+                                    if (cnt > 20usize) {
+                                        (o.add(80usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(84usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(88usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        (o.add(92usize) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                        bits = (bits & bits.wrapping_sub(1u64));
+                                        if (cnt > 24usize) {
+                                            let mut i: usize = 24usize;
+                                            while (i < cnt) {
+                                                (o.add((i << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                                                bits = (bits & bits.wrapping_sub(1u64));
+                                                i = (i + 1usize);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    n = (n + cnt);
                 }
                 blk = blk.add(64usize);
                 base = (base + 64usize);
@@ -14057,7 +14321,7 @@ pub mod raw {
         }
     }
 
-    /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
+    /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
     #[inline(always)]
     pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize { unsafe { nvol_json_index_neon(state, blocks, nblocks, idx, out) } }
 

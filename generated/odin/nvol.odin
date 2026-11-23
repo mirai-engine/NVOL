@@ -8413,10 +8413,76 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
-			for (bits != u64(0)) {
-				intrinsics.unaligned_store((^u32)(out[(n << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
-				n = (n + uint(1))
+			if (bits != u64(0)) {
+				cnt: uint = uint(intrinsics.count_ones(bits))
+				o: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
 				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				if (cnt > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					if (cnt > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						if (cnt > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							if (cnt > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								if (cnt > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									if (cnt > uint(24)) {
+										i1: uint = uint(24)
+										for (i1 < cnt) {
+											intrinsics.unaligned_store((^u32)(o[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+											bits = (bits & (bits - u64(1)))
+											i1 = (i1 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt)
 			}
 			blk = blk[uint(64):]
 			base = (base + uint(64))
@@ -8475,10 +8541,76 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
-			for (bits != u64(0)) {
-				intrinsics.unaligned_store((^u32)(out[(n << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
-				n = (n + uint(1))
+			if (bits != u64(0)) {
+				cnt: uint = uint(intrinsics.count_ones(bits))
+				o: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
 				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				if (cnt > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					if (cnt > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						if (cnt > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							if (cnt > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								if (cnt > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									if (cnt > uint(24)) {
+										i: uint = uint(24)
+										for (i < cnt) {
+											intrinsics.unaligned_store((^u32)(o[(i << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+											bits = (bits & (bits - u64(1)))
+											i = (i + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt)
 			}
 			blk = blk[uint(64):]
 			base = (base + uint(64))
@@ -8528,10 +8660,76 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
-			for (bits != u64(0)) {
-				intrinsics.unaligned_store((^u32)(out[(n << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
-				n = (n + uint(1))
+			if (bits != u64(0)) {
+				cnt: uint = uint(intrinsics.count_ones(bits))
+				o: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
 				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				if (cnt > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					if (cnt > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						if (cnt > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							if (cnt > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								if (cnt > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									if (cnt > uint(24)) {
+										i: uint = uint(24)
+										for (i < cnt) {
+											intrinsics.unaligned_store((^u32)(o[(i << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+											bits = (bits & (bits - u64(1)))
+											i = (i + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt)
 			}
 			blk = blk[uint(64):]
 			base = (base + uint(64))
@@ -8543,7 +8741,7 @@ when ODIN_ARCH == .amd64 {
 		return n
 	}
 
-	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
+	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
 	@(private) nvol_json_index_raw_ptr: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint = nvol_json_index_raw_resolve
 	@(private) nvol_json_index_raw_resolve :: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint {
 		f: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint = nvol_json_index_scalar
@@ -13114,10 +13312,76 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
-			for (bits != u64(0)) {
-				intrinsics.unaligned_store((^u32)(out[(n << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
-				n = (n + uint(1))
+			if (bits != u64(0)) {
+				cnt: uint = uint(intrinsics.count_ones(bits))
+				o: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
 				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				bits = (bits & (bits - u64(1)))
+				if (cnt > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+					bits = (bits & (bits - u64(1)))
+					if (cnt > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+						bits = (bits & (bits - u64(1)))
+						if (cnt > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+							bits = (bits & (bits - u64(1)))
+							if (cnt > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+								bits = (bits & (bits - u64(1)))
+								if (cnt > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+									bits = (bits & (bits - u64(1)))
+									if (cnt > uint(24)) {
+										i: uint = uint(24)
+										for (i < cnt) {
+											intrinsics.unaligned_store((^u32)(o[(i << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+											bits = (bits & (bits - u64(1)))
+											i = (i + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt)
 			}
 			blk = blk[uint(64):]
 			base = (base + uint(64))
@@ -13129,7 +13393,7 @@ when ODIN_ARCH == .amd64 {
 		return n
 	}
 
-	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
+	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
 	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_neon(state, blocks, nblocks, idx, out) }
 
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)

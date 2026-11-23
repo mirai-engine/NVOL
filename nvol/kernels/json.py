@@ -34,7 +34,8 @@ WS_TABLE = (0x20, 100, 100, 100, 17, 100, 113, 2, 100, 0x09, 0x0A, 112, 100, 0x0
 OP_TABLE = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x3A, 0x7B, 0x2C, 0x7D, 0, 0)
 
 DOC = ("simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + "
-       "offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the "
+       "offset, as u32) to out and returns how many (out holds 64 * nblocks u32; the entries past "
+       "the count may be overwritten); state (NVOL_JSON_STATE_BYTES, zero at the "
        "start of a document) carries the escape, string and scalar state between calls, and "
        "word 3 is non-zero once a control byte was found inside a string.")
 
@@ -123,11 +124,41 @@ def _block(b, isa, st, masks, base, out, n):
     b.set(psc, nqs >> 63)
     bits = b.var("bits", (op | (scalar & _not(follows))) & _not(ins ^ quote), U64)
     b.set(err, err | (ctl & ins))
-    # the indexer: one u32 per set bit, lowest first
-    with b.while_(bits.ne(0)):
-        b.store32(out + (n << 2), (base + prim("first_offset64", bits)).cast(U32))
-        b.set(n, n + 1)
-        b.set(bits, bits & bits.wsub(1))
+    _write_indexes(b, bits, base, out, n)
+
+
+# bit_indexer::write's unrolling (haswell): 4 positions unconditionally, then 4 more while the
+# count goes past them, up to 24, then one at a time
+STEP, STEP_UNTIL = 4, 24
+
+
+def _write_indexes(b, bits, base, out, n):
+    """One u32 per set bit, lowest first, as simdjson's bit_indexer::write: the slots past the
+    count get base + 64 (tzcnt of 0; out holds 64 per block, so they stay inside it) and n moves
+    by the count."""
+    with b.if_(bits.ne(0)):
+        cnt = b.let("cnt", prim("popcnt64", bits))
+        o = b.let("o", out + (n << 2))
+
+        def write(i):
+            b.store32(o + 4 * i if i else o, (base + prim("tzcnt64", bits)).cast(U32))
+            b.set(bits, bits & bits.wsub(1))
+
+        def stepped(start):
+            for i in range(start, start + STEP):
+                write(i)
+            if start + STEP < STEP_UNTIL:
+                with b.if_(cnt > start + STEP):
+                    stepped(start + STEP)
+            else:
+                with b.if_(cnt > STEP_UNTIL):
+                    i = b.var("i", STEP_UNTIL, USIZE)
+                    with b.while_(i < cnt):
+                        b.store32(o + (i << 2), (base + prim("first_offset64", bits)).cast(U32))
+                        b.set(bits, bits & bits.wsub(1))
+                        b.set(i, i + 1)
+        stepped(0)
+        b.set(n, n + cnt)
 
 
 def kernel(isa: ISA | None) -> Function:
