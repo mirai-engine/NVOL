@@ -178,14 +178,27 @@ def kernel(isa: ISA | None) -> Function:
     # scanned, so the indexer's branches wait on the previous block, not on this one's chain
     prev = b.var("prev", 0, U64)
     pbase = b.var("pbase", idx)
-    with b.while_(blk < end):
-        masks = _masks_vector(b, isa, blk, k) if isa else _masks_scalar(b, blk)
-        bits = _block(b, isa, st, masks)
+
+    def masks(at):
+        return _masks_vector(b, isa, at, k) if isa else _masks_scalar(b, at)
+    # stage1_mode's step<128>: two blocks per iteration, both scanned before either is written
+    end2 = b.let("end2", blocks + ((nblocks >> 1) << 7))
+    with b.while_(blk < end2):
+        m1 = masks(blk)
+        m2 = masks(blk + 64)
+        bits1 = b.var("bits1", _block(b, isa, st, m1), U64)
+        bits2 = _block(b, isa, st, m2)
+        _write_indexes(b, prev, pbase, out, n)
+        _write_indexes(b, bits1, base, out, n)
+        b.set(prev, bits2)
+        b.set(pbase, base + 64)
+        b.set(blk, blk + 128)
+        b.set(base, base + 128)
+    with b.if_(blk < end):              # an odd last block
+        bits = _block(b, isa, st, masks(blk))
         _write_indexes(b, prev, pbase, out, n)
         b.set(prev, bits)
         b.set(pbase, base)
-        b.set(blk, blk + 64)
-        b.set(base, base + 64)
     _write_indexes(b, prev, pbase, out, n)
     for k, v in enumerate(st):
         b.store64(state + 8 * k if k else state, v)

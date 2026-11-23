@@ -8367,7 +8367,8 @@ when ODIN_ARCH == .amd64 {
 		n: uint = uint(0)
 		prev: u64 = u64(0)
 		pbase: uint = idx
-		for (blk < end) {
+		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
+		for (blk < end2) {
 			bs: u64 = u64(0)
 			qt: u64 = u64(0)
 			ws: u64 = u64(0)
@@ -8395,6 +8396,33 @@ when ODIN_ARCH == .amd64 {
 				}
 				i = (i + uint(1))
 			}
+			bs1: u64 = u64(0)
+			qt1: u64 = u64(0)
+			ws1: u64 = u64(0)
+			op1: u64 = u64(0)
+			ctl1: u64 = u64(0)
+			i1: uint = uint(0)
+			for (i1 < uint(64)) {
+				c1: u8 = blk[uint(64):][i1:][0]
+				bit1: u64 = (u64(1) << u64(i1))
+				if (c1 == u8(92)) {
+					bs1 = (bs1 | bit1)
+				}
+				if (c1 == u8(34)) {
+					qt1 = (qt1 | bit1)
+				}
+				if (((c1 == u8(32)) || (c1 == u8(9))) || ((c1 == u8(10)) || (c1 == u8(13)))) {
+					ws1 = (ws1 | bit1)
+				}
+				c201: u8 = (c1 | u8(32))
+				if (((c201 == u8(58)) || (c201 == u8(123))) || ((c201 == u8(44)) || (c201 == u8(125)))) {
+					op1 = (op1 | bit1)
+				}
+				if (c1 <= u8(31)) {
+					ctl1 = (ctl1 | bit1)
+				}
+				i1 = (i1 + uint(1))
+			}
 			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
 			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
 			escaped: u64 = (code ~ (bs | nie))
@@ -8415,6 +8443,27 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
+			bits1: u64 = bits
+			pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+			code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+			escaped1: u64 = (code1 ~ (bs1 | nie))
+			nie = ((code1 & bs1) >> u64(63))
+			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
+			px1: u64 = quote1
+			px1 = (px1 ~ (px1 << u64(1)))
+			px1 = (px1 ~ (px1 << u64(2)))
+			px1 = (px1 ~ (px1 << u64(4)))
+			px1 = (px1 ~ (px1 << u64(8)))
+			px1 = (px1 ~ (px1 << u64(16)))
+			px1 = (px1 ~ (px1 << u64(32)))
+			in_string1: u64 = (px1 ~ pis)
+			pis = (u64(0) - (in_string1 >> u64(63)))
+			scalar1: u64 = ((op1 | ws1) ~ u64(18446744073709551615))
+			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
+			follows1: u64 = ((nqs1 << u64(1)) | psc)
+			psc = (nqs1 >> u64(63))
+			bits2: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			err = (err | (ctl1 & in_string1))
 			if (prev != u64(0)) {
 				cnt: uint = uint(intrinsics.count_ones(prev))
 				o: [^]u8 = out[(n << uint(2)):]
@@ -8472,11 +8521,11 @@ when ODIN_ARCH == .amd64 {
 									intrinsics.unaligned_store((^u32)(o[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 									prev = (prev & (prev - u64(1)))
 									if (cnt > uint(24)) {
-										i1: uint = uint(24)
-										for (i1 < cnt) {
-											intrinsics.unaligned_store((^u32)(o[(i1 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+										i2: uint = uint(24)
+										for (i2 < cnt) {
+											intrinsics.unaligned_store((^u32)(o[(i2 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 											prev = (prev & (prev - u64(1)))
-											i1 = (i1 + uint(1))
+											i2 = (i2 + uint(1))
 										}
 									}
 								}
@@ -8486,73 +8535,266 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt)
 			}
-			prev = bits
+			if (bits1 != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(bits1))
+				o1: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				if (cnt1 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					if (cnt1 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						if (cnt1 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							if (cnt1 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								if (cnt1 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									if (cnt1 > uint(24)) {
+										i3: uint = uint(24)
+										for (i3 < cnt1) {
+											intrinsics.unaligned_store((^u32)(o1[(i3 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+											bits1 = (bits1 & (bits1 - u64(1)))
+											i3 = (i3 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt1)
+			}
+			prev = bits2
+			pbase = (base + uint(64))
+			blk = blk[uint(128):]
+			base = (base + uint(128))
+		}
+		if (blk < end) {
+			bs2: u64 = u64(0)
+			qt2: u64 = u64(0)
+			ws2: u64 = u64(0)
+			op2: u64 = u64(0)
+			ctl2: u64 = u64(0)
+			i4: uint = uint(0)
+			for (i4 < uint(64)) {
+				c2: u8 = blk[i4:][0]
+				bit2: u64 = (u64(1) << u64(i4))
+				if (c2 == u8(92)) {
+					bs2 = (bs2 | bit2)
+				}
+				if (c2 == u8(34)) {
+					qt2 = (qt2 | bit2)
+				}
+				if (((c2 == u8(32)) || (c2 == u8(9))) || ((c2 == u8(10)) || (c2 == u8(13)))) {
+					ws2 = (ws2 | bit2)
+				}
+				c202: u8 = (c2 | u8(32))
+				if (((c202 == u8(58)) || (c202 == u8(123))) || ((c202 == u8(44)) || (c202 == u8(125)))) {
+					op2 = (op2 | bit2)
+				}
+				if (c2 <= u8(31)) {
+					ctl2 = (ctl2 | bit2)
+				}
+				i4 = (i4 + uint(1))
+			}
+			pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+			code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+			escaped2: u64 = (code2 ~ (bs2 | nie))
+			nie = ((code2 & bs2) >> u64(63))
+			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
+			px2: u64 = quote2
+			px2 = (px2 ~ (px2 << u64(1)))
+			px2 = (px2 ~ (px2 << u64(2)))
+			px2 = (px2 ~ (px2 << u64(4)))
+			px2 = (px2 ~ (px2 << u64(8)))
+			px2 = (px2 ~ (px2 << u64(16)))
+			px2 = (px2 ~ (px2 << u64(32)))
+			in_string2: u64 = (px2 ~ pis)
+			pis = (u64(0) - (in_string2 >> u64(63)))
+			scalar2: u64 = ((op2 | ws2) ~ u64(18446744073709551615))
+			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
+			follows2: u64 = ((nqs2 << u64(1)) | psc)
+			psc = (nqs2 >> u64(63))
+			bits3: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			err = (err | (ctl2 & in_string2))
+			if (prev != u64(0)) {
+				cnt2: uint = uint(intrinsics.count_ones(prev))
+				o2: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o2), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				if (cnt2 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o2[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					if (cnt2 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o2[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						if (cnt2 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o2[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							if (cnt2 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o2[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								if (cnt2 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o2[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									if (cnt2 > uint(24)) {
+										i5: uint = uint(24)
+										for (i5 < cnt2) {
+											intrinsics.unaligned_store((^u32)(o2[(i5 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+											prev = (prev & (prev - u64(1)))
+											i5 = (i5 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt2)
+			}
+			prev = bits3
 			pbase = base
-			blk = blk[uint(64):]
-			base = (base + uint(64))
 		}
 		if (prev != u64(0)) {
-			cnt1: uint = uint(intrinsics.count_ones(prev))
-			o1: [^]u8 = out[(n << uint(2)):]
-			intrinsics.unaligned_store((^u32)(o1), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			cnt3: uint = uint(intrinsics.count_ones(prev))
+			o3: [^]u8 = out[(n << uint(2)):]
+			intrinsics.unaligned_store((^u32)(o3), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			if (cnt1 > uint(4)) {
-				intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			if (cnt3 > uint(4)) {
+				intrinsics.unaligned_store((^u32)(o3[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				if (cnt1 > uint(8)) {
-					intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				if (cnt3 > uint(8)) {
+					intrinsics.unaligned_store((^u32)(o3[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					if (cnt1 > uint(12)) {
-						intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					if (cnt3 > uint(12)) {
+						intrinsics.unaligned_store((^u32)(o3[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						if (cnt1 > uint(16)) {
-							intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						if (cnt3 > uint(16)) {
+							intrinsics.unaligned_store((^u32)(o3[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							if (cnt1 > uint(20)) {
-								intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							if (cnt3 > uint(20)) {
+								intrinsics.unaligned_store((^u32)(o3[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								if (cnt1 > uint(24)) {
-									i2: uint = uint(24)
-									for (i2 < cnt1) {
-										intrinsics.unaligned_store((^u32)(o1[(i2 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								if (cnt3 > uint(24)) {
+									i6: uint = uint(24)
+									for (i6 < cnt3) {
+										intrinsics.unaligned_store((^u32)(o3[(i6 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 										prev = (prev & (prev - u64(1)))
-										i2 = (i2 + uint(1))
+										i6 = (i6 + uint(1))
 									}
 								}
 							}
@@ -8560,7 +8802,7 @@ when ODIN_ARCH == .amd64 {
 					}
 				}
 			}
-			n = (n + cnt1)
+			n = (n + cnt3)
 		}
 		intrinsics.unaligned_store((^u64)(state), nie)
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
@@ -8588,7 +8830,8 @@ when ODIN_ARCH == .amd64 {
 		k1f: V16 = V16(u8(31))
 		prev: u64 = u64(0)
 		pbase: uint = idx
-		for (blk < end) {
+		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
+		for (blk < end2) {
 			in_: V16 = intrinsics.unaligned_load((^V16)(blk))
 			in_1: V16 = intrinsics.unaligned_load((^V16)(blk[uint(16):]))
 			in_2: V16 = intrinsics.unaligned_load((^V16)(blk[uint(32):]))
@@ -8598,6 +8841,15 @@ when ODIN_ARCH == .amd64 {
 			ws: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_), in_)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_1), in_1))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_2), in_2))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_3), in_3))) << 48))
 			op: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_), intrinsics.simd_bit_or(in_, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_1), intrinsics.simd_bit_or(in_1, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_2), intrinsics.simd_bit_or(in_2, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_3), intrinsics.simd_bit_or(in_3, k20)))) << 48))
 			ctl: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3))) << 48))
+			in_4: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):]))
+			in_5: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(16):]))
+			in_6: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(32):]))
+			in_7: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(48):]))
+			bs1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_4, k_bs)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_5, k_bs))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_6, k_bs))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_7, k_bs))) << 48))
+			qt1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_4, k_qt)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_5, k_qt))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_6, k_qt))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_7, k_qt))) << 48))
+			ws1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_4), in_4)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_5), in_5))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_6), in_6))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_7), in_7))) << 48))
+			op1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_4), intrinsics.simd_bit_or(in_4, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_5), intrinsics.simd_bit_or(in_5, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_6), intrinsics.simd_bit_or(in_6, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_7), intrinsics.simd_bit_or(in_7, k20)))) << 48))
+			ctl1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_6, k1f), in_6))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_7, k1f), in_7))) << 48))
 			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
 			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
 			escaped: u64 = (code ~ (bs | nie))
@@ -8618,6 +8870,27 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
+			bits1: u64 = bits
+			pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+			code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+			escaped1: u64 = (code1 ~ (bs1 | nie))
+			nie = ((code1 & bs1) >> u64(63))
+			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
+			px1: u64 = quote1
+			px1 = (px1 ~ (px1 << u64(1)))
+			px1 = (px1 ~ (px1 << u64(2)))
+			px1 = (px1 ~ (px1 << u64(4)))
+			px1 = (px1 ~ (px1 << u64(8)))
+			px1 = (px1 ~ (px1 << u64(16)))
+			px1 = (px1 ~ (px1 << u64(32)))
+			in_string1: u64 = (px1 ~ pis)
+			pis = (u64(0) - (in_string1 >> u64(63)))
+			scalar1: u64 = ((op1 | ws1) ~ u64(18446744073709551615))
+			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
+			follows1: u64 = ((nqs1 << u64(1)) | psc)
+			psc = (nqs1 >> u64(63))
+			bits2: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			err = (err | (ctl1 & in_string1))
 			if (prev != u64(0)) {
 				cnt: uint = uint(intrinsics.count_ones(prev))
 				o: [^]u8 = out[(n << uint(2)):]
@@ -8689,73 +8962,248 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt)
 			}
-			prev = bits
+			if (bits1 != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(bits1))
+				o1: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				if (cnt1 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					if (cnt1 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						if (cnt1 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							if (cnt1 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								if (cnt1 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									if (cnt1 > uint(24)) {
+										i1: uint = uint(24)
+										for (i1 < cnt1) {
+											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+											bits1 = (bits1 & (bits1 - u64(1)))
+											i1 = (i1 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt1)
+			}
+			prev = bits2
+			pbase = (base + uint(64))
+			blk = blk[uint(128):]
+			base = (base + uint(128))
+		}
+		if (blk < end) {
+			in_8: V16 = intrinsics.unaligned_load((^V16)(blk))
+			in_9: V16 = intrinsics.unaligned_load((^V16)(blk[uint(16):]))
+			in_10: V16 = intrinsics.unaligned_load((^V16)(blk[uint(32):]))
+			in_11: V16 = intrinsics.unaligned_load((^V16)(blk[uint(48):]))
+			bs2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_8, k_bs)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_9, k_bs))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_10, k_bs))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_11, k_bs))) << 48))
+			qt2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_8, k_qt)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_9, k_qt))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_10, k_qt))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_11, k_qt))) << 48))
+			ws2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_8), in_8)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_9), in_9))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_10), in_10))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_11), in_11))) << 48))
+			op2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_8), intrinsics.simd_bit_or(in_8, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_9), intrinsics.simd_bit_or(in_9, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_10), intrinsics.simd_bit_or(in_10, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_11), intrinsics.simd_bit_or(in_11, k20)))) << 48))
+			ctl2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_8, k1f), in_8)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_9, k1f), in_9))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_10, k1f), in_10))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_11, k1f), in_11))) << 48))
+			pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+			code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+			escaped2: u64 = (code2 ~ (bs2 | nie))
+			nie = ((code2 & bs2) >> u64(63))
+			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
+			px2: u64 = quote2
+			px2 = (px2 ~ (px2 << u64(1)))
+			px2 = (px2 ~ (px2 << u64(2)))
+			px2 = (px2 ~ (px2 << u64(4)))
+			px2 = (px2 ~ (px2 << u64(8)))
+			px2 = (px2 ~ (px2 << u64(16)))
+			px2 = (px2 ~ (px2 << u64(32)))
+			in_string2: u64 = (px2 ~ pis)
+			pis = (u64(0) - (in_string2 >> u64(63)))
+			scalar2: u64 = ((op2 | ws2) ~ u64(18446744073709551615))
+			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
+			follows2: u64 = ((nqs2 << u64(1)) | psc)
+			psc = (nqs2 >> u64(63))
+			bits3: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			err = (err | (ctl2 & in_string2))
+			if (prev != u64(0)) {
+				cnt2: uint = uint(intrinsics.count_ones(prev))
+				o2: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o2), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				if (cnt2 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o2[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					if (cnt2 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o2[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						if (cnt2 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o2[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							if (cnt2 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o2[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								if (cnt2 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o2[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									if (cnt2 > uint(24)) {
+										i2: uint = uint(24)
+										for (i2 < cnt2) {
+											intrinsics.unaligned_store((^u32)(o2[(i2 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+											prev = (prev & (prev - u64(1)))
+											i2 = (i2 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt2)
+			}
+			prev = bits3
 			pbase = base
-			blk = blk[uint(64):]
-			base = (base + uint(64))
 		}
 		if (prev != u64(0)) {
-			cnt1: uint = uint(intrinsics.count_ones(prev))
-			o1: [^]u8 = out[(n << uint(2)):]
-			intrinsics.unaligned_store((^u32)(o1), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			cnt3: uint = uint(intrinsics.count_ones(prev))
+			o3: [^]u8 = out[(n << uint(2)):]
+			intrinsics.unaligned_store((^u32)(o3), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			if (cnt1 > uint(4)) {
-				intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			if (cnt3 > uint(4)) {
+				intrinsics.unaligned_store((^u32)(o3[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				if (cnt1 > uint(8)) {
-					intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				if (cnt3 > uint(8)) {
+					intrinsics.unaligned_store((^u32)(o3[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					if (cnt1 > uint(12)) {
-						intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					if (cnt3 > uint(12)) {
+						intrinsics.unaligned_store((^u32)(o3[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						if (cnt1 > uint(16)) {
-							intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						if (cnt3 > uint(16)) {
+							intrinsics.unaligned_store((^u32)(o3[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							if (cnt1 > uint(20)) {
-								intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							if (cnt3 > uint(20)) {
+								intrinsics.unaligned_store((^u32)(o3[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								if (cnt1 > uint(24)) {
-									i1: uint = uint(24)
-									for (i1 < cnt1) {
-										intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								if (cnt3 > uint(24)) {
+									i3: uint = uint(24)
+									for (i3 < cnt3) {
+										intrinsics.unaligned_store((^u32)(o3[(i3 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 										prev = (prev & (prev - u64(1)))
-										i1 = (i1 + uint(1))
+										i3 = (i3 + uint(1))
 									}
 								}
 							}
@@ -8763,7 +9211,7 @@ when ODIN_ARCH == .amd64 {
 					}
 				}
 			}
-			n = (n + cnt1)
+			n = (n + cnt3)
 		}
 		intrinsics.unaligned_store((^u64)(state), nie)
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
@@ -8791,7 +9239,8 @@ when ODIN_ARCH == .amd64 {
 		k1f: V32 = V32(u8(31))
 		prev: u64 = u64(0)
 		pbase: uint = idx
-		for (blk < end) {
+		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
+		for (blk < end2) {
 			in_: V32 = intrinsics.unaligned_load((^V32)(blk))
 			in_1: V32 = intrinsics.unaligned_load((^V32)(blk[uint(32):]))
 			bs: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_, k_bs))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_1, k_bs))) << 32)
@@ -8799,6 +9248,13 @@ when ODIN_ARCH == .amd64 {
 			ws: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_), in_))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_1), in_1))) << 32)
 			op: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_), intrinsics.simd_bit_or(in_, k20)))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_1), intrinsics.simd_bit_or(in_1, k20)))) << 32)
 			ctl: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1))) << 32)
+			in_2: V32 = intrinsics.unaligned_load((^V32)(blk[uint(64):]))
+			in_3: V32 = intrinsics.unaligned_load((^V32)(blk[uint(64):][uint(32):]))
+			bs1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_2, k_bs))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_3, k_bs))) << 32)
+			qt1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_2, k_qt))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_3, k_qt))) << 32)
+			ws1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_2), in_2))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_3), in_3))) << 32)
+			op1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_2), intrinsics.simd_bit_or(in_2, k20)))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_3), intrinsics.simd_bit_or(in_3, k20)))) << 32)
+			ctl1: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3))) << 32)
 			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
 			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
 			escaped: u64 = (code ~ (bs | nie))
@@ -8812,6 +9268,20 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
+			bits1: u64 = bits
+			pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+			code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+			escaped1: u64 = (code1 ~ (bs1 | nie))
+			nie = ((code1 & bs1) >> u64(63))
+			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
+			in_string1: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote1, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
+			pis = (u64(0) - (in_string1 >> u64(63)))
+			scalar1: u64 = ((op1 | ws1) ~ u64(18446744073709551615))
+			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
+			follows1: u64 = ((nqs1 << u64(1)) | psc)
+			psc = (nqs1 >> u64(63))
+			bits2: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			err = (err | (ctl1 & in_string1))
 			if (prev != u64(0)) {
 				cnt: uint = uint(intrinsics.count_ones(prev))
 				o: [^]u8 = out[(n << uint(2)):]
@@ -8883,73 +9353,239 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt)
 			}
-			prev = bits
+			if (bits1 != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(bits1))
+				o1: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				if (cnt1 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					if (cnt1 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						if (cnt1 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							if (cnt1 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								if (cnt1 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									if (cnt1 > uint(24)) {
+										i1: uint = uint(24)
+										for (i1 < cnt1) {
+											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+											bits1 = (bits1 & (bits1 - u64(1)))
+											i1 = (i1 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt1)
+			}
+			prev = bits2
+			pbase = (base + uint(64))
+			blk = blk[uint(128):]
+			base = (base + uint(128))
+		}
+		if (blk < end) {
+			in_4: V32 = intrinsics.unaligned_load((^V32)(blk))
+			in_5: V32 = intrinsics.unaligned_load((^V32)(blk[uint(32):]))
+			bs2: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_4, k_bs))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_5, k_bs))) << 32)
+			qt2: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_4, k_qt))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_5, k_qt))) << 32)
+			ws2: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_4), in_4))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_5), in_5))) << 32)
+			op2: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_4), intrinsics.simd_bit_or(in_4, k20)))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_5), intrinsics.simd_bit_or(in_5, k20)))) << 32)
+			ctl2: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5))) << 32)
+			pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+			code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+			escaped2: u64 = (code2 ~ (bs2 | nie))
+			nie = ((code2 & bs2) >> u64(63))
+			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
+			in_string2: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote2, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
+			pis = (u64(0) - (in_string2 >> u64(63)))
+			scalar2: u64 = ((op2 | ws2) ~ u64(18446744073709551615))
+			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
+			follows2: u64 = ((nqs2 << u64(1)) | psc)
+			psc = (nqs2 >> u64(63))
+			bits3: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			err = (err | (ctl2 & in_string2))
+			if (prev != u64(0)) {
+				cnt2: uint = uint(intrinsics.count_ones(prev))
+				o2: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o2), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				if (cnt2 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o2[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					if (cnt2 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o2[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						if (cnt2 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o2[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							if (cnt2 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o2[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								if (cnt2 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o2[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									if (cnt2 > uint(24)) {
+										i2: uint = uint(24)
+										for (i2 < cnt2) {
+											intrinsics.unaligned_store((^u32)(o2[(i2 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+											prev = (prev & (prev - u64(1)))
+											i2 = (i2 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt2)
+			}
+			prev = bits3
 			pbase = base
-			blk = blk[uint(64):]
-			base = (base + uint(64))
 		}
 		if (prev != u64(0)) {
-			cnt1: uint = uint(intrinsics.count_ones(prev))
-			o1: [^]u8 = out[(n << uint(2)):]
-			intrinsics.unaligned_store((^u32)(o1), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			cnt3: uint = uint(intrinsics.count_ones(prev))
+			o3: [^]u8 = out[(n << uint(2)):]
+			intrinsics.unaligned_store((^u32)(o3), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			if (cnt1 > uint(4)) {
-				intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			if (cnt3 > uint(4)) {
+				intrinsics.unaligned_store((^u32)(o3[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				if (cnt1 > uint(8)) {
-					intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				if (cnt3 > uint(8)) {
+					intrinsics.unaligned_store((^u32)(o3[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					if (cnt1 > uint(12)) {
-						intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					if (cnt3 > uint(12)) {
+						intrinsics.unaligned_store((^u32)(o3[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						if (cnt1 > uint(16)) {
-							intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						if (cnt3 > uint(16)) {
+							intrinsics.unaligned_store((^u32)(o3[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							if (cnt1 > uint(20)) {
-								intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							if (cnt3 > uint(20)) {
+								intrinsics.unaligned_store((^u32)(o3[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								if (cnt1 > uint(24)) {
-									i1: uint = uint(24)
-									for (i1 < cnt1) {
-										intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								if (cnt3 > uint(24)) {
+									i3: uint = uint(24)
+									for (i3 < cnt3) {
+										intrinsics.unaligned_store((^u32)(o3[(i3 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 										prev = (prev & (prev - u64(1)))
-										i1 = (i1 + uint(1))
+										i3 = (i3 + uint(1))
 									}
 								}
 							}
@@ -8957,7 +9593,7 @@ when ODIN_ARCH == .amd64 {
 					}
 				}
 			}
-			n = (n + cnt1)
+			n = (n + cnt3)
 		}
 		intrinsics.unaligned_store((^u64)(state), nie)
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
@@ -13505,7 +14141,8 @@ when ODIN_ARCH == .amd64 {
 		k0f: V16 = V16(u8(15))
 		prev: u64 = u64(0)
 		pbase: uint = idx
-		for (blk < end) {
+		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
+		for (blk < end2) {
 			in_: V16 = intrinsics.unaligned_load((^V16)(blk))
 			in_1: V16 = intrinsics.unaligned_load((^V16)(blk[uint(16):]))
 			in_2: V16 = intrinsics.unaligned_load((^V16)(blk[uint(32):]))
@@ -13519,6 +14156,19 @@ when ODIN_ARCH == .amd64 {
 			ws: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo1), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo2), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo3), in_3), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo1), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo2), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo3), in_3), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			op: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo), intrinsics.simd_bit_or(in_, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo1), intrinsics.simd_bit_or(in_1, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo2), intrinsics.simd_bit_or(in_2, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo3), intrinsics.simd_bit_or(in_3, k20)), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo), intrinsics.simd_bit_or(in_, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo1), intrinsics.simd_bit_or(in_1, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo2), intrinsics.simd_bit_or(in_2, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo3), intrinsics.simd_bit_or(in_3, k20)), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			ctl: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			in_4: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):]))
+			in_5: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(16):]))
+			in_6: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(32):]))
+			in_7: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(48):]))
+			lo4: V16 = intrinsics.simd_bit_and(in_4, k0f)
+			lo5: V16 = intrinsics.simd_bit_and(in_5, k0f)
+			lo6: V16 = intrinsics.simd_bit_and(in_6, k0f)
+			lo7: V16 = intrinsics.simd_bit_and(in_7, k0f)
+			bs1: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_4, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_5, k_bs), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_6, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_7, k_bs), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_4, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_5, k_bs), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_6, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_7, k_bs), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			qt1: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_4, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_5, k_qt), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_6, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_7, k_qt), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_4, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_5, k_qt), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_6, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_7, k_qt), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			ws1: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo4), in_4), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo5), in_5), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo6), in_6), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo7), in_7), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo4), in_4), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo5), in_5), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo6), in_6), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo7), in_7), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			op1: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo4), intrinsics.simd_bit_or(in_4, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo5), intrinsics.simd_bit_or(in_5, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo6), intrinsics.simd_bit_or(in_6, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo7), intrinsics.simd_bit_or(in_7, k20)), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo4), intrinsics.simd_bit_or(in_4, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo5), intrinsics.simd_bit_or(in_5, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo6), intrinsics.simd_bit_or(in_6, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo7), intrinsics.simd_bit_or(in_7, k20)), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			ctl1: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_6, k1f), in_6), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_7, k1f), in_7), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_6, k1f), in_6), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_7, k1f), in_7), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
 			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
 			escaped: u64 = (code ~ (bs | nie))
@@ -13539,6 +14189,27 @@ when ODIN_ARCH == .amd64 {
 			psc = (nqs >> u64(63))
 			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
 			err = (err | (ctl & in_string))
+			bits1: u64 = bits
+			pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+			code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+			escaped1: u64 = (code1 ~ (bs1 | nie))
+			nie = ((code1 & bs1) >> u64(63))
+			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
+			px1: u64 = quote1
+			px1 = (px1 ~ (px1 << u64(1)))
+			px1 = (px1 ~ (px1 << u64(2)))
+			px1 = (px1 ~ (px1 << u64(4)))
+			px1 = (px1 ~ (px1 << u64(8)))
+			px1 = (px1 ~ (px1 << u64(16)))
+			px1 = (px1 ~ (px1 << u64(32)))
+			in_string1: u64 = (px1 ~ pis)
+			pis = (u64(0) - (in_string1 >> u64(63)))
+			scalar1: u64 = ((op1 | ws1) ~ u64(18446744073709551615))
+			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
+			follows1: u64 = ((nqs1 << u64(1)) | psc)
+			psc = (nqs1 >> u64(63))
+			bits2: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			err = (err | (ctl1 & in_string1))
 			if (prev != u64(0)) {
 				cnt: uint = uint(intrinsics.count_ones(prev))
 				o: [^]u8 = out[(n << uint(2)):]
@@ -13610,73 +14281,252 @@ when ODIN_ARCH == .amd64 {
 				}
 				n = (n + cnt)
 			}
-			prev = bits
+			if (bits1 != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(bits1))
+				o1: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+				bits1 = (bits1 & (bits1 - u64(1)))
+				if (cnt1 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+					bits1 = (bits1 & (bits1 - u64(1)))
+					if (cnt1 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+						bits1 = (bits1 & (bits1 - u64(1)))
+						if (cnt1 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+							bits1 = (bits1 & (bits1 - u64(1)))
+							if (cnt1 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+								bits1 = (bits1 & (bits1 - u64(1)))
+								if (cnt1 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+									bits1 = (bits1 & (bits1 - u64(1)))
+									if (cnt1 > uint(24)) {
+										i1: uint = uint(24)
+										for (i1 < cnt1) {
+											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits1)))))
+											bits1 = (bits1 & (bits1 - u64(1)))
+											i1 = (i1 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt1)
+			}
+			prev = bits2
+			pbase = (base + uint(64))
+			blk = blk[uint(128):]
+			base = (base + uint(128))
+		}
+		if (blk < end) {
+			in_8: V16 = intrinsics.unaligned_load((^V16)(blk))
+			in_9: V16 = intrinsics.unaligned_load((^V16)(blk[uint(16):]))
+			in_10: V16 = intrinsics.unaligned_load((^V16)(blk[uint(32):]))
+			in_11: V16 = intrinsics.unaligned_load((^V16)(blk[uint(48):]))
+			lo8: V16 = intrinsics.simd_bit_and(in_8, k0f)
+			lo9: V16 = intrinsics.simd_bit_and(in_9, k0f)
+			lo10: V16 = intrinsics.simd_bit_and(in_10, k0f)
+			lo11: V16 = intrinsics.simd_bit_and(in_11, k0f)
+			bs2: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_8, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_9, k_bs), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_10, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_11, k_bs), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_8, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_9, k_bs), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_10, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_11, k_bs), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			qt2: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_8, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_9, k_qt), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_10, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_11, k_qt), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_8, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_9, k_qt), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_10, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_11, k_qt), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			ws2: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo8), in_8), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo9), in_9), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo10), in_10), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo11), in_11), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo8), in_8), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo9), in_9), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo10), in_10), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo11), in_11), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			op2: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo8), intrinsics.simd_bit_or(in_8, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo9), intrinsics.simd_bit_or(in_9, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo10), intrinsics.simd_bit_or(in_10, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo11), intrinsics.simd_bit_or(in_11, k20)), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo8), intrinsics.simd_bit_or(in_8, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo9), intrinsics.simd_bit_or(in_9, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo10), intrinsics.simd_bit_or(in_10, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo11), intrinsics.simd_bit_or(in_11, k20)), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			ctl2: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_8, k1f), in_8), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_9, k1f), in_9), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_10, k1f), in_10), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_11, k1f), in_11), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_8, k1f), in_8), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_9, k1f), in_9), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_10, k1f), in_10), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_11, k1f), in_11), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+			code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+			escaped2: u64 = (code2 ~ (bs2 | nie))
+			nie = ((code2 & bs2) >> u64(63))
+			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
+			px2: u64 = quote2
+			px2 = (px2 ~ (px2 << u64(1)))
+			px2 = (px2 ~ (px2 << u64(2)))
+			px2 = (px2 ~ (px2 << u64(4)))
+			px2 = (px2 ~ (px2 << u64(8)))
+			px2 = (px2 ~ (px2 << u64(16)))
+			px2 = (px2 ~ (px2 << u64(32)))
+			in_string2: u64 = (px2 ~ pis)
+			pis = (u64(0) - (in_string2 >> u64(63)))
+			scalar2: u64 = ((op2 | ws2) ~ u64(18446744073709551615))
+			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
+			follows2: u64 = ((nqs2 << u64(1)) | psc)
+			psc = (nqs2 >> u64(63))
+			bits3: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			err = (err | (ctl2 & in_string2))
+			if (prev != u64(0)) {
+				cnt2: uint = uint(intrinsics.count_ones(prev))
+				o2: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o2), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				if (cnt2 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o2[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					if (cnt2 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o2[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						if (cnt2 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o2[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							if (cnt2 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o2[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								if (cnt2 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o2[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									if (cnt2 > uint(24)) {
+										i2: uint = uint(24)
+										for (i2 < cnt2) {
+											intrinsics.unaligned_store((^u32)(o2[(i2 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+											prev = (prev & (prev - u64(1)))
+											i2 = (i2 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt2)
+			}
+			prev = bits3
 			pbase = base
-			blk = blk[uint(64):]
-			base = (base + uint(64))
 		}
 		if (prev != u64(0)) {
-			cnt1: uint = uint(intrinsics.count_ones(prev))
-			o1: [^]u8 = out[(n << uint(2)):]
-			intrinsics.unaligned_store((^u32)(o1), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			cnt3: uint = uint(intrinsics.count_ones(prev))
+			o3: [^]u8 = out[(n << uint(2)):]
+			intrinsics.unaligned_store((^u32)(o3), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			intrinsics.unaligned_store((^u32)(o3[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 			prev = (prev & (prev - u64(1)))
-			if (cnt1 > uint(4)) {
-				intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			if (cnt3 > uint(4)) {
+				intrinsics.unaligned_store((^u32)(o3[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				intrinsics.unaligned_store((^u32)(o3[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 				prev = (prev & (prev - u64(1)))
-				if (cnt1 > uint(8)) {
-					intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				if (cnt3 > uint(8)) {
+					intrinsics.unaligned_store((^u32)(o3[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					intrinsics.unaligned_store((^u32)(o3[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 					prev = (prev & (prev - u64(1)))
-					if (cnt1 > uint(12)) {
-						intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					if (cnt3 > uint(12)) {
+						intrinsics.unaligned_store((^u32)(o3[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						intrinsics.unaligned_store((^u32)(o3[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 						prev = (prev & (prev - u64(1)))
-						if (cnt1 > uint(16)) {
-							intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						if (cnt3 > uint(16)) {
+							intrinsics.unaligned_store((^u32)(o3[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							intrinsics.unaligned_store((^u32)(o3[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 							prev = (prev & (prev - u64(1)))
-							if (cnt1 > uint(20)) {
-								intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							if (cnt3 > uint(20)) {
+								intrinsics.unaligned_store((^u32)(o3[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								intrinsics.unaligned_store((^u32)(o3[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 								prev = (prev & (prev - u64(1)))
-								if (cnt1 > uint(24)) {
-									i1: uint = uint(24)
-									for (i1 < cnt1) {
-										intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								if (cnt3 > uint(24)) {
+									i3: uint = uint(24)
+									for (i3 < cnt3) {
+										intrinsics.unaligned_store((^u32)(o3[(i3 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
 										prev = (prev & (prev - u64(1)))
-										i1 = (i1 + uint(1))
+										i3 = (i3 + uint(1))
 									}
 								}
 							}
@@ -13684,7 +14534,7 @@ when ODIN_ARCH == .amd64 {
 					}
 				}
 			}
-			n = (n + cnt1)
+			n = (n + cnt3)
 		}
 		intrinsics.unaligned_store((^u64)(state), nie)
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)

@@ -53776,7 +53776,7 @@ L.nvol_find_byteset_pair_mask_raw_resolve:
     pop rdi
     jmp qword [rel L.nvol_find_byteset_pair_mask_raw_ptr]
 
-global nvol_json_index_scalar:function hidden 3013
+global nvol_json_index_scalar:function hidden 6476
 nvol_json_index_scalar:
 L.nvol_json_index_scalar:
     push rbx
@@ -53785,88 +53785,580 @@ L.nvol_json_index_scalar:
     push r13
     push r14
     push r15
-    sub rsp, 264
+    sub rsp, 488
     mov qword [rsp], rdi
+    mov rax, rdi
     mov qword [rsp + 32], r8
-    mov rax, qword [rdi]
-    mov r11, qword [rdi + 8]
+    mov r11, qword [rax]
     mov [rsp + 64], r11
-    mov r11, qword [rdi + 16]
+    mov r11, qword [rax + 8]
     mov [rsp + 96], r11
-    mov r11, qword [rdi + 24]
+    mov r11, qword [rax + 16]
     mov [rsp + 128], r11
-    mov r12, rsi
-    mov qword [rsp + 160], rcx
-    shl rdx, 6
-    lea r11, [rsi + rdx]
-    mov [rsp + 192], r11
-    xor r11d, r11d
+    mov r11, qword [rax + 24]
+    mov [rsp + 160], r11
+    mov rbp, rsi
+    mov qword [rsp + 192], rcx
+    mov r13, rdx
+    shl r13, 6
+    lea r11, [rsi + r13]
     mov [rsp + 224], r11
-    xor r14d, r14d
-    mov r15, rcx
-    mov r11, [rsp + 192]
-    cmp r12, r11
-    jae strict near L.nvol_json_index_scalar + 592
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    xor r11d, r11d
+    mov [rsp + 256], r11
+    xor r15d, r15d
+    mov qword [rsp + 288], rcx
+    mov rcx, rdx
+    shr rcx, 1
+    shl rcx, 7
+    lea r11, [rsi + rcx]
+    mov [rsp + 320], r11
+    cmp rbp, r11
+    jae strict near L.nvol_json_index_scalar + 1885
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 ; .L2:
     xor r8d, r8d
+    xor r11d, r11d
+    mov [rsp + 352], r11
+    xor r14d, r14d
     xor esi, esi
-    xor edi, edi
-    xor edx, edx
     xor r13d, r13d
-    xor ebp, ebp
-    cmp rbp, 64
-    jae strict short L.nvol_json_index_scalar + 256
-    db 0xf, 0x1f, 0x40, 0x0
+    xor r12d, r12d
+    cmp r12, 64
+    jae strict near L.nvol_json_index_scalar + 321
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L4:
-    movzx ebx, byte [r12 + rbp]
+    movzx ebx, byte [rbp + r12]
     mov r9d, 1
-    mov rcx, rbp
+    mov rcx, r12
     shl r9, cl
     cmp ebx, 92
-    jne strict short L.nvol_json_index_scalar + 177
+    jne strict short L.nvol_json_index_scalar + 226
     or r8, r9
 ; .L6:
     cmp ebx, 34
-    jne strict short L.nvol_json_index_scalar + 185
-    or rsi, r9
+    jne strict short L.nvol_json_index_scalar + 250
+    mov r11, qword [rsp + 352]
+    or r11, r9
+    mov [rsp + 352], r11
 ; .L8:
     cmp ebx, 32
-    je strict short L.nvol_json_index_scalar + 205
+    je strict short L.nvol_json_index_scalar + 270
     cmp ebx, 9
-    je strict short L.nvol_json_index_scalar + 205
+    je strict short L.nvol_json_index_scalar + 270
     cmp ebx, 10
-    je strict short L.nvol_json_index_scalar + 205
+    je strict short L.nvol_json_index_scalar + 270
     cmp ebx, 13
-    jne strict short L.nvol_json_index_scalar + 208
+    jne strict short L.nvol_json_index_scalar + 273
 ; .L13:
 ; .L12:
-    or rdi, r9
+    or r14, r9
 ; .L10:
     mov rcx, rbx
     or rcx, 32
     cmp ecx, 58
-    je strict short L.nvol_json_index_scalar + 235
+    je strict short L.nvol_json_index_scalar + 300
     cmp ecx, 123
-    je strict short L.nvol_json_index_scalar + 235
+    je strict short L.nvol_json_index_scalar + 300
     cmp ecx, 44
-    je strict short L.nvol_json_index_scalar + 235
+    je strict short L.nvol_json_index_scalar + 300
     cmp ecx, 125
-    jne strict short L.nvol_json_index_scalar + 238
+    jne strict short L.nvol_json_index_scalar + 303
 ; .L17:
 ; .L16:
-    or rdx, r9
+    or rsi, r9
 ; .L14:
     cmp ebx, 31
-    ja strict short L.nvol_json_index_scalar + 246
+    ja strict short L.nvol_json_index_scalar + 311
     or r13, r9
 ; .L18:
-    add rbp, 1
-    cmp rbp, 64
-    jb strict short L.nvol_json_index_scalar + 152
+    add r12, 1
+    cmp r12, 64
+    jb strict short L.nvol_json_index_scalar + 200
 ; .L5:
-    mov rcx, r8
-    mov r9, rax
+    xor r9d, r9d
+    xor r11d, r11d
+    mov [rsp + 384], r11
+    xor r12d, r12d
+    xor edx, edx
+    xor r11d, r11d
+    mov [rsp + 416], r11
+    xor eax, eax
+    cmp rax, 64
+    jae strict near L.nvol_json_index_scalar + 519
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L20:
+    movzx edi, byte [rbp + rax + 64]
+    mov r11d, 1
+    mov [rsp + 448], r11
+    mov rcx, rax
+    mov rbx, r11
+    shl rbx, cl
+    cmp edi, 92
+    jne strict short L.nvol_json_index_scalar + 404
+    or r9, rbx
+; .L22:
+    cmp edi, 34
+    jne strict short L.nvol_json_index_scalar + 428
+    mov r11, qword [rsp + 384]
+    or r11, rbx
+    mov [rsp + 384], r11
+; .L24:
+    cmp edi, 32
+    je strict short L.nvol_json_index_scalar + 448
+    cmp edi, 9
+    je strict short L.nvol_json_index_scalar + 448
+    cmp edi, 10
+    je strict short L.nvol_json_index_scalar + 448
+    cmp edi, 13
+    jne strict short L.nvol_json_index_scalar + 451
+; .L29:
+; .L28:
+    or r12, rbx
+; .L26:
+    mov rcx, rdi
+    or rcx, 32
+    cmp ecx, 58
+    je strict short L.nvol_json_index_scalar + 478
+    cmp ecx, 123
+    je strict short L.nvol_json_index_scalar + 478
+    cmp ecx, 44
+    je strict short L.nvol_json_index_scalar + 478
+    cmp ecx, 125
+    jne strict short L.nvol_json_index_scalar + 481
+; .L33:
+; .L32:
+    or rdx, rbx
+; .L30:
+    cmp edi, 31
+    ja strict short L.nvol_json_index_scalar + 505
+    mov r11, qword [rsp + 416]
+    or r11, rbx
+    mov [rsp + 416], r11
+; .L34:
+    add rax, 1
+    cmp rax, 64
+    jb strict near L.nvol_json_index_scalar + 368
+; .L21:
+    mov rax, r8
+    mov rcx, qword [rsp + 64]
+    not rcx
+    and rax, rcx
+    mov rcx, rax
+    shl rcx, 1
+    mov rdi, 12297829382473034410
+    or rcx, rdi
+    sub rcx, rax
+    mov rax, 12297829382473034410
+    xor rcx, rax
+    mov rax, rcx
+    mov rdi, r8
+    mov r11, [rsp + 64]
+    or rdi, r11
+    xor rax, rdi
+    mov r11, rcx
+    and r11, r8
+    shr r11, 63
+    mov [rsp + 64], r11
+    mov rcx, qword [rsp + 352]
+    not rax
+    and rcx, rax
+    mov rax, rcx
+    mov rdi, rax
+    mov r8, rax
+    shl r8, 1
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 2
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 4
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 8
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 16
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 32
+    xor rdi, r8
+    mov rax, rdi
+    mov r11, [rsp + 96]
+    xor rax, r11
+    xor r11d, r11d
+    mov rdi, rax
+    shr rdi, 63
+    sub r11, rdi
+    mov [rsp + 96], r11
+    mov rdi, rsi
+    or rdi, r14
+    not rdi
+    mov r8, rdi
+    mov rbx, rcx
+    not rbx
+    and r8, rbx
+    mov rbx, r8
+    shl rbx, 1
+    mov r11, [rsp + 128]
+    or rbx, r11
+    mov r11, r8
+    shr r11, 63
+    mov [rsp + 128], r11
+    not rbx
+    and rdi, rbx
+    or rsi, rdi
+    mov rdi, rax
+    xor rdi, rcx
+    not rdi
+    and rsi, rdi
+    mov r11, qword [rsp + 160]
+    and r13, rax
+    or r11, r13
+    mov [rsp + 160], r11
+    mov rax, r9
+    mov rcx, qword [rsp + 64]
+    not rcx
+    and rax, rcx
+    mov rcx, rax
+    shl rcx, 1
+    mov rdi, 12297829382473034410
+    or rcx, rdi
+    sub rcx, rax
+    mov rax, 12297829382473034410
+    xor rcx, rax
+    mov rax, rcx
+    mov rdi, r9
+    mov r11, [rsp + 64]
+    or rdi, r11
+    xor rax, rdi
+    mov r11, rcx
+    and r11, r9
+    shr r11, 63
+    mov [rsp + 64], r11
+    mov rcx, qword [rsp + 384]
+    not rax
+    and rcx, rax
+    mov rax, rcx
+    mov rdi, rax
+    mov r8, rax
+    shl r8, 1
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 2
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 4
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 8
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 16
+    xor rdi, r8
+    mov rax, rdi
+    mov r8, rax
+    shl r8, 32
+    xor rdi, r8
+    mov rax, rdi
+    mov r11, [rsp + 96]
+    xor rax, r11
+    xor r11d, r11d
+    mov rdi, rax
+    shr rdi, 63
+    sub r11, rdi
+    mov [rsp + 96], r11
+    mov rdi, rdx
+    or rdi, r12
+    not rdi
+    mov r8, rdi
+    mov r9, rcx
+    not r9
+    and r8, r9
+    mov r9, r8
+    shl r9, 1
+    mov r11, [rsp + 128]
+    or r9, r11
+    mov r11, r8
+    shr r11, 63
+    mov [rsp + 128], r11
+    not r9
+    and rdi, r9
+    or rdx, rdi
+    mov rdi, rax
+    xor rdi, rcx
+    not rdi
+    and rdx, rdi
+    mov r11, qword [rsp + 160]
+    mov rcx, qword [rsp + 416]
+    and rcx, rax
+    or r11, rcx
+    mov [rsp + 160], r11
+    test r15, r15
+    je strict near L.nvol_json_index_scalar + 1471
+    mov r9, qword [rsp + 288]
+    mov rbx, r9
+    lea rax, [rel NVOL_K0]
+    movzx ecx, r15b
+    movzx ecx, byte [rax + rcx]
+    mov rdi, r15
+    shr rdi, 8
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, r15
+    shr rdi, 16
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, r15
+    shr rdi, 24
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, r15
+    shr rdi, 32
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, r15
+    shr rdi, 40
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, r15
+    shr rdi, 48
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, r15
+    shr rdi, 56
+    movzx eax, byte [rax + rdi]
+    add ecx, eax
+    mov rax, qword [rsp + 256]
+    shl rax, 2
+    mov r11, [rsp + 32]
+    lea rax, [r11 + rax]
+    mov edi, 64
+    bsf r8, r15
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax], edi
+    mov rdi, r15
+    mov r8, r15
+    sub r8, 1
+    and rdi, r8
+    mov r15, rdi
+    mov edi, 64
+    bsf r8, r15
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 4], edi
+    mov rdi, r15
+    mov r8, r15
+    sub r8, 1
+    and rdi, r8
+    mov r15, rdi
+    mov edi, 64
+    bsf r8, r15
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 8], edi
+    mov rdi, r15
+    mov r8, r15
+    sub r8, 1
+    and rdi, r8
+    mov r15, rdi
+    mov edi, 64
+    bsf r8, r15
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 12], edi
+    mov rdi, r15
+    mov r8, r15
+    sub r8, 1
+    and rdi, r8
+    mov r15, rdi
+    cmp rcx, 4
+    ja strict near L.nvol_json_index_scalar + 5453
+; .L38:
+    mov r11, [rsp + 256]
+    lea r11, [r11 + rcx]
+    mov [rsp + 256], r11
+; .L36:
+    test rsi, rsi
+    je strict near L.nvol_json_index_scalar + 1815
+    mov r9, qword [rsp + 192]
+    mov rbx, r9
+    lea rax, [rel NVOL_K0]
+    movzx ecx, sil
+    movzx ecx, byte [rax + rcx]
+    mov rdi, rsi
+    shr rdi, 8
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, rsi
+    shr rdi, 16
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, rsi
+    shr rdi, 24
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, rsi
+    shr rdi, 32
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, rsi
+    shr rdi, 40
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, rsi
+    shr rdi, 48
+    movzx edi, dil
+    movzx edi, byte [rax + rdi]
+    add ecx, edi
+    mov rdi, rsi
+    shr rdi, 56
+    movzx eax, byte [rax + rdi]
+    add ecx, eax
+    mov rax, qword [rsp + 256]
+    shl rax, 2
+    mov r11, [rsp + 32]
+    lea rax, [r11 + rax]
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 4], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 8], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 12], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    cmp rcx, 4
+    ja strict near L.nvol_json_index_scalar + 6317
+; .L54:
+    mov r11, [rsp + 256]
+    lea r11, [r11 + rcx]
+    mov [rsp + 256], r11
+; .L52:
+    mov r15, rdx
+    mov r11, [rsp + 192]
+    lea r10, [r11 + 64]
+    mov [rsp + 288], r10
+    lea rbp, [rbp + 128]
+    mov r11, [rsp + 192]
+    lea r11, [r11 + 128]
+    mov [rsp + 192], r11
+    mov r11, [rsp + 320]
+    cmp rbp, r11
+    jb strict near L.nvol_json_index_scalar + 160
+; .L3:
+    mov r11, [rsp + 224]
+    cmp rbp, r11
+    jae strict near L.nvol_json_index_scalar + 3507
+    xor eax, eax
+    xor edx, edx
+    xor esi, esi
+    xor edi, edi
+    xor r8d, r8d
+    xor r9d, r9d
+    cmp r9, 64
+    jae strict short L.nvol_json_index_scalar + 2033
+    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L70:
+    movzx ebx, byte [rbp + r9]
+    mov r12d, 1
+    mov rcx, r9
+    shl r12, cl
+    cmp ebx, 92
+    jne strict short L.nvol_json_index_scalar + 1954
+    or rax, r12
+; .L72:
+    cmp ebx, 34
+    jne strict short L.nvol_json_index_scalar + 1962
+    or rdx, r12
+; .L74:
+    cmp ebx, 32
+    je strict short L.nvol_json_index_scalar + 1982
+    cmp ebx, 9
+    je strict short L.nvol_json_index_scalar + 1982
+    cmp ebx, 10
+    je strict short L.nvol_json_index_scalar + 1982
+    cmp ebx, 13
+    jne strict short L.nvol_json_index_scalar + 1985
+; .L79:
+; .L78:
+    or rsi, r12
+; .L76:
+    mov rcx, rbx
+    or rcx, 32
+    cmp ecx, 58
+    je strict short L.nvol_json_index_scalar + 2012
+    cmp ecx, 123
+    je strict short L.nvol_json_index_scalar + 2012
+    cmp ecx, 44
+    je strict short L.nvol_json_index_scalar + 2012
+    cmp ecx, 125
+    jne strict short L.nvol_json_index_scalar + 2015
+; .L83:
+; .L82:
+    or rdi, r12
+; .L80:
+    cmp ebx, 31
+    ja strict short L.nvol_json_index_scalar + 2023
+    or r8, r12
+; .L84:
+    add r9, 1
+    cmp r9, 64
+    jb strict short L.nvol_json_index_scalar + 1928
+; .L71:
+    mov rcx, rax
+    mov r9, qword [rsp + 64]
     not r9
     and rcx, r9
     mov r9, rcx
@@ -53877,422 +54369,744 @@ L.nvol_json_index_scalar:
     mov rcx, 12297829382473034410
     xor r9, rcx
     mov rcx, r9
-    mov rbx, r8
-    or rbx, rax
-    xor rcx, rbx
-    mov rax, r9
-    and rax, r8
-    shr rax, 63
-    not rcx
-    and rsi, rcx
-    mov rcx, rsi
-    mov r8, rcx
-    mov r9, rcx
-    shl r9, 1
-    xor r8, r9
-    mov rcx, r8
-    mov r9, rcx
-    shl r9, 2
-    xor r8, r9
-    mov rcx, r8
-    mov r9, rcx
-    shl r9, 4
-    xor r8, r9
-    mov rcx, r8
-    mov r9, rcx
-    shl r9, 8
-    xor r8, r9
-    mov rcx, r8
-    mov r9, rcx
-    shl r9, 16
-    xor r8, r9
-    mov rcx, r8
-    mov r9, rcx
-    shl r9, 32
-    xor r8, r9
-    mov rcx, r8
+    mov rbx, rax
     mov r11, [rsp + 64]
-    xor rcx, r11
-    xor r11d, r11d
-    mov r8, rcx
-    shr r8, 63
-    sub r11, r8
-    mov [rsp + 64], r11
-    mov r8, rdx
-    or r8, rdi
-    not r8
-    mov rdi, r8
-    mov r9, rsi
-    not r9
-    and rdi, r9
-    mov r9, rdi
-    shl r9, 1
-    mov r11, [rsp + 96]
-    or r9, r11
-    mov r11, rdi
+    or rbx, r11
+    xor rcx, rbx
+    mov r11, r9
+    and r11, rax
     shr r11, 63
+    mov [rsp + 64], r11
+    not rcx
+    and rdx, rcx
+    mov rax, rdx
+    mov rcx, rax
+    mov r9, rax
+    shl r9, 1
+    xor rcx, r9
+    mov rax, rcx
+    mov r9, rax
+    shl r9, 2
+    xor rcx, r9
+    mov rax, rcx
+    mov r9, rax
+    shl r9, 4
+    xor rcx, r9
+    mov rax, rcx
+    mov r9, rax
+    shl r9, 8
+    xor rcx, r9
+    mov rax, rcx
+    mov r9, rax
+    shl r9, 16
+    xor rcx, r9
+    mov rax, rcx
+    mov r9, rax
+    shl r9, 32
+    xor rcx, r9
+    mov rax, rcx
+    mov r11, [rsp + 96]
+    xor rax, r11
+    xor r11d, r11d
+    mov rcx, rax
+    shr rcx, 63
+    sub r11, rcx
     mov [rsp + 96], r11
+    mov rcx, rdi
+    or rcx, rsi
+    not rcx
+    mov rsi, rcx
+    mov r9, rdx
     not r9
-    and r8, r9
-    or rdx, r8
-    mov rdi, rcx
-    xor rdi, rsi
-    not rdi
-    and rdx, rdi
-    mov r11, qword [rsp + 128]
-    and r13, rcx
-    or r11, r13
+    and rsi, r9
+    mov r9, rsi
+    shl r9, 1
+    mov r11, [rsp + 128]
+    or r9, r11
+    mov r11, rsi
+    shr r11, 63
     mov [rsp + 128], r11
-    test r14, r14
-    jne strict near L.nvol_json_index_scalar + 2684
-; .L20:
-    mov r14, rdx
-    mov r15, qword [rsp + 160]
-    lea r12, [r12 + 64]
-    mov r11, [rsp + 160]
-    lea r11, [r11 + 64]
+    not r9
+    and rcx, r9
+    or rdi, rcx
+    mov rcx, rax
+    xor rcx, rdx
+    not rcx
+    and rdi, rcx
+    mov r11, qword [rsp + 160]
+    and r8, rax
+    or r11, r8
     mov [rsp + 160], r11
-    mov r11, [rsp + 192]
-    cmp r12, r11
-    jb strict near L.nvol_json_index_scalar + 128
-; .L3:
-    test r14, r14
-    je strict near L.nvol_json_index_scalar + 1752
-    lea rcx, [rel NVOL_K0]
-    movzx edx, r14b
-    movzx edx, byte [rcx + rdx]
-    mov rsi, r14
-    shr rsi, 8
-    movzx esi, sil
-    movzx esi, byte [rcx + rsi]
-    add edx, esi
-    mov rsi, r14
-    shr rsi, 16
-    movzx esi, sil
-    movzx esi, byte [rcx + rsi]
-    add edx, esi
-    mov rsi, r14
-    shr rsi, 24
-    movzx esi, sil
-    movzx esi, byte [rcx + rsi]
-    add edx, esi
-    mov rsi, r14
-    shr rsi, 32
-    movzx esi, sil
-    movzx esi, byte [rcx + rsi]
-    add edx, esi
-    mov rsi, r14
-    shr rsi, 40
-    movzx esi, sil
-    movzx esi, byte [rcx + rsi]
-    add edx, esi
-    mov rsi, r14
-    shr rsi, 48
-    movzx esi, sil
-    movzx esi, byte [rcx + rsi]
-    add edx, esi
-    mov rsi, r14
-    shr rsi, 56
-    movzx ecx, byte [rcx + rsi]
-    add edx, ecx
-    mov rcx, qword [rsp + 224]
-    shl rcx, 2
+    test r15, r15
+    je strict near L.nvol_json_index_scalar + 3488
+    mov r8, qword [rsp + 288]
+    mov r9, r8
+    lea rax, [rel NVOL_K0]
+    movzx ecx, r15b
+    movzx ecx, byte [rax + rcx]
+    mov rdx, r15
+    shr rdx, 8
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 16
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 24
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 32
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 40
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 48
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 56
+    movzx eax, byte [rax + rdx]
+    add ecx, eax
+    mov rax, qword [rsp + 256]
+    shl rax, 2
     mov r11, [rsp + 32]
-    lea rcx, [r11 + rcx]
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 4], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 8], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 12], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    cmp rdx, 4
-    jbe strict near L.nvol_json_index_scalar + 1732
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 16], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 20], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 24], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 28], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    cmp rdx, 8
-    jbe strict near L.nvol_json_index_scalar + 1732
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 32], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 36], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 40], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 44], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    cmp rdx, 12
-    jbe strict near L.nvol_json_index_scalar + 1732
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 48], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 52], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 56], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 60], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    cmp rdx, 16
-    jbe strict near L.nvol_json_index_scalar + 1732
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 64], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 68], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 72], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 76], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    cmp rdx, 20
-    jbe strict near L.nvol_json_index_scalar + 1732
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 80], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 84], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 88], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    mov esi, 64
-    bsf rdi, r14
-    cmovz rdi, rsi
-    lea rsi, [r15 + rdi]
-    mov dword [rcx + 92], esi
-    mov rsi, r14
-    mov rdi, r14
-    sub rdi, 1
-    and rsi, rdi
-    mov r14, rsi
-    cmp rdx, 24
-    jbe strict short L.nvol_json_index_scalar + 1732
-    mov esi, 24
-    cmp rsi, rdx
-    jae strict short L.nvol_json_index_scalar + 1732
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
-; .L50:
-    mov rdi, rsi
-    shl rdi, 2
-    bsf r8, r14
-    lea r8, [r15 + r8]
-    mov dword [rcx + rdi], r8d
-    mov rdi, r14
-    mov r8, r14
+    lea rax, [r11 + rax]
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 4], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 8], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 12], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 4
+    jbe strict near L.nvol_json_index_scalar + 3468
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 16], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 20], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 24], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 28], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 8
+    jbe strict near L.nvol_json_index_scalar + 3468
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 32], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 36], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 40], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 44], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 12
+    jbe strict near L.nvol_json_index_scalar + 3468
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 48], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 52], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 56], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 60], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 16
+    jbe strict near L.nvol_json_index_scalar + 3468
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 64], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 68], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 72], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 76], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 20
+    jbe strict near L.nvol_json_index_scalar + 3468
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 80], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 84], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 88], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r9 + rsi]
+    mov dword [rax + 92], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 24
+    jbe strict short L.nvol_json_index_scalar + 3468
+    mov edx, 24
+    cmp rdx, rcx
+    jae strict short L.nvol_json_index_scalar + 3468
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L100:
+    mov rsi, rdx
+    shl rsi, 2
+    bsf r8, r15
+    lea r8, [r9 + r8]
+    mov dword [rax + rsi], r8d
+    mov rsi, r15
+    mov r8, r15
     sub r8, 1
-    and rdi, r8
-    mov r14, rdi
-    add rsi, 1
-    cmp rsi, rdx
-    jb strict short L.nvol_json_index_scalar + 1688
-; .L51:
-; .L48:
-; .L46:
-; .L44:
-; .L42:
-; .L40:
-; .L38:
-    mov r11, [rsp + 224]
-    lea r11, [r11 + rdx]
-    mov [rsp + 224], r11
-; .L36:
-    mov r11, [rsp]
-    mov qword [r11], rax
+    and rsi, r8
+    mov r15, rsi
+    add rdx, 1
+    cmp rdx, rcx
+    jb strict short L.nvol_json_index_scalar + 3424
+; .L101:
+; .L98:
+; .L96:
+; .L94:
+; .L92:
+; .L90:
+; .L88:
+    mov r11, [rsp + 256]
+    lea r11, [r11 + rcx]
+    mov [rsp + 256], r11
+; .L86:
+    mov r15, rdi
+    mov r11, qword [rsp + 192]
+    mov qword [rsp + 288], r11
+; .L68:
+    test r15, r15
+    je strict near L.nvol_json_index_scalar + 4671
+    mov rdi, qword [rsp + 288]
+    mov r8, rdi
+    lea rax, [rel NVOL_K0]
+    movzx ecx, r15b
+    movzx ecx, byte [rax + rcx]
+    mov rdx, r15
+    shr rdx, 8
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 16
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 24
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 32
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 40
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 48
+    movzx edx, dl
+    movzx edx, byte [rax + rdx]
+    add ecx, edx
+    mov rdx, r15
+    shr rdx, 56
+    movzx eax, byte [rax + rdx]
+    add ecx, eax
+    mov rax, qword [rsp + 256]
+    shl rax, 2
+    mov r11, [rsp + 32]
+    lea rax, [r11 + rax]
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 4], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 8], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 12], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 4
+    jbe strict near L.nvol_json_index_scalar + 4651
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 16], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 20], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 24], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 28], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 8
+    jbe strict near L.nvol_json_index_scalar + 4651
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 32], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 36], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 40], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 44], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 12
+    jbe strict near L.nvol_json_index_scalar + 4651
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 48], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 52], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 56], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 60], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 16
+    jbe strict near L.nvol_json_index_scalar + 4651
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 64], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 68], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 72], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 76], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 20
+    jbe strict near L.nvol_json_index_scalar + 4651
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 80], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 84], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 88], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    mov edx, 64
+    bsf rsi, r15
+    cmovz rsi, rdx
+    lea rdx, [r8 + rsi]
+    mov dword [rax + 92], edx
+    mov rdx, r15
+    mov rsi, r15
+    sub rsi, 1
+    and rdx, rsi
+    mov r15, rdx
+    cmp rcx, 24
+    jbe strict short L.nvol_json_index_scalar + 4651
+    mov edx, 24
+    cmp rdx, rcx
+    jae strict short L.nvol_json_index_scalar + 4651
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L116:
+    mov rsi, rdx
+    shl rsi, 2
+    bsf rdi, r15
+    lea rdi, [r8 + rdi]
+    mov dword [rax + rsi], edi
+    mov rsi, r15
+    mov rdi, r15
+    sub rdi, 1
+    and rsi, rdi
+    mov r15, rsi
+    add rdx, 1
+    cmp rdx, rcx
+    jb strict short L.nvol_json_index_scalar + 4608
+; .L117:
+; .L114:
+; .L112:
+; .L110:
+; .L108:
+; .L106:
+; .L104:
+    mov r11, [rsp + 256]
+    lea r11, [r11 + rcx]
+    mov [rsp + 256], r11
+; .L102:
     mov r11, [rsp]
     mov r10, [rsp + 64]
-    mov qword [r11 + 8], r10
+    mov qword [r11], r10
     mov r11, [rsp]
     mov r10, [rsp + 96]
-    mov qword [r11 + 16], r10
+    mov qword [r11 + 8], r10
     mov r11, [rsp]
     mov r10, [rsp + 128]
+    mov qword [r11 + 16], r10
+    mov r11, [rsp]
+    mov r10, [rsp + 160]
     mov qword [r11 + 24], r10
-    mov rax, qword [rsp + 224]
-    add rsp, 264
+    mov rax, qword [rsp + 256]
+    add rsp, 488
     pop r15
     pop r14
     pop r13
@@ -54302,348 +55116,505 @@ L.nvol_json_index_scalar:
     ret
 ; .Lrare1:
     mov edi, 24
-    cmp rdi, rsi
-    jae strict short L.nvol_json_index_scalar + 1884
-    db 0xf, 0x1f, 0x0
-; .L34:
+    cmp rdi, rcx
+    jae strict short L.nvol_json_index_scalar + 4812
+    db 0xf, 0x1f, 0x40, 0x0
+; .L50:
     mov r8, rdi
     shl r8, 2
-    bsf r9, r14
-    lea r9, [r15 + r9]
-    mov dword [rcx + r8], r9d
-    mov r8, r14
-    mov r9, r14
+    bsf r9, r15
+    lea r9, [rbx + r9]
+    mov dword [rax + r8], r9d
+    mov r8, r15
+    mov r9, r15
     sub r9, 1
     and r8, r9
-    mov r14, r8
+    mov r15, r8
     add rdi, 1
-    cmp rdi, rsi
-    jb strict short L.nvol_json_index_scalar + 1840
-; .L35:
-    jmp strict near L.nvol_json_index_scalar + 2043
+    cmp rdi, rcx
+    jb strict short L.nvol_json_index_scalar + 4768
+; .L51:
+    jmp strict near L.nvol_json_index_scalar + 4971
 ; .Lrare2:
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 80], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 80], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 84], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 84], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 88], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 88], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 92], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 92], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
-    cmp rsi, 24
-    ja strict near L.nvol_json_index_scalar + 1827
-; .L32:
-    jmp strict near L.nvol_json_index_scalar + 2202
+    mov r15, rdi
+    cmp rcx, 24
+    ja strict near L.nvol_json_index_scalar + 4754
+; .L48:
+    jmp strict near L.nvol_json_index_scalar + 5130
 ; .Lrare3:
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 64], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 64], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 68], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 68], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 72], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 72], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 76], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 76], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
-    cmp rsi, 20
-    ja strict near L.nvol_json_index_scalar + 1889
-; .L30:
-    jmp strict near L.nvol_json_index_scalar + 2361
+    mov r15, rdi
+    cmp rcx, 20
+    ja strict near L.nvol_json_index_scalar + 4817
+; .L46:
+    jmp strict near L.nvol_json_index_scalar + 5289
 ; .Lrare4:
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 48], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 48], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 52], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 52], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 56], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 56], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 60], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 60], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
-    cmp rsi, 16
-    ja strict near L.nvol_json_index_scalar + 2048
-; .L28:
-    jmp strict near L.nvol_json_index_scalar + 2520
+    mov r15, rdi
+    cmp rcx, 16
+    ja strict near L.nvol_json_index_scalar + 4976
+; .L44:
+    jmp strict near L.nvol_json_index_scalar + 5448
 ; .Lrare5:
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 32], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 32], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 36], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 36], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 40], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 40], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 44], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 44], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
-    cmp rsi, 12
-    ja strict near L.nvol_json_index_scalar + 2207
-; .L26:
-    jmp strict near L.nvol_json_index_scalar + 2679
+    mov r15, rdi
+    cmp rcx, 12
+    ja strict near L.nvol_json_index_scalar + 5135
+; .L42:
+    jmp strict near L.nvol_json_index_scalar + 5607
 ; .Lrare6:
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 16], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 16], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 20], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 20], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 24], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 24], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov r15, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, r15
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 28], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 28], edi
+    mov rdi, r15
+    mov r8, r15
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
-    cmp rsi, 8
-    ja strict near L.nvol_json_index_scalar + 2366
-; .L24:
-    jmp strict near L.nvol_json_index_scalar + 2988
+    mov r15, rdi
+    cmp rcx, 8
+    ja strict near L.nvol_json_index_scalar + 5294
+; .L40:
+    jmp strict near L.nvol_json_index_scalar + 1451
 ; .Lrare7:
-    lea rcx, [rel NVOL_K0]
-    movzx esi, r14b
-    movzx esi, byte [rcx + rsi]
-    mov rdi, r14
-    shr rdi, 8
-    movzx edi, dil
-    movzx edi, byte [rcx + rdi]
-    add esi, edi
-    mov rdi, r14
-    shr rdi, 16
-    movzx edi, dil
-    movzx edi, byte [rcx + rdi]
-    add esi, edi
-    mov rdi, r14
-    shr rdi, 24
-    movzx edi, dil
-    movzx edi, byte [rcx + rdi]
-    add esi, edi
-    mov rdi, r14
-    shr rdi, 32
-    movzx edi, dil
-    movzx edi, byte [rcx + rdi]
-    add esi, edi
-    mov rdi, r14
-    shr rdi, 40
-    movzx edi, dil
-    movzx edi, byte [rcx + rdi]
-    add esi, edi
-    mov rdi, r14
-    shr rdi, 48
-    movzx edi, dil
-    movzx edi, byte [rcx + rdi]
-    add esi, edi
-    mov rdi, r14
-    shr rdi, 56
-    movzx ecx, byte [rcx + rdi]
-    add esi, ecx
-    mov rcx, qword [rsp + 224]
-    shl rcx, 2
-    mov r11, [rsp + 32]
-    lea rcx, [r11 + rcx]
+    mov edi, 24
+    cmp rdi, rcx
+    jae strict short L.nvol_json_index_scalar + 5676
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+; .L66:
+    mov r8, rdi
+    shl r8, 2
+    bsf r9, rsi
+    lea r9, [rbx + r9]
+    mov dword [rax + r8], r9d
+    mov r8, rsi
+    mov r9, rsi
+    sub r9, 1
+    and r8, r9
+    mov rsi, r8
+    add rdi, 1
+    cmp rdi, rcx
+    jb strict short L.nvol_json_index_scalar + 5632
+; .L67:
+    jmp strict near L.nvol_json_index_scalar + 5835
+; .Lrare8:
     mov edi, 64
-    bsf r8, r14
+    bsf r8, rsi
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 80], edi
+    mov rdi, rsi
+    mov r8, rsi
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov rsi, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, rsi
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 4], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 84], edi
+    mov rdi, rsi
+    mov r8, rsi
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov rsi, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, rsi
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 8], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 88], edi
+    mov rdi, rsi
+    mov r8, rsi
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
+    mov rsi, rdi
     mov edi, 64
-    bsf r8, r14
+    bsf r8, rsi
     cmovz r8, rdi
-    lea rdi, [r15 + r8]
-    mov dword [rcx + 12], edi
-    mov rdi, r14
-    mov r8, r14
+    lea rdi, [rbx + r8]
+    mov dword [rax + 92], edi
+    mov rdi, rsi
+    mov r8, rsi
     sub r8, 1
     and rdi, r8
-    mov r14, rdi
-    cmp rsi, 4
-    ja strict near L.nvol_json_index_scalar + 2525
-; .L22:
-    mov r11, [rsp + 224]
-    lea r11, [r11 + rsi]
-    mov [rsp + 224], r11
-    jmp strict near L.nvol_json_index_scalar + 539
+    mov rsi, rdi
+    cmp rcx, 24
+    ja strict near L.nvol_json_index_scalar + 5612
+; .L64:
+    jmp strict near L.nvol_json_index_scalar + 5994
+; .Lrare9:
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 64], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 68], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 72], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 76], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    cmp rcx, 20
+    ja strict near L.nvol_json_index_scalar + 5681
+; .L62:
+    jmp strict near L.nvol_json_index_scalar + 6153
+; .Lrare10:
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 48], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 52], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 56], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 60], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    cmp rcx, 16
+    ja strict near L.nvol_json_index_scalar + 5840
+; .L60:
+    jmp strict near L.nvol_json_index_scalar + 6312
+; .Lrare11:
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 32], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 36], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 40], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 44], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    cmp rcx, 12
+    ja strict near L.nvol_json_index_scalar + 5999
+; .L58:
+    jmp strict near L.nvol_json_index_scalar + 6471
+; .Lrare12:
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 16], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 20], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 24], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    mov edi, 64
+    bsf r8, rsi
+    cmovz r8, rdi
+    lea rdi, [rbx + r8]
+    mov dword [rax + 28], edi
+    mov rdi, rsi
+    mov r8, rsi
+    sub r8, 1
+    and rdi, r8
+    mov rsi, rdi
+    cmp rcx, 8
+    ja strict near L.nvol_json_index_scalar + 6158
+; .L56:
+    jmp strict near L.nvol_json_index_scalar + 1795
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-global nvol_json_index_ssse3:function hidden 3490
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+global nvol_json_index_ssse3:function hidden 9143
 nvol_json_index_ssse3:
 L.nvol_json_index_ssse3:
     push rbx
@@ -54652,21 +55623,21 @@ L.nvol_json_index_ssse3:
     push r13
     push r14
     push r15
-    sub rsp, 296
+    sub rsp, 2984
     mov qword [rsp], rdi
     mov qword [rsp + 32], r8
     mov rax, qword [rdi]
     mov r9, qword [rdi + 8]
     mov rbx, qword [rdi + 16]
-    mov r11, qword [rdi + 24]
-    mov [rsp + 64], r11
+    mov rbp, qword [rdi + 24]
     mov r12, rsi
-    mov qword [rsp + 96], rcx
-    shl rdx, 6
-    lea r11, [rsi + rdx]
-    mov [rsp + 128], r11
+    mov qword [rsp + 64], rcx
+    mov r14, rdx
+    shl r14, 6
+    lea r11, [rsi + r14]
+    mov [rsp + 96], r11
     xor r11d, r11d
-    mov [rsp + 160], r11
+    mov [rsp + 128], r11
     movdqa xmm0, [rel NVOL_K9]
     movdqa xmm1, [rel NVOL_K10]
     movdqa xmm2, [rel NVOL_K11]
@@ -54674,10 +55645,13 @@ L.nvol_json_index_ssse3:
     movdqa xmm4, [rel NVOL_K13]
     movdqa xmm5, [rel NVOL_K14]
     xor r14d, r14d
-    mov r11, [rsp + 128]
+    shr rdx, 1
+    shl rdx, 7
+    lea r11, [rsi + rdx]
+    mov [rsp + 160], r11
     cmp r12, r11
-    jae strict near L.nvol_json_index_ssse3 + 1015
-    db 0xf, 0x1f, 0x0
+    jae strict near L.nvol_json_index_ssse3 + 3416
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L2:
     movdqu xmm6, [r12]
     movdqu xmm7, [r12 + 16]
@@ -54685,68 +55659,72 @@ L.nvol_json_index_ssse3:
     movdqu xmm9, [r12 + 48]
     movdqa xmm10, xmm6
     pcmpeqb xmm10, xmm2
-    pmovmskb r15d, xmm10
+    pmovmskb esi, xmm10
     movdqa xmm10, xmm7
     pcmpeqb xmm10, xmm2
     pmovmskb r8d, xmm10
     shl r8, 16
-    or r15, r8
+    or rsi, r8
     movdqa xmm10, xmm8
     pcmpeqb xmm10, xmm2
     pmovmskb r8d, xmm10
     shl r8, 32
-    or r15, r8
+    or rsi, r8
     movdqa xmm10, xmm9
     pcmpeqb xmm10, xmm2
     pmovmskb r8d, xmm10
     shl r8, 48
-    or r15, r8
+    or rsi, r8
     movdqa xmm10, xmm6
     pcmpeqb xmm10, xmm3
     pmovmskb r8d, xmm10
     movdqa xmm10, xmm7
     pcmpeqb xmm10, xmm3
-    pmovmskb esi, xmm10
-    shl rsi, 16
-    or r8, rsi
+    pmovmskb edi, xmm10
+    shl rdi, 16
+    or r8, rdi
     movdqa xmm10, xmm8
     pcmpeqb xmm10, xmm3
-    pmovmskb esi, xmm10
-    shl rsi, 32
-    or r8, rsi
+    pmovmskb edi, xmm10
+    shl rdi, 32
+    or r8, rdi
     movdqa xmm10, xmm9
     pcmpeqb xmm10, xmm3
-    pmovmskb esi, xmm10
-    shl rsi, 48
-    or r8, rsi
+    pmovmskb edi, xmm10
+    shl rdi, 48
+    mov r11, r8
+    or r11, rdi
+    mov [rsp + 192], r11
     movdqa xmm10, xmm0
     pshufb xmm10, xmm6
     pcmpeqb xmm10, xmm6
-    pmovmskb esi, xmm10
+    pmovmskb edi, xmm10
     movdqa xmm10, xmm0
     pshufb xmm10, xmm7
     pcmpeqb xmm10, xmm7
-    pmovmskb edi, xmm10
-    shl rdi, 16
-    or rsi, rdi
+    pmovmskb r15d, xmm10
+    shl r15, 16
+    or rdi, r15
     movdqa xmm10, xmm0
     pshufb xmm10, xmm8
     pcmpeqb xmm10, xmm8
-    pmovmskb edi, xmm10
-    shl rdi, 32
-    or rsi, rdi
+    pmovmskb r15d, xmm10
+    shl r15, 32
+    or rdi, r15
     movdqa xmm10, xmm0
     pshufb xmm10, xmm9
     pcmpeqb xmm10, xmm9
-    pmovmskb edi, xmm10
-    shl rdi, 48
-    or rsi, rdi
+    pmovmskb r15d, xmm10
+    shl r15, 48
+    mov r11, rdi
+    or r11, r15
+    mov [rsp + 224], r11
     movdqa xmm10, xmm1
     pshufb xmm10, xmm6
     movdqa xmm11, xmm6
     por xmm11, xmm4
     pcmpeqb xmm10, xmm11
-    pmovmskb edi, xmm10
+    pmovmskb r15d, xmm10
     movdqa xmm10, xmm1
     pshufb xmm10, xmm7
     movdqa xmm11, xmm7
@@ -54754,7 +55732,7 @@ L.nvol_json_index_ssse3:
     pcmpeqb xmm10, xmm11
     pmovmskb edx, xmm10
     shl rdx, 16
-    or rdi, rdx
+    or r15, rdx
     movdqa xmm10, xmm1
     pshufb xmm10, xmm8
     movdqa xmm11, xmm8
@@ -54762,7 +55740,7 @@ L.nvol_json_index_ssse3:
     pcmpeqb xmm10, xmm11
     pmovmskb edx, xmm10
     shl rdx, 32
-    or rdi, rdx
+    or r15, rdx
     movdqa xmm10, xmm1
     pshufb xmm10, xmm9
     movdqa xmm11, xmm9
@@ -54770,7 +55748,7 @@ L.nvol_json_index_ssse3:
     pcmpeqb xmm10, xmm11
     pmovmskb edx, xmm10
     shl rdx, 48
-    or rdi, rdx
+    or r15, rdx
     movdqa xmm10, xmm6
     pminub xmm10, xmm5
     pcmpeqb xmm10, xmm6
@@ -54779,113 +55757,726 @@ L.nvol_json_index_ssse3:
     pminub xmm6, xmm5
     pcmpeqb xmm6, xmm7
     pmovmskb r11d, xmm6
-    mov [rsp + 192], r11
-    mov r13, r11
-    shl r13, 16
-    or rdx, r13
+    mov [rsp + 256], r11
+    shl r11, 16
+    mov [rsp + 288], r11
+    or rdx, r11
     movdqa xmm6, xmm8
     pminub xmm6, xmm5
     pcmpeqb xmm6, xmm8
-    pmovmskb r13d, xmm6
-    shl r13, 32
-    or rdx, r13
+    pmovmskb r11d, xmm6
+    mov [rsp + 320], r11
+    shl r11, 32
+    mov [rsp + 352], r11
+    or rdx, r11
     movdqa xmm6, xmm9
     pminub xmm6, xmm5
     pcmpeqb xmm6, xmm9
-    pmovmskb r13d, xmm6
-    shl r13, 48
-    or rdx, r13
-    mov r13, r15
-    mov rbp, rax
-    not rbp
-    and r13, rbp
-    mov rbp, r13
-    shl rbp, 1
+    pmovmskb r11d, xmm6
+    mov [rsp + 416], r11
+    shl r11, 48
+    mov [rsp + 448], r11
+    mov r11, rdx
+    mov r10, [rsp + 448]
+    or r11, r10
+    mov [rsp + 384], r11
+    movdqu xmm6, [r12 + 64]
+    movdqu xmm7, [r12 + 80]
+    movdqu xmm8, [r12 + 96]
+    movdqu xmm9, [r12 + 112]
+    movdqa xmm10, xmm6
+    pcmpeqb xmm10, xmm2
+    pmovmskb r11d, xmm10
+    mov [rsp + 480], r11
+    mov qword [rsp + 512], r11
+    movdqa xmm10, xmm7
+    pcmpeqb xmm10, xmm2
+    pmovmskb r11d, xmm10
+    mov [rsp + 544], r11
+    shl r11, 16
+    mov [rsp + 576], r11
+    mov r11, [rsp + 512]
+    mov r10, [rsp + 576]
+    or r11, r10
+    mov [rsp + 512], r11
+    mov qword [rsp + 608], r11
+    movdqa xmm10, xmm8
+    pcmpeqb xmm10, xmm2
+    pmovmskb r11d, xmm10
+    mov [rsp + 640], r11
+    shl r11, 32
+    mov [rsp + 672], r11
+    mov r11, [rsp + 608]
+    mov r10, [rsp + 672]
+    or r11, r10
+    mov [rsp + 608], r11
+    mov rdx, r11
+    movdqa xmm10, xmm9
+    pcmpeqb xmm10, xmm2
+    pmovmskb r11d, xmm10
+    mov [rsp + 704], r11
+    shl r11, 48
+    mov [rsp + 736], r11
+    or rdx, r11
+    movdqa xmm10, xmm6
+    pcmpeqb xmm10, xmm3
+    pmovmskb r11d, xmm10
+    mov [rsp + 768], r11
+    mov qword [rsp + 800], r11
+    movdqa xmm10, xmm7
+    pcmpeqb xmm10, xmm3
+    pmovmskb r11d, xmm10
+    mov [rsp + 832], r11
+    shl r11, 16
+    mov [rsp + 864], r11
+    mov r11, [rsp + 800]
+    mov r10, [rsp + 864]
+    or r11, r10
+    mov [rsp + 800], r11
+    mov qword [rsp + 896], r11
+    movdqa xmm10, xmm8
+    pcmpeqb xmm10, xmm3
+    pmovmskb r11d, xmm10
+    mov [rsp + 928], r11
+    shl r11, 32
+    mov [rsp + 960], r11
+    mov r11, [rsp + 896]
+    mov r10, [rsp + 960]
+    or r11, r10
+    mov [rsp + 896], r11
+    mov qword [rsp + 992], r11
+    movdqa xmm10, xmm9
+    pcmpeqb xmm10, xmm3
+    pmovmskb r11d, xmm10
+    mov [rsp + 1024], r11
+    shl r11, 48
+    mov [rsp + 1056], r11
+    mov r11, [rsp + 992]
+    mov r10, [rsp + 1056]
+    or r11, r10
+    mov [rsp + 992], r11
+    movdqa xmm10, xmm0
+    pshufb xmm10, xmm6
+    pcmpeqb xmm10, xmm6
+    pmovmskb r11d, xmm10
+    mov [rsp + 1088], r11
+    mov qword [rsp + 1120], r11
+    movdqa xmm10, xmm0
+    pshufb xmm10, xmm7
+    pcmpeqb xmm10, xmm7
+    pmovmskb r11d, xmm10
+    mov [rsp + 1152], r11
+    shl r11, 16
+    mov [rsp + 1184], r11
+    mov r11, [rsp + 1120]
+    mov r10, [rsp + 1184]
+    or r11, r10
+    mov [rsp + 1120], r11
+    mov qword [rsp + 1216], r11
+    movdqa xmm10, xmm0
+    pshufb xmm10, xmm8
+    pcmpeqb xmm10, xmm8
+    pmovmskb r11d, xmm10
+    mov [rsp + 1248], r11
+    shl r11, 32
+    mov [rsp + 1280], r11
+    mov r11, [rsp + 1216]
+    mov r10, [rsp + 1280]
+    or r11, r10
+    mov [rsp + 1216], r11
+    mov qword [rsp + 1312], r11
+    movdqa xmm10, xmm0
+    pshufb xmm10, xmm9
+    pcmpeqb xmm10, xmm9
+    pmovmskb r11d, xmm10
+    mov [rsp + 1344], r11
+    shl r11, 48
+    mov [rsp + 1376], r11
+    mov r11, [rsp + 1312]
+    mov r10, [rsp + 1376]
+    or r11, r10
+    mov [rsp + 1312], r11
+    movdqa xmm10, xmm1
+    pshufb xmm10, xmm6
+    movdqa xmm11, xmm6
+    por xmm11, xmm4
+    pcmpeqb xmm10, xmm11
+    pmovmskb r11d, xmm10
+    mov [rsp + 1408], r11
+    mov qword [rsp + 1440], r11
+    movdqa xmm10, xmm1
+    pshufb xmm10, xmm7
+    movdqa xmm11, xmm7
+    por xmm11, xmm4
+    pcmpeqb xmm10, xmm11
+    pmovmskb r11d, xmm10
+    mov [rsp + 1472], r11
+    shl r11, 16
+    mov [rsp + 1504], r11
+    mov r11, [rsp + 1440]
+    mov r10, [rsp + 1504]
+    or r11, r10
+    mov [rsp + 1440], r11
+    mov qword [rsp + 1536], r11
+    movdqa xmm10, xmm1
+    pshufb xmm10, xmm8
+    movdqa xmm11, xmm8
+    por xmm11, xmm4
+    pcmpeqb xmm10, xmm11
+    pmovmskb r11d, xmm10
+    mov [rsp + 1568], r11
+    shl r11, 32
+    mov [rsp + 1600], r11
+    mov r11, [rsp + 1536]
+    mov r10, [rsp + 1600]
+    or r11, r10
+    mov [rsp + 1536], r11
+    mov rdi, r11
+    movdqa xmm10, xmm1
+    pshufb xmm10, xmm9
+    movdqa xmm11, xmm9
+    por xmm11, xmm4
+    pcmpeqb xmm10, xmm11
+    pmovmskb r11d, xmm10
+    mov [rsp + 1632], r11
+    shl r11, 48
+    mov [rsp + 1664], r11
+    or rdi, r11
+    movdqa xmm10, xmm6
+    pminub xmm10, xmm5
+    pcmpeqb xmm10, xmm6
+    pmovmskb r11d, xmm10
+    mov [rsp + 1696], r11
+    mov qword [rsp + 1728], r11
+    movdqa xmm6, xmm7
+    pminub xmm6, xmm5
+    pcmpeqb xmm6, xmm7
+    pmovmskb r11d, xmm6
+    mov [rsp + 1760], r11
+    shl r11, 16
+    mov [rsp + 1792], r11
+    mov r11, [rsp + 1728]
+    mov r10, [rsp + 1792]
+    or r11, r10
+    mov [rsp + 1728], r11
+    mov qword [rsp + 1824], r11
+    movdqa xmm6, xmm8
+    pminub xmm6, xmm5
+    pcmpeqb xmm6, xmm8
+    pmovmskb r11d, xmm6
+    mov [rsp + 1856], r11
+    shl r11, 32
+    mov [rsp + 1888], r11
+    mov r11, [rsp + 1824]
+    mov r10, [rsp + 1888]
+    or r11, r10
+    mov [rsp + 1824], r11
+    mov qword [rsp + 1920], r11
+    movdqa xmm6, xmm9
+    pminub xmm6, xmm5
+    pcmpeqb xmm6, xmm9
+    pmovmskb r11d, xmm6
+    mov [rsp + 1952], r11
+    shl r11, 48
+    mov [rsp + 1984], r11
+    mov r11, [rsp + 1920]
+    mov r10, [rsp + 1984]
+    or r11, r10
+    mov [rsp + 1920], r11
+    mov r8, rsi
+    mov r11, rax
+    not r11
+    mov [rsp + 2016], r11
+    and r8, r11
+    mov r11, r8
+    shl r11, 1
+    mov [rsp + 2048], r11
+    mov qword [rsp + 2080], r11
     mov r11, 12297829382473034410
-    mov [rsp + 224], r11
-    or rbp, r11
-    sub rbp, r13
-    mov r13, 12297829382473034410
-    xor rbp, r13
-    mov r13, rbp
-    mov r11, r15
+    mov [rsp + 2112], r11
+    mov r11, [rsp + 2080]
+    mov r10, [rsp + 2112]
+    or r11, r10
+    mov [rsp + 2080], r11
+    sub r11, r8
+    mov [rsp + 2144], r11
+    mov r8, r11
+    mov r11, 12297829382473034410
+    mov [rsp + 2176], r11
+    xor r8, r11
+    mov r11, rsi
     or r11, rax
-    mov [rsp + 256], r11
-    xor r13, r11
-    mov rax, rbp
-    and rax, r15
+    mov [rsp + 2240], r11
+    mov r11, r8
+    mov r10, [rsp + 2240]
+    xor r11, r10
+    mov [rsp + 2208], r11
+    mov rax, r8
+    and rax, rsi
     shr rax, 63
-    not r13
-    and r8, r13
-    mov rbp, r8
-    mov r13, rbp
-    mov r15, rbp
-    shl r15, 1
-    xor r13, r15
-    mov rbp, r13
-    mov r15, rbp
-    shl r15, 2
-    xor r13, r15
-    mov rbp, r13
-    mov r15, rbp
-    shl r15, 4
-    xor r13, r15
-    mov rbp, r13
-    mov r15, rbp
-    shl r15, 8
-    xor r13, r15
-    mov rbp, r13
-    mov r15, rbp
-    shl r15, 16
-    xor r13, r15
-    mov rbp, r13
-    mov r15, rbp
-    shl r15, 32
-    xor r13, r15
-    mov rbp, r13
-    xor rbp, r9
+    mov rsi, qword [rsp + 192]
+    mov r8, r11
+    not r8
+    and rsi, r8
+    mov r8, rsi
+    mov r11, r8
+    shl r11, 1
+    mov [rsp + 2304], r11
+    mov r11, r8
+    mov r10, [rsp + 2304]
+    xor r11, r10
+    mov [rsp + 2272], r11
+    mov r8, r11
+    shl r11, 2
+    mov [rsp + 2368], r11
+    mov r11, r8
+    mov r10, [rsp + 2368]
+    xor r11, r10
+    mov [rsp + 2336], r11
+    mov r8, r11
+    shl r11, 4
+    mov [rsp + 2432], r11
+    mov r11, r8
+    mov r10, [rsp + 2432]
+    xor r11, r10
+    mov [rsp + 2400], r11
+    mov r8, r11
+    shl r11, 8
+    mov [rsp + 2496], r11
+    mov r11, r8
+    mov r10, [rsp + 2496]
+    xor r11, r10
+    mov [rsp + 2464], r11
+    mov r8, r11
+    shl r11, 16
+    mov [rsp + 2560], r11
+    mov r11, r8
+    mov r10, [rsp + 2560]
+    xor r11, r10
+    mov [rsp + 2528], r11
+    mov r8, r11
+    shl r11, 32
+    mov [rsp + 2624], r11
+    mov r11, r8
+    mov r10, [rsp + 2624]
+    xor r11, r10
+    mov [rsp + 2592], r11
+    mov r8, r11
+    xor r8, r9
     xor r9d, r9d
-    mov r13, rbp
-    shr r13, 63
-    sub r9, r13
-    mov r13, rdi
-    or r13, rsi
+    mov r11, r8
+    shr r11, 63
+    mov [rsp + 2656], r11
+    sub r9, r11
+    mov r11, r15
+    mov r10, [rsp + 224]
+    or r11, r10
+    mov [rsp + 2688], r11
+    mov r13, r11
     not r13
-    mov rsi, r13
-    mov r15, r8
+    mov r11, rsi
+    not r11
+    mov [rsp + 2752], r11
+    mov r11, r13
+    mov r10, [rsp + 2752]
+    and r11, r10
+    mov [rsp + 2720], r11
+    shl r11, 1
+    mov [rsp + 2784], r11
+    or r11, rbx
+    mov [rsp + 2816], r11
+    mov rbx, qword [rsp + 2720]
+    shr rbx, 63
+    not r11
+    mov [rsp + 2848], r11
+    and r13, r11
+    or r15, r13
+    mov r13, r8
+    xor r13, rsi
+    not r13
+    and r15, r13
+    mov rsi, qword [rsp + 384]
+    and rsi, r8
+    or rbp, rsi
+    mov qword [rsp + 2880], r15
+    mov rsi, rdx
+    mov r8, rax
+    not r8
+    and rsi, r8
+    mov r8, rsi
+    shl r8, 1
+    mov r13, 12297829382473034410
+    or r8, r13
+    sub r8, rsi
+    mov rsi, 12297829382473034410
+    xor r8, rsi
+    mov rsi, r8
+    mov r13, rdx
+    or r13, rax
+    xor rsi, r13
+    mov rax, r8
+    and rax, rdx
+    shr rax, 63
+    mov rdx, qword [rsp + 992]
+    not rsi
+    and rdx, rsi
+    mov rsi, rdx
+    mov r8, rsi
+    mov r13, rsi
+    shl r13, 1
+    xor r8, r13
+    mov rsi, r8
+    mov r13, rsi
+    shl r13, 2
+    xor r8, r13
+    mov rsi, r8
+    mov r13, rsi
+    shl r13, 4
+    xor r8, r13
+    mov rsi, r8
+    mov r13, rsi
+    shl r13, 8
+    xor r8, r13
+    mov rsi, r8
+    mov r13, rsi
+    shl r13, 16
+    xor r8, r13
+    mov rsi, r8
+    mov r13, rsi
+    shl r13, 32
+    xor r8, r13
+    mov rsi, r8
+    xor rsi, r9
+    xor r9d, r9d
+    mov r8, rsi
+    shr r8, 63
+    sub r9, r8
+    mov r8, rdi
+    mov r11, [rsp + 1312]
+    or r8, r11
+    not r8
+    mov r13, r8
+    mov r15, rdx
     not r15
-    and rsi, r15
-    mov r15, rsi
+    and r13, r15
+    mov r15, r13
     shl r15, 1
     or r15, rbx
-    mov rbx, rsi
+    mov rbx, r13
+    shr rbx, 63
+    not r15
+    and r8, r15
+    or rdi, r8
+    mov r8, rsi
+    xor r8, rdx
+    not r8
+    and rdi, r8
+    mov rdx, qword [rsp + 1920]
+    and rdx, rsi
+    or rbp, rdx
+    test r14, r14
+    jne strict near L.nvol_json_index_ssse3 + 7452
+; .L4:
+    mov r11, [rsp + 2880]
+    test r11, r11
+    je strict near L.nvol_json_index_ssse3 + 3362
+    mov r13, qword [rsp + 64]
+    mov r14, r13
+    lea rcx, [rel NVOL_K0]
+    mov r11, [rsp + 2880]
+    movzx edx, r11b
+    movzx edx, byte [rcx + rdx]
+    mov rsi, qword [rsp + 2880]
+    shr rsi, 8
+    movzx esi, sil
+    movzx esi, byte [rcx + rsi]
+    add edx, esi
+    mov rsi, qword [rsp + 2880]
+    shr rsi, 16
+    movzx esi, sil
+    movzx esi, byte [rcx + rsi]
+    add edx, esi
+    mov rsi, qword [rsp + 2880]
+    shr rsi, 24
+    movzx esi, sil
+    movzx esi, byte [rcx + rsi]
+    add edx, esi
+    mov rsi, qword [rsp + 2880]
+    shr rsi, 32
+    movzx esi, sil
+    movzx esi, byte [rcx + rsi]
+    add edx, esi
+    mov rsi, qword [rsp + 2880]
+    shr rsi, 40
+    movzx esi, sil
+    movzx esi, byte [rcx + rsi]
+    add edx, esi
+    mov rsi, qword [rsp + 2880]
+    shr rsi, 48
+    movzx esi, sil
+    movzx esi, byte [rcx + rsi]
+    add edx, esi
+    mov rsi, qword [rsp + 2880]
+    shr rsi, 56
+    movzx ecx, byte [rcx + rsi]
+    add edx, ecx
+    mov rcx, qword [rsp + 128]
+    shl rcx, 2
+    mov r11, [rsp + 32]
+    lea rcx, [r11 + rcx]
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 4], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 8], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 12], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    cmp rdx, 4
+    ja strict near L.nvol_json_index_ssse3 + 8892
+; .L22:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rdx]
+    mov [rsp + 128], r11
+; .L20:
+    mov r14, rdi
+    mov r11, [rsp + 64]
+    lea rcx, [r11 + 64]
+    lea r12, [r12 + 128]
+    mov r11, [rsp + 64]
+    lea r11, [r11 + 128]
+    mov [rsp + 64], r11
+    mov r11, [rsp + 160]
+    cmp r12, r11
+    jb strict near L.nvol_json_index_ssse3 + 160
+; .L3:
+    mov r11, [rsp + 96]
+    cmp r12, r11
+    jae strict near L.nvol_json_index_ssse3 + 5336
+    movdqu xmm6, [r12]
+    movdqu xmm7, [r12 + 16]
+    movdqu xmm8, [r12 + 32]
+    movdqu xmm9, [r12 + 48]
+    movdqa xmm10, xmm6
+    pcmpeqb xmm10, xmm2
+    pmovmskb edx, xmm10
+    movdqa xmm10, xmm7
+    pcmpeqb xmm10, xmm2
+    pmovmskb esi, xmm10
+    shl rsi, 16
+    or rdx, rsi
+    movdqa xmm10, xmm8
+    pcmpeqb xmm10, xmm2
+    pmovmskb esi, xmm10
+    shl rsi, 32
+    or rdx, rsi
+    movdqa xmm10, xmm9
+    pcmpeqb xmm10, xmm2
+    pmovmskb esi, xmm10
+    shl rsi, 48
+    or rdx, rsi
+    movdqa xmm2, xmm6
+    pcmpeqb xmm2, xmm3
+    pmovmskb esi, xmm2
+    movdqa xmm2, xmm7
+    pcmpeqb xmm2, xmm3
+    pmovmskb edi, xmm2
+    shl rdi, 16
+    or rsi, rdi
+    movdqa xmm2, xmm8
+    pcmpeqb xmm2, xmm3
+    pmovmskb edi, xmm2
+    shl rdi, 32
+    or rsi, rdi
+    movdqa xmm2, xmm9
+    pcmpeqb xmm2, xmm3
+    pmovmskb edi, xmm2
+    shl rdi, 48
+    or rsi, rdi
+    movdqa xmm2, xmm0
+    pshufb xmm2, xmm6
+    pcmpeqb xmm2, xmm6
+    pmovmskb edi, xmm2
+    movdqa xmm2, xmm0
+    pshufb xmm2, xmm7
+    pcmpeqb xmm2, xmm7
+    pmovmskb r8d, xmm2
+    shl r8, 16
+    or rdi, r8
+    movdqa xmm2, xmm0
+    pshufb xmm2, xmm8
+    pcmpeqb xmm2, xmm8
+    pmovmskb r8d, xmm2
+    shl r8, 32
+    or rdi, r8
+    pshufb xmm0, xmm9
+    pcmpeqb xmm0, xmm9
+    pmovmskb r8d, xmm0
+    shl r8, 48
+    or rdi, r8
+    movdqa xmm0, xmm1
+    pshufb xmm0, xmm6
+    movdqa xmm2, xmm6
+    por xmm2, xmm4
+    pcmpeqb xmm0, xmm2
+    pmovmskb r8d, xmm0
+    movdqa xmm0, xmm1
+    pshufb xmm0, xmm7
+    movdqa xmm2, xmm7
+    por xmm2, xmm4
+    pcmpeqb xmm0, xmm2
+    pmovmskb r12d, xmm0
+    shl r12, 16
+    or r8, r12
+    movdqa xmm0, xmm1
+    pshufb xmm0, xmm8
+    movdqa xmm2, xmm8
+    por xmm2, xmm4
+    pcmpeqb xmm0, xmm2
+    pmovmskb r12d, xmm0
+    shl r12, 32
+    or r8, r12
+    pshufb xmm1, xmm9
+    movdqa xmm0, xmm9
+    por xmm0, xmm4
+    pcmpeqb xmm1, xmm0
+    pmovmskb r12d, xmm1
+    shl r12, 48
+    or r8, r12
+    movdqa xmm0, xmm6
+    pminub xmm0, xmm5
+    pcmpeqb xmm0, xmm6
+    pmovmskb r12d, xmm0
+    movdqa xmm0, xmm7
+    pminub xmm0, xmm5
+    pcmpeqb xmm0, xmm7
+    pmovmskb r13d, xmm0
+    shl r13, 16
+    or r12, r13
+    movdqa xmm0, xmm8
+    pminub xmm0, xmm5
+    pcmpeqb xmm0, xmm8
+    pmovmskb r13d, xmm0
+    shl r13, 32
+    or r12, r13
+    movdqa xmm0, xmm9
+    pminub xmm0, xmm5
+    pcmpeqb xmm0, xmm9
+    pmovmskb r13d, xmm0
+    shl r13, 48
+    or r12, r13
+    mov r13, rdx
+    mov r15, rax
+    not r15
+    and r13, r15
+    mov r15, r13
+    shl r15, 1
+    mov r11, 12297829382473034410
+    mov [rsp + 2912], r11
+    or r15, r11
+    sub r15, r13
+    mov r13, 12297829382473034410
+    xor r15, r13
+    mov r13, r15
+    mov r11, rdx
+    or r11, rax
+    mov [rsp + 2944], r11
+    xor r13, r11
+    mov rax, r15
+    and rax, rdx
+    shr rax, 63
+    not r13
+    and rsi, r13
+    mov rdx, rsi
+    mov r13, rdx
+    mov r15, rdx
+    shl r15, 1
+    xor r13, r15
+    mov rdx, r13
+    mov r15, rdx
+    shl r15, 2
+    xor r13, r15
+    mov rdx, r13
+    mov r15, rdx
+    shl r15, 4
+    xor r13, r15
+    mov rdx, r13
+    mov r15, rdx
+    shl r15, 8
+    xor r13, r15
+    mov rdx, r13
+    mov r15, rdx
+    shl r15, 16
+    xor r13, r15
+    mov rdx, r13
+    mov r15, rdx
+    shl r15, 32
+    xor r13, r15
+    mov rdx, r13
+    xor rdx, r9
+    xor r9d, r9d
+    mov r13, rdx
+    shr r13, 63
+    sub r9, r13
+    mov r13, r8
+    or r13, rdi
+    not r13
+    mov rdi, r13
+    mov r15, rsi
+    not r15
+    and rdi, r15
+    mov r15, rdi
+    shl r15, 1
+    or r15, rbx
+    mov rbx, rdi
     shr rbx, 63
     not r15
     and r13, r15
-    or rdi, r13
-    mov rsi, rbp
-    xor rsi, r8
-    not rsi
-    and rdi, rsi
-    mov r11, qword [rsp + 64]
-    and rdx, rbp
-    or r11, rdx
-    mov [rsp + 64], r11
+    or r8, r13
+    mov rdi, rdx
+    xor rdi, rsi
+    not rdi
+    and r8, rdi
+    and r12, rdx
+    or rbp, r12
     test r14, r14
-    jne strict near L.nvol_json_index_ssse3 + 3140
-; .L4:
-    mov r14, rdi
-    mov rcx, qword [rsp + 96]
-    lea r12, [r12 + 64]
-    mov r11, [rsp + 96]
-    lea r11, [r11 + 64]
-    mov [rsp + 96], r11
-    mov r11, [rsp + 128]
-    cmp r12, r11
-    jb strict near L.nvol_json_index_ssse3 + 152
-; .L3:
-    test r14, r14
-    je strict near L.nvol_json_index_ssse3 + 2176
+    je strict near L.nvol_json_index_ssse3 + 5328
     lea rdx, [rel NVOL_K0]
     movzx esi, r14b
     movzx esi, byte [rdx + rsi]
@@ -54923,7 +56514,334 @@ L.nvol_json_index_ssse3:
     shr rdi, 56
     movzx edx, byte [rdx + rdi]
     add esi, edx
-    mov rdx, qword [rsp + 160]
+    mov rdx, qword [rsp + 128]
+    shl rdx, 2
+    mov r11, [rsp + 32]
+    lea rdx, [r11 + rdx]
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 4], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 8], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 12], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rsi, 4
+    jbe strict near L.nvol_json_index_ssse3 + 5308
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 16], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 20], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 24], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 28], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rsi, 8
+    jbe strict near L.nvol_json_index_ssse3 + 5308
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 32], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 36], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 40], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 44], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rsi, 12
+    jbe strict near L.nvol_json_index_ssse3 + 5308
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 48], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 52], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 56], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 60], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rsi, 16
+    jbe strict near L.nvol_json_index_ssse3 + 5308
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 64], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 68], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 72], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 76], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rsi, 20
+    jbe strict near L.nvol_json_index_ssse3 + 5308
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 80], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 84], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 88], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    mov edi, 64
+    bsf r12, r14
+    cmovz r12, rdi
+    lea rdi, [rcx + r12]
+    mov dword [rdx + 92], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rsi, 24
+    jbe strict short L.nvol_json_index_ssse3 + 5308
+    mov edi, 24
+    cmp rdi, rsi
+    jae strict short L.nvol_json_index_ssse3 + 5308
+    db 0x66, 0x90
+; .L52:
+    mov r12, rdi
+    shl r12, 2
+    bsf r13, r14
+    lea r13, [rcx + r13]
+    mov dword [rdx + r12], r13d
+    mov r12, r14
+    mov r13, r14
+    sub r13, 1
+    and r12, r13
+    mov r14, r12
+    add rdi, 1
+    cmp rdi, rsi
+    jb strict short L.nvol_json_index_ssse3 + 5264
+; .L53:
+; .L50:
+; .L48:
+; .L46:
+; .L44:
+; .L42:
+; .L40:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rsi]
+    mov [rsp + 128], r11
+; .L38:
+    mov r14, r8
+    mov rcx, qword [rsp + 64]
+; .L36:
+    test r14, r14
+    je strict near L.nvol_json_index_ssse3 + 6496
+    lea rdx, [rel NVOL_K0]
+    movzx esi, r14b
+    movzx esi, byte [rdx + rsi]
+    mov rdi, r14
+    shr rdi, 8
+    movzx edi, dil
+    movzx edi, byte [rdx + rdi]
+    add esi, edi
+    mov rdi, r14
+    shr rdi, 16
+    movzx edi, dil
+    movzx edi, byte [rdx + rdi]
+    add esi, edi
+    mov rdi, r14
+    shr rdi, 24
+    movzx edi, dil
+    movzx edi, byte [rdx + rdi]
+    add esi, edi
+    mov rdi, r14
+    shr rdi, 32
+    movzx edi, dil
+    movzx edi, byte [rdx + rdi]
+    add esi, edi
+    mov rdi, r14
+    shr rdi, 40
+    movzx edi, dil
+    movzx edi, byte [rdx + rdi]
+    add esi, edi
+    mov rdi, r14
+    shr rdi, 48
+    movzx edi, dil
+    movzx edi, byte [rdx + rdi]
+    add esi, edi
+    mov rdi, r14
+    shr rdi, 56
+    movzx edx, byte [rdx + rdi]
+    add esi, edx
+    mov rdx, qword [rsp + 128]
     shl rdx, 2
     mov r11, [rsp + 32]
     lea rdx, [r11 + rdx]
@@ -54968,7 +56886,7 @@ L.nvol_json_index_ssse3:
     and rdi, r8
     mov r14, rdi
     cmp rsi, 4
-    jbe strict near L.nvol_json_index_ssse3 + 2156
+    jbe strict near L.nvol_json_index_ssse3 + 6476
     mov edi, 64
     bsf r8, r14
     cmovz r8, rdi
@@ -55010,7 +56928,7 @@ L.nvol_json_index_ssse3:
     and rdi, r8
     mov r14, rdi
     cmp rsi, 8
-    jbe strict near L.nvol_json_index_ssse3 + 2156
+    jbe strict near L.nvol_json_index_ssse3 + 6476
     mov edi, 64
     bsf r8, r14
     cmovz r8, rdi
@@ -55052,7 +56970,7 @@ L.nvol_json_index_ssse3:
     and rdi, r8
     mov r14, rdi
     cmp rsi, 12
-    jbe strict near L.nvol_json_index_ssse3 + 2156
+    jbe strict near L.nvol_json_index_ssse3 + 6476
     mov edi, 64
     bsf r8, r14
     cmovz r8, rdi
@@ -55094,7 +57012,7 @@ L.nvol_json_index_ssse3:
     and rdi, r8
     mov r14, rdi
     cmp rsi, 16
-    jbe strict near L.nvol_json_index_ssse3 + 2156
+    jbe strict near L.nvol_json_index_ssse3 + 6476
     mov edi, 64
     bsf r8, r14
     cmovz r8, rdi
@@ -55136,7 +57054,7 @@ L.nvol_json_index_ssse3:
     and rdi, r8
     mov r14, rdi
     cmp rsi, 20
-    jbe strict near L.nvol_json_index_ssse3 + 2156
+    jbe strict near L.nvol_json_index_ssse3 + 6476
     mov edi, 64
     bsf r8, r14
     cmovz r8, rdi
@@ -55178,36 +57096,36 @@ L.nvol_json_index_ssse3:
     and rdi, r8
     mov r14, rdi
     cmp rsi, 24
-    jbe strict short L.nvol_json_index_ssse3 + 2156
+    jbe strict short L.nvol_json_index_ssse3 + 6476
     mov edi, 24
     cmp rdi, rsi
-    jae strict short L.nvol_json_index_ssse3 + 2156
-    db 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-; .L34:
+    jae strict short L.nvol_json_index_ssse3 + 6476
+    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+; .L68:
     mov r8, rdi
     shl r8, 2
-    bsf rbp, r14
-    lea rbp, [rcx + rbp]
-    mov dword [rdx + r8], ebp
+    bsf r12, r14
+    lea r12, [rcx + r12]
+    mov dword [rdx + r8], r12d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r12, r14
+    sub r12, 1
+    and r8, r12
     mov r14, r8
     add rdi, 1
     cmp rdi, rsi
-    jb strict short L.nvol_json_index_ssse3 + 2112
-; .L35:
-; .L32:
-; .L30:
-; .L28:
-; .L26:
-; .L24:
-; .L22:
-    mov r11, [rsp + 160]
+    jb strict short L.nvol_json_index_ssse3 + 6432
+; .L69:
+; .L66:
+; .L64:
+; .L62:
+; .L60:
+; .L58:
+; .L56:
+    mov r11, [rsp + 128]
     lea r11, [r11 + rsi]
-    mov [rsp + 160], r11
-; .L20:
+    mov [rsp + 128], r11
+; .L54:
     mov r11, [rsp]
     mov qword [r11], rax
     mov r11, [rsp]
@@ -55215,10 +57133,9 @@ L.nvol_json_index_ssse3:
     mov r11, [rsp]
     mov qword [r11 + 16], rbx
     mov r11, [rsp]
-    mov r10, [rsp + 64]
-    mov qword [r11 + 24], r10
-    mov rax, qword [rsp + 160]
-    add rsp, 296
+    mov qword [r11 + 24], rbp
+    mov rax, qword [rsp + 128]
+    add rsp, 2984
     pop r15
     pop r14
     pop r13
@@ -55229,249 +57146,249 @@ L.nvol_json_index_ssse3:
 ; .Lrare1:
     mov r8d, 24
     cmp r8, rsi
-    jae strict short L.nvol_json_index_ssse3 + 2300
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
+    jae strict short L.nvol_json_index_ssse3 + 6612
+    db 0xf, 0x1f, 0x40, 0x0
 ; .L18:
-    mov rbp, r8
-    shl rbp, 2
-    bsf r13, r14
-    lea r13, [rcx + r13]
-    mov dword [rdx + rbp], r13d
-    mov rbp, r14
+    mov r13, r8
+    shl r13, 2
+    bsf r15, r14
+    lea r15, [rcx + r15]
+    mov dword [rdx + r13], r15d
     mov r13, r14
-    sub r13, 1
-    and rbp, r13
-    mov r14, rbp
+    mov r15, r14
+    sub r15, 1
+    and r13, r15
+    mov r14, r13
     add r8, 1
     cmp r8, rsi
-    jb strict short L.nvol_json_index_ssse3 + 2256
+    jb strict short L.nvol_json_index_ssse3 + 6568
 ; .L19:
-    jmp strict near L.nvol_json_index_ssse3 + 2467
+    jmp strict near L.nvol_json_index_ssse3 + 6779
 ; .Lrare2:
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 80], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 84], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 88], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 92], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rsi, 24
-    ja strict near L.nvol_json_index_ssse3 + 2238
+    ja strict near L.nvol_json_index_ssse3 + 6553
 ; .L16:
-    jmp strict near L.nvol_json_index_ssse3 + 2634
+    jmp strict near L.nvol_json_index_ssse3 + 6946
 ; .Lrare3:
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 64], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 68], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 72], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 76], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rsi, 20
-    ja strict near L.nvol_json_index_ssse3 + 2305
+    ja strict near L.nvol_json_index_ssse3 + 6617
 ; .L14:
-    jmp strict near L.nvol_json_index_ssse3 + 2801
+    jmp strict near L.nvol_json_index_ssse3 + 7113
 ; .Lrare4:
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 48], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 52], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 56], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 60], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rsi, 16
-    ja strict near L.nvol_json_index_ssse3 + 2472
+    ja strict near L.nvol_json_index_ssse3 + 6784
 ; .L12:
-    jmp strict near L.nvol_json_index_ssse3 + 2968
+    jmp strict near L.nvol_json_index_ssse3 + 7280
 ; .Lrare5:
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 32], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 36], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 40], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 44], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rsi, 12
-    ja strict near L.nvol_json_index_ssse3 + 2639
+    ja strict near L.nvol_json_index_ssse3 + 6951
 ; .L10:
-    jmp strict near L.nvol_json_index_ssse3 + 3135
+    jmp strict near L.nvol_json_index_ssse3 + 7447
 ; .Lrare6:
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 16], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 20], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 24], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 28], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rsi, 8
-    ja strict near L.nvol_json_index_ssse3 + 2806
+    ja strict near L.nvol_json_index_ssse3 + 7118
 ; .L8:
-    jmp strict near L.nvol_json_index_ssse3 + 3465
+    jmp strict near L.nvol_json_index_ssse3 + 7777
 ; .Lrare7:
     lea rdx, [rel NVOL_K0]
     movzx esi, r14b
@@ -55510,63 +57427,327 @@ L.nvol_json_index_ssse3:
     shr r8, 56
     movzx edx, byte [rdx + r8]
     add esi, edx
-    mov rdx, qword [rsp + 160]
+    mov rdx, qword [rsp + 128]
     shl rdx, 2
     mov r11, [rsp + 32]
     lea rdx, [r11 + rdx]
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 4], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 8], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     mov r8d, 64
-    bsf rbp, r14
-    cmovz rbp, r8
-    lea r8, [rcx + rbp]
+    bsf r13, r14
+    cmovz r13, r8
+    lea r8, [rcx + r13]
     mov dword [rdx + 12], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rsi, 4
-    ja strict near L.nvol_json_index_ssse3 + 2973
+    ja strict near L.nvol_json_index_ssse3 + 7285
 ; .L6:
-    mov r11, [rsp + 160]
+    mov r11, [rsp + 128]
     lea r11, [r11 + rsi]
-    mov [rsp + 160], r11
-    jmp strict near L.nvol_json_index_ssse3 + 971
+    mov [rsp + 128], r11
+    jmp strict near L.nvol_json_index_ssse3 + 2878
+; .Lrare8:
+    mov esi, 24
+    cmp rsi, rdx
+    jae strict short L.nvol_json_index_ssse3 + 7883
+    db 0xf, 0x1f, 0x40, 0x0
+; .L34:
+    mov r8, rsi
+    shl r8, 2
+    mov r11, [rsp + 2880]
+    bsf r13, r11
+    lea r13, [r14 + r13]
+    mov dword [rcx + r8], r13d
+    mov r8, qword [rsp + 2880]
+    mov r13, qword [rsp + 2880]
+    sub r13, 1
+    and r8, r13
+    mov qword [rsp + 2880], r8
+    add rsi, 1
+    cmp rsi, rdx
+    jb strict short L.nvol_json_index_ssse3 + 7816
+; .L35:
+    jmp strict near L.nvol_json_index_ssse3 + 8134
+; .Lrare9:
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 80], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 84], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 88], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 92], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    cmp rdx, 24
+    ja strict near L.nvol_json_index_ssse3 + 7802
+; .L32:
+    jmp strict near L.nvol_json_index_ssse3 + 8385
+; .Lrare10:
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 64], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 68], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 72], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 76], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    cmp rdx, 20
+    ja strict near L.nvol_json_index_ssse3 + 7888
+; .L30:
+    jmp strict near L.nvol_json_index_ssse3 + 8636
+; .Lrare11:
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 48], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 52], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 56], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 60], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    cmp rdx, 16
+    ja strict near L.nvol_json_index_ssse3 + 8139
+; .L28:
+    jmp strict near L.nvol_json_index_ssse3 + 8887
+; .Lrare12:
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 32], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 36], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 40], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 44], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    cmp rdx, 12
+    ja strict near L.nvol_json_index_ssse3 + 8390
+; .L26:
+    jmp strict near L.nvol_json_index_ssse3 + 9138
+; .Lrare13:
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 16], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 20], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 24], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    mov esi, 64
+    mov r11, [rsp + 2880]
+    bsf r8, r11
+    cmovz r8, rsi
+    lea rsi, [r14 + r8]
+    mov dword [rcx + 28], esi
+    mov rsi, qword [rsp + 2880]
+    mov r8, qword [rsp + 2880]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 2880], rsi
+    cmp rdx, 8
+    ja strict near L.nvol_json_index_ssse3 + 8641
+; .L24:
+    jmp strict near L.nvol_json_index_ssse3 + 3342
 
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0xf, 0x1f, 0x0
-global nvol_json_index_avx2:function hidden 2377
+global nvol_json_index_avx2:function hidden 5787
 nvol_json_index_avx2:
 L.nvol_json_index_avx2:
     push rbx
@@ -55575,21 +57756,21 @@ L.nvol_json_index_avx2:
     push r13
     push r14
     push r15
-    sub rsp, 296
+    sub rsp, 1512
     mov qword [rsp], rdi
     mov qword [rsp + 32], r8
     mov rax, qword [rdi]
     mov r9, qword [rdi + 8]
     mov rbx, qword [rdi + 16]
-    mov r11, qword [rdi + 24]
-    mov [rsp + 64], r11
+    mov rbp, qword [rdi + 24]
     mov r12, rsi
-    mov qword [rsp + 96], rcx
-    shl rdx, 6
-    lea r11, [rsi + rdx]
-    mov [rsp + 128], r11
+    mov qword [rsp + 64], rcx
+    mov r14, rdx
+    shl r14, 6
+    lea r11, [rsi + r14]
+    mov [rsp + 96], r11
     xor r11d, r11d
-    mov [rsp + 160], r11
+    mov [rsp + 128], r11
     vmovdqa ymm0, [rel NVOL_K15]
     vmovdqa ymm1, [rel NVOL_K16]
     vmovdqa ymm2, [rel NVOL_K17]
@@ -55597,124 +57778,671 @@ L.nvol_json_index_avx2:
     vmovdqa ymm4, [rel NVOL_K19]
     vmovdqa ymm5, [rel NVOL_K20]
     xor r14d, r14d
-    mov r11, [rsp + 128]
+    shr rdx, 1
+    shl rdx, 7
+    lea r11, [rsi + rdx]
+    mov [rsp + 160], r11
     cmp r12, r11
-    jae strict near L.nvol_json_index_avx2 + 591
-    db 0xf, 0x1f, 0x0
+    jae strict near L.nvol_json_index_avx2 + 1705
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
 ; .L2:
     vmovdqu ymm6, [r12]
     vmovdqu ymm7, [r12 + 32]
     vpcmpeqb ymm8, ymm6, ymm2
-    vpmovmskb r15d, ymm8
+    vpmovmskb esi, ymm8
     vpcmpeqb ymm8, ymm7, ymm2
     vpmovmskb r8d, ymm8
     shl r8, 32
-    or r15, r8
+    or rsi, r8
     vpcmpeqb ymm8, ymm6, ymm3
     vpmovmskb r8d, ymm8
     vpcmpeqb ymm8, ymm7, ymm3
-    vpmovmskb esi, ymm8
-    shl rsi, 32
-    or r8, rsi
-    vpshufb ymm8, ymm0, ymm6
-    vpcmpeqb ymm8, ymm8, ymm6
-    vpmovmskb esi, ymm8
-    vpshufb ymm8, ymm0, ymm7
-    vpcmpeqb ymm8, ymm8, ymm7
     vpmovmskb edi, ymm8
     shl rdi, 32
-    or rsi, rdi
+    mov r11, r8
+    or r11, rdi
+    mov [rsp + 192], r11
+    vpshufb ymm8, ymm0, ymm6
+    vpcmpeqb ymm8, ymm8, ymm6
+    vpmovmskb edi, ymm8
+    vpshufb ymm8, ymm0, ymm7
+    vpcmpeqb ymm8, ymm8, ymm7
+    vpmovmskb r15d, ymm8
+    shl r15, 32
+    mov r11, rdi
+    or r11, r15
+    mov [rsp + 224], r11
     vpshufb ymm8, ymm1, ymm6
     vpor ymm9, ymm6, ymm4
     vpcmpeqb ymm8, ymm8, ymm9
-    vpmovmskb edi, ymm8
+    vpmovmskb r15d, ymm8
     vpshufb ymm8, ymm1, ymm7
     vpor ymm9, ymm7, ymm4
     vpcmpeqb ymm8, ymm8, ymm9
     vpmovmskb edx, ymm8
     shl rdx, 32
-    or rdi, rdx
+    or r15, rdx
     vpminub ymm8, ymm6, ymm5
     vpcmpeqb ymm6, ymm8, ymm6
     vpmovmskb edx, ymm6
     vpminub ymm6, ymm7, ymm5
     vpcmpeqb ymm6, ymm6, ymm7
     vpmovmskb r11d, ymm6
-    mov [rsp + 192], r11
-    mov r13, r11
-    shl r13, 32
-    or rdx, r13
-    mov r13, r15
-    mov rbp, rax
-    not rbp
-    and r13, rbp
-    mov rbp, r13
-    shl rbp, 1
-    mov r11, 12297829382473034410
-    mov [rsp + 224], r11
-    or rbp, r11
-    sub rbp, r13
-    mov r13, 12297829382473034410
-    xor rbp, r13
-    mov r13, rbp
-    mov r11, r15
-    or r11, rax
+    mov [rsp + 288], r11
+    shl r11, 32
+    mov [rsp + 320], r11
+    mov r11, rdx
+    mov r10, [rsp + 320]
+    or r11, r10
     mov [rsp + 256], r11
-    xor r13, r11
-    mov rax, rbp
-    and rax, r15
+    vmovdqu ymm6, [r12 + 64]
+    vmovdqu ymm7, [r12 + 96]
+    vpcmpeqb ymm8, ymm6, ymm2
+    vpmovmskb r11d, ymm8
+    mov [rsp + 352], r11
+    mov rdx, r11
+    vpcmpeqb ymm8, ymm7, ymm2
+    vpmovmskb r11d, ymm8
+    mov [rsp + 384], r11
+    shl r11, 32
+    mov [rsp + 416], r11
+    or rdx, r11
+    vpcmpeqb ymm8, ymm6, ymm3
+    vpmovmskb r11d, ymm8
+    mov [rsp + 448], r11
+    mov qword [rsp + 480], r11
+    vpcmpeqb ymm8, ymm7, ymm3
+    vpmovmskb r11d, ymm8
+    mov [rsp + 512], r11
+    shl r11, 32
+    mov [rsp + 544], r11
+    mov r11, [rsp + 480]
+    mov r10, [rsp + 544]
+    or r11, r10
+    mov [rsp + 480], r11
+    vpshufb ymm8, ymm0, ymm6
+    vpcmpeqb ymm8, ymm8, ymm6
+    vpmovmskb r11d, ymm8
+    mov [rsp + 576], r11
+    mov qword [rsp + 608], r11
+    vpshufb ymm8, ymm0, ymm7
+    vpcmpeqb ymm8, ymm8, ymm7
+    vpmovmskb r11d, ymm8
+    mov [rsp + 640], r11
+    shl r11, 32
+    mov [rsp + 672], r11
+    mov r11, [rsp + 608]
+    mov r10, [rsp + 672]
+    or r11, r10
+    mov [rsp + 608], r11
+    vpshufb ymm8, ymm1, ymm6
+    vpor ymm9, ymm6, ymm4
+    vpcmpeqb ymm8, ymm8, ymm9
+    vpmovmskb r11d, ymm8
+    mov [rsp + 704], r11
+    mov rdi, r11
+    vpshufb ymm8, ymm1, ymm7
+    vpor ymm9, ymm7, ymm4
+    vpcmpeqb ymm8, ymm8, ymm9
+    vpmovmskb r11d, ymm8
+    mov [rsp + 736], r11
+    shl r11, 32
+    mov [rsp + 768], r11
+    or rdi, r11
+    vpminub ymm8, ymm6, ymm5
+    vpcmpeqb ymm6, ymm8, ymm6
+    vpmovmskb r11d, ymm6
+    mov [rsp + 800], r11
+    mov qword [rsp + 832], r11
+    vpminub ymm6, ymm7, ymm5
+    vpcmpeqb ymm6, ymm6, ymm7
+    vpmovmskb r11d, ymm6
+    mov [rsp + 864], r11
+    shl r11, 32
+    mov [rsp + 896], r11
+    mov r11, [rsp + 832]
+    mov r10, [rsp + 896]
+    or r11, r10
+    mov [rsp + 832], r11
+    mov r8, rsi
+    mov r11, rax
+    not r11
+    mov [rsp + 928], r11
+    and r8, r11
+    mov r11, r8
+    shl r11, 1
+    mov [rsp + 960], r11
+    mov qword [rsp + 992], r11
+    mov r11, 12297829382473034410
+    mov [rsp + 1024], r11
+    mov r11, [rsp + 992]
+    mov r10, [rsp + 1024]
+    or r11, r10
+    mov [rsp + 992], r11
+    sub r11, r8
+    mov [rsp + 1056], r11
+    mov r8, r11
+    mov r11, 12297829382473034410
+    mov [rsp + 1088], r11
+    xor r8, r11
+    mov r11, rsi
+    or r11, rax
+    mov [rsp + 1152], r11
+    mov r11, r8
+    mov r10, [rsp + 1152]
+    xor r11, r10
+    mov [rsp + 1120], r11
+    mov rax, r8
+    and rax, rsi
     shr rax, 63
-    not r13
-    and r8, r13
-    vmovq xmm6, r8
+    mov rsi, qword [rsp + 192]
+    mov r8, r11
+    not r8
+    and rsi, r8
+    vmovq xmm6, rsi
     vpcmpeqb xmm7, xmm7, xmm7
     vpclmulqdq xmm6, xmm6, xmm7, 0
-    vmovq rbp, xmm6
-    xor rbp, r9
+    vmovq r8, xmm6
+    xor r8, r9
     xor r9d, r9d
-    mov r13, rbp
-    shr r13, 63
-    sub r9, r13
-    mov r13, rdi
-    or r13, rsi
+    mov r11, r8
+    shr r11, 63
+    mov [rsp + 1184], r11
+    sub r9, r11
+    mov r11, r15
+    mov r10, [rsp + 224]
+    or r11, r10
+    mov [rsp + 1216], r11
+    mov r13, r11
     not r13
-    mov rsi, r13
-    mov r15, r8
+    mov r11, rsi
+    not r11
+    mov [rsp + 1280], r11
+    mov r11, r13
+    mov r10, [rsp + 1280]
+    and r11, r10
+    mov [rsp + 1248], r11
+    shl r11, 1
+    mov [rsp + 1312], r11
+    or r11, rbx
+    mov [rsp + 1344], r11
+    mov rbx, qword [rsp + 1248]
+    shr rbx, 63
+    not r11
+    mov [rsp + 1376], r11
+    and r13, r11
+    or r15, r13
+    mov r13, r8
+    xor r13, rsi
+    not r13
+    and r15, r13
+    mov rsi, qword [rsp + 256]
+    and rsi, r8
+    or rbp, rsi
+    mov qword [rsp + 1408], r15
+    mov rsi, rdx
+    mov r8, rax
+    not r8
+    and rsi, r8
+    mov r8, rsi
+    shl r8, 1
+    mov r13, 12297829382473034410
+    or r8, r13
+    sub r8, rsi
+    mov rsi, 12297829382473034410
+    xor r8, rsi
+    mov rsi, r8
+    mov r13, rdx
+    or r13, rax
+    xor rsi, r13
+    mov rax, r8
+    and rax, rdx
+    shr rax, 63
+    mov rdx, qword [rsp + 480]
+    not rsi
+    and rdx, rsi
+    vmovq xmm6, rdx
+    vpcmpeqb xmm7, xmm7, xmm7
+    vpclmulqdq xmm6, xmm6, xmm7, 0
+    vmovq rsi, xmm6
+    xor rsi, r9
+    xor r9d, r9d
+    mov r8, rsi
+    shr r8, 63
+    sub r9, r8
+    mov r8, rdi
+    mov r11, [rsp + 608]
+    or r8, r11
+    not r8
+    mov r13, r8
+    mov r15, rdx
     not r15
-    and rsi, r15
-    mov r15, rsi
+    and r13, r15
+    mov r15, r13
     shl r15, 1
     or r15, rbx
-    mov rbx, rsi
+    mov rbx, r13
+    shr rbx, 63
+    not r15
+    and r8, r15
+    or rdi, r8
+    mov r8, rsi
+    xor r8, rdx
+    not r8
+    and rdi, r8
+    mov rdx, qword [rsp + 832]
+    and rdx, rsi
+    or rbp, rdx
+    test r14, r14
+    jne strict near L.nvol_json_index_avx2 + 4529
+; .L4:
+    mov r11, [rsp + 1408]
+    test r11, r11
+    je strict near L.nvol_json_index_avx2 + 1651
+    mov r13, qword [rsp + 64]
+    mov r14, r13
+    mov r11, [rsp + 1408]
+    popcnt rcx, r11
+    mov rdx, qword [rsp + 128]
+    shl rdx, 2
+    mov r11, [rsp + 32]
+    lea rdx, [r11 + rdx]
+    mov r11, [rsp + 1408]
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 4], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 8], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 12], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    cmp rcx, 4
+    ja strict near L.nvol_json_index_avx2 + 5588
+; .L22:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rcx]
+    mov [rsp + 128], r11
+; .L20:
+    mov r14, rdi
+    mov r11, [rsp + 64]
+    lea rcx, [r11 + 64]
+    lea r12, [r12 + 128]
+    mov r11, [rsp + 64]
+    lea r11, [r11 + 128]
+    mov [rsp + 64], r11
+    mov r11, [rsp + 160]
+    cmp r12, r11
+    jb strict near L.nvol_json_index_avx2 + 160
+; .L3:
+    mov r11, [rsp + 96]
+    cmp r12, r11
+    jae strict near L.nvol_json_index_avx2 + 2920
+    vmovdqu ymm6, [r12]
+    vmovdqu ymm7, [r12 + 32]
+    vpcmpeqb ymm8, ymm6, ymm2
+    vpmovmskb edx, ymm8
+    vpcmpeqb ymm2, ymm7, ymm2
+    vpmovmskb esi, ymm2
+    shl rsi, 32
+    or rdx, rsi
+    vpcmpeqb ymm2, ymm6, ymm3
+    vpmovmskb esi, ymm2
+    vpcmpeqb ymm2, ymm7, ymm3
+    vpmovmskb edi, ymm2
+    shl rdi, 32
+    or rsi, rdi
+    vpshufb ymm2, ymm0, ymm6
+    vpcmpeqb ymm2, ymm2, ymm6
+    vpmovmskb edi, ymm2
+    vpshufb ymm0, ymm0, ymm7
+    vpcmpeqb ymm0, ymm0, ymm7
+    vpmovmskb r8d, ymm0
+    shl r8, 32
+    or rdi, r8
+    vpshufb ymm0, ymm1, ymm6
+    vpor ymm2, ymm6, ymm4
+    vpcmpeqb ymm0, ymm0, ymm2
+    vpmovmskb r8d, ymm0
+    vpshufb ymm0, ymm1, ymm7
+    vpor ymm1, ymm7, ymm4
+    vpcmpeqb ymm0, ymm0, ymm1
+    vpmovmskb r12d, ymm0
+    shl r12, 32
+    or r8, r12
+    vpminub ymm0, ymm6, ymm5
+    vpcmpeqb ymm0, ymm0, ymm6
+    vpmovmskb r12d, ymm0
+    vpminub ymm0, ymm7, ymm5
+    vpcmpeqb ymm0, ymm0, ymm7
+    vpmovmskb r13d, ymm0
+    shl r13, 32
+    or r12, r13
+    mov r13, rdx
+    mov r15, rax
+    not r15
+    and r13, r15
+    mov r15, r13
+    shl r15, 1
+    mov r11, 12297829382473034410
+    mov [rsp + 1440], r11
+    or r15, r11
+    sub r15, r13
+    mov r13, 12297829382473034410
+    xor r15, r13
+    mov r13, r15
+    mov r11, rdx
+    or r11, rax
+    mov [rsp + 1472], r11
+    xor r13, r11
+    mov rax, r15
+    and rax, rdx
+    shr rax, 63
+    not r13
+    and rsi, r13
+    vmovq xmm0, rsi
+    vpcmpeqb xmm1, xmm1, xmm1
+    vpclmulqdq xmm0, xmm0, xmm1, 0
+    vmovq rdx, xmm0
+    xor rdx, r9
+    xor r9d, r9d
+    mov r13, rdx
+    shr r13, 63
+    sub r9, r13
+    mov r13, r8
+    or r13, rdi
+    not r13
+    mov rdi, r13
+    mov r15, rsi
+    not r15
+    and rdi, r15
+    mov r15, rdi
+    shl r15, 1
+    or r15, rbx
+    mov rbx, rdi
     shr rbx, 63
     not r15
     and r13, r15
-    or rdi, r13
-    mov rsi, rbp
-    xor rsi, r8
-    not rsi
-    and rdi, rsi
-    mov r11, qword [rsp + 64]
-    and rdx, rbp
-    or r11, rdx
-    mov [rsp + 64], r11
+    or r8, r13
+    mov rdi, rdx
+    xor rdi, rsi
+    not rdi
+    and r8, rdi
+    and r12, rdx
+    or rbp, r12
     test r14, r14
-    jne strict near L.nvol_json_index_avx2 + 2201
-; .L4:
-    mov r14, rdi
-    mov rcx, qword [rsp + 96]
-    lea r12, [r12 + 64]
-    mov r11, [rsp + 96]
-    lea r11, [r11 + 64]
-    mov [rsp + 96], r11
-    mov r11, [rsp + 128]
-    cmp r12, r11
-    jb strict near L.nvol_json_index_avx2 + 152
-; .L3:
-    test r14, r14
-    je strict near L.nvol_json_index_avx2 + 1432
+    je strict near L.nvol_json_index_avx2 + 2912
     popcnt rdx, r14
-    mov rsi, qword [rsp + 160]
+    mov rsi, qword [rsp + 128]
+    shl rsi, 2
+    mov r11, [rsp + 32]
+    lea rsi, [r11 + rsi]
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 4], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 8], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 12], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rdx, 4
+    jbe strict near L.nvol_json_index_avx2 + 2892
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 16], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 20], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 24], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 28], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rdx, 8
+    jbe strict near L.nvol_json_index_avx2 + 2892
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 32], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 36], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 40], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 44], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rdx, 12
+    jbe strict near L.nvol_json_index_avx2 + 2892
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 48], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 52], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 56], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 60], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rdx, 16
+    jbe strict near L.nvol_json_index_avx2 + 2892
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 64], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 68], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 72], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 76], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rdx, 20
+    jbe strict near L.nvol_json_index_avx2 + 2892
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 80], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 84], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 88], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    tzcnt rdi, r14
+    lea rdi, [rcx + rdi]
+    mov dword [rsi + 92], edi
+    mov rdi, r14
+    mov r12, r14
+    sub r12, 1
+    and rdi, r12
+    mov r14, rdi
+    cmp rdx, 24
+    jbe strict short L.nvol_json_index_avx2 + 2892
+    mov edi, 24
+    cmp rdi, rdx
+    jae strict short L.nvol_json_index_avx2 + 2892
+    db 0x90
+; .L52:
+    mov r12, rdi
+    shl r12, 2
+    bsf r13, r14
+    lea r13, [rcx + r13]
+    mov dword [rsi + r12], r13d
+    mov r12, r14
+    mov r13, r14
+    sub r13, 1
+    and r12, r13
+    mov r14, r12
+    add rdi, 1
+    cmp rdi, rdx
+    jb strict short L.nvol_json_index_avx2 + 2848
+; .L53:
+; .L50:
+; .L48:
+; .L46:
+; .L44:
+; .L42:
+; .L40:
+    mov r11, [rsp + 128]
+    lea r11, [r11 + rdx]
+    mov [rsp + 128], r11
+; .L38:
+    mov r14, r8
+    mov rcx, qword [rsp + 64]
+; .L36:
+    test r14, r14
+    je strict near L.nvol_json_index_avx2 + 3760
+    popcnt rdx, r14
+    mov rsi, qword [rsp + 128]
     shl rsi, 2
     mov r11, [rsp + 32]
     lea rsi, [r11 + rsi]
@@ -55751,7 +58479,7 @@ L.nvol_json_index_avx2:
     and rdi, r8
     mov r14, rdi
     cmp rdx, 4
-    jbe strict near L.nvol_json_index_avx2 + 1412
+    jbe strict near L.nvol_json_index_avx2 + 3740
     tzcnt rdi, r14
     lea rdi, [rcx + rdi]
     mov dword [rsi + 16], edi
@@ -55785,7 +58513,7 @@ L.nvol_json_index_avx2:
     and rdi, r8
     mov r14, rdi
     cmp rdx, 8
-    jbe strict near L.nvol_json_index_avx2 + 1412
+    jbe strict near L.nvol_json_index_avx2 + 3740
     tzcnt rdi, r14
     lea rdi, [rcx + rdi]
     mov dword [rsi + 32], edi
@@ -55819,7 +58547,7 @@ L.nvol_json_index_avx2:
     and rdi, r8
     mov r14, rdi
     cmp rdx, 12
-    jbe strict near L.nvol_json_index_avx2 + 1412
+    jbe strict near L.nvol_json_index_avx2 + 3740
     tzcnt rdi, r14
     lea rdi, [rcx + rdi]
     mov dword [rsi + 48], edi
@@ -55853,7 +58581,7 @@ L.nvol_json_index_avx2:
     and rdi, r8
     mov r14, rdi
     cmp rdx, 16
-    jbe strict near L.nvol_json_index_avx2 + 1412
+    jbe strict near L.nvol_json_index_avx2 + 3740
     tzcnt rdi, r14
     lea rdi, [rcx + rdi]
     mov dword [rsi + 64], edi
@@ -55887,7 +58615,7 @@ L.nvol_json_index_avx2:
     and rdi, r8
     mov r14, rdi
     cmp rdx, 20
-    jbe strict near L.nvol_json_index_avx2 + 1412
+    jbe strict near L.nvol_json_index_avx2 + 3740
     tzcnt rdi, r14
     lea rdi, [rcx + rdi]
     mov dword [rsi + 80], edi
@@ -55921,36 +58649,36 @@ L.nvol_json_index_avx2:
     and rdi, r8
     mov r14, rdi
     cmp rdx, 24
-    jbe strict short L.nvol_json_index_avx2 + 1412
+    jbe strict short L.nvol_json_index_avx2 + 3740
     mov edi, 24
     cmp rdi, rdx
-    jae strict short L.nvol_json_index_avx2 + 1412
-    db 0xf, 0x1f, 0x44, 0x0, 0x0
-; .L34:
+    jae strict short L.nvol_json_index_avx2 + 3740
+    db 0xf, 0x1f, 0x40, 0x0
+; .L68:
     mov r8, rdi
     shl r8, 2
-    bsf rbp, r14
-    lea rbp, [rcx + rbp]
-    mov dword [rsi + r8], ebp
+    bsf r12, r14
+    lea r12, [rcx + r12]
+    mov dword [rsi + r8], r12d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r12, r14
+    sub r12, 1
+    and r8, r12
     mov r14, r8
     add rdi, 1
     cmp rdi, rdx
-    jb strict short L.nvol_json_index_avx2 + 1368
-; .L35:
-; .L32:
-; .L30:
-; .L28:
-; .L26:
-; .L24:
-; .L22:
-    mov r11, [rsp + 160]
+    jb strict short L.nvol_json_index_avx2 + 3696
+; .L69:
+; .L66:
+; .L64:
+; .L62:
+; .L60:
+; .L58:
+; .L56:
+    mov r11, [rsp + 128]
     lea r11, [r11 + rdx]
-    mov [rsp + 160], r11
-; .L20:
+    mov [rsp + 128], r11
+; .L54:
     mov r11, [rsp]
     mov qword [r11], rax
     mov r11, [rsp]
@@ -55958,11 +58686,10 @@ L.nvol_json_index_avx2:
     mov r11, [rsp]
     mov qword [r11 + 16], rbx
     mov r11, [rsp]
-    mov r10, [rsp + 64]
-    mov qword [r11 + 24], r10
-    mov rax, qword [rsp + 160]
+    mov qword [r11 + 24], rbp
+    mov rax, qword [rsp + 128]
     vzeroupper
-    add rsp, 296
+    add rsp, 1512
     pop r15
     pop r14
     pop r13
@@ -55973,212 +58700,212 @@ L.nvol_json_index_avx2:
 ; .Lrare1:
     mov r8d, 24
     cmp r8, rdx
-    jae strict short L.nvol_json_index_avx2 + 1556
-    db 0xf, 0x1f, 0x40, 0x0
+    jae strict short L.nvol_json_index_avx2 + 3884
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
 ; .L18:
-    mov rbp, r8
-    shl rbp, 2
-    bsf r13, r14
-    lea r13, [rcx + r13]
-    mov dword [rsi + rbp], r13d
-    mov rbp, r14
+    mov r13, r8
+    shl r13, 2
+    bsf r15, r14
+    lea r15, [rcx + r15]
+    mov dword [rsi + r13], r15d
     mov r13, r14
-    sub r13, 1
-    and rbp, r13
-    mov r14, rbp
+    mov r15, r14
+    sub r15, 1
+    and r13, r15
+    mov r14, r13
     add r8, 1
     cmp r8, rdx
-    jb strict short L.nvol_json_index_avx2 + 1512
+    jb strict short L.nvol_json_index_avx2 + 3840
 ; .L19:
-    jmp strict short L.nvol_json_index_avx2 + 1684
+    jmp strict short L.nvol_json_index_avx2 + 4012
 ; .Lrare2:
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 80], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 84], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 88], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 92], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rdx, 24
-    ja strict near L.nvol_json_index_avx2 + 1497
+    ja strict near L.nvol_json_index_avx2 + 3820
 ; .L16:
-    jmp strict short L.nvol_json_index_avx2 + 1812
+    jmp strict short L.nvol_json_index_avx2 + 4140
 ; .Lrare3:
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 64], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 68], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 72], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 76], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rdx, 20
-    ja strict near L.nvol_json_index_avx2 + 1558
+    ja strict near L.nvol_json_index_avx2 + 3886
 ; .L14:
-    jmp strict short L.nvol_json_index_avx2 + 1940
+    jmp strict short L.nvol_json_index_avx2 + 4268
 ; .Lrare4:
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 48], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 52], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 56], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 60], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rdx, 16
-    ja strict near L.nvol_json_index_avx2 + 1686
+    ja strict near L.nvol_json_index_avx2 + 4014
 ; .L12:
-    jmp strict short L.nvol_json_index_avx2 + 2068
+    jmp strict short L.nvol_json_index_avx2 + 4396
 ; .Lrare5:
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 32], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 36], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 40], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 44], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rdx, 12
-    ja strict near L.nvol_json_index_avx2 + 1814
+    ja strict near L.nvol_json_index_avx2 + 4142
 ; .L10:
-    jmp strict short L.nvol_json_index_avx2 + 2196
+    jmp strict short L.nvol_json_index_avx2 + 4524
 ; .Lrare6:
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 16], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 20], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 24], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 28], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rdx, 8
-    ja strict near L.nvol_json_index_avx2 + 1942
+    ja strict near L.nvol_json_index_avx2 + 4270
 ; .L8:
-    jmp strict near L.nvol_json_index_avx2 + 2352
+    jmp strict near L.nvol_json_index_avx2 + 4680
 ; .Lrare7:
     popcnt rdx, r14
-    mov rsi, qword [rsp + 160]
+    mov rsi, qword [rsp + 128]
     shl rsi, 2
     mov r11, [rsp + 32]
     lea rsi, [r11 + rsi]
@@ -56186,44 +58913,269 @@ L.nvol_json_index_avx2:
     lea r8, [rcx + r8]
     mov dword [rsi], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 4], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 8], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     tzcnt r8, r14
     lea r8, [rcx + r8]
     mov dword [rsi + 12], r8d
     mov r8, r14
-    mov rbp, r14
-    sub rbp, 1
-    and r8, rbp
+    mov r13, r14
+    sub r13, 1
+    and r8, r13
     mov r14, r8
     cmp rdx, 4
-    ja strict near L.nvol_json_index_avx2 + 2070
+    ja strict near L.nvol_json_index_avx2 + 4398
 ; .L6:
-    mov r11, [rsp + 160]
+    mov r11, [rsp + 128]
     lea r11, [r11 + rdx]
-    mov [rsp + 160], r11
-    jmp strict near L.nvol_json_index_avx2 + 547
+    mov [rsp + 128], r11
+    jmp strict near L.nvol_json_index_avx2 + 1374
+; .Lrare8:
+    mov esi, 24
+    cmp rsi, rcx
+    jae strict short L.nvol_json_index_avx2 + 4787
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+; .L34:
+    mov r8, rsi
+    shl r8, 2
+    mov r11, [rsp + 1408]
+    bsf r13, r11
+    lea r13, [r14 + r13]
+    mov dword [rdx + r8], r13d
+    mov r8, qword [rsp + 1408]
+    mov r13, qword [rsp + 1408]
+    sub r13, 1
+    and r8, r13
+    mov qword [rsp + 1408], r8
+    add rsi, 1
+    cmp rsi, rcx
+    jb strict short L.nvol_json_index_avx2 + 4720
+; .L35:
+    jmp strict near L.nvol_json_index_avx2 + 4986
+; .Lrare9:
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 80], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 84], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 88], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 92], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    cmp rcx, 24
+    ja strict near L.nvol_json_index_avx2 + 4705
+; .L32:
+    jmp strict near L.nvol_json_index_avx2 + 5185
+; .Lrare10:
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 64], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 68], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 72], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 76], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    cmp rcx, 20
+    ja strict near L.nvol_json_index_avx2 + 4792
+; .L30:
+    jmp strict near L.nvol_json_index_avx2 + 5384
+; .Lrare11:
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 48], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 52], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 56], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 60], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    cmp rcx, 16
+    ja strict near L.nvol_json_index_avx2 + 4991
+; .L28:
+    jmp strict near L.nvol_json_index_avx2 + 5583
+; .Lrare12:
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 32], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 36], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 40], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 44], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    cmp rcx, 12
+    ja strict near L.nvol_json_index_avx2 + 5190
+; .L26:
+    jmp strict near L.nvol_json_index_avx2 + 5782
+; .Lrare13:
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 16], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 20], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 24], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    mov r11, rsi
+    tzcnt rsi, r11
+    lea rsi, [r14 + rsi]
+    mov dword [rdx + 28], esi
+    mov rsi, qword [rsp + 1408]
+    mov r8, qword [rsp + 1408]
+    sub r8, 1
+    and rsi, r8
+    mov qword [rsp + 1408], rsi
+    cmp rcx, 8
+    ja strict near L.nvol_json_index_avx2 + 5389
+; .L24:
+    jmp strict near L.nvol_json_index_avx2 + 1631
 
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
@@ -57527,18 +60479,18 @@ nvol_cie:
     dd 76
     dd $ - nvol_cie
     dd L.nvol_json_index_scalar - $
-    dd 3013
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 192, 2, 3, 0, 7, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 6476
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 4, 3, 111, 18, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_json_index_ssse3 - $
-    dd 3490
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 2, 3, 155, 8, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 9143
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 23, 3, 118, 25, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 76
     dd $ - nvol_cie
     dd L.nvol_json_index_avx2 - $
-    dd 2377
-    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 224, 2, 3, 182, 5, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
+    dd 5787
+    db 0, 65, 14, 16, 131, 2, 65, 14, 24, 134, 3, 66, 14, 32, 140, 4, 66, 14, 40, 141, 5, 66, 14, 48, 142, 6, 66, 14, 56, 143, 7, 71, 14, 160, 12, 3, 201, 14, 10, 71, 14, 56, 66, 14, 48, 66, 14, 40, 66, 14, 32, 66, 14, 24, 65, 14, 16, 65, 14, 8, 65, 11, 0, 0
     dd 16
     dd $ - nvol_cie
     dd L.nvol_json_index_raw - $
