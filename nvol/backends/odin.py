@@ -131,6 +131,7 @@ SCALAR = {
     "load32u": "intrinsics.unaligned_load((^u32)({0}))",
     "load64": "intrinsics.unaligned_load((^u64)({0}))",
     "cpu_avx2": "nvol_cpu_avx2()",
+    "cpu_avx2_pclmul": "nvol_cpu_avx2_pclmul()",
     "cpu_ssse3": "(.ssse3 in info.cpu_features())",
     "cpu_sse42": "nvol_cpu_sse42()",
 }
@@ -153,6 +154,11 @@ FOREIGN = {
 	@(private) nvol_cpu_avx2 :: proc "contextless" () -> bool {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override == 1 }
 		return .avx2 in info.cpu_features()
+	}
+	@(private) nvol_cpu_avx2_pclmul :: proc "contextless" () -> bool {
+		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override == 1 }
+		f := info.cpu_features()
+		return .avx2 in f && .pclmulqdq in f
 	}
 	@(private) nvol_cpu_sse42 :: proc "contextless" () -> bool {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override >= 1 }
@@ -307,7 +313,7 @@ class OdinPrinter(Printer):
             # (ssse3 is listed too: AVX2 implies it, but Odin compares the feature
             # strings when an AVX2 entry inlines an SSSE3 kernel)
             if feat == "avx2":
-                feat = "avx2,ssse3,-slow-unaligned-mem-32"
+                feat = "avx2,ssse3,pclmul,-slow-unaligned-mem-32"
             elif feat == "sse4.2":
                 feat = "sse4.2,ssse3"
             attrs.append(f'enable_target_feature="{feat}"')

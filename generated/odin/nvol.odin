@@ -40,6 +40,11 @@ when ODIN_ARCH == .amd64 {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override == 1 }
 		return .avx2 in info.cpu_features()
 	}
+	@(private) nvol_cpu_avx2_pclmul :: proc "contextless" () -> bool {
+		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override == 1 }
+		f := info.cpu_features()
+		return .avx2 in f && .pclmulqdq in f
+	}
 	@(private) nvol_cpu_sse42 :: proc "contextless" () -> bool {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override >= 1 }
 		return .sse42 in info.cpu_features()
@@ -174,7 +179,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// pointer to the first byte in [start, end) equal to any of 1 needle(s), or NULL; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memchr_avx2 :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
@@ -234,7 +239,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_memchr: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memchr_entry_avx2 :: #force_no_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -396,7 +401,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// pointer to the last byte in [start, end) equal to any of 1 needle(s), or NULL; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memrchr_avx2 :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
@@ -455,7 +460,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_memrchr: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memrchr_entry_avx2 :: #force_no_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -620,7 +625,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// pointer to the first byte in [start, end) equal to any of 2 needle(s), or NULL; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memchr2_avx2 :: #force_inline proc "contextless" (n1: u8, n2: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
@@ -669,7 +674,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_memchr2: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memchr2_entry_avx2 :: #force_no_inline proc "contextless" (n1: u8, n2: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -833,7 +838,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// pointer to the last byte in [start, end) equal to any of 2 needle(s), or NULL; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memrchr2_avx2 :: #force_inline proc "contextless" (n1: u8, n2: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
@@ -881,7 +886,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_memrchr2: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memrchr2_entry_avx2 :: #force_no_inline proc "contextless" (n1: u8, n2: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -1038,7 +1043,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// pointer to the first byte in [start, end) equal to any of 3 needle(s), or NULL; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memchr3_avx2 :: #force_inline proc "contextless" (n1: u8, n2: u8, n3: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
@@ -1088,7 +1093,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_memchr3: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memchr3_entry_avx2 :: #force_no_inline proc "contextless" (n1: u8, n2: u8, n3: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -1244,7 +1249,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// pointer to the last byte in [start, end) equal to any of 3 needle(s), or NULL; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memrchr3_avx2 :: #force_inline proc "contextless" (n1: u8, n2: u8, n3: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
@@ -1293,7 +1298,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_memrchr3: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memrchr3_entry_avx2 :: #force_no_inline proc "contextless" (n1: u8, n2: u8, n3: u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -1386,7 +1391,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// memchr-2.8.3-style count; requires len >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_count_parity_avx2 :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> uint #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
@@ -1422,7 +1427,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_count_parity: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_count_parity_entry_avx2 :: #force_no_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> uint #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -1510,7 +1515,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// SAD-accumulated count; requires len >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_count_sad_avx2 :: #force_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> uint #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		v1: V32 = V32(n1)
@@ -1560,7 +1565,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_count: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_count_entry_avx2 :: #force_no_inline proc "contextless" (n1: u8, start: [^]u8, end: [^]u8) -> uint #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -1664,7 +1669,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// requires len >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_first_non_ascii_avx2 :: #force_inline proc "contextless" (start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		mask: u32 = transmute(u32)nvol_pmovmskb256(intrinsics.unaligned_load((^V32)(start)))
@@ -1717,7 +1722,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_first_non_ascii: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_first_non_ascii_entry_avx2 :: #force_no_inline proc "contextless" (start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))
 		if (len_ < uint(16)) {
@@ -2032,7 +2037,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first packed-pair candidate index; requires hlen >= max(nlen, max(i1, i2) + 32)
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memmem_pppre_avx2 :: #force_inline proc "contextless" (state: [^]u8, nstart: [^]u8, nend: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		nlen: uint = uint(intrinsics.ptr_sub((^u8)(nend), (^u8)(nstart)))
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(state)))
@@ -2217,7 +2222,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// packed-pair search; requires hlen >= max(nlen, max(i1, i2) + 32)
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memmem_pp_avx2 :: #force_inline proc "contextless" (state: [^]u8, nstart: [^]u8, nend: [^]u8, hstart: [^]u8, hend: [^]u8) -> [^]u8 #no_bounds_check {
 		nlen: uint = uint(intrinsics.ptr_sub((^u8)(nend), (^u8)(nstart)))
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(state)))
@@ -2263,7 +2268,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// Two-Way + prefilter
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memmem_tw_avx2 :: #force_inline proc "contextless" (state: [^]u8, nstart: [^]u8, nend: [^]u8, hstart: [^]u8, hend: [^]u8) -> [^]u8 #no_bounds_check {
 		nlen: uint = uint(intrinsics.ptr_sub((^u8)(nend), (^u8)(nstart)))
 		hlen: uint = uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(hstart)))
@@ -2380,7 +2385,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// memmem: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_memmem_find_entry_avx2 :: #force_no_inline proc "contextless" (state: [^]u8, nstart: [^]u8, nend: [^]u8, hstart: [^]u8, hend: [^]u8) -> [^]u8 #no_bounds_check {
 		nlen: uint = uint(intrinsics.ptr_sub((^u8)(nend), (^u8)(nstart)))
 		hlen: uint = uint(intrinsics.ptr_sub((^u8)(hend), (^u8)(hstart)))
@@ -2934,7 +2939,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// slim Teddy, 1-byte masks; requires hend - hstart >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_teddy_slim_avx2_1 :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		lo: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):]))
 		hi: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):][uint(32):]))
@@ -2998,7 +3003,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// fat Teddy, 1-byte masks; requires hend - hstart >= 16
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_teddy_fat_avx2_1 :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		lo: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):]))
 		hi: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):][uint(32):]))
@@ -3068,7 +3073,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// slim Teddy, 2-byte masks; requires hend - hstart >= 33
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_teddy_slim_avx2_2 :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		lo: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):]))
 		lo1: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(64):]))
@@ -3141,7 +3146,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// fat Teddy, 2-byte masks; requires hend - hstart >= 17
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_teddy_fat_avx2_2 :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		lo: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):]))
 		lo1: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(64):]))
@@ -3220,7 +3225,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// slim Teddy, 3-byte masks; requires hend - hstart >= 34
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_teddy_slim_avx2_3 :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		lo: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):]))
 		lo1: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(64):]))
@@ -3301,7 +3306,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// fat Teddy, 3-byte masks; requires hend - hstart >= 18
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_teddy_fat_avx2_3 :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		lo: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):]))
 		lo1: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(64):]))
@@ -3388,7 +3393,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// slim Teddy, 4-byte masks; requires hend - hstart >= 35
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_teddy_slim_avx2_4 :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		lo: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):]))
 		lo1: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(64):]))
@@ -3477,7 +3482,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// fat Teddy, 4-byte masks; requires hend - hstart >= 19
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_teddy_fat_avx2_4 :: #force_no_inline proc "contextless" (state: [^]u8, blob: [^]u8, hstart: [^]u8, hend: [^]u8) -> uint #no_bounds_check {
 		lo: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(0):]))
 		lo1: V32 = intrinsics.unaligned_load((^V32)(state[uint(64):][uint(64):]))
@@ -5836,7 +5841,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		ta: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls)))
 		tb: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls[uint(16):])))
@@ -5870,7 +5875,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2_u :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		ut: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls[uint(64):])))
 		m0f: V32 = V32(u8(15))
@@ -5897,7 +5902,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (nibble lookup); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_avx2 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -5946,7 +5951,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2_k4 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -5975,7 +5980,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2_k5 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6005,7 +6010,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2_k6 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6036,7 +6041,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		ta: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls)))
 		tb: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls[uint(16):])))
@@ -6071,7 +6076,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_u :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		ut: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls[uint(64):])))
 		m0f: V32 = V32(u8(15))
@@ -6099,7 +6104,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_k1 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		zero: V32 = V32(0)
@@ -6126,7 +6131,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_k2 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6154,7 +6159,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_k3 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6183,7 +6188,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_k4 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6213,7 +6218,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_k5 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6244,7 +6249,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_k6 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6276,7 +6281,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		ta: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls)))
 		tb: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls[uint(16):])))
@@ -6312,7 +6317,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_u :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		ut: V32 = nvol_bcast128(intrinsics.unaligned_load((^V16)(cls[uint(64):])))
 		m0f: V32 = V32(u8(15))
@@ -6341,7 +6346,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_k1 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		cur: [^]u8 = start
@@ -6369,7 +6374,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_k2 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6398,7 +6403,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_k3 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6428,7 +6433,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_k4 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6459,7 +6464,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_k5 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6491,7 +6496,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_k6 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		c: V32 = V32(cls[uint(56):][uint(0):][0])
 		c1: V32 = V32(cls[uint(56):][uint(1):][0])
@@ -6524,7 +6529,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2_r0 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		cur: [^]u8 = start
@@ -6550,7 +6555,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_r0 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		zero: V32 = V32(0)
@@ -6577,7 +6582,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_r0 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		cur: [^]u8 = start
@@ -6605,7 +6610,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2_r1 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6632,7 +6637,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_r1 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6660,7 +6665,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_r1 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6689,7 +6694,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2_r2 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6717,7 +6722,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_r2 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6746,7 +6751,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_r2 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6776,7 +6781,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_avx2_r3 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6805,7 +6810,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first byte of [start, end) outside the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_avx2_r3 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6835,7 +6840,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_avx2_r3 :: #force_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		top: V32 = V32(cls[uint(81):][0])
 		e: V32 = V32(cls[uint(82):][uint(0):][0])
@@ -6866,7 +6871,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (1-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_avx2_k1 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -6897,7 +6902,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (2-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_avx2_k2 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -6930,7 +6935,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (3-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_avx2_k3 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -6965,7 +6970,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (4-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_avx2_k4 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7002,7 +7007,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (5-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_avx2_k5 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7041,7 +7046,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (6-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_avx2_k6 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7082,7 +7087,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (nibble lookup); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_mask_avx2 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7135,7 +7140,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (1-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_mask_avx2_k1 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7170,7 +7175,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (2-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_mask_avx2_k2 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7207,7 +7212,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (3-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_mask_avx2_k3 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7246,7 +7251,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (4-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_mask_avx2_k4 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7287,7 +7292,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (5-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_mask_avx2_k5 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7330,7 +7335,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (6-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_mask_avx2_k6 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7375,7 +7380,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (nibble lookup); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_visit_avx2 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, visit: ^Visitor) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7428,7 +7433,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (1-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_visit_avx2_k1 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, visit: ^Visitor) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7463,7 +7468,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (2-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_visit_avx2_k2 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, visit: ^Visitor) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7500,7 +7505,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (3-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_visit_avx2_k3 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, visit: ^Visitor) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7539,7 +7544,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (4-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_visit_avx2_k4 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, visit: ^Visitor) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7580,7 +7585,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (5-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_visit_avx2_k5 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, visit: ^Visitor) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7623,7 +7628,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (6-compare chains); requires end - start >= max(i1, i2) + 32
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_visit_avx2_k6 :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, visit: ^Visitor) -> [^]u8 #no_bounds_check {
 		i1: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(224):])))
 		i2: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(232):])))
@@ -7690,7 +7695,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_find_byteset: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_entry_avx2 :: #force_no_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		count: uint = uint(intrinsics.unaligned_load((^u64)(cls[uint(48):])))
 		if (count == uint(0)) {
@@ -7817,7 +7822,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_find_not_byteset: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_not_byteset_entry_avx2 :: #force_no_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		count: uint = uint(intrinsics.unaligned_load((^u64)(cls[uint(48):])))
 		if ((count == uint(0)) && (start < end)) {
@@ -7999,7 +8004,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_find_byteset_pair: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_entry_avx2 :: #force_no_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8) -> [^]u8 #no_bounds_check {
 		sel: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(240):])))
 		reach: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(248):])))
@@ -8054,7 +8059,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_find_byteset_pair_mask: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_mask_entry_avx2 :: #force_no_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 #no_bounds_check {
 		sel: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(240):])))
 		reach: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(248):])))
@@ -8109,7 +8114,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_find_byteset_pair_visit: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_find_byteset_pair_visit_entry_avx2 :: #force_no_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, visit: ^Visitor) -> [^]u8 #no_bounds_check {
 		sel: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(240):])))
 		reach: uint = uint(intrinsics.unaligned_load((^u64)(st[uint(248):])))
@@ -8164,7 +8169,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// nvol_copy_until_byteset: avx2 entry point
-	@(private, enable_target_feature="avx2,ssse3,-slow-unaligned-mem-32")
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
 	nvol_copy_until_byteset_entry_avx2 :: #force_no_inline proc "contextless" (cls: [^]u8, start: [^]u8, end: [^]u8, dst: [^]u8) -> [^]u8 #no_bounds_check {
 		count: uint = uint(intrinsics.unaligned_load((^u64)(cls[uint(48):])))
 		len_: uint = uint(intrinsics.ptr_sub((^u8)(end), (^u8)(start)))

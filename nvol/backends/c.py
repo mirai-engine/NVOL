@@ -85,15 +85,24 @@ static int nvol_cpu_avx2_detect(void) {
 }
 static int nvol_cpu_ssse3_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 9) & 1; }
 static int nvol_cpu_sse42_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 20) & 1; }
+static int nvol_cpu_avx2_pclmul_detect(void) {
+    int r[4]; __cpuid(r, 1);
+    return ((r[2] >> 1) & 1) && nvol_cpu_avx2_detect();          /* PCLMULQDQ */
+}
 #else
 /* every CPU with AVX2 or SSE4.2 has POPCNT (the dispatch does not check it, nor does the asm):
-   without the feature, the bit count in those kernels stays a software count */
-#  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt")))
+   without the feature, the bit count in those kernels stays a software count. Every AVX2 CPU
+   also has PCLMULQDQ; the kernels that use it dispatch on nvol_cpu_avx2_pclmul, which checks
+   both (a hypervisor can hide one) */
+#  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt,pclmul")))
 #  define NVOL_TARGET_SSSE3 __attribute__((target("ssse3")))
 #  define NVOL_TARGET_SSE4_2 __attribute__((target("sse4.2,popcnt")))
 static int nvol_cpu_avx2_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 static int nvol_cpu_ssse3_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 static int nvol_cpu_sse42_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
+static int nvol_cpu_avx2_pclmul_detect(void) {
+    __builtin_cpu_init(); return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul");
+}
 #endif
 static int nvol_cpu_ssse3_cache = -1;
 static inline int nvol_cpu_ssse3(void) {
@@ -111,6 +120,12 @@ static int nvol_cpu_avx2_cache = -1;
 static inline int nvol_cpu_avx2(void) {
     int v = nvol_cpu_avx2_cache;
     if (v < 0) { v = nvol_cpu_avx2_detect(); nvol_cpu_avx2_cache = v; }
+    return v;
+}
+static int nvol_cpu_avx2_pclmul_cache = -1;
+static inline NVOL_UNUSED int nvol_cpu_avx2_pclmul(void) {   /* no kernel dispatches on it yet */
+    int v = nvol_cpu_avx2_pclmul_cache;
+    if (v < 0) { v = nvol_cpu_avx2_pclmul_detect(); nvol_cpu_avx2_pclmul_cache = v; }
     return v;
 }
 """.strip("\n")
@@ -145,8 +160,8 @@ def _asm(prelude: str) -> str:
     assembly call the cached CPU checks, so they get external linkage."""
     out = []
     for line in prelude.splitlines():
-        if line.startswith("static inline int nvol_cpu_"):
-            decl = line[len("static inline "):-2].rstrip()
+        if line.startswith(("static inline int nvol_cpu_", "static inline NVOL_UNUSED int nvol_cpu_")):
+            decl = line.split("{")[0].replace("static inline ", "").replace("NVOL_UNUSED ", "").rstrip()
             out += [decl + ";", decl + " {"]
             continue
         out.append(line)
@@ -190,6 +205,7 @@ class CPrinter(Printer):
                              "NVOL_API void nvol_test_set_avx2(int v) {"]
                 if arch == "x86_64":
                     self.out.append("    nvol_cpu_avx2_cache = v < 0 ? -1 : v == 1;")
+                    self.out.append("    nvol_cpu_avx2_pclmul_cache = v < 0 ? -1 : v == 1;")
                     self.out.append("    nvol_cpu_sse42_cache = v < 0 ? -1 : v >= 1;")
                     self.out += [f"    {f.name}_ptr = {f.name}_resolve;" for f in self.ifuncs]
                 else:

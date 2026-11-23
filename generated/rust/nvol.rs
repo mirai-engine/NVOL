@@ -156,7 +156,7 @@ pub mod raw {
     }
 
     /// pointer to the first byte in [start, end) equal to any of 1 needle(s), or NULL; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memchr_avx2(n1: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -219,7 +219,7 @@ pub mod raw {
     }
 
     /// nvol_memchr: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memchr_entry_avx2(n1: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -399,7 +399,7 @@ pub mod raw {
     }
 
     /// pointer to the last byte in [start, end) equal to any of 1 needle(s), or NULL; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memrchr_avx2(n1: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -461,7 +461,7 @@ pub mod raw {
     }
 
     /// nvol_memrchr: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memrchr_entry_avx2(n1: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -644,7 +644,7 @@ pub mod raw {
     }
 
     /// pointer to the first byte in [start, end) equal to any of 2 needle(s), or NULL; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memchr2_avx2(n1: u8, n2: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -696,7 +696,7 @@ pub mod raw {
     }
 
     /// nvol_memchr2: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memchr2_entry_avx2(n1: u8, n2: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -878,7 +878,7 @@ pub mod raw {
     }
 
     /// pointer to the last byte in [start, end) equal to any of 2 needle(s), or NULL; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memrchr2_avx2(n1: u8, n2: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -929,7 +929,7 @@ pub mod raw {
     }
 
     /// nvol_memrchr2: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memrchr2_entry_avx2(n1: u8, n2: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -1104,7 +1104,7 @@ pub mod raw {
     }
 
     /// pointer to the first byte in [start, end) equal to any of 3 needle(s), or NULL; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memchr3_avx2(n1: u8, n2: u8, n3: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -1157,7 +1157,7 @@ pub mod raw {
     }
 
     /// nvol_memchr3: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memchr3_entry_avx2(n1: u8, n2: u8, n3: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -1331,7 +1331,7 @@ pub mod raw {
     }
 
     /// pointer to the last byte in [start, end) equal to any of 3 needle(s), or NULL; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memrchr3_avx2(n1: u8, n2: u8, n3: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -1383,7 +1383,7 @@ pub mod raw {
     }
 
     /// nvol_memrchr3: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memrchr3_entry_avx2(n1: u8, n2: u8, n3: u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -1494,7 +1494,7 @@ pub mod raw {
     }
 
     /// memchr-2.8.3-style count; requires len >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_count_parity_avx2(n1: u8, start: *const u8, end: *const u8) -> usize {
         unsafe {
@@ -1533,7 +1533,7 @@ pub mod raw {
     }
 
     /// nvol_count_parity: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_count_parity_entry_avx2(n1: u8, start: *const u8, end: *const u8) -> usize {
         unsafe {
@@ -1637,7 +1637,7 @@ pub mod raw {
     }
 
     /// SAD-accumulated count; requires len >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_count_sad_avx2(n1: u8, start: *const u8, end: *const u8) -> usize {
         unsafe {
@@ -1690,7 +1690,7 @@ pub mod raw {
     }
 
     /// nvol_count: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_count_entry_avx2(n1: u8, start: *const u8, end: *const u8) -> usize {
         unsafe {
@@ -1812,7 +1812,7 @@ pub mod raw {
     }
 
     /// requires len >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_first_non_ascii_avx2(start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -1868,7 +1868,7 @@ pub mod raw {
     }
 
     /// nvol_first_non_ascii: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_first_non_ascii_entry_avx2(start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -2213,7 +2213,7 @@ pub mod raw {
     }
 
     /// first packed-pair candidate index; requires hlen >= max(nlen, max(i1, i2) + 32)
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memmem_pppre_avx2(state: *const u8, nstart: *const u8, nend: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -2405,7 +2405,7 @@ pub mod raw {
     }
 
     /// packed-pair search; requires hlen >= max(nlen, max(i1, i2) + 32)
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memmem_pp_avx2(state: *const u8, nstart: *const u8, nend: *const u8, hstart: *const u8, hend: *const u8) -> *const u8 {
         unsafe {
@@ -2454,7 +2454,7 @@ pub mod raw {
     }
 
     /// Two-Way + prefilter
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memmem_tw_avx2(state: *const u8, nstart: *const u8, nend: *const u8, hstart: *const u8, hend: *const u8) -> *const u8 {
         unsafe {
@@ -2574,7 +2574,7 @@ pub mod raw {
     }
 
     /// memmem: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_memmem_find_entry_avx2(state: *const u8, nstart: *const u8, nend: *const u8, hstart: *const u8, hend: *const u8) -> *const u8 {
         unsafe {
@@ -3162,7 +3162,7 @@ pub mod raw {
     }
 
     /// slim Teddy, 1-byte masks; requires hend - hstart >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_slim_avx2_1(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -3229,7 +3229,7 @@ pub mod raw {
     }
 
     /// fat Teddy, 1-byte masks; requires hend - hstart >= 16
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_fat_avx2_1(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -3302,7 +3302,7 @@ pub mod raw {
     }
 
     /// slim Teddy, 2-byte masks; requires hend - hstart >= 33
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_slim_avx2_2(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -3378,7 +3378,7 @@ pub mod raw {
     }
 
     /// fat Teddy, 2-byte masks; requires hend - hstart >= 17
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_fat_avx2_2(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -3460,7 +3460,7 @@ pub mod raw {
     }
 
     /// slim Teddy, 3-byte masks; requires hend - hstart >= 34
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_slim_avx2_3(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -3544,7 +3544,7 @@ pub mod raw {
     }
 
     /// fat Teddy, 3-byte masks; requires hend - hstart >= 18
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_fat_avx2_3(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -3634,7 +3634,7 @@ pub mod raw {
     }
 
     /// slim Teddy, 4-byte masks; requires hend - hstart >= 35
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_slim_avx2_4(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -3726,7 +3726,7 @@ pub mod raw {
     }
 
     /// fat Teddy, 4-byte masks; requires hend - hstart >= 19
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline(never)]
     pub(crate) unsafe fn nvol_teddy_fat_avx2_4(state: *const u8, blob: *const u8, hstart: *const u8, hend: *const u8) -> usize {
         unsafe {
@@ -6244,7 +6244,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6281,7 +6281,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2_u(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6311,7 +6311,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (nibble lookup); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_avx2(st: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6363,7 +6363,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2_k4(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6395,7 +6395,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2_k5(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6428,7 +6428,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2_k6(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6462,7 +6462,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6500,7 +6500,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_u(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6531,7 +6531,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_k1(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6561,7 +6561,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_k2(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6592,7 +6592,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_k3(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6624,7 +6624,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_k4(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6657,7 +6657,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_k5(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6691,7 +6691,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_k6(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -6726,7 +6726,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -6765,7 +6765,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_u(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -6797,7 +6797,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_k1(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -6828,7 +6828,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_k2(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -6860,7 +6860,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_k3(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -6893,7 +6893,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_k4(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -6927,7 +6927,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_k5(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -6962,7 +6962,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_k6(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -6998,7 +6998,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2_r0(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7027,7 +7027,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_r0(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7057,7 +7057,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_r0(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -7088,7 +7088,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2_r1(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7118,7 +7118,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_r1(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7149,7 +7149,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_r1(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -7181,7 +7181,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2_r2(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7212,7 +7212,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_r2(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7244,7 +7244,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_r2(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -7277,7 +7277,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_avx2_r3(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7309,7 +7309,7 @@ pub mod raw {
     }
 
     /// first byte of [start, end) outside the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_avx2_r3(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7342,7 +7342,7 @@ pub mod raw {
     }
 
     /// copy [start, end) to dst up to the first byte in the class; requires end - start >= 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_avx2_r3(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {
@@ -7376,7 +7376,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (1-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_avx2_k1(st: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7410,7 +7410,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (2-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_avx2_k2(st: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7446,7 +7446,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (3-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_avx2_k3(st: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7484,7 +7484,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (4-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_avx2_k4(st: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7524,7 +7524,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (5-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_avx2_k5(st: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7566,7 +7566,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (6-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_avx2_k6(st: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -7610,7 +7610,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (nibble lookup); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_mask_avx2(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 {
         unsafe {
@@ -7666,7 +7666,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (1-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_mask_avx2_k1(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 {
         unsafe {
@@ -7704,7 +7704,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (2-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_mask_avx2_k2(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 {
         unsafe {
@@ -7744,7 +7744,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (3-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_mask_avx2_k3(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 {
         unsafe {
@@ -7786,7 +7786,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (4-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_mask_avx2_k4(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 {
         unsafe {
@@ -7830,7 +7830,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (5-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_mask_avx2_k5(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 {
         unsafe {
@@ -7876,7 +7876,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (6-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_mask_avx2_k6(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 {
         unsafe {
@@ -7924,7 +7924,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (nibble lookup); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_visit_avx2(st: *const u8, start: *const u8, end: *const u8, visit: &mut impl FnMut(*const u8, u64) -> bool) -> *const u8 {
         unsafe {
@@ -7980,7 +7980,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (1-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_visit_avx2_k1(st: *const u8, start: *const u8, end: *const u8, visit: &mut impl FnMut(*const u8, u64) -> bool) -> *const u8 {
         unsafe {
@@ -8018,7 +8018,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (2-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_visit_avx2_k2(st: *const u8, start: *const u8, end: *const u8, visit: &mut impl FnMut(*const u8, u64) -> bool) -> *const u8 {
         unsafe {
@@ -8058,7 +8058,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (3-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_visit_avx2_k3(st: *const u8, start: *const u8, end: *const u8, visit: &mut impl FnMut(*const u8, u64) -> bool) -> *const u8 {
         unsafe {
@@ -8100,7 +8100,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (4-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_visit_avx2_k4(st: *const u8, start: *const u8, end: *const u8, visit: &mut impl FnMut(*const u8, u64) -> bool) -> *const u8 {
         unsafe {
@@ -8144,7 +8144,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (5-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_visit_avx2_k5(st: *const u8, start: *const u8, end: *const u8, visit: &mut impl FnMut(*const u8, u64) -> bool) -> *const u8 {
         unsafe {
@@ -8190,7 +8190,7 @@ pub mod raw {
     }
 
     /// first p with hay[p+i1] in set 1 and hay[p+i2] in set 2 (6-compare chains); requires end - start >= max(i1, i2) + 32
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_visit_avx2_k6(st: *const u8, start: *const u8, end: *const u8, visit: &mut impl FnMut(*const u8, u64) -> bool) -> *const u8 {
         unsafe {
@@ -8263,7 +8263,7 @@ pub mod raw {
     }
 
     /// nvol_find_byteset: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_entry_avx2(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -8395,7 +8395,7 @@ pub mod raw {
     }
 
     /// nvol_find_not_byteset: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_not_byteset_entry_avx2(cls: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -8585,7 +8585,7 @@ pub mod raw {
     }
 
     /// nvol_find_byteset_pair: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_entry_avx2(st: *const u8, start: *const u8, end: *const u8) -> *const u8 {
         unsafe {
@@ -8643,7 +8643,7 @@ pub mod raw {
     }
 
     /// nvol_find_byteset_pair_mask: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_mask_entry_avx2(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 {
         unsafe {
@@ -8701,7 +8701,7 @@ pub mod raw {
     }
 
     /// nvol_find_byteset_pair_visit: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_find_byteset_pair_visit_entry_avx2(st: *const u8, start: *const u8, end: *const u8, visit: &mut impl FnMut(*const u8, u64) -> bool) -> *const u8 {
         unsafe {
@@ -8759,7 +8759,7 @@ pub mod raw {
     }
 
     /// nvol_copy_until_byteset: avx2 entry point
-    #[target_feature(enable = "avx2,popcnt")]
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_copy_until_byteset_entry_avx2(cls: *const u8, start: *const u8, end: *const u8, dst: *mut u8) -> *const u8 {
         unsafe {

@@ -44,6 +44,8 @@ SCALAR = {
     ("rust", "popcnt"): "({0}.count_ones() as usize)",
     ("rust", "cpu_avx2"): "std::is_x86_feature_detected!(\"avx2\")",
     ("c", "cpu_ssse3"): "nvol_cpu_ssse3()",
+    ("c", "cpu_avx2_pclmul"): "nvol_cpu_avx2_pclmul()",
+    ("rust", "cpu_avx2_pclmul"): "(std::is_x86_feature_detected!(\"avx2\") && std::is_x86_feature_detected!(\"pclmulqdq\"))",
     ("rust", "cpu_ssse3"): "std::is_x86_feature_detected!(\"ssse3\")",
     ("c", "cpu_sse42"): "nvol_cpu_sse42()",
     ("rust", "cpu_sse42"): "std::is_x86_feature_detected!(\"sse4.2\")",
@@ -139,7 +141,7 @@ SSE42 = ISA(
 AVX2 = ISA(
     name="avx2", bytes=32, arch="x86_64",
     vec_type={"c": "__m256i", "rust": "__m256i"},
-    target={"c": "avx2", "rust": "avx2,popcnt"},
+    target={"c": "avx2", "rust": "avx2,popcnt,pclmulqdq"},
     lower={
         ("c", "splat"): "_mm256_set1_epi8((char){0})",
         ("c", "vzero"): "_mm256_setzero_si256()",

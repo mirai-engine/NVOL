@@ -56,6 +56,9 @@ CPU_C = "int prims_cpu_has(const char *isa) { (void)isa; return 1; }\n" if A64 e
 int nvol_cpu_avx2(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 int nvol_cpu_ssse3(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 int nvol_cpu_sse42(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
+int nvol_cpu_avx2_pclmul(void) {
+    __builtin_cpu_init(); return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul");
+}
 """
 CTX = 0x7E57C0DE0000
 VISITOR = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_uint64)

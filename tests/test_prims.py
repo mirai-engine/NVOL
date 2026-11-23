@@ -104,6 +104,18 @@ def _fn_store32(isa):
     return b.build()
 
 
+def _fn_cpu(name):
+    """out[0] = the runtime check `name` (1 or 0), from an AVX2 function."""
+    b = ir.Builder(f"t_avx2_{name}", ir.VOID, isa="avx2", public=True)
+    b.param("src", ir.PTR)
+    out = b.param("out", ir.MPTR)
+    with b.if_(ir.prim(name)):
+        b.store64(out, 1)
+    with b.else_():
+        b.store64(out, 0)
+    return b.build()
+
+
 def _fn_half(name):
     b = ir.Builder(f"t_avx2_{name}", ir.VOID, isa="avx2", public=True)
     src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
@@ -127,6 +139,7 @@ def _module():
         mod.functions += [_fn_u64(isa, n) for n in names]
     mod.functions += [_fn_store32(isa) for isa, names in STORES.items() if names]
     mod.functions.append(_fn_half("load_half_bcast"))
+    mod.functions.append(_fn_cpu("cpu_avx2_pclmul"))
     return mod
 
 
@@ -140,6 +153,7 @@ int prims_cpu_has(const char *isa) {
     if (!strcmp(isa, "ssse3")) return __builtin_cpu_supports("ssse3");
     if (!strcmp(isa, "sse42")) return __builtin_cpu_supports("sse4.2");
     if (!strcmp(isa, "avx2")) return __builtin_cpu_supports("avx2");
+    if (!strcmp(isa, "pclmul")) return __builtin_cpu_supports("pclmul");
     return 0;
 }
 """
@@ -244,3 +258,15 @@ def test_lowerings_match_reference(built, isa):
             want = mem.region(0x9000)
             assert bytes(out) == want, (isa, name, src.hex(), bytes(out).hex(), want.hex())
 
+
+
+def test_cpu_avx2_pclmul(built):
+    """The generated check agrees with the compiler's: AVX2 and PCLMULQDQ."""
+    mod, lib = built
+    _skip_unless(lib, "avx2")
+    cfn = lib.t_avx2_cpu_avx2_pclmul
+    cfn.argtypes = [ctypes.c_char_p, ctypes.c_void_p]
+    cfn.restype = None
+    out = (ctypes.c_uint8 * 8)()
+    cfn(bytes(8), ctypes.addressof(out))
+    assert out[0] == (bool(lib.prims_cpu_has(b"avx2")) and bool(lib.prims_cpu_has(b"pclmul")))

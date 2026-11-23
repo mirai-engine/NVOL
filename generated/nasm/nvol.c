@@ -72,15 +72,24 @@ static int nvol_cpu_avx2_detect(void) {
 }
 static int nvol_cpu_ssse3_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 9) & 1; }
 static int nvol_cpu_sse42_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 20) & 1; }
+static int nvol_cpu_avx2_pclmul_detect(void) {
+    int r[4]; __cpuid(r, 1);
+    return ((r[2] >> 1) & 1) && nvol_cpu_avx2_detect();          /* PCLMULQDQ */
+}
 #else
 /* every CPU with AVX2 or SSE4.2 has POPCNT (the dispatch does not check it, nor does the asm):
-   without the feature, the bit count in those kernels stays a software count */
-#  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt")))
+   without the feature, the bit count in those kernels stays a software count. Every AVX2 CPU
+   also has PCLMULQDQ; the kernels that use it dispatch on nvol_cpu_avx2_pclmul, which checks
+   both (a hypervisor can hide one) */
+#  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt,pclmul")))
 #  define NVOL_TARGET_SSSE3 __attribute__((target("ssse3")))
 #  define NVOL_TARGET_SSE4_2 __attribute__((target("sse4.2,popcnt")))
 static int nvol_cpu_avx2_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 static int nvol_cpu_ssse3_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 static int nvol_cpu_sse42_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
+static int nvol_cpu_avx2_pclmul_detect(void) {
+    __builtin_cpu_init(); return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul");
+}
 #endif
 static int nvol_cpu_ssse3_cache = -1;
 int nvol_cpu_ssse3(void);
@@ -101,6 +110,13 @@ int nvol_cpu_avx2(void);
 int nvol_cpu_avx2(void) {
     int v = nvol_cpu_avx2_cache;
     if (v < 0) { v = nvol_cpu_avx2_detect(); nvol_cpu_avx2_cache = v; }
+    return v;
+}
+static int nvol_cpu_avx2_pclmul_cache = -1;
+int nvol_cpu_avx2_pclmul(void);
+int nvol_cpu_avx2_pclmul(void) {
+    int v = nvol_cpu_avx2_pclmul_cache;
+    if (v < 0) { v = nvol_cpu_avx2_pclmul_detect(); nvol_cpu_avx2_pclmul_cache = v; }
     return v;
 }
 #elif defined(__aarch64__) || defined(_M_ARM64)
@@ -162,6 +178,7 @@ const uint8_t * nvol_find_byteset_pair_mask_raw_resolve(const uint8_t *st, const
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */
 NVOL_API void nvol_test_set_avx2(int v) {
     nvol_cpu_avx2_cache = v < 0 ? -1 : v == 1;
+    nvol_cpu_avx2_pclmul_cache = v < 0 ? -1 : v == 1;
     nvol_cpu_sse42_cache = v < 0 ? -1 : v >= 1;
     nvol_memchr_raw_ptr = nvol_memchr_raw_resolve;
     nvol_memrchr_raw_ptr = nvol_memrchr_raw_resolve;

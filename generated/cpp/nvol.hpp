@@ -87,15 +87,24 @@ inline int nvol_cpu_avx2_detect(void) {
 }
 inline int nvol_cpu_ssse3_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 9) & 1; }
 inline int nvol_cpu_sse42_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 20) & 1; }
+inline int nvol_cpu_avx2_pclmul_detect(void) {
+    int r[4]; __cpuid(r, 1);
+    return ((r[2] >> 1) & 1) && nvol_cpu_avx2_detect();          /* PCLMULQDQ */
+}
 #else
 /* every CPU with AVX2 or SSE4.2 has POPCNT (the dispatch does not check it, nor does the asm):
-   without the feature, the bit count in those kernels stays a software count */
-#  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt")))
+   without the feature, the bit count in those kernels stays a software count. Every AVX2 CPU
+   also has PCLMULQDQ; the kernels that use it dispatch on nvol_cpu_avx2_pclmul, which checks
+   both (a hypervisor can hide one) */
+#  define NVOL_TARGET_AVX2 __attribute__((target("avx2,popcnt,pclmul")))
 #  define NVOL_TARGET_SSSE3 __attribute__((target("ssse3")))
 #  define NVOL_TARGET_SSE4_2 __attribute__((target("sse4.2,popcnt")))
 inline int nvol_cpu_avx2_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 inline int nvol_cpu_ssse3_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 inline int nvol_cpu_sse42_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
+inline int nvol_cpu_avx2_pclmul_detect(void) {
+    __builtin_cpu_init(); return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul");
+}
 #endif
 inline int nvol_cpu_ssse3_cache = -1;
 inline int nvol_cpu_ssse3(void) {
@@ -113,6 +122,12 @@ inline int nvol_cpu_avx2_cache = -1;
 inline int nvol_cpu_avx2(void) {
     int v = nvol_cpu_avx2_cache;
     if (v < 0) { v = nvol_cpu_avx2_detect(); nvol_cpu_avx2_cache = v; }
+    return v;
+}
+inline int nvol_cpu_avx2_pclmul_cache = -1;
+inline NVOL_UNUSED int nvol_cpu_avx2_pclmul(void) {   /* no kernel dispatches on it yet */
+    int v = nvol_cpu_avx2_pclmul_cache;
+    if (v < 0) { v = nvol_cpu_avx2_pclmul_detect(); nvol_cpu_avx2_pclmul_cache = v; }
     return v;
 }
 #elif defined(__aarch64__) || defined(_M_ARM64)
