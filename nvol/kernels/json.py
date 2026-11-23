@@ -184,10 +184,10 @@ def kernel(isa: ISA | None) -> Function:
     # stage1_mode's step<128>: two blocks per iteration, both scanned before either is written
     end2 = b.let("end2", blocks + ((nblocks >> 1) << 7))
     with b.while_(blk < end2):
-        m1 = masks(blk)
-        m2 = masks(blk + 64)
-        bits1 = b.var("bits1", _block(b, isa, st, m1), U64)
-        bits2 = _block(b, isa, st, m2)
+        # each block's masks right before its scan, as simdjson's json_scanner::next: the
+        # masks of both blocks at once outnumber the registers (GCC spilled 6 compares)
+        bits1 = b.var("bits1", _block(b, isa, st, masks(blk)), U64)
+        bits2 = _block(b, isa, st, masks(blk + 64))
         _write_indexes(b, prev, pbase, out, n)
         _write_indexes(b, bits1, base, out, n)
         b.set(prev, bits2)
