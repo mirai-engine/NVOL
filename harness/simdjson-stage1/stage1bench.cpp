@@ -1,6 +1,7 @@
 // simdjson's stage 1 against nvol_json_index_raw, on the same document, for hardware counters.
 //
-//   stage1bench count IMPL N FILE    IMPL: nvol | simdjson; runs stage 1 over FILE N times
+//   stage1bench count IMPL N FILE    IMPL: nvol | simdjson (stage 1), utf8-nvol | utf8-simdjson
+//                                    (nvol_utf8_valid, simdjson::validate_utf8); N passes
 //   stage1bench same FILE            both give the same structural positions (exit 1 if not)
 //
 // The document is padded with spaces to a whole number of 64-byte blocks; simdjson gets the
@@ -60,6 +61,11 @@ int main(int argc, char **argv) {
         size_t n = nvol(buf.data(), len, out, &utf8_ok);
         Simdjson s(len);
         size_t m = s.run(buf.data(), len);
+        bool v1 = nvol_utf8_valid(buf.data(), len) != 0;
+        bool v2 = simdjson::validate_utf8((const char *)buf.data(), len);
+        std::printf("%s nvol_utf8_valid %d validate_utf8 %d: %s\n", argv[2], v1, v2,
+                    v1 == v2 ? "same" : "DIFFERENT");
+        if (v1 != v2) return 1;
         if (s.err == simdjson::UTF8_ERROR || !utf8_ok) {
             bool same = (s.err == simdjson::UTF8_ERROR) == !utf8_ok;
             std::printf("%s UTF-8 error: nvol %d simdjson %d: %s\n", argv[2], !utf8_ok,
@@ -80,7 +86,11 @@ int main(int argc, char **argv) {
     auto buf = load(argv[4], len);
     long n = std::atol(argv[3]);
     size_t sum = 0;
-    if (!std::strcmp(argv[2], "nvol")) {
+    if (!std::strcmp(argv[2], "utf8-nvol")) {
+        for (long i = 0; i <= n; i++) sum += nvol_utf8_valid(buf.data(), len);
+    } else if (!std::strcmp(argv[2], "utf8-simdjson")) {
+        for (long i = 0; i <= n; i++) sum += simdjson::validate_utf8((const char *)buf.data(), len);
+    } else if (!std::strcmp(argv[2], "nvol")) {
         std::vector<uint32_t> out(len + 64);
         sum += nvol(buf.data(), len, out);  // the 0-call run pays the first touch too
         for (long i = 0; i < n; i++) sum += nvol(buf.data(), len, out);
