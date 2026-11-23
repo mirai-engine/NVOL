@@ -708,31 +708,45 @@ def share_slots(code: list, spilled) -> tuple:
     """A stack slot for each spilled register, shared by registers whose ranges never overlap:
     ({register: slot}, number of slots).
 
-    A register's range runs from its first to its last access in layout order, and covers a
-    whole loop (a backward jump's target to the jump) whenever it overlaps one, since a value
-    read at the top of a loop may come from the previous iteration; until nothing grows. Two
-    registers whose ranges do not overlap are never both live, so one slot holds each in turn.
-    Slots are given greedily by start (interval coloring, optimal for intervals)."""
+    A register's range runs from its first to its last access in layout order. It grows to a
+    whole loop (a backward jump's target to the jump) that it overlaps, unless the register
+    starts afresh in each iteration: its range lies inside the loop, its first access there
+    writes it without reading it, and no jump from the loop's head up to that write lands
+    between the write and the last access (a jump past the last access skips its reads too), so
+    every iteration that reads it writes it first. Otherwise a value read at the top of the
+    loop, or after it, may come from an earlier iteration. Until nothing grows. Two registers
+    whose ranges do not overlap are never both live, so one slot holds each in turn; slots are
+    given greedily by start (interval coloring)."""
     at = {ins.args[0].name: i for i, ins in enumerate(code) if ins.op == "label"}
-    loops = [(at[ins.args[0].name], i) for i, ins in enumerate(code)
+    jumps = [(i, at[ins.args[0].name]) for i, ins in enumerate(code)
              if (ins.op == "jmp" or ins.op in CONDJUMPS) and isinstance(ins.args[0], Lab)
-             and at.get(ins.args[0].name, i) < i]
-    span = {}
+             and ins.args[0].name in at]
+    loops = [(t, i) for i, t in jumps if t < i]
+    span, fresh, first = {}, {}, {}
     for i, ins in enumerate(code):
         for r in ins.uses + ins.defs:
             if isinstance(r, VReg) and r in spilled:
+                if r not in span:
+                    fresh[r] = r in ins.defs and r not in ins.uses
+                    first[r] = i
                 lo, hi = span.get(r, (i, i))
                 span[r] = (min(lo, i), max(hi, i))
     for r in spilled:
         span.setdefault(r, (0, len(code)))
+
+    def renewed(r, h, e):
+        lo, hi = span[r]
+        return (fresh.get(r) and h <= lo and hi <= e
+                and not any(h <= i < first[r] < t <= hi for i, t in jumps))
     grew = True
     while grew:
         grew = False
-        for r, (lo, hi) in span.items():
+        for r in span:
+            lo, hi = span[r]
             for h, e in loops:
-                if lo <= e and h <= hi and (h < lo or e > hi):
+                if lo <= e and h <= hi and (h < lo or e > hi) and not renewed(r, h, e):
                     lo, hi, grew = min(lo, h), max(hi, e), True
-            span[r] = (lo, hi)
+                    span[r] = (lo, hi)
     ends, slot = [], {}
     for r in sorted(span, key=lambda r: (span[r][0], r.id)):
         lo, hi = span[r]

@@ -12882,11 +12882,11 @@ nvol_memmem_tw_sse2:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $648, %rsp
-.seh_stackalloc 648
+    sub $488, %rsp
+.seh_stackalloc 488
 .seh_endprologue
     mov %rcx, (%rsp)
-    mov 752(%rsp), %r11
+    mov 592(%rsp), %r11
     mov %r11, 32(%rsp)
     sub %rdx, %r8
     sub %r9, %r11
@@ -12999,36 +12999,32 @@ nvol_memmem_tw_sse2:
 .Lnvol_memmem_tw_sse2.L12:
     mov %r8, %rax
     mov (%rcx), %r11
-    mov %r11, 384(%rsp)
+    mov %r11, 352(%rsp)
     mov %r11, %rsi
     mov 8(%rcx), %rdi
     movzbl (%rdx,%rsi), %r11d
-    mov %r11, 416(%rsp)
     imul $16843009, %r11d, %r10d
-    mov %r10, 448(%rsp)
     mov %r10, %r11
     movd %r11d, %xmm0
     pshufd $0, %xmm0, %xmm0
     movzbl (%rdx,%rdi), %r11d
-    mov %r11, 480(%rsp)
     imul $16843009, %r11d, %r10d
-    mov %r10, 512(%rsp)
     mov %r10, %r11
     movd %r11d, %xmm1
     pshufd $0, %xmm1, %xmm1
-    mov %rax, 544(%rsp)
+    mov %rax, 384(%rsp)
     mov %rsi, %r11
     cmp %rdi, %r11
     cmovb %rdi, %r11
-    mov %r11, 576(%rsp)
+    mov %r11, 416(%rsp)
     lea 16(%r11), %r10
-    mov %r10, 608(%rsp)
+    mov %r10, 448(%rsp)
     mov %r10, %rax
-    mov 544(%rsp), %r11
+    mov 384(%rsp), %r11
     cmp %rax, %r11
-    mov 544(%rsp), %r11
+    mov 384(%rsp), %r11
     cmovb %rax, %r11
-    mov %r11, 544(%rsp)
+    mov %r11, 384(%rsp)
     mov %rbx, %rax
     sub %r11, %rax
     mov 320(%rsp), %rcx
@@ -13036,7 +13032,7 @@ nvol_memmem_tw_sse2:
     {disp8} ja .Lnvol_memmem_tw_sse2.L23
     .byte 15, 31, 0
 .Lnvol_memmem_tw_sse2.L22:
-    mov 384(%rsp), %r11
+    mov 352(%rsp), %r11
     movdqu (%rcx,%r11), %xmm2
     pcmpeqb %xmm0, %xmm2
     movdqu (%rcx,%rdi), %xmm3
@@ -13202,7 +13198,7 @@ nvol_memmem_tw_sse2:
 .Lnvol_memmem_tw_sse2.L3:
     xor %eax, %eax
 .Lnvol_memmem_tw_sse2.L1:
-    add $648, %rsp
+    add $488, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -13237,7 +13233,7 @@ nvol_memmem_tw_sse2:
     lea (%r9,%r14), %rax
     {disp8} jmp .Lnvol_memmem_tw_sse2.L1
 .Lnvol_memmem_tw_sse2.Lrare1:
-    mov 384(%rsp), %r11
+    mov 352(%rsp), %r11
     movdqu (%rax,%r11), %xmm2
     pcmpeqb %xmm0, %xmm2
     movdqu (%rax,%rdi), %xmm0
@@ -13250,7 +13246,10 @@ nvol_memmem_tw_sse2:
     {disp32} jmp .Lnvol_memmem_tw_sse2.L26
 .seh_endproc
 
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_memmem_pp_avx2
 .def nvol_memmem_pp_avx2; .scl 2; .type 32; .endef
 nvol_memmem_pp_avx2:
@@ -13590,11 +13589,11 @@ nvol_memmem_tw_avx2:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $648, %rsp
-.seh_stackalloc 648
+    sub $520, %rsp
+.seh_stackalloc 520
 .seh_endprologue
     mov %rcx, (%rsp)
-    mov 752(%rsp), %r11
+    mov 624(%rsp), %r11
     mov %r11, 32(%rsp)
     sub %rdx, %r8
     sub %r9, %r11
@@ -13719,30 +13718,28 @@ nvol_memmem_tw_avx2:
     {disp32} jae .Lnvol_memmem_tw_avx2.L21
     mov %r8, %rcx
     mov (%rsi), %r11
-    mov %r11, 416(%rsp)
+    mov %r11, 384(%rsp)
     mov %r11, %rdi
     mov 8(%rsi), %r14
     movzbl (%rdx,%rdi), %r11d
-    mov %r11, 448(%rsp)
     vmovd %r11d, %xmm0
     vpbroadcastb %xmm0, %xmm0
     movzbl (%rdx,%r14), %r11d
-    mov %r11, 480(%rsp)
     vmovd %r11d, %xmm1
     vpbroadcastb %xmm1, %xmm1
-    mov %rcx, 512(%rsp)
+    mov %rcx, 416(%rsp)
     mov %rdi, %r11
     cmp %r14, %r11
     cmovb %r14, %r11
-    mov %r11, 544(%rsp)
+    mov %r11, 448(%rsp)
     lea 16(%r11), %r10
-    mov %r10, 576(%rsp)
+    mov %r10, 480(%rsp)
     mov %r10, %rcx
-    mov 512(%rsp), %r11
+    mov 416(%rsp), %r11
     cmp %rcx, %r11
-    mov 512(%rsp), %r11
+    mov 416(%rsp), %r11
     cmovb %rcx, %r11
-    mov %r11, 512(%rsp)
+    mov %r11, 416(%rsp)
     mov %rbx, %rcx
     sub %r11, %rcx
     mov 352(%rsp), %rsi
@@ -13751,7 +13748,7 @@ nvol_memmem_tw_avx2:
     mov 352(%rsp), %rbx
     .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_tw_avx2.L24:
-    mov 416(%rsp), %r11
+    mov 384(%rsp), %r11
     vpcmpeqb (%rsi,%r11), %xmm0, %xmm2
     vpcmpeqb (%rsi,%r14), %xmm1, %xmm3
     vpand %xmm3, %xmm2, %xmm2
@@ -13773,7 +13770,7 @@ nvol_memmem_tw_avx2:
 .Lnvol_memmem_tw_avx2.L21:
     mov %r8, %rcx
     mov (%rsi), %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 384(%rsp)
     mov %r11, %rbx
     mov 8(%rsi), %rdi
     movzbl (%rdx,%rbx), %r14d
@@ -13796,7 +13793,7 @@ nvol_memmem_tw_avx2:
     mov 352(%rsp), %rbx
     .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_memmem_tw_avx2.L33:
-    mov 608(%rsp), %r11
+    mov 384(%rsp), %r11
     vpcmpeqb (%rcx,%r11), %ymm0, %ymm2
     vpcmpeqb (%rcx,%rdi), %ymm1, %ymm3
     vpand %ymm3, %ymm2, %ymm2
@@ -13963,7 +13960,7 @@ nvol_memmem_tw_avx2:
     xor %eax, %eax
 .Lnvol_memmem_tw_avx2.L1:
     vzeroupper
-    add $648, %rsp
+    add $520, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -14008,7 +14005,7 @@ nvol_memmem_tw_avx2:
     lea (%r9,%r15), %rax
     {disp8} jmp .Lnvol_memmem_tw_avx2.L1
 .Lnvol_memmem_tw_avx2.Lrare1:
-    mov 416(%rsp), %r11
+    mov 384(%rsp), %r11
     vpcmpeqb (%rcx,%r11), %xmm0, %xmm0
     vpcmpeqb (%rcx,%r14), %xmm1, %xmm1
     vpand %xmm1, %xmm0, %xmm0
@@ -14018,7 +14015,7 @@ nvol_memmem_tw_avx2:
 .Lnvol_memmem_tw_avx2.L30:
     {disp32} jmp .Lnvol_memmem_tw_avx2.L28
 .Lnvol_memmem_tw_avx2.Lrare2:
-    mov 608(%rsp), %r11
+    mov 384(%rsp), %r11
     vpcmpeqb (%r14,%r11), %ymm0, %ymm0
     vpcmpeqb (%r14,%rdi), %ymm1, %ymm1
     vpand %ymm1, %ymm0, %ymm0
@@ -14033,7 +14030,8 @@ nvol_memmem_tw_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_memmem_find_entry_avx2
 .def nvol_memmem_find_entry_avx2; .scl 2; .type 32; .endef
 nvol_memmem_find_entry_avx2:
@@ -14054,11 +14052,11 @@ nvol_memmem_find_entry_avx2:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $648, %rsp
-.seh_stackalloc 648
+    sub $520, %rsp
+.seh_stackalloc 520
 .seh_endprologue
     mov %rcx, (%rsp)
-    mov 752(%rsp), %rdi
+    mov 624(%rsp), %rdi
     sub %rdx, %r8
     mov %rdi, %rbx
     sub %r9, %rbx
@@ -14079,7 +14077,7 @@ nvol_memmem_find_entry_avx2:
     mov %r9, %rdx
     mov %rdi, %r8
     vzeroupper
-    add $648, %rsp
+    add $520, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -14776,30 +14774,28 @@ nvol_memmem_find_entry_avx2:
     {disp32} jae .Lnvol_memmem_find_entry_avx2.L193
     mov %r8, %rcx
     mov (%rsi), %r11
-    mov %r11, 416(%rsp)
+    mov %r11, 384(%rsp)
     mov %r11, %r12
     mov 8(%rsi), %r15
     movzbl (%rdx,%r12), %r11d
-    mov %r11, 448(%rsp)
     vmovd %r11d, %xmm0
     vpbroadcastb %xmm0, %xmm0
     movzbl (%rdx,%r15), %r11d
-    mov %r11, 480(%rsp)
     vmovd %r11d, %xmm1
     vpbroadcastb %xmm1, %xmm1
-    mov %rcx, 512(%rsp)
+    mov %rcx, 416(%rsp)
     mov %r12, %r11
     cmp %r15, %r11
     cmovb %r15, %r11
-    mov %r11, 544(%rsp)
+    mov %r11, 448(%rsp)
     lea 16(%r11), %r10
-    mov %r10, 576(%rsp)
+    mov %r10, 480(%rsp)
     mov %r10, %rcx
-    mov 512(%rsp), %r11
+    mov 416(%rsp), %r11
     cmp %rcx, %r11
-    mov 512(%rsp), %r11
+    mov 416(%rsp), %r11
     cmovb %rcx, %r11
-    mov %r11, 512(%rsp)
+    mov %r11, 416(%rsp)
     mov %rdi, %rcx
     sub %r11, %rcx
     mov %rbx, %rsi
@@ -14807,7 +14803,7 @@ nvol_memmem_find_entry_avx2:
     {disp8} ja .Lnvol_memmem_find_entry_avx2.L197
     .byte 144
 .Lnvol_memmem_find_entry_avx2.L196:
-    mov 416(%rsp), %r11
+    mov 384(%rsp), %r11
     vpcmpeqb (%rsi,%r11), %xmm0, %xmm2
     vpcmpeqb (%rsi,%r15), %xmm1, %xmm3
     vpand %xmm3, %xmm2, %xmm2
@@ -14828,7 +14824,7 @@ nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L193:
     mov %r8, %rcx
     mov (%rsi), %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 384(%rsp)
     mov %r11, %rbx
     mov 8(%rsi), %r12
     movzbl (%rdx,%rbx), %r15d
@@ -14851,7 +14847,7 @@ nvol_memmem_find_entry_avx2:
     mov 352(%rsp), %rbx
     .byte 15, 31, 68, 0, 0
 .Lnvol_memmem_find_entry_avx2.L205:
-    mov 608(%rsp), %r11
+    mov 384(%rsp), %r11
     vpcmpeqb (%rcx,%r11), %ymm0, %ymm2
     vpcmpeqb (%rcx,%r12), %ymm1, %ymm3
     vpand %ymm3, %ymm2, %ymm2
@@ -15018,7 +15014,7 @@ nvol_memmem_find_entry_avx2:
     xor %eax, %eax
 .Lnvol_memmem_find_entry_avx2.L1:
     vzeroupper
-    add $648, %rsp
+    add $520, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -15247,7 +15243,7 @@ nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L170:
     {disp32} jmp .Lnvol_memmem_find_entry_avx2.L168
 .Lnvol_memmem_find_entry_avx2.Lrare13:
-    mov 416(%rsp), %r11
+    mov 384(%rsp), %r11
     vpcmpeqb (%rcx,%r11), %xmm0, %xmm0
     vpcmpeqb (%rcx,%r15), %xmm1, %xmm1
     vpand %xmm1, %xmm0, %xmm0
@@ -15257,7 +15253,7 @@ nvol_memmem_find_entry_avx2:
 .Lnvol_memmem_find_entry_avx2.L202:
     {disp32} jmp .Lnvol_memmem_find_entry_avx2.L200
 .Lnvol_memmem_find_entry_avx2.Lrare14:
-    mov 608(%rsp), %r11
+    mov 384(%rsp), %r11
     vpcmpeqb (%r15,%r11), %ymm0, %ymm0
     vpcmpeqb (%r15,%r12), %ymm1, %ymm1
     vpand %ymm1, %ymm0, %ymm0
@@ -15271,7 +15267,9 @@ nvol_memmem_find_entry_avx2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .globl nvol_memmem_find_entry_sse2
 .def nvol_memmem_find_entry_sse2; .scl 2; .type 32; .endef
 nvol_memmem_find_entry_sse2:
@@ -15292,11 +15290,11 @@ nvol_memmem_find_entry_sse2:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $680, %rsp
-.seh_stackalloc 680
+    sub $488, %rsp
+.seh_stackalloc 488
 .seh_endprologue
     mov %rcx, (%rsp)
-    mov 784(%rsp), %rdi
+    mov 592(%rsp), %rdi
     sub %rdx, %r8
     mov %rdi, %rbx
     sub %r9, %rbx
@@ -15316,7 +15314,7 @@ nvol_memmem_find_entry_sse2:
     movzbl (%rdx), %ecx
     mov %r9, %rdx
     mov %rdi, %r8
-    add $680, %rsp
+    add $488, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -15799,36 +15797,32 @@ nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L126:
     mov %r8, %rax
     mov (%rcx), %r11
-    mov %r11, 384(%rsp)
+    mov %r11, 352(%rsp)
     mov %r11, %rsi
     mov 8(%rcx), %r12
     movzbl (%rdx,%rsi), %r11d
-    mov %r11, 416(%rsp)
     imul $16843009, %r11d, %r10d
-    mov %r10, 448(%rsp)
     mov %r10, %r11
     movd %r11d, %xmm0
     pshufd $0, %xmm0, %xmm0
     movzbl (%rdx,%r12), %r11d
-    mov %r11, 480(%rsp)
     imul $16843009, %r11d, %r10d
-    mov %r10, 512(%rsp)
     mov %r10, %r11
     movd %r11d, %xmm1
     pshufd $0, %xmm1, %xmm1
-    mov %rax, 544(%rsp)
+    mov %rax, 384(%rsp)
     mov %rsi, %r11
     cmp %r12, %r11
     cmovb %r12, %r11
-    mov %r11, 576(%rsp)
+    mov %r11, 416(%rsp)
     lea 16(%r11), %r10
-    mov %r10, 608(%rsp)
+    mov %r10, 448(%rsp)
     mov %r10, %rax
-    mov 544(%rsp), %r11
+    mov 384(%rsp), %r11
     cmp %rax, %r11
-    mov 544(%rsp), %r11
+    mov 384(%rsp), %r11
     cmovb %rax, %r11
-    mov %r11, 544(%rsp)
+    mov %r11, 384(%rsp)
     mov %rdi, %rax
     sub %r11, %rax
     mov 320(%rsp), %rcx
@@ -15836,7 +15830,7 @@ nvol_memmem_find_entry_sse2:
     {disp8} ja .Lnvol_memmem_find_entry_sse2.L137
     .byte 144
 .Lnvol_memmem_find_entry_sse2.L136:
-    mov 384(%rsp), %r11
+    mov 352(%rsp), %r11
     movdqu (%rcx,%r11), %xmm2
     pcmpeqb %xmm0, %xmm2
     movdqu (%rcx,%r12), %xmm3
@@ -15881,7 +15875,7 @@ nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L148:
 .Lnvol_memmem_find_entry_sse2.L124:
     xor %r11d, %r11d
-    mov %r11, 640(%rsp)
+    mov %r11, 288(%rsp)
     mov 256(%rsp), %r11
     lea (%r14,%r11), %rcx
     movzbl (%r9,%rcx), %ecx
@@ -15892,7 +15886,7 @@ nvol_memmem_find_entry_sse2:
     cmp $0, %r12
     setne %cl
     movzbl %cl, %ecx
-    mov 640(%rsp), %r11
+    mov 288(%rsp), %r11
     cmp %ecx, %r11d
     {disp8} jne .Lnvol_memmem_find_entry_sse2.L150
     lea (%r14,%r8), %r14
@@ -16005,7 +15999,7 @@ nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L117:
     xor %eax, %eax
 .Lnvol_memmem_find_entry_sse2.L1:
-    add $680, %rsp
+    add $488, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -16162,7 +16156,7 @@ nvol_memmem_find_entry_sse2:
 .Lnvol_memmem_find_entry_sse2.L112:
     {disp32} jmp .Lnvol_memmem_find_entry_sse2.L110
 .Lnvol_memmem_find_entry_sse2.Lrare9:
-    mov 384(%rsp), %r11
+    mov 352(%rsp), %r11
     movdqu (%rax,%r11), %xmm2
     pcmpeqb %xmm0, %xmm2
     movdqu (%rax,%r12), %xmm0
@@ -16177,11 +16171,7 @@ nvol_memmem_find_entry_sse2:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 15, 31, 68, 0, 0
 .globl nvol_memmem_find_raw
 .def nvol_memmem_find_raw; .scl 2; .type 32; .endef
 nvol_memmem_find_raw:
@@ -17187,8 +17177,8 @@ nvol_teddy_slim_ssse3_1:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $392, %rsp
-.seh_stackalloc 392
+    sub $232, %rsp
+.seh_stackalloc 232
 .seh_endprologue
     mov %r8, (%rsp)
     movdqu 64(%rcx), %xmm0
@@ -17428,7 +17418,7 @@ nvol_teddy_slim_ssse3_1:
 .Lnvol_teddy_slim_ssse3_1.L52:
     mov $-1, %rax
 .Lnvol_teddy_slim_ssse3_1.L1:
-    add $392, %rsp
+    add $232, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -17519,7 +17509,7 @@ nvol_teddy_slim_ssse3_1:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_ssse3_1.L36
     movzbl 2(%r14), %r14d
@@ -17729,39 +17719,39 @@ nvol_teddy_slim_ssse3_1:
 .Lnvol_teddy_slim_ssse3_1.L27:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     movdqa %xmm5, %xmm3
     punpckhqdq %xmm5, %xmm3
     movq %xmm3, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_ssse3_1.L31
-    .byte 144
+    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_teddy_slim_ssse3_1.L30:
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_ssse3_1.L33
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_slim_ssse3_1.L32:
-    mov 288(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -17808,11 +17798,11 @@ nvol_teddy_slim_ssse3_1:
     {disp32} jne .Lnvol_teddy_slim_ssse3_1.L35
 .Lnvol_teddy_slim_ssse3_1.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_ssse3_1.L32
 .Lnvol_teddy_slim_ssse3_1.L33:
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_ssse3_1.L30
 .Lnvol_teddy_slim_ssse3_1.L31:
@@ -17826,7 +17816,9 @@ nvol_teddy_slim_ssse3_1:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_slim_ssse3_2
 .def nvol_teddy_slim_ssse3_2; .scl 2; .type 32; .endef
 nvol_teddy_slim_ssse3_2:
@@ -17847,18 +17839,18 @@ nvol_teddy_slim_ssse3_2:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $472, %rsp
-.seh_stackalloc 472
-    movdqu %xmm6, 384(%rsp)
-.seh_savexmm %xmm6, 384
-    movdqu %xmm7, 400(%rsp)
-.seh_savexmm %xmm7, 400
-    movdqu %xmm8, 416(%rsp)
-.seh_savexmm %xmm8, 416
-    movdqu %xmm9, 432(%rsp)
-.seh_savexmm %xmm9, 432
-    movdqu %xmm10, 448(%rsp)
-.seh_savexmm %xmm10, 448
+    sub $312, %rsp
+.seh_stackalloc 312
+    movdqu %xmm6, 224(%rsp)
+.seh_savexmm %xmm6, 224
+    movdqu %xmm7, 240(%rsp)
+.seh_savexmm %xmm7, 240
+    movdqu %xmm8, 256(%rsp)
+.seh_savexmm %xmm8, 256
+    movdqu %xmm9, 272(%rsp)
+.seh_savexmm %xmm9, 272
+    movdqu %xmm10, 288(%rsp)
+.seh_savexmm %xmm10, 288
 .seh_endprologue
     mov %r8, (%rsp)
     movdqu 64(%rcx), %xmm0
@@ -18119,12 +18111,12 @@ nvol_teddy_slim_ssse3_2:
 .Lnvol_teddy_slim_ssse3_2.L52:
     mov $-1, %rax
 .Lnvol_teddy_slim_ssse3_2.L1:
-    movdqu 384(%rsp), %xmm6
-    movdqu 400(%rsp), %xmm7
-    movdqu 416(%rsp), %xmm8
-    movdqu 432(%rsp), %xmm9
-    movdqu 448(%rsp), %xmm10
-    add $472, %rsp
+    movdqu 224(%rsp), %xmm6
+    movdqu 240(%rsp), %xmm7
+    movdqu 256(%rsp), %xmm8
+    movdqu 272(%rsp), %xmm9
+    movdqu 288(%rsp), %xmm10
+    add $312, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -18215,7 +18207,7 @@ nvol_teddy_slim_ssse3_2:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_ssse3_2.L36
     movzbl 2(%r14), %r14d
@@ -18426,39 +18418,39 @@ nvol_teddy_slim_ssse3_2:
 .Lnvol_teddy_slim_ssse3_2.L27:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     movdqa %xmm7, %xmm8
     punpckhqdq %xmm7, %xmm8
     movq %xmm8, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_ssse3_2.L31
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_ssse3_2.L30:
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_ssse3_2.L33
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_slim_ssse3_2.L32:
-    mov 288(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -18505,11 +18497,11 @@ nvol_teddy_slim_ssse3_2:
     {disp32} jne .Lnvol_teddy_slim_ssse3_2.L35
 .Lnvol_teddy_slim_ssse3_2.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_ssse3_2.L32
 .Lnvol_teddy_slim_ssse3_2.L33:
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_ssse3_2.L30
 .Lnvol_teddy_slim_ssse3_2.L31:
@@ -18522,11 +18514,7 @@ nvol_teddy_slim_ssse3_2:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_teddy_slim_ssse3_3
 .def nvol_teddy_slim_ssse3_3; .scl 2; .type 32; .endef
 nvol_teddy_slim_ssse3_3:
@@ -18547,26 +18535,26 @@ nvol_teddy_slim_ssse3_3:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $536, %rsp
-.seh_stackalloc 536
-    movdqu %xmm6, 384(%rsp)
-.seh_savexmm %xmm6, 384
-    movdqu %xmm7, 400(%rsp)
-.seh_savexmm %xmm7, 400
-    movdqu %xmm8, 416(%rsp)
-.seh_savexmm %xmm8, 416
-    movdqu %xmm9, 432(%rsp)
-.seh_savexmm %xmm9, 432
-    movdqu %xmm10, 448(%rsp)
-.seh_savexmm %xmm10, 448
-    movdqu %xmm11, 464(%rsp)
-.seh_savexmm %xmm11, 464
-    movdqu %xmm12, 480(%rsp)
-.seh_savexmm %xmm12, 480
-    movdqu %xmm13, 496(%rsp)
-.seh_savexmm %xmm13, 496
-    movdqu %xmm14, 512(%rsp)
-.seh_savexmm %xmm14, 512
+    sub $376, %rsp
+.seh_stackalloc 376
+    movdqu %xmm6, 224(%rsp)
+.seh_savexmm %xmm6, 224
+    movdqu %xmm7, 240(%rsp)
+.seh_savexmm %xmm7, 240
+    movdqu %xmm8, 256(%rsp)
+.seh_savexmm %xmm8, 256
+    movdqu %xmm9, 272(%rsp)
+.seh_savexmm %xmm9, 272
+    movdqu %xmm10, 288(%rsp)
+.seh_savexmm %xmm10, 288
+    movdqu %xmm11, 304(%rsp)
+.seh_savexmm %xmm11, 304
+    movdqu %xmm12, 320(%rsp)
+.seh_savexmm %xmm12, 320
+    movdqu %xmm13, 336(%rsp)
+.seh_savexmm %xmm13, 336
+    movdqu %xmm14, 352(%rsp)
+.seh_savexmm %xmm14, 352
 .seh_endprologue
     mov %r8, (%rsp)
     movdqu 64(%rcx), %xmm0
@@ -18847,16 +18835,16 @@ nvol_teddy_slim_ssse3_3:
 .Lnvol_teddy_slim_ssse3_3.L52:
     mov $-1, %rax
 .Lnvol_teddy_slim_ssse3_3.L1:
-    movdqu 384(%rsp), %xmm6
-    movdqu 400(%rsp), %xmm7
-    movdqu 416(%rsp), %xmm8
-    movdqu 432(%rsp), %xmm9
-    movdqu 448(%rsp), %xmm10
-    movdqu 464(%rsp), %xmm11
-    movdqu 480(%rsp), %xmm12
-    movdqu 496(%rsp), %xmm13
-    movdqu 512(%rsp), %xmm14
-    add $536, %rsp
+    movdqu 224(%rsp), %xmm6
+    movdqu 240(%rsp), %xmm7
+    movdqu 256(%rsp), %xmm8
+    movdqu 272(%rsp), %xmm9
+    movdqu 288(%rsp), %xmm10
+    movdqu 304(%rsp), %xmm11
+    movdqu 320(%rsp), %xmm12
+    movdqu 336(%rsp), %xmm13
+    movdqu 352(%rsp), %xmm14
+    add $376, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -18947,7 +18935,7 @@ nvol_teddy_slim_ssse3_3:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_ssse3_3.L36
     movzbl 2(%r14), %r14d
@@ -19159,39 +19147,39 @@ nvol_teddy_slim_ssse3_3:
 .Lnvol_teddy_slim_ssse3_3.L27:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     movdqa %xmm10, %xmm11
     punpckhqdq %xmm10, %xmm11
     movq %xmm11, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_ssse3_3.L31
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_ssse3_3.L30:
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_ssse3_3.L33
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_slim_ssse3_3.L32:
-    mov 288(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -19238,11 +19226,11 @@ nvol_teddy_slim_ssse3_3:
     {disp32} jne .Lnvol_teddy_slim_ssse3_3.L35
 .Lnvol_teddy_slim_ssse3_3.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_ssse3_3.L32
 .Lnvol_teddy_slim_ssse3_3.L33:
-    mov 256(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_ssse3_3.L30
 .Lnvol_teddy_slim_ssse3_3.L31:
@@ -19254,6 +19242,9 @@ nvol_teddy_slim_ssse3_3:
     {disp32} jmp .Lnvol_teddy_slim_ssse3_3.L4
 .seh_endproc
 
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
@@ -19278,28 +19269,28 @@ nvol_teddy_slim_ssse3_4:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $712, %rsp
-.seh_stackalloc 712
-    movdqu %xmm6, 544(%rsp)
-.seh_savexmm %xmm6, 544
-    movdqu %xmm7, 560(%rsp)
-.seh_savexmm %xmm7, 560
-    movdqu %xmm8, 576(%rsp)
-.seh_savexmm %xmm8, 576
-    movdqu %xmm9, 592(%rsp)
-.seh_savexmm %xmm9, 592
-    movdqu %xmm10, 608(%rsp)
-.seh_savexmm %xmm10, 608
-    movdqu %xmm11, 624(%rsp)
-.seh_savexmm %xmm11, 624
-    movdqu %xmm12, 640(%rsp)
-.seh_savexmm %xmm12, 640
-    movdqu %xmm13, 656(%rsp)
-.seh_savexmm %xmm13, 656
-    movdqu %xmm14, 672(%rsp)
-.seh_savexmm %xmm14, 672
-    movdqu %xmm15, 688(%rsp)
-.seh_savexmm %xmm15, 688
+    sub $552, %rsp
+.seh_stackalloc 552
+    movdqu %xmm6, 384(%rsp)
+.seh_savexmm %xmm6, 384
+    movdqu %xmm7, 400(%rsp)
+.seh_savexmm %xmm7, 400
+    movdqu %xmm8, 416(%rsp)
+.seh_savexmm %xmm8, 416
+    movdqu %xmm9, 432(%rsp)
+.seh_savexmm %xmm9, 432
+    movdqu %xmm10, 448(%rsp)
+.seh_savexmm %xmm10, 448
+    movdqu %xmm11, 464(%rsp)
+.seh_savexmm %xmm11, 464
+    movdqu %xmm12, 480(%rsp)
+.seh_savexmm %xmm12, 480
+    movdqu %xmm13, 496(%rsp)
+.seh_savexmm %xmm13, 496
+    movdqu %xmm14, 512(%rsp)
+.seh_savexmm %xmm14, 512
+    movdqu %xmm15, 528(%rsp)
+.seh_savexmm %xmm15, 528
 .seh_endprologue
     mov %r8, (%rsp)
     movdqu 64(%rcx), %xmm15
@@ -19609,17 +19600,17 @@ nvol_teddy_slim_ssse3_4:
 .Lnvol_teddy_slim_ssse3_4.L52:
     mov $-1, %rax
 .Lnvol_teddy_slim_ssse3_4.L1:
-    movdqu 544(%rsp), %xmm6
-    movdqu 560(%rsp), %xmm7
-    movdqu 576(%rsp), %xmm8
-    movdqu 592(%rsp), %xmm9
-    movdqu 608(%rsp), %xmm10
-    movdqu 624(%rsp), %xmm11
-    movdqu 640(%rsp), %xmm12
-    movdqu 656(%rsp), %xmm13
-    movdqu 672(%rsp), %xmm14
-    movdqu 688(%rsp), %xmm15
-    add $712, %rsp
+    movdqu 384(%rsp), %xmm6
+    movdqu 400(%rsp), %xmm7
+    movdqu 416(%rsp), %xmm8
+    movdqu 432(%rsp), %xmm9
+    movdqu 448(%rsp), %xmm10
+    movdqu 464(%rsp), %xmm11
+    movdqu 480(%rsp), %xmm12
+    movdqu 496(%rsp), %xmm13
+    movdqu 512(%rsp), %xmm14
+    movdqu 528(%rsp), %xmm15
+    add $552, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -19710,7 +19701,7 @@ nvol_teddy_slim_ssse3_4:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 352(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_ssse3_4.L36
     movzbl 2(%r14), %r14d
@@ -19922,39 +19913,39 @@ nvol_teddy_slim_ssse3_4:
 .Lnvol_teddy_slim_ssse3_4.L27:
     mov 224(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 256(%rsp)
     movdqa %xmm13, %xmm0
     punpckhqdq %xmm13, %xmm0
     movq %xmm0, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 224(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_ssse3_4.L31
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_teddy_slim_ssse3_4.L30:
-    mov 416(%rsp), %r11
+    mov 224(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 224(%rsp), %rbx
+    mov 224(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 224(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 384(%rsp), %r11
+    mov 256(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 288(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 320(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_ssse3_4.L33
     .byte 15, 31, 0
 .Lnvol_teddy_slim_ssse3_4.L32:
-    mov 448(%rsp), %r13
+    mov 288(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -20001,11 +19992,11 @@ nvol_teddy_slim_ssse3_4:
     {disp32} jne .Lnvol_teddy_slim_ssse3_4.L35
 .Lnvol_teddy_slim_ssse3_4.L34:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 320(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_ssse3_4.L32
 .Lnvol_teddy_slim_ssse3_4.L33:
-    mov 416(%rsp), %r11
+    mov 224(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_ssse3_4.L30
 .Lnvol_teddy_slim_ssse3_4.L31:
@@ -20042,8 +20033,8 @@ nvol_teddy_slim_avx2_1:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $712, %rsp
-.seh_stackalloc 712
+    sub $264, %rsp
+.seh_stackalloc 264
 .seh_endprologue
     mov %r8, (%rsp)
     vmovdqu 64(%rcx), %ymm0
@@ -20453,7 +20444,7 @@ nvol_teddy_slim_avx2_1:
     mov $-1, %rax
 .Lnvol_teddy_slim_avx2_1.L1:
     vzeroupper
-    add $712, %rsp
+    add $264, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -20544,7 +20535,7 @@ nvol_teddy_slim_avx2_1:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L36
     movzbl 2(%r14), %r14d
@@ -20595,7 +20586,7 @@ nvol_teddy_slim_avx2_1:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L59
     movzbl 2(%r14), %r14d
@@ -20646,7 +20637,7 @@ nvol_teddy_slim_avx2_1:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 672(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L82
     movzbl 2(%r14), %r14d
@@ -20952,37 +20943,37 @@ nvol_teddy_slim_avx2_1:
 .Lnvol_teddy_slim_avx2_1.L27:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm3, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_1.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_teddy_slim_avx2_1.L30:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_1.L33
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_avx2_1.L32:
-    mov 288(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -21029,11 +21020,11 @@ nvol_teddy_slim_avx2_1:
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L35
 .Lnvol_teddy_slim_avx2_1.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_1.L32
 .Lnvol_teddy_slim_avx2_1.L33:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L30
 .Lnvol_teddy_slim_avx2_1.L31:
@@ -21044,38 +21035,39 @@ nvol_teddy_slim_avx2_1:
 .Lnvol_teddy_slim_avx2_1.L50:
     mov 64(%rsp), %r11
     lea 16(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 96(%rsp)
     vextracti128 $1, %ymm3, %xmm4
     vmovq %xmm4, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_1.L54
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_teddy_slim_avx2_1.L53:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 384(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_1.L56
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_avx2_1.L55:
-    mov 448(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -21122,11 +21114,11 @@ nvol_teddy_slim_avx2_1:
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L58
 .Lnvol_teddy_slim_avx2_1.L57:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_1.L55
 .Lnvol_teddy_slim_avx2_1.L56:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L53
 .Lnvol_teddy_slim_avx2_1.L54:
@@ -21137,38 +21129,38 @@ nvol_teddy_slim_avx2_1:
 .Lnvol_teddy_slim_avx2_1.L73:
     mov 64(%rsp), %r11
     lea 24(%r11), %r10
-    mov %r10, 544(%rsp)
+    mov %r10, 96(%rsp)
     vextracti128 $1, %ymm3, %xmm3
     vpextrq $1, %xmm3, %r8
-    mov %r8, 576(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_1.L77
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_teddy_slim_avx2_1.L76:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 576(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 544(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 640(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_1.L79
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_slim_avx2_1.L78:
-    mov 608(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -21215,11 +21207,11 @@ nvol_teddy_slim_avx2_1:
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L81
 .Lnvol_teddy_slim_avx2_1.L80:
     lea 1(%r12), %r12
-    mov 640(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_1.L78
 .Lnvol_teddy_slim_avx2_1.L79:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_1.L76
 .Lnvol_teddy_slim_avx2_1.L77:
@@ -21234,10 +21226,7 @@ nvol_teddy_slim_avx2_1:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 144
 .globl nvol_teddy_fat_avx2_1
 .def nvol_teddy_fat_avx2_1; .scl 2; .type 32; .endef
 nvol_teddy_fat_avx2_1:
@@ -21258,8 +21247,8 @@ nvol_teddy_fat_avx2_1:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $712, %rsp
-.seh_stackalloc 712
+    sub $264, %rsp
+.seh_stackalloc 264
 .seh_endprologue
     mov %r8, (%rsp)
     vmovdqu 64(%rcx), %ymm0
@@ -21671,7 +21660,7 @@ nvol_teddy_fat_avx2_1:
     mov $-1, %rax
 .Lnvol_teddy_fat_avx2_1.L1:
     vzeroupper
-    add $712, %rsp
+    add $264, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -21762,7 +21751,7 @@ nvol_teddy_fat_avx2_1:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L36
     movzbl 2(%r14), %r14d
@@ -21813,7 +21802,7 @@ nvol_teddy_fat_avx2_1:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L59
     movzbl 2(%r14), %r14d
@@ -21864,7 +21853,7 @@ nvol_teddy_fat_avx2_1:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 672(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L82
     movzbl 2(%r14), %r14d
@@ -22174,37 +22163,37 @@ nvol_teddy_fat_avx2_1:
 .Lnvol_teddy_fat_avx2_1.L27:
     mov 64(%rsp), %r11
     lea 4(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm5, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_1.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_teddy_fat_avx2_1.L30:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_1.L33
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_1.L32:
-    mov 288(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -22251,11 +22240,11 @@ nvol_teddy_fat_avx2_1:
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L35
 .Lnvol_teddy_fat_avx2_1.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_1.L32
 .Lnvol_teddy_fat_avx2_1.L33:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L30
 .Lnvol_teddy_fat_avx2_1.L31:
@@ -22266,37 +22255,36 @@ nvol_teddy_fat_avx2_1:
 .Lnvol_teddy_fat_avx2_1.L50:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 96(%rsp)
     vmovq %xmm3, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_1.L54
-    .byte 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_1.L53:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 384(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_1.L56
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_1.L55:
-    mov 448(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -22343,11 +22331,11 @@ nvol_teddy_fat_avx2_1:
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L58
 .Lnvol_teddy_fat_avx2_1.L57:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_1.L55
 .Lnvol_teddy_fat_avx2_1.L56:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L53
 .Lnvol_teddy_fat_avx2_1.L54:
@@ -22358,37 +22346,38 @@ nvol_teddy_fat_avx2_1:
 .Lnvol_teddy_fat_avx2_1.L73:
     mov 64(%rsp), %r11
     lea 12(%r11), %r10
-    mov %r10, 544(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm3, %r8
-    mov %r8, 576(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_1.L77
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_teddy_fat_avx2_1.L76:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 576(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 544(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 640(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_1.L79
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_fat_avx2_1.L78:
-    mov 608(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -22435,11 +22424,11 @@ nvol_teddy_fat_avx2_1:
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L81
 .Lnvol_teddy_fat_avx2_1.L80:
     lea 1(%r12), %r12
-    mov 640(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_1.L78
 .Lnvol_teddy_fat_avx2_1.L79:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_1.L76
 .Lnvol_teddy_fat_avx2_1.L77:
@@ -22452,10 +22441,7 @@ nvol_teddy_fat_avx2_1:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_teddy_slim_avx2_2
 .def nvol_teddy_slim_avx2_2; .scl 2; .type 32; .endef
 nvol_teddy_slim_avx2_2:
@@ -22476,18 +22462,18 @@ nvol_teddy_slim_avx2_2:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $792, %rsp
-.seh_stackalloc 792
-    vmovdqu %xmm6, 704(%rsp)
-.seh_savexmm %xmm6, 704
-    vmovdqu %xmm7, 720(%rsp)
-.seh_savexmm %xmm7, 720
-    vmovdqu %xmm8, 736(%rsp)
-.seh_savexmm %xmm8, 736
-    vmovdqu %xmm9, 752(%rsp)
-.seh_savexmm %xmm9, 752
-    vmovdqu %xmm10, 768(%rsp)
-.seh_savexmm %xmm10, 768
+    sub $344, %rsp
+.seh_stackalloc 344
+    vmovdqu %xmm6, 256(%rsp)
+.seh_savexmm %xmm6, 256
+    vmovdqu %xmm7, 272(%rsp)
+.seh_savexmm %xmm7, 272
+    vmovdqu %xmm8, 288(%rsp)
+.seh_savexmm %xmm8, 288
+    vmovdqu %xmm9, 304(%rsp)
+.seh_savexmm %xmm9, 304
+    vmovdqu %xmm10, 320(%rsp)
+.seh_savexmm %xmm10, 320
 .seh_endprologue
     mov %r8, (%rsp)
     vmovdqu 64(%rcx), %ymm0
@@ -22916,12 +22902,12 @@ nvol_teddy_slim_avx2_2:
     mov $-1, %rax
 .Lnvol_teddy_slim_avx2_2.L1:
     vzeroupper
-    vmovdqu 704(%rsp), %xmm6
-    vmovdqu 720(%rsp), %xmm7
-    vmovdqu 736(%rsp), %xmm8
-    vmovdqu 752(%rsp), %xmm9
-    vmovdqu 768(%rsp), %xmm10
-    add $792, %rsp
+    vmovdqu 256(%rsp), %xmm6
+    vmovdqu 272(%rsp), %xmm7
+    vmovdqu 288(%rsp), %xmm8
+    vmovdqu 304(%rsp), %xmm9
+    vmovdqu 320(%rsp), %xmm10
+    add $344, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -23012,7 +22998,7 @@ nvol_teddy_slim_avx2_2:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L36
     movzbl 2(%r14), %r14d
@@ -23063,7 +23049,7 @@ nvol_teddy_slim_avx2_2:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L59
     movzbl 2(%r14), %r14d
@@ -23114,7 +23100,7 @@ nvol_teddy_slim_avx2_2:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 672(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L82
     movzbl 2(%r14), %r14d
@@ -23421,37 +23407,37 @@ nvol_teddy_slim_avx2_2:
 .Lnvol_teddy_slim_avx2_2.L27:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm7, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_2.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_teddy_slim_avx2_2.L30:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_2.L33
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_avx2_2.L32:
-    mov 288(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -23498,11 +23484,11 @@ nvol_teddy_slim_avx2_2:
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L35
 .Lnvol_teddy_slim_avx2_2.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_2.L32
 .Lnvol_teddy_slim_avx2_2.L33:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L30
 .Lnvol_teddy_slim_avx2_2.L31:
@@ -23513,38 +23499,39 @@ nvol_teddy_slim_avx2_2:
 .Lnvol_teddy_slim_avx2_2.L50:
     mov 64(%rsp), %r11
     lea 16(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 96(%rsp)
     vextracti128 $1, %ymm7, %xmm8
     vmovq %xmm8, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_2.L54
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_teddy_slim_avx2_2.L53:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 384(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_2.L56
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_avx2_2.L55:
-    mov 448(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -23591,11 +23578,11 @@ nvol_teddy_slim_avx2_2:
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L58
 .Lnvol_teddy_slim_avx2_2.L57:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_2.L55
 .Lnvol_teddy_slim_avx2_2.L56:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L53
 .Lnvol_teddy_slim_avx2_2.L54:
@@ -23606,38 +23593,38 @@ nvol_teddy_slim_avx2_2:
 .Lnvol_teddy_slim_avx2_2.L73:
     mov 64(%rsp), %r11
     lea 24(%r11), %r10
-    mov %r10, 544(%rsp)
+    mov %r10, 96(%rsp)
     vextracti128 $1, %ymm7, %xmm7
     vpextrq $1, %xmm7, %r8
-    mov %r8, 576(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_2.L77
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_teddy_slim_avx2_2.L76:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 576(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 544(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 640(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_2.L79
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_slim_avx2_2.L78:
-    mov 608(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -23684,11 +23671,11 @@ nvol_teddy_slim_avx2_2:
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L81
 .Lnvol_teddy_slim_avx2_2.L80:
     lea 1(%r12), %r12
-    mov 640(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_2.L78
 .Lnvol_teddy_slim_avx2_2.L79:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_2.L76
 .Lnvol_teddy_slim_avx2_2.L77:
@@ -23703,10 +23690,7 @@ nvol_teddy_slim_avx2_2:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 102, 144
 .globl nvol_teddy_fat_avx2_2
 .def nvol_teddy_fat_avx2_2; .scl 2; .type 32; .endef
 nvol_teddy_fat_avx2_2:
@@ -23727,18 +23711,18 @@ nvol_teddy_fat_avx2_2:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $792, %rsp
-.seh_stackalloc 792
-    vmovdqu %xmm6, 704(%rsp)
-.seh_savexmm %xmm6, 704
-    vmovdqu %xmm7, 720(%rsp)
-.seh_savexmm %xmm7, 720
-    vmovdqu %xmm8, 736(%rsp)
-.seh_savexmm %xmm8, 736
-    vmovdqu %xmm9, 752(%rsp)
-.seh_savexmm %xmm9, 752
-    vmovdqu %xmm10, 768(%rsp)
-.seh_savexmm %xmm10, 768
+    sub $344, %rsp
+.seh_stackalloc 344
+    vmovdqu %xmm6, 256(%rsp)
+.seh_savexmm %xmm6, 256
+    vmovdqu %xmm7, 272(%rsp)
+.seh_savexmm %xmm7, 272
+    vmovdqu %xmm8, 288(%rsp)
+.seh_savexmm %xmm8, 288
+    vmovdqu %xmm9, 304(%rsp)
+.seh_savexmm %xmm9, 304
+    vmovdqu %xmm10, 320(%rsp)
+.seh_savexmm %xmm10, 320
 .seh_endprologue
     mov %r8, (%rsp)
     vmovdqu 64(%rcx), %ymm0
@@ -24168,12 +24152,12 @@ nvol_teddy_fat_avx2_2:
     mov $-1, %rax
 .Lnvol_teddy_fat_avx2_2.L1:
     vzeroupper
-    vmovdqu 704(%rsp), %xmm6
-    vmovdqu 720(%rsp), %xmm7
-    vmovdqu 736(%rsp), %xmm8
-    vmovdqu 752(%rsp), %xmm9
-    vmovdqu 768(%rsp), %xmm10
-    add $792, %rsp
+    vmovdqu 256(%rsp), %xmm6
+    vmovdqu 272(%rsp), %xmm7
+    vmovdqu 288(%rsp), %xmm8
+    vmovdqu 304(%rsp), %xmm9
+    vmovdqu 320(%rsp), %xmm10
+    add $344, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -24264,7 +24248,7 @@ nvol_teddy_fat_avx2_2:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L36
     movzbl 2(%r14), %r14d
@@ -24315,7 +24299,7 @@ nvol_teddy_fat_avx2_2:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L59
     movzbl 2(%r14), %r14d
@@ -24366,7 +24350,7 @@ nvol_teddy_fat_avx2_2:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 672(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L82
     movzbl 2(%r14), %r14d
@@ -24676,37 +24660,37 @@ nvol_teddy_fat_avx2_2:
 .Lnvol_teddy_fat_avx2_2.L27:
     mov 64(%rsp), %r11
     lea 4(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm9, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_2.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_teddy_fat_avx2_2.L30:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_2.L33
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_2.L32:
-    mov 288(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -24753,11 +24737,11 @@ nvol_teddy_fat_avx2_2:
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L35
 .Lnvol_teddy_fat_avx2_2.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_2.L32
 .Lnvol_teddy_fat_avx2_2.L33:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L30
 .Lnvol_teddy_fat_avx2_2.L31:
@@ -24768,37 +24752,36 @@ nvol_teddy_fat_avx2_2:
 .Lnvol_teddy_fat_avx2_2.L50:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 96(%rsp)
     vmovq %xmm7, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_2.L54
-    .byte 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_2.L53:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 384(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_2.L56
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_2.L55:
-    mov 448(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -24845,11 +24828,11 @@ nvol_teddy_fat_avx2_2:
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L58
 .Lnvol_teddy_fat_avx2_2.L57:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_2.L55
 .Lnvol_teddy_fat_avx2_2.L56:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L53
 .Lnvol_teddy_fat_avx2_2.L54:
@@ -24860,37 +24843,38 @@ nvol_teddy_fat_avx2_2:
 .Lnvol_teddy_fat_avx2_2.L73:
     mov 64(%rsp), %r11
     lea 12(%r11), %r10
-    mov %r10, 544(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm7, %r8
-    mov %r8, 576(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_2.L77
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_teddy_fat_avx2_2.L76:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 576(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 544(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 640(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_2.L79
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_fat_avx2_2.L78:
-    mov 608(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -24937,11 +24921,11 @@ nvol_teddy_fat_avx2_2:
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L81
 .Lnvol_teddy_fat_avx2_2.L80:
     lea 1(%r12), %r12
-    mov 640(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_2.L78
 .Lnvol_teddy_fat_avx2_2.L79:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_2.L76
 .Lnvol_teddy_fat_avx2_2.L77:
@@ -24954,10 +24938,7 @@ nvol_teddy_fat_avx2_2:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_teddy_slim_avx2_3
 .def nvol_teddy_slim_avx2_3; .scl 2; .type 32; .endef
 nvol_teddy_slim_avx2_3:
@@ -24978,26 +24959,26 @@ nvol_teddy_slim_avx2_3:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $856, %rsp
-.seh_stackalloc 856
-    vmovdqu %xmm6, 704(%rsp)
-.seh_savexmm %xmm6, 704
-    vmovdqu %xmm7, 720(%rsp)
-.seh_savexmm %xmm7, 720
-    vmovdqu %xmm8, 736(%rsp)
-.seh_savexmm %xmm8, 736
-    vmovdqu %xmm9, 752(%rsp)
-.seh_savexmm %xmm9, 752
-    vmovdqu %xmm10, 768(%rsp)
-.seh_savexmm %xmm10, 768
-    vmovdqu %xmm11, 784(%rsp)
-.seh_savexmm %xmm11, 784
-    vmovdqu %xmm12, 800(%rsp)
-.seh_savexmm %xmm12, 800
-    vmovdqu %xmm13, 816(%rsp)
-.seh_savexmm %xmm13, 816
-    vmovdqu %xmm14, 832(%rsp)
-.seh_savexmm %xmm14, 832
+    sub $408, %rsp
+.seh_stackalloc 408
+    vmovdqu %xmm6, 256(%rsp)
+.seh_savexmm %xmm6, 256
+    vmovdqu %xmm7, 272(%rsp)
+.seh_savexmm %xmm7, 272
+    vmovdqu %xmm8, 288(%rsp)
+.seh_savexmm %xmm8, 288
+    vmovdqu %xmm9, 304(%rsp)
+.seh_savexmm %xmm9, 304
+    vmovdqu %xmm10, 320(%rsp)
+.seh_savexmm %xmm10, 320
+    vmovdqu %xmm11, 336(%rsp)
+.seh_savexmm %xmm11, 336
+    vmovdqu %xmm12, 352(%rsp)
+.seh_savexmm %xmm12, 352
+    vmovdqu %xmm13, 368(%rsp)
+.seh_savexmm %xmm13, 368
+    vmovdqu %xmm14, 384(%rsp)
+.seh_savexmm %xmm14, 384
 .seh_endprologue
     mov %r8, (%rsp)
     vmovdqu 64(%rcx), %ymm0
@@ -25444,16 +25425,16 @@ nvol_teddy_slim_avx2_3:
     mov $-1, %rax
 .Lnvol_teddy_slim_avx2_3.L1:
     vzeroupper
-    vmovdqu 704(%rsp), %xmm6
-    vmovdqu 720(%rsp), %xmm7
-    vmovdqu 736(%rsp), %xmm8
-    vmovdqu 752(%rsp), %xmm9
-    vmovdqu 768(%rsp), %xmm10
-    vmovdqu 784(%rsp), %xmm11
-    vmovdqu 800(%rsp), %xmm12
-    vmovdqu 816(%rsp), %xmm13
-    vmovdqu 832(%rsp), %xmm14
-    add $856, %rsp
+    vmovdqu 256(%rsp), %xmm6
+    vmovdqu 272(%rsp), %xmm7
+    vmovdqu 288(%rsp), %xmm8
+    vmovdqu 304(%rsp), %xmm9
+    vmovdqu 320(%rsp), %xmm10
+    vmovdqu 336(%rsp), %xmm11
+    vmovdqu 352(%rsp), %xmm12
+    vmovdqu 368(%rsp), %xmm13
+    vmovdqu 384(%rsp), %xmm14
+    add $408, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -25544,7 +25525,7 @@ nvol_teddy_slim_avx2_3:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L36
     movzbl 2(%r14), %r14d
@@ -25595,7 +25576,7 @@ nvol_teddy_slim_avx2_3:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L59
     movzbl 2(%r14), %r14d
@@ -25646,7 +25627,7 @@ nvol_teddy_slim_avx2_3:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 672(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L82
     movzbl 2(%r14), %r14d
@@ -25953,37 +25934,37 @@ nvol_teddy_slim_avx2_3:
 .Lnvol_teddy_slim_avx2_3.L27:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm10, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_3.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_teddy_slim_avx2_3.L30:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_3.L33
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_avx2_3.L32:
-    mov 288(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -26030,11 +26011,11 @@ nvol_teddy_slim_avx2_3:
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L35
 .Lnvol_teddy_slim_avx2_3.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_3.L32
 .Lnvol_teddy_slim_avx2_3.L33:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L30
 .Lnvol_teddy_slim_avx2_3.L31:
@@ -26045,38 +26026,39 @@ nvol_teddy_slim_avx2_3:
 .Lnvol_teddy_slim_avx2_3.L50:
     mov 64(%rsp), %r11
     lea 16(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 96(%rsp)
     vextracti128 $1, %ymm10, %xmm11
     vmovq %xmm11, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_3.L54
-    .byte 15, 31, 128, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_teddy_slim_avx2_3.L53:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 384(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_3.L56
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_slim_avx2_3.L55:
-    mov 448(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -26123,11 +26105,11 @@ nvol_teddy_slim_avx2_3:
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L58
 .Lnvol_teddy_slim_avx2_3.L57:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_3.L55
 .Lnvol_teddy_slim_avx2_3.L56:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L53
 .Lnvol_teddy_slim_avx2_3.L54:
@@ -26138,38 +26120,38 @@ nvol_teddy_slim_avx2_3:
 .Lnvol_teddy_slim_avx2_3.L73:
     mov 64(%rsp), %r11
     lea 24(%r11), %r10
-    mov %r10, 544(%rsp)
+    mov %r10, 96(%rsp)
     vextracti128 $1, %ymm10, %xmm10
     vpextrq $1, %xmm10, %r8
-    mov %r8, 576(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_3.L77
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 15, 31, 64, 0
 .Lnvol_teddy_slim_avx2_3.L76:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 576(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 544(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 640(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_3.L79
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_slim_avx2_3.L78:
-    mov 608(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -26216,11 +26198,11 @@ nvol_teddy_slim_avx2_3:
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L81
 .Lnvol_teddy_slim_avx2_3.L80:
     lea 1(%r12), %r12
-    mov 640(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_3.L78
 .Lnvol_teddy_slim_avx2_3.L79:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_3.L76
 .Lnvol_teddy_slim_avx2_3.L77:
@@ -26233,7 +26215,10 @@ nvol_teddy_slim_avx2_3:
 .seh_endproc
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
 .globl nvol_teddy_fat_avx2_3
 .def nvol_teddy_fat_avx2_3; .scl 2; .type 32; .endef
 nvol_teddy_fat_avx2_3:
@@ -26254,26 +26239,26 @@ nvol_teddy_fat_avx2_3:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $856, %rsp
-.seh_stackalloc 856
-    vmovdqu %xmm6, 704(%rsp)
-.seh_savexmm %xmm6, 704
-    vmovdqu %xmm7, 720(%rsp)
-.seh_savexmm %xmm7, 720
-    vmovdqu %xmm8, 736(%rsp)
-.seh_savexmm %xmm8, 736
-    vmovdqu %xmm9, 752(%rsp)
-.seh_savexmm %xmm9, 752
-    vmovdqu %xmm10, 768(%rsp)
-.seh_savexmm %xmm10, 768
-    vmovdqu %xmm11, 784(%rsp)
-.seh_savexmm %xmm11, 784
-    vmovdqu %xmm12, 800(%rsp)
-.seh_savexmm %xmm12, 800
-    vmovdqu %xmm13, 816(%rsp)
-.seh_savexmm %xmm13, 816
-    vmovdqu %xmm14, 832(%rsp)
-.seh_savexmm %xmm14, 832
+    sub $408, %rsp
+.seh_stackalloc 408
+    vmovdqu %xmm6, 256(%rsp)
+.seh_savexmm %xmm6, 256
+    vmovdqu %xmm7, 272(%rsp)
+.seh_savexmm %xmm7, 272
+    vmovdqu %xmm8, 288(%rsp)
+.seh_savexmm %xmm8, 288
+    vmovdqu %xmm9, 304(%rsp)
+.seh_savexmm %xmm9, 304
+    vmovdqu %xmm10, 320(%rsp)
+.seh_savexmm %xmm10, 320
+    vmovdqu %xmm11, 336(%rsp)
+.seh_savexmm %xmm11, 336
+    vmovdqu %xmm12, 352(%rsp)
+.seh_savexmm %xmm12, 352
+    vmovdqu %xmm13, 368(%rsp)
+.seh_savexmm %xmm13, 368
+    vmovdqu %xmm14, 384(%rsp)
+.seh_savexmm %xmm14, 384
 .seh_endprologue
     mov %r8, (%rsp)
     vmovdqu 64(%rcx), %ymm0
@@ -26719,16 +26704,16 @@ nvol_teddy_fat_avx2_3:
     mov $-1, %rax
 .Lnvol_teddy_fat_avx2_3.L1:
     vzeroupper
-    vmovdqu 704(%rsp), %xmm6
-    vmovdqu 720(%rsp), %xmm7
-    vmovdqu 736(%rsp), %xmm8
-    vmovdqu 752(%rsp), %xmm9
-    vmovdqu 768(%rsp), %xmm10
-    vmovdqu 784(%rsp), %xmm11
-    vmovdqu 800(%rsp), %xmm12
-    vmovdqu 816(%rsp), %xmm13
-    vmovdqu 832(%rsp), %xmm14
-    add $856, %rsp
+    vmovdqu 256(%rsp), %xmm6
+    vmovdqu 272(%rsp), %xmm7
+    vmovdqu 288(%rsp), %xmm8
+    vmovdqu 304(%rsp), %xmm9
+    vmovdqu 320(%rsp), %xmm10
+    vmovdqu 336(%rsp), %xmm11
+    vmovdqu 352(%rsp), %xmm12
+    vmovdqu 368(%rsp), %xmm13
+    vmovdqu 384(%rsp), %xmm14
+    add $408, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -26819,7 +26804,7 @@ nvol_teddy_fat_avx2_3:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 352(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L36
     movzbl 2(%r14), %r14d
@@ -26870,7 +26855,7 @@ nvol_teddy_fat_avx2_3:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 224(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L59
     movzbl 2(%r14), %r14d
@@ -26921,7 +26906,7 @@ nvol_teddy_fat_avx2_3:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 672(%rsp)
+    mov %r11, 192(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L82
     movzbl 2(%r14), %r14d
@@ -27231,37 +27216,37 @@ nvol_teddy_fat_avx2_3:
 .Lnvol_teddy_fat_avx2_3.L27:
     mov 64(%rsp), %r11
     lea 4(%r11), %r10
-    mov %r10, 224(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm12, %r8
-    mov %r8, 256(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_3.L31
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
 .Lnvol_teddy_fat_avx2_3.L30:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 256(%rsp), %rbx
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 256(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 224(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 288(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 320(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_3.L33
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_3.L32:
-    mov 288(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -27308,11 +27293,11 @@ nvol_teddy_fat_avx2_3:
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L35
 .Lnvol_teddy_fat_avx2_3.L34:
     lea 1(%r12), %r12
-    mov 320(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_3.L32
 .Lnvol_teddy_fat_avx2_3.L33:
-    mov 256(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L30
 .Lnvol_teddy_fat_avx2_3.L31:
@@ -27323,37 +27308,36 @@ nvol_teddy_fat_avx2_3:
 .Lnvol_teddy_fat_avx2_3.L50:
     mov 64(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 96(%rsp)
     vmovq %xmm10, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 128(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_3.L54
-    .byte 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_3.L53:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %rbx
+    mov 128(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 128(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 384(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 160(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 192(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_3.L56
-    .byte 15, 31, 0
+    .byte 102, 15, 31, 68, 0, 0
 .Lnvol_teddy_fat_avx2_3.L55:
-    mov 448(%rsp), %r13
+    mov 160(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -27400,11 +27384,11 @@ nvol_teddy_fat_avx2_3:
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L58
 .Lnvol_teddy_fat_avx2_3.L57:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 192(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_3.L55
 .Lnvol_teddy_fat_avx2_3.L56:
-    mov 416(%rsp), %r11
+    mov 128(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L53
 .Lnvol_teddy_fat_avx2_3.L54:
@@ -27415,37 +27399,38 @@ nvol_teddy_fat_avx2_3:
 .Lnvol_teddy_fat_avx2_3.L73:
     mov 64(%rsp), %r11
     lea 12(%r11), %r10
-    mov %r10, 544(%rsp)
+    mov %r10, 96(%rsp)
     vpextrq $1, %xmm10, %r8
-    mov %r8, 576(%rsp)
+    mov %r8, 64(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_3.L77
-    .byte 15, 31, 64, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_teddy_fat_avx2_3.L76:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     bsf %r11, %rdi
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %rbx
+    mov 64(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 576(%rsp)
+    mov %rbx, 64(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 544(%rsp), %r11
+    mov 96(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 128(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 640(%rsp)
+    mov %r10, 160(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_3.L79
-    .byte 15, 31, 0
+    .byte 102, 144
 .Lnvol_teddy_fat_avx2_3.L78:
-    mov 608(%rsp), %r13
+    mov 128(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -27492,11 +27477,11 @@ nvol_teddy_fat_avx2_3:
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L81
 .Lnvol_teddy_fat_avx2_3.L80:
     lea 1(%r12), %r12
-    mov 640(%rsp), %r11
+    mov 160(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_3.L78
 .Lnvol_teddy_fat_avx2_3.L79:
-    mov 576(%rsp), %r11
+    mov 64(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_3.L76
 .Lnvol_teddy_fat_avx2_3.L77:
@@ -27510,7 +27495,11 @@ nvol_teddy_fat_avx2_3:
 
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 128, 0, 0, 0, 0
 .globl nvol_teddy_slim_avx2_4
 .def nvol_teddy_slim_avx2_4; .scl 2; .type 32; .endef
 nvol_teddy_slim_avx2_4:
@@ -27531,28 +27520,28 @@ nvol_teddy_slim_avx2_4:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $1032, %rsp
-.seh_stackalloc 1032
-    vmovdqu %xmm6, 864(%rsp)
-.seh_savexmm %xmm6, 864
-    vmovdqu %xmm7, 880(%rsp)
-.seh_savexmm %xmm7, 880
-    vmovdqu %xmm8, 896(%rsp)
-.seh_savexmm %xmm8, 896
-    vmovdqu %xmm9, 912(%rsp)
-.seh_savexmm %xmm9, 912
-    vmovdqu %xmm10, 928(%rsp)
-.seh_savexmm %xmm10, 928
-    vmovdqu %xmm11, 944(%rsp)
-.seh_savexmm %xmm11, 944
-    vmovdqu %xmm12, 960(%rsp)
-.seh_savexmm %xmm12, 960
-    vmovdqu %xmm13, 976(%rsp)
-.seh_savexmm %xmm13, 976
-    vmovdqu %xmm14, 992(%rsp)
-.seh_savexmm %xmm14, 992
-    vmovdqu %xmm15, 1008(%rsp)
-.seh_savexmm %xmm15, 1008
+    sub $584, %rsp
+.seh_stackalloc 584
+    vmovdqu %xmm6, 416(%rsp)
+.seh_savexmm %xmm6, 416
+    vmovdqu %xmm7, 432(%rsp)
+.seh_savexmm %xmm7, 432
+    vmovdqu %xmm8, 448(%rsp)
+.seh_savexmm %xmm8, 448
+    vmovdqu %xmm9, 464(%rsp)
+.seh_savexmm %xmm9, 464
+    vmovdqu %xmm10, 480(%rsp)
+.seh_savexmm %xmm10, 480
+    vmovdqu %xmm11, 496(%rsp)
+.seh_savexmm %xmm11, 496
+    vmovdqu %xmm12, 512(%rsp)
+.seh_savexmm %xmm12, 512
+    vmovdqu %xmm13, 528(%rsp)
+.seh_savexmm %xmm13, 528
+    vmovdqu %xmm14, 544(%rsp)
+.seh_savexmm %xmm14, 544
+    vmovdqu %xmm15, 560(%rsp)
+.seh_savexmm %xmm15, 560
 .seh_endprologue
     mov %r8, (%rsp)
     vmovdqu 64(%rcx), %ymm15
@@ -28030,17 +28019,17 @@ nvol_teddy_slim_avx2_4:
     mov $-1, %rax
 .Lnvol_teddy_slim_avx2_4.L1:
     vzeroupper
-    vmovdqu 864(%rsp), %xmm6
-    vmovdqu 880(%rsp), %xmm7
-    vmovdqu 896(%rsp), %xmm8
-    vmovdqu 912(%rsp), %xmm9
-    vmovdqu 928(%rsp), %xmm10
-    vmovdqu 944(%rsp), %xmm11
-    vmovdqu 960(%rsp), %xmm12
-    vmovdqu 976(%rsp), %xmm13
-    vmovdqu 992(%rsp), %xmm14
-    vmovdqu 1008(%rsp), %xmm15
-    add $1032, %rsp
+    vmovdqu 416(%rsp), %xmm6
+    vmovdqu 432(%rsp), %xmm7
+    vmovdqu 448(%rsp), %xmm8
+    vmovdqu 464(%rsp), %xmm9
+    vmovdqu 480(%rsp), %xmm10
+    vmovdqu 496(%rsp), %xmm11
+    vmovdqu 512(%rsp), %xmm12
+    vmovdqu 528(%rsp), %xmm13
+    vmovdqu 544(%rsp), %xmm14
+    vmovdqu 560(%rsp), %xmm15
+    add $584, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -28131,7 +28120,7 @@ nvol_teddy_slim_avx2_4:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 384(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L36
     movzbl 2(%r14), %r14d
@@ -28182,7 +28171,7 @@ nvol_teddy_slim_avx2_4:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 672(%rsp)
+    mov %r11, 384(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L59
     movzbl 2(%r14), %r14d
@@ -28233,7 +28222,7 @@ nvol_teddy_slim_avx2_4:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 832(%rsp)
+    mov %r11, 352(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L82
     movzbl 2(%r14), %r14d
@@ -28540,37 +28529,37 @@ nvol_teddy_slim_avx2_4:
 .Lnvol_teddy_slim_avx2_4.L27:
     mov 224(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 256(%rsp)
     vpextrq $1, %xmm3, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 288(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_4.L31
     .byte 102, 144
 .Lnvol_teddy_slim_avx2_4.L30:
-    mov 416(%rsp), %r11
+    mov 288(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 288(%rsp), %rbx
+    mov 288(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 288(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 384(%rsp), %r11
+    mov 256(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 320(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 352(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_4.L33
     .byte 15, 31, 0
 .Lnvol_teddy_slim_avx2_4.L32:
-    mov 448(%rsp), %r13
+    mov 320(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -28617,11 +28606,11 @@ nvol_teddy_slim_avx2_4:
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L35
 .Lnvol_teddy_slim_avx2_4.L34:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 352(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_4.L32
 .Lnvol_teddy_slim_avx2_4.L33:
-    mov 416(%rsp), %r11
+    mov 288(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L30
 .Lnvol_teddy_slim_avx2_4.L31:
@@ -28632,38 +28621,38 @@ nvol_teddy_slim_avx2_4:
 .Lnvol_teddy_slim_avx2_4.L50:
     mov 224(%rsp), %r11
     lea 16(%r11), %r10
-    mov %r10, 544(%rsp)
+    mov %r10, 256(%rsp)
     vextracti128 $1, %ymm3, %xmm0
     vmovq %xmm0, %r8
-    mov %r8, 576(%rsp)
+    mov %r8, 288(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_4.L54
     .byte 15, 31, 64, 0
 .Lnvol_teddy_slim_avx2_4.L53:
-    mov 576(%rsp), %r11
+    mov 288(%rsp), %r11
     bsf %r11, %rdi
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
+    mov 288(%rsp), %rbx
+    mov 288(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 576(%rsp)
+    mov %rbx, 288(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 544(%rsp), %r11
+    mov 256(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 320(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 640(%rsp)
+    mov %r10, 352(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_4.L56
     .byte 15, 31, 0
 .Lnvol_teddy_slim_avx2_4.L55:
-    mov 608(%rsp), %r13
+    mov 320(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -28710,11 +28699,11 @@ nvol_teddy_slim_avx2_4:
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L58
 .Lnvol_teddy_slim_avx2_4.L57:
     lea 1(%r12), %r12
-    mov 640(%rsp), %r11
+    mov 352(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_4.L55
 .Lnvol_teddy_slim_avx2_4.L56:
-    mov 576(%rsp), %r11
+    mov 288(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L53
 .Lnvol_teddy_slim_avx2_4.L54:
@@ -28725,38 +28714,38 @@ nvol_teddy_slim_avx2_4:
 .Lnvol_teddy_slim_avx2_4.L73:
     mov 224(%rsp), %r11
     lea 24(%r11), %r10
-    mov %r10, 704(%rsp)
+    mov %r10, 256(%rsp)
     vextracti128 $1, %ymm3, %xmm0
     vpextrq $1, %xmm0, %r8
-    mov %r8, 736(%rsp)
+    mov %r8, 224(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_slim_avx2_4.L77
     .byte 15, 31, 0
 .Lnvol_teddy_slim_avx2_4.L76:
-    mov 736(%rsp), %r11
+    mov 224(%rsp), %r11
     bsf %r11, %rdi
-    mov 736(%rsp), %rbx
-    mov 736(%rsp), %r11
+    mov 224(%rsp), %rbx
+    mov 224(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 736(%rsp)
+    mov %rbx, 224(%rsp)
     mov %rdi, %rbx
     shr $3, %rbx
-    mov 704(%rsp), %r11
+    mov 256(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $7, %r11
-    mov %r11, 768(%rsp)
+    mov %r11, 288(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 800(%rsp)
+    mov %r10, 320(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_slim_avx2_4.L79
     .byte 15, 31, 0
 .Lnvol_teddy_slim_avx2_4.L78:
-    mov 768(%rsp), %r13
+    mov 288(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -28803,11 +28792,11 @@ nvol_teddy_slim_avx2_4:
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L81
 .Lnvol_teddy_slim_avx2_4.L80:
     lea 1(%r12), %r12
-    mov 800(%rsp), %r11
+    mov 320(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_slim_avx2_4.L78
 .Lnvol_teddy_slim_avx2_4.L79:
-    mov 736(%rsp), %r11
+    mov 224(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_slim_avx2_4.L76
 .Lnvol_teddy_slim_avx2_4.L77:
@@ -28842,28 +28831,28 @@ nvol_teddy_fat_avx2_4:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $1032, %rsp
-.seh_stackalloc 1032
-    vmovdqu %xmm6, 864(%rsp)
-.seh_savexmm %xmm6, 864
-    vmovdqu %xmm7, 880(%rsp)
-.seh_savexmm %xmm7, 880
-    vmovdqu %xmm8, 896(%rsp)
-.seh_savexmm %xmm8, 896
-    vmovdqu %xmm9, 912(%rsp)
-.seh_savexmm %xmm9, 912
-    vmovdqu %xmm10, 928(%rsp)
-.seh_savexmm %xmm10, 928
-    vmovdqu %xmm11, 944(%rsp)
-.seh_savexmm %xmm11, 944
-    vmovdqu %xmm12, 960(%rsp)
-.seh_savexmm %xmm12, 960
-    vmovdqu %xmm13, 976(%rsp)
-.seh_savexmm %xmm13, 976
-    vmovdqu %xmm14, 992(%rsp)
-.seh_savexmm %xmm14, 992
-    vmovdqu %xmm15, 1008(%rsp)
-.seh_savexmm %xmm15, 1008
+    sub $584, %rsp
+.seh_stackalloc 584
+    vmovdqu %xmm6, 416(%rsp)
+.seh_savexmm %xmm6, 416
+    vmovdqu %xmm7, 432(%rsp)
+.seh_savexmm %xmm7, 432
+    vmovdqu %xmm8, 448(%rsp)
+.seh_savexmm %xmm8, 448
+    vmovdqu %xmm9, 464(%rsp)
+.seh_savexmm %xmm9, 464
+    vmovdqu %xmm10, 480(%rsp)
+.seh_savexmm %xmm10, 480
+    vmovdqu %xmm11, 496(%rsp)
+.seh_savexmm %xmm11, 496
+    vmovdqu %xmm12, 512(%rsp)
+.seh_savexmm %xmm12, 512
+    vmovdqu %xmm13, 528(%rsp)
+.seh_savexmm %xmm13, 528
+    vmovdqu %xmm14, 544(%rsp)
+.seh_savexmm %xmm14, 544
+    vmovdqu %xmm15, 560(%rsp)
+.seh_savexmm %xmm15, 560
 .seh_endprologue
     mov %r8, (%rsp)
     vmovdqu 64(%rcx), %ymm15
@@ -29338,17 +29327,17 @@ nvol_teddy_fat_avx2_4:
     mov $-1, %rax
 .Lnvol_teddy_fat_avx2_4.L1:
     vzeroupper
-    vmovdqu 864(%rsp), %xmm6
-    vmovdqu 880(%rsp), %xmm7
-    vmovdqu 896(%rsp), %xmm8
-    vmovdqu 912(%rsp), %xmm9
-    vmovdqu 928(%rsp), %xmm10
-    vmovdqu 944(%rsp), %xmm11
-    vmovdqu 960(%rsp), %xmm12
-    vmovdqu 976(%rsp), %xmm13
-    vmovdqu 992(%rsp), %xmm14
-    vmovdqu 1008(%rsp), %xmm15
-    add $1032, %rsp
+    vmovdqu 416(%rsp), %xmm6
+    vmovdqu 432(%rsp), %xmm7
+    vmovdqu 448(%rsp), %xmm8
+    vmovdqu 464(%rsp), %xmm9
+    vmovdqu 480(%rsp), %xmm10
+    vmovdqu 496(%rsp), %xmm11
+    vmovdqu 512(%rsp), %xmm12
+    vmovdqu 528(%rsp), %xmm13
+    vmovdqu 544(%rsp), %xmm14
+    vmovdqu 560(%rsp), %xmm15
+    add $584, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -29439,7 +29428,7 @@ nvol_teddy_fat_avx2_4:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 512(%rsp)
+    mov %r11, 384(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L36
     movzbl 2(%r14), %r14d
@@ -29490,7 +29479,7 @@ nvol_teddy_fat_avx2_4:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 672(%rsp)
+    mov %r11, 384(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L59
     movzbl 2(%r14), %r14d
@@ -29541,7 +29530,7 @@ nvol_teddy_fat_avx2_4:
     xor %eax, %eax
     movzwl (%r14), %r15d
     movzwl (%rbx), %r11d
-    mov %r11, 832(%rsp)
+    mov %r11, 352(%rsp)
     cmp %r11d, %r15d
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L82
     movzbl 2(%r14), %r14d
@@ -29851,37 +29840,37 @@ nvol_teddy_fat_avx2_4:
 .Lnvol_teddy_fat_avx2_4.L27:
     mov 224(%rsp), %r11
     lea 4(%r11), %r10
-    mov %r10, 384(%rsp)
+    mov %r10, 256(%rsp)
     vpextrq $1, %xmm1, %r8
-    mov %r8, 416(%rsp)
+    mov %r8, 288(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_4.L31
     .byte 102, 144
 .Lnvol_teddy_fat_avx2_4.L30:
-    mov 416(%rsp), %r11
+    mov 288(%rsp), %r11
     bsf %r11, %rdi
-    mov 416(%rsp), %rbx
-    mov 416(%rsp), %r11
+    mov 288(%rsp), %rbx
+    mov 288(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 416(%rsp)
+    mov %rbx, 288(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 384(%rsp), %r11
+    mov 256(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 448(%rsp)
+    mov %r11, 320(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 480(%rsp)
+    mov %r10, 352(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_4.L33
     .byte 15, 31, 0
 .Lnvol_teddy_fat_avx2_4.L32:
-    mov 448(%rsp), %r13
+    mov 320(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -29928,11 +29917,11 @@ nvol_teddy_fat_avx2_4:
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L35
 .Lnvol_teddy_fat_avx2_4.L34:
     lea 1(%r12), %r12
-    mov 480(%rsp), %r11
+    mov 352(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_4.L32
 .Lnvol_teddy_fat_avx2_4.L33:
-    mov 416(%rsp), %r11
+    mov 288(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L30
 .Lnvol_teddy_fat_avx2_4.L31:
@@ -29943,37 +29932,37 @@ nvol_teddy_fat_avx2_4:
 .Lnvol_teddy_fat_avx2_4.L50:
     mov 224(%rsp), %r11
     lea 8(%r11), %r10
-    mov %r10, 544(%rsp)
+    mov %r10, 256(%rsp)
     vmovq %xmm0, %r8
-    mov %r8, 576(%rsp)
+    mov %r8, 288(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_4.L54
     .byte 102, 144
 .Lnvol_teddy_fat_avx2_4.L53:
-    mov 576(%rsp), %r11
+    mov 288(%rsp), %r11
     bsf %r11, %rdi
-    mov 576(%rsp), %rbx
-    mov 576(%rsp), %r11
+    mov 288(%rsp), %rbx
+    mov 288(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 576(%rsp)
+    mov %rbx, 288(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 544(%rsp), %r11
+    mov 256(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 320(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 640(%rsp)
+    mov %r10, 352(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_4.L56
     .byte 15, 31, 0
 .Lnvol_teddy_fat_avx2_4.L55:
-    mov 608(%rsp), %r13
+    mov 320(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -30020,11 +30009,11 @@ nvol_teddy_fat_avx2_4:
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L58
 .Lnvol_teddy_fat_avx2_4.L57:
     lea 1(%r12), %r12
-    mov 640(%rsp), %r11
+    mov 352(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_4.L55
 .Lnvol_teddy_fat_avx2_4.L56:
-    mov 576(%rsp), %r11
+    mov 288(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L53
 .Lnvol_teddy_fat_avx2_4.L54:
@@ -30035,37 +30024,37 @@ nvol_teddy_fat_avx2_4:
 .Lnvol_teddy_fat_avx2_4.L73:
     mov 224(%rsp), %r11
     lea 12(%r11), %r10
-    mov %r10, 704(%rsp)
+    mov %r10, 256(%rsp)
     vpextrq $1, %xmm0, %r8
-    mov %r8, 736(%rsp)
+    mov %r8, 224(%rsp)
     mov %r8, %r11
     test %r11, %r11
     {disp32} je .Lnvol_teddy_fat_avx2_4.L77
     .byte 144
 .Lnvol_teddy_fat_avx2_4.L76:
-    mov 736(%rsp), %r11
+    mov 224(%rsp), %r11
     bsf %r11, %rdi
-    mov 736(%rsp), %rbx
-    mov 736(%rsp), %r11
+    mov 224(%rsp), %rbx
+    mov 224(%rsp), %r11
     lea -1(%r11), %rbp
     and %rbp, %rbx
-    mov %rbx, 736(%rsp)
+    mov %rbx, 224(%rsp)
     mov %rdi, %rbx
     shr $4, %rbx
-    mov 704(%rsp), %r11
+    mov 256(%rsp), %r11
     lea (%r11,%rbx), %rbx
     mov %rdi, %r11
     and $15, %r11
-    mov %r11, 768(%rsp)
+    mov %r11, 288(%rsp)
     movzbl 320(%rcx,%r11), %r10d
-    mov %r10, 800(%rsp)
+    mov %r10, 320(%rsp)
     xor %r12d, %r12d
     mov %r10, %r11
     cmp %r11, %r12
     {disp32} jae .Lnvol_teddy_fat_avx2_4.L79
     .byte 15, 31, 0
 .Lnvol_teddy_fat_avx2_4.L78:
-    mov 768(%rsp), %r13
+    mov 288(%rsp), %r13
     shl $6, %r13
     lea (%r13,%r12), %r13
     movzbl 336(%rcx,%r13), %r13d
@@ -30112,11 +30101,11 @@ nvol_teddy_fat_avx2_4:
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L81
 .Lnvol_teddy_fat_avx2_4.L80:
     lea 1(%r12), %r12
-    mov 800(%rsp), %r11
+    mov 320(%rsp), %r11
     cmp %r11, %r12
     {disp32} jb .Lnvol_teddy_fat_avx2_4.L78
 .Lnvol_teddy_fat_avx2_4.L79:
-    mov 736(%rsp), %r11
+    mov 224(%rsp), %r11
     test %r11, %r11
     {disp32} jne .Lnvol_teddy_fat_avx2_4.L76
 .Lnvol_teddy_fat_avx2_4.L77:
@@ -58126,24 +58115,24 @@ nvol_json_index_ssse3:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $1960, %rsp
-.seh_stackalloc 1960
-    movdqu %xmm6, 1856(%rsp)
-.seh_savexmm %xmm6, 1856
-    movdqu %xmm7, 1872(%rsp)
-.seh_savexmm %xmm7, 1872
-    movdqu %xmm8, 1888(%rsp)
-.seh_savexmm %xmm8, 1888
-    movdqu %xmm9, 1904(%rsp)
-.seh_savexmm %xmm9, 1904
-    movdqu %xmm10, 1920(%rsp)
-.seh_savexmm %xmm10, 1920
-    movdqu %xmm11, 1936(%rsp)
-.seh_savexmm %xmm11, 1936
+    sub $456, %rsp
+.seh_stackalloc 456
+    movdqu %xmm6, 352(%rsp)
+.seh_savexmm %xmm6, 352
+    movdqu %xmm7, 368(%rsp)
+.seh_savexmm %xmm7, 368
+    movdqu %xmm8, 384(%rsp)
+.seh_savexmm %xmm8, 384
+    movdqu %xmm9, 400(%rsp)
+.seh_savexmm %xmm9, 400
+    movdqu %xmm10, 416(%rsp)
+.seh_savexmm %xmm10, 416
+    movdqu %xmm11, 432(%rsp)
+.seh_savexmm %xmm11, 432
 .seh_endprologue
     mov %rcx, (%rsp)
     mov %rcx, %rax
-    mov 2064(%rsp), %r11
+    mov 560(%rsp), %r11
     mov %r11, 32(%rsp)
     mov (%rax), %rsi
     mov 8(%rax), %rdi
@@ -58276,56 +58265,49 @@ nvol_json_index_ssse3:
     pminub %xmm5, %xmm6
     pcmpeqb %xmm7, %xmm6
     pmovmskb %xmm6, %r11d
-    mov %r11, 224(%rsp)
     shl $16, %r11
-    mov %r11, 256(%rsp)
     or %r11, %rdx
     movdqa %xmm8, %xmm6
     pminub %xmm5, %xmm6
     pcmpeqb %xmm8, %xmm6
     pmovmskb %xmm6, %r11d
-    mov %r11, 288(%rsp)
     shl $32, %r11
-    mov %r11, 320(%rsp)
     or %r11, %rdx
     movdqa %xmm9, %xmm6
     pminub %xmm5, %xmm6
     pcmpeqb %xmm9, %xmm6
     pmovmskb %xmm6, %r11d
-    mov %r11, 384(%rsp)
+    mov %r11, 256(%rsp)
     shl $48, %r11
-    mov %r11, 416(%rsp)
+    mov %r11, 288(%rsp)
     mov %rdx, %r11
-    mov 416(%rsp), %r10
+    mov 288(%rsp), %r10
     or %r10, %r11
-    mov %r11, 352(%rsp)
+    mov %r11, 224(%rsp)
     mov %rsi, %rax
     test %r8, %r8
-    {disp32} je .Lnvol_json_index_ssse3.L4
+    {disp8} je .Lnvol_json_index_ssse3.L4
     mov %r8, %rax
     mov %rsi, %r11
     not %r11
-    mov %r11, 448(%rsp)
     and %r11, %rax
     mov %rax, %r11
     shl $1, %r11
-    mov %r11, 480(%rsp)
-    mov %r11, 512(%rsp)
+    mov %r11, 288(%rsp)
     movabsq $12297829382473034410, %r11
-    mov %r11, 544(%rsp)
-    mov 512(%rsp), %r11
-    mov 544(%rsp), %r10
+    mov %r11, 256(%rsp)
+    mov 288(%rsp), %r11
+    mov 256(%rsp), %r10
     or %r10, %r11
-    mov %r11, 512(%rsp)
+    mov %r11, 288(%rsp)
     sub %rax, %r11
-    mov %r11, 576(%rsp)
     mov %r11, %rcx
     movabsq $12297829382473034410, %rax
     xor %rax, %rcx
     mov %rcx, %rax
     mov %r8, %r11
     or %rsi, %r11
-    mov %r11, 608(%rsp)
+    mov %r11, 256(%rsp)
     xor %r11, %rax
     mov %rcx, %rsi
     and %r8, %rsi
@@ -58341,32 +58323,26 @@ nvol_json_index_ssse3:
     mov %rax, %r8
     mov %rax, %r11
     shl $1, %r11
-    mov %r11, 640(%rsp)
     xor %r11, %r8
     mov %r8, %rax
     mov %rax, %r11
     shl $2, %r11
-    mov %r11, 672(%rsp)
     xor %r11, %r8
     mov %r8, %rax
     mov %rax, %r11
     shl $4, %r11
-    mov %r11, 704(%rsp)
     xor %r11, %r8
     mov %r8, %rax
     mov %rax, %r11
     shl $8, %r11
-    mov %r11, 736(%rsp)
     xor %r11, %r8
     mov %r8, %rax
     mov %rax, %r11
     shl $16, %r11
-    mov %r11, 768(%rsp)
     xor %r11, %r8
     mov %r8, %rax
     mov %rax, %r11
     shl $32, %r11
-    mov %r11, 800(%rsp)
     xor %r11, %r8
     mov %r8, %rax
     xor %rdi, %rax
@@ -58381,13 +58357,10 @@ nvol_json_index_ssse3:
     mov %r8, %rdx
     mov %rcx, %r11
     not %r11
-    mov %r11, 832(%rsp)
     and %r11, %rdx
     mov %rdx, %r11
     shl $1, %r11
-    mov %r11, 864(%rsp)
     or %rbx, %r11
-    mov %r11, 896(%rsp)
     mov %rdx, %rbx
     shr $63, %rbx
     mov %r11, %rdx
@@ -58398,10 +58371,10 @@ nvol_json_index_ssse3:
     xor %rcx, %rdx
     not %rdx
     and %rdx, %r15
-    mov 352(%rsp), %rcx
+    mov 224(%rsp), %rcx
     and %rax, %rcx
     or %rcx, %rbp
-    mov %r15, 928(%rsp)
+    mov %r15, 160(%rsp)
     movdqu 64(%r12), %xmm6
     movdqu 80(%r12), %xmm7
     movdqu 96(%r12), %xmm8
@@ -58443,7 +58416,7 @@ nvol_json_index_ssse3:
     shl $48, %rdx
     mov %rcx, %r11
     or %rdx, %r11
-    mov %r11, 960(%rsp)
+    mov %r11, 192(%rsp)
     movdqa %xmm0, %xmm10
     pshufb %xmm6, %xmm10
     pcmpeqb %xmm6, %xmm10
@@ -58467,7 +58440,7 @@ nvol_json_index_ssse3:
     shl $48, %r8
     mov %rdx, %r11
     or %r8, %r11
-    mov %r11, 992(%rsp)
+    mov %r11, 224(%rsp)
     movdqa %xmm1, %xmm10
     pshufb %xmm6, %xmm10
     movdqa %xmm6, %xmm11
@@ -58480,7 +58453,6 @@ nvol_json_index_ssse3:
     por %xmm4, %xmm11
     pcmpeqb %xmm11, %xmm10
     pmovmskb %xmm10, %r11d
-    mov %r11, 1024(%rsp)
     mov %r11, %r15
     shl $16, %r15
     or %r15, %r8
@@ -58508,56 +58480,49 @@ nvol_json_index_ssse3:
     pminub %xmm5, %xmm6
     pcmpeqb %xmm7, %xmm6
     pmovmskb %xmm6, %r11d
-    mov %r11, 1056(%rsp)
     shl $16, %r11
-    mov %r11, 1088(%rsp)
     or %r11, %r15
     movdqa %xmm8, %xmm6
     pminub %xmm5, %xmm6
     pcmpeqb %xmm8, %xmm6
     pmovmskb %xmm6, %r11d
-    mov %r11, 1120(%rsp)
     shl $32, %r11
-    mov %r11, 1152(%rsp)
     or %r11, %r15
     movdqa %xmm9, %xmm6
     pminub %xmm5, %xmm6
     pcmpeqb %xmm9, %xmm6
     pmovmskb %xmm6, %r11d
-    mov %r11, 1216(%rsp)
+    mov %r11, 288(%rsp)
     shl $48, %r11
-    mov %r11, 1248(%rsp)
+    mov %r11, 320(%rsp)
     mov %r15, %r11
-    mov 1248(%rsp), %r10
+    mov 320(%rsp), %r10
     or %r10, %r11
-    mov %r11, 1184(%rsp)
+    mov %r11, 256(%rsp)
     mov %rsi, %rcx
     test %rax, %rax
-    {disp32} je .Lnvol_json_index_ssse3.L6
+    {disp8} je .Lnvol_json_index_ssse3.L6
     mov %rax, %rcx
     mov %rsi, %r11
     not %r11
-    mov %r11, 1280(%rsp)
     and %r11, %rcx
     mov %rcx, %r11
     shl $1, %r11
-    mov %r11, 1312(%rsp)
-    mov %r11, 1344(%rsp)
+    mov %r11, 320(%rsp)
     movabsq $12297829382473034410, %r11
-    mov %r11, 1376(%rsp)
-    mov 1344(%rsp), %r11
-    mov 1376(%rsp), %r10
+    mov %r11, 288(%rsp)
+    mov 320(%rsp), %r11
+    mov 288(%rsp), %r10
     or %r10, %r11
-    mov %r11, 1344(%rsp)
+    mov %r11, 320(%rsp)
     sub %rcx, %r11
-    mov %r11, 1408(%rsp)
     mov %r11, %rdx
     movabsq $12297829382473034410, %rcx
     xor %rcx, %rdx
     mov %rdx, %rcx
     mov %rax, %r11
     or %rsi, %r11
-    mov %r11, 1440(%rsp)
+    mov %r11, 288(%rsp)
     xor %r11, %rcx
     mov %rdx, %rsi
     and %rax, %rsi
@@ -58566,39 +58531,33 @@ nvol_json_index_ssse3:
 .Lnvol_json_index_ssse3.L6:
     xor %esi, %esi
 .Lnvol_json_index_ssse3.L7:
-    mov 960(%rsp), %rax
+    mov 192(%rsp), %rax
     not %rcx
     and %rcx, %rax
     mov %rax, %rcx
     mov %rcx, %rdx
     mov %rcx, %r11
     shl $1, %r11
-    mov %r11, 1472(%rsp)
     xor %r11, %rdx
     mov %rdx, %rcx
     mov %rcx, %r11
     shl $2, %r11
-    mov %r11, 1504(%rsp)
     xor %r11, %rdx
     mov %rdx, %rcx
     mov %rcx, %r11
     shl $4, %r11
-    mov %r11, 1536(%rsp)
     xor %r11, %rdx
     mov %rdx, %rcx
     mov %rcx, %r11
     shl $8, %r11
-    mov %r11, 1568(%rsp)
     xor %r11, %rdx
     mov %rdx, %rcx
     mov %rcx, %r11
     shl $16, %r11
-    mov %r11, 1600(%rsp)
     xor %r11, %rdx
     mov %rdx, %rcx
     mov %rcx, %r11
     shl $32, %r11
-    mov %r11, 1632(%rsp)
     xor %r11, %rdx
     mov %rdx, %rcx
     xor %rdi, %rcx
@@ -58607,19 +58566,18 @@ nvol_json_index_ssse3:
     shr $63, %rdx
     sub %rdx, %rdi
     mov %r8, %rdx
-    mov 992(%rsp), %r11
+    mov 224(%rsp), %r11
     or %r11, %rdx
     not %rdx
     mov %rdx, %r15
     mov %rax, %r11
     not %r11
-    mov %r11, 1664(%rsp)
     and %r11, %r15
     mov %r15, %r11
     shl $1, %r11
-    mov %r11, 1696(%rsp)
+    mov %r11, 192(%rsp)
     or %rbx, %r11
-    mov %r11, 1728(%rsp)
+    mov %r11, 224(%rsp)
     mov %r15, %rbx
     shr $63, %rbx
     mov %r11, %r15
@@ -58630,51 +58588,51 @@ nvol_json_index_ssse3:
     xor %rax, %rdx
     not %rdx
     and %rdx, %r8
-    mov 1184(%rsp), %rax
+    mov 256(%rsp), %rax
     and %rcx, %rax
     or %rax, %rbp
     test %r14, %r14
     {disp32} jne .Lnvol_json_index_ssse3.Lrare7
 .Lnvol_json_index_ssse3.L8:
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     test %r11, %r11
     {disp32} je .Lnvol_json_index_ssse3.L24
     mov %r13, %r14
     lea NVOL_K0(%rip), %rax
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     movzbl %r11b, %ecx
     movzbl (%rax,%rcx), %ecx
-    mov 928(%rsp), %rdx
+    mov 160(%rsp), %rdx
     shr $8, %rdx
     movzbl %dl, %edx
     movzbl (%rax,%rdx), %edx
     add %edx, %ecx
-    mov 928(%rsp), %rdx
+    mov 160(%rsp), %rdx
     shr $16, %rdx
     movzbl %dl, %edx
     movzbl (%rax,%rdx), %edx
     add %edx, %ecx
-    mov 928(%rsp), %rdx
+    mov 160(%rsp), %rdx
     shr $24, %rdx
     movzbl %dl, %edx
     movzbl (%rax,%rdx), %edx
     add %edx, %ecx
-    mov 928(%rsp), %rdx
+    mov 160(%rsp), %rdx
     shr $32, %rdx
     movzbl %dl, %edx
     movzbl (%rax,%rdx), %edx
     add %edx, %ecx
-    mov 928(%rsp), %rdx
+    mov 160(%rsp), %rdx
     shr $40, %rdx
     movzbl %dl, %edx
     movzbl (%rax,%rdx), %edx
     add %edx, %ecx
-    mov 928(%rsp), %rdx
+    mov 160(%rsp), %rdx
     shr $48, %rdx
     movzbl %dl, %edx
     movzbl (%rax,%rdx), %edx
     add %edx, %ecx
-    mov 928(%rsp), %rdx
+    mov 160(%rsp), %rdx
     shr $56, %rdx
     movzbl (%rax,%rdx), %eax
     add %eax, %ecx
@@ -58683,49 +58641,49 @@ nvol_json_index_ssse3:
     mov 32(%rsp), %r11
     lea (%r11,%rax), %rax
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, (%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 4(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 8(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 12(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $4, %rcx
     {disp32} ja .Lnvol_json_index_ssse3.Lrare13
 .Lnvol_json_index_ssse3.L26:
@@ -59607,13 +59565,13 @@ nvol_json_index_ssse3:
     mov (%rsp), %r11
     mov %rbp, 24(%r11)
     mov 96(%rsp), %rax
-    movdqu 1856(%rsp), %xmm6
-    movdqu 1872(%rsp), %xmm7
-    movdqu 1888(%rsp), %xmm8
-    movdqu 1904(%rsp), %xmm9
-    movdqu 1920(%rsp), %xmm10
-    movdqu 1936(%rsp), %xmm11
-    add $1960, %rsp
+    movdqu 352(%rsp), %xmm6
+    movdqu 368(%rsp), %xmm7
+    movdqu 384(%rsp), %xmm8
+    movdqu 400(%rsp), %xmm9
+    movdqu 416(%rsp), %xmm10
+    movdqu 432(%rsp), %xmm11
+    add $456, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -59633,15 +59591,14 @@ nvol_json_index_ssse3:
     mov %rdx, %r15
     shl $2, %r15
     bsf %r14, %r11
-    mov %r11, 1760(%rsp)
     lea (%r9,%r11), %r10
-    mov %r10, 1792(%rsp)
+    mov %r10, 224(%rsp)
     mov %r10, %r11
     mov %r11d, (%rax,%r15)
     mov %r14, %r15
     mov %r14, %r11
     sub $1, %r11
-    mov %r11, 1824(%rsp)
+    mov %r11, 192(%rsp)
     and %r11, %r15
     mov %r15, %r14
     add $1, %rdx
@@ -59968,19 +59925,20 @@ nvol_json_index_ssse3:
     cmp %rcx, %rdx
     {disp8} jae .Lnvol_json_index_ssse3.L39
     mov %r13, %r15
-    .byte 102, 144
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_json_index_ssse3.L38:
     mov %rdx, %r9
     shl $2, %r9
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r14
     lea (%r15,%r14), %r14
     mov %r14d, (%rax,%r9)
-    mov 928(%rsp), %r9
-    mov 928(%rsp), %r14
+    mov 160(%rsp), %r9
+    mov 160(%rsp), %r14
     sub $1, %r14
     and %r14, %r9
-    mov %r9, 928(%rsp)
+    mov %r9, 160(%rsp)
     add $1, %rdx
     cmp %rcx, %rdx
     {disp8} jb .Lnvol_json_index_ssse3.L38
@@ -59988,245 +59946,245 @@ nvol_json_index_ssse3:
     {disp32} jmp .Lnvol_json_index_ssse3.L36
 .Lnvol_json_index_ssse3.Lrare9:
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 80(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 84(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 88(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 92(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $24, %rcx
     {disp32} ja .Lnvol_json_index_ssse3.Lrare8
 .Lnvol_json_index_ssse3.L36:
     {disp32} jmp .Lnvol_json_index_ssse3.L34
 .Lnvol_json_index_ssse3.Lrare10:
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 64(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 68(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 72(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 76(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $20, %rcx
     {disp32} ja .Lnvol_json_index_ssse3.Lrare9
 .Lnvol_json_index_ssse3.L34:
     {disp32} jmp .Lnvol_json_index_ssse3.L32
 .Lnvol_json_index_ssse3.Lrare11:
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 48(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 52(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 56(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 60(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $16, %rcx
     {disp32} ja .Lnvol_json_index_ssse3.Lrare10
 .Lnvol_json_index_ssse3.L32:
     {disp32} jmp .Lnvol_json_index_ssse3.L30
 .Lnvol_json_index_ssse3.Lrare12:
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 32(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 36(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 40(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 44(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $12, %rcx
     {disp32} ja .Lnvol_json_index_ssse3.Lrare11
 .Lnvol_json_index_ssse3.L30:
     {disp32} jmp .Lnvol_json_index_ssse3.L28
 .Lnvol_json_index_ssse3.Lrare13:
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 16(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 20(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 24(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     mov $64, %edx
-    mov 928(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r9
     cmovz %rdx, %r9
     lea (%r14,%r9), %rdx
     mov %edx, 28(%rax)
-    mov 928(%rsp), %rdx
-    mov 928(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 928(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $8, %rcx
     {disp32} ja .Lnvol_json_index_ssse3.Lrare12
 .Lnvol_json_index_ssse3.L28:
@@ -60254,20 +60212,20 @@ nvol_json_index_avx2:
 .seh_pushreg %r14
     push %r15
 .seh_pushreg %r15
-    sub $1288, %rsp
-.seh_stackalloc 1288
-    vmovdqu %xmm6, 1216(%rsp)
-.seh_savexmm %xmm6, 1216
-    vmovdqu %xmm7, 1232(%rsp)
-.seh_savexmm %xmm7, 1232
-    vmovdqu %xmm8, 1248(%rsp)
-.seh_savexmm %xmm8, 1248
-    vmovdqu %xmm9, 1264(%rsp)
-.seh_savexmm %xmm9, 1264
+    sub $424, %rsp
+.seh_stackalloc 424
+    vmovdqu %xmm6, 352(%rsp)
+.seh_savexmm %xmm6, 352
+    vmovdqu %xmm7, 368(%rsp)
+.seh_savexmm %xmm7, 368
+    vmovdqu %xmm8, 384(%rsp)
+.seh_savexmm %xmm8, 384
+    vmovdqu %xmm9, 400(%rsp)
+.seh_savexmm %xmm9, 400
 .seh_endprologue
     mov %rcx, (%rsp)
     mov %rcx, %rax
-    mov 1392(%rsp), %r11
+    mov 528(%rsp), %r11
     mov %r11, 32(%rsp)
     mov (%rax), %rsi
     mov 8(%rax), %rdi
@@ -60347,31 +60305,28 @@ nvol_json_index_avx2:
     mov %r11, 224(%rsp)
     mov %rsi, %rax
     test %r8, %r8
-    {disp32} je .Lnvol_json_index_avx2.L4
+    {disp8} je .Lnvol_json_index_avx2.L4
     mov %r8, %rax
     mov %rsi, %r11
     not %r11
-    mov %r11, 320(%rsp)
     and %r11, %rax
     mov %rax, %r11
     shl $1, %r11
-    mov %r11, 352(%rsp)
-    mov %r11, 384(%rsp)
+    mov %r11, 288(%rsp)
     movabsq $12297829382473034410, %r11
-    mov %r11, 416(%rsp)
-    mov 384(%rsp), %r11
-    mov 416(%rsp), %r10
+    mov %r11, 256(%rsp)
+    mov 288(%rsp), %r11
+    mov 256(%rsp), %r10
     or %r10, %r11
-    mov %r11, 384(%rsp)
+    mov %r11, 288(%rsp)
     sub %rax, %r11
-    mov %r11, 448(%rsp)
     mov %r11, %rcx
     movabsq $12297829382473034410, %rax
     xor %rax, %rcx
     mov %rcx, %rax
     mov %r8, %r11
     or %rsi, %r11
-    mov %r11, 480(%rsp)
+    mov %r11, 256(%rsp)
     xor %r11, %rax
     mov %rcx, %rsi
     and %r8, %rsi
@@ -60399,13 +60354,10 @@ nvol_json_index_avx2:
     mov %r8, %rdx
     mov %rcx, %r11
     not %r11
-    mov %r11, 512(%rsp)
     and %r11, %rdx
     mov %rdx, %r11
     shl $1, %r11
-    mov %r11, 544(%rsp)
     or %rbx, %r11
-    mov %r11, 576(%rsp)
     mov %rdx, %rbx
     shr $63, %rbx
     mov %r11, %rdx
@@ -60419,7 +60371,7 @@ nvol_json_index_avx2:
     mov 224(%rsp), %rcx
     and %rax, %rcx
     or %rcx, %rbp
-    mov %r15, 608(%rsp)
+    mov %r15, 160(%rsp)
     vmovdqu 64(%r12), %ymm6
     vmovdqu 96(%r12), %ymm7
     vpcmpeqb %ymm2, %ymm6, %ymm8
@@ -60435,7 +60387,7 @@ nvol_json_index_avx2:
     shl $32, %rdx
     mov %rcx, %r11
     or %rdx, %r11
-    mov %r11, 640(%rsp)
+    mov %r11, 192(%rsp)
     vpshufb %ymm6, %ymm0, %ymm8
     vpcmpeqb %ymm6, %ymm8, %ymm8
     vpmovmskb %ymm8, %edx
@@ -60445,7 +60397,7 @@ nvol_json_index_avx2:
     shl $32, %r8
     mov %rdx, %r11
     or %r8, %r11
-    mov %r11, 672(%rsp)
+    mov %r11, 224(%rsp)
     vpshufb %ymm6, %ymm1, %ymm8
     vpor %ymm4, %ymm6, %ymm9
     vpcmpeqb %ymm9, %ymm8, %ymm8
@@ -60454,7 +60406,6 @@ nvol_json_index_avx2:
     vpor %ymm4, %ymm7, %ymm9
     vpcmpeqb %ymm9, %ymm8, %ymm8
     vpmovmskb %ymm8, %r11d
-    mov %r11, 704(%rsp)
     mov %r11, %r15
     shl $32, %r15
     or %r15, %r8
@@ -60464,40 +60415,37 @@ nvol_json_index_avx2:
     vpminub %ymm5, %ymm7, %ymm6
     vpcmpeqb %ymm7, %ymm6, %ymm6
     vpmovmskb %ymm6, %r11d
-    mov %r11, 768(%rsp)
+    mov %r11, 288(%rsp)
     shl $32, %r11
-    mov %r11, 800(%rsp)
+    mov %r11, 320(%rsp)
     mov %r15, %r11
-    mov 800(%rsp), %r10
+    mov 320(%rsp), %r10
     or %r10, %r11
-    mov %r11, 736(%rsp)
+    mov %r11, 256(%rsp)
     mov %rsi, %rcx
     test %rax, %rax
-    {disp32} je .Lnvol_json_index_avx2.L6
+    {disp8} je .Lnvol_json_index_avx2.L6
     mov %rax, %rcx
     mov %rsi, %r11
     not %r11
-    mov %r11, 832(%rsp)
     and %r11, %rcx
     mov %rcx, %r11
     shl $1, %r11
-    mov %r11, 864(%rsp)
-    mov %r11, 896(%rsp)
+    mov %r11, 320(%rsp)
     movabsq $12297829382473034410, %r11
-    mov %r11, 928(%rsp)
-    mov 896(%rsp), %r11
-    mov 928(%rsp), %r10
+    mov %r11, 288(%rsp)
+    mov 320(%rsp), %r11
+    mov 288(%rsp), %r10
     or %r10, %r11
-    mov %r11, 896(%rsp)
+    mov %r11, 320(%rsp)
     sub %rcx, %r11
-    mov %r11, 960(%rsp)
     mov %r11, %rdx
     movabsq $12297829382473034410, %rcx
     xor %rcx, %rdx
     mov %rdx, %rcx
     mov %rax, %r11
     or %rsi, %r11
-    mov %r11, 992(%rsp)
+    mov %r11, 288(%rsp)
     xor %r11, %rcx
     mov %rdx, %rsi
     and %rax, %rsi
@@ -60506,7 +60454,7 @@ nvol_json_index_avx2:
 .Lnvol_json_index_avx2.L6:
     xor %esi, %esi
 .Lnvol_json_index_avx2.L7:
-    mov 640(%rsp), %rax
+    mov 192(%rsp), %rax
     not %rcx
     and %rcx, %rax
     vmovq %rax, %xmm6
@@ -60519,19 +60467,18 @@ nvol_json_index_avx2:
     shr $63, %rdx
     sub %rdx, %rdi
     mov %r8, %rdx
-    mov 672(%rsp), %r11
+    mov 224(%rsp), %r11
     or %r11, %rdx
     not %rdx
     mov %rdx, %r15
     mov %rax, %r11
     not %r11
-    mov %r11, 1024(%rsp)
     and %r11, %r15
     mov %r15, %r11
     shl $1, %r11
-    mov %r11, 1056(%rsp)
+    mov %r11, 192(%rsp)
     or %rbx, %r11
-    mov %r11, 1088(%rsp)
+    mov %r11, 224(%rsp)
     mov %r15, %rbx
     shr $63, %rbx
     mov %r11, %r15
@@ -60542,58 +60489,58 @@ nvol_json_index_avx2:
     xor %rax, %rdx
     not %rdx
     and %rdx, %r8
-    mov 736(%rsp), %rax
+    mov 256(%rsp), %rax
     and %rcx, %rax
     or %rax, %rbp
     test %r14, %r14
     {disp32} jne .Lnvol_json_index_avx2.Lrare7
 .Lnvol_json_index_avx2.L8:
-    mov 608(%rsp), %r11
+    mov 160(%rsp), %r11
     test %r11, %r11
     {disp32} je .Lnvol_json_index_avx2.L24
     mov %r13, %r14
-    mov 608(%rsp), %r11
+    mov 160(%rsp), %r11
     popcnt %r11, %rax
     mov 96(%rsp), %rcx
     shl $2, %rcx
     mov 32(%rsp), %r11
     lea (%r11,%rcx), %rcx
-    mov 608(%rsp), %r11
+    mov 160(%rsp), %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, (%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 4(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 8(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 12(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $4, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare13
 .Lnvol_json_index_avx2.L26:
@@ -61215,11 +61162,11 @@ nvol_json_index_avx2:
     mov %rbp, 24(%r11)
     mov 96(%rsp), %rax
     vzeroupper
-    vmovdqu 1216(%rsp), %xmm6
-    vmovdqu 1232(%rsp), %xmm7
-    vmovdqu 1248(%rsp), %xmm8
-    vmovdqu 1264(%rsp), %xmm9
-    add $1288, %rsp
+    vmovdqu 352(%rsp), %xmm6
+    vmovdqu 368(%rsp), %xmm7
+    vmovdqu 384(%rsp), %xmm8
+    vmovdqu 400(%rsp), %xmm9
+    add $424, %rsp
     pop %r15
     pop %r14
     pop %r13
@@ -61238,15 +61185,14 @@ nvol_json_index_avx2:
     mov %rdx, %r15
     shl $2, %r15
     bsf %r14, %r11
-    mov %r11, 1120(%rsp)
     lea (%r9,%r11), %r10
-    mov %r10, 1152(%rsp)
+    mov %r10, 224(%rsp)
     mov %r10, %r11
     mov %r11d, (%rcx,%r15)
     mov %r14, %r15
     mov %r14, %r11
     sub $1, %r11
-    mov %r11, 1184(%rsp)
+    mov %r11, 192(%rsp)
     and %r11, %r15
     mov %r15, %r14
     add $1, %rdx
@@ -61489,19 +61435,18 @@ nvol_json_index_avx2:
     cmp %rax, %rdx
     {disp8} jae .Lnvol_json_index_avx2.L39
     mov %r13, %r15
-    .byte 15, 31, 132, 0, 0, 0, 0, 0
 .Lnvol_json_index_avx2.L38:
     mov %rdx, %r9
     shl $2, %r9
-    mov 608(%rsp), %r11
+    mov 160(%rsp), %r11
     bsf %r11, %r14
     lea (%r15,%r14), %r14
     mov %r14d, (%rcx,%r9)
-    mov 608(%rsp), %r9
-    mov 608(%rsp), %r14
+    mov 160(%rsp), %r9
+    mov 160(%rsp), %r14
     sub $1, %r14
     and %r14, %r9
-    mov %r9, 608(%rsp)
+    mov %r9, 160(%rsp)
     add $1, %rdx
     cmp %rax, %rdx
     {disp8} jb .Lnvol_json_index_avx2.L38
@@ -61512,38 +61457,38 @@ nvol_json_index_avx2:
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 80(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 84(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 88(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 92(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $24, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare8
 .Lnvol_json_index_avx2.L36:
@@ -61553,38 +61498,38 @@ nvol_json_index_avx2:
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 64(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 68(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 72(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 76(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $20, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare9
 .Lnvol_json_index_avx2.L34:
@@ -61594,38 +61539,38 @@ nvol_json_index_avx2:
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 48(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 52(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 56(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 60(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $16, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare10
 .Lnvol_json_index_avx2.L32:
@@ -61635,38 +61580,38 @@ nvol_json_index_avx2:
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 32(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 36(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 40(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 44(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $12, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare11
 .Lnvol_json_index_avx2.L30:
@@ -61676,47 +61621,45 @@ nvol_json_index_avx2:
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 16(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 20(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 24(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     mov %rdx, %r11
     tzcnt %r11, %rdx
     lea (%r14,%rdx), %rdx
     mov %edx, 28(%rcx)
-    mov 608(%rsp), %rdx
-    mov 608(%rsp), %r9
+    mov 160(%rsp), %rdx
+    mov 160(%rsp), %r9
     sub $1, %r9
     and %r9, %rdx
-    mov %rdx, 608(%rsp)
+    mov %rdx, 160(%rsp)
     cmp $8, %rax
     {disp32} ja .Lnvol_json_index_avx2.Lrare12
 .Lnvol_json_index_avx2.L28:
     {disp32} jmp .Lnvol_json_index_avx2.L26
 .seh_endproc
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 0
+    .byte 15, 31, 68, 0, 0
 .globl nvol_json_index_raw
 .def nvol_json_index_raw; .scl 2; .type 32; .endef
 nvol_json_index_raw:

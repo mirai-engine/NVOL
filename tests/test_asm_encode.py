@@ -136,3 +136,39 @@ def test_nasm_gas_same_bytes(tmp_path):
     diff = [(t1, samebytes._hex(b1), samebytes._hex(b2)) for (b1, t1), (b2, t2) in zip(a, b)
             if not samebytes._eq(b1, b2)]
     assert not diff, diff[:10]
+
+
+def _slots(code_spec):
+    """share_slots over a tiny MIR program: (op, label, defs, uses) rows; returns {name: slot}."""
+    from nvol.asm.mir import Ins, Lab, VReg
+    from nvol.asm.regalloc import share_slots
+    regs = {n: VReg("g", k) for k, n in enumerate("vw")}
+    code = [Ins(op, [Lab(lab)] if lab else [], [regs[x] for x in d], [regs[x] for x in u])
+            for op, lab, d, u in code_spec]
+    slot, _ = share_slots(code, set(regs.values()))
+    return {n: slot[r] for n, r in regs.items()}
+
+
+def test_spill_slots_shared_only_when_ranges_are_disjoint():
+    """Disjoint ranges share; a register written fresh each iteration keeps its own range; a
+    register whose write a jump can skip, or whose first access reads it, needs the whole
+    loop (it may carry a value from the previous iteration) and so its own slot."""
+    fresh = [("label", "L", "", ""), ("mov", None, "w", ""), ("use", None, "", "w"),
+             ("mov", None, "v", ""), ("use", None, "", "v"), ("jnz", "L", "", "")]
+    s = _slots(fresh)
+    assert s["v"] == s["w"]
+    skipped = [("label", "L", "", ""), ("mov", None, "w", ""), ("use", None, "", "w"),
+               ("jz", "M", "", ""), ("mov", None, "v", ""), ("label", "M", "", ""),
+               ("use", None, "", "v"), ("jnz", "L", "", "")]
+    s = _slots(skipped)
+    assert s["v"] != s["w"]
+    carried = [("label", "L", "", ""), ("mov", None, "w", ""), ("use", None, "", "w"),
+               ("add", None, "v", "v"), ("use", None, "", "v"), ("jnz", "L", "", "")]
+    s = _slots(carried)
+    assert s["v"] != s["w"]
+    # a jump over every access of v (an arm it lives in alone) does not matter
+    arm = [("label", "L", "", ""), ("mov", None, "w", ""), ("use", None, "", "w"),
+           ("jz", "M", "", ""), ("mov", None, "v", ""), ("use", None, "", "v"),
+           ("label", "M", "", ""), ("jnz", "L", "", "")]
+    s = _slots(arm)
+    assert s["v"] == s["w"]
