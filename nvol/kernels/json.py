@@ -104,8 +104,8 @@ def _masks_vector(b, isa, blk, k):
             mask("ctl", lambda v, i: prim("cmpeq", prim("vmin8", v, k["k1f"]), v))]
 
 
-def _block(b, isa, st, masks, base, out, n):
-    """One block of json_scanner::next plus the indexer, on the five masks."""
+def _block(b, isa, st, masks):
+    """One block of json_scanner::next on the five masks: its structural starts."""
     nie, pis, psc, err = st
     bs, qt, ws, op, ctl = masks
     # json_escape_scanner::next (without its no-backslash shortcut, which gives the same masks)
@@ -122,9 +122,9 @@ def _block(b, isa, st, masks, base, out, n):
     nqs = b.let("nqs", scalar & _not(quote))
     follows = b.let("follows", (nqs << 1) | psc)
     b.set(psc, nqs >> 63)
-    bits = b.var("bits", (op | (scalar & _not(follows))) & _not(ins ^ quote), U64)
+    bits = b.let("bits", (op | (scalar & _not(follows))) & _not(ins ^ quote))
     b.set(err, err | (ctl & ins))
-    _write_indexes(b, bits, base, out, n)
+    return bits
 
 
 # bit_indexer::write's unrolling (haswell): 4 positions unconditionally, then 4 more while the
@@ -174,11 +174,19 @@ def kernel(isa: ISA | None) -> Function:
     end = b.let("end", blocks + (nblocks << 6))
     n = b.var("n", 0)
     k = _consts(b, isa) if isa else None
+    # json_structural_indexer::next: a block's positions are written while the next block is
+    # scanned, so the indexer's branches wait on the previous block, not on this one's chain
+    prev = b.var("prev", 0, U64)
+    pbase = b.var("pbase", idx)
     with b.while_(blk < end):
         masks = _masks_vector(b, isa, blk, k) if isa else _masks_scalar(b, blk)
-        _block(b, isa, st, masks, base, out, n)
+        bits = _block(b, isa, st, masks)
+        _write_indexes(b, prev, pbase, out, n)
+        b.set(prev, bits)
+        b.set(pbase, base)
         b.set(blk, blk + 64)
         b.set(base, base + 64)
+    _write_indexes(b, prev, pbase, out, n)
     for k, v in enumerate(st):
         b.store64(state + 8 * k if k else state, v)
     b.ret(n)

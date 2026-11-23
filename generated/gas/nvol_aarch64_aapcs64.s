@@ -21261,28 +21261,32 @@ L.nvol_find_byteset_pair_mask_raw:
 nvol_json_index_neon:
 L.nvol_json_index_neon:
 .cfi_startproc
+    str x19, [sp, #-16]!
+.cfi_def_cfa_offset 16
+.cfi_offset 19, -16
     ldr x9, [x0]
     ldr x10, [x0, #8]
     ldr x11, [x0, #16]
     ldr x12, [x0, #24]
     mov x13, x1
-    lsl x14, x2, #6
-    add x14, x1, x14
-    movz w15, #0
-    adrp x1, NVOL_K0
-    add x1, x1, :lo12:NVOL_K0
-    ldr q0, [x1]
-    adrp x1, NVOL_K1
-    add x1, x1, :lo12:NVOL_K1
-    ldr q1, [x1]
+    mov x14, x3
+    lsl x15, x2, #6
+    add x15, x1, x15
+    movz w1, #0
+    adrp x2, NVOL_K0
+    add x2, x2, :lo12:NVOL_K0
+    ldr q0, [x2]
+    adrp x2, NVOL_K1
+    add x2, x2, :lo12:NVOL_K1
+    ldr q1, [x2]
     movi v2.16b, #92
     movi v3.16b, #34
     movi v4.16b, #32
     movi v5.16b, #31
     movi v6.16b, #15
-    cmp x13, x14
+    movz w2, #0
+    cmp x13, x15
     b.hs .Lnvol_json_index_neon.L3
-    nop
 .Lnvol_json_index_neon.L2:
     ldr q7, [x13]
     ldr q16, [x13, #16]
@@ -21292,11 +21296,11 @@ L.nvol_json_index_neon:
     and v20.16b, v16.16b, v6.16b
     and v21.16b, v17.16b, v6.16b
     and v22.16b, v18.16b, v6.16b
-    movz x1, #513
-    movk x1, #2052, lsl #16
-    movk x1, #8208, lsl #32
-    movk x1, #32832, lsl #48
-    dup v23.2d, x1
+    movz x5, #513
+    movk x5, #2052, lsl #16
+    movk x5, #8208, lsl #32
+    movk x5, #32832, lsl #48
+    dup v23.2d, x5
     cmeq v24.16b, v7.16b, v2.16b
     and v24.16b, v24.16b, v23.16b
     cmeq v25.16b, v16.16b, v2.16b
@@ -21309,12 +21313,12 @@ L.nvol_json_index_neon:
     addp v23.16b, v26.16b, v23.16b
     addp v23.16b, v24.16b, v23.16b
     addp v23.16b, v23.16b, v23.16b
-    fmov x1, d23
-    movz x2, #513
-    movk x2, #2052, lsl #16
-    movk x2, #8208, lsl #32
-    movk x2, #32832, lsl #48
-    dup v23.2d, x2
+    fmov x5, d23
+    movz x6, #513
+    movk x6, #2052, lsl #16
+    movk x6, #8208, lsl #32
+    movk x6, #32832, lsl #48
+    dup v23.2d, x6
     cmeq v24.16b, v7.16b, v3.16b
     and v24.16b, v24.16b, v23.16b
     cmeq v25.16b, v16.16b, v3.16b
@@ -21327,12 +21331,12 @@ L.nvol_json_index_neon:
     addp v23.16b, v26.16b, v23.16b
     addp v23.16b, v24.16b, v23.16b
     addp v23.16b, v23.16b, v23.16b
-    fmov x2, d23
-    movz x5, #513
-    movk x5, #2052, lsl #16
-    movk x5, #8208, lsl #32
-    movk x5, #32832, lsl #48
-    dup v23.2d, x5
+    fmov x6, d23
+    movz x7, #513
+    movk x7, #2052, lsl #16
+    movk x7, #8208, lsl #32
+    movk x7, #32832, lsl #48
+    dup v23.2d, x7
     tbl v24.16b, {v0.16b}, v19.16b
     cmeq v24.16b, v24.16b, v7.16b
     and v24.16b, v24.16b, v23.16b
@@ -21349,12 +21353,12 @@ L.nvol_json_index_neon:
     addp v23.16b, v26.16b, v23.16b
     addp v23.16b, v24.16b, v23.16b
     addp v23.16b, v23.16b, v23.16b
-    fmov x5, d23
-    movz x6, #513
-    movk x6, #2052, lsl #16
-    movk x6, #8208, lsl #32
-    movk x6, #32832, lsl #48
-    dup v23.2d, x6
+    fmov x7, d23
+    movz x8, #513
+    movk x8, #2052, lsl #16
+    movk x8, #8208, lsl #32
+    movk x8, #32832, lsl #48
+    dup v23.2d, x8
     tbl v19.16b, {v1.16b}, v19.16b
     orr v24.16b, v7.16b, v4.16b
     cmeq v19.16b, v19.16b, v24.16b
@@ -21375,12 +21379,12 @@ L.nvol_json_index_neon:
     addp v20.16b, v21.16b, v22.16b
     addp v19.16b, v19.16b, v20.16b
     addp v19.16b, v19.16b, v19.16b
-    fmov x6, d19
-    movz x7, #513
-    movk x7, #2052, lsl #16
-    movk x7, #8208, lsl #32
-    movk x7, #32832, lsl #48
-    dup v19.2d, x7
+    fmov x8, d19
+    movz x16, #513
+    movk x16, #2052, lsl #16
+    movk x16, #8208, lsl #32
+    movk x16, #32832, lsl #48
+    dup v19.2d, x16
     umin v20.16b, v7.16b, v5.16b
     cmeq v7.16b, v20.16b, v7.16b
     and v7.16b, v7.16b, v19.16b
@@ -21397,267 +21401,458 @@ L.nvol_json_index_neon:
     addp v16.16b, v17.16b, v18.16b
     addp v7.16b, v7.16b, v16.16b
     addp v7.16b, v7.16b, v7.16b
-    fmov x7, d7
-    movn x8, #0
-    eor x8, x9, x8
-    and x8, x1, x8
-    lsl x16, x8, #1
-    orr x16, x16, #12297829382473034410
-    sub x8, x16, x8
-    eor x8, x8, #12297829382473034410
-    orr x16, x1, x9
-    eor x16, x8, x16
-    and x1, x8, x1
-    lsr x9, x1, #63
-    movn x1, #0
-    eor x1, x16, x1
-    and x1, x2, x1
-    mov x2, x1
-    lsl x8, x2, #1
-    eor x2, x2, x8
-    lsl x8, x2, #2
-    eor x2, x2, x8
-    lsl x8, x2, #4
-    eor x2, x2, x8
-    lsl x8, x2, #8
-    eor x2, x2, x8
-    lsl x8, x2, #16
-    eor x2, x2, x8
-    lsl x8, x2, #32
-    eor x2, x2, x8
-    eor x2, x2, x10
-    movz w8, #0
-    lsr x16, x2, #63
-    sub x10, x8, x16
-    orr x5, x6, x5
+    fmov x16, d7
+    movn x17, #0
+    eor x17, x9, x17
+    and x17, x5, x17
+    lsl x19, x17, #1
+    orr x19, x19, #12297829382473034410
+    sub x17, x19, x17
+    eor x17, x17, #12297829382473034410
+    orr x19, x5, x9
+    eor x19, x17, x19
+    and x5, x17, x5
+    lsr x9, x5, #63
+    movn x5, #0
+    eor x5, x19, x5
+    and x5, x6, x5
+    mov x6, x5
+    lsl x17, x6, #1
+    eor x6, x6, x17
+    lsl x17, x6, #2
+    eor x6, x6, x17
+    lsl x17, x6, #4
+    eor x6, x6, x17
+    lsl x17, x6, #8
+    eor x6, x6, x17
+    lsl x17, x6, #16
+    eor x6, x6, x17
+    lsl x17, x6, #32
+    eor x6, x6, x17
+    eor x6, x6, x10
+    movz w17, #0
+    lsr x19, x6, #63
+    sub x10, x17, x19
+    orr x7, x8, x7
+    movn x17, #0
+    eor x7, x7, x17
+    movn x17, #0
+    eor x17, x5, x17
+    and x17, x7, x17
+    lsl x19, x17, #1
+    orr x19, x19, x11
+    lsr x11, x17, #63
+    movn x17, #0
+    eor x17, x19, x17
+    and x7, x7, x17
+    orr x7, x8, x7
+    eor x5, x6, x5
     movn x8, #0
     eor x5, x5, x8
-    movn x8, #0
-    eor x8, x1, x8
-    and x8, x5, x8
-    lsl x16, x8, #1
-    orr x16, x16, x11
-    lsr x11, x8, #63
-    movn x8, #0
-    eor x8, x16, x8
-    and x5, x5, x8
-    orr x5, x6, x5
-    eor x1, x2, x1
-    movn x6, #0
-    eor x1, x1, x6
-    and x1, x5, x1
-    and x2, x7, x2
-    orr x12, x12, x2
-    cbnz x1, .Lnvol_json_index_neon.Lrare7
+    and x5, x7, x5
+    and x6, x16, x6
+    orr x12, x12, x6
+    cbnz x2, .Lnvol_json_index_neon.Lrare7
 .Lnvol_json_index_neon.L4:
+    mov x2, x5
+    mov x3, x14
     add x13, x13, #64
-    add x3, x3, #64
-    cmp x13, x14
+    add x14, x14, #64
+    cmp x13, x15
     b.lo .Lnvol_json_index_neon.L2
 .Lnvol_json_index_neon.L3:
+    cbz x2, .Lnvol_json_index_neon.L20
+    fmov d0, x2
+    cnt v0.8b, v0.8b
+    addv b0, v0.8b
+    umov w13, v0.b[0]
+    lsl x14, x1, #2
+    add x14, x4, x14
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #4]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #8]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #12]
+    sub x15, x2, #1
+    and x2, x2, x15
+    cmp x13, #4
+    b.ls .Lnvol_json_index_neon.L22
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #16]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #20]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #24]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #28]
+    sub x15, x2, #1
+    and x2, x2, x15
+    cmp x13, #8
+    b.ls .Lnvol_json_index_neon.L24
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #32]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #36]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #40]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #44]
+    sub x15, x2, #1
+    and x2, x2, x15
+    cmp x13, #12
+    b.ls .Lnvol_json_index_neon.L26
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #48]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #52]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #56]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #60]
+    sub x15, x2, #1
+    and x2, x2, x15
+    cmp x13, #16
+    b.ls .Lnvol_json_index_neon.L28
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #64]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #68]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #72]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #76]
+    sub x15, x2, #1
+    and x2, x2, x15
+    cmp x13, #20
+    b.ls .Lnvol_json_index_neon.L30
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #80]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #84]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #88]
+    sub x15, x2, #1
+    and x2, x2, x15
+    rbit x15, x2
+    clz x15, x15
+    add x15, x3, x15
+    str w15, [x14, #92]
+    sub x15, x2, #1
+    and x2, x2, x15
+    cmp x13, #24
+    b.ls .Lnvol_json_index_neon.L32
+    orr w15, wzr, #24
+    cmp x15, x13
+    b.hs .Lnvol_json_index_neon.L35
+    nop
+.Lnvol_json_index_neon.L34:
+    lsl x4, x15, #2
+    rbit x5, x2
+    clz x5, x5
+    add x5, x3, x5
+    str w5, [x14, x4]
+    sub x4, x2, #1
+    and x2, x2, x4
+    add x15, x15, #1
+    cmp x15, x13
+    b.lo .Lnvol_json_index_neon.L34
+.Lnvol_json_index_neon.L35:
+.Lnvol_json_index_neon.L32:
+.Lnvol_json_index_neon.L30:
+.Lnvol_json_index_neon.L28:
+.Lnvol_json_index_neon.L26:
+.Lnvol_json_index_neon.L24:
+.Lnvol_json_index_neon.L22:
+    add x1, x1, x13
+.Lnvol_json_index_neon.L20:
     str x9, [x0]
     str x10, [x0, #8]
     str x11, [x0, #16]
     str x12, [x0, #24]
-    mov x0, x15
+    mov x0, x1
+    ldr x19, [sp], #16
     ret
 .Lnvol_json_index_neon.Lrare1:
-    orr w6, wzr, #24
-    cmp x6, x2
+    orr w8, wzr, #24
+    cmp x8, x6
     b.hs .Lnvol_json_index_neon.L19
+    nop
 .Lnvol_json_index_neon.L18:
-    lsl x7, x6, #2
-    rbit x8, x1
-    clz x8, x8
-    add x8, x3, x8
-    str w8, [x5, x7]
-    sub x7, x1, #1
-    and x1, x1, x7
-    add x6, x6, #1
-    cmp x6, x2
+    lsl x16, x8, #2
+    rbit x17, x2
+    clz x17, x17
+    add x17, x3, x17
+    str w17, [x7, x16]
+    sub x16, x2, #1
+    and x2, x2, x16
+    add x8, x8, #1
+    cmp x8, x6
     b.lo .Lnvol_json_index_neon.L18
 .Lnvol_json_index_neon.L19:
     b .Lnvol_json_index_neon.L16
 .Lnvol_json_index_neon.Lrare2:
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #80]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #84]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #88]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #92]
-    sub x6, x1, #1
-    and x1, x1, x6
-    cmp x2, #24
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #80]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #84]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #88]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #92]
+    sub x8, x2, #1
+    and x2, x2, x8
+    cmp x6, #24
     b.hi .Lnvol_json_index_neon.Lrare1
 .Lnvol_json_index_neon.L16:
     b .Lnvol_json_index_neon.L14
 .Lnvol_json_index_neon.Lrare3:
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #64]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #68]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #72]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #76]
-    sub x6, x1, #1
-    and x1, x1, x6
-    cmp x2, #20
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #64]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #68]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #72]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #76]
+    sub x8, x2, #1
+    and x2, x2, x8
+    cmp x6, #20
     b.hi .Lnvol_json_index_neon.Lrare2
 .Lnvol_json_index_neon.L14:
     b .Lnvol_json_index_neon.L12
 .Lnvol_json_index_neon.Lrare4:
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #48]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #52]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #56]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #60]
-    sub x6, x1, #1
-    and x1, x1, x6
-    cmp x2, #16
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #48]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #52]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #56]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #60]
+    sub x8, x2, #1
+    and x2, x2, x8
+    cmp x6, #16
     b.hi .Lnvol_json_index_neon.Lrare3
 .Lnvol_json_index_neon.L12:
     b .Lnvol_json_index_neon.L10
 .Lnvol_json_index_neon.Lrare5:
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #32]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #36]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #40]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #44]
-    sub x6, x1, #1
-    and x1, x1, x6
-    cmp x2, #12
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #32]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #36]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #40]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #44]
+    sub x8, x2, #1
+    and x2, x2, x8
+    cmp x6, #12
     b.hi .Lnvol_json_index_neon.Lrare4
 .Lnvol_json_index_neon.L10:
     b .Lnvol_json_index_neon.L8
 .Lnvol_json_index_neon.Lrare6:
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #16]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #20]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #24]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #28]
-    sub x6, x1, #1
-    and x1, x1, x6
-    cmp x2, #8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #16]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #20]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #24]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #28]
+    sub x8, x2, #1
+    and x2, x2, x8
+    cmp x6, #8
     b.hi .Lnvol_json_index_neon.Lrare5
 .Lnvol_json_index_neon.L8:
     b .Lnvol_json_index_neon.L6
 .Lnvol_json_index_neon.Lrare7:
-    fmov d7, x1
+    fmov d7, x2
     cnt v7.8b, v7.8b
     addv b7, v7.8b
-    umov w2, v7.b[0]
-    lsl x5, x15, #2
-    add x5, x4, x5
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #4]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #8]
-    sub x6, x1, #1
-    and x1, x1, x6
-    rbit x6, x1
-    clz x6, x6
-    add x6, x3, x6
-    str w6, [x5, #12]
-    sub x6, x1, #1
-    and x1, x1, x6
-    cmp x2, #4
+    umov w6, v7.b[0]
+    lsl x7, x1, #2
+    add x7, x4, x7
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #4]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #8]
+    sub x8, x2, #1
+    and x2, x2, x8
+    rbit x8, x2
+    clz x8, x8
+    add x8, x3, x8
+    str w8, [x7, #12]
+    sub x8, x2, #1
+    and x2, x2, x8
+    cmp x6, #4
     b.hi .Lnvol_json_index_neon.Lrare6
 .Lnvol_json_index_neon.L6:
-    add x15, x15, x2
+    add x1, x1, x6
     b .Lnvol_json_index_neon.L4
 .cfi_endproc
 .size nvol_json_index_neon, .-nvol_json_index_neon
