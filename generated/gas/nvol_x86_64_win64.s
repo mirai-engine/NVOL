@@ -28,6 +28,42 @@ NVOL_K7:
 .p2align 5
 NVOL_K8:
     .byte 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128
+.p2align 5
+NVOL_K9:
+    .byte 32, 100, 100, 100, 17, 100, 113, 2, 100, 9, 10, 112, 100, 13, 100, 100
+.p2align 5
+NVOL_K10:
+    .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 123, 44, 125, 0, 0
+.p2align 5
+NVOL_K11:
+    .byte 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92
+.p2align 5
+NVOL_K12:
+    .byte 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34
+.p2align 5
+NVOL_K13:
+    .byte 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
+.p2align 5
+NVOL_K14:
+    .byte 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
+.p2align 5
+NVOL_K15:
+    .byte 32, 100, 100, 100, 17, 100, 113, 2, 100, 9, 10, 112, 100, 13, 100, 100, 32, 100, 100, 100, 17, 100, 113, 2, 100, 9, 10, 112, 100, 13, 100, 100
+.p2align 5
+NVOL_K16:
+    .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 123, 44, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 123, 44, 125, 0, 0
+.p2align 5
+NVOL_K17:
+    .byte 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92
+.p2align 5
+NVOL_K18:
+    .byte 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34
+.p2align 5
+NVOL_K19:
+    .byte 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
+.p2align 5
+NVOL_K20:
+    .byte 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31
 .p2align 6
 nvol_tbl_rank:
     .byte 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
@@ -111,6 +147,10 @@ nvol_find_byteset_pair_raw_ptr:
 .globl nvol_find_byteset_pair_mask_raw_ptr
 nvol_find_byteset_pair_mask_raw_ptr:
     .quad nvol_find_byteset_pair_mask_raw_resolve
+.p2align 3
+.globl nvol_json_index_raw_ptr
+nvol_json_index_raw_ptr:
+    .quad nvol_json_index_raw_resolve
 .section .drectve
     .ascii " -export:nvol_memchr_raw"
     .ascii " -export:nvol_memchr"
@@ -56396,10 +56436,609 @@ nvol_json_index_scalar:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 15, 31, 68, 0, 0
+.globl nvol_json_index_ssse3
+.def nvol_json_index_ssse3; .scl 2; .type 32; .endef
+nvol_json_index_ssse3:
+.seh_proc nvol_json_index_ssse3
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+    push %r12
+.seh_pushreg %r12
+    push %r13
+.seh_pushreg %r13
+    push %r14
+.seh_pushreg %r14
+    push %r15
+.seh_pushreg %r15
+    sub $776, %rsp
+.seh_stackalloc 776
+    movdqu %xmm6, 672(%rsp)
+.seh_savexmm %xmm6, 672
+    movdqu %xmm7, 688(%rsp)
+.seh_savexmm %xmm7, 688
+    movdqu %xmm8, 704(%rsp)
+.seh_savexmm %xmm8, 704
+    movdqu %xmm9, 720(%rsp)
+.seh_savexmm %xmm9, 720
+    movdqu %xmm10, 736(%rsp)
+.seh_savexmm %xmm10, 736
+    movdqu %xmm11, 752(%rsp)
+.seh_savexmm %xmm11, 752
+.seh_endprologue
+    mov %rcx, (%rsp)
+    mov 880(%rsp), %rax
+    mov (%rcx), %rsi
+    mov 8(%rcx), %rdi
+    mov 16(%rcx), %rbx
+    mov 24(%rcx), %r11
+    mov %r11, 32(%rsp)
+    mov %rdx, %r12
+    shl $6, %r8
+    lea (%rdx,%r8), %r11
+    mov %r11, 64(%rsp)
+    xor %r8d, %r8d
+    movdqa NVOL_K9(%rip), %xmm0
+    movdqa NVOL_K10(%rip), %xmm1
+    movdqa NVOL_K11(%rip), %xmm2
+    movdqa NVOL_K12(%rip), %xmm3
+    movdqa NVOL_K13(%rip), %xmm4
+    movdqa NVOL_K14(%rip), %xmm5
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_json_index_ssse3.L3
+    .byte 15, 31, 128, 0, 0, 0, 0
+.Lnvol_json_index_ssse3.L2:
+    movdqu (%r12), %xmm6
+    movdqu 16(%r12), %xmm7
+    movdqu 32(%r12), %xmm8
+    movdqu 48(%r12), %xmm9
+    movdqa %xmm6, %xmm10
+    pcmpeqb %xmm2, %xmm10
+    pmovmskb %xmm10, %r13d
+    movdqa %xmm7, %xmm10
+    pcmpeqb %xmm2, %xmm10
+    pmovmskb %xmm10, %r14d
+    shl $16, %r14
+    or %r14, %r13
+    movdqa %xmm8, %xmm10
+    pcmpeqb %xmm2, %xmm10
+    pmovmskb %xmm10, %r14d
+    shl $32, %r14
+    or %r14, %r13
+    movdqa %xmm9, %xmm10
+    pcmpeqb %xmm2, %xmm10
+    pmovmskb %xmm10, %r14d
+    shl $48, %r14
+    or %r14, %r13
+    movdqa %xmm6, %xmm10
+    pcmpeqb %xmm3, %xmm10
+    pmovmskb %xmm10, %r14d
+    movdqa %xmm7, %xmm10
+    pcmpeqb %xmm3, %xmm10
+    pmovmskb %xmm10, %r15d
+    shl $16, %r15
+    or %r15, %r14
+    movdqa %xmm8, %xmm10
+    pcmpeqb %xmm3, %xmm10
+    pmovmskb %xmm10, %r15d
+    shl $32, %r15
+    or %r15, %r14
+    movdqa %xmm9, %xmm10
+    pcmpeqb %xmm3, %xmm10
+    pmovmskb %xmm10, %r15d
+    shl $48, %r15
+    or %r15, %r14
+    movdqa %xmm0, %xmm10
+    pshufb %xmm6, %xmm10
+    pcmpeqb %xmm6, %xmm10
+    pmovmskb %xmm10, %r15d
+    movdqa %xmm0, %xmm10
+    pshufb %xmm7, %xmm10
+    pcmpeqb %xmm7, %xmm10
+    pmovmskb %xmm10, %ecx
+    shl $16, %rcx
+    or %rcx, %r15
+    movdqa %xmm0, %xmm10
+    pshufb %xmm8, %xmm10
+    pcmpeqb %xmm8, %xmm10
+    pmovmskb %xmm10, %ecx
+    shl $32, %rcx
+    or %rcx, %r15
+    movdqa %xmm0, %xmm10
+    pshufb %xmm9, %xmm10
+    pcmpeqb %xmm9, %xmm10
+    pmovmskb %xmm10, %ecx
+    shl $48, %rcx
+    or %rcx, %r15
+    movdqa %xmm1, %xmm10
+    pshufb %xmm6, %xmm10
+    movdqa %xmm6, %xmm11
+    por %xmm4, %xmm11
+    pcmpeqb %xmm11, %xmm10
+    pmovmskb %xmm10, %ecx
+    movdqa %xmm1, %xmm10
+    pshufb %xmm7, %xmm10
+    movdqa %xmm7, %xmm11
+    por %xmm4, %xmm11
+    pcmpeqb %xmm11, %xmm10
+    pmovmskb %xmm10, %edx
+    shl $16, %rdx
+    or %rdx, %rcx
+    movdqa %xmm1, %xmm10
+    pshufb %xmm8, %xmm10
+    movdqa %xmm8, %xmm11
+    por %xmm4, %xmm11
+    pcmpeqb %xmm11, %xmm10
+    pmovmskb %xmm10, %edx
+    shl $32, %rdx
+    or %rdx, %rcx
+    movdqa %xmm1, %xmm10
+    pshufb %xmm9, %xmm10
+    movdqa %xmm9, %xmm11
+    por %xmm4, %xmm11
+    pcmpeqb %xmm11, %xmm10
+    pmovmskb %xmm10, %edx
+    shl $48, %rdx
+    or %rdx, %rcx
+    movdqa %xmm6, %xmm10
+    pminub %xmm5, %xmm10
+    pcmpeqb %xmm6, %xmm10
+    pmovmskb %xmm10, %edx
+    movdqa %xmm7, %xmm6
+    pminub %xmm5, %xmm6
+    pcmpeqb %xmm7, %xmm6
+    pmovmskb %xmm6, %r11d
+    mov %r11, 96(%rsp)
+    mov %r11, %rbp
+    shl $16, %rbp
+    or %rbp, %rdx
+    movdqa %xmm8, %xmm6
+    pminub %xmm5, %xmm6
+    pcmpeqb %xmm8, %xmm6
+    pmovmskb %xmm6, %ebp
+    shl $32, %rbp
+    or %rbp, %rdx
+    movdqa %xmm9, %xmm6
+    pminub %xmm5, %xmm6
+    pcmpeqb %xmm9, %xmm6
+    pmovmskb %xmm6, %ebp
+    shl $48, %rbp
+    or %rbp, %rdx
+    mov %r13, %rbp
+    mov %rsi, %r11
+    not %r11
+    mov %r11, 128(%rsp)
+    and %r11, %rbp
+    mov %rbp, %r11
+    shl $1, %r11
+    mov %r11, 160(%rsp)
+    mov %r11, 192(%rsp)
+    movabsq $12297829382473034410, %r11
+    mov %r11, 224(%rsp)
+    mov 192(%rsp), %r11
+    mov 224(%rsp), %r10
+    or %r10, %r11
+    mov %r11, 192(%rsp)
+    sub %rbp, %r11
+    mov %r11, 256(%rsp)
+    mov %r11, %rbp
+    movabsq $12297829382473034410, %r11
+    mov %r11, 288(%rsp)
+    xor %r11, %rbp
+    mov %r13, %r11
+    or %rsi, %r11
+    mov %r11, 352(%rsp)
+    mov %rbp, %r11
+    mov 352(%rsp), %r10
+    xor %r10, %r11
+    mov %r11, 320(%rsp)
+    mov %rbp, %rsi
+    and %r13, %rsi
+    shr $63, %rsi
+    mov %r11, %rbp
+    not %rbp
+    and %rbp, %r14
+    mov %r14, %rbp
+    mov %rbp, %r13
+    mov %rbp, %r11
+    shl $1, %r11
+    mov %r11, 384(%rsp)
+    xor %r11, %r13
+    mov %r13, %rbp
+    mov %rbp, %r11
+    shl $2, %r11
+    mov %r11, 416(%rsp)
+    xor %r11, %r13
+    mov %r13, %rbp
+    mov %rbp, %r11
+    shl $4, %r11
+    mov %r11, 448(%rsp)
+    xor %r11, %r13
+    mov %r13, %rbp
+    mov %rbp, %r11
+    shl $8, %r11
+    mov %r11, 480(%rsp)
+    xor %r11, %r13
+    mov %r13, %rbp
+    mov %rbp, %r11
+    shl $16, %r11
+    mov %r11, 512(%rsp)
+    xor %r11, %r13
+    mov %r13, %rbp
+    mov %rbp, %r11
+    shl $32, %r11
+    mov %r11, 544(%rsp)
+    xor %r11, %r13
+    mov %r13, %rbp
+    xor %rdi, %rbp
+    xor %edi, %edi
+    mov %rbp, %r13
+    shr $63, %r13
+    sub %r13, %rdi
+    mov %rcx, %r13
+    or %r15, %r13
+    not %r13
+    mov %r13, %r15
+    mov %r14, %r11
+    not %r11
+    mov %r11, 576(%rsp)
+    and %r11, %r15
+    mov %r15, %r11
+    shl $1, %r11
+    mov %r11, 608(%rsp)
+    or %rbx, %r11
+    mov %r11, 640(%rsp)
+    mov %r15, %rbx
+    shr $63, %rbx
+    mov %r11, %r15
+    not %r15
+    and %r15, %r13
+    or %r13, %rcx
+    mov %rbp, %r13
+    xor %r14, %r13
+    not %r13
+    and %r13, %rcx
+    mov 32(%rsp), %r11
+    and %rbp, %rdx
+    or %rdx, %r11
+    mov %r11, 32(%rsp)
+    test %rcx, %rcx
+    {disp8} je .Lnvol_json_index_ssse3.L5
+    .byte 102, 15, 31, 68, 0, 0
+.Lnvol_json_index_ssse3.L4:
+    mov %r8, %rdx
+    shl $2, %rdx
+    bsf %rcx, %rbp
+    lea (%r9,%rbp), %rbp
+    mov %ebp, (%rax,%rdx)
+    lea 1(%r8), %r8
+    mov %rcx, %rdx
+    mov %rcx, %rbp
+    sub $1, %rbp
+    and %rbp, %rdx
+    mov %rdx, %rcx
+    test %rcx, %rcx
+    {disp8} jne .Lnvol_json_index_ssse3.L4
+.Lnvol_json_index_ssse3.L5:
+    lea 64(%r12), %r12
+    lea 64(%r9), %r9
+    mov 64(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_json_index_ssse3.L2
+.Lnvol_json_index_ssse3.L3:
+    mov (%rsp), %r11
+    mov %rsi, (%r11)
+    mov (%rsp), %r11
+    mov %rdi, 8(%r11)
+    mov (%rsp), %r11
+    mov %rbx, 16(%r11)
+    mov (%rsp), %r11
+    mov 32(%rsp), %r10
+    mov %r10, 24(%r11)
+    mov %r8, %rax
+    movdqu 672(%rsp), %xmm6
+    movdqu 688(%rsp), %xmm7
+    movdqu 704(%rsp), %xmm8
+    movdqu 720(%rsp), %xmm9
+    movdqu 736(%rsp), %xmm10
+    movdqu 752(%rsp), %xmm11
+    add $776, %rsp
+    pop %r15
+    pop %r14
+    pop %r13
+    pop %r12
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
+    ret
+.seh_endproc
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 0
+.globl nvol_json_index_avx2
+.def nvol_json_index_avx2; .scl 2; .type 32; .endef
+nvol_json_index_avx2:
+.seh_proc nvol_json_index_avx2
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+    push %r12
+.seh_pushreg %r12
+    push %r13
+.seh_pushreg %r13
+    push %r14
+.seh_pushreg %r14
+    push %r15
+.seh_pushreg %r15
+    sub $552, %rsp
+.seh_stackalloc 552
+    vmovdqu %xmm6, 480(%rsp)
+.seh_savexmm %xmm6, 480
+    vmovdqu %xmm7, 496(%rsp)
+.seh_savexmm %xmm7, 496
+    vmovdqu %xmm8, 512(%rsp)
+.seh_savexmm %xmm8, 512
+    vmovdqu %xmm9, 528(%rsp)
+.seh_savexmm %xmm9, 528
+.seh_endprologue
+    mov %rcx, (%rsp)
+    mov 656(%rsp), %rax
+    mov (%rcx), %rsi
+    mov 8(%rcx), %rdi
+    mov 16(%rcx), %rbx
+    mov 24(%rcx), %r11
+    mov %r11, 32(%rsp)
+    mov %rdx, %r12
+    shl $6, %r8
+    lea (%rdx,%r8), %r11
+    mov %r11, 64(%rsp)
+    xor %r8d, %r8d
+    vmovdqa NVOL_K15(%rip), %ymm0
+    vmovdqa NVOL_K16(%rip), %ymm1
+    vmovdqa NVOL_K17(%rip), %ymm2
+    vmovdqa NVOL_K18(%rip), %ymm3
+    vmovdqa NVOL_K19(%rip), %ymm4
+    vmovdqa NVOL_K20(%rip), %ymm5
+    cmp %r11, %r12
+    {disp32} jae .Lnvol_json_index_avx2.L3
+    .byte 15, 31, 68, 0, 0
+.Lnvol_json_index_avx2.L2:
+    vmovdqu (%r12), %ymm6
+    vmovdqu 32(%r12), %ymm7
+    vpcmpeqb %ymm2, %ymm6, %ymm8
+    vpmovmskb %ymm8, %r13d
+    vpcmpeqb %ymm2, %ymm7, %ymm8
+    vpmovmskb %ymm8, %r14d
+    shl $32, %r14
+    or %r14, %r13
+    vpcmpeqb %ymm3, %ymm6, %ymm8
+    vpmovmskb %ymm8, %r14d
+    vpcmpeqb %ymm3, %ymm7, %ymm8
+    vpmovmskb %ymm8, %r15d
+    shl $32, %r15
+    or %r15, %r14
+    vpshufb %ymm6, %ymm0, %ymm8
+    vpcmpeqb %ymm6, %ymm8, %ymm8
+    vpmovmskb %ymm8, %r15d
+    vpshufb %ymm7, %ymm0, %ymm8
+    vpcmpeqb %ymm7, %ymm8, %ymm8
+    vpmovmskb %ymm8, %ecx
+    shl $32, %rcx
+    or %rcx, %r15
+    vpshufb %ymm6, %ymm1, %ymm8
+    vpor %ymm4, %ymm6, %ymm9
+    vpcmpeqb %ymm9, %ymm8, %ymm8
+    vpmovmskb %ymm8, %ecx
+    vpshufb %ymm7, %ymm1, %ymm8
+    vpor %ymm4, %ymm7, %ymm9
+    vpcmpeqb %ymm9, %ymm8, %ymm8
+    vpmovmskb %ymm8, %edx
+    shl $32, %rdx
+    or %rdx, %rcx
+    vpminub %ymm5, %ymm6, %ymm8
+    vpcmpeqb %ymm6, %ymm8, %ymm6
+    vpmovmskb %ymm6, %edx
+    vpminub %ymm5, %ymm7, %ymm6
+    vpcmpeqb %ymm7, %ymm6, %ymm6
+    vpmovmskb %ymm6, %r11d
+    mov %r11, 96(%rsp)
+    mov %r11, %rbp
+    shl $32, %rbp
+    or %rbp, %rdx
+    mov %r13, %rbp
+    mov %rsi, %r11
+    not %r11
+    mov %r11, 128(%rsp)
+    and %r11, %rbp
+    mov %rbp, %r11
+    shl $1, %r11
+    mov %r11, 160(%rsp)
+    mov %r11, 192(%rsp)
+    movabsq $12297829382473034410, %r11
+    mov %r11, 224(%rsp)
+    mov 192(%rsp), %r11
+    mov 224(%rsp), %r10
+    or %r10, %r11
+    mov %r11, 192(%rsp)
+    sub %rbp, %r11
+    mov %r11, 256(%rsp)
+    mov %r11, %rbp
+    movabsq $12297829382473034410, %r11
+    mov %r11, 288(%rsp)
+    xor %r11, %rbp
+    mov %r13, %r11
+    or %rsi, %r11
+    mov %r11, 352(%rsp)
+    mov %rbp, %r11
+    mov 352(%rsp), %r10
+    xor %r10, %r11
+    mov %r11, 320(%rsp)
+    mov %rbp, %rsi
+    and %r13, %rsi
+    shr $63, %rsi
+    mov %r11, %rbp
+    not %rbp
+    and %rbp, %r14
+    vmovq %r14, %xmm6
+    vpcmpeqb %xmm7, %xmm7, %xmm7
+    vpclmulqdq $0, %xmm7, %xmm6, %xmm6
+    vmovq %xmm6, %rbp
+    xor %rdi, %rbp
+    xor %edi, %edi
+    mov %rbp, %r13
+    shr $63, %r13
+    sub %r13, %rdi
+    mov %rcx, %r13
+    or %r15, %r13
+    not %r13
+    mov %r13, %r15
+    mov %r14, %r11
+    not %r11
+    mov %r11, 384(%rsp)
+    and %r11, %r15
+    mov %r15, %r11
+    shl $1, %r11
+    mov %r11, 416(%rsp)
+    or %rbx, %r11
+    mov %r11, 448(%rsp)
+    mov %r15, %rbx
+    shr $63, %rbx
+    mov %r11, %r15
+    not %r15
+    and %r15, %r13
+    or %r13, %rcx
+    mov %rbp, %r13
+    xor %r14, %r13
+    not %r13
+    and %r13, %rcx
+    mov 32(%rsp), %r11
+    and %rbp, %rdx
+    or %rdx, %r11
+    mov %r11, 32(%rsp)
+    test %rcx, %rcx
+    {disp8} je .Lnvol_json_index_avx2.L5
+    .byte 15, 31, 64, 0
+.Lnvol_json_index_avx2.L4:
+    mov %r8, %rdx
+    shl $2, %rdx
+    bsf %rcx, %rbp
+    lea (%r9,%rbp), %rbp
+    mov %ebp, (%rax,%rdx)
+    lea 1(%r8), %r8
+    mov %rcx, %rdx
+    mov %rcx, %rbp
+    sub $1, %rbp
+    and %rbp, %rdx
+    mov %rdx, %rcx
+    test %rcx, %rcx
+    {disp8} jne .Lnvol_json_index_avx2.L4
+.Lnvol_json_index_avx2.L5:
+    lea 64(%r12), %r12
+    lea 64(%r9), %r9
+    mov 64(%rsp), %r11
+    cmp %r11, %r12
+    {disp32} jb .Lnvol_json_index_avx2.L2
+.Lnvol_json_index_avx2.L3:
+    mov (%rsp), %r11
+    mov %rsi, (%r11)
+    mov (%rsp), %r11
+    mov %rdi, 8(%r11)
+    mov (%rsp), %r11
+    mov %rbx, 16(%r11)
+    mov (%rsp), %r11
+    mov 32(%rsp), %r10
+    mov %r10, 24(%r11)
+    mov %r8, %rax
+    vzeroupper
+    vmovdqu 480(%rsp), %xmm6
+    vmovdqu 496(%rsp), %xmm7
+    vmovdqu 512(%rsp), %xmm8
+    vmovdqu 528(%rsp), %xmm9
+    add $552, %rsp
+    pop %r15
+    pop %r14
+    pop %r13
+    pop %r12
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
+    ret
+.seh_endproc
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 68, 0, 0
 .globl nvol_json_index_raw
 .def nvol_json_index_raw; .scl 2; .type 32; .endef
 nvol_json_index_raw:
-    {disp32} jmp nvol_json_index_scalar
+    jmp *nvol_json_index_raw_ptr(%rip)
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
+.globl nvol_json_index_raw_resolve
+.def nvol_json_index_raw_resolve; .scl 2; .type 32; .endef
+nvol_json_index_raw_resolve:
+.seh_proc nvol_json_index_raw_resolve
+    push %rcx
+.seh_pushreg %rcx
+    push %rdx
+.seh_pushreg %rdx
+    push %r8
+.seh_pushreg %r8
+    push %r9
+.seh_pushreg %r9
+    sub $40, %rsp
+.seh_stackalloc 40
+.seh_endprologue
+    call nvol_cpu_avx2_pclmul
+    test %eax, %eax
+    {disp8} jne .Lnvol_json_index_raw_resolve.T0
+    call nvol_cpu_ssse3
+    test %eax, %eax
+    {disp8} jne .Lnvol_json_index_raw_resolve.T1
+    lea nvol_json_index_scalar(%rip), %rax
+    {disp8} jmp .Lnvol_json_index_raw_resolve.done
+.Lnvol_json_index_raw_resolve.T0:
+    lea nvol_json_index_avx2(%rip), %rax
+    {disp8} jmp .Lnvol_json_index_raw_resolve.done
+.Lnvol_json_index_raw_resolve.T1:
+    lea nvol_json_index_ssse3(%rip), %rax
+    {disp8} jmp .Lnvol_json_index_raw_resolve.done
+.Lnvol_json_index_raw_resolve.done:
+    mov %rax, nvol_json_index_raw_ptr(%rip)
+    add $40, %rsp
+    pop %r9
+    pop %r8
+    pop %rdx
+    pop %rcx
+    jmp *nvol_json_index_raw_ptr(%rip)
+.seh_endproc
 
 .p2align 3
 nvol_fntbl_teddy:

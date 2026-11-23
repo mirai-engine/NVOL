@@ -9054,9 +9054,143 @@ pub mod raw {
         }
     }
 
+    /// stage 1, ssse3 masks
+    #[target_feature(enable = "ssse3")]
+    #[inline]
+    pub(crate) unsafe fn nvol_json_index_ssse3(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
+        unsafe {
+            let mut nie: u64 = (state as *const u64).read_unaligned();
+            let mut pis: u64 = (state.add(8usize) as *const u64).read_unaligned();
+            let mut psc: u64 = (state.add(16usize) as *const u64).read_unaligned();
+            let mut err: u64 = (state.add(24usize) as *const u64).read_unaligned();
+            let mut blk: *const u8 = blocks;
+            let mut base: usize = idx;
+            let end: *const u8 = blocks.add((nblocks << 6usize));
+            let mut n: usize = 0usize;
+            let ws_table: __m128i = _mm_setr_epi8(32u8 as i8, 100u8 as i8, 100u8 as i8, 100u8 as i8, 17u8 as i8, 100u8 as i8, 113u8 as i8, 2u8 as i8, 100u8 as i8, 9u8 as i8, 10u8 as i8, 112u8 as i8, 100u8 as i8, 13u8 as i8, 100u8 as i8, 100u8 as i8);
+            let op_table: __m128i = _mm_setr_epi8(0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 58u8 as i8, 123u8 as i8, 44u8 as i8, 125u8 as i8, 0u8 as i8, 0u8 as i8);
+            let k_bs: __m128i = _mm_set1_epi8(92u8 as i8);
+            let k_qt: __m128i = _mm_set1_epi8(34u8 as i8);
+            let k20: __m128i = _mm_set1_epi8(32u8 as i8);
+            let k1f: __m128i = _mm_set1_epi8(31u8 as i8);
+            while (blk < end) {
+                let in_: __m128i = _mm_loadu_si128(blk as *const __m128i);
+                let in_1: __m128i = _mm_loadu_si128(blk.add(16usize) as *const __m128i);
+                let in_2: __m128i = _mm_loadu_si128(blk.add(32usize) as *const __m128i);
+                let in_3: __m128i = _mm_loadu_si128(blk.add(48usize) as *const __m128i);
+                let bs: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(in_, k_bs)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_1, k_bs)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_2, k_bs)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_3, k_bs)) as u32 as u64) << 48));
+                let qt: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(in_, k_qt)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_1, k_qt)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_2, k_qt)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_3, k_qt)) as u32 as u64) << 48));
+                let ws: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_), in_)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_1), in_1)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_2), in_2)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_3), in_3)) as u32 as u64) << 48));
+                let op: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_), _mm_or_si128(in_, k20))) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_1), _mm_or_si128(in_1, k20))) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_2), _mm_or_si128(in_2, k20))) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_3), _mm_or_si128(in_3, k20))) as u32 as u64) << 48));
+                let ctl: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_, k1f), in_)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_1, k1f), in_1)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_2, k1f), in_2)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_3, k1f), in_3)) as u32 as u64) << 48));
+                let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                let escaped: u64 = (code ^ (bs | nie));
+                nie = ((code & bs) >> 63u64);
+                let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
+                let mut px: u64 = quote;
+                px = (px ^ (px << 1u64));
+                px = (px ^ (px << 2u64));
+                px = (px ^ (px << 4u64));
+                px = (px ^ (px << 8u64));
+                px = (px ^ (px << 16u64));
+                px = (px ^ (px << 32u64));
+                let in_string: u64 = (px ^ pis);
+                pis = 0u64.wrapping_sub((in_string >> 63u64));
+                let scalar: u64 = ((op | ws) ^ 18446744073709551615u64);
+                let nqs: u64 = (scalar & (quote ^ 18446744073709551615u64));
+                let follows: u64 = ((nqs << 1u64) | psc);
+                psc = (nqs >> 63u64);
+                let mut bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
+                err = (err | (ctl & in_string));
+                while (bits != 0u64) {
+                    (out.add((n << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    n = (n + 1usize);
+                    bits = (bits & bits.wrapping_sub(1u64));
+                }
+                blk = blk.add(64usize);
+                base = (base + 64usize);
+            }
+            (state as *mut u64).write_unaligned(nie);
+            (state.add(8usize) as *mut u64).write_unaligned(pis);
+            (state.add(16usize) as *mut u64).write_unaligned(psc);
+            (state.add(24usize) as *mut u64).write_unaligned(err);
+            return n;
+        }
+    }
+
+    /// stage 1, avx2 masks
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
+    #[inline]
+    pub(crate) unsafe fn nvol_json_index_avx2(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
+        unsafe {
+            let mut nie: u64 = (state as *const u64).read_unaligned();
+            let mut pis: u64 = (state.add(8usize) as *const u64).read_unaligned();
+            let mut psc: u64 = (state.add(16usize) as *const u64).read_unaligned();
+            let mut err: u64 = (state.add(24usize) as *const u64).read_unaligned();
+            let mut blk: *const u8 = blocks;
+            let mut base: usize = idx;
+            let end: *const u8 = blocks.add((nblocks << 6usize));
+            let mut n: usize = 0usize;
+            let ws_table: __m256i = _mm256_setr_epi8(32u8 as i8, 100u8 as i8, 100u8 as i8, 100u8 as i8, 17u8 as i8, 100u8 as i8, 113u8 as i8, 2u8 as i8, 100u8 as i8, 9u8 as i8, 10u8 as i8, 112u8 as i8, 100u8 as i8, 13u8 as i8, 100u8 as i8, 100u8 as i8, 32u8 as i8, 100u8 as i8, 100u8 as i8, 100u8 as i8, 17u8 as i8, 100u8 as i8, 113u8 as i8, 2u8 as i8, 100u8 as i8, 9u8 as i8, 10u8 as i8, 112u8 as i8, 100u8 as i8, 13u8 as i8, 100u8 as i8, 100u8 as i8);
+            let op_table: __m256i = _mm256_setr_epi8(0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 58u8 as i8, 123u8 as i8, 44u8 as i8, 125u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 58u8 as i8, 123u8 as i8, 44u8 as i8, 125u8 as i8, 0u8 as i8, 0u8 as i8);
+            let k_bs: __m256i = _mm256_set1_epi8(92u8 as i8);
+            let k_qt: __m256i = _mm256_set1_epi8(34u8 as i8);
+            let k20: __m256i = _mm256_set1_epi8(32u8 as i8);
+            let k1f: __m256i = _mm256_set1_epi8(31u8 as i8);
+            while (blk < end) {
+                let in_: __m256i = _mm256_loadu_si256(blk as *const __m256i);
+                let in_1: __m256i = _mm256_loadu_si256(blk.add(32usize) as *const __m256i);
+                let bs: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_, k_bs)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_1, k_bs)) as u32 as u64) << 32));
+                let qt: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_, k_qt)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_1, k_qt)) as u32 as u64) << 32));
+                let ws: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_), in_)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_1), in_1)) as u32 as u64) << 32));
+                let op: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_), _mm256_or_si256(in_, k20))) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_1), _mm256_or_si256(in_1, k20))) as u32 as u64) << 32));
+                let ctl: u64 = ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_, k1f), in_)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_1, k1f), in_1)) as u32 as u64) << 32));
+                let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                let escaped: u64 = (code ^ (bs | nie));
+                nie = ((code & bs) >> 63u64);
+                let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
+                let in_string: u64 = ((_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128(quote as i64), _mm_set1_epi8(-1))) as u64) ^ pis);
+                pis = 0u64.wrapping_sub((in_string >> 63u64));
+                let scalar: u64 = ((op | ws) ^ 18446744073709551615u64);
+                let nqs: u64 = (scalar & (quote ^ 18446744073709551615u64));
+                let follows: u64 = ((nqs << 1u64) | psc);
+                psc = (nqs >> 63u64);
+                let mut bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
+                err = (err | (ctl & in_string));
+                while (bits != 0u64) {
+                    (out.add((n << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    n = (n + 1usize);
+                    bits = (bits & bits.wrapping_sub(1u64));
+                }
+                blk = blk.add(64usize);
+                base = (base + 64usize);
+            }
+            (state as *mut u64).write_unaligned(nie);
+            (state.add(8usize) as *mut u64).write_unaligned(pis);
+            (state.add(16usize) as *mut u64).write_unaligned(psc);
+            (state.add(24usize) as *mut u64).write_unaligned(err);
+            return n;
+        }
+    }
+
     /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
     #[inline(always)]
-    pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize { unsafe { nvol_json_index_scalar(state, blocks, nblocks, idx, out) } }
+    pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
+        use core::sync::atomic::{AtomicPtr, Ordering};
+        type F = unsafe fn(*mut u8, *const u8, usize, usize, *mut u8) -> usize;
+        static FN: AtomicPtr<()> = AtomicPtr::new(resolve as F as *mut ());
+        unsafe fn resolve(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
+            let mut f: F = nvol_json_index_scalar;
+            if std::is_x86_feature_detected!("ssse3") { f = nvol_json_index_ssse3; }
+            if (std::is_x86_feature_detected!("avx2") && std::is_x86_feature_detected!("pclmulqdq")) { f = nvol_json_index_avx2; }
+            FN.store(f as *mut (), Ordering::Relaxed);
+            unsafe { f(state, blocks, nblocks, idx, out) }
+        }
+        let f = FN.load(Ordering::Relaxed);
+        unsafe { core::mem::transmute::<*mut (), F>(f)(state, blocks, nblocks, idx, out) }
+    }
 
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 12] = [
         nvol_teddy_slim_ssse3_1,
@@ -13854,9 +13988,9 @@ pub mod raw {
     #[inline(always)]
     pub unsafe fn nvol_find_byteset_pair_mask_raw(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 { unsafe { nvol_find_byteset_pair_mask_entry_neon(st, start, end, out) } }
 
-    /// stage 1, scalar masks
+    /// stage 1, neon masks
     #[inline(always)]
-    pub(crate) unsafe fn nvol_json_index_scalar(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
+    pub(crate) unsafe fn nvol_json_index_neon(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
         unsafe {
             let mut nie: u64 = (state as *const u64).read_unaligned();
             let mut pis: u64 = (state.add(8usize) as *const u64).read_unaligned();
@@ -13866,34 +14000,27 @@ pub mod raw {
             let mut base: usize = idx;
             let end: *const u8 = blocks.add((nblocks << 6usize));
             let mut n: usize = 0usize;
+            let ws_table: uint8x16_t = vcombine_u8(vcreate_u8(((32u8 as u64)) | ((100u8 as u64) << 8) | ((100u8 as u64) << 16) | ((100u8 as u64) << 24) | ((17u8 as u64) << 32) | ((100u8 as u64) << 40) | ((113u8 as u64) << 48) | ((2u8 as u64) << 56)), vcreate_u8(((100u8 as u64)) | ((9u8 as u64) << 8) | ((10u8 as u64) << 16) | ((112u8 as u64) << 24) | ((100u8 as u64) << 32) | ((13u8 as u64) << 40) | ((100u8 as u64) << 48) | ((100u8 as u64) << 56)));
+            let op_table: uint8x16_t = vcombine_u8(vcreate_u8(((0u8 as u64)) | ((0u8 as u64) << 8) | ((0u8 as u64) << 16) | ((0u8 as u64) << 24) | ((0u8 as u64) << 32) | ((0u8 as u64) << 40) | ((0u8 as u64) << 48) | ((0u8 as u64) << 56)), vcreate_u8(((0u8 as u64)) | ((0u8 as u64) << 8) | ((58u8 as u64) << 16) | ((123u8 as u64) << 24) | ((44u8 as u64) << 32) | ((125u8 as u64) << 40) | ((0u8 as u64) << 48) | ((0u8 as u64) << 56)));
+            let k_bs: uint8x16_t = vdupq_n_u8(92u8);
+            let k_qt: uint8x16_t = vdupq_n_u8(34u8);
+            let k20: uint8x16_t = vdupq_n_u8(32u8);
+            let k1f: uint8x16_t = vdupq_n_u8(31u8);
+            let k0f: uint8x16_t = vdupq_n_u8(15u8);
             while (blk < end) {
-                let mut bs: u64 = 0u64;
-                let mut qt: u64 = 0u64;
-                let mut ws: u64 = 0u64;
-                let mut op: u64 = 0u64;
-                let mut ctl: u64 = 0u64;
-                let mut i: usize = 0usize;
-                while (i < 64usize) {
-                    let c: u8 = (*blk.add(i));
-                    let bit: u64 = (1u64 << (i as u64));
-                    if (c == 92u8) {
-                        bs = (bs | bit);
-                    }
-                    if (c == 34u8) {
-                        qt = (qt | bit);
-                    }
-                    if (((c == 32u8) || (c == 9u8)) || ((c == 10u8) || (c == 13u8))) {
-                        ws = (ws | bit);
-                    }
-                    let c20: u8 = (c | 32u8);
-                    if (((c20 == 58u8) || (c20 == 123u8)) || ((c20 == 44u8) || (c20 == 125u8))) {
-                        op = (op | bit);
-                    }
-                    if (c <= 31u8) {
-                        ctl = (ctl | bit);
-                    }
-                    i = (i + 1usize);
-                }
+                let in_: uint8x16_t = vld1q_u8(blk);
+                let in_1: uint8x16_t = vld1q_u8(blk.add(16usize));
+                let in_2: uint8x16_t = vld1q_u8(blk.add(32usize));
+                let in_3: uint8x16_t = vld1q_u8(blk.add(48usize));
+                let lo: uint8x16_t = vandq_u8(in_, k0f);
+                let lo1: uint8x16_t = vandq_u8(in_1, k0f);
+                let lo2: uint8x16_t = vandq_u8(in_2, k0f);
+                let lo3: uint8x16_t = vandq_u8(in_3, k0f);
+                let bs: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(in_1, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(in_3, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(in_1, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(in_3, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
+                let qt: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(in_1, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(in_3, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(in_1, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(in_3, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
+                let ws: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo1), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo2), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo3), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo1), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo2), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo3), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
+                let op: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
+                let ctl: u64 = vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
                 let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
                 let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
                 let escaped: u64 = (code ^ (bs | nie));
@@ -13932,7 +14059,7 @@ pub mod raw {
 
     /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
     #[inline(always)]
-    pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize { unsafe { nvol_json_index_scalar(state, blocks, nblocks, idx, out) } }
+    pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize { unsafe { nvol_json_index_neon(state, blocks, nblocks, idx, out) } }
 
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 4] = [
         nvol_teddy_slim_neon_1,

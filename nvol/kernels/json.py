@@ -18,8 +18,8 @@ scanners inlined (docs/SIMDJSON_SIMD_INVENTORY.md, "The stage 1 API").
 """
 from __future__ import annotations
 
-from ..ir import MPTR, PTR, U32, U64, USIZE, Builder, Function, Module, lift, lor, prim
-from ..isa import ISA, prefix_xor
+from ..ir import MPTR, PTR, U8, U32, U64, USIZE, Builder, Function, Module, lift, lor, prim
+from ..isa import ISA, ISAS, prefix_xor
 
 STATE_WORDS = 4
 STATE_BYTES = 8 * STATE_WORDS
@@ -71,6 +71,38 @@ def _masks_scalar(b, blk):
     return ms
 
 
+def _consts(b, isa):
+    """The splats and tables of the vector masks, hoisted out of the block loop."""
+    def splat(name, x):
+        return b.let(name, prim("splat", lift(x, U8)))
+    return {"ws_table": b.let("ws_table", prim("vtable16", *[lift(x, U8) for x in WS_TABLE])),
+            "op_table": b.let("op_table", prim("vtable16", *[lift(x, U8) for x in OP_TABLE])),
+            "bs": splat("k_bs", 0x5C), "qt": splat("k_qt", 0x22), "k20": splat("k20", 0x20),
+            "k1f": splat("k1f", 0x1F), "k0f": splat("k0f", 0x0F) if isa.name == "neon" else None}
+
+
+def _masks_vector(b, isa, blk, k):
+    """The block's masks from 64 / V vectors: two cmpeq, classify's two lookups (haswell:
+    whitespace = table[lo] == byte, operator = table[lo] == byte | 0x20), and byte <= 0x1F as
+    min(byte, 0x1F) == byte."""
+    V = isa.bytes
+    vs = [b.let("in", prim("load_u", blk + V * j if j else blk)) for j in range(64 // V)]
+    # pshufb takes the low nibble of an index below 0x80 (and gives 0 from 0x80 up); NEON's tbl
+    # gives 0 from 16 up, so it is indexed by the low nibble. Either way a byte only matches
+    # its own entry: the tables hold bytes below 0x80 whose low nibble is their index.
+    idx = [b.let("lo", prim("vand", v, k["k0f"])) for v in vs] if k["k0f"] is not None else vs
+    bm = "bmask64x2" if V == 32 else "bmask64x4"
+
+    def mask(name, f):
+        return b.let(name, prim(bm, *[f(v, i) for v, i in zip(vs, idx)]))
+    return [mask("bs", lambda v, i: prim("cmpeq", v, k["bs"])),
+            mask("qt", lambda v, i: prim("cmpeq", v, k["qt"])),
+            mask("ws", lambda v, i: prim("cmpeq", prim("vshuffle", k["ws_table"], i), v)),
+            mask("op", lambda v, i: prim("cmpeq", prim("vshuffle", k["op_table"], i),
+                                         prim("vor", v, k["k20"]))),
+            mask("ctl", lambda v, i: prim("cmpeq", prim("vmin8", v, k["k1f"]), v))]
+
+
 def _block(b, isa, st, masks, base, out, n):
     """One block of json_scanner::next plus the indexer, on the five masks."""
     nie, pis, psc, err = st
@@ -109,8 +141,9 @@ def kernel(isa: ISA | None) -> Function:
     base = b.var("base", idx)
     end = b.let("end", blocks + (nblocks << 6))
     n = b.var("n", 0)
+    k = _consts(b, isa) if isa else None
     with b.while_(blk < end):
-        masks = _masks_scalar(b, blk)
+        masks = _masks_vector(b, isa, blk, k) if isa else _masks_scalar(b, blk)
         _block(b, isa, st, masks, base, out, n)
         b.set(blk, blk + 64)
         b.set(base, base + 64)
@@ -121,10 +154,19 @@ def kernel(isa: ISA | None) -> Function:
 
 
 def build(isas: list, mod: Module) -> None:
-    scalar = kernel(None)
-    mod.functions.append(scalar)
+    """Its own ISA set, as Teddy and byteset: AVX2 (with PCLMULQDQ), then SSSE3 (pshufb), then
+    the scalar masks on x86_64; NEON alone on aarch64."""
+    if "neon" in [i.name for i in isas]:     # NEON is the baseline: no scalar masks
+        neon = kernel(ISAS["neon"])
+        mod.functions.append(neon)
+        entries = [(None, neon.name)]
+    else:
+        scalar, avx2, ssse3 = kernel(None), kernel(ISAS["avx2"]), kernel(ISAS["ssse3"])
+        mod.functions += [scalar, ssse3, avx2]
+        entries = [(prim("cpu_avx2_pclmul"), avx2.name), (prim("cpu_ssse3"), ssse3.name),
+                   (None, scalar.name)]
     rb = Builder("nvol_json_index_raw", USIZE, public=True, doc=DOC)
     _params(rb)
     raw = rb.build()
-    raw.ifunc = [(None, scalar.name)]
+    raw.ifunc = entries
     mod.functions.append(raw)

@@ -8428,8 +8428,131 @@ when ODIN_ARCH == .amd64 {
 		return n
 	}
 
+	// stage 1, ssse3 masks
+	@(private, enable_target_feature="ssse3")
+	nvol_json_index_ssse3 :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
+		nie: u64 = intrinsics.unaligned_load((^u64)(state))
+		pis: u64 = intrinsics.unaligned_load((^u64)(state[uint(8):]))
+		psc: u64 = intrinsics.unaligned_load((^u64)(state[uint(16):]))
+		err: u64 = intrinsics.unaligned_load((^u64)(state[uint(24):]))
+		blk: [^]u8 = blocks
+		base: uint = idx
+		end: [^]u8 = blocks[(nblocks << uint(6)):]
+		n: uint = uint(0)
+		ws_table: V16 = V16{u8(32), u8(100), u8(100), u8(100), u8(17), u8(100), u8(113), u8(2), u8(100), u8(9), u8(10), u8(112), u8(100), u8(13), u8(100), u8(100)}
+		op_table: V16 = V16{u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(58), u8(123), u8(44), u8(125), u8(0), u8(0)}
+		k_bs: V16 = V16(u8(92))
+		k_qt: V16 = V16(u8(34))
+		k20: V16 = V16(u8(32))
+		k1f: V16 = V16(u8(31))
+		for (blk < end) {
+			in_: V16 = intrinsics.unaligned_load((^V16)(blk))
+			in_1: V16 = intrinsics.unaligned_load((^V16)(blk[uint(16):]))
+			in_2: V16 = intrinsics.unaligned_load((^V16)(blk[uint(32):]))
+			in_3: V16 = intrinsics.unaligned_load((^V16)(blk[uint(48):]))
+			bs: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_, k_bs)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_1, k_bs))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_2, k_bs))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_3, k_bs))) << 48))
+			qt: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_, k_qt)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_1, k_qt))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_2, k_qt))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_3, k_qt))) << 48))
+			ws: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_), in_)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_1), in_1))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_2), in_2))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_3), in_3))) << 48))
+			op: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_), intrinsics.simd_bit_or(in_, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_1), intrinsics.simd_bit_or(in_1, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_2), intrinsics.simd_bit_or(in_2, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_3), intrinsics.simd_bit_or(in_3, k20)))) << 48))
+			ctl: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3))) << 48))
+			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+			escaped: u64 = (code ~ (bs | nie))
+			nie = ((code & bs) >> u64(63))
+			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
+			px: u64 = quote
+			px = (px ~ (px << u64(1)))
+			px = (px ~ (px << u64(2)))
+			px = (px ~ (px << u64(4)))
+			px = (px ~ (px << u64(8)))
+			px = (px ~ (px << u64(16)))
+			px = (px ~ (px << u64(32)))
+			in_string: u64 = (px ~ pis)
+			pis = (u64(0) - (in_string >> u64(63)))
+			scalar: u64 = ((op | ws) ~ u64(18446744073709551615))
+			nqs: u64 = (scalar & (quote ~ u64(18446744073709551615)))
+			follows: u64 = ((nqs << u64(1)) | psc)
+			psc = (nqs >> u64(63))
+			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
+			err = (err | (ctl & in_string))
+			for (bits != u64(0)) {
+				intrinsics.unaligned_store((^u32)(out[(n << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				n = (n + uint(1))
+				bits = (bits & (bits - u64(1)))
+			}
+			blk = blk[uint(64):]
+			base = (base + uint(64))
+		}
+		intrinsics.unaligned_store((^u64)(state), nie)
+		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
+		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
+		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		return n
+	}
+
+	// stage 1, avx2 masks
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
+	nvol_json_index_avx2 :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
+		nie: u64 = intrinsics.unaligned_load((^u64)(state))
+		pis: u64 = intrinsics.unaligned_load((^u64)(state[uint(8):]))
+		psc: u64 = intrinsics.unaligned_load((^u64)(state[uint(16):]))
+		err: u64 = intrinsics.unaligned_load((^u64)(state[uint(24):]))
+		blk: [^]u8 = blocks
+		base: uint = idx
+		end: [^]u8 = blocks[(nblocks << uint(6)):]
+		n: uint = uint(0)
+		ws_table: V32 = V32{u8(32), u8(100), u8(100), u8(100), u8(17), u8(100), u8(113), u8(2), u8(100), u8(9), u8(10), u8(112), u8(100), u8(13), u8(100), u8(100), u8(32), u8(100), u8(100), u8(100), u8(17), u8(100), u8(113), u8(2), u8(100), u8(9), u8(10), u8(112), u8(100), u8(13), u8(100), u8(100)}
+		op_table: V32 = V32{u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(58), u8(123), u8(44), u8(125), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(58), u8(123), u8(44), u8(125), u8(0), u8(0)}
+		k_bs: V32 = V32(u8(92))
+		k_qt: V32 = V32(u8(34))
+		k20: V32 = V32(u8(32))
+		k1f: V32 = V32(u8(31))
+		for (blk < end) {
+			in_: V32 = intrinsics.unaligned_load((^V32)(blk))
+			in_1: V32 = intrinsics.unaligned_load((^V32)(blk[uint(32):]))
+			bs: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_, k_bs))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_1, k_bs))) << 32)
+			qt: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_, k_qt))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(in_1, k_qt))) << 32)
+			ws: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_), in_))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(ws_table, in_1), in_1))) << 32)
+			op: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_), intrinsics.simd_bit_or(in_, k20)))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(nvol_pshufb256(op_table, in_1), intrinsics.simd_bit_or(in_1, k20)))) << 32)
+			ctl: u64 = (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1))) << 32)
+			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+			escaped: u64 = (code ~ (bs | nie))
+			nie = ((code & bs) >> u64(63))
+			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
+			in_string: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
+			pis = (u64(0) - (in_string >> u64(63)))
+			scalar: u64 = ((op | ws) ~ u64(18446744073709551615))
+			nqs: u64 = (scalar & (quote ~ u64(18446744073709551615)))
+			follows: u64 = ((nqs << u64(1)) | psc)
+			psc = (nqs >> u64(63))
+			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
+			err = (err | (ctl & in_string))
+			for (bits != u64(0)) {
+				intrinsics.unaligned_store((^u32)(out[(n << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				n = (n + uint(1))
+				bits = (bits & (bits - u64(1)))
+			}
+			blk = blk[uint(64):]
+			base = (base + uint(64))
+		}
+		intrinsics.unaligned_store((^u64)(state), nie)
+		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
+		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
+		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		return n
+	}
+
 	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
-	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_scalar(state, blocks, nblocks, idx, out) }
+	@(private) nvol_json_index_raw_ptr: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint = nvol_json_index_raw_resolve
+	@(private) nvol_json_index_raw_resolve :: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint {
+		f: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint = nvol_json_index_scalar
+		if (.ssse3 in info.cpu_features()) { f = nvol_json_index_ssse3 }
+		if nvol_cpu_avx2_pclmul() { f = nvol_json_index_avx2 }
+		nvol_json_index_raw_ptr = f
+		return f(state, blocks, nblocks, idx, out)
+	}
+	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_raw_ptr(state, blocks, nblocks, idx, out) }
 
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {
@@ -8450,6 +8573,7 @@ when ODIN_ARCH == .amd64 {
 		nvol_find_not_byteset_raw_ptr = nvol_find_not_byteset_raw_resolve
 		nvol_find_byteset_pair_raw_ptr = nvol_find_byteset_pair_raw_resolve
 		nvol_find_byteset_pair_mask_raw_ptr = nvol_find_byteset_pair_mask_raw_resolve
+		nvol_json_index_raw_ptr = nvol_json_index_raw_resolve
 	}
 } else when ODIN_ARCH == .arm64 {
 	@(private, default_calling_convention = "none")
@@ -12938,9 +13062,9 @@ when ODIN_ARCH == .amd64 {
 	// Like nvol_find_byteset_pair_raw, but returns the base of the first chunk with candidates and stores all its candidates to *out: position base + i is a candidate when bit i (x86_64) or bit 4i+3 (aarch64) is set. NULL when there is none.
 	nvol_find_byteset_pair_mask_raw :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 { return nvol_find_byteset_pair_mask_entry_neon(st, start, end, out) }
 
-	// stage 1, scalar masks
+	// stage 1, neon masks
 	@(private)
-	nvol_json_index_scalar :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
+	nvol_json_index_neon :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
 		nie: u64 = intrinsics.unaligned_load((^u64)(state))
 		pis: u64 = intrinsics.unaligned_load((^u64)(state[uint(8):]))
 		psc: u64 = intrinsics.unaligned_load((^u64)(state[uint(16):]))
@@ -12949,34 +13073,27 @@ when ODIN_ARCH == .amd64 {
 		base: uint = idx
 		end: [^]u8 = blocks[(nblocks << uint(6)):]
 		n: uint = uint(0)
+		ws_table: V16 = V16{u8(32), u8(100), u8(100), u8(100), u8(17), u8(100), u8(113), u8(2), u8(100), u8(9), u8(10), u8(112), u8(100), u8(13), u8(100), u8(100)}
+		op_table: V16 = V16{u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(58), u8(123), u8(44), u8(125), u8(0), u8(0)}
+		k_bs: V16 = V16(u8(92))
+		k_qt: V16 = V16(u8(34))
+		k20: V16 = V16(u8(32))
+		k1f: V16 = V16(u8(31))
+		k0f: V16 = V16(u8(15))
 		for (blk < end) {
-			bs: u64 = u64(0)
-			qt: u64 = u64(0)
-			ws: u64 = u64(0)
-			op: u64 = u64(0)
-			ctl: u64 = u64(0)
-			i: uint = uint(0)
-			for (i < uint(64)) {
-				c: u8 = blk[i:][0]
-				bit: u64 = (u64(1) << u64(i))
-				if (c == u8(92)) {
-					bs = (bs | bit)
-				}
-				if (c == u8(34)) {
-					qt = (qt | bit)
-				}
-				if (((c == u8(32)) || (c == u8(9))) || ((c == u8(10)) || (c == u8(13)))) {
-					ws = (ws | bit)
-				}
-				c20: u8 = (c | u8(32))
-				if (((c20 == u8(58)) || (c20 == u8(123))) || ((c20 == u8(44)) || (c20 == u8(125)))) {
-					op = (op | bit)
-				}
-				if (c <= u8(31)) {
-					ctl = (ctl | bit)
-				}
-				i = (i + uint(1))
-			}
+			in_: V16 = intrinsics.unaligned_load((^V16)(blk))
+			in_1: V16 = intrinsics.unaligned_load((^V16)(blk[uint(16):]))
+			in_2: V16 = intrinsics.unaligned_load((^V16)(blk[uint(32):]))
+			in_3: V16 = intrinsics.unaligned_load((^V16)(blk[uint(48):]))
+			lo: V16 = intrinsics.simd_bit_and(in_, k0f)
+			lo1: V16 = intrinsics.simd_bit_and(in_1, k0f)
+			lo2: V16 = intrinsics.simd_bit_and(in_2, k0f)
+			lo3: V16 = intrinsics.simd_bit_and(in_3, k0f)
+			bs: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_1, k_bs), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_2, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_3, k_bs), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_1, k_bs), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_2, k_bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_3, k_bs), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			qt: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_1, k_qt), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_2, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_3, k_qt), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_1, k_qt), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_2, k_qt), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(in_3, k_qt), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			ws: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo1), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo2), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo3), in_3), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo1), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo2), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(ws_table, lo3), in_3), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			op: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo), intrinsics.simd_bit_or(in_, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo1), intrinsics.simd_bit_or(in_1, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo2), intrinsics.simd_bit_or(in_2, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo3), intrinsics.simd_bit_or(in_3, k20)), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo), intrinsics.simd_bit_or(in_, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo1), intrinsics.simd_bit_or(in_1, k20)), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo2), intrinsics.simd_bit_or(in_2, k20)), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(nvol_tbl1(op_table, lo3), intrinsics.simd_bit_or(in_3, k20)), transmute(V16)U64x2(0x8040201008040201))))), 0)
+			ctl: u64 = intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3), transmute(V16)U64x2(0x8040201008040201))))), 0)
 			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
 			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
 			escaped: u64 = (code ~ (bs | nie))
@@ -13013,7 +13130,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
-	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_scalar(state, blocks, nblocks, idx, out) }
+	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_neon(state, blocks, nblocks, idx, out) }
 
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {

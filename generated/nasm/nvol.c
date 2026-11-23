@@ -173,6 +173,9 @@ const uint8_t * nvol_find_byteset_pair_raw_resolve(const uint8_t *st, const uint
 typedef const uint8_t * (*nvol_find_byteset_pair_mask_raw_fn_t)(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out);
 extern nvol_find_byteset_pair_mask_raw_fn_t nvol_find_byteset_pair_mask_raw_ptr;
 const uint8_t * nvol_find_byteset_pair_mask_raw_resolve(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out);
+typedef size_t (*nvol_json_index_raw_fn_t)(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out);
+extern nvol_json_index_raw_fn_t nvol_json_index_raw_ptr;
+size_t nvol_json_index_raw_resolve(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out);
 
 #ifdef NVOL_TESTING
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */
@@ -196,6 +199,7 @@ NVOL_API void nvol_test_set_avx2(int v) {
     nvol_find_not_byteset_raw_ptr = nvol_find_not_byteset_raw_resolve;
     nvol_find_byteset_pair_raw_ptr = nvol_find_byteset_pair_raw_resolve;
     nvol_find_byteset_pair_mask_raw_ptr = nvol_find_byteset_pair_mask_raw_resolve;
+    nvol_json_index_raw_ptr = nvol_json_index_raw_resolve;
 }
 #endif
 #elif defined(__aarch64__) || defined(_M_ARM64)
@@ -4602,8 +4606,8 @@ NVOL_API const uint8_t * nvol_find_byteset_pair_raw(const uint8_t *st, const uin
 /* Like nvol_find_byteset_pair_raw, but returns the base of the first chunk with candidates and stores all its candidates to *out: position base + i is a candidate when bit i (x86_64) or bit 4i+3 (aarch64) is set. NULL when there is none. */
 NVOL_API const uint8_t * nvol_find_byteset_pair_mask_raw(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out) { return nvol_find_byteset_pair_mask_entry_neon(st, start, end, out); }
 
-/* stage 1, scalar masks */
-NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+/* stage 1, neon masks */
+NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
     uint64_t nie = nvol_load64(state);
     uint64_t pis = nvol_load64((state + ((size_t)8u)));
     uint64_t psc = nvol_load64((state + ((size_t)16u)));
@@ -4612,34 +4616,27 @@ NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks,
     size_t base = idx;
     const uint8_t *const end = (blocks + (nblocks << ((size_t)6u)));
     size_t n = ((size_t)0u);
+    const uint8x16_t ws_table = vcombine_u8(vcreate_u8((uint64_t)(32u) | (uint64_t)(100u) << 8 | (uint64_t)(100u) << 16 | (uint64_t)(100u) << 24 | (uint64_t)(17u) << 32 | (uint64_t)(100u) << 40 | (uint64_t)(113u) << 48 | (uint64_t)(2u) << 56), vcreate_u8((uint64_t)(100u) | (uint64_t)(9u) << 8 | (uint64_t)(10u) << 16 | (uint64_t)(112u) << 24 | (uint64_t)(100u) << 32 | (uint64_t)(13u) << 40 | (uint64_t)(100u) << 48 | (uint64_t)(100u) << 56));
+    const uint8x16_t op_table = vcombine_u8(vcreate_u8((uint64_t)(0u) | (uint64_t)(0u) << 8 | (uint64_t)(0u) << 16 | (uint64_t)(0u) << 24 | (uint64_t)(0u) << 32 | (uint64_t)(0u) << 40 | (uint64_t)(0u) << 48 | (uint64_t)(0u) << 56), vcreate_u8((uint64_t)(0u) | (uint64_t)(0u) << 8 | (uint64_t)(58u) << 16 | (uint64_t)(123u) << 24 | (uint64_t)(44u) << 32 | (uint64_t)(125u) << 40 | (uint64_t)(0u) << 48 | (uint64_t)(0u) << 56));
+    const uint8x16_t k_bs = vdupq_n_u8((uint8_t)(92u));
+    const uint8x16_t k_qt = vdupq_n_u8((uint8_t)(34u));
+    const uint8x16_t k20 = vdupq_n_u8((uint8_t)(32u));
+    const uint8x16_t k1f = vdupq_n_u8((uint8_t)(31u));
+    const uint8x16_t k0f = vdupq_n_u8((uint8_t)(15u));
     while (blk < end) {
-        uint64_t bs = UINT64_C(0);
-        uint64_t qt = UINT64_C(0);
-        uint64_t ws = UINT64_C(0);
-        uint64_t op = UINT64_C(0);
-        uint64_t ctl = UINT64_C(0);
-        size_t i = ((size_t)0u);
-        while (i < ((size_t)64u)) {
-            const uint8_t c = (*((blk + i)));
-            const uint64_t bit = (UINT64_C(1) << ((uint64_t)(i)));
-            if (c == 92u) {
-                bs = (bs | bit);
-            }
-            if (c == 34u) {
-                qt = (qt | bit);
-            }
-            if (((c == 32u) || (c == 9u)) || ((c == 10u) || (c == 13u))) {
-                ws = (ws | bit);
-            }
-            const uint8_t c20 = (c | 32u);
-            if (((c20 == 58u) || (c20 == 123u)) || ((c20 == 44u) || (c20 == 125u))) {
-                op = (op | bit);
-            }
-            if (c <= 31u) {
-                ctl = (ctl | bit);
-            }
-            i = (i + ((size_t)1u));
-        }
+        const uint8x16_t in_ = vld1q_u8(blk);
+        const uint8x16_t in_1 = vld1q_u8((blk + ((size_t)16u)));
+        const uint8x16_t in_2 = vld1q_u8((blk + ((size_t)32u)));
+        const uint8x16_t in_3 = vld1q_u8((blk + ((size_t)48u)));
+        const uint8x16_t lo = vandq_u8(in_, k0f);
+        const uint8x16_t lo1 = vandq_u8(in_1, k0f);
+        const uint8x16_t lo2 = vandq_u8(in_2, k0f);
+        const uint8x16_t lo3 = vandq_u8(in_3, k0f);
+        const uint64_t bs = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_1, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_3, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_1, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_3, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+        const uint64_t qt = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_1, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_3, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_1, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_3, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+        const uint64_t ws = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo1), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo2), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo3), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo1), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo2), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo3), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+        const uint64_t op = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+        const uint64_t ctl = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
         const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
         const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
         const uint64_t escaped = (code ^ (bs | nie));
@@ -4676,7 +4673,7 @@ NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks,
 }
 
 /* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
-NVOL_API size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_scalar(state, blocks, nblocks, idx, out); }
+NVOL_API size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_neon(state, blocks, nblocks, idx, out); }
 
 #ifdef NVOL_TESTING
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */

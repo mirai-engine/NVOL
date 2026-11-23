@@ -8377,8 +8377,131 @@ NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks,
     return n;
 }
 
+/* stage 1, ssse3 masks */
+NVOL_TARGET_SSSE3 NVOL_INLINE size_t nvol_json_index_ssse3(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+    uint64_t nie = nvol_load64(state);
+    uint64_t pis = nvol_load64((state + ((size_t)8u)));
+    uint64_t psc = nvol_load64((state + ((size_t)16u)));
+    uint64_t err = nvol_load64((state + ((size_t)24u)));
+    const uint8_t *blk = blocks;
+    size_t base = idx;
+    const uint8_t *const end = (blocks + (nblocks << ((size_t)6u)));
+    size_t n = ((size_t)0u);
+    const __m128i ws_table = _mm_setr_epi8((char)32u, (char)100u, (char)100u, (char)100u, (char)17u, (char)100u, (char)113u, (char)2u, (char)100u, (char)9u, (char)10u, (char)112u, (char)100u, (char)13u, (char)100u, (char)100u);
+    const __m128i op_table = _mm_setr_epi8((char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)58u, (char)123u, (char)44u, (char)125u, (char)0u, (char)0u);
+    const __m128i k_bs = _mm_set1_epi8((char)92u);
+    const __m128i k_qt = _mm_set1_epi8((char)34u);
+    const __m128i k20 = _mm_set1_epi8((char)32u);
+    const __m128i k1f = _mm_set1_epi8((char)31u);
+    while (blk < end) {
+        const __m128i in_ = _mm_loadu_si128((const __m128i *)(blk));
+        const __m128i in_1 = _mm_loadu_si128((const __m128i *)((blk + ((size_t)16u))));
+        const __m128i in_2 = _mm_loadu_si128((const __m128i *)((blk + ((size_t)32u))));
+        const __m128i in_3 = _mm_loadu_si128((const __m128i *)((blk + ((size_t)48u))));
+        const uint64_t bs = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(in_, k_bs))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(in_1, k_bs)) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(in_2, k_bs)) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(in_3, k_bs)) << 48));
+        const uint64_t qt = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(in_, k_qt))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(in_1, k_qt)) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(in_2, k_qt)) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(in_3, k_qt)) << 48));
+        const uint64_t ws = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_), in_))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_1), in_1)) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_2), in_2)) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_3), in_3)) << 48));
+        const uint64_t op = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_), _mm_or_si128(in_, k20)))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_1), _mm_or_si128(in_1, k20))) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_2), _mm_or_si128(in_2, k20))) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_3), _mm_or_si128(in_3, k20))) << 48));
+        const uint64_t ctl = (((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_, k1f), in_))) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_1, k1f), in_1)) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_2, k1f), in_2)) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_3, k1f), in_3)) << 48));
+        const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
+        const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
+        const uint64_t escaped = (code ^ (bs | nie));
+        nie = ((code & bs) >> UINT64_C(63));
+        const uint64_t quote = (qt & (escaped ^ UINT64_C(18446744073709551615)));
+        uint64_t px = quote;
+        px = (px ^ (px << UINT64_C(1)));
+        px = (px ^ (px << UINT64_C(2)));
+        px = (px ^ (px << UINT64_C(4)));
+        px = (px ^ (px << UINT64_C(8)));
+        px = (px ^ (px << UINT64_C(16)));
+        px = (px ^ (px << UINT64_C(32)));
+        const uint64_t in_string = (px ^ pis);
+        pis = ((uint64_t)(UINT64_C(0) - (in_string >> UINT64_C(63))));
+        const uint64_t scalar = ((op | ws) ^ UINT64_C(18446744073709551615));
+        const uint64_t nqs = (scalar & (quote ^ UINT64_C(18446744073709551615)));
+        const uint64_t follows = ((nqs << UINT64_C(1)) | psc);
+        psc = (nqs >> UINT64_C(63));
+        uint64_t bits = ((op | (scalar & (follows ^ UINT64_C(18446744073709551615)))) & ((in_string ^ quote) ^ UINT64_C(18446744073709551615)));
+        err = (err | (ctl & in_string));
+        while (bits != UINT64_C(0)) {
+            nvol_store32((out + (n << ((size_t)2u))), ((uint32_t)((base + ((size_t)nvol_ctz64(bits))))));
+            n = (n + ((size_t)1u));
+            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+        }
+        blk = (blk + ((size_t)64u));
+        base = (base + ((size_t)64u));
+    }
+    nvol_store64(state, nie);
+    nvol_store64((state + ((size_t)8u)), pis);
+    nvol_store64((state + ((size_t)16u)), psc);
+    nvol_store64((state + ((size_t)24u)), err);
+    return n;
+}
+
+/* stage 1, avx2 masks */
+NVOL_TARGET_AVX2 NVOL_INLINE size_t nvol_json_index_avx2(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+    uint64_t nie = nvol_load64(state);
+    uint64_t pis = nvol_load64((state + ((size_t)8u)));
+    uint64_t psc = nvol_load64((state + ((size_t)16u)));
+    uint64_t err = nvol_load64((state + ((size_t)24u)));
+    const uint8_t *blk = blocks;
+    size_t base = idx;
+    const uint8_t *const end = (blocks + (nblocks << ((size_t)6u)));
+    size_t n = ((size_t)0u);
+    const __m256i ws_table = _mm256_setr_epi8((char)32u, (char)100u, (char)100u, (char)100u, (char)17u, (char)100u, (char)113u, (char)2u, (char)100u, (char)9u, (char)10u, (char)112u, (char)100u, (char)13u, (char)100u, (char)100u, (char)32u, (char)100u, (char)100u, (char)100u, (char)17u, (char)100u, (char)113u, (char)2u, (char)100u, (char)9u, (char)10u, (char)112u, (char)100u, (char)13u, (char)100u, (char)100u);
+    const __m256i op_table = _mm256_setr_epi8((char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)58u, (char)123u, (char)44u, (char)125u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)0u, (char)58u, (char)123u, (char)44u, (char)125u, (char)0u, (char)0u);
+    const __m256i k_bs = _mm256_set1_epi8((char)92u);
+    const __m256i k_qt = _mm256_set1_epi8((char)34u);
+    const __m256i k20 = _mm256_set1_epi8((char)32u);
+    const __m256i k1f = _mm256_set1_epi8((char)31u);
+    while (blk < end) {
+        const __m256i in_ = _mm256_loadu_si256((const __m256i *)(blk));
+        const __m256i in_1 = _mm256_loadu_si256((const __m256i *)((blk + ((size_t)32u))));
+        const uint64_t bs = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_, k_bs)) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_1, k_bs)) << 32));
+        const uint64_t qt = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_, k_qt)) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(in_1, k_qt)) << 32));
+        const uint64_t ws = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_), in_)) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(ws_table, in_1), in_1)) << 32));
+        const uint64_t op = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_), _mm256_or_si256(in_, k20))) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_shuffle_epi8(op_table, in_1), _mm256_or_si256(in_1, k20))) << 32));
+        const uint64_t ctl = ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_, k1f), in_)) | ((uint64_t)(uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_min_epu8(in_1, k1f), in_1)) << 32));
+        const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
+        const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
+        const uint64_t escaped = (code ^ (bs | nie));
+        nie = ((code & bs) >> UINT64_C(63));
+        const uint64_t quote = (qt & (escaped ^ UINT64_C(18446744073709551615)));
+        const uint64_t in_string = (((uint64_t)_mm_cvtsi128_si64(_mm_clmulepi64_si128(_mm_cvtsi64_si128((long long)(quote)), _mm_set1_epi8((char)-1), 0))) ^ pis);
+        pis = ((uint64_t)(UINT64_C(0) - (in_string >> UINT64_C(63))));
+        const uint64_t scalar = ((op | ws) ^ UINT64_C(18446744073709551615));
+        const uint64_t nqs = (scalar & (quote ^ UINT64_C(18446744073709551615)));
+        const uint64_t follows = ((nqs << UINT64_C(1)) | psc);
+        psc = (nqs >> UINT64_C(63));
+        uint64_t bits = ((op | (scalar & (follows ^ UINT64_C(18446744073709551615)))) & ((in_string ^ quote) ^ UINT64_C(18446744073709551615)));
+        err = (err | (ctl & in_string));
+        while (bits != UINT64_C(0)) {
+            nvol_store32((out + (n << ((size_t)2u))), ((uint32_t)((base + ((size_t)nvol_ctz64(bits))))));
+            n = (n + ((size_t)1u));
+            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+        }
+        blk = (blk + ((size_t)64u));
+        base = (base + ((size_t)64u));
+    }
+    nvol_store64(state, nie);
+    nvol_store64((state + ((size_t)8u)), pis);
+    nvol_store64((state + ((size_t)16u)), psc);
+    nvol_store64((state + ((size_t)24u)), err);
+    return n;
+}
+
+typedef size_t (*nvol_json_index_raw_fn_t)(uint8_t * state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t * out);
+inline size_t nvol_json_index_raw_resolve(uint8_t * state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t * out);
+inline nvol_json_index_raw_fn_t nvol_json_index_raw_ptr = nvol_json_index_raw_resolve;
+inline size_t nvol_json_index_raw_resolve(uint8_t * state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t * out) {
+    nvol_json_index_raw_fn_t f = nvol_json_index_scalar;
+    if (nvol_cpu_ssse3()) f = nvol_json_index_ssse3;
+    if (nvol_cpu_avx2_pclmul()) f = nvol_json_index_avx2;
+    nvol_json_index_raw_ptr = f;
+    return f(state, blocks, nblocks, idx, out);
+}
 /* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
-inline size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_scalar(state, blocks, nblocks, idx, out); }
+inline size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_raw_ptr(state, blocks, nblocks, idx, out); }
 
 #elif defined(__aarch64__) || defined(_M_ARM64)
 inline constexpr uint8_t nvol_tbl_rank[256] = {
@@ -12784,8 +12907,8 @@ inline const uint8_t * nvol_find_byteset_pair_raw(const uint8_t *st, const uint8
 /* Like nvol_find_byteset_pair_raw, but returns the base of the first chunk with candidates and stores all its candidates to *out: position base + i is a candidate when bit i (x86_64) or bit 4i+3 (aarch64) is set. NULL when there is none. */
 inline const uint8_t * nvol_find_byteset_pair_mask_raw(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out) { return nvol_find_byteset_pair_mask_entry_neon(st, start, end, out); }
 
-/* stage 1, scalar masks */
-NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+/* stage 1, neon masks */
+NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
     uint64_t nie = nvol_load64(state);
     uint64_t pis = nvol_load64((state + ((size_t)8u)));
     uint64_t psc = nvol_load64((state + ((size_t)16u)));
@@ -12794,34 +12917,27 @@ NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks,
     size_t base = idx;
     const uint8_t *const end = (blocks + (nblocks << ((size_t)6u)));
     size_t n = ((size_t)0u);
+    const uint8x16_t ws_table = vcombine_u8(vcreate_u8((uint64_t)(32u) | (uint64_t)(100u) << 8 | (uint64_t)(100u) << 16 | (uint64_t)(100u) << 24 | (uint64_t)(17u) << 32 | (uint64_t)(100u) << 40 | (uint64_t)(113u) << 48 | (uint64_t)(2u) << 56), vcreate_u8((uint64_t)(100u) | (uint64_t)(9u) << 8 | (uint64_t)(10u) << 16 | (uint64_t)(112u) << 24 | (uint64_t)(100u) << 32 | (uint64_t)(13u) << 40 | (uint64_t)(100u) << 48 | (uint64_t)(100u) << 56));
+    const uint8x16_t op_table = vcombine_u8(vcreate_u8((uint64_t)(0u) | (uint64_t)(0u) << 8 | (uint64_t)(0u) << 16 | (uint64_t)(0u) << 24 | (uint64_t)(0u) << 32 | (uint64_t)(0u) << 40 | (uint64_t)(0u) << 48 | (uint64_t)(0u) << 56), vcreate_u8((uint64_t)(0u) | (uint64_t)(0u) << 8 | (uint64_t)(58u) << 16 | (uint64_t)(123u) << 24 | (uint64_t)(44u) << 32 | (uint64_t)(125u) << 40 | (uint64_t)(0u) << 48 | (uint64_t)(0u) << 56));
+    const uint8x16_t k_bs = vdupq_n_u8((uint8_t)(92u));
+    const uint8x16_t k_qt = vdupq_n_u8((uint8_t)(34u));
+    const uint8x16_t k20 = vdupq_n_u8((uint8_t)(32u));
+    const uint8x16_t k1f = vdupq_n_u8((uint8_t)(31u));
+    const uint8x16_t k0f = vdupq_n_u8((uint8_t)(15u));
     while (blk < end) {
-        uint64_t bs = UINT64_C(0);
-        uint64_t qt = UINT64_C(0);
-        uint64_t ws = UINT64_C(0);
-        uint64_t op = UINT64_C(0);
-        uint64_t ctl = UINT64_C(0);
-        size_t i = ((size_t)0u);
-        while (i < ((size_t)64u)) {
-            const uint8_t c = (*((blk + i)));
-            const uint64_t bit = (UINT64_C(1) << ((uint64_t)(i)));
-            if (c == 92u) {
-                bs = (bs | bit);
-            }
-            if (c == 34u) {
-                qt = (qt | bit);
-            }
-            if (((c == 32u) || (c == 9u)) || ((c == 10u) || (c == 13u))) {
-                ws = (ws | bit);
-            }
-            const uint8_t c20 = (c | 32u);
-            if (((c20 == 58u) || (c20 == 123u)) || ((c20 == 44u) || (c20 == 125u))) {
-                op = (op | bit);
-            }
-            if (c <= 31u) {
-                ctl = (ctl | bit);
-            }
-            i = (i + ((size_t)1u));
-        }
+        const uint8x16_t in_ = vld1q_u8(blk);
+        const uint8x16_t in_1 = vld1q_u8((blk + ((size_t)16u)));
+        const uint8x16_t in_2 = vld1q_u8((blk + ((size_t)32u)));
+        const uint8x16_t in_3 = vld1q_u8((blk + ((size_t)48u)));
+        const uint8x16_t lo = vandq_u8(in_, k0f);
+        const uint8x16_t lo1 = vandq_u8(in_1, k0f);
+        const uint8x16_t lo2 = vandq_u8(in_2, k0f);
+        const uint8x16_t lo3 = vandq_u8(in_3, k0f);
+        const uint64_t bs = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_1, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_3, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_1, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_3, k_bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+        const uint64_t qt = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_1, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_3, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(in_, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_1, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(in_2, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(in_3, k_qt), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+        const uint64_t ws = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo1), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo2), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo3), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo1), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo2), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(ws_table, lo3), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+        const uint64_t op = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo), vorrq_u8(in_, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo1), vorrq_u8(in_1, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo2), vorrq_u8(in_2, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vqtbl1q_u8(op_table, lo3), vorrq_u8(in_3, k20)), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+        const uint64_t ctl = vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_, k1f), in_), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_1, k1f), in_1), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(vminq_u8(in_2, k1f), in_2), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(vminq_u8(in_3, k1f), in_3), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
         const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
         const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
         const uint64_t escaped = (code ^ (bs | nie));
@@ -12858,7 +12974,7 @@ NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks,
 }
 
 /* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
-inline size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_scalar(state, blocks, nblocks, idx, out); }
+inline size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_neon(state, blocks, nblocks, idx, out); }
 
 #else
 #  error "NVOL: unsupported architecture (x86_64 and aarch64 are generated)"

@@ -173,6 +173,9 @@ const uint8_t * nvol_find_byteset_pair_raw_resolve(const uint8_t *st, const uint
 typedef const uint8_t * (*nvol_find_byteset_pair_mask_raw_fn_t)(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out);
 extern nvol_find_byteset_pair_mask_raw_fn_t nvol_find_byteset_pair_mask_raw_ptr;
 const uint8_t * nvol_find_byteset_pair_mask_raw_resolve(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out);
+typedef size_t (*nvol_json_index_raw_fn_t)(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out);
+extern nvol_json_index_raw_fn_t nvol_json_index_raw_ptr;
+size_t nvol_json_index_raw_resolve(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out);
 
 #ifdef NVOL_TESTING
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */
@@ -196,6 +199,7 @@ NVOL_API void nvol_test_set_avx2(int v) {
     nvol_find_not_byteset_raw_ptr = nvol_find_not_byteset_raw_resolve;
     nvol_find_byteset_pair_raw_ptr = nvol_find_byteset_pair_raw_resolve;
     nvol_find_byteset_pair_mask_raw_ptr = nvol_find_byteset_pair_mask_raw_resolve;
+    nvol_json_index_raw_ptr = nvol_json_index_raw_resolve;
 }
 #endif
 #elif defined(__aarch64__) || defined(_M_ARM64)
