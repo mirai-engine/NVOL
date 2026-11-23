@@ -16,7 +16,7 @@ from conftest import _cc
 from nvol import ir
 from nvol.backends import c as c_backend
 from nvol.interp import Interpreter, Memory
-from nvol.isa import ISAS
+from nvol.isa import ISAS, prefix_xor
 from nvol.primitives import PRIMS
 
 VEC_TO_VEC = {
@@ -35,6 +35,8 @@ BLOCK = {"ssse3": ["bmask64x4"], "avx2": ["bmask64x2"]}
 U64_TO_SCALAR = {"ssse3": ["popcnt64"], "avx2": ["popcnt64", "prefix_xor64"]}
 # statements, not primitives: t_<isa>_store32 (a register and an immediate, at odd offsets)
 STORES = {"ssse3": ["store32"], "avx2": []}
+# IR helpers of nvol.isa, not primitives: t_<isa>_prefix_xor (the shift/xor steps without PCLMUL)
+HELPERS = {"ssse3": ["prefix_xor"], "avx2": []}
 
 
 def _fn_vec(isa, name):
@@ -93,6 +95,13 @@ def _fn_u64(isa, name):
     return b.build()
 
 
+def _fn_prefix_xor(isa):
+    b = ir.Builder(f"t_{isa}_prefix_xor", ir.VOID, isa=isa, public=True)
+    src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
+    b.store64(out, prefix_xor(b, ISAS[isa], ir.prim("load64", src).cast(ir.U64)))
+    return b.build()
+
+
 def _fn_store32(isa):
     b = ir.Builder(f"t_{isa}_store32", ir.VOID, isa=isa, public=True)
     src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
@@ -138,6 +147,7 @@ def _module():
     for isa, names in U64_TO_SCALAR.items():
         mod.functions += [_fn_u64(isa, n) for n in names]
     mod.functions += [_fn_store32(isa) for isa, names in STORES.items() if names]
+    mod.functions += [_fn_prefix_xor(isa) for isa, names in HELPERS.items() if names]
     mod.functions.append(_fn_half("load_half_bcast"))
     mod.functions.append(_fn_cpu("cpu_avx2_pclmul"))
     return mod
@@ -239,7 +249,7 @@ def test_lowerings_match_reference(built, isa):
     _skip_unless(lib, isa)
     rng = random.Random(11)
     V = ISAS[isa].bytes
-    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + BLOCK[isa] + U64_TO_SCALAR[isa] + STORES[isa] + (["load_half_bcast"] if isa == "avx2" else [])
+    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + BLOCK[isa] + U64_TO_SCALAR[isa] + STORES[isa] + HELPERS[isa] + (["load_half_bcast"] if isa == "avx2" else [])
     for name in names:
         f = mod.fn(f"t_{isa}_{name}")
         cfn = getattr(lib, f.name)
@@ -270,3 +280,29 @@ def test_cpu_avx2_pclmul(built):
     out = (ctypes.c_uint8 * 8)()
     cfn(bytes(8), ctypes.addressof(out))
     assert out[0] == (bool(lib.prims_cpu_has(b"avx2")) and bool(lib.prims_cpu_has(b"pclmul")))
+
+
+def test_prefix_xor_reference():
+    """prefix_xor64's semantics is the low half of the carry-less product with all ones, and
+    the shift/xor steps of nvol.isa.prefix_xor (SSSE3 and NEON) compute it."""
+    from nvol.primitives import _prefix_xor64
+    M = (1 << 64) - 1
+    rng = random.Random(34)
+    xs = [0, M, 1, 1 << 63, 0x8000000000000001, 0x5555555555555555] + [rng.getrandbits(64) for _ in range(200)]
+    for x in xs:
+        clmul = 0
+        for i in range(64):
+            if x >> i & 1:
+                clmul ^= (M << i) & M
+        assert _prefix_xor64(None, x) == clmul, hex(x)
+    for isa in ("ssse3", "neon"):
+        mod = ir.Module("px")
+        mod.arch = ISAS[isa].arch
+        mod.functions.append(_fn_prefix_xor(isa))
+        for x in xs[:40]:
+            mem = Memory(x.to_bytes(8, "little"), 0x1000)
+            mem.add(bytes(8), 0x9000)
+            Interpreter(mod, mem).call(f"t_{isa}_prefix_xor", [0x1000, 0x9000])
+            assert int.from_bytes(mem.region(0x9000), "little") == _prefix_xor64(None, x), (isa, hex(x))
+    b = ir.Builder("t", ir.U64, isa="avx2")
+    assert prefix_xor(b, ISAS["avx2"], b.param("x", ir.U64)).name == "prefix_xor64"

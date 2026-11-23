@@ -11,7 +11,7 @@ with bit arithmetic. This is a different model from that of ripgrep, ugrep and r
 | `json_character_block::classify` | masks of whitespace and of `{}[]:,` in the block: one `pshufb` + `cmpeq` per class, with tables built so that each member has its own low nibble (`\| 0x20` merges `[` with `{` and `]` with `}`) | none: the NVOL byteset gives the mask only for the block with candidates and uses two nibble searches |
 | `json_string_scanner` | masks of `\` and `"` in the block | plain `cmpeq`; NVOL does not expose per-block masks |
 | `json_escape_scanner` | which `"` are escaped (bit arithmetic with additions) | scalar, not applicable |
-| `prefix_xor` | string interiors (`pclmulqdq` against all ones) | none |
+| `prefix_xor` | string interiors (`pclmulqdq` against all ones) | `prefix_xor64` (AVX2) and `nvol.isa.prefix_xor` (every ISA) |
 | `utf8_lookup4_algorithm` | UTF-8 validation (three nibble lookups and continuation checks) | none (PENDING 1.13) |
 | `json_minifier` | `classify` + compact the block | none |
 | `backslash_and_quote::copy_and_find` (stage 2) | copies 32 bytes and gives the masks of `\` and `"` | `nvol_copy_until_byteset` copies while it searches and gives the position of the first member (not the masks): it works where the first hit is used |
@@ -29,8 +29,8 @@ up to the first hit:
    *unique-nibble* sets of `byteset`, such as the 4 JSON whitespace bytes); the variant that
    returns the block mask is missing.
 2. **Multi-byte equality masks per block** (`\` and `"`).
-3. **`prefix_xor`** with carry-less multiplication (`pclmulqdq` / `pmull`) and its scalar
-   alternative.
+3. **`prefix_xor`** with carry-less multiplication and its scalar alternative (done in
+   PENDING 34).
 4. **UTF-8 validation** (PENDING 1.13), which ugrep also lacks.
 5. **8 digits to integer**.
 
@@ -61,7 +61,7 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 | `blsr` (`x & (x - 1)`) | indexer (`clear_lowest_bit`) | expressible (`wsub`, `and`) | — |
 | sign smear `int64(x) >> 63` | string scanner (`prev_in_string`) | expressible as `0 - (x >> 63)` | — |
 | store of `u32` indices | indexer (`write_index`) | `Store32` | — |
-| carry-less multiplication | `prefix_xor` (`_mm_clmulepi64_si128` against all ones) | `prefix_xor64` in AVX2 functions (`vpclmulqdq` against all ones), which dispatch on `cpu_avx2_pclmul`; the scalar form for the other ISAs is missing | 34 |
+| carry-less multiplication | `prefix_xor` (`_mm_clmulepi64_si128` against all ones) | `prefix_xor64` in AVX2 functions (`vpclmulqdq` against all ones), which dispatch on `cpu_avx2_pclmul`; `nvol.isa.prefix_xor` gives the six shift/`xor` steps on the other ISAs, as simdjson's arm64 | — |
 | `pmaddubsw`, `pmaddwd`, `packusdw` (128 bits) | `parse_eight_digits_unrolled` | none | 37 |
 | unaligned 32-byte copy plus two masks | `copy_and_find` | `nvol_copy_until_byteset` (copy plus the first member) | 37 |
 | `compress` (`thintable_epi8`, `pshufb_combine_table`) | the minifier | none | not in phase 6 |

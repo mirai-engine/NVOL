@@ -339,3 +339,16 @@ def movemask(isa: ISA, v):
 def all_lanes_mask(isa: ISA):
     from .ir import lift
     return lift((1 << isa.mask_bits) - 1, mask_ty(isa))
+
+
+def prefix_xor(b, isa: "ISA | None", x):
+    """simdjson's prefix_xor of a u64 (bit i = XOR of bits 0..i). One pclmulqdq where the ISA
+    has it (AVX2 functions, which dispatch on cpu_avx2_pclmul); elsewhere the six shift/xor
+    steps of simdjson's arm64 and fallback kernels, let-bound so no step is computed twice."""
+    from .ir import U64, Prim
+    if isa is not None and ("c", "prefix_xor64") in isa.lower:
+        return Prim("prefix_xor64", [x], U64)
+    v = b.var("px", x, U64)
+    for k in (1, 2, 4, 8, 16, 32):
+        b.set(v, v ^ (v << k))
+    return v

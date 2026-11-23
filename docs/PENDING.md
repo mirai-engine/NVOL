@@ -647,9 +647,19 @@ Two consequences for the design:
     with the same `vperm2i128` + `vpalignr` as simdjson's haswell `prev<N>`.
     The Rust and Odin lowerings of these primitives are compiled (rustc, odin check, x86_64
     and aarch64) but not run until a kernel uses them (2.3).
-34. **`feat/clmul`: carry-less multiplication.** `pclmulqdq` (x86) and `pmull` (aarch64), with
-    the scalar `prefix_xor` (six shifts and `xor`s) as the fallback, and the runtime check
-    `cpu_pclmul` (westmere needs SSE4.2 plus PCLMUL). Then `prefix_xor` itself.
+34. **`feat/clmul`: carry-less multiplication.** *(Done on the branch, 2026-11-23; merged with
+    35, which calls it.)* One commit each, with its tests and a seeded bug that fails them:
+    - the runtime check `cpu_avx2_pclmul`, the single dispatch condition of the AVX2 JSON
+      kernels (the AVX2 targets of C, Rust and Odin gain `pclmul`);
+    - the primitive `prefix_xor64`, in AVX2 functions only: `vpclmulqdq` against all ones, as
+      simdjson's haswell `prefix_xor`;
+    - `nvol.isa.prefix_xor`, which emits `prefix_xor64` where the ISA has it and otherwise
+      the six let-bound shift/`xor` steps of simdjson's arm64 and fallback kernels.
+
+    Not added: `pmull` on aarch64, because simdjson's arm64 `prefix_xor` uses the shift/`xor`
+    steps too, and a PCLMUL path for the SSE ISAs, because every AVX2 CPU has PCLMULQDQ and
+    the SSE functions only run on CPUs without AVX2. The Rust and Odin lowerings are compiled
+    (rustc, odin check, x86_64 and aarch64) but not run until a kernel uses them (2.3).
 35. **`feat/json-stage1`: the 64-byte block kernels**, which cover most of simdjson's SIMD
     work:
     - `classify`: the masks of whitespace and of `{}[]:,`, one `pshufb` + `cmpeq` per class,
@@ -747,7 +757,7 @@ as little-endian). The detail of both is in Done.
 | 1.8 | P2 | **AVX-512 / AVX10** | memchr does not use it; it would be "better than ripgrep". It requires 64-bit masks (today `MASK` is u32). |
 | 1.9 | P2 | **An even faster `count`** | Tested (item 15): two accumulators in the kernel lower the asm (140 → 131 cycles at 4 KiB AVX2) and Clang (136 → 123), but make GCC worse (SSE2: 264 → 307 cycles), so it was discarded. The asm reassociates the subtractions in pairs in the lowering, like GCC. It remains to see how to give the C the same without losing with GCC (item 44). |
 | 1.13 | P1 | **ugrep: UTF-8 validation** | The only part of ugrep's SIMD that NVOL does not cover ([inventory](UGREP_SIMD_INVENTORY.md)): `isutf8` (ASCII path + sequence validation). `first_non_ascii` covers the ASCII path; a validation kernel is missing (e.g. Keiser-Lemire's, nibble tables as in `byteset`). AVX-512BW stays out until there is hardware (1.8). |
-| 1.17 | P1 | **simdjson: block-to-mask kernels (phase 6, items 33-38)** | No simdjson routine has an equivalent in NVOL ([inventory](SIMDJSON_SIMD_INVENTORY.md)): all of them turn 64 B blocks (with guaranteed padding) into 64-bit masks. Missing: a per-block membership mask (one `pshufb` when possible, Muła otherwise), equality masks for several bytes, `prefix_xor` (`pclmulqdq`/`pmull` and scalar), UTF-8 validation (1.13) and 8 digits to integer. The first three cover stage 1. |
+| 1.17 | P1 | **simdjson: block-to-mask kernels (phase 6, items 33-38)** | No simdjson routine has an equivalent in NVOL ([inventory](SIMDJSON_SIMD_INVENTORY.md)): all of them turn 64 B blocks (with guaranteed padding) into 64-bit masks. Missing: a per-block membership mask (one `pshufb` when possible, Muła otherwise), equality masks for several bytes, UTF-8 validation (1.13) and 8 digits to integer (`prefix_xor` is done: 34). The first two and `prefix_xor` cover stage 1. |
 | 1.11 | P2 | **`memmem_init` can be 2× faster** | Inlined by LTO, building a 40 B Finder took 114 ns in one binary and 301 ns in another; now it is `noinline` and takes ~230 ns (memchr: ~240-255 ns). See what LLVM did in the 114 ns case (did it vectorize the rarity scan or the byteset?) and bring it into the IR. |
 
 ## 2. Generator (IR, interpreter, backends)
