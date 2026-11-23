@@ -664,8 +664,9 @@ Two consequences for the design:
     work. *(Done on the branch, 2026-11-23: `nvol_json_index_raw` runs the whole loop, with
     the masks of AVX2 (with PCLMULQDQ and BMI1), SSSE3, NEON and a scalar fallback, the
     indexer unrolled as `bit_indexer::write`, each block written while the next is scanned, and
-    two blocks per iteration as `step<128>`. Against simdjson's own stage 1: +4.7 % cycles on
-    citm_catalog, −5.4 % on twitter, with simdjson also validating UTF-8
+    two blocks per iteration as `step<128>`; an audit of the citm gap added the escape-scanner
+    shortcut, the per-block mask order and IR branch hints. Against simdjson's own stage 1:
+    −6.7 % cycles on citm_catalog, −16.4 % on twitter, with simdjson also validating UTF-8
     ([report](benchmarks/2026-11-23-json-stage1-wsl.md)); the like-for-like verdict comes
     after 36. Open: the C library's scalar path is not reached by `tests/test_json.py`, because
     the test hook cannot hide SSSE3 (`nvol check` and `test_asm` call it directly); the SSSE3,

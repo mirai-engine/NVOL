@@ -36,6 +36,38 @@ Each step is its own commit, A/B interleaved twice against the commit before it.
 
 Total: citm −31.6 %, twitter −44.9 %.
 
+## Audit of the citm_catalog gap
+
+The first result above left NVOL +4.7 % on citm_catalog and −5.4 % on twitter. twitter is
+heavy in non-ASCII text, where simdjson's UTF-8 check costs the most; citm is almost all ASCII,
+so it compares the two scanning loops nearly bare. Synthetic 1 MiB documents (instructions per
+64-byte block, exact under load) placed the gap:
+
+| document | simdjson | NVOL | NVOL cycles |
+|---|---:|---:|---:|
+| whitespace only (no structurals) | 78.1 | 86.1 | +8 % |
+| one long string | 78.1 | 86.0 | +5 % |
+| numbers (~7 structurals per block) | 169 | 181 | +7 % |
+| `1,1,1,…` (32 per block) | 557 | 551 | **−23 %** |
+| small objects (~11 per block) | 413 | 416 | **−20 %** |
+
+The indexer already beat simdjson's; the scanning core cost ~8 instructions per block more.
+Frontend counters ruled out the µop cache (both >99 % DSB); the extra work was in the backend.
+Three causes, three commits:
+
+| commit | cause | citm cycles | twitter cycles |
+|---|---|---:|---:|
+| 7fdbefc | both blocks' masks computed before either scan: 6 vector spills and `pis` carried through the stack | 987017 (−0.5 %) | 360060 (−2.1 %) |
+| 6485f67 | no escape-scanner shortcut on blocks without `\` (8 instructions per block) | 912590 (−7.6 %) | 333256 (−7.5 %) |
+| 379171b | GCC laid the rare backslash branch inline; `If.likely` hint → `__builtin_expect` | 882570 (−3.2 %) | 323946 (−2.8 %) |
+
+A placement control (`-falign-loops` 16, 32, 64) moves the same code by up to 1.2 % on citm and
+3 % on twitter; each step above was measured at two alignments. The shortcut alone, before
+7fdbefc, lost (citm +1.3 %): GCC if-converted the second block's branch to `cmovne`.
+
+**After the audit:** citm_catalog 882k cycles against simdjson's 946k (**−6.7 %**), twitter
+324k against 387k (**−16.4 %**), with simdjson still also validating UTF-8 (item 36).
+
 ## Rejected on the way
 
 - **`first_offset64(bits | 1 << 63)`** for the unconditional slots (no UB at 0 without a new
