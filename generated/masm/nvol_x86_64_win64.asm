@@ -36,6 +36,7 @@ _DRECTVE SEGMENT INFO ALIAS(".drectve")
     DB "-export:nvol_find_not_byteset_raw "
     DB "-export:nvol_find_byteset_pair_raw "
     DB "-export:nvol_find_byteset_pair_mask_raw "
+    DB "-export:nvol_json_index_raw "
 _DRECTVE ENDS
 _NVOLK SEGMENT ALIGN(64) READ ALIAS(".rdata") 'CONST'
 ALIGN 32
@@ -55583,6 +55584,239 @@ L_done:
     pop rcx
     jmp qword ptr [nvol_find_byteset_pair_mask_raw_ptr]
 nvol_find_byteset_pair_mask_raw_resolve ENDP
+
+    DB 15, 31, 64, 0
+nvol_json_index_scalar PROC PUBLIC FRAME
+    push rbx
+    .PUSHREG rbx
+    push rbp
+    .PUSHREG rbp
+    push rdi
+    .PUSHREG rdi
+    push rsi
+    .PUSHREG rsi
+    push r12
+    .PUSHREG r12
+    push r13
+    .PUSHREG r13
+    push r14
+    .PUSHREG r14
+    push r15
+    .PUSHREG r15
+    sub rsp, 200
+    .ALLOCSTACK 200
+    .ENDPROLOG
+    mov qword ptr [rsp], rcx
+    mov rax, rcx
+    mov rsi, qword ptr [rsp + 304]
+    mov r11, qword ptr [rax]
+    mov [rsp + 32], r11
+    mov r11, qword ptr [rax + 8]
+    mov [rsp + 64], r11
+    mov r11, qword ptr [rax + 16]
+    mov [rsp + 96], r11
+    mov r11, qword ptr [rax + 24]
+    mov [rsp + 128], r11
+    mov r13, rdx
+    shl r8, 6
+    lea r11, [rdx + r8]
+    mov [rsp + 160], r11
+    xor r8d, r8d
+    cmp r13, r11
+    jae NEAR PTR L_L3
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+L_L2:
+    xor r14d, r14d
+    xor r15d, r15d
+    xor eax, eax
+    xor edx, edx
+    xor r12d, r12d
+    xor ebp, ebp
+    cmp rbp, 64
+    jae SHORT L_L5
+    DB 15, 31, 0
+L_L4:
+    movzx ebx, byte ptr [r13 + rbp]
+    mov edi, 1
+    mov rcx, rbp
+    shl rdi, cl
+    cmp ebx, 92
+    jne SHORT L_L6
+    or r14, rdi
+L_L6:
+    cmp ebx, 34
+    jne SHORT L_L8
+    or r15, rdi
+L_L8:
+    cmp ebx, 32
+    je SHORT L_L12
+    cmp ebx, 9
+    je SHORT L_L12
+    cmp ebx, 10
+    je SHORT L_L13
+    cmp ebx, 13
+    jne SHORT L_L10
+L_L13:
+L_L12:
+    or rax, rdi
+L_L10:
+    mov rcx, rbx
+    or rcx, 32
+    cmp ecx, 58
+    je SHORT L_L16
+    cmp ecx, 123
+    je SHORT L_L16
+    cmp ecx, 44
+    je SHORT L_L17
+    cmp ecx, 125
+    jne SHORT L_L14
+L_L17:
+L_L16:
+    or rdx, rdi
+L_L14:
+    cmp ebx, 31
+    ja SHORT L_L18
+    or r12, rdi
+L_L18:
+    add rbp, 1
+    cmp rbp, 64
+    jb SHORT L_L4
+L_L5:
+    mov rcx, r14
+    mov rdi, qword ptr [rsp + 32]
+    not rdi
+    and rcx, rdi
+    mov rdi, rcx
+    shl rdi, 1
+    mov rbx, -6148914691236517206
+    or rdi, rbx
+    sub rdi, rcx
+    mov rcx, -6148914691236517206
+    xor rdi, rcx
+    mov rcx, rdi
+    mov rbx, r14
+    mov r11, [rsp + 32]
+    or rbx, r11
+    xor rcx, rbx
+    mov r11, rdi
+    and r11, r14
+    shr r11, 63
+    mov [rsp + 32], r11
+    not rcx
+    and r15, rcx
+    mov rcx, r15
+    mov rdi, rcx
+    mov rbx, rcx
+    shl rbx, 1
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 2
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 4
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 8
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 16
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 32
+    xor rdi, rbx
+    mov rcx, rdi
+    mov r11, [rsp + 64]
+    xor rcx, r11
+    xor r11d, r11d
+    mov rdi, rcx
+    shr rdi, 63
+    sub r11, rdi
+    mov [rsp + 64], r11
+    mov rdi, rdx
+    or rdi, rax
+    not rdi
+    mov rax, rdi
+    mov rbx, r15
+    not rbx
+    and rax, rbx
+    mov rbx, rax
+    shl rbx, 1
+    mov r11, [rsp + 96]
+    or rbx, r11
+    mov r11, rax
+    shr r11, 63
+    mov [rsp + 96], r11
+    not rbx
+    and rdi, rbx
+    or rdx, rdi
+    mov rax, rcx
+    xor rax, r15
+    not rax
+    and rdx, rax
+    mov r11, qword ptr [rsp + 128]
+    and r12, rcx
+    or r11, r12
+    mov [rsp + 128], r11
+    test rdx, rdx
+    je SHORT L_L21
+    DB 15, 31, 68, 0, 0
+L_L20:
+    mov rax, r8
+    shl rax, 2
+    bsf rcx, rdx
+    lea rcx, [r9 + rcx]
+    mov dword ptr [rsi + rax], ecx
+    lea r8, [r8 + 1]
+    mov rax, rdx
+    mov rcx, rdx
+    sub rcx, 1
+    and rax, rcx
+    mov rdx, rax
+    test rdx, rdx
+    jne SHORT L_L20
+L_L21:
+    lea r13, [r13 + 64]
+    lea r9, [r9 + 64]
+    mov r11, [rsp + 160]
+    cmp r13, r11
+    jb NEAR PTR L_L2
+L_L3:
+    mov r11, [rsp]
+    mov r10, [rsp + 32]
+    mov qword ptr [r11], r10
+    mov r11, [rsp]
+    mov r10, [rsp + 64]
+    mov qword ptr [r11 + 8], r10
+    mov r11, [rsp]
+    mov r10, [rsp + 96]
+    mov qword ptr [r11 + 16], r10
+    mov r11, [rsp]
+    mov r10, [rsp + 128]
+    mov qword ptr [r11 + 24], r10
+    mov rax, r8
+    add rsp, 200
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
+    ret
+nvol_json_index_scalar ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
+nvol_json_index_raw PROC PUBLIC
+    jmp NEAR PTR nvol_json_index_scalar
+nvol_json_index_raw ENDP
 
 ALIGN 8
 nvol_fntbl_teddy DD nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy

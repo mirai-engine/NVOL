@@ -69,3 +69,40 @@ def expected(api_name: str, needles, hay: bytes) -> int:
     if api_name == "nvol_first_non_ascii":
         return first_non_ascii(hay)
     raise KeyError(api_name)
+
+
+# ---- simdjson stage 1 (kernels/json.py) ----------------------------------------------------
+JSON_WS = b" \t\n\r"
+# classify's operators: (c | 0x20) in ':', '{', ',', '}', which also takes [ ] and the control
+# bytes 0x0C (FF) and 0x1A (SUB), as simdjson does (stage 2 rejects those two)
+JSON_OP = {0x3A, 0x7B, 0x2C, 0x7D}
+
+
+def json_index(data: bytes, idx: int = 0, state=(0, 0, 0, 0)):
+    """simdjson's stage 1 output, byte by byte, written from the definitions rather than from the
+    mask arithmetic: (positions, (next_is_escaped, prev_in_string, prev_scalar, error)).
+
+    A byte is escaped when the byte before it is a backslash that is not escaped itself (this
+    holds inside and outside strings, as simdjson's escape scanner runs on the whole block). An
+    unescaped quote toggles "in string"; the opening quote counts as inside, the closing one as
+    outside. Outside strings, a structural position is an operator, or the first byte of a run
+    of scalar bytes (neither whitespace nor operator); a quote ends a run, so the byte after a
+    closing quote starts one. A control byte (<= 0x1F) inside a string sets the error."""
+    esc, in_str, prev_scalar, err = state[0] & 1, state[1] != 0, state[2] & 1, state[3] != 0
+    out = []
+    for i, c in enumerate(data):
+        escaped = esc
+        esc = 1 if c == 0x5C and not escaped else 0
+        quote = c == 0x22 and not escaped
+        if quote:
+            in_str = not in_str
+        tail = in_str != quote             # in_string ^ quote: inside, closing quote excluded
+        op = (c | 0x20) in JSON_OP
+        scalar = not op and c not in JSON_WS
+        if not tail and (op or (scalar and not prev_scalar)):
+            out.append(idx + i)
+        if c <= 0x1F and in_str:
+            err = True
+        prev_scalar = 1 if scalar and not quote else 0
+    mask = (1 << 64) - 1
+    return out, (esc, mask if in_str else 0, prev_scalar, int(err))

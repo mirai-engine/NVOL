@@ -450,6 +450,9 @@ def glue(mod) -> list:
     if "nvol_byteset_init" in api or any(f.name == "nvol_byteset_init" for f in mod.functions):
         from ..kernels.byteset import CONSTANTS
         L += [f"BYTESET_{n} :: {v}   // {doc}" for n, v, doc in CONSTANTS] + [""]
+    if any(f.name == "nvol_json_index_raw" for f in mod.functions):
+        from ..kernels.json import CONSTANTS as JSON_CONSTANTS
+        L += [f"JSON_{n} :: {v}   // {doc}" for n, v, doc in JSON_CONSTANTS] + [""]
     if any(k == "memmem" for k, _, _ in mod.api):
         L += [f"MEMMEM_STATE_WORDS :: {STATE_WORDS}",
               "// Substring finder (memchr::memmem::Finder). Borrows the needle.",

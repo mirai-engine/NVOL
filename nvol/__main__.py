@@ -220,6 +220,98 @@ def byteset_cases(rng, n):
         yield s1, s2, i1, i2, bytes(hay), start, end
 
 
+JSON_SNIPPETS = [b'{"a": 1}', b'[1, 2.5e-3, true, false, null]', b'"x\\"y"', b'"\\\\"', b'{"k\\\\": [ ]}',
+                 b'"a\x01b"', b'  \t\r\n', b'"\\u00e9"', b'tru e', b'"\xc3\xa9"']
+
+
+def json_cases(rng, n):
+    """(blocks, splits, state): 1-6 blocks of JSON-like bytes, the block counts of the calls
+    that cover them (the state carried between calls), and the starting state."""
+    alpha = b'{}[]:,"\\ \t\n\rabc019.-' + bytes([0x01, 0x0C, 0x1A, 0x1F, 0x7F, 0x80, 0xC3, 0xFF])
+    heavy = b'\\"\\"\\ab'      # runs of backslashes and quotes, the escape scanner's hard cases
+    for _ in range(n):
+        nb = rng.randint(1, 6)
+        data = bytearray()
+        while len(data) < 64 * nb:
+            r = rng.random()
+            if r < 0.3:
+                data += rng.choice(JSON_SNIPPETS)
+            elif r < 0.5:
+                data += bytes(rng.choice(heavy) for _ in range(rng.randint(1, 12)))
+            else:
+                data += bytes(rng.choice(alpha) for _ in range(rng.randint(1, 8)))
+        data = bytes(data[:64 * nb])
+        splits, left = [], nb
+        while left:
+            k = rng.randint(1, left)
+            splits.append(k)
+            left -= k
+        if rng.random() < 0.3:
+            state = (rng.randrange(2), rng.choice([0, (1 << 64) - 1]), rng.randrange(2), 0)
+        else:
+            state = (0, 0, 0, 0)
+        yield data, splits, state
+
+
+def json_run(call, mem, data, splits, state, hb, sb, ob):
+    """Run nvol_json_index_raw over the splits with `call(args) -> count`; returns
+    (positions, state words)."""
+    for k, w in enumerate(state):
+        mem[sb + 8 * k:sb + 8 * k + 8] = w.to_bytes(8, "little")
+    out, at = [], 0
+    for k in splits:
+        n = call([sb, hb + 64 * at, k, 64 * at, ob])
+        out += [int.from_bytes(bytes(mem[ob + 4 * i:ob + 4 * i + 4]), "little") for i in range(n)]
+        at += k
+    st = tuple(int.from_bytes(bytes(mem[sb + 8 * k:sb + 8 * k + 8]), "little") for k in range(4))
+    return out, st
+
+
+def json_same(got, want) -> bool:
+    """The error word is any non-zero value; the other words are exact."""
+    (gp, gs), (wp, ws) = got, want
+    return gp == wp and gs[:3] == ws[:3] and (gs[3] != 0) == (ws[3] != 0)
+
+
+def check_json(mod, cases: int, seed: int) -> int:
+    from .kernels.json import STATE_BYTES
+    rng = random.Random(seed)
+    bad = total = 0
+    arch = getattr(mod, "arch", "x86_64")
+    cpus = ([{"avx2": True, "pclmul": True, "ssse3": True}, {"avx2": False, "ssse3": True},
+             {"avx2": False, "ssse3": False}] if arch == "x86_64" else [{}])
+    for data, splits, state in json_cases(rng, cases):
+        want = oracle.json_index(data, 0, state)
+        for cpu in cpus:
+            hb, sb, ob = 0x10000 + 64 * rng.randrange(4) + rng.randrange(64), 0x80000, 0x90000
+            mem = Memory(data, hb)
+            mem.add(bytes(STATE_BYTES), sb)
+            mem.add(bytes(4 * len(data)), ob)
+            it = Interpreter(mod, mem, cpu)
+            view = _MemView(mem)
+            got = json_run(lambda a: it.call("nvol_json_index_raw", a), view, data, splits, state, hb, sb, ob)
+            total += 1
+            if not json_same(got, want):
+                bad += 1
+                print(f"MISMATCH json cpu={cpu} splits={splits} state={state} data={data!r} "
+                      f"got={got} want={want}")
+    print(f"[{arch}] json interpreter vs oracle: {total - bad}/{total} ok")
+    return 1 if bad else 0
+
+
+class _MemView:
+    """mem[a:b] reads and writes the interpreter's memory by address."""
+
+    def __init__(self, mem):
+        self.mem = mem
+
+    def __getitem__(self, s):
+        return self.mem.read(s.start, s.stop - s.start)
+
+    def __setitem__(self, s, data):
+        self.mem.write(s.start, data)
+
+
 def check_byteset(mod, cases: int, seed: int) -> int:
     from .kernels.byteset import CLASS_BYTES, PAIR_BYTES
     rng = random.Random(seed)
@@ -347,6 +439,7 @@ def check(mod, cases: int, seed: int) -> int:
     rc = check_memmem(mod, cases * 8, seed) if any(k == "memmem" for k, _, _ in mod.api) else 0
     rc |= check_teddy(mod, cases * 4, seed) if any(k == "teddy" for k, _, _ in mod.api) else 0
     rc |= check_byteset(mod, cases * 4, seed) if any(f.name == "nvol_find_byteset_raw" for f in mod.functions) else 0
+    rc |= check_json(mod, cases, seed) if any(f.name == "nvol_json_index_raw" for f in mod.functions) else 0
     return 1 if bad or rc else 0
 
 

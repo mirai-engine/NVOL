@@ -499,7 +499,15 @@ def byteset_header(mod) -> list:
     if not any(f.name == "nvol_byteset_init" for f in mod.functions):
         return []
     from ..kernels.byteset import CONSTANTS
-    return [f"#define NVOL_BYTESET_{n} {v}   /* {doc} */" for n, v, doc in CONSTANTS]
+    return [f"#define NVOL_BYTESET_{n} {v}   /* {doc} */" for n, v, doc in CONSTANTS] + json_header(mod)
+
+
+def json_header(mod) -> list:
+    """The state size of nvol_json_index_raw (kernels/json.py)."""
+    if not any(f.name == "nvol_json_index_raw" for f in mod.functions):
+        return []
+    from ..kernels.json import CONSTANTS
+    return [f"#define NVOL_JSON_{n} {v}   /* {doc} */" for n, v, doc in CONSTANTS]
 
 def generate(module, lang: str = "c", asm_kernels=False) -> dict:
     """module: an ir.Module or {arch: ir.Module}. asm_kernels: the C for a library whose

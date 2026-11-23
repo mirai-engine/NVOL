@@ -189,6 +189,11 @@ class RustPrinter(Printer):
                 for n, v, doc in CONSTANTS:
                     self.out += [f"    /// {doc}", f"    pub const NVOL_BYTESET_{n}: usize = {v};"]
                 self.out.append("")
+            if any(f.name == "nvol_json_index_raw" for f in mod.functions):
+                from ..kernels.json import CONSTANTS as JSON_CONSTANTS
+                for n, v, doc in JSON_CONSTANTS:
+                    self.out += [f"    /// {doc}", f"    pub const NVOL_JSON_{n}: usize = {v};"]
+                self.out.append("")
             for name, data in self.mod.tables.items():
                 self.out.append(f"    pub(crate) static NVOL_TBL_{name.upper()}: [u8; {len(data)}] = {list(data)};")
             self.out.append("")

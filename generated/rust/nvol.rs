@@ -28,6 +28,9 @@ pub mod raw {
     /// u64 in the pair state: max(i1, i2)
     pub const NVOL_BYTESET_PAIR_REACH: usize = 248;
 
+    /// bytes of the nvol_json_index_raw state
+    pub const NVOL_JSON_STATE_BYTES: usize = 32;
+
     pub(crate) static NVOL_TBL_RANK: [u8; 256] = [55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28, 255, 148, 164, 149, 136, 160, 155, 173, 221, 222, 134, 122, 232, 202, 215, 224, 208, 220, 204, 187, 183, 179, 177, 168, 178, 200, 226, 195, 154, 184, 174, 126, 120, 191, 157, 194, 170, 189, 162, 161, 150, 193, 142, 137, 171, 176, 185, 167, 186, 112, 175, 192, 188, 156, 140, 143, 123, 133, 128, 147, 138, 146, 114, 223, 151, 249, 216, 238, 236, 253, 227, 218, 230, 247, 135, 180, 241, 233, 246, 244, 231, 139, 245, 243, 251, 235, 201, 196, 240, 214, 152, 182, 205, 181, 127, 27, 212, 211, 210, 213, 228, 197, 169, 159, 131, 172, 105, 80, 98, 96, 97, 81, 207, 145, 116, 115, 144, 130, 153, 121, 107, 132, 109, 110, 124, 111, 82, 108, 118, 141, 113, 129, 119, 125, 165, 117, 92, 106, 83, 72, 99, 93, 65, 79, 166, 237, 163, 199, 190, 225, 209, 203, 198, 217, 219, 206, 234, 248, 158, 239, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255];
 
     /// word-at-a-time (SWAR) search; the dispatch's path under 16 bytes
@@ -8975,6 +8978,86 @@ pub mod raw {
         unsafe { core::mem::transmute::<*mut (), F>(f)(st, start, end, out) }
     }
 
+    /// stage 1, scalar masks
+    #[inline(always)]
+    pub(crate) unsafe fn nvol_json_index_scalar(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
+        unsafe {
+            let mut nie: u64 = (state as *const u64).read_unaligned();
+            let mut pis: u64 = (state.add(8usize) as *const u64).read_unaligned();
+            let mut psc: u64 = (state.add(16usize) as *const u64).read_unaligned();
+            let mut err: u64 = (state.add(24usize) as *const u64).read_unaligned();
+            let mut blk: *const u8 = blocks;
+            let mut base: usize = idx;
+            let end: *const u8 = blocks.add((nblocks << 6usize));
+            let mut n: usize = 0usize;
+            while (blk < end) {
+                let mut bs: u64 = 0u64;
+                let mut qt: u64 = 0u64;
+                let mut ws: u64 = 0u64;
+                let mut op: u64 = 0u64;
+                let mut ctl: u64 = 0u64;
+                let mut i: usize = 0usize;
+                while (i < 64usize) {
+                    let c: u8 = (*blk.add(i));
+                    let bit: u64 = (1u64 << (i as u64));
+                    if (c == 92u8) {
+                        bs = (bs | bit);
+                    }
+                    if (c == 34u8) {
+                        qt = (qt | bit);
+                    }
+                    if (((c == 32u8) || (c == 9u8)) || ((c == 10u8) || (c == 13u8))) {
+                        ws = (ws | bit);
+                    }
+                    let c20: u8 = (c | 32u8);
+                    if (((c20 == 58u8) || (c20 == 123u8)) || ((c20 == 44u8) || (c20 == 125u8))) {
+                        op = (op | bit);
+                    }
+                    if (c <= 31u8) {
+                        ctl = (ctl | bit);
+                    }
+                    i = (i + 1usize);
+                }
+                let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                let escaped: u64 = (code ^ (bs | nie));
+                nie = ((code & bs) >> 63u64);
+                let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
+                let mut px: u64 = quote;
+                px = (px ^ (px << 1u64));
+                px = (px ^ (px << 2u64));
+                px = (px ^ (px << 4u64));
+                px = (px ^ (px << 8u64));
+                px = (px ^ (px << 16u64));
+                px = (px ^ (px << 32u64));
+                let in_string: u64 = (px ^ pis);
+                pis = 0u64.wrapping_sub((in_string >> 63u64));
+                let scalar: u64 = ((op | ws) ^ 18446744073709551615u64);
+                let nqs: u64 = (scalar & (quote ^ 18446744073709551615u64));
+                let follows: u64 = ((nqs << 1u64) | psc);
+                psc = (nqs >> 63u64);
+                let mut bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
+                err = (err | (ctl & in_string));
+                while (bits != 0u64) {
+                    (out.add((n << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    n = (n + 1usize);
+                    bits = (bits & bits.wrapping_sub(1u64));
+                }
+                blk = blk.add(64usize);
+                base = (base + 64usize);
+            }
+            (state as *mut u64).write_unaligned(nie);
+            (state.add(8usize) as *mut u64).write_unaligned(pis);
+            (state.add(16usize) as *mut u64).write_unaligned(psc);
+            (state.add(24usize) as *mut u64).write_unaligned(err);
+            return n;
+        }
+    }
+
+    /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
+    #[inline(always)]
+    pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize { unsafe { nvol_json_index_scalar(state, blocks, nblocks, idx, out) } }
+
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 12] = [
         nvol_teddy_slim_ssse3_1,
         nvol_teddy_slim_ssse3_2,
@@ -9016,6 +9099,9 @@ pub mod raw {
     pub const NVOL_BYTESET_PAIR_SEL: usize = 240;
     /// u64 in the pair state: max(i1, i2)
     pub const NVOL_BYTESET_PAIR_REACH: usize = 248;
+
+    /// bytes of the nvol_json_index_raw state
+    pub const NVOL_JSON_STATE_BYTES: usize = 32;
 
     pub(crate) static NVOL_TBL_RANK: [u8; 256] = [55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28, 255, 148, 164, 149, 136, 160, 155, 173, 221, 222, 134, 122, 232, 202, 215, 224, 208, 220, 204, 187, 183, 179, 177, 168, 178, 200, 226, 195, 154, 184, 174, 126, 120, 191, 157, 194, 170, 189, 162, 161, 150, 193, 142, 137, 171, 176, 185, 167, 186, 112, 175, 192, 188, 156, 140, 143, 123, 133, 128, 147, 138, 146, 114, 223, 151, 249, 216, 238, 236, 253, 227, 218, 230, 247, 135, 180, 241, 233, 246, 244, 231, 139, 245, 243, 251, 235, 201, 196, 240, 214, 152, 182, 205, 181, 127, 27, 212, 211, 210, 213, 228, 197, 169, 159, 131, 172, 105, 80, 98, 96, 97, 81, 207, 145, 116, 115, 144, 130, 153, 121, 107, 132, 109, 110, 124, 111, 82, 108, 118, 141, 113, 129, 119, 125, 165, 117, 92, 106, 83, 72, 99, 93, 65, 79, 166, 237, 163, 199, 190, 225, 209, 203, 198, 217, 219, 206, 234, 248, 158, 239, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255];
 
@@ -13767,6 +13853,86 @@ pub mod raw {
     /// Like nvol_find_byteset_pair_raw, but returns the base of the first chunk with candidates and stores all its candidates to *out: position base + i is a candidate when bit i (x86_64) or bit 4i+3 (aarch64) is set. NULL when there is none.
     #[inline(always)]
     pub unsafe fn nvol_find_byteset_pair_mask_raw(st: *const u8, start: *const u8, end: *const u8, out: *mut u8) -> *const u8 { unsafe { nvol_find_byteset_pair_mask_entry_neon(st, start, end, out) } }
+
+    /// stage 1, scalar masks
+    #[inline(always)]
+    pub(crate) unsafe fn nvol_json_index_scalar(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
+        unsafe {
+            let mut nie: u64 = (state as *const u64).read_unaligned();
+            let mut pis: u64 = (state.add(8usize) as *const u64).read_unaligned();
+            let mut psc: u64 = (state.add(16usize) as *const u64).read_unaligned();
+            let mut err: u64 = (state.add(24usize) as *const u64).read_unaligned();
+            let mut blk: *const u8 = blocks;
+            let mut base: usize = idx;
+            let end: *const u8 = blocks.add((nblocks << 6usize));
+            let mut n: usize = 0usize;
+            while (blk < end) {
+                let mut bs: u64 = 0u64;
+                let mut qt: u64 = 0u64;
+                let mut ws: u64 = 0u64;
+                let mut op: u64 = 0u64;
+                let mut ctl: u64 = 0u64;
+                let mut i: usize = 0usize;
+                while (i < 64usize) {
+                    let c: u8 = (*blk.add(i));
+                    let bit: u64 = (1u64 << (i as u64));
+                    if (c == 92u8) {
+                        bs = (bs | bit);
+                    }
+                    if (c == 34u8) {
+                        qt = (qt | bit);
+                    }
+                    if (((c == 32u8) || (c == 9u8)) || ((c == 10u8) || (c == 13u8))) {
+                        ws = (ws | bit);
+                    }
+                    let c20: u8 = (c | 32u8);
+                    if (((c20 == 58u8) || (c20 == 123u8)) || ((c20 == 44u8) || (c20 == 125u8))) {
+                        op = (op | bit);
+                    }
+                    if (c <= 31u8) {
+                        ctl = (ctl | bit);
+                    }
+                    i = (i + 1usize);
+                }
+                let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                let escaped: u64 = (code ^ (bs | nie));
+                nie = ((code & bs) >> 63u64);
+                let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
+                let mut px: u64 = quote;
+                px = (px ^ (px << 1u64));
+                px = (px ^ (px << 2u64));
+                px = (px ^ (px << 4u64));
+                px = (px ^ (px << 8u64));
+                px = (px ^ (px << 16u64));
+                px = (px ^ (px << 32u64));
+                let in_string: u64 = (px ^ pis);
+                pis = 0u64.wrapping_sub((in_string >> 63u64));
+                let scalar: u64 = ((op | ws) ^ 18446744073709551615u64);
+                let nqs: u64 = (scalar & (quote ^ 18446744073709551615u64));
+                let follows: u64 = ((nqs << 1u64) | psc);
+                psc = (nqs >> 63u64);
+                let mut bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
+                err = (err | (ctl & in_string));
+                while (bits != 0u64) {
+                    (out.add((n << 2usize)) as *mut u32).write_unaligned(((base + (bits.trailing_zeros() as usize)) as u32));
+                    n = (n + 1usize);
+                    bits = (bits & bits.wrapping_sub(1u64));
+                }
+                blk = blk.add(64usize);
+                base = (base + 64usize);
+            }
+            (state as *mut u64).write_unaligned(nie);
+            (state.add(8usize) as *mut u64).write_unaligned(pis);
+            (state.add(16usize) as *mut u64).write_unaligned(psc);
+            (state.add(24usize) as *mut u64).write_unaligned(err);
+            return n;
+        }
+    }
+
+    /// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
+    #[inline(always)]
+    pub unsafe fn nvol_json_index_raw(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize { unsafe { nvol_json_index_scalar(state, blocks, nblocks, idx, out) } }
 
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 4] = [
         nvol_teddy_slim_neon_1,

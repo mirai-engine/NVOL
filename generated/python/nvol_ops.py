@@ -354,3 +354,5 @@ class ByteSet:
         """First position >= start whose byte is not in the set, or None."""
         return self._run(_lib.nvol_find_not_byteset_raw, hay, start)
 
+JSON_STATE_BYTES = 32  # bytes of the nvol_json_index_raw state
+

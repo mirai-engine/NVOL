@@ -4602,6 +4602,82 @@ NVOL_API const uint8_t * nvol_find_byteset_pair_raw(const uint8_t *st, const uin
 /* Like nvol_find_byteset_pair_raw, but returns the base of the first chunk with candidates and stores all its candidates to *out: position base + i is a candidate when bit i (x86_64) or bit 4i+3 (aarch64) is set. NULL when there is none. */
 NVOL_API const uint8_t * nvol_find_byteset_pair_mask_raw(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out) { return nvol_find_byteset_pair_mask_entry_neon(st, start, end, out); }
 
+/* stage 1, scalar masks */
+NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+    uint64_t nie = nvol_load64(state);
+    uint64_t pis = nvol_load64((state + ((size_t)8u)));
+    uint64_t psc = nvol_load64((state + ((size_t)16u)));
+    uint64_t err = nvol_load64((state + ((size_t)24u)));
+    const uint8_t *blk = blocks;
+    size_t base = idx;
+    const uint8_t *const end = (blocks + (nblocks << ((size_t)6u)));
+    size_t n = ((size_t)0u);
+    while (blk < end) {
+        uint64_t bs = UINT64_C(0);
+        uint64_t qt = UINT64_C(0);
+        uint64_t ws = UINT64_C(0);
+        uint64_t op = UINT64_C(0);
+        uint64_t ctl = UINT64_C(0);
+        size_t i = ((size_t)0u);
+        while (i < ((size_t)64u)) {
+            const uint8_t c = (*((blk + i)));
+            const uint64_t bit = (UINT64_C(1) << ((uint64_t)(i)));
+            if (c == 92u) {
+                bs = (bs | bit);
+            }
+            if (c == 34u) {
+                qt = (qt | bit);
+            }
+            if (((c == 32u) || (c == 9u)) || ((c == 10u) || (c == 13u))) {
+                ws = (ws | bit);
+            }
+            const uint8_t c20 = (c | 32u);
+            if (((c20 == 58u) || (c20 == 123u)) || ((c20 == 44u) || (c20 == 125u))) {
+                op = (op | bit);
+            }
+            if (c <= 31u) {
+                ctl = (ctl | bit);
+            }
+            i = (i + ((size_t)1u));
+        }
+        const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
+        const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
+        const uint64_t escaped = (code ^ (bs | nie));
+        nie = ((code & bs) >> UINT64_C(63));
+        const uint64_t quote = (qt & (escaped ^ UINT64_C(18446744073709551615)));
+        uint64_t px = quote;
+        px = (px ^ (px << UINT64_C(1)));
+        px = (px ^ (px << UINT64_C(2)));
+        px = (px ^ (px << UINT64_C(4)));
+        px = (px ^ (px << UINT64_C(8)));
+        px = (px ^ (px << UINT64_C(16)));
+        px = (px ^ (px << UINT64_C(32)));
+        const uint64_t in_string = (px ^ pis);
+        pis = ((uint64_t)(UINT64_C(0) - (in_string >> UINT64_C(63))));
+        const uint64_t scalar = ((op | ws) ^ UINT64_C(18446744073709551615));
+        const uint64_t nqs = (scalar & (quote ^ UINT64_C(18446744073709551615)));
+        const uint64_t follows = ((nqs << UINT64_C(1)) | psc);
+        psc = (nqs >> UINT64_C(63));
+        uint64_t bits = ((op | (scalar & (follows ^ UINT64_C(18446744073709551615)))) & ((in_string ^ quote) ^ UINT64_C(18446744073709551615)));
+        err = (err | (ctl & in_string));
+        while (bits != UINT64_C(0)) {
+            nvol_store32((out + (n << ((size_t)2u))), ((uint32_t)((base + ((size_t)nvol_ctz64(bits))))));
+            n = (n + ((size_t)1u));
+            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+        }
+        blk = (blk + ((size_t)64u));
+        base = (base + ((size_t)64u));
+    }
+    nvol_store64(state, nie);
+    nvol_store64((state + ((size_t)8u)), pis);
+    nvol_store64((state + ((size_t)16u)), psc);
+    nvol_store64((state + ((size_t)24u)), err);
+    return n;
+}
+
+/* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
+NVOL_API size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_scalar(state, blocks, nblocks, idx, out); }
+
 #ifdef NVOL_TESTING
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */
 NVOL_API void nvol_test_set_avx2(int v) {

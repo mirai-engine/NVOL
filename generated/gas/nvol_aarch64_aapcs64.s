@@ -21246,6 +21246,172 @@ L.nvol_find_byteset_pair_mask_raw:
 .cfi_endproc
 .size nvol_find_byteset_pair_mask_raw, .-nvol_find_byteset_pair_mask_raw
 
+    nop
+    nop
+    nop
+.globl nvol_json_index_scalar
+.type nvol_json_index_scalar, %function
+.hidden nvol_json_index_scalar
+nvol_json_index_scalar:
+L.nvol_json_index_scalar:
+.cfi_startproc
+    str x19, [sp, #-16]!
+.cfi_def_cfa_offset 16
+.cfi_offset 19, -16
+    ldr x9, [x0]
+    ldr x10, [x0, #8]
+    ldr x11, [x0, #16]
+    ldr x12, [x0, #24]
+    mov x13, x1
+    lsl x14, x2, #6
+    add x14, x1, x14
+    movz w15, #0
+    cmp x13, x14
+    b.hs .Lnvol_json_index_scalar.L3
+    nop
+.Lnvol_json_index_scalar.L2:
+    movz w1, #0
+    movz w2, #0
+    movz w5, #0
+    movz w6, #0
+    movz w7, #0
+    movz w8, #0
+    cmp x8, #64
+    b.hs .Lnvol_json_index_scalar.L5
+.Lnvol_json_index_scalar.L4:
+    ldrb w16, [x13, x8]
+    orr w17, wzr, #1
+    lsl x17, x17, x8
+    cmp x16, #92
+    b.ne .Lnvol_json_index_scalar.L6
+    orr x1, x1, x17
+.Lnvol_json_index_scalar.L6:
+    cmp x16, #34
+    b.ne .Lnvol_json_index_scalar.L8
+    orr x2, x2, x17
+.Lnvol_json_index_scalar.L8:
+    cmp x16, #32
+    b.eq .Lnvol_json_index_scalar.L12
+    cmp x16, #9
+    b.eq .Lnvol_json_index_scalar.L12
+    cmp x16, #10
+    b.eq .Lnvol_json_index_scalar.L13
+    cmp x16, #13
+    b.ne .Lnvol_json_index_scalar.L10
+.Lnvol_json_index_scalar.L13:
+.Lnvol_json_index_scalar.L12:
+    orr x5, x5, x17
+.Lnvol_json_index_scalar.L10:
+    orr x19, x16, #32
+    cmp x19, #58
+    b.eq .Lnvol_json_index_scalar.L16
+    cmp x19, #123
+    b.eq .Lnvol_json_index_scalar.L16
+    cmp x19, #44
+    b.eq .Lnvol_json_index_scalar.L17
+    cmp x19, #125
+    b.ne .Lnvol_json_index_scalar.L14
+.Lnvol_json_index_scalar.L17:
+.Lnvol_json_index_scalar.L16:
+    orr x6, x6, x17
+.Lnvol_json_index_scalar.L14:
+    cmp x16, #31
+    b.hi .Lnvol_json_index_scalar.L18
+    orr x7, x7, x17
+.Lnvol_json_index_scalar.L18:
+    add x8, x8, #1
+    cmp x8, #64
+    b.lo .Lnvol_json_index_scalar.L4
+.Lnvol_json_index_scalar.L5:
+    movn x8, #0
+    eor x8, x9, x8
+    and x8, x1, x8
+    lsl x16, x8, #1
+    orr x16, x16, #12297829382473034410
+    sub x8, x16, x8
+    eor x8, x8, #12297829382473034410
+    orr x16, x1, x9
+    eor x16, x8, x16
+    and x1, x8, x1
+    lsr x9, x1, #63
+    movn x1, #0
+    eor x1, x16, x1
+    and x1, x2, x1
+    mov x2, x1
+    lsl x8, x2, #1
+    eor x2, x2, x8
+    lsl x8, x2, #2
+    eor x2, x2, x8
+    lsl x8, x2, #4
+    eor x2, x2, x8
+    lsl x8, x2, #8
+    eor x2, x2, x8
+    lsl x8, x2, #16
+    eor x2, x2, x8
+    lsl x8, x2, #32
+    eor x2, x2, x8
+    eor x2, x2, x10
+    movz w8, #0
+    lsr x16, x2, #63
+    sub x10, x8, x16
+    orr x5, x6, x5
+    movn x8, #0
+    eor x5, x5, x8
+    movn x8, #0
+    eor x8, x1, x8
+    and x8, x5, x8
+    lsl x16, x8, #1
+    orr x16, x16, x11
+    lsr x11, x8, #63
+    movn x8, #0
+    eor x8, x16, x8
+    and x5, x5, x8
+    orr x5, x6, x5
+    eor x1, x2, x1
+    movn x6, #0
+    eor x1, x1, x6
+    and x1, x5, x1
+    and x2, x7, x2
+    orr x12, x12, x2
+    cbz x1, .Lnvol_json_index_scalar.L21
+    nop
+.Lnvol_json_index_scalar.L20:
+    lsl x2, x15, #2
+    rbit x5, x1
+    clz x5, x5
+    add x5, x3, x5
+    str w5, [x4, x2]
+    add x15, x15, #1
+    sub x2, x1, #1
+    and x1, x1, x2
+    cbnz x1, .Lnvol_json_index_scalar.L20
+.Lnvol_json_index_scalar.L21:
+    add x13, x13, #64
+    add x3, x3, #64
+    cmp x13, x14
+    b.lo .Lnvol_json_index_scalar.L2
+.Lnvol_json_index_scalar.L3:
+    str x9, [x0]
+    str x10, [x0, #8]
+    str x11, [x0, #16]
+    str x12, [x0, #24]
+    mov x0, x15
+    ldr x19, [sp], #16
+    ret
+.cfi_endproc
+.size nvol_json_index_scalar, .-nvol_json_index_scalar
+
+    nop
+    nop
+.globl nvol_json_index_raw
+.type nvol_json_index_raw, %function
+nvol_json_index_raw:
+L.nvol_json_index_raw:
+.cfi_startproc
+    b L.nvol_json_index_scalar
+.cfi_endproc
+.size nvol_json_index_raw, .-nvol_json_index_raw
+
 .p2align 3
 nvol_fntbl_teddy:
     .word L.nvol_teddy_slim_neon_1 - nvol_fntbl_teddy

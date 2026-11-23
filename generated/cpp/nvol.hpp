@@ -8304,6 +8304,82 @@ inline const uint8_t * nvol_find_byteset_pair_mask_raw_resolve(const uint8_t *st
 /* Like nvol_find_byteset_pair_raw, but returns the base of the first chunk with candidates and stores all its candidates to *out: position base + i is a candidate when bit i (x86_64) or bit 4i+3 (aarch64) is set. NULL when there is none. */
 inline const uint8_t * nvol_find_byteset_pair_mask_raw(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out) { return nvol_find_byteset_pair_mask_raw_ptr(st, start, end, out); }
 
+/* stage 1, scalar masks */
+NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+    uint64_t nie = nvol_load64(state);
+    uint64_t pis = nvol_load64((state + ((size_t)8u)));
+    uint64_t psc = nvol_load64((state + ((size_t)16u)));
+    uint64_t err = nvol_load64((state + ((size_t)24u)));
+    const uint8_t *blk = blocks;
+    size_t base = idx;
+    const uint8_t *const end = (blocks + (nblocks << ((size_t)6u)));
+    size_t n = ((size_t)0u);
+    while (blk < end) {
+        uint64_t bs = UINT64_C(0);
+        uint64_t qt = UINT64_C(0);
+        uint64_t ws = UINT64_C(0);
+        uint64_t op = UINT64_C(0);
+        uint64_t ctl = UINT64_C(0);
+        size_t i = ((size_t)0u);
+        while (i < ((size_t)64u)) {
+            const uint8_t c = (*((blk + i)));
+            const uint64_t bit = (UINT64_C(1) << ((uint64_t)(i)));
+            if (c == 92u) {
+                bs = (bs | bit);
+            }
+            if (c == 34u) {
+                qt = (qt | bit);
+            }
+            if (((c == 32u) || (c == 9u)) || ((c == 10u) || (c == 13u))) {
+                ws = (ws | bit);
+            }
+            const uint8_t c20 = (c | 32u);
+            if (((c20 == 58u) || (c20 == 123u)) || ((c20 == 44u) || (c20 == 125u))) {
+                op = (op | bit);
+            }
+            if (c <= 31u) {
+                ctl = (ctl | bit);
+            }
+            i = (i + ((size_t)1u));
+        }
+        const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
+        const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
+        const uint64_t escaped = (code ^ (bs | nie));
+        nie = ((code & bs) >> UINT64_C(63));
+        const uint64_t quote = (qt & (escaped ^ UINT64_C(18446744073709551615)));
+        uint64_t px = quote;
+        px = (px ^ (px << UINT64_C(1)));
+        px = (px ^ (px << UINT64_C(2)));
+        px = (px ^ (px << UINT64_C(4)));
+        px = (px ^ (px << UINT64_C(8)));
+        px = (px ^ (px << UINT64_C(16)));
+        px = (px ^ (px << UINT64_C(32)));
+        const uint64_t in_string = (px ^ pis);
+        pis = ((uint64_t)(UINT64_C(0) - (in_string >> UINT64_C(63))));
+        const uint64_t scalar = ((op | ws) ^ UINT64_C(18446744073709551615));
+        const uint64_t nqs = (scalar & (quote ^ UINT64_C(18446744073709551615)));
+        const uint64_t follows = ((nqs << UINT64_C(1)) | psc);
+        psc = (nqs >> UINT64_C(63));
+        uint64_t bits = ((op | (scalar & (follows ^ UINT64_C(18446744073709551615)))) & ((in_string ^ quote) ^ UINT64_C(18446744073709551615)));
+        err = (err | (ctl & in_string));
+        while (bits != UINT64_C(0)) {
+            nvol_store32((out + (n << ((size_t)2u))), ((uint32_t)((base + ((size_t)nvol_ctz64(bits))))));
+            n = (n + ((size_t)1u));
+            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+        }
+        blk = (blk + ((size_t)64u));
+        base = (base + ((size_t)64u));
+    }
+    nvol_store64(state, nie);
+    nvol_store64((state + ((size_t)8u)), pis);
+    nvol_store64((state + ((size_t)16u)), psc);
+    nvol_store64((state + ((size_t)24u)), err);
+    return n;
+}
+
+/* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
+inline size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_scalar(state, blocks, nblocks, idx, out); }
+
 #elif defined(__aarch64__) || defined(_M_ARM64)
 inline constexpr uint8_t nvol_tbl_rank[256] = {
     55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43,
@@ -12708,6 +12784,82 @@ inline const uint8_t * nvol_find_byteset_pair_raw(const uint8_t *st, const uint8
 /* Like nvol_find_byteset_pair_raw, but returns the base of the first chunk with candidates and stores all its candidates to *out: position base + i is a candidate when bit i (x86_64) or bit 4i+3 (aarch64) is set. NULL when there is none. */
 inline const uint8_t * nvol_find_byteset_pair_mask_raw(const uint8_t *st, const uint8_t *start, const uint8_t *end, uint8_t *out) { return nvol_find_byteset_pair_mask_entry_neon(st, start, end, out); }
 
+/* stage 1, scalar masks */
+NVOL_INLINE size_t nvol_json_index_scalar(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+    uint64_t nie = nvol_load64(state);
+    uint64_t pis = nvol_load64((state + ((size_t)8u)));
+    uint64_t psc = nvol_load64((state + ((size_t)16u)));
+    uint64_t err = nvol_load64((state + ((size_t)24u)));
+    const uint8_t *blk = blocks;
+    size_t base = idx;
+    const uint8_t *const end = (blocks + (nblocks << ((size_t)6u)));
+    size_t n = ((size_t)0u);
+    while (blk < end) {
+        uint64_t bs = UINT64_C(0);
+        uint64_t qt = UINT64_C(0);
+        uint64_t ws = UINT64_C(0);
+        uint64_t op = UINT64_C(0);
+        uint64_t ctl = UINT64_C(0);
+        size_t i = ((size_t)0u);
+        while (i < ((size_t)64u)) {
+            const uint8_t c = (*((blk + i)));
+            const uint64_t bit = (UINT64_C(1) << ((uint64_t)(i)));
+            if (c == 92u) {
+                bs = (bs | bit);
+            }
+            if (c == 34u) {
+                qt = (qt | bit);
+            }
+            if (((c == 32u) || (c == 9u)) || ((c == 10u) || (c == 13u))) {
+                ws = (ws | bit);
+            }
+            const uint8_t c20 = (c | 32u);
+            if (((c20 == 58u) || (c20 == 123u)) || ((c20 == 44u) || (c20 == 125u))) {
+                op = (op | bit);
+            }
+            if (c <= 31u) {
+                ctl = (ctl | bit);
+            }
+            i = (i + ((size_t)1u));
+        }
+        const uint64_t pe = (bs & (nie ^ UINT64_C(18446744073709551615)));
+        const uint64_t code = (((uint64_t)(((pe << UINT64_C(1)) | UINT64_C(12297829382473034410)) - pe)) ^ UINT64_C(12297829382473034410));
+        const uint64_t escaped = (code ^ (bs | nie));
+        nie = ((code & bs) >> UINT64_C(63));
+        const uint64_t quote = (qt & (escaped ^ UINT64_C(18446744073709551615)));
+        uint64_t px = quote;
+        px = (px ^ (px << UINT64_C(1)));
+        px = (px ^ (px << UINT64_C(2)));
+        px = (px ^ (px << UINT64_C(4)));
+        px = (px ^ (px << UINT64_C(8)));
+        px = (px ^ (px << UINT64_C(16)));
+        px = (px ^ (px << UINT64_C(32)));
+        const uint64_t in_string = (px ^ pis);
+        pis = ((uint64_t)(UINT64_C(0) - (in_string >> UINT64_C(63))));
+        const uint64_t scalar = ((op | ws) ^ UINT64_C(18446744073709551615));
+        const uint64_t nqs = (scalar & (quote ^ UINT64_C(18446744073709551615)));
+        const uint64_t follows = ((nqs << UINT64_C(1)) | psc);
+        psc = (nqs >> UINT64_C(63));
+        uint64_t bits = ((op | (scalar & (follows ^ UINT64_C(18446744073709551615)))) & ((in_string ^ quote) ^ UINT64_C(18446744073709551615)));
+        err = (err | (ctl & in_string));
+        while (bits != UINT64_C(0)) {
+            nvol_store32((out + (n << ((size_t)2u))), ((uint32_t)((base + ((size_t)nvol_ctz64(bits))))));
+            n = (n + ((size_t)1u));
+            bits = (bits & ((uint64_t)(bits - UINT64_C(1))));
+        }
+        blk = (blk + ((size_t)64u));
+        base = (base + ((size_t)64u));
+    }
+    nvol_store64(state, nie);
+    nvol_store64((state + ((size_t)8u)), pis);
+    nvol_store64((state + ((size_t)16u)), psc);
+    nvol_store64((state + ((size_t)24u)), err);
+    return n;
+}
+
+/* simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string. */
+inline size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) { return nvol_json_index_scalar(state, blocks, nblocks, idx, out); }
+
 #else
 #  error "NVOL: unsupported architecture (x86_64 and aarch64 are generated)"
 #endif
@@ -12767,6 +12919,7 @@ inline size_t nvol_memchr_iter_count(nvol_memchr_iter *it) {
 #define NVOL_BYTESET_SET16 96   /* 16 bytes in the class: the members in increasing order, then zeros; the only bytes nvol_find_not_byteset_sse42 reads */
 #define NVOL_BYTESET_PAIR_SEL 240   /* u64 in the pair state: 0 empty, 1..CHAIN_MAX k-compare kernel _k<sel>, CHAIN_MAX + 1 nibble lookup */
 #define NVOL_BYTESET_PAIR_REACH 248   /* u64 in the pair state: max(i1, i2) */
+#define NVOL_JSON_STATE_BYTES 32   /* bytes of the nvol_json_index_raw state */
 #define NVOL_MEMMEM_STATE_WORDS 8
 /* Substring finder (memchr::memmem::Finder). state words: 0=pair_index1, 1=pair_index2, 2=rk_hash, 3=rk_pow2, 4=tw_byteset, 5=tw_critical_pos, 6=tw_small_period, 7=tw_period_or_shift */
 typedef struct nvol_memmem_finder { const uint8_t *needle; size_t nlen; uint64_t state[NVOL_MEMMEM_STATE_WORDS]; } nvol_memmem_finder;

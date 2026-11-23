@@ -128,4 +128,7 @@ def generate(module) -> dict:
             out.append("    return None if r == _NONE else r")
         out.append("\n")
     out += iters.python(module) + finder.python(module) + packed.python(module) + _byteset(module)
+    if any(f.name == "nvol_json_index_raw" for f in module.functions):
+        from ..kernels.json import CONSTANTS as JSON_CONSTANTS
+        out += [f"JSON_{n} = {v}  # {doc}" for n, v, doc in JSON_CONSTANTS]
     return {"nvol_ops.py": TEMPLATE.format(functions="\n".join(out).rstrip() + "\n")}

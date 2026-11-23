@@ -143,6 +143,7 @@ nvol_find_byteset_pair_mask_raw_ptr:
     .ascii " -export:nvol_find_not_byteset_raw"
     .ascii " -export:nvol_find_byteset_pair_raw"
     .ascii " -export:nvol_find_byteset_pair_mask_raw"
+    .ascii " -export:nvol_json_index_raw"
 .text
 .p2align 6
 
@@ -56162,6 +56163,243 @@ nvol_find_byteset_pair_mask_raw_resolve:
     pop %rcx
     jmp *nvol_find_byteset_pair_mask_raw_ptr(%rip)
 .seh_endproc
+
+    .byte 15, 31, 64, 0
+.globl nvol_json_index_scalar
+.def nvol_json_index_scalar; .scl 2; .type 32; .endef
+nvol_json_index_scalar:
+.seh_proc nvol_json_index_scalar
+    push %rbx
+.seh_pushreg %rbx
+    push %rbp
+.seh_pushreg %rbp
+    push %rdi
+.seh_pushreg %rdi
+    push %rsi
+.seh_pushreg %rsi
+    push %r12
+.seh_pushreg %r12
+    push %r13
+.seh_pushreg %r13
+    push %r14
+.seh_pushreg %r14
+    push %r15
+.seh_pushreg %r15
+    sub $200, %rsp
+.seh_stackalloc 200
+.seh_endprologue
+    mov %rcx, (%rsp)
+    mov %rcx, %rax
+    mov 304(%rsp), %rsi
+    mov (%rax), %r11
+    mov %r11, 32(%rsp)
+    mov 8(%rax), %r11
+    mov %r11, 64(%rsp)
+    mov 16(%rax), %r11
+    mov %r11, 96(%rsp)
+    mov 24(%rax), %r11
+    mov %r11, 128(%rsp)
+    mov %rdx, %r13
+    shl $6, %r8
+    lea (%rdx,%r8), %r11
+    mov %r11, 160(%rsp)
+    xor %r8d, %r8d
+    cmp %r11, %r13
+    {disp32} jae .Lnvol_json_index_scalar.L3
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+.Lnvol_json_index_scalar.L2:
+    xor %r14d, %r14d
+    xor %r15d, %r15d
+    xor %eax, %eax
+    xor %edx, %edx
+    xor %r12d, %r12d
+    xor %ebp, %ebp
+    cmp $64, %rbp
+    {disp8} jae .Lnvol_json_index_scalar.L5
+    .byte 15, 31, 0
+.Lnvol_json_index_scalar.L4:
+    movzbl (%r13,%rbp), %ebx
+    mov $1, %edi
+    mov %rbp, %rcx
+    shl %cl, %rdi
+    cmp $92, %ebx
+    {disp8} jne .Lnvol_json_index_scalar.L6
+    or %rdi, %r14
+.Lnvol_json_index_scalar.L6:
+    cmp $34, %ebx
+    {disp8} jne .Lnvol_json_index_scalar.L8
+    or %rdi, %r15
+.Lnvol_json_index_scalar.L8:
+    cmp $32, %ebx
+    {disp8} je .Lnvol_json_index_scalar.L12
+    cmp $9, %ebx
+    {disp8} je .Lnvol_json_index_scalar.L12
+    cmp $10, %ebx
+    {disp8} je .Lnvol_json_index_scalar.L13
+    cmp $13, %ebx
+    {disp8} jne .Lnvol_json_index_scalar.L10
+.Lnvol_json_index_scalar.L13:
+.Lnvol_json_index_scalar.L12:
+    or %rdi, %rax
+.Lnvol_json_index_scalar.L10:
+    mov %rbx, %rcx
+    or $32, %rcx
+    cmp $58, %ecx
+    {disp8} je .Lnvol_json_index_scalar.L16
+    cmp $123, %ecx
+    {disp8} je .Lnvol_json_index_scalar.L16
+    cmp $44, %ecx
+    {disp8} je .Lnvol_json_index_scalar.L17
+    cmp $125, %ecx
+    {disp8} jne .Lnvol_json_index_scalar.L14
+.Lnvol_json_index_scalar.L17:
+.Lnvol_json_index_scalar.L16:
+    or %rdi, %rdx
+.Lnvol_json_index_scalar.L14:
+    cmp $31, %ebx
+    {disp8} ja .Lnvol_json_index_scalar.L18
+    or %rdi, %r12
+.Lnvol_json_index_scalar.L18:
+    add $1, %rbp
+    cmp $64, %rbp
+    {disp8} jb .Lnvol_json_index_scalar.L4
+.Lnvol_json_index_scalar.L5:
+    mov %r14, %rcx
+    mov 32(%rsp), %rdi
+    not %rdi
+    and %rdi, %rcx
+    mov %rcx, %rdi
+    shl $1, %rdi
+    movabsq $12297829382473034410, %rbx
+    or %rbx, %rdi
+    sub %rcx, %rdi
+    movabsq $12297829382473034410, %rcx
+    xor %rcx, %rdi
+    mov %rdi, %rcx
+    mov %r14, %rbx
+    mov 32(%rsp), %r11
+    or %r11, %rbx
+    xor %rbx, %rcx
+    mov %rdi, %r11
+    and %r14, %r11
+    shr $63, %r11
+    mov %r11, 32(%rsp)
+    not %rcx
+    and %rcx, %r15
+    mov %r15, %rcx
+    mov %rcx, %rdi
+    mov %rcx, %rbx
+    shl $1, %rbx
+    xor %rbx, %rdi
+    mov %rdi, %rcx
+    mov %rcx, %rbx
+    shl $2, %rbx
+    xor %rbx, %rdi
+    mov %rdi, %rcx
+    mov %rcx, %rbx
+    shl $4, %rbx
+    xor %rbx, %rdi
+    mov %rdi, %rcx
+    mov %rcx, %rbx
+    shl $8, %rbx
+    xor %rbx, %rdi
+    mov %rdi, %rcx
+    mov %rcx, %rbx
+    shl $16, %rbx
+    xor %rbx, %rdi
+    mov %rdi, %rcx
+    mov %rcx, %rbx
+    shl $32, %rbx
+    xor %rbx, %rdi
+    mov %rdi, %rcx
+    mov 64(%rsp), %r11
+    xor %r11, %rcx
+    xor %r11d, %r11d
+    mov %rcx, %rdi
+    shr $63, %rdi
+    sub %rdi, %r11
+    mov %r11, 64(%rsp)
+    mov %rdx, %rdi
+    or %rax, %rdi
+    not %rdi
+    mov %rdi, %rax
+    mov %r15, %rbx
+    not %rbx
+    and %rbx, %rax
+    mov %rax, %rbx
+    shl $1, %rbx
+    mov 96(%rsp), %r11
+    or %r11, %rbx
+    mov %rax, %r11
+    shr $63, %r11
+    mov %r11, 96(%rsp)
+    not %rbx
+    and %rbx, %rdi
+    or %rdi, %rdx
+    mov %rcx, %rax
+    xor %r15, %rax
+    not %rax
+    and %rax, %rdx
+    mov 128(%rsp), %r11
+    and %rcx, %r12
+    or %r12, %r11
+    mov %r11, 128(%rsp)
+    test %rdx, %rdx
+    {disp8} je .Lnvol_json_index_scalar.L21
+    .byte 15, 31, 68, 0, 0
+.Lnvol_json_index_scalar.L20:
+    mov %r8, %rax
+    shl $2, %rax
+    bsf %rdx, %rcx
+    lea (%r9,%rcx), %rcx
+    mov %ecx, (%rsi,%rax)
+    lea 1(%r8), %r8
+    mov %rdx, %rax
+    mov %rdx, %rcx
+    sub $1, %rcx
+    and %rcx, %rax
+    mov %rax, %rdx
+    test %rdx, %rdx
+    {disp8} jne .Lnvol_json_index_scalar.L20
+.Lnvol_json_index_scalar.L21:
+    lea 64(%r13), %r13
+    lea 64(%r9), %r9
+    mov 160(%rsp), %r11
+    cmp %r11, %r13
+    {disp32} jb .Lnvol_json_index_scalar.L2
+.Lnvol_json_index_scalar.L3:
+    mov (%rsp), %r11
+    mov 32(%rsp), %r10
+    mov %r10, (%r11)
+    mov (%rsp), %r11
+    mov 64(%rsp), %r10
+    mov %r10, 8(%r11)
+    mov (%rsp), %r11
+    mov 96(%rsp), %r10
+    mov %r10, 16(%r11)
+    mov (%rsp), %r11
+    mov 128(%rsp), %r10
+    mov %r10, 24(%r11)
+    mov %r8, %rax
+    add $200, %rsp
+    pop %r15
+    pop %r14
+    pop %r13
+    pop %r12
+    pop %rsi
+    pop %rdi
+    pop %rbp
+    pop %rbx
+    ret
+.seh_endproc
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
+.globl nvol_json_index_raw
+.def nvol_json_index_raw; .scl 2; .type 32; .endef
+nvol_json_index_raw:
+    {disp32} jmp nvol_json_index_scalar
 
 .p2align 3
 nvol_fntbl_teddy:

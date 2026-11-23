@@ -1,4 +1,4 @@
-"""Every backend exports the same byte-set constants, with the generator's values
+"""Every backend exports the same byte-set and JSON constants, with the generator's values
 (the e2e patches size their states and pick kernels with them)."""
 import re
 
@@ -7,6 +7,7 @@ import pytest
 from nvol.__main__ import generate
 from nvol.kernels import build_modules
 from nvol.kernels.byteset import CONSTANTS
+from nvol.kernels.json import CONSTANTS as JSON_CONSTANTS
 
 PATTERNS = {
     "c/nvol.h": r"#define NVOL_BYTESET_{n} (\d+)\b",
@@ -29,4 +30,13 @@ def test_byteset_constants(files, rel):
     text = files[rel]
     for name, value, _doc in CONSTANTS:
         found = {int(v) for v in re.findall(PATTERNS[rel].format(n=name), text, re.M)}
+        assert found == {value}, (rel, name, value, found)
+
+
+@pytest.mark.parametrize("rel", sorted(PATTERNS))
+def test_json_constants(files, rel):
+    text = files[rel]
+    for name, value, _doc in JSON_CONSTANTS:
+        pat = PATTERNS[rel].replace("BYTESET_", "JSON_").format(n=name)
+        found = {int(v) for v in re.findall(pat, text, re.M)}
         assert found == {value}, (rel, name, value, found)

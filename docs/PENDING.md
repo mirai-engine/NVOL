@@ -661,7 +661,8 @@ Two consequences for the design:
     the SSE functions only run on CPUs without AVX2. The Rust and Odin lowerings are compiled
     (rustc, odin check, x86_64 and aarch64) but not run until a kernel uses them (2.3).
 35. **`feat/json-stage1`: the 64-byte block kernels**, which cover most of simdjson's SIMD
-    work. They go out as one kernel that runs the whole stage 1 loop, with the scanners as
+    work. *(In progress: `nvol_json_index_raw` runs the whole loop with masks built byte by
+    byte; the SSSE3, AVX2 and NEON masks and the unrolled indexer are next.)* They go out as one kernel that runs the whole stage 1 loop, with the scanners as
     inlined IR helpers; one public function per scanner and block was set aside because of
     its call per 64 bytes ([the stage 1 API](SIMDJSON_SIMD_INVENTORY.md#the-stage-1-api)):
     - `classify`: the masks of whitespace and of `{}[]:,`, one `pshufb` + `cmpeq` per class,

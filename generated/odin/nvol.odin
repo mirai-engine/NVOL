@@ -8354,6 +8354,83 @@ when ODIN_ARCH == .amd64 {
 	}
 	nvol_find_byteset_pair_mask_raw :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 { return nvol_find_byteset_pair_mask_raw_ptr(st, start, end, out) }
 
+	// stage 1, scalar masks
+	@(private)
+	nvol_json_index_scalar :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
+		nie: u64 = intrinsics.unaligned_load((^u64)(state))
+		pis: u64 = intrinsics.unaligned_load((^u64)(state[uint(8):]))
+		psc: u64 = intrinsics.unaligned_load((^u64)(state[uint(16):]))
+		err: u64 = intrinsics.unaligned_load((^u64)(state[uint(24):]))
+		blk: [^]u8 = blocks
+		base: uint = idx
+		end: [^]u8 = blocks[(nblocks << uint(6)):]
+		n: uint = uint(0)
+		for (blk < end) {
+			bs: u64 = u64(0)
+			qt: u64 = u64(0)
+			ws: u64 = u64(0)
+			op: u64 = u64(0)
+			ctl: u64 = u64(0)
+			i: uint = uint(0)
+			for (i < uint(64)) {
+				c: u8 = blk[i:][0]
+				bit: u64 = (u64(1) << u64(i))
+				if (c == u8(92)) {
+					bs = (bs | bit)
+				}
+				if (c == u8(34)) {
+					qt = (qt | bit)
+				}
+				if (((c == u8(32)) || (c == u8(9))) || ((c == u8(10)) || (c == u8(13)))) {
+					ws = (ws | bit)
+				}
+				c20: u8 = (c | u8(32))
+				if (((c20 == u8(58)) || (c20 == u8(123))) || ((c20 == u8(44)) || (c20 == u8(125)))) {
+					op = (op | bit)
+				}
+				if (c <= u8(31)) {
+					ctl = (ctl | bit)
+				}
+				i = (i + uint(1))
+			}
+			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+			escaped: u64 = (code ~ (bs | nie))
+			nie = ((code & bs) >> u64(63))
+			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
+			px: u64 = quote
+			px = (px ~ (px << u64(1)))
+			px = (px ~ (px << u64(2)))
+			px = (px ~ (px << u64(4)))
+			px = (px ~ (px << u64(8)))
+			px = (px ~ (px << u64(16)))
+			px = (px ~ (px << u64(32)))
+			in_string: u64 = (px ~ pis)
+			pis = (u64(0) - (in_string >> u64(63)))
+			scalar: u64 = ((op | ws) ~ u64(18446744073709551615))
+			nqs: u64 = (scalar & (quote ~ u64(18446744073709551615)))
+			follows: u64 = ((nqs << u64(1)) | psc)
+			psc = (nqs >> u64(63))
+			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
+			err = (err | (ctl & in_string))
+			for (bits != u64(0)) {
+				intrinsics.unaligned_store((^u32)(out[(n << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				n = (n + uint(1))
+				bits = (bits & (bits - u64(1)))
+			}
+			blk = blk[uint(64):]
+			base = (base + uint(64))
+		}
+		intrinsics.unaligned_store((^u64)(state), nie)
+		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
+		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
+		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		return n
+	}
+
+	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
+	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_scalar(state, blocks, nblocks, idx, out) }
+
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {
 		nvol_test_avx2_override = v
@@ -12861,6 +12938,83 @@ when ODIN_ARCH == .amd64 {
 	// Like nvol_find_byteset_pair_raw, but returns the base of the first chunk with candidates and stores all its candidates to *out: position base + i is a candidate when bit i (x86_64) or bit 4i+3 (aarch64) is set. NULL when there is none.
 	nvol_find_byteset_pair_mask_raw :: #force_inline proc "contextless" (st: [^]u8, start: [^]u8, end: [^]u8, out: [^]u8) -> [^]u8 { return nvol_find_byteset_pair_mask_entry_neon(st, start, end, out) }
 
+	// stage 1, scalar masks
+	@(private)
+	nvol_json_index_scalar :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
+		nie: u64 = intrinsics.unaligned_load((^u64)(state))
+		pis: u64 = intrinsics.unaligned_load((^u64)(state[uint(8):]))
+		psc: u64 = intrinsics.unaligned_load((^u64)(state[uint(16):]))
+		err: u64 = intrinsics.unaligned_load((^u64)(state[uint(24):]))
+		blk: [^]u8 = blocks
+		base: uint = idx
+		end: [^]u8 = blocks[(nblocks << uint(6)):]
+		n: uint = uint(0)
+		for (blk < end) {
+			bs: u64 = u64(0)
+			qt: u64 = u64(0)
+			ws: u64 = u64(0)
+			op: u64 = u64(0)
+			ctl: u64 = u64(0)
+			i: uint = uint(0)
+			for (i < uint(64)) {
+				c: u8 = blk[i:][0]
+				bit: u64 = (u64(1) << u64(i))
+				if (c == u8(92)) {
+					bs = (bs | bit)
+				}
+				if (c == u8(34)) {
+					qt = (qt | bit)
+				}
+				if (((c == u8(32)) || (c == u8(9))) || ((c == u8(10)) || (c == u8(13)))) {
+					ws = (ws | bit)
+				}
+				c20: u8 = (c | u8(32))
+				if (((c20 == u8(58)) || (c20 == u8(123))) || ((c20 == u8(44)) || (c20 == u8(125)))) {
+					op = (op | bit)
+				}
+				if (c <= u8(31)) {
+					ctl = (ctl | bit)
+				}
+				i = (i + uint(1))
+			}
+			pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+			code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+			escaped: u64 = (code ~ (bs | nie))
+			nie = ((code & bs) >> u64(63))
+			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
+			px: u64 = quote
+			px = (px ~ (px << u64(1)))
+			px = (px ~ (px << u64(2)))
+			px = (px ~ (px << u64(4)))
+			px = (px ~ (px << u64(8)))
+			px = (px ~ (px << u64(16)))
+			px = (px ~ (px << u64(32)))
+			in_string: u64 = (px ~ pis)
+			pis = (u64(0) - (in_string >> u64(63)))
+			scalar: u64 = ((op | ws) ~ u64(18446744073709551615))
+			nqs: u64 = (scalar & (quote ~ u64(18446744073709551615)))
+			follows: u64 = ((nqs << u64(1)) | psc)
+			psc = (nqs >> u64(63))
+			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
+			err = (err | (ctl & in_string))
+			for (bits != u64(0)) {
+				intrinsics.unaligned_store((^u32)(out[(n << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(bits)))))
+				n = (n + uint(1))
+				bits = (bits & (bits - u64(1)))
+			}
+			blk = blk[uint(64):]
+			base = (base + uint(64))
+		}
+		intrinsics.unaligned_store((^u64)(state), nie)
+		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
+		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
+		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		return n
+	}
+
+	// simdjson stage 1 over nblocks 64-byte blocks: writes the structural positions (idx + offset, as u32) to out and returns how many; state (NVOL_JSON_STATE_BYTES, zero at the start of a document) carries the escape, string and scalar state between calls, and word 3 is non-zero once a control byte was found inside a string.
+	nvol_json_index_raw :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint { return nvol_json_index_scalar(state, blocks, nblocks, idx, out) }
+
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {
 		_ = v
@@ -12975,6 +13129,8 @@ BYTESET_SET16_OK :: 85   // u8 in the class: 1 when the member list is usable by
 BYTESET_SET16 :: 96   // 16 bytes in the class: the members in increasing order, then zeros; the only bytes nvol_find_not_byteset_sse42 reads
 BYTESET_PAIR_SEL :: 240   // u64 in the pair state: 0 empty, 1..CHAIN_MAX k-compare kernel _k<sel>, CHAIN_MAX + 1 nibble lookup
 BYTESET_PAIR_REACH :: 248   // u64 in the pair state: max(i1, i2)
+
+JSON_STATE_BYTES :: 32   // bytes of the nvol_json_index_raw state
 
 MEMMEM_STATE_WORDS :: 8
 // Substring finder (memchr::memmem::Finder). Borrows the needle.

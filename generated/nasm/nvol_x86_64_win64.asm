@@ -138,6 +138,7 @@ section .drectve info
     db "-export:nvol_find_not_byteset_raw "
     db "-export:nvol_find_byteset_pair_raw "
     db "-export:nvol_find_byteset_pair_mask_raw "
+    db "-export:nvol_json_index_raw "
 section .text align=64
 
 global nvol_memchr_scalar
@@ -54628,6 +54629,230 @@ nvol_find_byteset_pair_mask_raw_resolve:
     jmp qword [rel nvol_find_byteset_pair_mask_raw_ptr]
 .unwind_end:
 
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_json_index_scalar
+nvol_json_index_scalar:
+    push rbx
+    push rbp
+    push rdi
+    push rsi
+    push r12
+    push r13
+    push r14
+    push r15
+    sub rsp, 200
+    mov qword [rsp], rcx
+    mov rax, rcx
+    mov rsi, qword [rsp + 304]
+    mov r11, qword [rax]
+    mov [rsp + 32], r11
+    mov r11, qword [rax + 8]
+    mov [rsp + 64], r11
+    mov r11, qword [rax + 16]
+    mov [rsp + 96], r11
+    mov r11, qword [rax + 24]
+    mov [rsp + 128], r11
+    mov r13, rdx
+    shl r8, 6
+    lea r11, [rdx + r8]
+    mov [rsp + 160], r11
+    xor r8d, r8d
+    cmp r13, r11
+    jae strict near .L3
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+.L2:
+    xor r14d, r14d
+    xor r15d, r15d
+    xor eax, eax
+    xor edx, edx
+    xor r12d, r12d
+    xor ebp, ebp
+    cmp rbp, 64
+    jae strict short .L5
+    db 0xf, 0x1f, 0x0
+.L4:
+    movzx ebx, byte [r13 + rbp]
+    mov edi, 1
+    mov rcx, rbp
+    shl rdi, cl
+    cmp ebx, 92
+    jne strict short .L6
+    or r14, rdi
+.L6:
+    cmp ebx, 34
+    jne strict short .L8
+    or r15, rdi
+.L8:
+    cmp ebx, 32
+    je strict short .L12
+    cmp ebx, 9
+    je strict short .L12
+    cmp ebx, 10
+    je strict short .L13
+    cmp ebx, 13
+    jne strict short .L10
+.L13:
+.L12:
+    or rax, rdi
+.L10:
+    mov rcx, rbx
+    or rcx, 32
+    cmp ecx, 58
+    je strict short .L16
+    cmp ecx, 123
+    je strict short .L16
+    cmp ecx, 44
+    je strict short .L17
+    cmp ecx, 125
+    jne strict short .L14
+.L17:
+.L16:
+    or rdx, rdi
+.L14:
+    cmp ebx, 31
+    ja strict short .L18
+    or r12, rdi
+.L18:
+    add rbp, 1
+    cmp rbp, 64
+    jb strict short .L4
+.L5:
+    mov rcx, r14
+    mov rdi, qword [rsp + 32]
+    not rdi
+    and rcx, rdi
+    mov rdi, rcx
+    shl rdi, 1
+    mov rbx, 12297829382473034410
+    or rdi, rbx
+    sub rdi, rcx
+    mov rcx, 12297829382473034410
+    xor rdi, rcx
+    mov rcx, rdi
+    mov rbx, r14
+    mov r11, [rsp + 32]
+    or rbx, r11
+    xor rcx, rbx
+    mov r11, rdi
+    and r11, r14
+    shr r11, 63
+    mov [rsp + 32], r11
+    not rcx
+    and r15, rcx
+    mov rcx, r15
+    mov rdi, rcx
+    mov rbx, rcx
+    shl rbx, 1
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 2
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 4
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 8
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 16
+    xor rdi, rbx
+    mov rcx, rdi
+    mov rbx, rcx
+    shl rbx, 32
+    xor rdi, rbx
+    mov rcx, rdi
+    mov r11, [rsp + 64]
+    xor rcx, r11
+    xor r11d, r11d
+    mov rdi, rcx
+    shr rdi, 63
+    sub r11, rdi
+    mov [rsp + 64], r11
+    mov rdi, rdx
+    or rdi, rax
+    not rdi
+    mov rax, rdi
+    mov rbx, r15
+    not rbx
+    and rax, rbx
+    mov rbx, rax
+    shl rbx, 1
+    mov r11, [rsp + 96]
+    or rbx, r11
+    mov r11, rax
+    shr r11, 63
+    mov [rsp + 96], r11
+    not rbx
+    and rdi, rbx
+    or rdx, rdi
+    mov rax, rcx
+    xor rax, r15
+    not rax
+    and rdx, rax
+    mov r11, qword [rsp + 128]
+    and r12, rcx
+    or r11, r12
+    mov [rsp + 128], r11
+    test rdx, rdx
+    je strict short .L21
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+.L20:
+    mov rax, r8
+    shl rax, 2
+    bsf rcx, rdx
+    lea rcx, [r9 + rcx]
+    mov dword [rsi + rax], ecx
+    lea r8, [r8 + 1]
+    mov rax, rdx
+    mov rcx, rdx
+    sub rcx, 1
+    and rax, rcx
+    mov rdx, rax
+    test rdx, rdx
+    jne strict short .L20
+.L21:
+    lea r13, [r13 + 64]
+    lea r9, [r9 + 64]
+    mov r11, [rsp + 160]
+    cmp r13, r11
+    jb strict near .L2
+.L3:
+    mov r11, [rsp]
+    mov r10, [rsp + 32]
+    mov qword [r11], r10
+    mov r11, [rsp]
+    mov r10, [rsp + 64]
+    mov qword [r11 + 8], r10
+    mov r11, [rsp]
+    mov r10, [rsp + 96]
+    mov qword [r11 + 16], r10
+    mov r11, [rsp]
+    mov r10, [rsp + 128]
+    mov qword [r11 + 24], r10
+    mov rax, r8
+    add rsp, 200
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
+    ret
+.unwind_end:
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_json_index_raw
+nvol_json_index_raw:
+    jmp strict near nvol_json_index_scalar
+
 align 8
 nvol_fntbl_teddy:
     dd nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy
@@ -55142,6 +55367,9 @@ nvol_unwind_nvol_find_byteset_pair_raw_resolve:
 align 4, db 0
 nvol_unwind_nvol_find_byteset_pair_mask_raw_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
+align 4, db 0
+nvol_unwind_nvol_json_index_scalar:
+    db 1, 19, 10, 0, 19, 1, 25, 0, 12, 240, 10, 224, 8, 208, 6, 192, 4, 96, 3, 112, 2, 80, 1, 48
 
 section .pdata rdata align=4
     dd nvol_memchr_sse2 wrt ..imagebase, nvol_memchr_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr_sse2 wrt ..imagebase
@@ -55310,3 +55538,4 @@ section .pdata rdata align=4
     dd nvol_find_not_byteset_raw_resolve wrt ..imagebase, nvol_find_not_byteset_raw_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_find_not_byteset_raw_resolve wrt ..imagebase
     dd nvol_find_byteset_pair_raw_resolve wrt ..imagebase, nvol_find_byteset_pair_raw_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_find_byteset_pair_raw_resolve wrt ..imagebase
     dd nvol_find_byteset_pair_mask_raw_resolve wrt ..imagebase, nvol_find_byteset_pair_mask_raw_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_find_byteset_pair_mask_raw_resolve wrt ..imagebase
+    dd nvol_json_index_scalar wrt ..imagebase, nvol_json_index_scalar.unwind_end wrt ..imagebase, nvol_unwind_nvol_json_index_scalar wrt ..imagebase
