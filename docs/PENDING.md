@@ -699,7 +699,26 @@ Two consequences for the design:
       8-byte load never does;
       [benchmark](benchmarks/2026-11-24-json-numbers-wsl.md))*;
     - **`feat/json-stage2-strings`:** `copy_and_find` (copy 32 bytes and give the masks of `\`
-      and `"`), a variant of `nvol_copy_until_byteset`, and the block's `is_ascii`.
+      and `"`), a variant of `nvol_copy_until_byteset`, and the block's `is_ascii` *(done on the
+      branch, 2026-11-24: `nvol_json_copy_and_find` (AVX2, SSE2, NEON), at parity with
+      simdjson's haswell and westmere routines once `bmask64x4`'s C lowering took simdjson's
+      casts; the block's `is_ascii` is only called by the UTF-8 checker, which is item 36's
+      ASCII path, so it needs no kernel of its own;
+      [benchmark](benchmarks/2026-11-24-json-strings-wsl.md))*.
+37b. **`feat/json-stage1-sse`: the rest of stage 1**, found while measuring 37. The SSE stage 1
+    had never been compared with simdjson's westmere. Against it (best of 15, cycles per pass):
+    twitter 807k against 610k (+32 %), citm_catalog 1705k against 1432k (+19 %), with 6x the
+    branch misses on twitter. NVOL's SSE kernel targets SSSE3, simdjson's westmere SSE4.2 +
+    PCLMULQDQ + POPCNT, and it shows:
+    - the indexer's `tzcnt64` without BMI1 is `x ? ctz : 64`, a branch per slot (93 `je`, 84
+      `jmp` in the kernel, against 4 and 12 in the AVX2 one); simdjson's `trailing_zeroes` is
+      a bare `ctz`, whose value at 0 lands in a slot past the count;
+    - `popcnt64` is a software count, and `prefix_xor` the six shift/`xor` steps.
+
+    To do: a westmere-class kernel (SSE4.2, PCLMULQDQ, POPCNT) dispatched before the SSSE3
+    one, an indexer without the branch, then the SSE rows measured against westmere. Also the
+    other opens of 35: the scalar path of the C library is not reached by
+    `tests/test_json.py`, and the NEON, Rust, Odin and asm builds of stage 1 are not measured.
 38. **`feat/simdjson-e2e`: integration and measurement.**
     - a patch to simdjson, like the one for rapidjson: its generic code calls NVOL's kernels
       instead of its own;

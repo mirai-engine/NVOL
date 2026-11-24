@@ -14,7 +14,7 @@ with bit arithmetic. This is a different model from that of ripgrep, ugrep and r
 | `prefix_xor` | string interiors (`pclmulqdq` against all ones) | `prefix_xor64` (AVX2) and `nvol.isa.prefix_xor` (every ISA) |
 | `utf8_lookup4_algorithm` | UTF-8 validation (three nibble lookups and continuation checks) | none (PENDING 1.13) |
 | `json_minifier` | `classify` + compact the block | none |
-| `backslash_and_quote::copy_and_find` (stage 2) | copies 32 bytes and gives the masks of `\` and `"` | `nvol_copy_until_byteset` copies while it searches and gives the position of the first member (not the masks): it works where the first hit is used |
+| `backslash_and_quote::copy_and_find` (stage 2) | copies 32 bytes and gives the masks of `\` and `"` | `nvol_json_copy_and_find` (AVX2, SSE2, NEON) |
 | `parse_eight_digits_unrolled` | 8 ASCII digits to integer (`maddubs`, `madd`, `packus`) | `nvol_parse_eight_digits` (SSE4.1 and SWAR), `nvol_is_eight_digits` |
 | `is_ascii` | OR of the 64 bytes and `movemask` | none |
 
@@ -63,7 +63,7 @@ today; the last column is the PENDING item (phase 6) that adds what is missing.
 | store of `u32` indices | indexer (`write_index`) | `Store32` | — |
 | carry-less multiplication | `prefix_xor` (`_mm_clmulepi64_si128` against all ones) | `prefix_xor64` in AVX2 functions (`vpclmulqdq` against all ones), which dispatch on `cpu_avx2_pclmul`; `nvol.isa.prefix_xor` gives the six shift/`xor` steps on the other ISAs, as simdjson's arm64 | — |
 | `pmaddubsw`, `pmaddwd`, `packusdw` (128 bits) | `parse_eight_digits_unrolled` | `vmaddubs`, `vmadd16`, `vpackus32`, with `load8v` and `lane32_0` | — |
-| unaligned 32-byte copy plus two masks | `copy_and_find` | `nvol_copy_until_byteset` (copy plus the first member) | 37 |
+| unaligned 32-byte copy plus two masks | `copy_and_find` | `nvol_json_copy_and_find` | — |
 | `compress` (`thintable_epi8`, `pshufb_combine_table`) | the minifier | none | not in phase 6 |
 | 64×64→128-bit multiplication | `full_multiplication` (floating-point numbers) | none | not in phase 6 (scalar) |
 

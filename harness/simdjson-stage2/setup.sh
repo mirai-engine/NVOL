@@ -1,10 +1,10 @@
 #!/bin/sh
 # Copyright The Mirai Authors. SPDX-License-Identifier: MIT OR Apache-2.0
 #
-# simdjson's stage-2 routines against NVOL's, inside Linux (WSL): one binary with simdjson's
+# simdjson's stage-2 routines against NVOL's, inside Linux (WSL): binaries with simdjson's
 # amalgamated source and NVOL's generated C++ header, both inlined into the same loops.
 #
-#   sh setup.sh <simdjson checkout>     # binaries land in $W (default ${E2E:-$HOME/e2e}/stage2)
+#   sh setup.sh <simdjson checkout>     # binaries and corpus land in $W (default ${E2E:-$HOME/e2e}/stage2)
 #   env: CXX (default g++)
 set -e
 SRC=${1:?usage: setup.sh <simdjson checkout>}
@@ -12,7 +12,11 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 NVOL=$(cd "$HERE/../.." && pwd)
 W=${W:-${E2E:-$HOME/e2e}/stage2}
 CXX=${CXX:-g++}
-mkdir -p "$W"
-# digitsbench.cpp includes simdjson.cpp, where every implementation's code is
-$CXX -O2 -std=c++17 -I"$SRC/singleheader" -I"$NVOL/generated/cpp" -o "$W/digitsbench" "$HERE/digitsbench.cpp"
+mkdir -p "$W/corpus"
+cp "$SRC"/jsonexamples/twitter.json "$SRC"/jsonexamples/citm_catalog.json "$W/corpus/"
+# each bench includes simdjson.cpp, where every implementation's code is
+for b in digitsbench stringsbench; do
+    $CXX -O2 -std=c++17 -I"$SRC/singleheader" -I"$NVOL/generated/cpp" -o "$W/$b" "$HERE/$b.cpp"
+done
 "$W/digitsbench" same
+for f in "$W"/corpus/*.json; do "$W/stringsbench" same "$f"; done
