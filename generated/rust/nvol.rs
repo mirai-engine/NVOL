@@ -10067,6 +10067,510 @@ pub mod raw {
         }
     }
 
+    /// stage 1, sse42 masks
+    #[target_feature(enable = "sse4.2,popcnt")]
+    #[inline]
+    pub(crate) unsafe fn nvol_json_index_sse42(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
+        unsafe {
+            let mut nie: u64 = (state as *const u64).read_unaligned();
+            let mut pis: u64 = (state.add(8usize) as *const u64).read_unaligned();
+            let mut psc: u64 = (state.add(16usize) as *const u64).read_unaligned();
+            let mut err: u64 = (state.add(24usize) as *const u64).read_unaligned();
+            let mut blk: *const u8 = blocks;
+            let mut base: usize = idx;
+            let end: *const u8 = blocks.add((nblocks << 6usize));
+            let mut n: usize = 0usize;
+            let ws_table: __m128i = _mm_setr_epi8(32u8 as i8, 100u8 as i8, 100u8 as i8, 100u8 as i8, 17u8 as i8, 100u8 as i8, 113u8 as i8, 2u8 as i8, 100u8 as i8, 9u8 as i8, 10u8 as i8, 112u8 as i8, 100u8 as i8, 13u8 as i8, 100u8 as i8, 100u8 as i8);
+            let op_table: __m128i = _mm_setr_epi8(0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 0u8 as i8, 58u8 as i8, 123u8 as i8, 44u8 as i8, 125u8 as i8, 0u8 as i8, 0u8 as i8);
+            let k_bs: __m128i = _mm_set1_epi8(92u8 as i8);
+            let k_qt: __m128i = _mm_set1_epi8(34u8 as i8);
+            let k20: __m128i = _mm_set1_epi8(32u8 as i8);
+            let k1f: __m128i = _mm_set1_epi8(31u8 as i8);
+            let mut uerr: u64 = (state.add(32usize) as *const u64).read_unaligned();
+            let t1h: __m128i = _mm_setr_epi8(2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8);
+            let t1l: __m128i = _mm_setr_epi8(231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8);
+            let t2h: __m128i = _mm_setr_epi8(1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8);
+            let k0f: __m128i = _mm_set1_epi8(15u8 as i8);
+            let k60: __m128i = _mm_set1_epi8(96u8 as i8);
+            let k70: __m128i = _mm_set1_epi8(112u8 as i8);
+            let k80: __m128i = _mm_set1_epi8(128u8 as i8);
+            let kmax: __m128i = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 239u8 as i8, 223u8 as i8, 191u8 as i8);
+            let mut uprev: __m128i = _mm_loadu_si128(state.add(64usize) as *const __m128i);
+            let mut verr: __m128i = _mm_setzero_si128();
+            let mut vinc: __m128i = _mm_subs_epu8(uprev, kmax);
+            let mut prev: u64 = 0u64;
+            let mut pbase: usize = idx;
+            let end2: *const u8 = blocks.add(((nblocks >> 1usize) << 7usize));
+            while (blk < end2) {
+                let in_: __m128i = _mm_loadu_si128(blk as *const __m128i);
+                let in_1: __m128i = _mm_loadu_si128(blk.add(16usize) as *const __m128i);
+                let in_2: __m128i = _mm_loadu_si128(blk.add(32usize) as *const __m128i);
+                let in_3: __m128i = _mm_loadu_si128(blk.add(48usize) as *const __m128i);
+                let bs: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(in_, k_bs)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_1, k_bs)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_2, k_bs)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_3, k_bs)) as u32 as u64) << 48));
+                let qt: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(in_, k_qt)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_1, k_qt)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_2, k_qt)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_3, k_qt)) as u32 as u64) << 48));
+                let ws: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_), in_)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_1), in_1)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_2), in_2)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_3), in_3)) as u32 as u64) << 48));
+                let op: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_), _mm_or_si128(in_, k20))) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_1), _mm_or_si128(in_1, k20))) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_2), _mm_or_si128(in_2, k20))) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_3), _mm_or_si128(in_3, k20))) as u32 as u64) << 48));
+                let ctl: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_, k1f), in_)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_1, k1f), in_1)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_2, k1f), in_2)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_3, k1f), in_3)) as u32 as u64) << 48));
+                let mut escaped: u64 = nie;
+                if (bs != 0u64) {
+                    core::hint::cold_path();
+                    let pe: u64 = (bs & (nie ^ 18446744073709551615u64));
+                    let code: u64 = (((pe << 1u64) | 12297829382473034410u64).wrapping_sub(pe) ^ 12297829382473034410u64);
+                    escaped = (code ^ (bs | nie));
+                    nie = ((code & bs) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
+                let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
+                let mut px: u64 = quote;
+                px = (px ^ (px << 1u64));
+                px = (px ^ (px << 2u64));
+                px = (px ^ (px << 4u64));
+                px = (px ^ (px << 8u64));
+                px = (px ^ (px << 16u64));
+                px = (px ^ (px << 32u64));
+                let in_string: u64 = (px ^ pis);
+                pis = 0u64.wrapping_sub((in_string >> 63u64));
+                let scalar: u64 = ((op | ws) ^ 18446744073709551615u64);
+                let nqs: u64 = (scalar & (quote ^ 18446744073709551615u64));
+                let follows: u64 = ((nqs << 1u64) | psc);
+                psc = (nqs >> 63u64);
+                let bits: u64 = ((op | (scalar & (follows ^ 18446744073709551615u64))) & ((in_string ^ quote) ^ 18446744073709551615u64));
+                err = (err | (ctl & in_string));
+                let mut sbits: u64 = bits;
+                if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_, in_1), _mm_or_si128(in_2, in_3))) as u32) == 0u32) {
+                    verr = _mm_or_si128(verr, vinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev1: __m128i = _mm_alignr_epi8::<15>(in_, uprev);
+                    let sc: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev1), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev1, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_, uprev), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_, uprev), k70)), k80), sc));
+                    let prev11: __m128i = _mm_alignr_epi8::<15>(in_1, in_);
+                    let sc1: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev11), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev11, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_1), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_1, in_), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_1, in_), k70)), k80), sc1));
+                    let prev12: __m128i = _mm_alignr_epi8::<15>(in_2, in_1);
+                    let sc2: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev12), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev12, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_2), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_2, in_1), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_2, in_1), k70)), k80), sc2));
+                    let prev13: __m128i = _mm_alignr_epi8::<15>(in_3, in_2);
+                    let sc3: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev13), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev13, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_3), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_3, in_2), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_3, in_2), k70)), k80), sc3));
+                    vinc = _mm_subs_epu8(in_3, kmax);
+                }
+                uprev = in_3;
+                let in_4: __m128i = _mm_loadu_si128(blk.add(64usize) as *const __m128i);
+                let in_5: __m128i = _mm_loadu_si128(blk.add(64usize).add(16usize) as *const __m128i);
+                let in_6: __m128i = _mm_loadu_si128(blk.add(64usize).add(32usize) as *const __m128i);
+                let in_7: __m128i = _mm_loadu_si128(blk.add(64usize).add(48usize) as *const __m128i);
+                let bs1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(in_4, k_bs)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_5, k_bs)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_6, k_bs)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_7, k_bs)) as u32 as u64) << 48));
+                let qt1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(in_4, k_qt)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_5, k_qt)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_6, k_qt)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_7, k_qt)) as u32 as u64) << 48));
+                let ws1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_4), in_4)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_5), in_5)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_6), in_6)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_7), in_7)) as u32 as u64) << 48));
+                let op1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_4), _mm_or_si128(in_4, k20))) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_5), _mm_or_si128(in_5, k20))) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_6), _mm_or_si128(in_6, k20))) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_7), _mm_or_si128(in_7, k20))) as u32 as u64) << 48));
+                let ctl1: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_4, k1f), in_4)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_5, k1f), in_5)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_6, k1f), in_6)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_7, k1f), in_7)) as u32 as u64) << 48));
+                let mut escaped1: u64 = nie;
+                if (bs1 != 0u64) {
+                    core::hint::cold_path();
+                    let pe1: u64 = (bs1 & (nie ^ 18446744073709551615u64));
+                    let code1: u64 = (((pe1 << 1u64) | 12297829382473034410u64).wrapping_sub(pe1) ^ 12297829382473034410u64);
+                    escaped1 = (code1 ^ (bs1 | nie));
+                    nie = ((code1 & bs1) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
+                let quote1: u64 = (qt1 & (escaped1 ^ 18446744073709551615u64));
+                let mut px1: u64 = quote1;
+                px1 = (px1 ^ (px1 << 1u64));
+                px1 = (px1 ^ (px1 << 2u64));
+                px1 = (px1 ^ (px1 << 4u64));
+                px1 = (px1 ^ (px1 << 8u64));
+                px1 = (px1 ^ (px1 << 16u64));
+                px1 = (px1 ^ (px1 << 32u64));
+                let in_string1: u64 = (px1 ^ pis);
+                pis = 0u64.wrapping_sub((in_string1 >> 63u64));
+                let scalar1: u64 = ((op1 | ws1) ^ 18446744073709551615u64);
+                let nqs1: u64 = (scalar1 & (quote1 ^ 18446744073709551615u64));
+                let follows1: u64 = ((nqs1 << 1u64) | psc);
+                psc = (nqs1 >> 63u64);
+                let bits1: u64 = ((op1 | (scalar1 & (follows1 ^ 18446744073709551615u64))) & ((in_string1 ^ quote1) ^ 18446744073709551615u64));
+                err = (err | (ctl1 & in_string1));
+                let mut sbits1: u64 = bits1;
+                if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_4, in_5), _mm_or_si128(in_6, in_7))) as u32) == 0u32) {
+                    verr = _mm_or_si128(verr, vinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev14: __m128i = _mm_alignr_epi8::<15>(in_4, uprev);
+                    let sc4: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev14), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev14, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_4), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_4, uprev), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_4, uprev), k70)), k80), sc4));
+                    let prev15: __m128i = _mm_alignr_epi8::<15>(in_5, in_4);
+                    let sc5: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev15), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev15, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_5), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_5, in_4), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_5, in_4), k70)), k80), sc5));
+                    let prev16: __m128i = _mm_alignr_epi8::<15>(in_6, in_5);
+                    let sc6: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev16), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev16, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_6), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_6, in_5), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_6, in_5), k70)), k80), sc6));
+                    let prev17: __m128i = _mm_alignr_epi8::<15>(in_7, in_6);
+                    let sc7: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev17), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev17, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_7), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_7, in_6), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_7, in_6), k70)), k80), sc7));
+                    vinc = _mm_subs_epu8(in_7, kmax);
+                }
+                uprev = in_7;
+                if (prev != 0u64) {
+                    let cnt: usize = (prev.count_ones() as usize);
+                    let o: *mut u8 = out.add((n << 2usize));
+                    (o as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o.add(4usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o.add(8usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o.add(12usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    if (cnt > 4usize) {
+                        (o.add(16usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o.add(20usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o.add(24usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o.add(28usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        if (cnt > 8usize) {
+                            (o.add(32usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o.add(36usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o.add(40usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o.add(44usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            if (cnt > 12usize) {
+                                (o.add(48usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o.add(52usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o.add(56usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o.add(60usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                if (cnt > 16usize) {
+                                    (o.add(64usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o.add(68usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o.add(72usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o.add(76usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    if (cnt > 20usize) {
+                                        (o.add(80usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                        prev = (prev & prev.wrapping_sub(1u64));
+                                        (o.add(84usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                        prev = (prev & prev.wrapping_sub(1u64));
+                                        (o.add(88usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                        prev = (prev & prev.wrapping_sub(1u64));
+                                        (o.add(92usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                        prev = (prev & prev.wrapping_sub(1u64));
+                                        if (cnt > 24usize) {
+                                            let mut i: usize = 24usize;
+                                            while (i < cnt) {
+                                                (o.add((i << 2usize)) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                                prev = (prev & prev.wrapping_sub(1u64));
+                                                i = (i + 1usize);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    n = (n + cnt);
+                }
+                if (sbits != 0u64) {
+                    let cnt1: usize = (sbits.count_ones() as usize);
+                    let o1: *mut u8 = out.add((n << 2usize));
+                    (o1 as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(4usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(8usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    (o1.add(12usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                    if (cnt1 > 4usize) {
+                        (o1.add(16usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(20usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(24usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        (o1.add(28usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                        if (cnt1 > 8usize) {
+                            (o1.add(32usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(36usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(40usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            (o1.add(44usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                            sbits = (sbits & sbits.wrapping_sub(1u64));
+                            if (cnt1 > 12usize) {
+                                (o1.add(48usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(52usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(56usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                (o1.add(60usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                if (cnt1 > 16usize) {
+                                    (o1.add(64usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(68usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(72usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    (o1.add(76usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                    sbits = (sbits & sbits.wrapping_sub(1u64));
+                                    if (cnt1 > 20usize) {
+                                        (o1.add(80usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(84usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(88usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        (o1.add(92usize) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                        sbits = (sbits & sbits.wrapping_sub(1u64));
+                                        if (cnt1 > 24usize) {
+                                            let mut i1: usize = 24usize;
+                                            while (i1 < cnt1) {
+                                                (o1.add((i1 << 2usize)) as *mut u32).write_unaligned(((base + (sbits.trailing_zeros() as usize)) as u32));
+                                                sbits = (sbits & sbits.wrapping_sub(1u64));
+                                                i1 = (i1 + 1usize);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    n = (n + cnt1);
+                }
+                prev = sbits1;
+                pbase = (base + 64usize);
+                blk = blk.add(128usize);
+                base = (base + 128usize);
+            }
+            if (blk < end) {
+                let in_8: __m128i = _mm_loadu_si128(blk as *const __m128i);
+                let in_9: __m128i = _mm_loadu_si128(blk.add(16usize) as *const __m128i);
+                let in_10: __m128i = _mm_loadu_si128(blk.add(32usize) as *const __m128i);
+                let in_11: __m128i = _mm_loadu_si128(blk.add(48usize) as *const __m128i);
+                let bs2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(in_8, k_bs)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_9, k_bs)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_10, k_bs)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_11, k_bs)) as u32 as u64) << 48));
+                let qt2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(in_8, k_qt)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_9, k_qt)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_10, k_qt)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(in_11, k_qt)) as u32 as u64) << 48));
+                let ws2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_8), in_8)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_9), in_9)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_10), in_10)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(ws_table, in_11), in_11)) as u32 as u64) << 48));
+                let op2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_8), _mm_or_si128(in_8, k20))) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_9), _mm_or_si128(in_9, k20))) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_10), _mm_or_si128(in_10, k20))) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_shuffle_epi8(op_table, in_11), _mm_or_si128(in_11, k20))) as u32 as u64) << 48));
+                let ctl2: u64 = (((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_8, k1f), in_8)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_9, k1f), in_9)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_10, k1f), in_10)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(_mm_min_epu8(in_11, k1f), in_11)) as u32 as u64) << 48));
+                let mut escaped2: u64 = nie;
+                if (bs2 != 0u64) {
+                    core::hint::cold_path();
+                    let pe2: u64 = (bs2 & (nie ^ 18446744073709551615u64));
+                    let code2: u64 = (((pe2 << 1u64) | 12297829382473034410u64).wrapping_sub(pe2) ^ 12297829382473034410u64);
+                    escaped2 = (code2 ^ (bs2 | nie));
+                    nie = ((code2 & bs2) >> 63u64);
+                } else {
+                    nie = 0u64;
+                }
+                let quote2: u64 = (qt2 & (escaped2 ^ 18446744073709551615u64));
+                let mut px2: u64 = quote2;
+                px2 = (px2 ^ (px2 << 1u64));
+                px2 = (px2 ^ (px2 << 2u64));
+                px2 = (px2 ^ (px2 << 4u64));
+                px2 = (px2 ^ (px2 << 8u64));
+                px2 = (px2 ^ (px2 << 16u64));
+                px2 = (px2 ^ (px2 << 32u64));
+                let in_string2: u64 = (px2 ^ pis);
+                pis = 0u64.wrapping_sub((in_string2 >> 63u64));
+                let scalar2: u64 = ((op2 | ws2) ^ 18446744073709551615u64);
+                let nqs2: u64 = (scalar2 & (quote2 ^ 18446744073709551615u64));
+                let follows2: u64 = ((nqs2 << 1u64) | psc);
+                psc = (nqs2 >> 63u64);
+                let bits2: u64 = ((op2 | (scalar2 & (follows2 ^ 18446744073709551615u64))) & ((in_string2 ^ quote2) ^ 18446744073709551615u64));
+                err = (err | (ctl2 & in_string2));
+                let mut sbits2: u64 = bits2;
+                if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_8, in_9), _mm_or_si128(in_10, in_11))) as u32) == 0u32) {
+                    verr = _mm_or_si128(verr, vinc);
+                } else {
+                    core::hint::cold_path();
+                    let prev18: __m128i = _mm_alignr_epi8::<15>(in_8, uprev);
+                    let sc8: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev18), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev18, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_8), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_8, uprev), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_8, uprev), k70)), k80), sc8));
+                    let prev19: __m128i = _mm_alignr_epi8::<15>(in_9, in_8);
+                    let sc9: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev19), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev19, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_9), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_9, in_8), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_9, in_8), k70)), k80), sc9));
+                    let prev110: __m128i = _mm_alignr_epi8::<15>(in_10, in_9);
+                    let sc10: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev110), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev110, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_10), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_10, in_9), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_10, in_9), k70)), k80), sc10));
+                    let prev111: __m128i = _mm_alignr_epi8::<15>(in_11, in_10);
+                    let sc11: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev111), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev111, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_11), _mm_set1_epi8(0x0F))));
+                    verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_11, in_10), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_11, in_10), k70)), k80), sc11));
+                    vinc = _mm_subs_epu8(in_11, kmax);
+                }
+                uprev = in_11;
+                if (prev != 0u64) {
+                    let cnt2: usize = (prev.count_ones() as usize);
+                    let o2: *mut u8 = out.add((n << 2usize));
+                    (o2 as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o2.add(4usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o2.add(8usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o2.add(12usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    if (cnt2 > 4usize) {
+                        (o2.add(16usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o2.add(20usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o2.add(24usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o2.add(28usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        if (cnt2 > 8usize) {
+                            (o2.add(32usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o2.add(36usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o2.add(40usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o2.add(44usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            if (cnt2 > 12usize) {
+                                (o2.add(48usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o2.add(52usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o2.add(56usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o2.add(60usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                if (cnt2 > 16usize) {
+                                    (o2.add(64usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o2.add(68usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o2.add(72usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o2.add(76usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    if (cnt2 > 20usize) {
+                                        (o2.add(80usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                        prev = (prev & prev.wrapping_sub(1u64));
+                                        (o2.add(84usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                        prev = (prev & prev.wrapping_sub(1u64));
+                                        (o2.add(88usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                        prev = (prev & prev.wrapping_sub(1u64));
+                                        (o2.add(92usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                        prev = (prev & prev.wrapping_sub(1u64));
+                                        if (cnt2 > 24usize) {
+                                            let mut i2: usize = 24usize;
+                                            while (i2 < cnt2) {
+                                                (o2.add((i2 << 2usize)) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                                prev = (prev & prev.wrapping_sub(1u64));
+                                                i2 = (i2 + 1usize);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    n = (n + cnt2);
+                }
+                prev = sbits2;
+                pbase = base;
+            }
+            if (prev != 0u64) {
+                let cnt3: usize = (prev.count_ones() as usize);
+                let o3: *mut u8 = out.add((n << 2usize));
+                (o3 as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                prev = (prev & prev.wrapping_sub(1u64));
+                (o3.add(4usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                prev = (prev & prev.wrapping_sub(1u64));
+                (o3.add(8usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                prev = (prev & prev.wrapping_sub(1u64));
+                (o3.add(12usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                prev = (prev & prev.wrapping_sub(1u64));
+                if (cnt3 > 4usize) {
+                    (o3.add(16usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o3.add(20usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o3.add(24usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    (o3.add(28usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                    prev = (prev & prev.wrapping_sub(1u64));
+                    if (cnt3 > 8usize) {
+                        (o3.add(32usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o3.add(36usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o3.add(40usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        (o3.add(44usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                        prev = (prev & prev.wrapping_sub(1u64));
+                        if (cnt3 > 12usize) {
+                            (o3.add(48usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o3.add(52usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o3.add(56usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            (o3.add(60usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                            prev = (prev & prev.wrapping_sub(1u64));
+                            if (cnt3 > 16usize) {
+                                (o3.add(64usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o3.add(68usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o3.add(72usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                (o3.add(76usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                prev = (prev & prev.wrapping_sub(1u64));
+                                if (cnt3 > 20usize) {
+                                    (o3.add(80usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o3.add(84usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o3.add(88usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    (o3.add(92usize) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                    prev = (prev & prev.wrapping_sub(1u64));
+                                    if (cnt3 > 24usize) {
+                                        let mut i3: usize = 24usize;
+                                        while (i3 < cnt3) {
+                                            (o3.add((i3 << 2usize)) as *mut u32).write_unaligned(((pbase + (prev.trailing_zeros() as usize)) as u32));
+                                            prev = (prev & prev.wrapping_sub(1u64));
+                                            i3 = (i3 + 1usize);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                n = (n + cnt3);
+            }
+            (state as *mut u64).write_unaligned(nie);
+            (state.add(8usize) as *mut u64).write_unaligned(pis);
+            (state.add(16usize) as *mut u64).write_unaligned(psc);
+            (state.add(24usize) as *mut u64).write_unaligned(err);
+            (state.add(32usize) as *mut u64).write_unaligned((uerr | ((!(_mm_movemask_epi8(_mm_cmpeq_epi8(verr, _mm_setzero_si128())) == 0xFFFF)) as u64)));
+            (state.add(40usize) as *mut u64).write_unaligned(((!(_mm_movemask_epi8(_mm_cmpeq_epi8(vinc, _mm_setzero_si128())) == 0xFFFF)) as u64));
+            _mm_storeu_si128(state.add(64usize) as *mut __m128i, uprev);
+            return n;
+        }
+    }
+
     /// stage 1, avx2 masks
     #[target_feature(enable = "avx2,popcnt,pclmulqdq,bmi1")]
     #[inline]
@@ -10535,6 +11039,7 @@ pub mod raw {
         unsafe fn resolve(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
             let mut f: F = nvol_json_index_scalar;
             if std::is_x86_feature_detected!("ssse3") { f = nvol_json_index_ssse3; }
+            if std::is_x86_feature_detected!("sse4.2") { f = nvol_json_index_sse42; }
             if (std::is_x86_feature_detected!("avx2") && std::is_x86_feature_detected!("pclmulqdq") && std::is_x86_feature_detected!("bmi1")) { f = nvol_json_index_avx2; }
             FN.store(f as *mut (), Ordering::Relaxed);
             unsafe { f(state, blocks, nblocks, idx, out) }

@@ -9432,6 +9432,501 @@ when ODIN_ARCH == .amd64 {
 		return n
 	}
 
+	// stage 1, sse42 masks
+	@(private, enable_target_feature="sse4.2,ssse3")
+	nvol_json_index_sse42 :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
+		nie: u64 = intrinsics.unaligned_load((^u64)(state))
+		pis: u64 = intrinsics.unaligned_load((^u64)(state[uint(8):]))
+		psc: u64 = intrinsics.unaligned_load((^u64)(state[uint(16):]))
+		err: u64 = intrinsics.unaligned_load((^u64)(state[uint(24):]))
+		blk: [^]u8 = blocks
+		base: uint = idx
+		end: [^]u8 = blocks[(nblocks << uint(6)):]
+		n: uint = uint(0)
+		ws_table: V16 = V16{u8(32), u8(100), u8(100), u8(100), u8(17), u8(100), u8(113), u8(2), u8(100), u8(9), u8(10), u8(112), u8(100), u8(13), u8(100), u8(100)}
+		op_table: V16 = V16{u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(0), u8(58), u8(123), u8(44), u8(125), u8(0), u8(0)}
+		k_bs: V16 = V16(u8(92))
+		k_qt: V16 = V16(u8(34))
+		k20: V16 = V16(u8(32))
+		k1f: V16 = V16(u8(31))
+		uerr: u64 = intrinsics.unaligned_load((^u64)(state[uint(32):]))
+		t1h: V16 = V16{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
+		t1l: V16 = V16{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
+		t2h: V16 = V16{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
+		k0f: V16 = V16(u8(15))
+		k60: V16 = V16(u8(96))
+		k70: V16 = V16(u8(112))
+		k80: V16 = V16(u8(128))
+		kmax: V16 = V16{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, u8(239), u8(223), u8(191)}
+		uprev: V16 = intrinsics.unaligned_load((^V16)(state[uint(64):]))
+		verr: V16 = V16(0)
+		vinc: V16 = intrinsics.simd_saturating_sub(uprev, kmax)
+		prev: u64 = u64(0)
+		pbase: uint = idx
+		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
+		for (blk < end2) {
+			in_: V16 = intrinsics.unaligned_load((^V16)(blk))
+			in_1: V16 = intrinsics.unaligned_load((^V16)(blk[uint(16):]))
+			in_2: V16 = intrinsics.unaligned_load((^V16)(blk[uint(32):]))
+			in_3: V16 = intrinsics.unaligned_load((^V16)(blk[uint(48):]))
+			bs: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_, k_bs)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_1, k_bs))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_2, k_bs))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_3, k_bs))) << 48))
+			qt: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_, k_qt)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_1, k_qt))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_2, k_qt))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_3, k_qt))) << 48))
+			ws: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_), in_)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_1), in_1))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_2), in_2))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_3), in_3))) << 48))
+			op: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_), intrinsics.simd_bit_or(in_, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_1), intrinsics.simd_bit_or(in_1, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_2), intrinsics.simd_bit_or(in_2, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_3), intrinsics.simd_bit_or(in_3, k20)))) << 48))
+			ctl: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_, k1f), in_)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_1, k1f), in_1))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_2, k1f), in_2))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_3, k1f), in_3))) << 48))
+			escaped: u64 = nie
+			if intrinsics.expect((bs != u64(0)), false) {
+				pe: u64 = (bs & (nie ~ u64(18446744073709551615)))
+				code: u64 = ((((pe << u64(1)) | u64(12297829382473034410)) - pe) ~ u64(12297829382473034410))
+				escaped = (code ~ (bs | nie))
+				nie = ((code & bs) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
+			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
+			px: u64 = quote
+			px = (px ~ (px << u64(1)))
+			px = (px ~ (px << u64(2)))
+			px = (px ~ (px << u64(4)))
+			px = (px ~ (px << u64(8)))
+			px = (px ~ (px << u64(16)))
+			px = (px ~ (px << u64(32)))
+			in_string: u64 = (px ~ pis)
+			pis = (u64(0) - (in_string >> u64(63)))
+			scalar: u64 = ((op | ws) ~ u64(18446744073709551615))
+			nqs: u64 = (scalar & (quote ~ u64(18446744073709551615)))
+			follows: u64 = ((nqs << u64(1)) | psc)
+			psc = (nqs >> u64(63))
+			bits: u64 = ((op | (scalar & (follows ~ u64(18446744073709551615)))) & ((in_string ~ quote) ~ u64(18446744073709551615)))
+			err = (err | (ctl & in_string))
+			sbits: u64 = bits
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3))) == u32(0)), true) {
+				verr = intrinsics.simd_bit_or(verr, vinc)
+			} else {
+				prev1: V16 = intrinsics.simd_shuffle(uprev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc))
+				prev11: V16 = intrinsics.simd_shuffle(in_, in_1, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc1: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev11, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev11, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_1, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc1))
+				prev12: V16 = intrinsics.simd_shuffle(in_1, in_2, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc2: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev12, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev12, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_2, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_1, in_2, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc2))
+				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_3, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
+				vinc = intrinsics.simd_saturating_sub(in_3, kmax)
+			}
+			uprev = in_3
+			in_4: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):]))
+			in_5: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(16):]))
+			in_6: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(32):]))
+			in_7: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):][uint(48):]))
+			bs1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_4, k_bs)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_5, k_bs))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_6, k_bs))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_7, k_bs))) << 48))
+			qt1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_4, k_qt)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_5, k_qt))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_6, k_qt))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_7, k_qt))) << 48))
+			ws1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_4), in_4)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_5), in_5))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_6), in_6))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_7), in_7))) << 48))
+			op1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_4), intrinsics.simd_bit_or(in_4, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_5), intrinsics.simd_bit_or(in_5, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_6), intrinsics.simd_bit_or(in_6, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_7), intrinsics.simd_bit_or(in_7, k20)))) << 48))
+			ctl1: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_4, k1f), in_4)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_5, k1f), in_5))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_6, k1f), in_6))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_7, k1f), in_7))) << 48))
+			escaped1: u64 = nie
+			if intrinsics.expect((bs1 != u64(0)), false) {
+				pe1: u64 = (bs1 & (nie ~ u64(18446744073709551615)))
+				code1: u64 = ((((pe1 << u64(1)) | u64(12297829382473034410)) - pe1) ~ u64(12297829382473034410))
+				escaped1 = (code1 ~ (bs1 | nie))
+				nie = ((code1 & bs1) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
+			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
+			px1: u64 = quote1
+			px1 = (px1 ~ (px1 << u64(1)))
+			px1 = (px1 ~ (px1 << u64(2)))
+			px1 = (px1 ~ (px1 << u64(4)))
+			px1 = (px1 ~ (px1 << u64(8)))
+			px1 = (px1 ~ (px1 << u64(16)))
+			px1 = (px1 ~ (px1 << u64(32)))
+			in_string1: u64 = (px1 ~ pis)
+			pis = (u64(0) - (in_string1 >> u64(63)))
+			scalar1: u64 = ((op1 | ws1) ~ u64(18446744073709551615))
+			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
+			follows1: u64 = ((nqs1 << u64(1)) | psc)
+			psc = (nqs1 >> u64(63))
+			bits1: u64 = ((op1 | (scalar1 & (follows1 ~ u64(18446744073709551615)))) & ((in_string1 ~ quote1) ~ u64(18446744073709551615)))
+			err = (err | (ctl1 & in_string1))
+			sbits1: u64 = bits1
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_4, in_5), intrinsics.simd_bit_or(in_6, in_7))) == u32(0)), true) {
+				verr = intrinsics.simd_bit_or(verr, vinc)
+			} else {
+				prev14: V16 = intrinsics.simd_shuffle(uprev, in_4, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc4: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev14, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev14, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_4, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_4, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_4, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc4))
+				prev15: V16 = intrinsics.simd_shuffle(in_4, in_5, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc5: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev15, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev15, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_5, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc5))
+				prev16: V16 = intrinsics.simd_shuffle(in_5, in_6, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc6: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev16, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev16, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_6, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_5, in_6, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_5, in_6, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc6))
+				prev17: V16 = intrinsics.simd_shuffle(in_6, in_7, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc7: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev17, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev17, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_7, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc7))
+				vinc = intrinsics.simd_saturating_sub(in_7, kmax)
+			}
+			uprev = in_7
+			if (prev != u64(0)) {
+				cnt: uint = uint(intrinsics.count_ones(prev))
+				o: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				if (cnt > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					if (cnt > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						if (cnt > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							if (cnt > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								if (cnt > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									if (cnt > uint(24)) {
+										i: uint = uint(24)
+										for (i < cnt) {
+											intrinsics.unaligned_store((^u32)(o[(i << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+											prev = (prev & (prev - u64(1)))
+											i = (i + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt)
+			}
+			if (sbits != u64(0)) {
+				cnt1: uint = uint(intrinsics.count_ones(sbits))
+				o1: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o1), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(4):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(8):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				intrinsics.unaligned_store((^u32)(o1[uint(12):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+				sbits = (sbits & (sbits - u64(1)))
+				if (cnt1 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o1[uint(16):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(20):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(24):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					intrinsics.unaligned_store((^u32)(o1[uint(28):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+					sbits = (sbits & (sbits - u64(1)))
+					if (cnt1 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o1[uint(32):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(36):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(40):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						intrinsics.unaligned_store((^u32)(o1[uint(44):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+						sbits = (sbits & (sbits - u64(1)))
+						if (cnt1 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o1[uint(48):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(52):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(56):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							intrinsics.unaligned_store((^u32)(o1[uint(60):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+							sbits = (sbits & (sbits - u64(1)))
+							if (cnt1 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o1[uint(64):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(68):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(72):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								intrinsics.unaligned_store((^u32)(o1[uint(76):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+								sbits = (sbits & (sbits - u64(1)))
+								if (cnt1 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o1[uint(80):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(84):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(88):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									intrinsics.unaligned_store((^u32)(o1[uint(92):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+									sbits = (sbits & (sbits - u64(1)))
+									if (cnt1 > uint(24)) {
+										i1: uint = uint(24)
+										for (i1 < cnt1) {
+											intrinsics.unaligned_store((^u32)(o1[(i1 << uint(2)):]), u32((base + uint(intrinsics.count_trailing_zeros(sbits)))))
+											sbits = (sbits & (sbits - u64(1)))
+											i1 = (i1 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt1)
+			}
+			prev = sbits1
+			pbase = (base + uint(64))
+			blk = blk[uint(128):]
+			base = (base + uint(128))
+		}
+		if (blk < end) {
+			in_8: V16 = intrinsics.unaligned_load((^V16)(blk))
+			in_9: V16 = intrinsics.unaligned_load((^V16)(blk[uint(16):]))
+			in_10: V16 = intrinsics.unaligned_load((^V16)(blk[uint(32):]))
+			in_11: V16 = intrinsics.unaligned_load((^V16)(blk[uint(48):]))
+			bs2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_8, k_bs)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_9, k_bs))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_10, k_bs))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_11, k_bs))) << 48))
+			qt2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_8, k_qt)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_9, k_qt))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_10, k_qt))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(in_11, k_qt))) << 48))
+			ws2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_8), in_8)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_9), in_9))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_10), in_10))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(ws_table, in_11), in_11))) << 48))
+			op2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_8), intrinsics.simd_bit_or(in_8, k20))))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_9), intrinsics.simd_bit_or(in_9, k20)))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_10), intrinsics.simd_bit_or(in_10, k20)))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(nvol_pshufb128(op_table, in_11), intrinsics.simd_bit_or(in_11, k20)))) << 48))
+			ctl2: u64 = ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_8, k1f), in_8)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_9, k1f), in_9))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_10, k1f), in_10))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(intrinsics.simd_min(in_11, k1f), in_11))) << 48))
+			escaped2: u64 = nie
+			if intrinsics.expect((bs2 != u64(0)), false) {
+				pe2: u64 = (bs2 & (nie ~ u64(18446744073709551615)))
+				code2: u64 = ((((pe2 << u64(1)) | u64(12297829382473034410)) - pe2) ~ u64(12297829382473034410))
+				escaped2 = (code2 ~ (bs2 | nie))
+				nie = ((code2 & bs2) >> u64(63))
+			} else {
+				nie = u64(0)
+			}
+			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
+			px2: u64 = quote2
+			px2 = (px2 ~ (px2 << u64(1)))
+			px2 = (px2 ~ (px2 << u64(2)))
+			px2 = (px2 ~ (px2 << u64(4)))
+			px2 = (px2 ~ (px2 << u64(8)))
+			px2 = (px2 ~ (px2 << u64(16)))
+			px2 = (px2 ~ (px2 << u64(32)))
+			in_string2: u64 = (px2 ~ pis)
+			pis = (u64(0) - (in_string2 >> u64(63)))
+			scalar2: u64 = ((op2 | ws2) ~ u64(18446744073709551615))
+			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
+			follows2: u64 = ((nqs2 << u64(1)) | psc)
+			psc = (nqs2 >> u64(63))
+			bits2: u64 = ((op2 | (scalar2 & (follows2 ~ u64(18446744073709551615)))) & ((in_string2 ~ quote2) ~ u64(18446744073709551615)))
+			err = (err | (ctl2 & in_string2))
+			sbits2: u64 = bits2
+			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_8, in_9), intrinsics.simd_bit_or(in_10, in_11))) == u32(0)), true) {
+				verr = intrinsics.simd_bit_or(verr, vinc)
+			} else {
+				prev18: V16 = intrinsics.simd_shuffle(uprev, in_8, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc8: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev18, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev18, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_8, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_8, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(uprev, in_8, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc8))
+				prev19: V16 = intrinsics.simd_shuffle(in_8, in_9, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc9: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev19, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev19, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_9, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_8, in_9, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_8, in_9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc9))
+				prev110: V16 = intrinsics.simd_shuffle(in_9, in_10, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc10: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev110, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev110, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_10, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_9, in_10, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_9, in_10, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc10))
+				prev111: V16 = intrinsics.simd_shuffle(in_10, in_11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+				sc11: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev111, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev111, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_11, V16(4))))
+				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc11))
+				vinc = intrinsics.simd_saturating_sub(in_11, kmax)
+			}
+			uprev = in_11
+			if (prev != u64(0)) {
+				cnt2: uint = uint(intrinsics.count_ones(prev))
+				o2: [^]u8 = out[(n << uint(2)):]
+				intrinsics.unaligned_store((^u32)(o2), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o2[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				if (cnt2 > uint(4)) {
+					intrinsics.unaligned_store((^u32)(o2[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o2[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					if (cnt2 > uint(8)) {
+						intrinsics.unaligned_store((^u32)(o2[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o2[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						if (cnt2 > uint(12)) {
+							intrinsics.unaligned_store((^u32)(o2[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o2[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							if (cnt2 > uint(16)) {
+								intrinsics.unaligned_store((^u32)(o2[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o2[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								if (cnt2 > uint(20)) {
+									intrinsics.unaligned_store((^u32)(o2[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									intrinsics.unaligned_store((^u32)(o2[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+									prev = (prev & (prev - u64(1)))
+									if (cnt2 > uint(24)) {
+										i2: uint = uint(24)
+										for (i2 < cnt2) {
+											intrinsics.unaligned_store((^u32)(o2[(i2 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+											prev = (prev & (prev - u64(1)))
+											i2 = (i2 + uint(1))
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				n = (n + cnt2)
+			}
+			prev = sbits2
+			pbase = base
+		}
+		if (prev != u64(0)) {
+			cnt3: uint = uint(intrinsics.count_ones(prev))
+			o3: [^]u8 = out[(n << uint(2)):]
+			intrinsics.unaligned_store((^u32)(o3), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			prev = (prev & (prev - u64(1)))
+			intrinsics.unaligned_store((^u32)(o3[uint(4):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			prev = (prev & (prev - u64(1)))
+			intrinsics.unaligned_store((^u32)(o3[uint(8):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			prev = (prev & (prev - u64(1)))
+			intrinsics.unaligned_store((^u32)(o3[uint(12):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+			prev = (prev & (prev - u64(1)))
+			if (cnt3 > uint(4)) {
+				intrinsics.unaligned_store((^u32)(o3[uint(16):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o3[uint(20):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o3[uint(24):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				intrinsics.unaligned_store((^u32)(o3[uint(28):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+				prev = (prev & (prev - u64(1)))
+				if (cnt3 > uint(8)) {
+					intrinsics.unaligned_store((^u32)(o3[uint(32):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o3[uint(36):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o3[uint(40):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					intrinsics.unaligned_store((^u32)(o3[uint(44):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+					prev = (prev & (prev - u64(1)))
+					if (cnt3 > uint(12)) {
+						intrinsics.unaligned_store((^u32)(o3[uint(48):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o3[uint(52):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o3[uint(56):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						intrinsics.unaligned_store((^u32)(o3[uint(60):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+						prev = (prev & (prev - u64(1)))
+						if (cnt3 > uint(16)) {
+							intrinsics.unaligned_store((^u32)(o3[uint(64):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o3[uint(68):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o3[uint(72):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							intrinsics.unaligned_store((^u32)(o3[uint(76):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+							prev = (prev & (prev - u64(1)))
+							if (cnt3 > uint(20)) {
+								intrinsics.unaligned_store((^u32)(o3[uint(80):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o3[uint(84):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o3[uint(88):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								intrinsics.unaligned_store((^u32)(o3[uint(92):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+								prev = (prev & (prev - u64(1)))
+								if (cnt3 > uint(24)) {
+									i3: uint = uint(24)
+									for (i3 < cnt3) {
+										intrinsics.unaligned_store((^u32)(o3[(i3 << uint(2)):]), u32((pbase + uint(intrinsics.count_trailing_zeros(prev)))))
+										prev = (prev & (prev - u64(1)))
+										i3 = (i3 + uint(1))
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			n = (n + cnt3)
+		}
+		intrinsics.unaligned_store((^u64)(state), nie)
+		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
+		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
+		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
+		intrinsics.unaligned_store((^u64)(state[uint(32):]), (uerr | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), u64((!(intrinsics.simd_reduce_or(vinc) == 0))))
+		intrinsics.unaligned_store((^V16)(state[uint(64):]), uprev)
+		return n
+	}
+
 	// stage 1, avx2 masks
 	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32,bmi")
 	nvol_json_index_avx2 :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
@@ -9887,6 +10382,7 @@ when ODIN_ARCH == .amd64 {
 	@(private) nvol_json_index_raw_resolve :: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint {
 		f: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint = nvol_json_index_scalar
 		if (.ssse3 in info.cpu_features()) { f = nvol_json_index_ssse3 }
+		if nvol_cpu_sse42() { f = nvol_json_index_sse42 }
 		if nvol_cpu_avx2_pclmul_bmi1() { f = nvol_json_index_avx2 }
 		nvol_json_index_raw_ptr = f
 		return f(state, blocks, nblocks, idx, out)

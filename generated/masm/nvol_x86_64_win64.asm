@@ -61043,6 +61043,3070 @@ nvol_json_index_ssse3 ENDP
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 68, 0, 0
+nvol_json_index_sse42 PROC PUBLIC FRAME
+    push rbx
+    .PUSHREG rbx
+    push rbp
+    .PUSHREG rbp
+    push rdi
+    .PUSHREG rdi
+    push rsi
+    .PUSHREG rsi
+    push r12
+    .PUSHREG r12
+    push r13
+    .PUSHREG r13
+    push r14
+    .PUSHREG r14
+    push r15
+    .PUSHREG r15
+    sub rsp, 744
+    .ALLOCSTACK 744
+    movdqu xmmword ptr [rsp + 576], xmm6
+    .SAVEXMM128 xmm6, 576
+    movdqu xmmword ptr [rsp + 592], xmm7
+    .SAVEXMM128 xmm7, 592
+    movdqu xmmword ptr [rsp + 608], xmm8
+    .SAVEXMM128 xmm8, 608
+    movdqu xmmword ptr [rsp + 624], xmm9
+    .SAVEXMM128 xmm9, 624
+    movdqu xmmword ptr [rsp + 640], xmm10
+    .SAVEXMM128 xmm10, 640
+    movdqu xmmword ptr [rsp + 656], xmm11
+    .SAVEXMM128 xmm11, 656
+    movdqu xmmword ptr [rsp + 672], xmm12
+    .SAVEXMM128 xmm12, 672
+    movdqu xmmword ptr [rsp + 688], xmm13
+    .SAVEXMM128 xmm13, 688
+    movdqu xmmword ptr [rsp + 704], xmm14
+    .SAVEXMM128 xmm14, 704
+    movdqu xmmword ptr [rsp + 720], xmm15
+    .SAVEXMM128 xmm15, 720
+    .ENDPROLOG
+    mov qword ptr [rsp], rcx
+    mov rax, rcx
+    mov r11, qword ptr [rsp + 848]
+    mov [rsp + 32], r11
+    mov rsi, qword ptr [rax]
+    mov rdi, qword ptr [rax + 8]
+    mov rbx, qword ptr [rax + 16]
+    mov rbp, qword ptr [rax + 24]
+    mov r12, rdx
+    mov r13, r9
+    mov r14, r8
+    shl r14, 6
+    lea r11, [rdx + r14]
+    mov [rsp + 64], r11
+    xor r11d, r11d
+    mov [rsp + 96], r11
+    movdqa xmm15, xmmword ptr [NVOL_K9]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqa xmm15, xmmword ptr [NVOL_K10]
+    movdqu xmmword ptr [rsp + 160], xmm15
+    movdqa xmm15, xmmword ptr [NVOL_K11]
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqa xmm15, xmmword ptr [NVOL_K12]
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqa xmm15, xmmword ptr [NVOL_K13]
+    movdqu xmmword ptr [rsp + 256], xmm15
+    movdqa xmm5, xmmword ptr [NVOL_K14]
+    mov r11, qword ptr [rax + 32]
+    mov [rsp + 288], r11
+    movdqa xmm6, xmmword ptr [NVOL_K15]
+    movdqa xmm7, xmmword ptr [NVOL_K16]
+    movdqa xmm8, xmmword ptr [NVOL_K17]
+    movdqa xmm9, xmmword ptr [NVOL_K1]
+    movdqa xmm10, xmmword ptr [NVOL_K18]
+    movdqa xmm11, xmmword ptr [NVOL_K19]
+    movdqa xmm12, xmmword ptr [NVOL_K6]
+    movdqa xmm15, xmmword ptr [NVOL_K20]
+    movdqu xmmword ptr [rsp + 320], xmm15
+    movdqu xmm13, xmmword ptr [rax + 64]
+    pxor xmm0, xmm0
+    movdqu xmmword ptr [rsp + 352], xmm13
+    movdqu xmm15, xmmword ptr [rsp + 352]
+    movdqu xmm14, xmmword ptr [rsp + 320]
+    psubusb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 352], xmm15
+    xor r14d, r14d
+    shr r8, 1
+    shl r8, 7
+    lea r11, [rdx + r8]
+    mov [rsp + 384], r11
+    cmp r12, r11
+    jae NEAR PTR L_L3
+    DB 144
+L_L2:
+    movdqu xmm1, xmmword ptr [r12]
+    movdqu xmm2, xmmword ptr [r12 + 16]
+    movdqu xmm3, xmmword ptr [r12 + 32]
+    movdqu xmm4, xmmword ptr [r12 + 48]
+    movdqu xmmword ptr [rsp + 416], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 416], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    pmovmskb r8d, xmm15
+    movdqu xmmword ptr [rsp + 416], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 416], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    pmovmskb eax, xmm15
+    shl rax, 16
+    or r8, rax
+    movdqu xmmword ptr [rsp + 416], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 416], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    pmovmskb eax, xmm15
+    shl rax, 32
+    or r8, rax
+    movdqu xmmword ptr [rsp + 416], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 416], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    pmovmskb eax, xmm15
+    shl rax, 48
+    or r8, rax
+    movdqu xmmword ptr [rsp + 416], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 416], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    pmovmskb eax, xmm15
+    movdqu xmmword ptr [rsp + 416], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 416], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    pmovmskb r15d, xmm15
+    shl r15, 16
+    or rax, r15
+    movdqu xmmword ptr [rsp + 416], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 416], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    pmovmskb r15d, xmm15
+    shl r15, 32
+    or rax, r15
+    movdqu xmmword ptr [rsp + 448], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pmovmskb r15d, xmm15
+    shl r15, 48
+    mov r11, rax
+    or r11, r15
+    mov [rsp + 416], r11
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pmovmskb r15d, xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pmovmskb ecx, xmm15
+    shl rcx, 16
+    or r15, rcx
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pmovmskb ecx, xmm15
+    shl rcx, 32
+    or r15, rcx
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pmovmskb ecx, xmm15
+    shl rcx, 48
+    or r15, rcx
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmmword ptr [rsp + 480], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb ecx, xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmmword ptr [rsp + 480], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb edx, xmm15
+    shl rdx, 16
+    or rcx, rdx
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmmword ptr [rsp + 480], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb edx, xmm15
+    shl rdx, 32
+    or rcx, rdx
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmmword ptr [rsp + 480], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb edx, xmm15
+    shl rdx, 48
+    or rcx, rdx
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pmovmskb edx, xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pmovmskb r11d, xmm15
+    shl r11, 16
+    or rdx, r11
+    movdqu xmmword ptr [rsp + 448], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pcmpeqb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pmovmskb r11d, xmm15
+    shl r11, 32
+    or rdx, r11
+    movdqu xmmword ptr [rsp + 480], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb r11d, xmm15
+    mov [rsp + 480], r11
+    shl r11, 48
+    mov [rsp + 512], r11
+    mov r11, rdx
+    mov r10, [rsp + 512]
+    or r11, r10
+    mov [rsp + 448], r11
+    mov rax, rsi
+    test r8, r8
+    je SHORT L_L4
+    mov rax, r8
+    mov r11, rsi
+    not r11
+    and rax, r11
+    mov r11, rax
+    shl r11, 1
+    mov qword ptr [rsp + 512], r11
+    mov r11, -6148914691236517206
+    mov [rsp + 480], r11
+    mov r11, [rsp + 512]
+    mov r10, [rsp + 480]
+    or r11, r10
+    mov [rsp + 512], r11
+    sub r11, rax
+    mov rdx, r11
+    mov rax, -6148914691236517206
+    xor rdx, rax
+    mov rax, rdx
+    mov r11, r8
+    or r11, rsi
+    mov [rsp + 480], r11
+    xor rax, r11
+    mov rsi, rdx
+    and rsi, r8
+    shr rsi, 63
+    jmp SHORT L_L5
+L_L4:
+    xor esi, esi
+L_L5:
+    mov rdx, qword ptr [rsp + 416]
+    not rax
+    and rdx, rax
+    mov rax, rdx
+    mov r8, rax
+    mov r11, rax
+    shl r11, 1
+    xor r8, r11
+    mov rax, r8
+    mov r11, rax
+    shl r11, 2
+    xor r8, r11
+    mov rax, r8
+    mov r11, rax
+    shl r11, 4
+    xor r8, r11
+    mov rax, r8
+    mov r11, rax
+    shl r11, 8
+    xor r8, r11
+    mov rax, r8
+    mov r11, rax
+    shl r11, 16
+    xor r8, r11
+    mov rax, r8
+    mov r11, rax
+    shl r11, 32
+    xor r8, r11
+    mov rax, r8
+    xor rax, rdi
+    xor edi, edi
+    mov r8, rax
+    shr r8, 63
+    sub rdi, r8
+    mov r8, rcx
+    or r8, r15
+    not r8
+    mov r15, r8
+    mov r11, rdx
+    not r11
+    and r15, r11
+    mov r11, r15
+    shl r11, 1
+    or r11, rbx
+    mov rbx, r15
+    shr rbx, 63
+    mov r15, r11
+    not r15
+    and r8, r15
+    or rcx, r8
+    mov r8, rax
+    xor r8, rdx
+    not r8
+    and rcx, r8
+    mov rdx, qword ptr [rsp + 448]
+    and rdx, rax
+    or rbp, rdx
+    mov qword ptr [rsp + 416], rcx
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    por xmm15, xmm2
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmmword ptr [rsp + 480], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    por xmm15, xmm4
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb eax, xmm15
+    test eax, eax
+    jne SHORT L_L6
+    movdqu xmm15, xmmword ptr [rsp + 352]
+    por xmm0, xmm15
+    jmp NEAR PTR L_L7
+L_L6:
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm13, 15
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmmword ptr [rsp + 480], xmm6
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pand xmm15, xmm9
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm7
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 448]
+    pand xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm8
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 448]
+    pand xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm13, 14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    psubusb xmm15, xmm10
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm13, 13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm13, xmmword ptr [rsp + 448]
+    psubusb xmm13, xmm11
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    por xmm15, xmm13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm13, xmmword ptr [rsp + 448]
+    pand xmm13, xmm12
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pxor xmm13, xmm15
+    por xmm0, xmm13
+    movdqa xmm13, xmm2
+    palignr xmm13, xmm1, 15
+    movdqu xmmword ptr [rsp + 448], xmm13
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm6
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    pand xmm13, xmm9
+    movdqu xmmword ptr [rsp + 480], xmm7
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm13
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm13, xmmword ptr [rsp + 448]
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pand xmm13, xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm8
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pand xmm13, xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm1, 14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    psubusb xmm15, xmm10
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm1, 13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm1, xmmword ptr [rsp + 448]
+    psubusb xmm1, xmm11
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    por xmm15, xmm1
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm1, xmmword ptr [rsp + 448]
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    movdqa xmm1, xmm3
+    palignr xmm1, xmm2, 15
+    movdqa xmm13, xmm1
+    psrlw xmm13, 4
+    pand xmm13, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 448], xmm6
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    pand xmm1, xmm9
+    movdqa xmm13, xmm7
+    pshufb xmm13, xmm1
+    movdqu xmm1, xmmword ptr [rsp + 448]
+    pand xmm1, xmm13
+    movdqa xmm13, xmm3
+    psrlw xmm13, 4
+    pand xmm13, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 448], xmm8
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pand xmm1, xmm15
+    movdqa xmm13, xmm3
+    palignr xmm13, xmm2, 14
+    psubusb xmm13, xmm10
+    movdqu xmmword ptr [rsp + 448], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm2, 13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm2, xmmword ptr [rsp + 448]
+    psubusb xmm2, xmm11
+    por xmm13, xmm2
+    pand xmm13, xmm12
+    pxor xmm13, xmm1
+    por xmm0, xmm13
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 15
+    movdqa xmm2, xmm1
+    psrlw xmm2, 4
+    pand xmm2, xmmword ptr [NVOL_K1]
+    movdqa xmm13, xmm6
+    pshufb xmm13, xmm2
+    pand xmm1, xmm9
+    movdqa xmm2, xmm7
+    pshufb xmm2, xmm1
+    pand xmm13, xmm2
+    movdqa xmm1, xmm4
+    psrlw xmm1, 4
+    pand xmm1, xmmword ptr [NVOL_K1]
+    movdqa xmm2, xmm8
+    pshufb xmm2, xmm1
+    pand xmm13, xmm2
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 14
+    psubusb xmm1, xmm10
+    movdqa xmm2, xmm4
+    palignr xmm2, xmm3, 13
+    psubusb xmm2, xmm11
+    por xmm1, xmm2
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    movdqu xmmword ptr [rsp + 352], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 352]
+    movdqu xmm14, xmmword ptr [rsp + 320]
+    psubusb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 352], xmm15
+L_L7:
+    movdqa xmm13, xmm4
+    movdqu xmm1, xmmword ptr [r12 + 64]
+    movdqu xmm2, xmmword ptr [r12 + 80]
+    movdqu xmm3, xmmword ptr [r12 + 96]
+    movdqu xmm4, xmmword ptr [r12 + 112]
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pmovmskb eax, xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pmovmskb edx, xmm15
+    shl rdx, 16
+    or rax, rdx
+    movdqu xmmword ptr [rsp + 448], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pmovmskb edx, xmm15
+    shl rdx, 32
+    or rax, rdx
+    movdqu xmmword ptr [rsp + 448], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pmovmskb edx, xmm15
+    shl rdx, 48
+    or rax, rdx
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pmovmskb edx, xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pmovmskb r8d, xmm15
+    shl r8, 16
+    or rdx, r8
+    movdqu xmmword ptr [rsp + 448], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pmovmskb r8d, xmm15
+    shl r8, 32
+    or rdx, r8
+    movdqu xmmword ptr [rsp + 480], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pmovmskb r8d, xmm15
+    shl r8, 48
+    mov r11, rdx
+    or r11, r8
+    mov [rsp + 448], r11
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb r8d, xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb r15d, xmm15
+    shl r15, 16
+    or r8, r15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb r15d, xmm15
+    shl r15, 32
+    or r8, r15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb r15d, xmm15
+    shl r15, 48
+    or r8, r15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 512], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    pmovmskb r15d, xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 512], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    pmovmskb r11d, xmm15
+    mov rcx, r11
+    shl rcx, 16
+    or r15, rcx
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 512], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    pmovmskb ecx, xmm15
+    shl rcx, 32
+    or r15, rcx
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 512], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    pmovmskb ecx, xmm15
+    shl rcx, 48
+    or r15, rcx
+    movdqu xmmword ptr [rsp + 480], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb ecx, xmm15
+    movdqu xmmword ptr [rsp + 480], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb r11d, xmm15
+    shl r11, 16
+    or rcx, r11
+    movdqu xmmword ptr [rsp + 480], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pcmpeqb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb r11d, xmm15
+    shl r11, 32
+    or rcx, r11
+    movdqu xmmword ptr [rsp + 512], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    pcmpeqb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    pmovmskb r11d, xmm15
+    mov [rsp + 512], r11
+    shl r11, 48
+    mov [rsp + 544], r11
+    mov r11, rcx
+    mov r10, [rsp + 544]
+    or r11, r10
+    mov [rsp + 480], r11
+    mov rcx, rsi
+    test rax, rax
+    je SHORT L_L8
+    mov rcx, rax
+    mov r11, rsi
+    not r11
+    and rcx, r11
+    mov r11, rcx
+    shl r11, 1
+    mov qword ptr [rsp + 544], r11
+    mov r11, -6148914691236517206
+    mov [rsp + 512], r11
+    mov r11, [rsp + 544]
+    mov r10, [rsp + 512]
+    or r11, r10
+    mov [rsp + 544], r11
+    sub r11, rcx
+    mov rdx, r11
+    mov rcx, -6148914691236517206
+    xor rdx, rcx
+    mov rcx, rdx
+    mov r11, rax
+    or r11, rsi
+    mov [rsp + 512], r11
+    xor rcx, r11
+    mov rsi, rdx
+    and rsi, rax
+    shr rsi, 63
+    jmp SHORT L_L9
+L_L8:
+    xor esi, esi
+L_L9:
+    mov rax, qword ptr [rsp + 448]
+    not rcx
+    and rax, rcx
+    mov rcx, rax
+    mov rdx, rcx
+    mov r11, rcx
+    shl r11, 1
+    xor rdx, r11
+    mov rcx, rdx
+    mov r11, rcx
+    shl r11, 2
+    xor rdx, r11
+    mov rcx, rdx
+    mov r11, rcx
+    shl r11, 4
+    xor rdx, r11
+    mov rcx, rdx
+    mov r11, rcx
+    shl r11, 8
+    xor rdx, r11
+    mov rcx, rdx
+    mov r11, rcx
+    shl r11, 16
+    xor rdx, r11
+    mov rcx, rdx
+    mov r11, rcx
+    shl r11, 32
+    xor rdx, r11
+    mov rcx, rdx
+    xor rcx, rdi
+    xor edi, edi
+    mov rdx, rcx
+    shr rdx, 63
+    sub rdi, rdx
+    mov rdx, r15
+    or rdx, r8
+    not rdx
+    mov r8, rdx
+    mov r11, rax
+    not r11
+    and r8, r11
+    mov r11, r8
+    shl r11, 1
+    or r11, rbx
+    mov rbx, r8
+    shr rbx, 63
+    mov r8, r11
+    not r8
+    and rdx, r8
+    or r15, rdx
+    mov rdx, rcx
+    xor rdx, rax
+    not rdx
+    and r15, rdx
+    mov rax, qword ptr [rsp + 480]
+    and rax, rcx
+    or rbp, rax
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    por xmm15, xmm2
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmmword ptr [rsp + 480], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    por xmm15, xmm4
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pmovmskb eax, xmm15
+    test eax, eax
+    jne SHORT L_L10
+    movdqu xmm15, xmmword ptr [rsp + 352]
+    por xmm0, xmm15
+    jmp NEAR PTR L_L11
+L_L10:
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm13, 15
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmmword ptr [rsp + 480], xmm6
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    pand xmm15, xmm9
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm7
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 448]
+    pand xmm15, xmm14
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm8
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmm14, xmmword ptr [rsp + 448]
+    pand xmm15, xmm14
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm13, 14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    psubusb xmm15, xmm10
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm13, 13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm13, xmmword ptr [rsp + 448]
+    psubusb xmm13, xmm11
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    por xmm15, xmm13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm13, xmmword ptr [rsp + 448]
+    pand xmm13, xmm12
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pxor xmm13, xmm15
+    por xmm0, xmm13
+    movdqa xmm13, xmm2
+    palignr xmm13, xmm1, 15
+    movdqu xmmword ptr [rsp + 448], xmm13
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm6
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    pand xmm13, xmm9
+    movdqu xmmword ptr [rsp + 480], xmm7
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm13
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm13, xmmword ptr [rsp + 448]
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pand xmm13, xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm8
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pand xmm13, xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm1, 14
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    psubusb xmm15, xmm10
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmmword ptr [rsp + 448], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm1, 13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm1, xmmword ptr [rsp + 448]
+    psubusb xmm1, xmm11
+    movdqu xmm15, xmmword ptr [rsp + 480]
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    por xmm15, xmm1
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm1, xmmword ptr [rsp + 448]
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    movdqa xmm1, xmm3
+    palignr xmm1, xmm2, 15
+    movdqa xmm13, xmm1
+    psrlw xmm13, 4
+    pand xmm13, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 448], xmm6
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    pand xmm1, xmm9
+    movdqa xmm13, xmm7
+    pshufb xmm13, xmm1
+    movdqu xmm1, xmmword ptr [rsp + 448]
+    pand xmm1, xmm13
+    movdqa xmm13, xmm3
+    psrlw xmm13, 4
+    pand xmm13, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 448], xmm8
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pshufb xmm15, xmm13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    pand xmm1, xmm15
+    movdqa xmm13, xmm3
+    palignr xmm13, xmm2, 14
+    psubusb xmm13, xmm10
+    movdqu xmmword ptr [rsp + 448], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    palignr xmm15, xmm2, 13
+    movdqu xmmword ptr [rsp + 448], xmm15
+    movdqu xmm2, xmmword ptr [rsp + 448]
+    psubusb xmm2, xmm11
+    por xmm13, xmm2
+    pand xmm13, xmm12
+    pxor xmm13, xmm1
+    por xmm0, xmm13
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 15
+    movdqa xmm2, xmm1
+    psrlw xmm2, 4
+    pand xmm2, xmmword ptr [NVOL_K1]
+    movdqa xmm13, xmm6
+    pshufb xmm13, xmm2
+    pand xmm1, xmm9
+    movdqa xmm2, xmm7
+    pshufb xmm2, xmm1
+    pand xmm13, xmm2
+    movdqa xmm1, xmm4
+    psrlw xmm1, 4
+    pand xmm1, xmmword ptr [NVOL_K1]
+    movdqa xmm2, xmm8
+    pshufb xmm2, xmm1
+    pand xmm13, xmm2
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 14
+    psubusb xmm1, xmm10
+    movdqa xmm2, xmm4
+    palignr xmm2, xmm3, 13
+    psubusb xmm2, xmm11
+    por xmm1, xmm2
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    movdqu xmmword ptr [rsp + 352], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 352]
+    movdqu xmm14, xmmword ptr [rsp + 320]
+    psubusb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 352], xmm15
+L_L11:
+    movdqa xmm13, xmm4
+    test r14, r14
+    jne NEAR PTR L_Lrare7
+L_L12:
+    mov r11, [rsp + 416]
+    test r11, r11
+    je NEAR PTR L_L28
+    mov r9, r13
+    mov r11, [rsp + 416]
+    popcnt rax, r11
+    mov rcx, qword ptr [rsp + 96]
+    shl rcx, 2
+    mov r11, [rsp + 32]
+    lea rcx, [r11 + rcx]
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 4], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 8], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 12], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    cmp rax, 4
+    ja NEAR PTR L_Lrare13
+L_L30:
+    mov r11, [rsp + 96]
+    lea r11, [r11 + rax]
+    mov [rsp + 96], r11
+L_L28:
+    mov r14, r15
+    lea r9, [r13 + 64]
+    lea r12, [r12 + 128]
+    lea r13, [r13 + 128]
+    mov r11, [rsp + 384]
+    cmp r12, r11
+    jb NEAR PTR L_L2
+L_L3:
+    mov r11, [rsp + 64]
+    cmp r12, r11
+    jae NEAR PTR L_L44
+    movdqu xmm1, xmmword ptr [r12]
+    movdqu xmm2, xmmword ptr [r12 + 16]
+    movdqu xmm3, xmmword ptr [r12 + 32]
+    movdqu xmm4, xmmword ptr [r12 + 48]
+    movdqu xmmword ptr [rsp + 64], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pmovmskb eax, xmm15
+    movdqu xmmword ptr [rsp + 64], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pmovmskb ecx, xmm15
+    shl rcx, 16
+    or rax, rcx
+    movdqu xmmword ptr [rsp + 64], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pmovmskb ecx, xmm15
+    shl rcx, 32
+    or rax, rcx
+    movdqu xmmword ptr [rsp + 64], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pmovmskb ecx, xmm15
+    shl rcx, 48
+    or rax, rcx
+    movdqu xmmword ptr [rsp + 64], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pmovmskb ecx, xmm15
+    movdqu xmmword ptr [rsp + 64], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pmovmskb edx, xmm15
+    shl rdx, 16
+    or rcx, rdx
+    movdqu xmmword ptr [rsp + 64], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pmovmskb edx, xmm15
+    shl rdx, 32
+    or rcx, rdx
+    movdqu xmmword ptr [rsp + 192], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmm14, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    pmovmskb edx, xmm15
+    shl rdx, 48
+    mov r11, rcx
+    or r11, rdx
+    mov [rsp + 64], r11
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    pshufb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pmovmskb edx, xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    pshufb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pmovmskb r8d, xmm15
+    shl r8, 16
+    or rdx, r8
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    pshufb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pcmpeqb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pmovmskb r8d, xmm15
+    shl r8, 32
+    or rdx, r8
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    pshufb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pcmpeqb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pmovmskb r8d, xmm15
+    shl r8, 48
+    or rdx, r8
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pshufb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmmword ptr [rsp + 192], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pmovmskb r8d, xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pshufb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmmword ptr [rsp + 192], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pmovmskb r12d, xmm15
+    shl r12, 16
+    or r8, r12
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pshufb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmmword ptr [rsp + 192], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    movdqu xmm14, xmmword ptr [rsp + 192]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 224], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 224]
+    pmovmskb r12d, xmm15
+    shl r12, 32
+    or r8, r12
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pshufb xmm15, xmm4
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmmword ptr [rsp + 160], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    movdqu xmm14, xmmword ptr [rsp + 256]
+    por xmm15, xmm14
+    movdqu xmmword ptr [rsp + 160], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    movdqu xmm14, xmmword ptr [rsp + 160]
+    pcmpeqb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 192], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 192]
+    pmovmskb r12d, xmm15
+    shl r12, 48
+    or r8, r12
+    movdqu xmmword ptr [rsp + 128], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 160], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    pcmpeqb xmm15, xmm1
+    movdqu xmmword ptr [rsp + 160], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    pmovmskb r12d, xmm15
+    movdqu xmmword ptr [rsp + 128], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 160], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    pcmpeqb xmm15, xmm2
+    movdqu xmmword ptr [rsp + 160], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    pmovmskb r15d, xmm15
+    shl r15, 16
+    or r12, r15
+    movdqu xmmword ptr [rsp + 128], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 160], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    pcmpeqb xmm15, xmm3
+    movdqu xmmword ptr [rsp + 160], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 160]
+    pmovmskb r15d, xmm15
+    shl r15, 32
+    or r12, r15
+    movdqu xmmword ptr [rsp + 128], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pminub xmm15, xmm5
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm5, xmmword ptr [rsp + 128]
+    pcmpeqb xmm5, xmm4
+    pmovmskb r15d, xmm5
+    shl r15, 48
+    or r12, r15
+    mov r15, rsi
+    test rax, rax
+    je SHORT L_L46
+    mov r15, rax
+    mov r11, rsi
+    not r11
+    and r15, r11
+    mov r11, r15
+    shl r11, 1
+    mov qword ptr [rsp + 160], r11
+    mov r11, -6148914691236517206
+    mov [rsp + 128], r11
+    mov r11, [rsp + 160]
+    mov r10, [rsp + 128]
+    or r11, r10
+    mov [rsp + 160], r11
+    sub r11, r15
+    mov rcx, r11
+    mov r15, -6148914691236517206
+    xor rcx, r15
+    mov r15, rcx
+    mov r11, rax
+    or r11, rsi
+    mov [rsp + 128], r11
+    xor r15, r11
+    mov rsi, rcx
+    and rsi, rax
+    shr rsi, 63
+    jmp SHORT L_L47
+L_L46:
+    xor esi, esi
+L_L47:
+    mov rax, qword ptr [rsp + 64]
+    not r15
+    and rax, r15
+    mov rcx, rax
+    mov r15, rcx
+    mov r11, rcx
+    shl r11, 1
+    xor r15, r11
+    mov rcx, r15
+    mov r11, rcx
+    shl r11, 2
+    xor r15, r11
+    mov rcx, r15
+    mov r11, rcx
+    shl r11, 4
+    xor r15, r11
+    mov rcx, r15
+    mov r11, rcx
+    shl r11, 8
+    xor r15, r11
+    mov rcx, r15
+    mov r11, rcx
+    shl r11, 16
+    xor r15, r11
+    mov rcx, r15
+    mov r11, rcx
+    shl r11, 32
+    xor r15, r11
+    mov rcx, r15
+    xor rcx, rdi
+    xor edi, edi
+    mov r15, rcx
+    shr r15, 63
+    sub rdi, r15
+    mov r15, r8
+    or r15, rdx
+    not r15
+    mov rdx, r15
+    mov r11, rax
+    not r11
+    and rdx, r11
+    mov r11, rdx
+    shl r11, 1
+    or r11, rbx
+    mov [rsp + 128], r11
+    mov rbx, rdx
+    shr rbx, 63
+    mov rdx, r11
+    not rdx
+    and r15, rdx
+    or r8, r15
+    mov rdx, rcx
+    xor rdx, rax
+    not rdx
+    and r8, rdx
+    and r12, rcx
+    or rbp, r12
+    movdqa xmm5, xmm1
+    por xmm5, xmm2
+    movdqu xmmword ptr [rsp + 64], xmm3
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    por xmm15, xmm4
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    por xmm5, xmm15
+    pmovmskb eax, xmm5
+    test eax, eax
+    jne SHORT L_L48
+    movdqu xmm15, xmmword ptr [rsp + 352]
+    por xmm0, xmm15
+    jmp NEAR PTR L_L49
+L_L48:
+    movdqa xmm5, xmm1
+    palignr xmm5, xmm13, 15
+    movdqu xmmword ptr [rsp + 64], xmm5
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmmword ptr [rsp + 64], xmm6
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 128]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    pand xmm5, xmm9
+    movdqu xmmword ptr [rsp + 128], xmm7
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pshufb xmm15, xmm5
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm5, xmmword ptr [rsp + 64]
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pand xmm5, xmm15
+    movdqu xmmword ptr [rsp + 64], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    psrlw xmm15, 4
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    pand xmm15, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmmword ptr [rsp + 64], xmm8
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmm14, xmmword ptr [rsp + 128]
+    pshufb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pand xmm5, xmm15
+    movdqu xmmword ptr [rsp + 64], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    palignr xmm15, xmm13, 14
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    psubusb xmm15, xmm10
+    movdqu xmmword ptr [rsp + 128], xmm15
+    movdqu xmmword ptr [rsp + 64], xmm1
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    palignr xmm15, xmm13, 13
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm13, xmmword ptr [rsp + 64]
+    psubusb xmm13, xmm11
+    movdqu xmm15, xmmword ptr [rsp + 128]
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    por xmm15, xmm13
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm13, xmmword ptr [rsp + 64]
+    pand xmm13, xmm12
+    pxor xmm13, xmm5
+    por xmm0, xmm13
+    movdqa xmm5, xmm2
+    palignr xmm5, xmm1, 15
+    movdqa xmm13, xmm5
+    psrlw xmm13, 4
+    pand xmm13, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 64], xmm6
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pshufb xmm15, xmm13
+    movdqu xmmword ptr [rsp + 64], xmm15
+    pand xmm5, xmm9
+    movdqa xmm13, xmm7
+    pshufb xmm13, xmm5
+    movdqu xmm5, xmmword ptr [rsp + 64]
+    pand xmm5, xmm13
+    movdqa xmm13, xmm2
+    psrlw xmm13, 4
+    pand xmm13, xmmword ptr [NVOL_K1]
+    movdqu xmmword ptr [rsp + 64], xmm8
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pshufb xmm15, xmm13
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pand xmm5, xmm15
+    movdqa xmm13, xmm2
+    palignr xmm13, xmm1, 14
+    psubusb xmm13, xmm10
+    movdqu xmmword ptr [rsp + 64], xmm2
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    palignr xmm15, xmm1, 13
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm1, xmmword ptr [rsp + 64]
+    psubusb xmm1, xmm11
+    por xmm13, xmm1
+    pand xmm13, xmm12
+    pxor xmm13, xmm5
+    por xmm0, xmm13
+    movdqa xmm1, xmm3
+    palignr xmm1, xmm2, 15
+    movdqa xmm5, xmm1
+    psrlw xmm5, 4
+    pand xmm5, xmmword ptr [NVOL_K1]
+    movdqa xmm13, xmm6
+    pshufb xmm13, xmm5
+    pand xmm1, xmm9
+    movdqa xmm5, xmm7
+    pshufb xmm5, xmm1
+    pand xmm13, xmm5
+    movdqa xmm1, xmm3
+    psrlw xmm1, 4
+    pand xmm1, xmmword ptr [NVOL_K1]
+    movdqa xmm5, xmm8
+    pshufb xmm5, xmm1
+    pand xmm13, xmm5
+    movdqa xmm1, xmm3
+    palignr xmm1, xmm2, 14
+    psubusb xmm1, xmm10
+    movdqa xmm5, xmm3
+    palignr xmm5, xmm2, 13
+    psubusb xmm5, xmm11
+    por xmm1, xmm5
+    pand xmm1, xmm12
+    pxor xmm1, xmm13
+    por xmm0, xmm1
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 15
+    movdqa xmm2, xmm1
+    psrlw xmm2, 4
+    pand xmm2, xmmword ptr [NVOL_K1]
+    pshufb xmm6, xmm2
+    pand xmm1, xmm9
+    pshufb xmm7, xmm1
+    pand xmm6, xmm7
+    movdqa xmm1, xmm4
+    psrlw xmm1, 4
+    pand xmm1, xmmword ptr [NVOL_K1]
+    pshufb xmm8, xmm1
+    pand xmm6, xmm8
+    movdqa xmm1, xmm4
+    palignr xmm1, xmm3, 14
+    psubusb xmm1, xmm10
+    movdqa xmm2, xmm4
+    palignr xmm2, xmm3, 13
+    psubusb xmm2, xmm11
+    por xmm1, xmm2
+    pand xmm1, xmm12
+    pxor xmm1, xmm6
+    por xmm0, xmm1
+    movdqu xmmword ptr [rsp + 352], xmm4
+    movdqu xmm15, xmmword ptr [rsp + 352]
+    movdqu xmm14, xmmword ptr [rsp + 320]
+    psubusb xmm15, xmm14
+    movdqu xmmword ptr [rsp + 352], xmm15
+L_L49:
+    movdqa xmm13, xmm4
+    test r14, r14
+    je NEAR PTR L_L50
+    popcnt rax, r14
+    mov rcx, qword ptr [rsp + 96]
+    shl rcx, 2
+    mov r11, [rsp + 32]
+    lea rcx, [r11 + rcx]
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 4], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 8], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 12], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    cmp rax, 4
+    jbe NEAR PTR L_L52
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 16], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 20], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 24], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 28], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    cmp rax, 8
+    jbe NEAR PTR L_L54
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 32], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 36], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 40], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 44], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    cmp rax, 12
+    jbe NEAR PTR L_L56
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 48], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 52], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 56], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 60], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    cmp rax, 16
+    jbe NEAR PTR L_L58
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 64], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 68], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 72], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 76], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    cmp rax, 20
+    jbe NEAR PTR L_L60
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 80], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 84], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 88], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    mov edx, 64
+    bsf r12, r14
+    cmovz r12, rdx
+    lea rdx, [r9 + r12]
+    mov dword ptr [rcx + 92], edx
+    mov rdx, r14
+    mov r12, r14
+    sub r12, 1
+    and rdx, r12
+    mov r14, rdx
+    cmp rax, 24
+    jbe SHORT L_L62
+    mov edx, 24
+    cmp rdx, rax
+    jae SHORT L_L65
+    DB 15, 31, 128, 0, 0, 0, 0
+L_L64:
+    mov r12, rdx
+    shl r12, 2
+    bsf r15, r14
+    lea r15, [r9 + r15]
+    mov dword ptr [rcx + r12], r15d
+    mov r12, r14
+    mov r15, r14
+    sub r15, 1
+    and r12, r15
+    mov r14, r12
+    add rdx, 1
+    cmp rdx, rax
+    jb SHORT L_L64
+L_L65:
+L_L62:
+L_L60:
+L_L58:
+L_L56:
+L_L54:
+L_L52:
+    mov r11, [rsp + 96]
+    lea r11, [r11 + rax]
+    mov [rsp + 96], r11
+L_L50:
+    mov r14, r8
+    mov r9, r13
+L_L44:
+    test r14, r14
+    je NEAR PTR L_L66
+    popcnt rax, r14
+    mov rcx, qword ptr [rsp + 96]
+    shl rcx, 2
+    mov r11, [rsp + 32]
+    lea rcx, [r11 + rcx]
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 4], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 8], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 12], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 4
+    jbe NEAR PTR L_L68
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 16], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 20], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 24], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 28], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 8
+    jbe NEAR PTR L_L70
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 32], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 36], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 40], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 44], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 12
+    jbe NEAR PTR L_L72
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 48], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 52], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 56], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 60], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 16
+    jbe NEAR PTR L_L74
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 64], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 68], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 72], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 76], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 20
+    jbe NEAR PTR L_L76
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 80], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 84], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 88], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 92], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 24
+    jbe SHORT L_L78
+    mov edx, 24
+    cmp rdx, rax
+    jae SHORT L_L81
+    DB 15, 31, 128, 0, 0, 0, 0
+L_L80:
+    mov r8, rdx
+    shl r8, 2
+    bsf r12, r14
+    lea r12, [r9 + r12]
+    mov dword ptr [rcx + r8], r12d
+    mov r8, r14
+    mov r12, r14
+    sub r12, 1
+    and r8, r12
+    mov r14, r8
+    add rdx, 1
+    cmp rdx, rax
+    jb SHORT L_L80
+L_L81:
+L_L78:
+L_L76:
+L_L74:
+L_L72:
+L_L70:
+L_L68:
+    mov r11, [rsp + 96]
+    lea r11, [r11 + rax]
+    mov [rsp + 96], r11
+L_L66:
+    mov r11, [rsp]
+    mov qword ptr [r11], rsi
+    mov r11, [rsp]
+    mov qword ptr [r11 + 8], rdi
+    mov r11, [rsp]
+    mov qword ptr [r11 + 16], rbx
+    mov r11, [rsp]
+    mov qword ptr [r11 + 24], rbp
+    mov rax, qword ptr [rsp + 288]
+    pxor xmm1, xmm1
+    pcmpeqb xmm0, xmm1
+    pmovmskb ecx, xmm0
+    cmp ecx, 65535
+    sete cl
+    movzx ecx, cl
+    xor ecx, 1
+    or rax, rcx
+    mov r11, [rsp]
+    mov qword ptr [r11 + 32], rax
+    pxor xmm0, xmm0
+    movdqu xmm1, xmmword ptr [rsp + 352]
+    pcmpeqb xmm1, xmm0
+    pmovmskb eax, xmm1
+    cmp eax, 65535
+    sete al
+    movzx eax, al
+    xor eax, 1
+    mov r11, [rsp]
+    mov qword ptr [r11 + 40], rax
+    mov r11, [rsp]
+    movdqu xmmword ptr [r11 + 64], xmm13
+    mov rax, qword ptr [rsp + 96]
+    movdqu xmm6, xmmword ptr [rsp + 576]
+    movdqu xmm7, xmmword ptr [rsp + 592]
+    movdqu xmm8, xmmword ptr [rsp + 608]
+    movdqu xmm9, xmmword ptr [rsp + 624]
+    movdqu xmm10, xmmword ptr [rsp + 640]
+    movdqu xmm11, xmmword ptr [rsp + 656]
+    movdqu xmm12, xmmword ptr [rsp + 672]
+    movdqu xmm13, xmmword ptr [rsp + 688]
+    movdqu xmm14, xmmword ptr [rsp + 704]
+    movdqu xmm15, xmmword ptr [rsp + 720]
+    add rsp, 744
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rbx
+    ret
+L_Lrare1:
+    mov edx, 24
+    cmp rdx, rax
+    jae SHORT L_L27
+    DB 15, 31, 128, 0, 0, 0, 0
+L_L26:
+    mov r8, rdx
+    shl r8, 2
+    bsf r11, r14
+    lea r10, [r9 + r11]
+    mov [rsp + 480], r10
+    mov r11, r10
+    mov dword ptr [rcx + r8], r11d
+    mov r8, r14
+    mov r11, r14
+    sub r11, 1
+    mov [rsp + 448], r11
+    and r8, r11
+    mov r14, r8
+    add rdx, 1
+    cmp rdx, rax
+    jb SHORT L_L26
+L_L27:
+    jmp NEAR PTR L_L24
+L_Lrare2:
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 80], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 84], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 88], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 92], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 24
+    ja NEAR PTR L_Lrare1
+L_L24:
+    jmp NEAR PTR L_L22
+L_Lrare3:
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 64], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 68], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 72], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 76], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 20
+    ja NEAR PTR L_Lrare2
+L_L22:
+    jmp NEAR PTR L_L20
+L_Lrare4:
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 48], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 52], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 56], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 60], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 16
+    ja NEAR PTR L_Lrare3
+L_L20:
+    jmp NEAR PTR L_L18
+L_Lrare5:
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 32], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 36], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 40], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 44], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 12
+    ja NEAR PTR L_Lrare4
+L_L18:
+    jmp NEAR PTR L_L16
+L_Lrare6:
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 16], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 20], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 24], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 28], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 8
+    ja NEAR PTR L_Lrare5
+L_L16:
+    jmp NEAR PTR L_L14
+L_Lrare7:
+    popcnt rax, r14
+    mov rcx, qword ptr [rsp + 96]
+    shl rcx, 2
+    mov r11, [rsp + 32]
+    lea rcx, [r11 + rcx]
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 4], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 8], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    mov edx, 64
+    bsf r8, r14
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 12], edx
+    mov rdx, r14
+    mov r8, r14
+    sub r8, 1
+    and rdx, r8
+    mov r14, rdx
+    cmp rax, 4
+    ja NEAR PTR L_Lrare6
+L_L14:
+    mov r11, [rsp + 96]
+    lea r11, [r11 + rax]
+    mov [rsp + 96], r11
+    jmp NEAR PTR L_L12
+L_Lrare8:
+    mov edx, 24
+    cmp rdx, rax
+    jae SHORT L_L43
+    mov r14, r13
+    DB 144
+L_L42:
+    mov r8, rdx
+    shl r8, 2
+    mov r11, [rsp + 416]
+    bsf r9, r11
+    lea r9, [r14 + r9]
+    mov dword ptr [rcx + r8], r9d
+    mov r8, qword ptr [rsp + 416]
+    mov r9, qword ptr [rsp + 416]
+    sub r9, 1
+    and r8, r9
+    mov qword ptr [rsp + 416], r8
+    add rdx, 1
+    cmp rdx, rax
+    jb SHORT L_L42
+L_L43:
+    jmp NEAR PTR L_L40
+L_Lrare9:
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 80], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 84], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 88], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 92], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    cmp rax, 24
+    ja NEAR PTR L_Lrare8
+L_L40:
+    jmp NEAR PTR L_L38
+L_Lrare10:
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 64], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 68], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 72], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 76], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    cmp rax, 20
+    ja NEAR PTR L_Lrare9
+L_L38:
+    jmp NEAR PTR L_L36
+L_Lrare11:
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 48], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 52], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 56], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 60], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    cmp rax, 16
+    ja NEAR PTR L_Lrare10
+L_L36:
+    jmp NEAR PTR L_L34
+L_Lrare12:
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 32], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 36], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 40], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 44], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    cmp rax, 12
+    ja NEAR PTR L_Lrare11
+L_L34:
+    jmp NEAR PTR L_L32
+L_Lrare13:
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 16], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 20], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 24], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    mov edx, 64
+    mov r11, [rsp + 416]
+    bsf r8, r11
+    cmovz r8, rdx
+    lea rdx, [r9 + r8]
+    mov dword ptr [rcx + 28], edx
+    mov rdx, qword ptr [rsp + 416]
+    mov r8, qword ptr [rsp + 416]
+    sub r8, 1
+    and rdx, r8
+    mov qword ptr [rsp + 416], rdx
+    cmp rax, 8
+    ja NEAR PTR L_Lrare12
+L_L32:
+    jmp NEAR PTR L_L30
+nvol_json_index_sse42 ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 68, 0, 0
 nvol_json_index_avx2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -62942,15 +66006,21 @@ nvol_json_index_raw_resolve PROC PUBLIC FRAME
     call nvol_cpu_avx2_pclmul_bmi1
     test eax, eax
     jne SHORT L_T0
-    call nvol_cpu_ssse3
+    call nvol_cpu_sse42
     test eax, eax
     jne SHORT L_T1
+    call nvol_cpu_ssse3
+    test eax, eax
+    jne SHORT L_T2
     lea rax, [nvol_json_index_scalar]
     jmp SHORT L_done
 L_T0:
     lea rax, [nvol_json_index_avx2]
     jmp SHORT L_done
 L_T1:
+    lea rax, [nvol_json_index_sse42]
+    jmp SHORT L_done
+L_T2:
     lea rax, [nvol_json_index_ssse3]
     jmp SHORT L_done
 L_done:
@@ -62963,8 +66033,6 @@ L_done:
     jmp qword ptr [nvol_json_index_raw_ptr]
 nvol_json_index_raw_resolve ENDP
 
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0

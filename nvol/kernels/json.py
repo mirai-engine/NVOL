@@ -295,17 +295,19 @@ def kernel(isa: ISA | None) -> Function:
 
 
 def build(isas: list, mod: Module) -> None:
-    """Its own ISA set, as Teddy and byteset: AVX2 (with PCLMULQDQ), then SSSE3 (pshufb), then
-    the scalar masks on x86_64; NEON alone on aarch64."""
+    """Its own ISA set, as Teddy and byteset: AVX2 (with PCLMULQDQ), then SSE4.2 (simdjson's
+    westmere class: POPCNT), then SSSE3 (pshufb), then the scalar masks on x86_64; NEON alone on
+    aarch64."""
     if "neon" in [i.name for i in isas]:     # NEON is the baseline: no scalar masks
         neon = kernel(ISAS["neon"])
         mod.functions.append(neon)
         entries = [(None, neon.name)]
     else:
         scalar, avx2, ssse3 = kernel(None), kernel(ISAS["avx2"]), kernel(ISAS["ssse3"])
-        mod.functions += [scalar, ssse3, avx2]
-        entries = [(prim("cpu_avx2_pclmul_bmi1"), avx2.name), (prim("cpu_ssse3"), ssse3.name),
-                   (None, scalar.name)]
+        sse42 = kernel(ISAS["sse42"])
+        mod.functions += [scalar, ssse3, sse42, avx2]
+        entries = [(prim("cpu_avx2_pclmul_bmi1"), avx2.name), (prim("cpu_sse42"), sse42.name),
+                   (prim("cpu_ssse3"), ssse3.name), (None, scalar.name)]
     rb = Builder("nvol_json_index_raw", USIZE, public=True, doc=DOC)
     _params(rb)
     raw = rb.build()

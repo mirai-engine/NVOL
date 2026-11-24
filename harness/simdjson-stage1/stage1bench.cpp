@@ -1,7 +1,8 @@
 // simdjson's stage 1 against nvol_json_index_raw, on the same document, for hardware counters.
 //
 //   stage1bench count IMPL N FILE    IMPL: nvol | simdjson (stage 1: AVX2, haswell),
-//                                    nvol-ssse3 | simdjson-westmere (the SSE kernels),
+//                                    nvol-sse42 | nvol-ssse3 | simdjson-westmere (the SSE
+//                                    kernels),
 //                                    utf8-nvol | utf8-simdjson (nvol_utf8_valid,
 //                                    simdjson::validate_utf8); N passes
 //   stage1bench same FILE            both give the same structural positions, with each pair of
@@ -19,7 +20,7 @@
 #include "simdjson.h"
 extern "C" {
 #include "nvol.h"
-void nvol_test_set_avx2(int v);   // nvol.c built with NVOL_TESTING: 0 forces the SSE kernels
+void nvol_test_set_avx2(int v);   // nvol.c built with NVOL_TESTING: 2 forces SSE4.2, 0 SSSE3
 }
 
 static std::vector<uint8_t> load(const char *path, size_t &len) {
@@ -63,7 +64,7 @@ int main(int argc, char **argv) {
         auto buf = load(argv[2], len);
         int rc = 0;
         for (int sse = 0; sse < 2 && !rc; sse++) {
-        nvol_test_set_avx2(sse ? 0 : -1);
+        nvol_test_set_avx2(sse ? 2 : -1);
         std::vector<uint32_t> out(len + 64);
         bool utf8_ok;
         size_t n = nvol(buf.data(), len, out, &utf8_ok);
@@ -83,7 +84,7 @@ int main(int argc, char **argv) {
         }
         // simdjson writes len, len, 0 past its last structural; n_structural_indexes leaves them out
         bool ok = m == n && std::memcmp(out.data(), s.p->structural_indexes.get(), n * 4) == 0;
-        std::printf("%s nvol%s %zu simdjson %zu (%s): %s\n", argv[2], sse ? "-ssse3" : "", n, m,
+        std::printf("%s nvol%s %zu simdjson %zu (%s): %s\n", argv[2], sse ? "-sse42" : "", n, m,
                     simdjson::get_active_implementation()->name().c_str(), ok ? "same" : "DIFFERENT");
         rc = ok ? 0 : 1;
         }
@@ -101,8 +102,9 @@ int main(int argc, char **argv) {
         for (long i = 0; i <= n; i++) sum += nvol_utf8_valid(buf.data(), len);
     } else if (!std::strcmp(argv[2], "utf8-simdjson")) {
         for (long i = 0; i <= n; i++) sum += simdjson::validate_utf8((const char *)buf.data(), len);
-    } else if (!std::strcmp(argv[2], "nvol") || !std::strcmp(argv[2], "nvol-ssse3")) {
-        if (argv[2][4]) nvol_test_set_avx2(0);
+    } else if (!std::strcmp(argv[2], "nvol") || !std::strcmp(argv[2], "nvol-ssse3") ||
+               !std::strcmp(argv[2], "nvol-sse42")) {
+        if (argv[2][4]) nvol_test_set_avx2(!std::strcmp(argv[2], "nvol-sse42") ? 2 : 0);
         std::vector<uint32_t> out(len + 64);
         sum += nvol(buf.data(), len, out);  // the 0-call run pays the first touch too
         for (long i = 0; i < n; i++) sum += nvol(buf.data(), len, out);

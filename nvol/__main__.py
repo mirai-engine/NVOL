@@ -433,8 +433,9 @@ def check_json(mod, cases: int, seed: int) -> int:
     rng = random.Random(seed)
     bad = total = 0
     arch = getattr(mod, "arch", "x86_64")
-    cpus = ([{"avx2": True, "pclmul": True, "ssse3": True}, {"avx2": False, "ssse3": True},
-             {"avx2": False, "ssse3": False}] if arch == "x86_64" else [{}])
+    cpus = ([{"avx2": True, "pclmul": True, "ssse3": True}, {"avx2": False, "sse42": True},
+             {"avx2": False, "sse42": False, "ssse3": True},
+             {"avx2": False, "sse42": False, "ssse3": False}] if arch == "x86_64" else [{}])
     for data, splits, state in json_cases(rng, cases):
         want = oracle.json_index(data, 0, state)
         for cpu in cpus:
