@@ -41,6 +41,7 @@ _DRECTVE SEGMENT INFO ALIAS(".drectve")
     DB "-export:nvol_utf8_valid "
     DB "-export:nvol_is_eight_digits "
     DB "-export:nvol_parse_eight_digits "
+    DB "-export:nvol_json_copy_and_find "
 _DRECTVE ENDS
 _NVOLK SEGMENT ALIGN(64) READ ALIAS(".rdata") 'CONST'
 ALIGN 32
@@ -224,6 +225,9 @@ nvol_utf8_valid_ptr DQ nvol_utf8_valid_resolve
 ALIGN 8
 PUBLIC nvol_parse_eight_digits_ptr
 nvol_parse_eight_digits_ptr DQ nvol_parse_eight_digits_resolve
+ALIGN 8
+PUBLIC nvol_json_copy_and_find_ptr
+nvol_json_copy_and_find_ptr DQ nvol_json_copy_and_find_resolve
 _DATA ENDS
 _NVOLT SEGMENT ALIGN(64) READ EXECUTE ALIAS(".text") 'CODE'
 
@@ -63893,6 +63897,95 @@ L_done:
     pop rcx
     jmp qword ptr [nvol_parse_eight_digits_ptr]
 nvol_parse_eight_digits_resolve ENDP
+
+    DB 15, 31, 64, 0
+nvol_json_copy_and_find_sse2 PROC PUBLIC
+    movdqa xmm0, xmmword ptr [NVOL_K11]
+    movdqa xmm1, xmmword ptr [NVOL_K12]
+    movdqu xmm2, xmmword ptr [rcx]
+    movdqu xmm3, xmmword ptr [rcx + 16]
+    movdqu xmmword ptr [rdx], xmm2
+    movdqu xmmword ptr [rdx + 16], xmm3
+    movdqa xmm4, xmm2
+    pcmpeqb xmm4, xmm0
+    pmovmskb eax, xmm4
+    movdqa xmm4, xmm3
+    pcmpeqb xmm4, xmm0
+    pmovmskb ecx, xmm4
+    shl rcx, 16
+    or rax, rcx
+    pcmpeqb xmm2, xmm1
+    pmovmskb ecx, xmm2
+    shl rcx, 32
+    or rax, rcx
+    pcmpeqb xmm3, xmm1
+    pmovmskb ecx, xmm3
+    shl rcx, 48
+    or rax, rcx
+    ret
+nvol_json_copy_and_find_sse2 ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
+nvol_json_copy_and_find_avx2 PROC PUBLIC
+    vmovdqa ymm0, ymmword ptr [NVOL_K23]
+    vmovdqa ymm1, ymmword ptr [NVOL_K24]
+    vmovdqu ymm2, ymmword ptr [rcx]
+    vmovdqu ymmword ptr [rdx], ymm2
+    vpcmpeqb ymm0, ymm2, ymm0
+    vpmovmskb eax, ymm0
+    vpcmpeqb ymm0, ymm2, ymm1
+    vpmovmskb ecx, ymm0
+    shl rcx, 32
+    or rax, rcx
+    vzeroupper
+    ret
+nvol_json_copy_and_find_avx2 ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
+nvol_json_copy_and_find PROC PUBLIC
+    jmp qword ptr [nvol_json_copy_and_find_ptr]
+nvol_json_copy_and_find ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
+nvol_json_copy_and_find_resolve PROC PUBLIC FRAME
+    push rcx
+    .PUSHREG rcx
+    push rdx
+    .PUSHREG rdx
+    push r8
+    .PUSHREG r8
+    push r9
+    .PUSHREG r9
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    call nvol_cpu_avx2
+    test eax, eax
+    jne SHORT L_T0
+    lea rax, [nvol_json_copy_and_find_sse2]
+    jmp SHORT L_done
+L_T0:
+    lea rax, [nvol_json_copy_and_find_avx2]
+    jmp SHORT L_done
+L_done:
+    mov qword ptr [nvol_json_copy_and_find_ptr], rax
+    add rsp, 40
+    pop r9
+    pop r8
+    pop rdx
+    pop rcx
+    jmp qword ptr [nvol_json_copy_and_find_ptr]
+nvol_json_copy_and_find_resolve ENDP
 
 ALIGN 8
 nvol_fntbl_teddy DD nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy

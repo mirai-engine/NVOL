@@ -207,6 +207,10 @@ nvol_utf8_valid_ptr:
 .globl nvol_parse_eight_digits_ptr
 nvol_parse_eight_digits_ptr:
     .quad nvol_parse_eight_digits_resolve
+.p2align 3
+.globl nvol_json_copy_and_find_ptr
+nvol_json_copy_and_find_ptr:
+    .quad nvol_json_copy_and_find_resolve
 .section .drectve
     .ascii " -export:nvol_memchr_raw"
     .ascii " -export:nvol_memchr"
@@ -243,6 +247,7 @@ nvol_parse_eight_digits_ptr:
     .ascii " -export:nvol_utf8_valid"
     .ascii " -export:nvol_is_eight_digits"
     .ascii " -export:nvol_parse_eight_digits"
+    .ascii " -export:nvol_json_copy_and_find"
 .text
 .p2align 6
 
@@ -64520,6 +64525,101 @@ nvol_parse_eight_digits_resolve:
     pop %rdx
     pop %rcx
     jmp *nvol_parse_eight_digits_ptr(%rip)
+.seh_endproc
+
+    .byte 15, 31, 64, 0
+.globl nvol_json_copy_and_find_sse2
+.def nvol_json_copy_and_find_sse2; .scl 2; .type 32; .endef
+nvol_json_copy_and_find_sse2:
+    movdqa NVOL_K11(%rip), %xmm0
+    movdqa NVOL_K12(%rip), %xmm1
+    movdqu (%rcx), %xmm2
+    movdqu 16(%rcx), %xmm3
+    movdqu %xmm2, (%rdx)
+    movdqu %xmm3, 16(%rdx)
+    movdqa %xmm2, %xmm4
+    pcmpeqb %xmm0, %xmm4
+    pmovmskb %xmm4, %eax
+    movdqa %xmm3, %xmm4
+    pcmpeqb %xmm0, %xmm4
+    pmovmskb %xmm4, %ecx
+    shl $16, %rcx
+    or %rcx, %rax
+    pcmpeqb %xmm1, %xmm2
+    pmovmskb %xmm2, %ecx
+    shl $32, %rcx
+    or %rcx, %rax
+    pcmpeqb %xmm1, %xmm3
+    pmovmskb %xmm3, %ecx
+    shl $48, %rcx
+    or %rcx, %rax
+    ret
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
+.globl nvol_json_copy_and_find_avx2
+.def nvol_json_copy_and_find_avx2; .scl 2; .type 32; .endef
+nvol_json_copy_and_find_avx2:
+    vmovdqa NVOL_K23(%rip), %ymm0
+    vmovdqa NVOL_K24(%rip), %ymm1
+    vmovdqu (%rcx), %ymm2
+    vmovdqu %ymm2, (%rdx)
+    vpcmpeqb %ymm0, %ymm2, %ymm0
+    vpmovmskb %ymm0, %eax
+    vpcmpeqb %ymm1, %ymm2, %ymm0
+    vpmovmskb %ymm0, %ecx
+    shl $32, %rcx
+    or %rcx, %rax
+    vzeroupper
+    ret
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
+.globl nvol_json_copy_and_find
+.def nvol_json_copy_and_find; .scl 2; .type 32; .endef
+nvol_json_copy_and_find:
+    jmp *nvol_json_copy_and_find_ptr(%rip)
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
+.globl nvol_json_copy_and_find_resolve
+.def nvol_json_copy_and_find_resolve; .scl 2; .type 32; .endef
+nvol_json_copy_and_find_resolve:
+.seh_proc nvol_json_copy_and_find_resolve
+    push %rcx
+.seh_pushreg %rcx
+    push %rdx
+.seh_pushreg %rdx
+    push %r8
+.seh_pushreg %r8
+    push %r9
+.seh_pushreg %r9
+    sub $40, %rsp
+.seh_stackalloc 40
+.seh_endprologue
+    call nvol_cpu_avx2
+    test %eax, %eax
+    {disp8} jne .Lnvol_json_copy_and_find_resolve.T0
+    lea nvol_json_copy_and_find_sse2(%rip), %rax
+    {disp8} jmp .Lnvol_json_copy_and_find_resolve.done
+.Lnvol_json_copy_and_find_resolve.T0:
+    lea nvol_json_copy_and_find_avx2(%rip), %rax
+    {disp8} jmp .Lnvol_json_copy_and_find_resolve.done
+.Lnvol_json_copy_and_find_resolve.done:
+    mov %rax, nvol_json_copy_and_find_ptr(%rip)
+    add $40, %rsp
+    pop %r9
+    pop %r8
+    pop %rdx
+    pop %rcx
+    jmp *nvol_json_copy_and_find_ptr(%rip)
 .seh_endproc
 
 .p2align 3

@@ -194,6 +194,11 @@ global nvol_parse_eight_digits_ptr:data hidden
 nvol_parse_eight_digits_ptr:
 L.nvol_parse_eight_digits_ptr:
     dq L.nvol_parse_eight_digits_resolve
+align 8, db 0
+global nvol_json_copy_and_find_ptr:data hidden
+nvol_json_copy_and_find_ptr:
+L.nvol_json_copy_and_find_ptr:
+    dq L.nvol_json_copy_and_find_resolve
 section .note.GNU-stack noalloc noexec nowrite progbits
 section .text align=64
 
@@ -61918,6 +61923,96 @@ L.nvol_parse_eight_digits_resolve:
     pop rdi
     jmp qword [rel L.nvol_parse_eight_digits_ptr]
 
+global nvol_json_copy_and_find_sse2:function hidden 96
+nvol_json_copy_and_find_sse2:
+L.nvol_json_copy_and_find_sse2:
+    movdqa xmm0, [rel NVOL_K11]
+    movdqa xmm1, [rel NVOL_K12]
+    movdqu xmm2, [rdi]
+    movdqu xmm3, [rdi + 16]
+    movdqu [rsi], xmm2
+    movdqu [rsi + 16], xmm3
+    movdqa xmm4, xmm2
+    pcmpeqb xmm4, xmm0
+    pmovmskb eax, xmm4
+    movdqa xmm4, xmm3
+    pcmpeqb xmm4, xmm0
+    pmovmskb ecx, xmm4
+    shl rcx, 16
+    or rax, rcx
+    pcmpeqb xmm2, xmm1
+    pmovmskb ecx, xmm2
+    shl rcx, 32
+    or rax, rcx
+    pcmpeqb xmm3, xmm1
+    pmovmskb ecx, xmm3
+    shl rcx, 48
+    or rax, rcx
+    ret
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_json_copy_and_find_avx2:function hidden 51
+nvol_json_copy_and_find_avx2:
+L.nvol_json_copy_and_find_avx2:
+    vmovdqa ymm0, [rel NVOL_K23]
+    vmovdqa ymm1, [rel NVOL_K24]
+    vmovdqu ymm2, [rdi]
+    vmovdqu [rsi], ymm2
+    vpcmpeqb ymm0, ymm2, ymm0
+    vpmovmskb eax, ymm0
+    vpcmpeqb ymm0, ymm2, ymm1
+    vpmovmskb ecx, ymm0
+    shl rcx, 32
+    or rax, rcx
+    vzeroupper
+    ret
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_json_copy_and_find:function 6
+nvol_json_copy_and_find:
+L.nvol_json_copy_and_find:
+    jmp qword [rel L.nvol_json_copy_and_find_ptr]
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_json_copy_and_find_resolve:function hidden 64
+nvol_json_copy_and_find_resolve:
+L.nvol_json_copy_and_find_resolve:
+    push rdi
+    push rsi
+    push rdx
+    push rcx
+    push r8
+    push r9
+    sub rsp, 8
+    call nvol_cpu_avx2 wrt ..plt
+    test eax, eax
+    jne strict short L.nvol_json_copy_and_find_resolve + 30
+    lea rax, [rel L.nvol_json_copy_and_find_sse2]
+    jmp strict short L.nvol_json_copy_and_find_resolve + 39
+; .T0:
+    lea rax, [rel L.nvol_json_copy_and_find_avx2]
+    jmp strict short L.nvol_json_copy_and_find_resolve + 39
+; .done:
+    mov qword [rel L.nvol_json_copy_and_find_ptr], rax
+    add rsp, 8
+    pop r9
+    pop r8
+    pop rcx
+    pop rdx
+    pop rsi
+    pop rdi
+    jmp qword [rel L.nvol_json_copy_and_find_ptr]
+
 align 8
 nvol_fntbl_teddy:
     dd L.nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy
@@ -63236,8 +63331,28 @@ nvol_cie:
     dd L.nvol_parse_eight_digits - $
     dd 6
     db 0, 0, 0, 0
-    dd 72
+    dd 68
     dd $ - nvol_cie
     dd L.nvol_parse_eight_digits_resolve - $
     dd 64
-    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 102, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0, 0, 0, 0, 0
+    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 102, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_json_copy_and_find_sse2 - $
+    dd 96
+    db 0, 0, 0, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_json_copy_and_find_avx2 - $
+    dd 51
+    db 0, 0, 0, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_json_copy_and_find - $
+    dd 6
+    db 0, 0, 0, 0
+    dd 68
+    dd $ - nvol_cie
+    dd L.nvol_json_copy_and_find_resolve - $
+    dd 64
+    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 102, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0

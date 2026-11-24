@@ -80,6 +80,15 @@ JSON_WS = b" \t\n\r"
 JSON_OP = {0x3A, 0x7B, 0x2C, 0x7D}
 
 
+def copy_and_find(data: bytes) -> int:
+    """The masks of 32 bytes: bit i of the low half for a '\\' at byte i, of the high half for
+    a '"'."""
+    assert len(data) == 32
+    bs = sum(1 << i for i, c in enumerate(data) if c == 0x5C)
+    q = sum(1 << i for i, c in enumerate(data) if c == 0x22)
+    return bs | q << 32
+
+
 def is_eight_digits(data: bytes) -> int:
     """1 when the 8 bytes are ASCII digits, else 0."""
     assert len(data) == 8

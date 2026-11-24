@@ -1,10 +1,10 @@
 from ..ir import Module
 from ..isa import ARCH_ISAS, ISAS
-from . import ascii, byteset, count, json, memchr, memmem, numbers, teddy, utf8
+from . import ascii, byteset, count, json, memchr, memmem, numbers, strings, teddy, utf8
 
-ALL = ("memchr", "count", "ascii", "memmem", "teddy", "byteset", "json", "utf8", "numbers")   # memmem needs memchr; teddy needs memmem
+ALL = ("memchr", "count", "ascii", "memmem", "teddy", "byteset", "json", "utf8", "numbers", "strings")   # memmem needs memchr; teddy needs memmem
 ARCHS = ("x86_64", "aarch64")
-_FAMILIES = {"memchr": memchr, "count": count, "ascii": ascii, "memmem": memmem, "teddy": teddy, "byteset": byteset, "json": json, "utf8": utf8, "numbers": numbers}
+_FAMILIES = {"memchr": memchr, "count": count, "ascii": ascii, "memmem": memmem, "teddy": teddy, "byteset": byteset, "json": json, "utf8": utf8, "numbers": numbers, "strings": strings}
 
 
 def build_module(isa_names=None, kernels=ALL, arch="x86_64") -> Module:

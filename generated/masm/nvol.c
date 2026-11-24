@@ -195,6 +195,9 @@ size_t nvol_utf8_valid_resolve(const uint8_t *p, size_t len_);
 typedef uint32_t (*nvol_parse_eight_digits_fn_t)(const uint8_t *p);
 extern nvol_parse_eight_digits_fn_t nvol_parse_eight_digits_ptr;
 uint32_t nvol_parse_eight_digits_resolve(const uint8_t *p);
+typedef uint64_t (*nvol_json_copy_and_find_fn_t)(const uint8_t *src, uint8_t *dst);
+extern nvol_json_copy_and_find_fn_t nvol_json_copy_and_find_ptr;
+uint64_t nvol_json_copy_and_find_resolve(const uint8_t *src, uint8_t *dst);
 
 #ifdef NVOL_TESTING
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */
@@ -221,6 +224,7 @@ NVOL_API void nvol_test_set_avx2(int v) {
     nvol_json_index_raw_ptr = nvol_json_index_raw_resolve;
     nvol_utf8_valid_ptr = nvol_utf8_valid_resolve;
     nvol_parse_eight_digits_ptr = nvol_parse_eight_digits_resolve;
+    nvol_json_copy_and_find_ptr = nvol_json_copy_and_find_resolve;
 }
 #endif
 #elif defined(__aarch64__) || defined(_M_ARM64)
@@ -5271,6 +5275,20 @@ NVOL_INLINE uint32_t nvol_parse_eight_digits_scalar(const uint8_t *p) {
 
 /* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
 NVOL_API uint32_t nvol_parse_eight_digits(const uint8_t *p) { return nvol_parse_eight_digits_scalar(p); }
+
+/* copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes */
+NVOL_INLINE uint64_t nvol_json_copy_and_find_neon(const uint8_t *src, uint8_t *dst) {
+    const uint8x16_t bs = vdupq_n_u8((uint8_t)(92u));
+    const uint8x16_t q = vdupq_n_u8((uint8_t)(34u));
+    const uint8x16_t v0 = vld1q_u8(src);
+    const uint8x16_t v1 = vld1q_u8((src + ((size_t)16u)));
+    vst1q_u8(dst, v0);
+    vst1q_u8((dst + ((size_t)16u)), v1);
+    return vgetq_lane_u64(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(v0, bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(v1, bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(v0, q), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(v1, q), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(v0, bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(v1, bs), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201))))), vpaddq_u8(vandq_u8(vceqq_u8(v0, q), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))), vandq_u8(vceqq_u8(v1, q), vreinterpretq_u8_u64(vdupq_n_u64(UINT64_C(0x8040201008040201)))))))), 0);
+}
+
+/* copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes */
+NVOL_API uint64_t nvol_json_copy_and_find(const uint8_t *src, uint8_t *dst) { return nvol_json_copy_and_find_neon(src, dst); }
 
 #ifdef NVOL_TESTING
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */

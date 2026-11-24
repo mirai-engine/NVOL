@@ -264,6 +264,13 @@ L.nvol_utf8_valid_ptr:
 nvol_parse_eight_digits_ptr:
 L.nvol_parse_eight_digits_ptr:
     .quad L.nvol_parse_eight_digits_resolve
+.p2align 3
+.globl nvol_json_copy_and_find_ptr
+.type nvol_json_copy_and_find_ptr, @object
+.hidden nvol_json_copy_and_find_ptr
+nvol_json_copy_and_find_ptr:
+L.nvol_json_copy_and_find_ptr:
+    .quad L.nvol_json_copy_and_find_resolve
 .section .note.GNU-stack,"",@progbits
 .text
 .p2align 6
@@ -65323,6 +65330,135 @@ L.nvol_parse_eight_digits_resolve:
     jmp *L.nvol_parse_eight_digits_ptr(%rip)
 .cfi_endproc
 .size nvol_parse_eight_digits_resolve, .-nvol_parse_eight_digits_resolve
+
+.globl nvol_json_copy_and_find_sse2
+.type nvol_json_copy_and_find_sse2, @function
+.hidden nvol_json_copy_and_find_sse2
+nvol_json_copy_and_find_sse2:
+L.nvol_json_copy_and_find_sse2:
+.cfi_startproc
+    movdqa NVOL_K11(%rip), %xmm0
+    movdqa NVOL_K12(%rip), %xmm1
+    movdqu (%rdi), %xmm2
+    movdqu 16(%rdi), %xmm3
+    movdqu %xmm2, (%rsi)
+    movdqu %xmm3, 16(%rsi)
+    movdqa %xmm2, %xmm4
+    pcmpeqb %xmm0, %xmm4
+    pmovmskb %xmm4, %eax
+    movdqa %xmm3, %xmm4
+    pcmpeqb %xmm0, %xmm4
+    pmovmskb %xmm4, %ecx
+    shl $16, %rcx
+    or %rcx, %rax
+    pcmpeqb %xmm1, %xmm2
+    pmovmskb %xmm2, %ecx
+    shl $32, %rcx
+    or %rcx, %rax
+    pcmpeqb %xmm1, %xmm3
+    pmovmskb %xmm3, %ecx
+    shl $48, %rcx
+    or %rcx, %rax
+    ret
+.cfi_endproc
+.size nvol_json_copy_and_find_sse2, .-nvol_json_copy_and_find_sse2
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
+.globl nvol_json_copy_and_find_avx2
+.type nvol_json_copy_and_find_avx2, @function
+.hidden nvol_json_copy_and_find_avx2
+nvol_json_copy_and_find_avx2:
+L.nvol_json_copy_and_find_avx2:
+.cfi_startproc
+    vmovdqa NVOL_K23(%rip), %ymm0
+    vmovdqa NVOL_K24(%rip), %ymm1
+    vmovdqu (%rdi), %ymm2
+    vmovdqu %ymm2, (%rsi)
+    vpcmpeqb %ymm0, %ymm2, %ymm0
+    vpmovmskb %ymm0, %eax
+    vpcmpeqb %ymm1, %ymm2, %ymm0
+    vpmovmskb %ymm0, %ecx
+    shl $32, %rcx
+    or %rcx, %rax
+    vzeroupper
+    ret
+.cfi_endproc
+.size nvol_json_copy_and_find_avx2, .-nvol_json_copy_and_find_avx2
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
+.globl nvol_json_copy_and_find
+.type nvol_json_copy_and_find, @function
+nvol_json_copy_and_find:
+L.nvol_json_copy_and_find:
+.cfi_startproc
+    jmp *L.nvol_json_copy_and_find_ptr(%rip)
+.cfi_endproc
+.size nvol_json_copy_and_find, .-nvol_json_copy_and_find
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
+.globl nvol_json_copy_and_find_resolve
+.type nvol_json_copy_and_find_resolve, @function
+.hidden nvol_json_copy_and_find_resolve
+nvol_json_copy_and_find_resolve:
+L.nvol_json_copy_and_find_resolve:
+.cfi_startproc
+    push %rdi
+.cfi_def_cfa_offset 16
+.cfi_offset %rdi, -16
+    push %rsi
+.cfi_def_cfa_offset 24
+.cfi_offset %rsi, -24
+    push %rdx
+.cfi_def_cfa_offset 32
+.cfi_offset %rdx, -32
+    push %rcx
+.cfi_def_cfa_offset 40
+.cfi_offset %rcx, -40
+    push %r8
+.cfi_def_cfa_offset 48
+.cfi_offset %r8, -48
+    push %r9
+.cfi_def_cfa_offset 56
+.cfi_offset %r9, -56
+    sub $8, %rsp
+.cfi_def_cfa_offset 64
+    call nvol_cpu_avx2@PLT
+    test %eax, %eax
+    {disp8} jne .Lnvol_json_copy_and_find_resolve.T0
+    lea L.nvol_json_copy_and_find_sse2(%rip), %rax
+    {disp8} jmp .Lnvol_json_copy_and_find_resolve.done
+.Lnvol_json_copy_and_find_resolve.T0:
+    lea L.nvol_json_copy_and_find_avx2(%rip), %rax
+    {disp8} jmp .Lnvol_json_copy_and_find_resolve.done
+.Lnvol_json_copy_and_find_resolve.done:
+    mov %rax, L.nvol_json_copy_and_find_ptr(%rip)
+    add $8, %rsp
+.cfi_def_cfa_offset 56
+    pop %r9
+.cfi_def_cfa_offset 48
+    pop %r8
+.cfi_def_cfa_offset 40
+    pop %rcx
+.cfi_def_cfa_offset 32
+    pop %rdx
+.cfi_def_cfa_offset 24
+    pop %rsi
+.cfi_def_cfa_offset 16
+    pop %rdi
+.cfi_def_cfa_offset 8
+    jmp *L.nvol_json_copy_and_find_ptr(%rip)
+.cfi_endproc
+.size nvol_json_copy_and_find_resolve, .-nvol_json_copy_and_find_resolve
 
 .p2align 3
 nvol_fntbl_teddy:

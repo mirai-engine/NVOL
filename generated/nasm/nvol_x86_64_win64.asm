@@ -175,6 +175,10 @@ align 8, db 0
 global nvol_parse_eight_digits_ptr
 nvol_parse_eight_digits_ptr:
     dq nvol_parse_eight_digits_resolve
+align 8, db 0
+global nvol_json_copy_and_find_ptr
+nvol_json_copy_and_find_ptr:
+    dq nvol_json_copy_and_find_resolve
 section .drectve info
     db "-export:nvol_memchr_raw "
     db "-export:nvol_memchr "
@@ -211,6 +215,7 @@ section .drectve info
     db "-export:nvol_utf8_valid "
     db "-export:nvol_is_eight_digits "
     db "-export:nvol_parse_eight_digits "
+    db "-export:nvol_json_copy_and_find "
 section .text align=64
 
 global nvol_memchr_scalar
@@ -62847,6 +62852,90 @@ nvol_parse_eight_digits_resolve:
     jmp qword [rel nvol_parse_eight_digits_ptr]
 .unwind_end:
 
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_json_copy_and_find_sse2
+nvol_json_copy_and_find_sse2:
+    movdqa xmm0, [rel NVOL_K11]
+    movdqa xmm1, [rel NVOL_K12]
+    movdqu xmm2, [rcx]
+    movdqu xmm3, [rcx + 16]
+    movdqu [rdx], xmm2
+    movdqu [rdx + 16], xmm3
+    movdqa xmm4, xmm2
+    pcmpeqb xmm4, xmm0
+    pmovmskb eax, xmm4
+    movdqa xmm4, xmm3
+    pcmpeqb xmm4, xmm0
+    pmovmskb ecx, xmm4
+    shl rcx, 16
+    or rax, rcx
+    pcmpeqb xmm2, xmm1
+    pmovmskb ecx, xmm2
+    shl rcx, 32
+    or rax, rcx
+    pcmpeqb xmm3, xmm1
+    pmovmskb ecx, xmm3
+    shl rcx, 48
+    or rax, rcx
+    ret
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_json_copy_and_find_avx2
+nvol_json_copy_and_find_avx2:
+    vmovdqa ymm0, [rel NVOL_K23]
+    vmovdqa ymm1, [rel NVOL_K24]
+    vmovdqu ymm2, [rcx]
+    vmovdqu [rdx], ymm2
+    vpcmpeqb ymm0, ymm2, ymm0
+    vpmovmskb eax, ymm0
+    vpcmpeqb ymm0, ymm2, ymm1
+    vpmovmskb ecx, ymm0
+    shl rcx, 32
+    or rax, rcx
+    vzeroupper
+    ret
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_json_copy_and_find
+nvol_json_copy_and_find:
+    jmp qword [rel nvol_json_copy_and_find_ptr]
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_json_copy_and_find_resolve
+nvol_json_copy_and_find_resolve:
+    push rcx
+    push rdx
+    push r8
+    push r9
+    sub rsp, 40
+    call nvol_cpu_avx2
+    test eax, eax
+    jne strict short .T0
+    lea rax, [rel nvol_json_copy_and_find_sse2]
+    jmp strict short .done
+.T0:
+    lea rax, [rel nvol_json_copy_and_find_avx2]
+    jmp strict short .done
+.done:
+    mov qword [rel nvol_json_copy_and_find_ptr], rax
+    add rsp, 40
+    pop r9
+    pop r8
+    pop rdx
+    pop rcx
+    jmp qword [rel nvol_json_copy_and_find_ptr]
+.unwind_end:
+
 align 8
 nvol_fntbl_teddy:
     dd nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy
@@ -63385,6 +63474,9 @@ nvol_unwind_nvol_utf8_valid_resolve:
 align 4, db 0
 nvol_unwind_nvol_parse_eight_digits_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
+align 4, db 0
+nvol_unwind_nvol_json_copy_and_find_resolve:
+    db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
 
 section .pdata rdata align=4
     dd nvol_memchr_sse2 wrt ..imagebase, nvol_memchr_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr_sse2 wrt ..imagebase
@@ -63561,3 +63653,4 @@ section .pdata rdata align=4
     dd nvol_utf8_valid_avx2 wrt ..imagebase, nvol_utf8_valid_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_utf8_valid_avx2 wrt ..imagebase
     dd nvol_utf8_valid_resolve wrt ..imagebase, nvol_utf8_valid_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_utf8_valid_resolve wrt ..imagebase
     dd nvol_parse_eight_digits_resolve wrt ..imagebase, nvol_parse_eight_digits_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_parse_eight_digits_resolve wrt ..imagebase
+    dd nvol_json_copy_and_find_resolve wrt ..imagebase, nvol_json_copy_and_find_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_json_copy_and_find_resolve wrt ..imagebase

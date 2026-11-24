@@ -90,6 +90,8 @@ NVOL_API size_t nvol_utf8_valid(const uint8_t *p, size_t len_);
 NVOL_API uint32_t nvol_is_eight_digits(const uint8_t *p);
 /* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
 NVOL_API uint32_t nvol_parse_eight_digits(const uint8_t *p);
+/* copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes */
+NVOL_API uint64_t nvol_json_copy_and_find(const uint8_t *src, uint8_t *dst);
 
 /* Iterator over match positions of 1..3 needles (memchr_iter & co.).
  *   nvol_memchr_iter it; nvol_memchr_iter_init(&it, 2, 'a', 'b', 0, hay, len);

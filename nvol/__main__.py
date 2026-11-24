@@ -249,6 +249,35 @@ def digit_cases(rng, n):
         yield bytes(data)
 
 
+def string_cases(rng, n):
+    """32-byte pieces of strings: text with no, one or many backslashes and quotes, runs of
+    them, and the bytes on either side of 0x22 and 0x5C."""
+    alpha = b'abc \\"\x21\x23\x5b\x5d\xdc\xa2\x00\xff'
+    for _ in range(n):
+        p = rng.choice([0.0, 0.05, 0.3, 0.9])
+        yield bytes(rng.choice(alpha) if rng.random() < p else rng.randrange(0x20, 0x7F) for _ in range(32))
+
+
+def check_strings(mod, cases: int, seed: int) -> int:
+    rng = random.Random(seed)
+    bad = total = 0
+    arch = getattr(mod, "arch", "x86_64")
+    cpus = [{"avx2": True}, {"avx2": False}] if arch == "x86_64" else [{}]
+    for data in string_cases(rng, cases):
+        want = oracle.copy_and_find(data)
+        for cpu in cpus:
+            hs, hd = 0x10000 + rng.randrange(64), 0x20000 + rng.randrange(64)
+            mem = Memory(data, hs)
+            mem.add(bytes(32), hd)
+            got = Interpreter(mod, mem, cpu).call("nvol_json_copy_and_find", [hs, hd])
+            total += 1
+            if got != want or mem.region(hd) != data:
+                bad += 1
+                print(f"MISMATCH copy_and_find cpu={cpu} data={data!r} got={got:#x} want={want:#x}")
+    print(f"[{arch}] strings interpreter vs oracle: {total - bad}/{total} ok")
+    return 1 if bad else 0
+
+
 def check_numbers(mod, cases: int, seed: int) -> int:
     rng = random.Random(seed)
     bad = total = 0
@@ -568,6 +597,7 @@ def check(mod, cases: int, seed: int) -> int:
     rc |= check_json(mod, cases, seed) if any(f.name == "nvol_json_index_raw" for f in mod.functions) else 0
     rc |= check_utf8(mod, cases, seed) if any(f.name == "nvol_utf8_valid" for f in mod.functions) else 0
     rc |= check_numbers(mod, cases, seed) if any(f.name == "nvol_parse_eight_digits" for f in mod.functions) else 0
+    rc |= check_strings(mod, cases, seed) if any(f.name == "nvol_json_copy_and_find" for f in mod.functions) else 0
     return 1 if bad or rc else 0
 
 

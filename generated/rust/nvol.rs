@@ -10906,6 +10906,49 @@ pub mod raw {
         unsafe { core::mem::transmute::<*mut (), F>(f)(p) }
     }
 
+    /// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+    #[inline(always)]
+    pub(crate) unsafe fn nvol_json_copy_and_find_sse2(src: *const u8, dst: *mut u8) -> u64 {
+        unsafe {
+            let bs: __m128i = _mm_set1_epi8(92u8 as i8);
+            let q: __m128i = _mm_set1_epi8(34u8 as i8);
+            let v0: __m128i = _mm_loadu_si128(src as *const __m128i);
+            let v1: __m128i = _mm_loadu_si128(src.add(16usize) as *const __m128i);
+            _mm_storeu_si128(dst as *mut __m128i, v0);
+            _mm_storeu_si128(dst.add(16usize) as *mut __m128i, v1);
+            return (((_mm_movemask_epi8(_mm_cmpeq_epi8(v0, bs)) as u32 as u64)) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(v1, bs)) as u32 as u64) << 16) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(v0, q)) as u32 as u64) << 32) | ((_mm_movemask_epi8(_mm_cmpeq_epi8(v1, q)) as u32 as u64) << 48));
+        }
+    }
+
+    /// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+    #[target_feature(enable = "avx2,popcnt,pclmulqdq")]
+    #[inline]
+    pub(crate) unsafe fn nvol_json_copy_and_find_avx2(src: *const u8, dst: *mut u8) -> u64 {
+        unsafe {
+            let bs: __m256i = _mm256_set1_epi8(92u8 as i8);
+            let q: __m256i = _mm256_set1_epi8(34u8 as i8);
+            let v0: __m256i = _mm256_loadu_si256(src as *const __m256i);
+            _mm256_storeu_si256(dst as *mut __m256i, v0);
+            return ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(v0, bs)) as u32 as u64) | ((_mm256_movemask_epi8(_mm256_cmpeq_epi8(v0, q)) as u32 as u64) << 32));
+        }
+    }
+
+    /// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+    #[inline(always)]
+    pub unsafe fn nvol_json_copy_and_find(src: *const u8, dst: *mut u8) -> u64 {
+        use core::sync::atomic::{AtomicPtr, Ordering};
+        type F = unsafe fn(*const u8, *mut u8) -> u64;
+        static FN: AtomicPtr<()> = AtomicPtr::new(resolve as F as *mut ());
+        unsafe fn resolve(src: *const u8, dst: *mut u8) -> u64 {
+            let mut f: F = nvol_json_copy_and_find_sse2;
+            if std::is_x86_feature_detected!("avx2") { f = nvol_json_copy_and_find_avx2; }
+            FN.store(f as *mut (), Ordering::Relaxed);
+            unsafe { f(src, dst) }
+        }
+        let f = FN.load(Ordering::Relaxed);
+        unsafe { core::mem::transmute::<*mut (), F>(f)(src, dst) }
+    }
+
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 12] = [
         nvol_teddy_slim_ssse3_1,
         nvol_teddy_slim_ssse3_2,
@@ -16367,6 +16410,24 @@ pub mod raw {
     /// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
     #[inline(always)]
     pub unsafe fn nvol_parse_eight_digits(p: *const u8) -> u32 { unsafe { nvol_parse_eight_digits_scalar(p) } }
+
+    /// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+    #[inline(always)]
+    pub(crate) unsafe fn nvol_json_copy_and_find_neon(src: *const u8, dst: *mut u8) -> u64 {
+        unsafe {
+            let bs: uint8x16_t = vdupq_n_u8(92u8);
+            let q: uint8x16_t = vdupq_n_u8(34u8);
+            let v0: uint8x16_t = vld1q_u8(src);
+            let v1: uint8x16_t = vld1q_u8(src.add(16usize));
+            vst1q_u8(dst, v0);
+            vst1q_u8(dst.add(16usize), v1);
+            return vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpaddq_u8(vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(v0, bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(v1, bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(v0, q), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(v1, q), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))), vpaddq_u8(vpaddq_u8(vandq_u8(vceqq_u8(v0, bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(v1, bs), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201)))), vpaddq_u8(vandq_u8(vceqq_u8(v0, q), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))), vandq_u8(vceqq_u8(v1, q), vreinterpretq_u8_u64(vdupq_n_u64(0x8040201008040201))))))));
+        }
+    }
+
+    /// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+    #[inline(always)]
+    pub unsafe fn nvol_json_copy_and_find(src: *const u8, dst: *mut u8) -> u64 { unsafe { nvol_json_copy_and_find_neon(src, dst) } }
 
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 4] = [
         nvol_teddy_slim_neon_1,

@@ -10228,6 +10228,38 @@ when ODIN_ARCH == .amd64 {
 	}
 	nvol_parse_eight_digits :: #force_inline proc "contextless" (p: [^]u8) -> u32 { return nvol_parse_eight_digits_ptr(p) }
 
+	// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+	@(private)
+	nvol_json_copy_and_find_sse2 :: #force_inline proc "contextless" (src: [^]u8, dst: [^]u8) -> u64 #no_bounds_check {
+		bs: V16 = V16(u8(92))
+		q: V16 = V16(u8(34))
+		v0: V16 = intrinsics.unaligned_load((^V16)(src))
+		v1: V16 = intrinsics.unaligned_load((^V16)(src[uint(16):]))
+		intrinsics.unaligned_store((^V16)(dst), v0)
+		intrinsics.unaligned_store((^V16)(dst[uint(16):]), v1)
+		return ((u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(v0, bs)))) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(v1, bs))) << 16) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(v0, q))) << 32) | (u64(transmute(u32)nvol_pmovmskb128(intrinsics.simd_lanes_eq(v1, q))) << 48))
+	}
+
+	// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+	@(private, enable_target_feature="avx2,ssse3,pclmul,-slow-unaligned-mem-32")
+	nvol_json_copy_and_find_avx2 :: #force_inline proc "contextless" (src: [^]u8, dst: [^]u8) -> u64 #no_bounds_check {
+		bs: V32 = V32(u8(92))
+		q: V32 = V32(u8(34))
+		v0: V32 = intrinsics.unaligned_load((^V32)(src))
+		intrinsics.unaligned_store((^V32)(dst), v0)
+		return (u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(v0, bs))) | u64(transmute(u32)nvol_pmovmskb256(intrinsics.simd_lanes_eq(v0, q))) << 32)
+	}
+
+	// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+	@(private) nvol_json_copy_and_find_ptr: proc "contextless" (src: [^]u8, dst: [^]u8) -> u64 = nvol_json_copy_and_find_resolve
+	@(private) nvol_json_copy_and_find_resolve :: proc "contextless" (src: [^]u8, dst: [^]u8) -> u64 {
+		f: proc "contextless" (src: [^]u8, dst: [^]u8) -> u64 = nvol_json_copy_and_find_sse2
+		if nvol_cpu_avx2() { f = nvol_json_copy_and_find_avx2 }
+		nvol_json_copy_and_find_ptr = f
+		return f(src, dst)
+	}
+	nvol_json_copy_and_find :: #force_inline proc "contextless" (src: [^]u8, dst: [^]u8) -> u64 { return nvol_json_copy_and_find_ptr(src, dst) }
+
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {
 		nvol_test_avx2_override = v
@@ -10250,6 +10282,7 @@ when ODIN_ARCH == .amd64 {
 		nvol_json_index_raw_ptr = nvol_json_index_raw_resolve
 		nvol_utf8_valid_ptr = nvol_utf8_valid_resolve
 		nvol_parse_eight_digits_ptr = nvol_parse_eight_digits_resolve
+		nvol_json_copy_and_find_ptr = nvol_json_copy_and_find_resolve
 	}
 } else when ODIN_ARCH == .arm64 {
 	@(private, default_calling_convention = "none")
@@ -15385,6 +15418,21 @@ when ODIN_ARCH == .amd64 {
 
 	// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
 	nvol_parse_eight_digits :: #force_inline proc "contextless" (p: [^]u8) -> u32 { return nvol_parse_eight_digits_scalar(p) }
+
+	// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+	@(private)
+	nvol_json_copy_and_find_neon :: #force_inline proc "contextless" (src: [^]u8, dst: [^]u8) -> u64 #no_bounds_check {
+		bs: V16 = V16(u8(92))
+		q: V16 = V16(u8(34))
+		v0: V16 = intrinsics.unaligned_load((^V16)(src))
+		v1: V16 = intrinsics.unaligned_load((^V16)(src[uint(16):]))
+		intrinsics.unaligned_store((^V16)(dst), v0)
+		intrinsics.unaligned_store((^V16)(dst[uint(16):]), v1)
+		return intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(v0, bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(v1, bs), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(v0, q), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(v1, q), transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(v0, bs), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(v1, bs), transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(v0, q), transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and(intrinsics.simd_lanes_eq(v1, q), transmute(V16)U64x2(0x8040201008040201))))), 0)
+	}
+
+	// copies src[0..32) to dst[0..32) and returns the mask of '\\' (bits 0-31) and of '"' (bits 32-63), bit i for byte i; reads and writes exactly 32 bytes
+	nvol_json_copy_and_find :: #force_inline proc "contextless" (src: [^]u8, dst: [^]u8) -> u64 { return nvol_json_copy_and_find_neon(src, dst) }
 
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {

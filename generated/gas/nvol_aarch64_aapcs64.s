@@ -23278,6 +23278,55 @@ L.nvol_parse_eight_digits:
 .cfi_endproc
 .size nvol_parse_eight_digits, .-nvol_parse_eight_digits
 
+    nop
+    nop
+    nop
+.globl nvol_json_copy_and_find_neon
+.type nvol_json_copy_and_find_neon, %function
+.hidden nvol_json_copy_and_find_neon
+nvol_json_copy_and_find_neon:
+L.nvol_json_copy_and_find_neon:
+.cfi_startproc
+    movi v0.16b, #92
+    movi v1.16b, #34
+    ldr q2, [x0]
+    ldr q3, [x0, #16]
+    str q2, [x1]
+    str q3, [x1, #16]
+    movz x9, #513
+    movk x9, #2052, lsl #16
+    movk x9, #8208, lsl #32
+    movk x9, #32832, lsl #48
+    dup v4.2d, x9
+    cmeq v5.16b, v2.16b, v0.16b
+    and v5.16b, v5.16b, v4.16b
+    cmeq v0.16b, v3.16b, v0.16b
+    and v0.16b, v0.16b, v4.16b
+    cmeq v2.16b, v2.16b, v1.16b
+    and v2.16b, v2.16b, v4.16b
+    cmeq v1.16b, v3.16b, v1.16b
+    and v1.16b, v1.16b, v4.16b
+    addp v0.16b, v5.16b, v0.16b
+    addp v1.16b, v2.16b, v1.16b
+    addp v0.16b, v0.16b, v1.16b
+    addp v0.16b, v0.16b, v0.16b
+    fmov x0, d0
+    ret
+.cfi_endproc
+.size nvol_json_copy_and_find_neon, .-nvol_json_copy_and_find_neon
+
+    nop
+    nop
+    nop
+.globl nvol_json_copy_and_find
+.type nvol_json_copy_and_find, %function
+nvol_json_copy_and_find:
+L.nvol_json_copy_and_find:
+.cfi_startproc
+    b L.nvol_json_copy_and_find_neon
+.cfi_endproc
+.size nvol_json_copy_and_find, .-nvol_json_copy_and_find
+
 .p2align 3
 nvol_fntbl_teddy:
     .word L.nvol_teddy_slim_neon_1 - nvol_fntbl_teddy
