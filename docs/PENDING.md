@@ -771,6 +771,31 @@ decision). 3.2 is done (`harness/c/compile_commands.py`).
 than the reference); 1.1e (b) and (c) (documented limits: needles of up to 4 GiB, state read
 as little-endian). The detail of both is in Done.
 
+### After the work list: NVOL in place of other projects' SIMD
+
+The maintainer's intention, recorded 2026-11-23: once phases 6-9 and the extras are done, try
+NVOL in place of the hand-written SIMD of the projects below, with the same process as
+simdjson. For each project:
+- first an analysis of where its SIMD lives and which kernels and primitives it needs;
+- then one `feat/<kind>` branch per kind of feature;
+- then the project's own tests, plus counters against its original code.
+
+The order is decided when the work starts.
+
+- **Databases:** [ClickHouse](https://github.com/ClickHouse/ClickHouse),
+  [PostgreSQL](https://github.com/postgres/postgres), [DuckDB](https://github.com/duckdb/duckdb).
+- **Renderers, 3D simulators, game engines, 3D editors:**
+  - [O3DE](https://github.com/o3de/o3de);
+  - [Source SDK 2013](https://github.com/ValveSoftware/source-sdk-2013);
+  - [Bevy](https://github.com/bevyengine/bevy);
+  - [Blender](https://github.com/blender/blender), with its [Cycles](https://github.com/blender/cycles)
+    renderer. Which of Blender's other dependencies carry SIMD worth replacing is part of its
+    analysis.
+- **Cryptography:** [libsodium](https://github.com/jedisct1/libsodium),
+  [intel-ipsec-mb](https://github.com/intel/intel-ipsec-mb),
+  [BLAKE3](https://github.com/BLAKE3-team/BLAKE3). The extras A and B (ChaCha20, P-384 field
+  arithmetic) are the first step of this group.
+
 ## 1. Parity with ripgrep's SIMD
 
 | # | P | Pending | Detail |
