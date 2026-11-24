@@ -4,13 +4,15 @@ instructions: scratch registers, spill code, the peephole and the stack frame. `
 takes this module as its target `T`."""
 from __future__ import annotations
 
+import sys
+
 from .. import ir
 from .abi import ABI
 from .lower import (CC, NEG, Lower, Unsupported, _bit_test, _cmp_width, _const_value, _imm32,
                     _masked_addr, _same, _target)
 from .mir import (CONDJUMPS, PHYS, RSP, TERMINATORS, VECS, Imm, Ins, Lab, Mem, Phys, Reg, VReg,
                   regs_in)
-from .regalloc import _subst, copy_back, jump_cleanup, reloads, share_slots
+from .regalloc import _subst, copy_back, jump_cleanup, reloads, remat, share_slots
 
 # element-wise vector operations: one instruction each (legacy name; VEX adds "v")
 VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vxor": "pxor", "vsub8": "psubb", "vsubs8": "psubusb",
@@ -25,7 +27,7 @@ POPCNT8 = bytes(bin(i).count("1") for i in range(256))   # (aligned 32 like ever
 # vector operations whose last source may be a memory operand (VEX: any alignment; legacy SSE:
 # 16-byte aligned only), and those whose two sources commute
 _FOLD = {"pcmpeqb", "por", "pand", "psubb", "pminub", "paddq", "pshufb", "punpcklbw",
-         "punpckhbw", "psadbw", "pxor"}
+         "punpckhbw", "psadbw", "pxor", "psubusb", "pandn"}
 _COMMUTE = {"pcmpeqb", "por", "pand", "pminub", "paddq", "pxor"}
 _LOADS = {"movdqa", "movdqu", "vmovdqa", "vmovdqu"}
 
@@ -949,18 +951,78 @@ def _direct(ins: Ins, spilled) -> str:
     return ""
 
 
+def _remat_mem(ins: Ins):
+    """The .rodata operand of a constant load (`vmovdqa v, [rel const]`, vconst), else None."""
+    if ins.op in ("movdqa", "vmovdqa") and len(ins.args) == 2 and isinstance(ins.args[0], Reg) \
+            and isinstance(ins.args[1], Mem) and ins.args[1].sym is not None \
+            and ins.args[1].base is None and ins.args[1].index is None:
+        return ins.args[1]
+    return None
+
+
+def _fold_at(ins: Ins, r: VReg):
+    """The operand index where r can be replaced by a memory operand in ins (the last source of
+    an operation that takes one, after a swap for a commutative VEX one), else None."""
+    if any(isinstance(a, Mem) for a in ins.args) or r in ins.defs:
+        return None
+    vex = ins.op.startswith("v") and ins.op[1:] in _FOLD
+    base = ins.op[1:] if vex else ins.op
+    if base not in _FOLD:
+        return None
+    regs = [k for k, a in enumerate(ins.args) if isinstance(a, Reg) and a.r is r]
+    if len(regs) != 1:
+        return None
+    k = regs[0]
+    srcs = [n for n, a in enumerate(ins.args) if not isinstance(a, Imm)]
+    if k == srcs[-1] and (vex or k != 0):
+        return k
+    if vex and base in _COMMUTE and len(srcs) >= 3 and k == srcs[-2]:
+        return k
+    return None
+
+
+def _foldable(ins: Ins, r: VReg) -> bool:
+    return _fold_at(ins, r) is not None
+
+
 def _rewrite(code, assign, spilled):
     """Physical registers for every virtual one; spill code around instructions that touch a
     spilled register (loaded into a scratch register before, stored back after). A move that
-    touches one spilled register reads or writes the slot itself."""
-    slot, nslots = share_slots(code, spilled)
+    touches one spilled register reads or writes the slot itself. A spilled constant (one
+    load from .rodata, regalloc.remat) has no slot: its load goes, and each read takes the
+    constant as a memory operand where the instruction allows it, else loads it again."""
+    rm = {r: m for r, m in remat(code, sys.modules[__name__]).items() if r in spilled}
+    slot, nslots = share_slots(code, spilled - set(rm))
     avx = _avx(code)
     out = []
     for ins in code:
         if not any(isinstance(r, VReg) and r in spilled for r in ins.uses + ins.defs):
             out.append(_subst(ins, assign))
             continue
+        if any(r in rm for r in ins.defs):          # the constant's own load
+            continue
+        for r in [r for r in dict.fromkeys(ins.uses) if r in rm]:
+            k = _fold_at(ins, r)
+            if k is not None:
+                srcs = [n for n, a in enumerate(ins.args) if not isinstance(a, Imm)]
+                args = list(ins.args)
+                if k != srcs[-1]:                    # commutative: the constant goes last
+                    args[k], args[srcs[-1]] = args[srcs[-1]], args[k]
+                    k = srcs[-1]
+                m = rm[r]
+                args[k] = Mem(sym=m.sym, disp=m.disp)
+                ins = Ins(ins.op, args, ins.defs, [u for u in ins.uses if u is not r])
+        if not any(isinstance(r, VReg) and r in spilled for r in ins.uses + ins.defs):
+            out.append(_subst(ins, assign))
+            continue
         kind = _direct(ins, spilled)
+        if kind == "load" and ins.args[1].r in rm:
+            d, s = ins.args
+            pd = assign[d.r] if isinstance(d.r, VReg) else d.r
+            m = rm[s.r]
+            out.append(Ins(ins.op if ins.op != "mov" else ("vmovdqa" if avx else "movdqa"),
+                           [Reg(pd, d.w), Mem(sym=m.sym, disp=m.disp)], [pd], []))
+            continue
         if kind:
             d, s = ins.args
             vec = d.r.cls == "v"
@@ -990,7 +1052,10 @@ def _rewrite(code, assign, spilled):
                 w = 64 if r.cls == "g" else 256
                 mop = "mov" if r.cls == "g" else "vmovdqu" if _avx(code) else "movdqu"
                 wv = 64 if r.cls == "g" else (256 if mop == "vmovdqu" else 128)
-                if r in ins.uses:
+                if r in rm:
+                    m = rm[r]
+                    pre.append(Ins("vmovdqa" if avx else "movdqa", [Reg(s, wv), Mem(sym=m.sym, disp=m.disp)], [s], []))
+                elif r in ins.uses:
                     pre.append(Ins(mop, [Reg(s, wv), Mem(spill=slot[r], w=0)], [s], []))
                 if r in ins.defs:
                     post.append(Ins(mop, [Mem(spill=slot[r], w=0), Reg(s, wv)], [], [s]))
@@ -1154,6 +1219,8 @@ _RSP = RSP
 MOVES = _MOVES
 direct = _direct
 rewrite = _rewrite
+remat_mem = _remat_mem
+foldable = _foldable
 peephole = _peephole
 frame = _frame
 avx = _avx

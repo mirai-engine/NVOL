@@ -270,9 +270,16 @@ def _scan(code, abi: ABI, T, reserve: dict, late=frozenset()):
 
     freq = _freq(code)
     weight = {}
+    rm = remat(code, T)
     for i, ins in enumerate(code):
         for r in dict.fromkeys(ins.uses + ins.defs):
             if isinstance(r, VReg):
+                if r in rm:
+                    # a constant from .rodata: spilled, it has no store and no slot, and each
+                    # read is a memory operand (nearly free) or one load
+                    if r in ins.uses:
+                        weight[r] = weight.get(r, 0.0) + freq[i] * (0.25 if T.foldable(ins, r) else 1.0)
+                    continue
                 weight[r] = weight.get(r, 0.0) + freq[i]
     segs = _segments(code, ranges, live_in, live_out)
 
@@ -343,6 +350,26 @@ def _scan(code, abi: ABI, T, reserve: dict, late=frozenset()):
                 and not any(_overlap([(a, b)], segs[w]) for w in held.get(p, ()))]
     return assign, spilled, free
 
+
+
+def remat(code: list, T) -> dict:
+    """{register: its .rodata operand} for the registers whose only write is a load of a
+    constant (T.remat_mem), which a spill can reload from there instead of a stack slot."""
+    hook = getattr(T, "remat_mem", None)
+    if hook is None:
+        return {}
+    defs = {}
+    for ins in code:
+        for r in ins.defs:
+            if isinstance(r, VReg):
+                defs.setdefault(r, []).append(ins)
+    out = {}
+    for r, ds in defs.items():
+        if len(ds) == 1:
+            m = hook(ds[0])
+            if m is not None:
+                out[r] = m
+    return out
 
 
 def _need(code, spilled, T) -> dict:
