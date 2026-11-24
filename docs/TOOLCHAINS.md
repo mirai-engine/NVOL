@@ -76,12 +76,9 @@ What the report got right and what it got wrong:
 
 NVOL keeps no workaround: user-space addresses stay below 2^63 on x86-64 and aarch64.
 
-**Policy from 2026-11-24 (the user's decision).** No new issue or pull request to another
-project until NVOL is mature. Findings are documented here and in the project that found them,
-with their evidence, and reported later, when NVOL's maturity backs them. A finding about
-semantics (what a construct should mean, not what it does) is to be raised first as a
-question to the project, never as a fix. The open NASM reports (T11: #349 and #350, still open
-on 2026-11-24, no comments) stay as they are.
+**From 2026-11-24.** Every bug found is written down here, in the project that found it. Issues
+and pull requests go to other projects only once grepper and NVOL are finished. The open NASM
+reports (T11: #349 and #350, still open on 2026-11-24, no comments) stay as they are.
 
 ### T9. NASM: two jumps that depend on each other stay long
 
