@@ -719,6 +719,33 @@ Two consequences for the design:
     one, an indexer without the branch, then the SSE rows measured against westmere. Also the
     other opens of 35: the scalar path of the C library is not reached by
     `tests/test_json.py`, and the NEON, Rust, Odin and asm builds of stage 1 are not measured.
+
+    *In progress on `feat/json-stage1-sse`, paused 2026-11-24 for grepper (the maintainer's
+    call).* Done, one commit each:
+    - `nvol_tzcnt64` is bsf + cmovz without BMI1: SSSE3 stage 1 −12 % on twitter, branch
+      misses 6x down to simdjson's;
+    - `nvol_json_index_sse42` (POPCNT), then with the `pclmul` feature and `cpu_sse42_pclmul`;
+    - `ctz64_lax` for the indexer's slots. SSE4.2 stage 1 against westmere: −2.9 % on
+      twitter, −2.0 % on citm_catalog;
+    - the test hook's 3 forces the scalar paths (test_json reaches them);
+    - simdjson's kernels in the parity benchmarks (C, C++, Rust, Odin, asm);
+    - the x86 assembler: spilled constants rematerialized, then `blsr` in BMI1 functions.
+      The asm json kernel against gcc went from −53 % (AVX2, 4 KB) to about −23 %.
+
+    Rejected: one block per iteration on the SSE kernels, as simdjson's westmere
+    (+3.8 % on twitter).
+
+    Left:
+    - **Shared `vperm2i128`:** share the `vperm2i128` of UTF-8's three shifts in the asm (written,
+      not measured: the asm emits 18 where GCC emits 6).
+    - **`x & (x - 1)` without BMI1:** lea + and in the SSE kernels: −19 % from 4 KB, but +1.5 %
+      with one 64-byte block on SSE4.2, and not from position. The cause is still to be found.
+    - **The asm json kernel's remaining gap with gcc:** GPR spills; the bits variable of the
+      indexer was spilled.
+    - **The other languages:** Rust, Odin and C++ against the asm on the four phase 6 kernels, each
+      deviation explained.
+    - **NEON:** the NEON stage 1 under QEMU.
+    - **Docs:** the benchmark document.
 38. **`feat/simdjson-e2e`: integration and measurement.**
     - a patch to simdjson, like the one for rapidjson: its generic code calls NVOL's kernels
       instead of its own;
