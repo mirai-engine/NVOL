@@ -13,7 +13,8 @@ CC=${CC:-gcc}
 CXX=${CXX:-g++}
 mkdir -p "$W/corpus"
 cp "$SRC"/jsonexamples/twitter.json "$SRC"/jsonexamples/citm_catalog.json "$W/corpus/"
-$CC -O2 -c -I"$NVOL/generated/c" -o "$W/nvol.o" "$NVOL/generated/c/nvol.c"
+# NVOL_TESTING: the nvol_test_set_avx2 hook, for the SSE kernels (nvol-ssse3)
+$CC -O2 -DNVOL_TESTING -c -I"$NVOL/generated/c" -o "$W/nvol.o" "$NVOL/generated/c/nvol.c"
 $CXX -O2 -std=c++17 -c -I"$SRC/singleheader" -o "$W/simdjson.o" "$SRC/singleheader/simdjson.cpp"
 $CXX -O2 -std=c++17 -I"$SRC/singleheader" -I"$NVOL/generated/c" -o "$W/stage1bench" \
     "$HERE/stage1bench.cpp" "$W/simdjson.o" "$W/nvol.o"
