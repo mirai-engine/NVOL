@@ -692,7 +692,12 @@ Two consequences for the design:
     subtraction, and `any_bits_set_anywhere`, which is `!is_zero`). simdjson needs it, and ugrep's `isutf8` too.
 37. **Stage 2**, in two branches:
     - **`feat/json-numbers`:** `parse_eight_digits_unrolled` (`pmaddubsw`, `pmaddwd`,
-      `packusdw` on 128 bits);
+      `packusdw` on 128 bits) *(done on the branch, 2026-11-24: `nvol_parse_eight_digits`
+      (SSE4.1 sequence, SWAR) and `nvol_is_eight_digits`. Against simdjson 5.2.0, inlined
+      into the same loop: the same cycles in its haswell and fallback targets, −3.3 % in
+      westmere, where its 16-byte load splits a cache line once in eight numbers and NVOL's
+      8-byte load never does;
+      [benchmark](benchmarks/2026-11-24-json-numbers-wsl.md))*;
     - **`feat/json-stage2-strings`:** `copy_and_find` (copy 32 bytes and give the masks of `\`
       and `"`), a variant of `nvol_copy_until_byteset`, and the block's `is_ascii`.
 38. **`feat/simdjson-e2e`: integration and measurement.**
