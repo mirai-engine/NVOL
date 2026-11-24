@@ -72,6 +72,14 @@ align 32, db 0
 NVOL_K31: db 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
 align 32, db 0
 NVOL_K32: db 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 239, 223, 191
+align 32, db 0
+NVOL_K33: db 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1
+align 32, db 0
+NVOL_K34: db 100, 0, 1, 0, 100, 0, 1, 0, 100, 0, 1, 0, 100, 0, 1, 0
+align 32, db 0
+NVOL_K35: db 16, 39, 1, 0, 16, 39, 1, 0, 16, 39, 1, 0, 16, 39, 1, 0
+align 32, db 0
+NVOL_K36: db 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48
 align 64, db 0
 nvol_tbl_rank:
     db 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
@@ -163,6 +171,10 @@ align 8, db 0
 global nvol_utf8_valid_ptr
 nvol_utf8_valid_ptr:
     dq nvol_utf8_valid_resolve
+align 8, db 0
+global nvol_parse_eight_digits_ptr
+nvol_parse_eight_digits_ptr:
+    dq nvol_parse_eight_digits_resolve
 section .drectve info
     db "-export:nvol_memchr_raw "
     db "-export:nvol_memchr "
@@ -197,6 +209,8 @@ section .drectve info
     db "-export:nvol_find_byteset_pair_mask_raw "
     db "-export:nvol_json_index_raw "
     db "-export:nvol_utf8_valid "
+    db "-export:nvol_is_eight_digits "
+    db "-export:nvol_parse_eight_digits "
 section .text align=64
 
 global nvol_memchr_scalar
@@ -62725,6 +62739,114 @@ nvol_utf8_valid_resolve:
     jmp qword [rel nvol_utf8_valid_ptr]
 .unwind_end:
 
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_is_eight_digits
+nvol_is_eight_digits:
+    mov rax, qword [rcx]
+    mov rcx, rax
+    mov rdx, 17361641481138401520
+    and rcx, rdx
+    mov rdx, 434041037028460038
+    add rax, rdx
+    mov rdx, 17361641481138401520
+    and rax, rdx
+    shr rax, 4
+    or rcx, rax
+    mov rax, 3689348814741910323
+    cmp rcx, rax
+    sete al
+    movzx eax, al
+    ret
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0x90
+global nvol_parse_eight_digits_scalar
+nvol_parse_eight_digits_scalar:
+    mov rax, qword [rcx]
+    mov rcx, 1085102592571150095
+    and rax, rcx
+    mov ecx, 2561
+    imul rax, rcx
+    shr rax, 8
+    mov rcx, 71777214294589695
+    and rax, rcx
+    mov ecx, 6553601
+    imul rax, rcx
+    shr rax, 16
+    mov rcx, 281470681808895
+    and rax, rcx
+    mov rcx, 42949672960001
+    imul rax, rcx
+    shr rax, 32
+    ret
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_parse_eight_digits_sse42
+nvol_parse_eight_digits_sse42:
+    movdqa xmm0, [rel NVOL_K33]
+    movdqa xmm1, [rel NVOL_K34]
+    movdqa xmm2, [rel NVOL_K35]
+    movq xmm3, qword [rcx]
+    psubb xmm3, [rel NVOL_K36]
+    pmaddubsw xmm3, xmm0
+    pmaddwd xmm3, xmm1
+    movdqa xmm0, xmm3
+    packusdw xmm0, xmm3
+    pmaddwd xmm0, xmm2
+    movd eax, xmm0
+    ret
+
+    db 0x90
+global nvol_parse_eight_digits
+nvol_parse_eight_digits:
+    jmp qword [rel nvol_parse_eight_digits_ptr]
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_parse_eight_digits_resolve
+nvol_parse_eight_digits_resolve:
+    push rcx
+    push rdx
+    push r8
+    push r9
+    sub rsp, 40
+    call nvol_cpu_sse42
+    test eax, eax
+    jne strict short .T0
+    lea rax, [rel nvol_parse_eight_digits_scalar]
+    jmp strict short .done
+.T0:
+    lea rax, [rel nvol_parse_eight_digits_sse42]
+    jmp strict short .done
+.done:
+    mov qword [rel nvol_parse_eight_digits_ptr], rax
+    add rsp, 40
+    pop r9
+    pop r8
+    pop rdx
+    pop rcx
+    jmp qword [rel nvol_parse_eight_digits_ptr]
+.unwind_end:
+
 align 8
 nvol_fntbl_teddy:
     dd nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy
@@ -63260,6 +63382,9 @@ nvol_unwind_nvol_utf8_valid_avx2:
 align 4, db 0
 nvol_unwind_nvol_utf8_valid_resolve:
     db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
+align 4, db 0
+nvol_unwind_nvol_parse_eight_digits_resolve:
+    db 1, 10, 5, 0, 10, 66, 6, 144, 4, 128, 2, 32, 1, 16, 0, 0
 
 section .pdata rdata align=4
     dd nvol_memchr_sse2 wrt ..imagebase, nvol_memchr_sse2.unwind_end wrt ..imagebase, nvol_unwind_nvol_memchr_sse2 wrt ..imagebase
@@ -63435,3 +63560,4 @@ section .pdata rdata align=4
     dd nvol_utf8_valid_ssse3 wrt ..imagebase, nvol_utf8_valid_ssse3.unwind_end wrt ..imagebase, nvol_unwind_nvol_utf8_valid_ssse3 wrt ..imagebase
     dd nvol_utf8_valid_avx2 wrt ..imagebase, nvol_utf8_valid_avx2.unwind_end wrt ..imagebase, nvol_unwind_nvol_utf8_valid_avx2 wrt ..imagebase
     dd nvol_utf8_valid_resolve wrt ..imagebase, nvol_utf8_valid_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_utf8_valid_resolve wrt ..imagebase
+    dd nvol_parse_eight_digits_resolve wrt ..imagebase, nvol_parse_eight_digits_resolve.unwind_end wrt ..imagebase, nvol_unwind_nvol_parse_eight_digits_resolve wrt ..imagebase

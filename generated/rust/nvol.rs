@@ -10854,6 +10854,58 @@ pub mod raw {
         unsafe { core::mem::transmute::<*mut (), F>(f)(p, len_) }
     }
 
+    /// 1 when p[0..8) are eight ASCII digits '0'..'9', else 0; reads exactly 8 bytes
+    #[inline(always)]
+    pub unsafe fn nvol_is_eight_digits(p: *const u8) -> u32 {
+        unsafe {
+            let v: u64 = (p as *const u64).read_unaligned();
+            return ((((v & 17361641481138401520u64) | ((v.wrapping_add(434041037028460038u64) & 17361641481138401520u64) >> 4u64)) == 3689348814741910323u64) as u32);
+        }
+    }
+
+    /// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+    #[inline(always)]
+    pub(crate) unsafe fn nvol_parse_eight_digits_scalar(p: *const u8) -> u32 {
+        unsafe {
+            let mut v: u64 = (p as *const u64).read_unaligned();
+            v = ((v & 1085102592571150095u64).wrapping_mul(2561u64) >> 8u64);
+            v = ((v & 71777214294589695u64).wrapping_mul(6553601u64) >> 16u64);
+            return (((v & 281470681808895u64).wrapping_mul(42949672960001u64) >> 32u64) as u32);
+        }
+    }
+
+    /// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+    #[target_feature(enable = "sse4.2,popcnt")]
+    #[inline]
+    pub(crate) unsafe fn nvol_parse_eight_digits_sse42(p: *const u8) -> u32 {
+        unsafe {
+            let m10: __m128i = _mm_setr_epi8(10u8 as i8, 1u8 as i8, 10u8 as i8, 1u8 as i8, 10u8 as i8, 1u8 as i8, 10u8 as i8, 1u8 as i8, 10u8 as i8, 1u8 as i8, 10u8 as i8, 1u8 as i8, 10u8 as i8, 1u8 as i8, 10u8 as i8, 1u8 as i8);
+            let m100: __m128i = _mm_setr_epi8(100u8 as i8, 0u8 as i8, 1u8 as i8, 0u8 as i8, 100u8 as i8, 0u8 as i8, 1u8 as i8, 0u8 as i8, 100u8 as i8, 0u8 as i8, 1u8 as i8, 0u8 as i8, 100u8 as i8, 0u8 as i8, 1u8 as i8, 0u8 as i8);
+            let m10000: __m128i = _mm_setr_epi8(16u8 as i8, 39u8 as i8, 1u8 as i8, 0u8 as i8, 16u8 as i8, 39u8 as i8, 1u8 as i8, 0u8 as i8, 16u8 as i8, 39u8 as i8, 1u8 as i8, 0u8 as i8, 16u8 as i8, 39u8 as i8, 1u8 as i8, 0u8 as i8);
+            let d: __m128i = _mm_sub_epi8(_mm_loadl_epi64(p as *const __m128i), _mm_set1_epi8(48u8 as i8));
+            let t1: __m128i = _mm_maddubs_epi16(d, m10);
+            let t2: __m128i = _mm_madd_epi16(t1, m100);
+            let t3: __m128i = _mm_packus_epi32(t2, t2);
+            return (_mm_cvtsi128_si32(_mm_madd_epi16(t3, m10000)) as u32);
+        }
+    }
+
+    /// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+    #[inline(always)]
+    pub unsafe fn nvol_parse_eight_digits(p: *const u8) -> u32 {
+        use core::sync::atomic::{AtomicPtr, Ordering};
+        type F = unsafe fn(*const u8) -> u32;
+        static FN: AtomicPtr<()> = AtomicPtr::new(resolve as F as *mut ());
+        unsafe fn resolve(p: *const u8) -> u32 {
+            let mut f: F = nvol_parse_eight_digits_scalar;
+            if std::is_x86_feature_detected!("sse4.2") { f = nvol_parse_eight_digits_sse42; }
+            FN.store(f as *mut (), Ordering::Relaxed);
+            unsafe { f(p) }
+        }
+        let f = FN.load(Ordering::Relaxed);
+        unsafe { core::mem::transmute::<*mut (), F>(f)(p) }
+    }
+
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 12] = [
         nvol_teddy_slim_ssse3_1,
         nvol_teddy_slim_ssse3_2,
@@ -16291,6 +16343,30 @@ pub mod raw {
     /// 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0
     #[inline(always)]
     pub unsafe fn nvol_utf8_valid(p: *const u8, len_: usize) -> usize { unsafe { nvol_utf8_valid_neon(p, len_) } }
+
+    /// 1 when p[0..8) are eight ASCII digits '0'..'9', else 0; reads exactly 8 bytes
+    #[inline(always)]
+    pub unsafe fn nvol_is_eight_digits(p: *const u8) -> u32 {
+        unsafe {
+            let v: u64 = (p as *const u64).read_unaligned();
+            return ((((v & 17361641481138401520u64) | ((v.wrapping_add(434041037028460038u64) & 17361641481138401520u64) >> 4u64)) == 3689348814741910323u64) as u32);
+        }
+    }
+
+    /// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+    #[inline(always)]
+    pub(crate) unsafe fn nvol_parse_eight_digits_scalar(p: *const u8) -> u32 {
+        unsafe {
+            let mut v: u64 = (p as *const u64).read_unaligned();
+            v = ((v & 1085102592571150095u64).wrapping_mul(2561u64) >> 8u64);
+            v = ((v & 71777214294589695u64).wrapping_mul(6553601u64) >> 16u64);
+            return (((v & 281470681808895u64).wrapping_mul(42949672960001u64) >> 32u64) as u32);
+        }
+    }
+
+    /// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+    #[inline(always)]
+    pub unsafe fn nvol_parse_eight_digits(p: *const u8) -> u32 { unsafe { nvol_parse_eight_digits_scalar(p) } }
 
     pub(crate) static NVOL_FNTBL_TEDDY: [unsafe fn(*const u8, *const u8, *const u8, *const u8) -> usize; 4] = [
         nvol_teddy_slim_neon_1,

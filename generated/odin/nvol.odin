@@ -10190,6 +10190,44 @@ when ODIN_ARCH == .amd64 {
 	}
 	nvol_utf8_valid :: #force_inline proc "contextless" (p: [^]u8, len_: uint) -> uint { return nvol_utf8_valid_ptr(p, len_) }
 
+	// 1 when p[0..8) are eight ASCII digits '0'..'9', else 0; reads exactly 8 bytes
+	nvol_is_eight_digits :: proc "contextless" (p: [^]u8) -> u32 #no_bounds_check {
+		v: u64 = intrinsics.unaligned_load((^u64)(p))
+		return u32((((v & u64(17361641481138401520)) | (((v + u64(434041037028460038)) & u64(17361641481138401520)) >> u64(4))) == u64(3689348814741910323)))
+	}
+
+	// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+	@(private)
+	nvol_parse_eight_digits_scalar :: #force_inline proc "contextless" (p: [^]u8) -> u32 #no_bounds_check {
+		v: u64 = intrinsics.unaligned_load((^u64)(p))
+		v = (((v & u64(1085102592571150095)) * u64(2561)) >> u64(8))
+		v = (((v & u64(71777214294589695)) * u64(6553601)) >> u64(16))
+		return u32((((v & u64(281470681808895)) * u64(42949672960001)) >> u64(32)))
+	}
+
+	// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+	@(private, enable_target_feature="sse4.2,ssse3")
+	nvol_parse_eight_digits_sse42 :: #force_inline proc "contextless" (p: [^]u8) -> u32 #no_bounds_check {
+		m10: V16 = V16{u8(10), u8(1), u8(10), u8(1), u8(10), u8(1), u8(10), u8(1), u8(10), u8(1), u8(10), u8(1), u8(10), u8(1), u8(10), u8(1)}
+		m100: V16 = V16{u8(100), u8(0), u8(1), u8(0), u8(100), u8(0), u8(1), u8(0), u8(100), u8(0), u8(1), u8(0), u8(100), u8(0), u8(1), u8(0)}
+		m10000: V16 = V16{u8(16), u8(39), u8(1), u8(0), u8(16), u8(39), u8(1), u8(0), u8(16), u8(39), u8(1), u8(0), u8(16), u8(39), u8(1), u8(0)}
+		d: V16 = intrinsics.simd_sub(transmute(V16)U64x2{intrinsics.unaligned_load((^u64)(p)), 0}, V16(u8(48)))
+		t1: V16 = transmute(V16)nvol_pmaddubsw128(d, m10)
+		t2: V16 = transmute(V16)nvol_pmaddwd128(transmute(U16x8)t1, transmute(U16x8)m100)
+		t3: V16 = transmute(V16)nvol_packusdw128(transmute(U32x4)t2, transmute(U32x4)t2)
+		return intrinsics.simd_extract(transmute(U32x4)transmute(V16)nvol_pmaddwd128(transmute(U16x8)t3, transmute(U16x8)m10000), 0)
+	}
+
+	// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+	@(private) nvol_parse_eight_digits_ptr: proc "contextless" (p: [^]u8) -> u32 = nvol_parse_eight_digits_resolve
+	@(private) nvol_parse_eight_digits_resolve :: proc "contextless" (p: [^]u8) -> u32 {
+		f: proc "contextless" (p: [^]u8) -> u32 = nvol_parse_eight_digits_scalar
+		if nvol_cpu_sse42() { f = nvol_parse_eight_digits_sse42 }
+		nvol_parse_eight_digits_ptr = f
+		return f(p)
+	}
+	nvol_parse_eight_digits :: #force_inline proc "contextless" (p: [^]u8) -> u32 { return nvol_parse_eight_digits_ptr(p) }
+
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {
 		nvol_test_avx2_override = v
@@ -10211,6 +10249,7 @@ when ODIN_ARCH == .amd64 {
 		nvol_find_byteset_pair_mask_raw_ptr = nvol_find_byteset_pair_mask_raw_resolve
 		nvol_json_index_raw_ptr = nvol_json_index_raw_resolve
 		nvol_utf8_valid_ptr = nvol_utf8_valid_resolve
+		nvol_parse_eight_digits_ptr = nvol_parse_eight_digits_resolve
 	}
 } else when ODIN_ARCH == .arm64 {
 	@(private, default_calling_convention = "none")
@@ -15328,6 +15367,24 @@ when ODIN_ARCH == .amd64 {
 
 	// 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0
 	nvol_utf8_valid :: #force_inline proc "contextless" (p: [^]u8, len_: uint) -> uint { return nvol_utf8_valid_neon(p, len_) }
+
+	// 1 when p[0..8) are eight ASCII digits '0'..'9', else 0; reads exactly 8 bytes
+	nvol_is_eight_digits :: proc "contextless" (p: [^]u8) -> u32 #no_bounds_check {
+		v: u64 = intrinsics.unaligned_load((^u64)(p))
+		return u32((((v & u64(17361641481138401520)) | (((v + u64(434041037028460038)) & u64(17361641481138401520)) >> u64(4))) == u64(3689348814741910323)))
+	}
+
+	// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+	@(private)
+	nvol_parse_eight_digits_scalar :: #force_inline proc "contextless" (p: [^]u8) -> u32 #no_bounds_check {
+		v: u64 = intrinsics.unaligned_load((^u64)(p))
+		v = (((v & u64(1085102592571150095)) * u64(2561)) >> u64(8))
+		v = (((v & u64(71777214294589695)) * u64(6553601)) >> u64(16))
+		return u32((((v & u64(281470681808895)) * u64(42949672960001)) >> u64(32)))
+	}
+
+	// the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes
+	nvol_parse_eight_digits :: #force_inline proc "contextless" (p: [^]u8) -> u32 { return nvol_parse_eight_digits_scalar(p) }
 
 	// test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only)
 	nvol_test_set_avx2 :: proc "contextless" (v: int) {

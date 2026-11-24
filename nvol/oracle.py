@@ -80,6 +80,12 @@ JSON_WS = b" \t\n\r"
 JSON_OP = {0x3A, 0x7B, 0x2C, 0x7D}
 
 
+def is_eight_digits(data: bytes) -> int:
+    """1 when the 8 bytes are ASCII digits, else 0."""
+    assert len(data) == 8
+    return int(all(0x30 <= c <= 0x39 for c in data))
+
+
 def utf8_valid(data: bytes) -> int:
     """1 when data is valid UTF-8 (RFC 3629), as Python's strict decoder says, else 0."""
     try:

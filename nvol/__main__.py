@@ -235,6 +235,44 @@ UTF8_BAD = [b"\xc0\x80", b"\xc1\xbf", b"\xe0\x80\x80", b"\xe0\x9f\xbf", b"\xed\x
             b"\xc3", b"\xe2\x82", b"\xf0\x9f\x98", b"\xfe", b"\xff", b"\xe2\x28\xa1"]
 
 
+def digit_cases(rng, n):
+    """8-byte strings: mostly digits, with (half the time) one byte just outside '0'..'9',
+    a digit with its high bit or nibble changed, or any byte."""
+    near = [0x2F, 0x3A, 0x20, 0x2E, 0x2D, 0x2B, 0x65, 0x45, 0x00, 0xFF]
+    for _ in range(n):
+        data = bytearray(rng.choice(b"0123456789") for _ in range(8))
+        r = rng.random()
+        if r < 0.5:
+            i = rng.randrange(8)
+            data[i] = (rng.choice(near) if r < 0.2 else data[i] | 0x80 if r < 0.3
+                       else data[i] ^ (rng.randrange(1, 16) << 4) if r < 0.4 else rng.randrange(256))
+        yield bytes(data)
+
+
+def check_numbers(mod, cases: int, seed: int) -> int:
+    rng = random.Random(seed)
+    bad = total = 0
+    arch = getattr(mod, "arch", "x86_64")
+    cpus = [{"sse42": True}, {"sse42": False}] if arch == "x86_64" else [{}]
+    for data in digit_cases(rng, cases):
+        want = oracle.is_eight_digits(data)
+        for cpu in cpus:
+            hb = 0x10000 + rng.randrange(64)
+            got = Interpreter(mod, Memory(data, hb), cpu).call("nvol_is_eight_digits", [hb])
+            total += 1
+            if got != want:
+                bad += 1
+                print(f"MISMATCH is_eight_digits data={data!r} got={got} want={want}")
+            if want:
+                got = Interpreter(mod, Memory(data, hb), cpu).call("nvol_parse_eight_digits", [hb])
+                total += 1
+                if got != int(data):
+                    bad += 1
+                    print(f"MISMATCH parse_eight_digits cpu={cpu} data={data!r} got={got}")
+    print(f"[{arch}] numbers interpreter vs oracle: {total - bad}/{total} ok")
+    return 1 if bad else 0
+
+
 def utf8_cases(rng, n):
     """Byte strings around 64-byte boundaries: valid text, then (half the time) one break."""
     for _ in range(n):
@@ -529,6 +567,7 @@ def check(mod, cases: int, seed: int) -> int:
     rc |= check_byteset(mod, cases * 4, seed) if any(f.name == "nvol_find_byteset_raw" for f in mod.functions) else 0
     rc |= check_json(mod, cases, seed) if any(f.name == "nvol_json_index_raw" for f in mod.functions) else 0
     rc |= check_utf8(mod, cases, seed) if any(f.name == "nvol_utf8_valid" for f in mod.functions) else 0
+    rc |= check_numbers(mod, cases, seed) if any(f.name == "nvol_parse_eight_digits" for f in mod.functions) else 0
     return 1 if bad or rc else 0
 
 

@@ -192,6 +192,9 @@ size_t nvol_json_index_raw_resolve(uint8_t *state, const uint8_t *blocks, size_t
 typedef size_t (*nvol_utf8_valid_fn_t)(const uint8_t *p, size_t len_);
 extern nvol_utf8_valid_fn_t nvol_utf8_valid_ptr;
 size_t nvol_utf8_valid_resolve(const uint8_t *p, size_t len_);
+typedef uint32_t (*nvol_parse_eight_digits_fn_t)(const uint8_t *p);
+extern nvol_parse_eight_digits_fn_t nvol_parse_eight_digits_ptr;
+uint32_t nvol_parse_eight_digits_resolve(const uint8_t *p);
 
 #ifdef NVOL_TESTING
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */
@@ -217,6 +220,7 @@ NVOL_API void nvol_test_set_avx2(int v) {
     nvol_find_byteset_pair_mask_raw_ptr = nvol_find_byteset_pair_mask_raw_resolve;
     nvol_json_index_raw_ptr = nvol_json_index_raw_resolve;
     nvol_utf8_valid_ptr = nvol_utf8_valid_resolve;
+    nvol_parse_eight_digits_ptr = nvol_parse_eight_digits_resolve;
 }
 #endif
 #elif defined(__aarch64__) || defined(_M_ARM64)
@@ -5250,6 +5254,23 @@ NVOL_INLINE size_t nvol_utf8_valid_neon(const uint8_t *p, size_t len_) {
 
 /* 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0 */
 NVOL_API size_t nvol_utf8_valid(const uint8_t *p, size_t len_) { return nvol_utf8_valid_neon(p, len_); }
+
+/* 1 when p[0..8) are eight ASCII digits '0'..'9', else 0; reads exactly 8 bytes */
+NVOL_API uint32_t nvol_is_eight_digits(const uint8_t *p) {
+    const uint64_t v = nvol_load64(p);
+    return ((uint32_t)((((v & UINT64_C(17361641481138401520)) | ((((uint64_t)(v + UINT64_C(434041037028460038))) & UINT64_C(17361641481138401520)) >> UINT64_C(4))) == UINT64_C(3689348814741910323))));
+}
+
+/* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
+NVOL_INLINE uint32_t nvol_parse_eight_digits_scalar(const uint8_t *p) {
+    uint64_t v = nvol_load64(p);
+    v = (((uint64_t)((v & UINT64_C(1085102592571150095)) * UINT64_C(2561))) >> UINT64_C(8));
+    v = (((uint64_t)((v & UINT64_C(71777214294589695)) * UINT64_C(6553601))) >> UINT64_C(16));
+    return ((uint32_t)((((uint64_t)((v & UINT64_C(281470681808895)) * UINT64_C(42949672960001))) >> UINT64_C(32))));
+}
+
+/* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
+NVOL_API uint32_t nvol_parse_eight_digits(const uint8_t *p) { return nvol_parse_eight_digits_scalar(p); }
 
 #ifdef NVOL_TESTING
 /* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */

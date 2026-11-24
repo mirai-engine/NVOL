@@ -72,6 +72,14 @@ align 32, db 0
 NVOL_K31: db 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
 align 32, db 0
 NVOL_K32: db 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 239, 223, 191
+align 32, db 0
+NVOL_K33: db 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1
+align 32, db 0
+NVOL_K34: db 100, 0, 1, 0, 100, 0, 1, 0, 100, 0, 1, 0, 100, 0, 1, 0
+align 32, db 0
+NVOL_K35: db 16, 39, 1, 0, 16, 39, 1, 0, 16, 39, 1, 0, 16, 39, 1, 0
+align 32, db 0
+NVOL_K36: db 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48
 align 64, db 0
 nvol_tbl_rank:
     db 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
@@ -181,6 +189,11 @@ global nvol_utf8_valid_ptr:data hidden
 nvol_utf8_valid_ptr:
 L.nvol_utf8_valid_ptr:
     dq L.nvol_utf8_valid_resolve
+align 8, db 0
+global nvol_parse_eight_digits_ptr:data hidden
+nvol_parse_eight_digits_ptr:
+L.nvol_parse_eight_digits_ptr:
+    dq L.nvol_parse_eight_digits_resolve
 section .note.GNU-stack noalloc noexec nowrite progbits
 section .text align=64
 
@@ -61789,6 +61802,122 @@ L.nvol_utf8_valid_resolve:
     pop rdi
     jmp qword [rel L.nvol_utf8_valid_ptr]
 
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x90
+global nvol_is_eight_digits:function 72
+nvol_is_eight_digits:
+L.nvol_is_eight_digits:
+    mov rax, qword [rdi]
+    mov rcx, rax
+    mov rdx, 17361641481138401520
+    and rcx, rdx
+    mov rdx, 434041037028460038
+    add rax, rdx
+    mov rdx, 17361641481138401520
+    and rax, rdx
+    shr rax, 4
+    or rcx, rax
+    mov rax, 3689348814741910323
+    cmp rcx, rax
+    sete al
+    movzx eax, al
+    ret
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0x90
+global nvol_parse_eight_digits_scalar:function hidden 87
+nvol_parse_eight_digits_scalar:
+L.nvol_parse_eight_digits_scalar:
+    mov rax, qword [rdi]
+    mov rcx, 1085102592571150095
+    and rax, rcx
+    mov ecx, 2561
+    imul rax, rcx
+    shr rax, 8
+    mov rcx, 71777214294589695
+    and rax, rcx
+    mov ecx, 6553601
+    imul rax, rcx
+    shr rax, 16
+    mov rcx, 281470681808895
+    and rax, rcx
+    mov rcx, 42949672960001
+    imul rax, rcx
+    shr rax, 32
+    ret
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x44, 0x0, 0x0
+global nvol_parse_eight_digits_sse42:function hidden 63
+nvol_parse_eight_digits_sse42:
+L.nvol_parse_eight_digits_sse42:
+    movdqa xmm0, [rel NVOL_K33]
+    movdqa xmm1, [rel NVOL_K34]
+    movdqa xmm2, [rel NVOL_K35]
+    movq xmm3, qword [rdi]
+    psubb xmm3, [rel NVOL_K36]
+    pmaddubsw xmm3, xmm0
+    pmaddwd xmm3, xmm1
+    movdqa xmm0, xmm3
+    packusdw xmm0, xmm3
+    pmaddwd xmm0, xmm2
+    movd eax, xmm0
+    ret
+
+    db 0x90
+global nvol_parse_eight_digits:function 6
+nvol_parse_eight_digits:
+L.nvol_parse_eight_digits:
+    jmp qword [rel L.nvol_parse_eight_digits_ptr]
+
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
+global nvol_parse_eight_digits_resolve:function hidden 64
+nvol_parse_eight_digits_resolve:
+L.nvol_parse_eight_digits_resolve:
+    push rdi
+    push rsi
+    push rdx
+    push rcx
+    push r8
+    push r9
+    sub rsp, 8
+    call nvol_cpu_sse42 wrt ..plt
+    test eax, eax
+    jne strict short L.nvol_parse_eight_digits_resolve + 30
+    lea rax, [rel L.nvol_parse_eight_digits_scalar]
+    jmp strict short L.nvol_parse_eight_digits_resolve + 39
+; .T0:
+    lea rax, [rel L.nvol_parse_eight_digits_sse42]
+    jmp strict short L.nvol_parse_eight_digits_resolve + 39
+; .done:
+    mov qword [rel L.nvol_parse_eight_digits_ptr], rax
+    add rsp, 8
+    pop r9
+    pop r8
+    pop rcx
+    pop rdx
+    pop rsi
+    pop rdi
+    jmp qword [rel L.nvol_parse_eight_digits_ptr]
+
 align 8
 nvol_fntbl_teddy:
     dd L.nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy
@@ -63082,8 +63211,33 @@ nvol_cie:
     dd L.nvol_utf8_valid - $
     dd 6
     db 0, 0, 0, 0
-    dd 72
+    dd 68
     dd $ - nvol_cie
     dd L.nvol_utf8_valid_resolve - $
     dd 82
-    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 120, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0, 0, 0, 0, 0
+    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 120, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_is_eight_digits - $
+    dd 72
+    db 0, 0, 0, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_parse_eight_digits_scalar - $
+    dd 87
+    db 0, 0, 0, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_parse_eight_digits_sse42 - $
+    dd 63
+    db 0, 0, 0, 0
+    dd 16
+    dd $ - nvol_cie
+    dd L.nvol_parse_eight_digits - $
+    dd 6
+    db 0, 0, 0, 0
+    dd 72
+    dd $ - nvol_cie
+    dd L.nvol_parse_eight_digits_resolve - $
+    dd 64
+    db 0, 65, 14, 16, 133, 2, 65, 14, 24, 132, 3, 65, 14, 32, 129, 4, 65, 14, 40, 130, 5, 66, 14, 48, 136, 6, 66, 14, 56, 137, 7, 68, 14, 64, 102, 14, 56, 66, 14, 48, 66, 14, 40, 65, 14, 32, 65, 14, 24, 65, 14, 16, 65, 14, 8, 0, 0, 0, 0, 0

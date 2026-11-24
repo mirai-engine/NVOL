@@ -23221,6 +23221,63 @@ L.nvol_utf8_valid:
 .cfi_endproc
 .size nvol_utf8_valid, .-nvol_utf8_valid
 
+    nop
+    nop
+    nop
+.globl nvol_is_eight_digits
+.type nvol_is_eight_digits, %function
+nvol_is_eight_digits:
+L.nvol_is_eight_digits:
+.cfi_startproc
+    ldr x9, [x0]
+    and x10, x9, #17361641481138401520
+    orr x11, xzr, #434041037028460038
+    add x9, x9, x11
+    and x9, x9, #17361641481138401520
+    lsr x9, x9, #4
+    orr x9, x10, x9
+    orr x10, xzr, #3689348814741910323
+    cmp x9, x10
+    cset w0, eq
+    ret
+.cfi_endproc
+.size nvol_is_eight_digits, .-nvol_is_eight_digits
+
+    nop
+.globl nvol_parse_eight_digits_scalar
+.type nvol_parse_eight_digits_scalar, %function
+.hidden nvol_parse_eight_digits_scalar
+nvol_parse_eight_digits_scalar:
+L.nvol_parse_eight_digits_scalar:
+.cfi_startproc
+    ldr x9, [x0]
+    and x10, x9, #1085102592571150095
+    movz w11, #2561
+    mul x10, x10, x11
+    lsr x9, x10, #8
+    and x10, x9, #71777214294589695
+    movz w11, #1
+    movk w11, #100, lsl #16
+    mul x10, x10, x11
+    lsr x9, x10, #16
+    and x9, x9, #281470681808895
+    movz x10, #1
+    movk x10, #10000, lsl #32
+    mul x9, x9, x10
+    lsr x0, x9, #32
+    ret
+.cfi_endproc
+.size nvol_parse_eight_digits_scalar, .-nvol_parse_eight_digits_scalar
+
+.globl nvol_parse_eight_digits
+.type nvol_parse_eight_digits, %function
+nvol_parse_eight_digits:
+L.nvol_parse_eight_digits:
+.cfi_startproc
+    b L.nvol_parse_eight_digits_scalar
+.cfi_endproc
+.size nvol_parse_eight_digits, .-nvol_parse_eight_digits
+
 .p2align 3
 nvol_fntbl_teddy:
     .word L.nvol_teddy_slim_neon_1 - nvol_fntbl_teddy

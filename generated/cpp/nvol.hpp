@@ -10148,6 +10148,44 @@ inline size_t nvol_utf8_valid_resolve(const uint8_t *p, size_t len_) {
 /* 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0 */
 inline size_t nvol_utf8_valid(const uint8_t *p, size_t len_) { return nvol_utf8_valid_ptr(p, len_); }
 
+/* 1 when p[0..8) are eight ASCII digits '0'..'9', else 0; reads exactly 8 bytes */
+inline uint32_t nvol_is_eight_digits(const uint8_t *p) {
+    const uint64_t v = nvol_load64(p);
+    return ((uint32_t)((((v & UINT64_C(17361641481138401520)) | ((((uint64_t)(v + UINT64_C(434041037028460038))) & UINT64_C(17361641481138401520)) >> UINT64_C(4))) == UINT64_C(3689348814741910323))));
+}
+
+/* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
+NVOL_INLINE uint32_t nvol_parse_eight_digits_scalar(const uint8_t *p) {
+    uint64_t v = nvol_load64(p);
+    v = (((uint64_t)((v & UINT64_C(1085102592571150095)) * UINT64_C(2561))) >> UINT64_C(8));
+    v = (((uint64_t)((v & UINT64_C(71777214294589695)) * UINT64_C(6553601))) >> UINT64_C(16));
+    return ((uint32_t)((((uint64_t)((v & UINT64_C(281470681808895)) * UINT64_C(42949672960001))) >> UINT64_C(32))));
+}
+
+/* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
+NVOL_TARGET_SSE4_2 NVOL_INLINE uint32_t nvol_parse_eight_digits_sse42(const uint8_t *p) {
+    const __m128i m10 = _mm_setr_epi8((char)10u, (char)1u, (char)10u, (char)1u, (char)10u, (char)1u, (char)10u, (char)1u, (char)10u, (char)1u, (char)10u, (char)1u, (char)10u, (char)1u, (char)10u, (char)1u);
+    const __m128i m100 = _mm_setr_epi8((char)100u, (char)0u, (char)1u, (char)0u, (char)100u, (char)0u, (char)1u, (char)0u, (char)100u, (char)0u, (char)1u, (char)0u, (char)100u, (char)0u, (char)1u, (char)0u);
+    const __m128i m10000 = _mm_setr_epi8((char)16u, (char)39u, (char)1u, (char)0u, (char)16u, (char)39u, (char)1u, (char)0u, (char)16u, (char)39u, (char)1u, (char)0u, (char)16u, (char)39u, (char)1u, (char)0u);
+    const __m128i d = _mm_sub_epi8(_mm_loadl_epi64((const __m128i *)(p)), _mm_set1_epi8((char)48u));
+    const __m128i t1 = _mm_maddubs_epi16(d, m10);
+    const __m128i t2 = _mm_madd_epi16(t1, m100);
+    const __m128i t3 = _mm_packus_epi32(t2, t2);
+    return ((uint32_t)_mm_cvtsi128_si32(_mm_madd_epi16(t3, m10000)));
+}
+
+typedef uint32_t (*nvol_parse_eight_digits_fn_t)(const uint8_t *p);
+inline uint32_t nvol_parse_eight_digits_resolve(const uint8_t *p);
+inline nvol_parse_eight_digits_fn_t nvol_parse_eight_digits_ptr = nvol_parse_eight_digits_resolve;
+inline uint32_t nvol_parse_eight_digits_resolve(const uint8_t *p) {
+    nvol_parse_eight_digits_fn_t f = nvol_parse_eight_digits_scalar;
+    if (nvol_cpu_sse42()) f = nvol_parse_eight_digits_sse42;
+    nvol_parse_eight_digits_ptr = f;
+    return f(p);
+}
+/* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
+inline uint32_t nvol_parse_eight_digits(const uint8_t *p) { return nvol_parse_eight_digits_ptr(p); }
+
 #elif defined(__aarch64__) || defined(_M_ARM64)
 inline constexpr uint8_t nvol_tbl_rank[256] = {
     55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43,
@@ -15179,6 +15217,23 @@ NVOL_INLINE size_t nvol_utf8_valid_neon(const uint8_t *p, size_t len_) {
 
 /* 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0 */
 inline size_t nvol_utf8_valid(const uint8_t *p, size_t len_) { return nvol_utf8_valid_neon(p, len_); }
+
+/* 1 when p[0..8) are eight ASCII digits '0'..'9', else 0; reads exactly 8 bytes */
+inline uint32_t nvol_is_eight_digits(const uint8_t *p) {
+    const uint64_t v = nvol_load64(p);
+    return ((uint32_t)((((v & UINT64_C(17361641481138401520)) | ((((uint64_t)(v + UINT64_C(434041037028460038))) & UINT64_C(17361641481138401520)) >> UINT64_C(4))) == UINT64_C(3689348814741910323))));
+}
+
+/* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
+NVOL_INLINE uint32_t nvol_parse_eight_digits_scalar(const uint8_t *p) {
+    uint64_t v = nvol_load64(p);
+    v = (((uint64_t)((v & UINT64_C(1085102592571150095)) * UINT64_C(2561))) >> UINT64_C(8));
+    v = (((uint64_t)((v & UINT64_C(71777214294589695)) * UINT64_C(6553601))) >> UINT64_C(16));
+    return ((uint32_t)((((uint64_t)((v & UINT64_C(281470681808895)) * UINT64_C(42949672960001))) >> UINT64_C(32))));
+}
+
+/* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
+inline uint32_t nvol_parse_eight_digits(const uint8_t *p) { return nvol_parse_eight_digits_scalar(p); }
 
 #else
 #  error "NVOL: unsupported architecture (x86_64 and aarch64 are generated)"

@@ -86,6 +86,10 @@ NVOL_API const uint8_t * nvol_find_byteset_pair_mask_raw(const uint8_t *st, cons
 NVOL_API size_t nvol_json_index_raw(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out);
 /* 1 when p[0..len) is valid UTF-8 (no overlong forms, surrogates or code points above U+10FFFF), else 0 */
 NVOL_API size_t nvol_utf8_valid(const uint8_t *p, size_t len_);
+/* 1 when p[0..8) are eight ASCII digits '0'..'9', else 0; reads exactly 8 bytes */
+NVOL_API uint32_t nvol_is_eight_digits(const uint8_t *p);
+/* the decimal value of p[0..8), which must be eight ASCII digits (nvol_is_eight_digits); reads exactly 8 bytes */
+NVOL_API uint32_t nvol_parse_eight_digits(const uint8_t *p);
 
 /* Iterator over match positions of 1..3 needles (memchr_iter & co.).
  *   nvol_memchr_iter it; nvol_memchr_iter_init(&it, 2, 'a', 'b', 0, hay, len);

@@ -39,6 +39,8 @@ _DRECTVE SEGMENT INFO ALIAS(".drectve")
     DB "-export:nvol_find_byteset_pair_mask_raw "
     DB "-export:nvol_json_index_raw "
     DB "-export:nvol_utf8_valid "
+    DB "-export:nvol_is_eight_digits "
+    DB "-export:nvol_parse_eight_digits "
 _DRECTVE ENDS
 _NVOLK SEGMENT ALIGN(64) READ ALIAS(".rdata") 'CONST'
 ALIGN 32
@@ -138,6 +140,14 @@ NVOL_K31 DB 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112, 112
 ALIGN 32
 NVOL_K32 DB 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
     DB 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 239, 223, 191
+ALIGN 32
+NVOL_K33 DB 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1
+ALIGN 32
+NVOL_K34 DB 100, 0, 1, 0, 100, 0, 1, 0, 100, 0, 1, 0, 100, 0, 1, 0
+ALIGN 32
+NVOL_K35 DB 16, 39, 1, 0, 16, 39, 1, 0, 16, 39, 1, 0, 16, 39, 1, 0
+ALIGN 32
+NVOL_K36 DB 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48
 ALIGN 64
 nvol_tbl_rank DB 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
     DB 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 56, 32, 31, 30, 29, 28
@@ -211,6 +221,9 @@ nvol_json_index_raw_ptr DQ nvol_json_index_raw_resolve
 ALIGN 8
 PUBLIC nvol_utf8_valid_ptr
 nvol_utf8_valid_ptr DQ nvol_utf8_valid_resolve
+ALIGN 8
+PUBLIC nvol_parse_eight_digits_ptr
+nvol_parse_eight_digits_ptr DQ nvol_parse_eight_digits_resolve
 _DATA ENDS
 _NVOLT SEGMENT ALIGN(64) READ EXECUTE ALIAS(".text") 'CODE'
 
@@ -63767,6 +63780,119 @@ L_done:
     pop rcx
     jmp qword ptr [nvol_utf8_valid_ptr]
 nvol_utf8_valid_resolve ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
+nvol_is_eight_digits PROC PUBLIC
+    mov rax, qword ptr [rcx]
+    mov rcx, rax
+    mov rdx, -1085102592571150096
+    and rcx, rdx
+    mov rdx, 434041037028460038
+    add rax, rdx
+    mov rdx, -1085102592571150096
+    and rax, rdx
+    shr rax, 4
+    or rcx, rax
+    mov rax, 3689348814741910323
+    cmp rcx, rax
+    sete al
+    movzx eax, al
+    ret
+nvol_is_eight_digits ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 144
+nvol_parse_eight_digits_scalar PROC PUBLIC
+    mov rax, qword ptr [rcx]
+    mov rcx, 1085102592571150095
+    and rax, rcx
+    mov ecx, 2561
+    imul rax, rcx
+    shr rax, 8
+    mov rcx, 71777214294589695
+    and rax, rcx
+    mov ecx, 6553601
+    imul rax, rcx
+    shr rax, 16
+    mov rcx, 281470681808895
+    and rax, rcx
+    mov rcx, 42949672960001
+    imul rax, rcx
+    shr rax, 32
+    ret
+nvol_parse_eight_digits_scalar ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 68, 0, 0
+nvol_parse_eight_digits_sse42 PROC PUBLIC
+    movdqa xmm0, xmmword ptr [NVOL_K33]
+    movdqa xmm1, xmmword ptr [NVOL_K34]
+    movdqa xmm2, xmmword ptr [NVOL_K35]
+    movq xmm3, qword ptr [rcx]
+    psubb xmm3, xmmword ptr [NVOL_K36]
+    pmaddubsw xmm3, xmm0
+    pmaddwd xmm3, xmm1
+    movdqa xmm0, xmm3
+    packusdw xmm0, xmm3
+    pmaddwd xmm0, xmm2
+    movd eax, xmm0
+    ret
+nvol_parse_eight_digits_sse42 ENDP
+
+    DB 144
+nvol_parse_eight_digits PROC PUBLIC
+    jmp qword ptr [nvol_parse_eight_digits_ptr]
+nvol_parse_eight_digits ENDP
+
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
+nvol_parse_eight_digits_resolve PROC PUBLIC FRAME
+    push rcx
+    .PUSHREG rcx
+    push rdx
+    .PUSHREG rdx
+    push r8
+    .PUSHREG r8
+    push r9
+    .PUSHREG r9
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    call nvol_cpu_sse42
+    test eax, eax
+    jne SHORT L_T0
+    lea rax, [nvol_parse_eight_digits_scalar]
+    jmp SHORT L_done
+L_T0:
+    lea rax, [nvol_parse_eight_digits_sse42]
+    jmp SHORT L_done
+L_done:
+    mov qword ptr [nvol_parse_eight_digits_ptr], rax
+    add rsp, 40
+    pop r9
+    pop r8
+    pop rdx
+    pop rcx
+    jmp qword ptr [nvol_parse_eight_digits_ptr]
+nvol_parse_eight_digits_resolve ENDP
 
 ALIGN 8
 nvol_fntbl_teddy DD nvol_teddy_slim_ssse3_1 - nvol_fntbl_teddy

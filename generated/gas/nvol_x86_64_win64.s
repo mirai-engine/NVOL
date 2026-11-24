@@ -100,6 +100,18 @@ NVOL_K31:
 .p2align 5
 NVOL_K32:
     .byte 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 239, 223, 191
+.p2align 5
+NVOL_K33:
+    .byte 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1
+.p2align 5
+NVOL_K34:
+    .byte 100, 0, 1, 0, 100, 0, 1, 0, 100, 0, 1, 0, 100, 0, 1, 0
+.p2align 5
+NVOL_K35:
+    .byte 16, 39, 1, 0, 16, 39, 1, 0, 16, 39, 1, 0, 16, 39, 1, 0
+.p2align 5
+NVOL_K36:
+    .byte 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48
 .p2align 6
 nvol_tbl_rank:
     .byte 55, 52, 51, 50, 49, 48, 47, 46, 45, 103, 242, 66, 67, 229, 44, 43
@@ -191,6 +203,10 @@ nvol_json_index_raw_ptr:
 .globl nvol_utf8_valid_ptr
 nvol_utf8_valid_ptr:
     .quad nvol_utf8_valid_resolve
+.p2align 3
+.globl nvol_parse_eight_digits_ptr
+nvol_parse_eight_digits_ptr:
+    .quad nvol_parse_eight_digits_resolve
 .section .drectve
     .ascii " -export:nvol_memchr_raw"
     .ascii " -export:nvol_memchr"
@@ -225,6 +241,8 @@ nvol_utf8_valid_ptr:
     .ascii " -export:nvol_find_byteset_pair_mask_raw"
     .ascii " -export:nvol_json_index_raw"
     .ascii " -export:nvol_utf8_valid"
+    .ascii " -export:nvol_is_eight_digits"
+    .ascii " -export:nvol_parse_eight_digits"
 .text
 .p2align 6
 
@@ -64382,6 +64400,126 @@ nvol_utf8_valid_resolve:
     pop %rdx
     pop %rcx
     jmp *nvol_utf8_valid_ptr(%rip)
+.seh_endproc
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
+.globl nvol_is_eight_digits
+.def nvol_is_eight_digits; .scl 2; .type 32; .endef
+nvol_is_eight_digits:
+    mov (%rcx), %rax
+    mov %rax, %rcx
+    movabsq $17361641481138401520, %rdx
+    and %rdx, %rcx
+    movabsq $434041037028460038, %rdx
+    add %rdx, %rax
+    movabsq $17361641481138401520, %rdx
+    and %rdx, %rax
+    shr $4, %rax
+    or %rax, %rcx
+    movabsq $3689348814741910323, %rax
+    cmp %rax, %rcx
+    sete %al
+    movzbl %al, %eax
+    ret
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 144
+.globl nvol_parse_eight_digits_scalar
+.def nvol_parse_eight_digits_scalar; .scl 2; .type 32; .endef
+nvol_parse_eight_digits_scalar:
+    mov (%rcx), %rax
+    movabsq $1085102592571150095, %rcx
+    and %rcx, %rax
+    mov $2561, %ecx
+    imul %rcx, %rax
+    shr $8, %rax
+    movabsq $71777214294589695, %rcx
+    and %rcx, %rax
+    mov $6553601, %ecx
+    imul %rcx, %rax
+    shr $16, %rax
+    movabsq $281470681808895, %rcx
+    and %rcx, %rax
+    movabsq $42949672960001, %rcx
+    imul %rcx, %rax
+    shr $32, %rax
+    ret
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 68, 0, 0
+.globl nvol_parse_eight_digits_sse42
+.def nvol_parse_eight_digits_sse42; .scl 2; .type 32; .endef
+nvol_parse_eight_digits_sse42:
+    movdqa NVOL_K33(%rip), %xmm0
+    movdqa NVOL_K34(%rip), %xmm1
+    movdqa NVOL_K35(%rip), %xmm2
+    movq (%rcx), %xmm3
+    psubb NVOL_K36(%rip), %xmm3
+    pmaddubsw %xmm0, %xmm3
+    pmaddwd %xmm1, %xmm3
+    movdqa %xmm3, %xmm0
+    packusdw %xmm3, %xmm0
+    pmaddwd %xmm2, %xmm0
+    movd %xmm0, %eax
+    ret
+
+    .byte 144
+.globl nvol_parse_eight_digits
+.def nvol_parse_eight_digits; .scl 2; .type 32; .endef
+nvol_parse_eight_digits:
+    jmp *nvol_parse_eight_digits_ptr(%rip)
+
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
+.globl nvol_parse_eight_digits_resolve
+.def nvol_parse_eight_digits_resolve; .scl 2; .type 32; .endef
+nvol_parse_eight_digits_resolve:
+.seh_proc nvol_parse_eight_digits_resolve
+    push %rcx
+.seh_pushreg %rcx
+    push %rdx
+.seh_pushreg %rdx
+    push %r8
+.seh_pushreg %r8
+    push %r9
+.seh_pushreg %r9
+    sub $40, %rsp
+.seh_stackalloc 40
+.seh_endprologue
+    call nvol_cpu_sse42
+    test %eax, %eax
+    {disp8} jne .Lnvol_parse_eight_digits_resolve.T0
+    lea nvol_parse_eight_digits_scalar(%rip), %rax
+    {disp8} jmp .Lnvol_parse_eight_digits_resolve.done
+.Lnvol_parse_eight_digits_resolve.T0:
+    lea nvol_parse_eight_digits_sse42(%rip), %rax
+    {disp8} jmp .Lnvol_parse_eight_digits_resolve.done
+.Lnvol_parse_eight_digits_resolve.done:
+    mov %rax, nvol_parse_eight_digits_ptr(%rip)
+    add $40, %rsp
+    pop %r9
+    pop %r8
+    pop %rdx
+    pop %rcx
+    jmp *nvol_parse_eight_digits_ptr(%rip)
 .seh_endproc
 
 .p2align 3
