@@ -126,7 +126,9 @@ NEON_16 = {
     "vshuffle": "nvol_tbl1({0}, {1})",
 }
 X86_16_SSE42 = {**X86_16, "skip_set16": "u32(nvol_pcmpistri128({0}, {1}, 0x10))",
-                "vpackus32": "transmute(V16)nvol_packusdw128(transmute(U32x4){0}, transmute(U32x4){1})"}
+                "vpackus32": "transmute(V16)nvol_packusdw128(transmute(U32x4){0}, transmute(U32x4){1})",
+                # functions with the pclmul feature only (prefix_xor picks it by the feature)
+                "prefix_xor64": "intrinsics.simd_extract(nvol_pclmulqdq(U64x2{{{0}, 0}}, U64x2(~u64(0)), 0), 0)"}
 LOWER = {"sse2": X86_16, "ssse3": X86_16, "sse42": X86_16_SSE42, "avx2": X86_32, "neon": NEON_16}
 SCALAR = {
     "first_offset": "uint(intrinsics.count_trailing_zeros({0}))",
@@ -143,6 +145,7 @@ SCALAR = {
     "cpu_avx2_pclmul_bmi1": "nvol_cpu_avx2_pclmul_bmi1()",
     "cpu_ssse3": "(.ssse3 in info.cpu_features())",
     "cpu_sse42": "nvol_cpu_sse42()",
+    "cpu_sse42_pclmul": "nvol_cpu_sse42_pclmul()",
 }
 
 ARCH = {"x86_64": ".amd64", "aarch64": ".arm64"}
@@ -176,6 +179,11 @@ FOREIGN = {
 	@(private) nvol_cpu_sse42 :: proc "contextless" () -> bool {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override >= 1 }
 		return .sse42 in info.cpu_features()
+	}
+	@(private) nvol_cpu_sse42_pclmul :: proc "contextless" () -> bool {
+		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override >= 1 }
+		f := info.cpu_features()
+		return .sse42 in f && .pclmulqdq in f
 	}
 
 	@(private) nvol_bcast128 :: #force_inline proc "contextless" (x: V16) -> V32 {

@@ -221,9 +221,11 @@ def _write_indexes(b, bits, base, out, n):
 
 def kernel(isa: ISA | None) -> Function:
     tag = isa.name if isa else "scalar"
-    # AVX2 with BMI1, as simdjson's haswell kernel: tzcnt and blsr in the indexer
+    # AVX2 with BMI1, as simdjson's haswell kernel: tzcnt and blsr in the indexer; SSE4.2 with
+    # PCLMULQDQ, as its westmere kernel: prefix_xor in one pclmulqdq
     b = Builder(f"nvol_json_index_{tag}", USIZE, isa=isa.name if isa else None,
-                doc=f"stage 1, {tag} masks", features=("bmi1",) if tag == "avx2" else ())
+                doc=f"stage 1, {tag} masks",
+                features={"avx2": ("bmi1",), "sse42": ("pclmul",)}.get(tag, ()))
     state, blocks, nblocks, idx, out = _params(b)
     st = [b.var(n, prim("load64", state + 8 * k if k else state), U64)
           for k, n in enumerate(("nie", "pis", "psc", "err"))]
@@ -295,9 +297,9 @@ def kernel(isa: ISA | None) -> Function:
 
 
 def build(isas: list, mod: Module) -> None:
-    """Its own ISA set, as Teddy and byteset: AVX2 (with PCLMULQDQ), then SSE4.2 (simdjson's
-    westmere class: POPCNT), then SSSE3 (pshufb), then the scalar masks on x86_64; NEON alone on
-    aarch64."""
+    """Its own ISA set, as Teddy and byteset: AVX2 (with PCLMULQDQ), then SSE4.2 with PCLMULQDQ
+    (simdjson's westmere class: POPCNT, pclmulqdq), then SSSE3 (pshufb), then the scalar masks
+    on x86_64; NEON alone on aarch64."""
     if "neon" in [i.name for i in isas]:     # NEON is the baseline: no scalar masks
         neon = kernel(ISAS["neon"])
         mod.functions.append(neon)
@@ -306,7 +308,7 @@ def build(isas: list, mod: Module) -> None:
         scalar, avx2, ssse3 = kernel(None), kernel(ISAS["avx2"]), kernel(ISAS["ssse3"])
         sse42 = kernel(ISAS["sse42"])
         mod.functions += [scalar, ssse3, sse42, avx2]
-        entries = [(prim("cpu_avx2_pclmul_bmi1"), avx2.name), (prim("cpu_sse42"), sse42.name),
+        entries = [(prim("cpu_avx2_pclmul_bmi1"), avx2.name), (prim("cpu_sse42_pclmul"), sse42.name),
                    (prim("cpu_ssse3"), ssse3.name), (None, scalar.name)]
     rb = Builder("nvol_json_index_raw", USIZE, public=True, doc=DOC)
     _params(rb)

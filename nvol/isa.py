@@ -49,6 +49,8 @@ SCALAR = {
     ("rust", "cpu_ssse3"): "std::is_x86_feature_detected!(\"ssse3\")",
     ("c", "cpu_sse42"): "nvol_cpu_sse42()",
     ("rust", "cpu_sse42"): "std::is_x86_feature_detected!(\"sse4.2\")",
+    ("c", "cpu_sse42_pclmul"): "nvol_cpu_sse42_pclmul()",
+    ("rust", "cpu_sse42_pclmul"): "(std::is_x86_feature_detected!(\"sse4.2\") && std::is_x86_feature_detected!(\"pclmulqdq\"))",
     ("c", "first_offset64"): "((size_t)nvol_ctz64({0}))",
     ("rust", "first_offset64"): "({0}.trailing_zeros() as usize)",
     ("c", "tzcnt64"): "((size_t)nvol_tzcnt64({0}))",
@@ -355,6 +357,9 @@ ARCH_ISAS = {"x86_64": ("sse2", "ssse3", "sse42", "avx2"), "aarch64": ("neon",)}
 FEATURE_LOWER = {
     ("c", "bmi1", "tzcnt64"): "((size_t)_tzcnt_u64({0}))",
     ("rust", "bmi1", "tzcnt64"): "(_tzcnt_u64({0}) as usize)",
+    # an SSE function with PCLMULQDQ (simdjson's westmere): the same 128-bit sequence as AVX2's
+    ("c", "pclmul", "prefix_xor64"): "((uint64_t)_mm_cvtsi128_si64(_mm_clmulepi64_si128(_mm_cvtsi64_si128((long long)({0})), _mm_set1_epi8((char)-1), 0)))",
+    ("rust", "pclmul", "prefix_xor64"): "(_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128({0} as i64), _mm_set1_epi8(-1))) as u64)",
 }
 
 
@@ -390,10 +395,11 @@ def all_lanes_mask(isa: ISA):
 
 def prefix_xor(b, isa: "ISA | None", x):
     """simdjson's prefix_xor of a u64 (bit i = XOR of bits 0..i). One pclmulqdq where the ISA
-    has it (AVX2 functions, which dispatch on cpu_avx2_pclmul_bmi1); elsewhere the six shift/xor
-    steps of simdjson's arm64 and fallback kernels, let-bound so no step is computed twice."""
+    has it (AVX2 functions, which dispatch on cpu_avx2_pclmul_bmi1) or the function has the
+    pclmul feature (SSE4.2, cpu_sse42_pclmul); elsewhere the six shift/xor steps of simdjson's
+    arm64 and fallback kernels, let-bound so no step is computed twice."""
     from .ir import U64, Prim
-    if isa is not None and ("c", "prefix_xor64") in isa.lower:
+    if isa is not None and (("c", "prefix_xor64") in isa.lower or "pclmul" in getattr(b, "features", ())):
         return Prim("prefix_xor64", [x], U64)
     v = b.var("px", x, U64)
     for k in (1, 2, 4, 8, 16, 32):

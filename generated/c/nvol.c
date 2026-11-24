@@ -82,6 +82,7 @@ typedef struct nvol_visitor { int (*fn)(void *ctx, const uint8_t *chunk, uint64_
 #  define NVOL_TARGET_AVX2_BMI1
 #  define NVOL_TARGET_SSSE3
 #  define NVOL_TARGET_SSE4_2
+#  define NVOL_TARGET_SSE4_2_PCLMUL
 static int nvol_cpu_avx2_detect(void) {
     int r[4]; __cpuid(r, 1);
     if (!((r[2] >> 27) & 1) || !((r[2] >> 28) & 1)) return 0;   /* OSXSAVE, AVX */
@@ -90,6 +91,7 @@ static int nvol_cpu_avx2_detect(void) {
 }
 static int nvol_cpu_ssse3_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 9) & 1; }
 static int nvol_cpu_sse42_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 20) & 1; }
+static int nvol_cpu_sse42_pclmul_detect(void) { int r[4]; __cpuid(r, 1); return (r[2] >> 20) & (r[2] >> 1) & 1; }
 static int nvol_cpu_avx2_pclmul_bmi1_detect(void) {
     int r[4]; __cpuid(r, 1);
     if (!((r[2] >> 1) & 1) || !nvol_cpu_avx2_detect()) return 0;  /* PCLMULQDQ */
@@ -104,9 +106,14 @@ static int nvol_cpu_avx2_pclmul_bmi1_detect(void) {
 #  define NVOL_TARGET_AVX2_BMI1 __attribute__((target("avx2,popcnt,pclmul,bmi")))
 #  define NVOL_TARGET_SSSE3 __attribute__((target("ssse3")))
 #  define NVOL_TARGET_SSE4_2 __attribute__((target("sse4.2,popcnt")))
+#  define NVOL_TARGET_SSE4_2_PCLMUL __attribute__((target("sse4.2,popcnt,pclmul")))
 static int nvol_cpu_avx2_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("avx2"); }
 static int nvol_cpu_ssse3_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("ssse3"); }
 static int nvol_cpu_sse42_detect(void) { __builtin_cpu_init(); return __builtin_cpu_supports("sse4.2"); }
+static int nvol_cpu_sse42_pclmul_detect(void) {
+    __builtin_cpu_init();
+    return __builtin_cpu_supports("sse4.2") && __builtin_cpu_supports("pclmul");
+}
 static int nvol_cpu_avx2_pclmul_bmi1_detect(void) {
     __builtin_cpu_init();
     return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("pclmul") && __builtin_cpu_supports("bmi");
@@ -122,6 +129,12 @@ static int nvol_cpu_sse42_cache = -1;
 static inline int nvol_cpu_sse42(void) {
     int v = nvol_cpu_sse42_cache;
     if (v < 0) { v = nvol_cpu_sse42_detect(); nvol_cpu_sse42_cache = v; }
+    return v;
+}
+static int nvol_cpu_sse42_pclmul_cache = -1;
+static inline NVOL_UNUSED int nvol_cpu_sse42_pclmul(void) {
+    int v = nvol_cpu_sse42_pclmul_cache;
+    if (v < 0) { v = nvol_cpu_sse42_pclmul_detect(); nvol_cpu_sse42_pclmul_cache = v; }
     return v;
 }
 static int nvol_cpu_avx2_cache = -1;
@@ -9381,7 +9394,7 @@ NVOL_TARGET_SSSE3 NVOL_INLINE size_t nvol_json_index_ssse3(uint8_t *state, const
 }
 
 /* stage 1, sse42 masks */
-NVOL_TARGET_SSE4_2 NVOL_INLINE size_t nvol_json_index_sse42(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
+NVOL_TARGET_SSE4_2_PCLMUL NVOL_INLINE size_t nvol_json_index_sse42(uint8_t *state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t *out) {
     uint64_t nie = nvol_load64(state);
     uint64_t pis = nvol_load64((state + ((size_t)8u)));
     uint64_t psc = nvol_load64((state + ((size_t)16u)));
@@ -9431,14 +9444,7 @@ NVOL_TARGET_SSE4_2 NVOL_INLINE size_t nvol_json_index_sse42(uint8_t *state, cons
             nie = UINT64_C(0);
         }
         const uint64_t quote = (qt & (escaped ^ UINT64_C(18446744073709551615)));
-        uint64_t px = quote;
-        px = (px ^ (px << UINT64_C(1)));
-        px = (px ^ (px << UINT64_C(2)));
-        px = (px ^ (px << UINT64_C(4)));
-        px = (px ^ (px << UINT64_C(8)));
-        px = (px ^ (px << UINT64_C(16)));
-        px = (px ^ (px << UINT64_C(32)));
-        const uint64_t in_string = (px ^ pis);
+        const uint64_t in_string = (((uint64_t)_mm_cvtsi128_si64(_mm_clmulepi64_si128(_mm_cvtsi64_si128((long long)(quote)), _mm_set1_epi8((char)-1), 0))) ^ pis);
         pis = ((uint64_t)(UINT64_C(0) - (in_string >> UINT64_C(63))));
         const uint64_t scalar = ((op | ws) ^ UINT64_C(18446744073709551615));
         const uint64_t nqs = (scalar & (quote ^ UINT64_C(18446744073709551615)));
@@ -9484,14 +9490,7 @@ NVOL_TARGET_SSE4_2 NVOL_INLINE size_t nvol_json_index_sse42(uint8_t *state, cons
             nie = UINT64_C(0);
         }
         const uint64_t quote1 = (qt1 & (escaped1 ^ UINT64_C(18446744073709551615)));
-        uint64_t px1 = quote1;
-        px1 = (px1 ^ (px1 << UINT64_C(1)));
-        px1 = (px1 ^ (px1 << UINT64_C(2)));
-        px1 = (px1 ^ (px1 << UINT64_C(4)));
-        px1 = (px1 ^ (px1 << UINT64_C(8)));
-        px1 = (px1 ^ (px1 << UINT64_C(16)));
-        px1 = (px1 ^ (px1 << UINT64_C(32)));
-        const uint64_t in_string1 = (px1 ^ pis);
+        const uint64_t in_string1 = (((uint64_t)_mm_cvtsi128_si64(_mm_clmulepi64_si128(_mm_cvtsi64_si128((long long)(quote1)), _mm_set1_epi8((char)-1), 0))) ^ pis);
         pis = ((uint64_t)(UINT64_C(0) - (in_string1 >> UINT64_C(63))));
         const uint64_t scalar1 = ((op1 | ws1) ^ UINT64_C(18446744073709551615));
         const uint64_t nqs1 = (scalar1 & (quote1 ^ UINT64_C(18446744073709551615)));
@@ -9685,14 +9684,7 @@ NVOL_TARGET_SSE4_2 NVOL_INLINE size_t nvol_json_index_sse42(uint8_t *state, cons
             nie = UINT64_C(0);
         }
         const uint64_t quote2 = (qt2 & (escaped2 ^ UINT64_C(18446744073709551615)));
-        uint64_t px2 = quote2;
-        px2 = (px2 ^ (px2 << UINT64_C(1)));
-        px2 = (px2 ^ (px2 << UINT64_C(2)));
-        px2 = (px2 ^ (px2 << UINT64_C(4)));
-        px2 = (px2 ^ (px2 << UINT64_C(8)));
-        px2 = (px2 ^ (px2 << UINT64_C(16)));
-        px2 = (px2 ^ (px2 << UINT64_C(32)));
-        const uint64_t in_string2 = (px2 ^ pis);
+        const uint64_t in_string2 = (((uint64_t)_mm_cvtsi128_si64(_mm_clmulepi64_si128(_mm_cvtsi64_si128((long long)(quote2)), _mm_set1_epi8((char)-1), 0))) ^ pis);
         pis = ((uint64_t)(UINT64_C(0) - (in_string2 >> UINT64_C(63))));
         const uint64_t scalar2 = ((op2 | ws2) ^ UINT64_C(18446744073709551615));
         const uint64_t nqs2 = (scalar2 & (quote2 ^ UINT64_C(18446744073709551615)));
@@ -10329,7 +10321,7 @@ static nvol_json_index_raw_fn_t nvol_json_index_raw_ptr = nvol_json_index_raw_re
 static size_t nvol_json_index_raw_resolve(uint8_t * state, const uint8_t *blocks, size_t nblocks, size_t idx, uint8_t * out) {
     nvol_json_index_raw_fn_t f = nvol_json_index_scalar;
     if (nvol_cpu_ssse3()) f = nvol_json_index_ssse3;
-    if (nvol_cpu_sse42()) f = nvol_json_index_sse42;
+    if (nvol_cpu_sse42_pclmul()) f = nvol_json_index_sse42;
     if (nvol_cpu_avx2_pclmul_bmi1()) f = nvol_json_index_avx2;
     nvol_json_index_raw_ptr = f;
     return f(state, blocks, nblocks, idx, out);
@@ -10709,6 +10701,7 @@ NVOL_API void nvol_test_set_avx2(int v) {
     nvol_cpu_avx2_cache = v < 0 ? -1 : v == 1;
     nvol_cpu_avx2_pclmul_bmi1_cache = v < 0 ? -1 : v == 1;
     nvol_cpu_sse42_cache = v < 0 ? -1 : v >= 1;
+    nvol_cpu_sse42_pclmul_cache = v < 0 ? -1 : v >= 1;
     nvol_memchr_raw_ptr = nvol_memchr_raw_resolve;
     nvol_memrchr_raw_ptr = nvol_memrchr_raw_resolve;
     nvol_memchr2_raw_ptr = nvol_memchr2_raw_resolve;

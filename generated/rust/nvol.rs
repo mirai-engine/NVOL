@@ -10068,7 +10068,7 @@ pub mod raw {
     }
 
     /// stage 1, sse42 masks
-    #[target_feature(enable = "sse4.2,popcnt")]
+    #[target_feature(enable = "sse4.2,popcnt,pclmulqdq")]
     #[inline]
     pub(crate) unsafe fn nvol_json_index_sse42(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
         unsafe {
@@ -10122,14 +10122,7 @@ pub mod raw {
                     nie = 0u64;
                 }
                 let quote: u64 = (qt & (escaped ^ 18446744073709551615u64));
-                let mut px: u64 = quote;
-                px = (px ^ (px << 1u64));
-                px = (px ^ (px << 2u64));
-                px = (px ^ (px << 4u64));
-                px = (px ^ (px << 8u64));
-                px = (px ^ (px << 16u64));
-                px = (px ^ (px << 32u64));
-                let in_string: u64 = (px ^ pis);
+                let in_string: u64 = ((_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128(quote as i64), _mm_set1_epi8(-1))) as u64) ^ pis);
                 pis = 0u64.wrapping_sub((in_string >> 63u64));
                 let scalar: u64 = ((op | ws) ^ 18446744073709551615u64);
                 let nqs: u64 = (scalar & (quote ^ 18446744073709551615u64));
@@ -10177,14 +10170,7 @@ pub mod raw {
                     nie = 0u64;
                 }
                 let quote1: u64 = (qt1 & (escaped1 ^ 18446744073709551615u64));
-                let mut px1: u64 = quote1;
-                px1 = (px1 ^ (px1 << 1u64));
-                px1 = (px1 ^ (px1 << 2u64));
-                px1 = (px1 ^ (px1 << 4u64));
-                px1 = (px1 ^ (px1 << 8u64));
-                px1 = (px1 ^ (px1 << 16u64));
-                px1 = (px1 ^ (px1 << 32u64));
-                let in_string1: u64 = (px1 ^ pis);
+                let in_string1: u64 = ((_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128(quote1 as i64), _mm_set1_epi8(-1))) as u64) ^ pis);
                 pis = 0u64.wrapping_sub((in_string1 >> 63u64));
                 let scalar1: u64 = ((op1 | ws1) ^ 18446744073709551615u64);
                 let nqs1: u64 = (scalar1 & (quote1 ^ 18446744073709551615u64));
@@ -10380,14 +10366,7 @@ pub mod raw {
                     nie = 0u64;
                 }
                 let quote2: u64 = (qt2 & (escaped2 ^ 18446744073709551615u64));
-                let mut px2: u64 = quote2;
-                px2 = (px2 ^ (px2 << 1u64));
-                px2 = (px2 ^ (px2 << 2u64));
-                px2 = (px2 ^ (px2 << 4u64));
-                px2 = (px2 ^ (px2 << 8u64));
-                px2 = (px2 ^ (px2 << 16u64));
-                px2 = (px2 ^ (px2 << 32u64));
-                let in_string2: u64 = (px2 ^ pis);
+                let in_string2: u64 = ((_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128(quote2 as i64), _mm_set1_epi8(-1))) as u64) ^ pis);
                 pis = 0u64.wrapping_sub((in_string2 >> 63u64));
                 let scalar2: u64 = ((op2 | ws2) ^ 18446744073709551615u64);
                 let nqs2: u64 = (scalar2 & (quote2 ^ 18446744073709551615u64));
@@ -11039,7 +11018,7 @@ pub mod raw {
         unsafe fn resolve(state: *mut u8, blocks: *const u8, nblocks: usize, idx: usize, out: *mut u8) -> usize {
             let mut f: F = nvol_json_index_scalar;
             if std::is_x86_feature_detected!("ssse3") { f = nvol_json_index_ssse3; }
-            if std::is_x86_feature_detected!("sse4.2") { f = nvol_json_index_sse42; }
+            if (std::is_x86_feature_detected!("sse4.2") && std::is_x86_feature_detected!("pclmulqdq")) { f = nvol_json_index_sse42; }
             if (std::is_x86_feature_detected!("avx2") && std::is_x86_feature_detected!("pclmulqdq") && std::is_x86_feature_detected!("bmi1")) { f = nvol_json_index_avx2; }
             FN.store(f as *mut (), Ordering::Relaxed);
             unsafe { f(state, blocks, nblocks, idx, out) }

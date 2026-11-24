@@ -62040,32 +62040,18 @@ nvol_json_index_sse42:
     mov 416(%rsp), %rdx
     not %rax
     and %rax, %rdx
-    mov %rdx, %rax
-    mov %rax, %r8
-    mov %rax, %r11
-    shl $1, %r11
-    xor %r11, %r8
-    mov %r8, %rax
-    mov %rax, %r11
-    shl $2, %r11
-    xor %r11, %r8
-    mov %r8, %rax
-    mov %rax, %r11
-    shl $4, %r11
-    xor %r11, %r8
-    mov %r8, %rax
-    mov %rax, %r11
-    shl $8, %r11
-    xor %r11, %r8
-    mov %r8, %rax
-    mov %rax, %r11
-    shl $16, %r11
-    xor %r11, %r8
-    mov %r8, %rax
-    mov %rax, %r11
-    shl $32, %r11
-    xor %r11, %r8
-    mov %r8, %rax
+    movq %rdx, %xmm15
+    movdqu %xmm15, 416(%rsp)
+    pcmpeqb %xmm15, %xmm15
+    movdqu %xmm15, 480(%rsp)
+    movdqu 416(%rsp), %xmm15
+    movdqu %xmm15, 512(%rsp)
+    movdqu 512(%rsp), %xmm15
+    movdqu 480(%rsp), %xmm14
+    pclmulqdq $0, %xmm14, %xmm15
+    movdqu %xmm15, 512(%rsp)
+    movdqu 512(%rsp), %xmm15
+    movq %xmm15, %rax
     xor %rdi, %rax
     xor %edi, %edi
     mov %rax, %r8
@@ -62628,32 +62614,18 @@ nvol_json_index_sse42:
     mov 448(%rsp), %rax
     not %rcx
     and %rcx, %rax
-    mov %rax, %rcx
-    mov %rcx, %rdx
-    mov %rcx, %r11
-    shl $1, %r11
-    xor %r11, %rdx
-    mov %rdx, %rcx
-    mov %rcx, %r11
-    shl $2, %r11
-    xor %r11, %rdx
-    mov %rdx, %rcx
-    mov %rcx, %r11
-    shl $4, %r11
-    xor %r11, %rdx
-    mov %rdx, %rcx
-    mov %rcx, %r11
-    shl $8, %r11
-    xor %r11, %rdx
-    mov %rdx, %rcx
-    mov %rcx, %r11
-    shl $16, %r11
-    xor %r11, %rdx
-    mov %rdx, %rcx
-    mov %rcx, %r11
-    shl $32, %r11
-    xor %r11, %rdx
-    mov %rdx, %rcx
+    movq %rax, %xmm15
+    movdqu %xmm15, 448(%rsp)
+    pcmpeqb %xmm15, %xmm15
+    movdqu %xmm15, 512(%rsp)
+    movdqu 448(%rsp), %xmm15
+    movdqu %xmm15, 544(%rsp)
+    movdqu 544(%rsp), %xmm15
+    movdqu 512(%rsp), %xmm14
+    pclmulqdq $0, %xmm14, %xmm15
+    movdqu %xmm15, 544(%rsp)
+    movdqu 544(%rsp), %xmm15
+    movq %xmm15, %rcx
     xor %rdi, %rcx
     xor %edi, %edi
     mov %rcx, %rdx
@@ -63280,32 +63252,12 @@ nvol_json_index_sse42:
     mov 64(%rsp), %rax
     not %r15
     and %r15, %rax
-    mov %rax, %rcx
-    mov %rcx, %r15
-    mov %rcx, %r11
-    shl $1, %r11
-    xor %r11, %r15
-    mov %r15, %rcx
-    mov %rcx, %r11
-    shl $2, %r11
-    xor %r11, %r15
-    mov %r15, %rcx
-    mov %rcx, %r11
-    shl $4, %r11
-    xor %r11, %r15
-    mov %r15, %rcx
-    mov %rcx, %r11
-    shl $8, %r11
-    xor %r11, %r15
-    mov %r15, %rcx
-    mov %rcx, %r11
-    shl $16, %r11
-    xor %r11, %r15
-    mov %r15, %rcx
-    mov %rcx, %r11
-    shl $32, %r11
-    xor %r11, %r15
-    mov %r15, %rcx
+    movq %rax, %xmm5
+    pcmpeqb %xmm15, %xmm15
+    movdqu %xmm15, 64(%rsp)
+    movdqu 64(%rsp), %xmm15
+    pclmulqdq $0, %xmm15, %xmm5
+    movq %xmm5, %rcx
     xor %rdi, %rcx
     xor %edi, %edi
     mov %rcx, %r15
@@ -63769,7 +63721,6 @@ nvol_json_index_sse42:
     mov $24, %edx
     cmp %rax, %rdx
     {disp8} jae .Lnvol_json_index_sse42.L65
-    .byte 15, 31, 128, 0, 0, 0, 0
 .Lnvol_json_index_sse42.L64:
     mov %rdx, %r12
     shl $2, %r12
@@ -64713,7 +64664,9 @@ nvol_json_index_sse42:
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
     .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 68, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 15, 31, 64, 0
 .globl nvol_json_index_avx2
 .def nvol_json_index_avx2; .scl 2; .type 32; .endef
 nvol_json_index_avx2:
@@ -66620,7 +66573,7 @@ nvol_json_index_raw_resolve:
     call nvol_cpu_avx2_pclmul_bmi1
     test %eax, %eax
     {disp8} jne .Lnvol_json_index_raw_resolve.T0
-    call nvol_cpu_sse42
+    call nvol_cpu_sse42_pclmul
     test %eax, %eax
     {disp8} jne .Lnvol_json_index_raw_resolve.T1
     call nvol_cpu_ssse3

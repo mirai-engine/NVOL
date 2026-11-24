@@ -167,7 +167,7 @@ class RustPrinter(Printer):
         if f.doc:
             self.line(f"/// {f.doc}")
         if self.isa and self.isa.target["rust"] not in ("", "sse2"):
-            feat = ",".join([self.isa.target["rust"], *f.features])
+            feat = ",".join([self.isa.target["rust"], *("pclmulqdq" if x == "pclmul" else x for x in f.features)])
             self.line(f'#[target_feature(enable = "{feat}")]')
             self.line("#[inline(never)]" if f.noinline else "#[inline]")
         else:

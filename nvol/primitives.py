@@ -265,8 +265,8 @@ _DEFS += [
             lambda c, m: bin(m & MASK64).count("1")),
     PrimDef("prefix_xor64", (U64,), U64,
             "bit i = XOR of bits 0..i (simdjson prefix_xor): the low 64 bits of the carry-less "
-            "product with all ones (pclmulqdq); AVX2 functions only, which dispatch on "
-            "cpu_avx2_pclmul_bmi1",
+            "product with all ones (pclmulqdq); AVX2 functions, which dispatch on "
+            "cpu_avx2_pclmul_bmi1, and functions with the pclmul feature (cpu_sse42_pclmul)",
             _prefix_xor64),
     PrimDef("cpu_avx2_pclmul_bmi1", (), BOOL,
             "runtime: CPU and OS support AVX2, and the CPU has PCLMULQDQ and BMI1 (simdjson's "
@@ -275,6 +275,10 @@ _DEFS += [
             lambda c: c.cpu.get("avx2", True) and c.cpu.get("pclmul", True) and c.cpu.get("bmi1", True)),
     PrimDef("cpu_ssse3", (), BOOL, "runtime: CPU supports SSSE3", lambda c: c.cpu.get("ssse3", True)),
     PrimDef("cpu_sse42", (), BOOL, "runtime: CPU supports SSE4.2", lambda c: c.cpu.get("sse42", True)),
+    PrimDef("cpu_sse42_pclmul", (), BOOL,
+            "runtime: CPU supports SSE4.2 and PCLMULQDQ (simdjson's westmere kernel needs both; "
+            "Nehalem has SSE4.2 without PCLMULQDQ)",
+            lambda c: c.cpu.get("sse42", True) and c.cpu.get("pclmul", True)),
     PrimDef("skip_set16", (VEC, VEC), U32,
             "index of the first lane of x outside the set, 16 if none (pcmpistri, equal-any, "
             "negative polarity, implicit lengths): the set is the lanes of s before its first 0; "

@@ -62778,32 +62778,18 @@ L.nvol_json_index_sse42:
     mov 416(%rsp), %rsi
     not %rdx
     and %rdx, %rsi
-    mov %rsi, %rdx
-    mov %rdx, %r8
-    mov %rdx, %r11
-    shl $1, %r11
-    xor %r11, %r8
-    mov %r8, %rdx
-    mov %rdx, %r11
-    shl $2, %r11
-    xor %r11, %r8
-    mov %r8, %rdx
-    mov %rdx, %r11
-    shl $4, %r11
-    xor %r11, %r8
-    mov %r8, %rdx
-    mov %rdx, %r11
-    shl $8, %r11
-    xor %r11, %r8
-    mov %r8, %rdx
-    mov %rdx, %r11
-    shl $16, %r11
-    xor %r11, %r8
-    mov %r8, %rdx
-    mov %rdx, %r11
-    shl $32, %r11
-    xor %r11, %r8
-    mov %r8, %rdx
+    movq %rsi, %xmm15
+    movdqu %xmm15, 416(%rsp)
+    pcmpeqb %xmm15, %xmm15
+    movdqu %xmm15, 480(%rsp)
+    movdqu 416(%rsp), %xmm15
+    movdqu %xmm15, 512(%rsp)
+    movdqu 512(%rsp), %xmm15
+    movdqu 480(%rsp), %xmm14
+    pclmulqdq $0, %xmm14, %xmm15
+    movdqu %xmm15, 512(%rsp)
+    movdqu 512(%rsp), %xmm15
+    movq %xmm15, %rdx
     xor %r9, %rdx
     xor %r9d, %r9d
     mov %rdx, %r8
@@ -63366,32 +63352,18 @@ L.nvol_json_index_sse42:
     mov 448(%rsp), %rdx
     not %rsi
     and %rsi, %rdx
-    mov %rdx, %rsi
-    mov %rsi, %rdi
-    mov %rsi, %r11
-    shl $1, %r11
-    xor %r11, %rdi
-    mov %rdi, %rsi
-    mov %rsi, %r11
-    shl $2, %r11
-    xor %r11, %rdi
-    mov %rdi, %rsi
-    mov %rsi, %r11
-    shl $4, %r11
-    xor %r11, %rdi
-    mov %rdi, %rsi
-    mov %rsi, %r11
-    shl $8, %r11
-    xor %r11, %rdi
-    mov %rdi, %rsi
-    mov %rsi, %r11
-    shl $16, %r11
-    xor %r11, %rdi
-    mov %rdi, %rsi
-    mov %rsi, %r11
-    shl $32, %r11
-    xor %r11, %rdi
-    mov %rdi, %rsi
+    movq %rdx, %xmm15
+    movdqu %xmm15, 448(%rsp)
+    pcmpeqb %xmm15, %xmm15
+    movdqu %xmm15, 512(%rsp)
+    movdqu 448(%rsp), %xmm15
+    movdqu %xmm15, 544(%rsp)
+    movdqu 544(%rsp), %xmm15
+    movdqu 512(%rsp), %xmm14
+    pclmulqdq $0, %xmm14, %xmm15
+    movdqu %xmm15, 544(%rsp)
+    movdqu 544(%rsp), %xmm15
+    movq %xmm15, %rsi
     xor %r9, %rsi
     xor %r9d, %r9d
     mov %rsi, %rdi
@@ -64018,32 +63990,12 @@ L.nvol_json_index_sse42:
     mov 64(%rsp), %rdx
     not %r15
     and %r15, %rdx
-    mov %rdx, %rsi
-    mov %rsi, %r15
-    mov %rsi, %r11
-    shl $1, %r11
-    xor %r11, %r15
-    mov %r15, %rsi
-    mov %rsi, %r11
-    shl $2, %r11
-    xor %r11, %r15
-    mov %r15, %rsi
-    mov %rsi, %r11
-    shl $4, %r11
-    xor %r11, %r15
-    mov %r15, %rsi
-    mov %rsi, %r11
-    shl $8, %r11
-    xor %r11, %r15
-    mov %r15, %rsi
-    mov %rsi, %r11
-    shl $16, %r11
-    xor %r11, %r15
-    mov %r15, %rsi
-    mov %rsi, %r11
-    shl $32, %r11
-    xor %r11, %r15
-    mov %r15, %rsi
+    movq %rdx, %xmm5
+    pcmpeqb %xmm15, %xmm15
+    movdqu %xmm15, 64(%rsp)
+    movdqu 64(%rsp), %xmm15
+    pclmulqdq $0, %xmm15, %xmm5
+    movq %xmm5, %rsi
     xor %r9, %rsi
     xor %r9d, %r9d
     mov %rsi, %r15
@@ -64507,7 +64459,7 @@ L.nvol_json_index_sse42:
     mov $24, %edi
     cmp %rdx, %rdi
     {disp8} jae .Lnvol_json_index_sse42.L65
-    .byte 15, 31, 64, 0
+    .byte 15, 31, 68, 0, 0
 .Lnvol_json_index_sse42.L64:
     mov %rdi, %r12
     shl $2, %r12
@@ -65180,7 +65132,7 @@ L.nvol_json_index_sse42:
     cmp %rcx, %rsi
     {disp8} jae .Lnvol_json_index_sse42.L43
     mov %r13, %r14
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
+    .byte 144
 .Lnvol_json_index_sse42.L42:
     mov %rsi, %rdi
     shl $2, %rdi
@@ -65446,12 +65398,7 @@ L.nvol_json_index_sse42:
 .cfi_endproc
 .size nvol_json_index_sse42, .-nvol_json_index_sse42
 
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 102, 15, 31, 132, 0, 0, 0, 0, 0
-    .byte 15, 31, 64, 0
+    .byte 144
 .globl nvol_json_index_avx2
 .type nvol_json_index_avx2, @function
 .hidden nvol_json_index_avx2
@@ -67346,7 +67293,7 @@ L.nvol_json_index_raw_resolve:
     call nvol_cpu_avx2_pclmul_bmi1@PLT
     test %eax, %eax
     {disp8} jne .Lnvol_json_index_raw_resolve.T0
-    call nvol_cpu_sse42@PLT
+    call nvol_cpu_sse42_pclmul@PLT
     test %eax, %eax
     {disp8} jne .Lnvol_json_index_raw_resolve.T1
     call nvol_cpu_ssse3@PLT

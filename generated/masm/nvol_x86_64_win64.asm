@@ -4,6 +4,7 @@ OPTION CASEMAP:NONE
 EXTERN nvol_cpu_avx2:PROC
 EXTERN nvol_cpu_avx2_pclmul_bmi1:PROC
 EXTERN nvol_cpu_sse42:PROC
+EXTERN nvol_cpu_sse42_pclmul:PROC
 EXTERN nvol_cpu_ssse3:PROC
 _DRECTVE SEGMENT INFO ALIAS(".drectve")
     DB "-export:nvol_memchr_raw "
@@ -61433,32 +61434,18 @@ L_L5:
     mov rdx, qword ptr [rsp + 416]
     not rax
     and rdx, rax
-    mov rax, rdx
-    mov r8, rax
-    mov r11, rax
-    shl r11, 1
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 2
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 4
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 8
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 16
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 32
-    xor r8, r11
-    mov rax, r8
+    movq xmm15, rdx
+    movdqu xmmword ptr [rsp + 416], xmm15
+    pcmpeqb xmm15, xmm15
+    movdqu xmmword ptr [rsp + 480], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 416]
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movdqu xmm14, xmmword ptr [rsp + 480]
+    pclmulqdq xmm15, xmm14, 0
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 512]
+    movq rax, xmm15
     xor rax, rdi
     xor edi, edi
     mov r8, rax
@@ -62021,32 +62008,18 @@ L_L9:
     mov rax, qword ptr [rsp + 448]
     not rcx
     and rax, rcx
-    mov rcx, rax
-    mov rdx, rcx
-    mov r11, rcx
-    shl r11, 1
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 2
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 4
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 8
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 16
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 32
-    xor rdx, r11
-    mov rcx, rdx
+    movq xmm15, rax
+    movdqu xmmword ptr [rsp + 448], xmm15
+    pcmpeqb xmm15, xmm15
+    movdqu xmmword ptr [rsp + 512], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 448]
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    movdqu xmm14, xmmword ptr [rsp + 512]
+    pclmulqdq xmm15, xmm14, 0
+    movdqu xmmword ptr [rsp + 544], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 544]
+    movq rcx, xmm15
     xor rcx, rdi
     xor edi, edi
     mov rdx, rcx
@@ -62673,32 +62646,12 @@ L_L47:
     mov rax, qword ptr [rsp + 64]
     not r15
     and rax, r15
-    mov rcx, rax
-    mov r15, rcx
-    mov r11, rcx
-    shl r11, 1
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 2
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 4
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 8
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 16
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 32
-    xor r15, r11
-    mov rcx, r15
+    movq xmm5, rax
+    pcmpeqb xmm15, xmm15
+    movdqu xmmword ptr [rsp + 64], xmm15
+    movdqu xmm15, xmmword ptr [rsp + 64]
+    pclmulqdq xmm5, xmm15, 0
+    movq rcx, xmm5
     xor rcx, rdi
     xor edi, edi
     mov r15, rcx
@@ -63162,7 +63115,6 @@ L_L49:
     mov edx, 24
     cmp rdx, rax
     jae SHORT L_L65
-    DB 15, 31, 128, 0, 0, 0, 0
 L_L64:
     mov r12, rdx
     shl r12, 2
@@ -64106,7 +64058,9 @@ nvol_json_index_sse42 ENDP
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
     DB 102, 15, 31, 132, 0, 0, 0, 0, 0
-    DB 102, 15, 31, 68, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 102, 15, 31, 132, 0, 0, 0, 0, 0
+    DB 15, 31, 64, 0
 nvol_json_index_avx2 PROC PUBLIC FRAME
     push rbx
     .PUSHREG rbx
@@ -66006,7 +65960,7 @@ nvol_json_index_raw_resolve PROC PUBLIC FRAME
     call nvol_cpu_avx2_pclmul_bmi1
     test eax, eax
     jne SHORT L_T0
-    call nvol_cpu_sse42
+    call nvol_cpu_sse42_pclmul
     test eax, eax
     jne SHORT L_T1
     call nvol_cpu_ssse3

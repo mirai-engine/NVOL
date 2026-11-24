@@ -53,6 +53,11 @@ when ODIN_ARCH == .amd64 {
 		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override >= 1 }
 		return .sse42 in info.cpu_features()
 	}
+	@(private) nvol_cpu_sse42_pclmul :: proc "contextless" () -> bool {
+		if nvol_test_avx2_override >= 0 { return nvol_test_avx2_override >= 1 }
+		f := info.cpu_features()
+		return .sse42 in f && .pclmulqdq in f
+	}
 
 	@(private) nvol_bcast128 :: #force_inline proc "contextless" (x: V16) -> V32 {
 		return intrinsics.simd_shuffle(x, x, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
@@ -9433,7 +9438,7 @@ when ODIN_ARCH == .amd64 {
 	}
 
 	// stage 1, sse42 masks
-	@(private, enable_target_feature="sse4.2,ssse3")
+	@(private, enable_target_feature="sse4.2,ssse3,pclmul")
 	nvol_json_index_sse42 :: #force_inline proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint #no_bounds_check {
 		nie: u64 = intrinsics.unaligned_load((^u64)(state))
 		pis: u64 = intrinsics.unaligned_load((^u64)(state[uint(8):]))
@@ -9484,14 +9489,7 @@ when ODIN_ARCH == .amd64 {
 				nie = u64(0)
 			}
 			quote: u64 = (qt & (escaped ~ u64(18446744073709551615)))
-			px: u64 = quote
-			px = (px ~ (px << u64(1)))
-			px = (px ~ (px << u64(2)))
-			px = (px ~ (px << u64(4)))
-			px = (px ~ (px << u64(8)))
-			px = (px ~ (px << u64(16)))
-			px = (px ~ (px << u64(32)))
-			in_string: u64 = (px ~ pis)
+			in_string: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
 			pis = (u64(0) - (in_string >> u64(63)))
 			scalar: u64 = ((op | ws) ~ u64(18446744073709551615))
 			nqs: u64 = (scalar & (quote ~ u64(18446744073709551615)))
@@ -9537,14 +9535,7 @@ when ODIN_ARCH == .amd64 {
 				nie = u64(0)
 			}
 			quote1: u64 = (qt1 & (escaped1 ~ u64(18446744073709551615)))
-			px1: u64 = quote1
-			px1 = (px1 ~ (px1 << u64(1)))
-			px1 = (px1 ~ (px1 << u64(2)))
-			px1 = (px1 ~ (px1 << u64(4)))
-			px1 = (px1 ~ (px1 << u64(8)))
-			px1 = (px1 ~ (px1 << u64(16)))
-			px1 = (px1 ~ (px1 << u64(32)))
-			in_string1: u64 = (px1 ~ pis)
+			in_string1: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote1, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
 			pis = (u64(0) - (in_string1 >> u64(63)))
 			scalar1: u64 = ((op1 | ws1) ~ u64(18446744073709551615))
 			nqs1: u64 = (scalar1 & (quote1 ~ u64(18446744073709551615)))
@@ -9738,14 +9729,7 @@ when ODIN_ARCH == .amd64 {
 				nie = u64(0)
 			}
 			quote2: u64 = (qt2 & (escaped2 ~ u64(18446744073709551615)))
-			px2: u64 = quote2
-			px2 = (px2 ~ (px2 << u64(1)))
-			px2 = (px2 ~ (px2 << u64(2)))
-			px2 = (px2 ~ (px2 << u64(4)))
-			px2 = (px2 ~ (px2 << u64(8)))
-			px2 = (px2 ~ (px2 << u64(16)))
-			px2 = (px2 ~ (px2 << u64(32)))
-			in_string2: u64 = (px2 ~ pis)
+			in_string2: u64 = (intrinsics.simd_extract(nvol_pclmulqdq(U64x2{quote2, 0}, U64x2(~u64(0)), 0), 0) ~ pis)
 			pis = (u64(0) - (in_string2 >> u64(63)))
 			scalar2: u64 = ((op2 | ws2) ~ u64(18446744073709551615))
 			nqs2: u64 = (scalar2 & (quote2 ~ u64(18446744073709551615)))
@@ -10382,7 +10366,7 @@ when ODIN_ARCH == .amd64 {
 	@(private) nvol_json_index_raw_resolve :: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint {
 		f: proc "contextless" (state: [^]u8, blocks: [^]u8, nblocks: uint, idx: uint, out: [^]u8) -> uint = nvol_json_index_scalar
 		if (.ssse3 in info.cpu_features()) { f = nvol_json_index_ssse3 }
-		if nvol_cpu_sse42() { f = nvol_json_index_sse42 }
+		if nvol_cpu_sse42_pclmul() { f = nvol_json_index_sse42 }
 		if nvol_cpu_avx2_pclmul_bmi1() { f = nvol_json_index_avx2 }
 		nvol_json_index_raw_ptr = f
 		return f(state, blocks, nblocks, idx, out)

@@ -4,6 +4,7 @@ default rel
 extern nvol_cpu_avx2
 extern nvol_cpu_avx2_pclmul_bmi1
 extern nvol_cpu_sse42
+extern nvol_cpu_sse42_pclmul
 extern nvol_cpu_ssse3
 section .rdata
 align 32, db 0
@@ -60422,32 +60423,18 @@ nvol_json_index_sse42:
     mov rdx, qword [rsp + 416]
     not rax
     and rdx, rax
-    mov rax, rdx
-    mov r8, rax
-    mov r11, rax
-    shl r11, 1
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 2
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 4
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 8
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 16
-    xor r8, r11
-    mov rax, r8
-    mov r11, rax
-    shl r11, 32
-    xor r8, r11
-    mov rax, r8
+    movq xmm15, rdx
+    movdqu [rsp + 416], xmm15
+    pcmpeqb xmm15, xmm15
+    movdqu [rsp + 480], xmm15
+    movdqu xmm15, [rsp + 416]
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    movdqu xmm14, [rsp + 480]
+    pclmulqdq xmm15, xmm14, 0
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 512]
+    movq rax, xmm15
     xor rax, rdi
     xor edi, edi
     mov r8, rax
@@ -61010,32 +60997,18 @@ nvol_json_index_sse42:
     mov rax, qword [rsp + 448]
     not rcx
     and rax, rcx
-    mov rcx, rax
-    mov rdx, rcx
-    mov r11, rcx
-    shl r11, 1
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 2
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 4
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 8
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 16
-    xor rdx, r11
-    mov rcx, rdx
-    mov r11, rcx
-    shl r11, 32
-    xor rdx, r11
-    mov rcx, rdx
+    movq xmm15, rax
+    movdqu [rsp + 448], xmm15
+    pcmpeqb xmm15, xmm15
+    movdqu [rsp + 512], xmm15
+    movdqu xmm15, [rsp + 448]
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    movdqu xmm14, [rsp + 512]
+    pclmulqdq xmm15, xmm14, 0
+    movdqu [rsp + 544], xmm15
+    movdqu xmm15, [rsp + 544]
+    movq rcx, xmm15
     xor rcx, rdi
     xor edi, edi
     mov rdx, rcx
@@ -61662,32 +61635,12 @@ nvol_json_index_sse42:
     mov rax, qword [rsp + 64]
     not r15
     and rax, r15
-    mov rcx, rax
-    mov r15, rcx
-    mov r11, rcx
-    shl r11, 1
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 2
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 4
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 8
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 16
-    xor r15, r11
-    mov rcx, r15
-    mov r11, rcx
-    shl r11, 32
-    xor r15, r11
-    mov rcx, r15
+    movq xmm5, rax
+    pcmpeqb xmm15, xmm15
+    movdqu [rsp + 64], xmm15
+    movdqu xmm15, [rsp + 64]
+    pclmulqdq xmm5, xmm15, 0
+    movq rcx, xmm5
     xor rcx, rdi
     xor edi, edi
     mov r15, rcx
@@ -62151,7 +62104,6 @@ nvol_json_index_sse42:
     mov edx, 24
     cmp rdx, rax
     jae strict short .L65
-    db 0xf, 0x1f, 0x80, 0x0, 0x0, 0x0, 0x0
 .L64:
     mov r12, rdx
     shl r12, 2
@@ -63095,7 +63047,9 @@ nvol_json_index_sse42:
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
     db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
-    db 0x66, 0xf, 0x1f, 0x44, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0x66, 0xf, 0x1f, 0x84, 0x0, 0x0, 0x0, 0x0, 0x0
+    db 0xf, 0x1f, 0x40, 0x0
 global nvol_json_index_avx2
 nvol_json_index_avx2:
     push rbx
@@ -64971,7 +64925,7 @@ nvol_json_index_raw_resolve:
     call nvol_cpu_avx2_pclmul_bmi1
     test eax, eax
     jne strict short .T0
-    call nvol_cpu_sse42
+    call nvol_cpu_sse42_pclmul
     test eax, eax
     jne strict short .T1
     call nvol_cpu_ssse3
