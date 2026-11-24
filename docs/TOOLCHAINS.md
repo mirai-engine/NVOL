@@ -84,7 +84,8 @@ and a wasm32 memory past 2 GiB. With Odin `dev-2026-10` (84bc3fc), `a < b` on `[
 to `cmp` + `setl` (signed) for `windows_i386`, and the same comparison on `uintptr` to `setb`
 (unsigned); `windows_amd64` gives `setl` and `setb` likewise. The report argued from 64-bit
 targets only and granted that user space was unaffected; this 32-bit case is the one to lead
-with if it is ever raised again. Until then, NVOL and grepper compare addresses as `uintptr`.
+with if it is ever raised again. Rule meanwhile, for NVOL's Odin backend and grepper: order
+addresses as `uintptr`, not as pointers (not yet audited in the existing code).
 
 **From 2026-11-24.** Every bug found is written down here, in the project that found it. Issues
 and pull requests go to other projects only once grepper and NVOL are finished. The open NASM
