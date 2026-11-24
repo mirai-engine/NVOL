@@ -16,7 +16,7 @@ there and is not a documented decision; the last column says which, and why.
 |---|---|---|---|---|---|
 | T1 | LLVM (Odin's backend) | 20 | the `or` of compare masks folded to `i1`: a `vpsllw $7` per iteration | the `mask_or` primitive (0x00/0xFF lanes), lowered by Odin as `simd_max` | no: not reproduced on 2026-11-22 (the same kernel without `mask_or`, Odin on LLVM 20 and 22, and the reduced IR on LLVM 22.1.8 and 23.1.5 all emit `vpor` with no `vpsllw`); nothing to file |
 | T2 | LLVM (Odin's backend) | 20 | LSR keeps two induction variables over an aligned pointer tied to `start` | the Odin backend builds the aligned pointer as `(addr(p) \| (V-1)) + 1` | no: LLVM is right given Odin's IR (no `inbounds`), so it belongs to T3, not to LLVM |
-| T3 | Odin | dev-2026-10 | GEPs without `inbounds`, `icmp sle` on pointers, no `@(align)`, no way to pass LLVM options | the T2 rewrite; nothing for the rest | **yes**, the signed comparisons: [odin-lang/Odin#8551](https://github.com/odin-lang/Odin/issues/8551), fix in [#8552](https://github.com/odin-lang/Odin/pull/8552); `inbounds` not filed (Odin allows arbitrary pointer arithmetic, so it may be by design) |
+| T3 | Odin | dev-2026-10 | GEPs without `inbounds`, `icmp sle` on pointers, no `@(align)`, no way to pass LLVM options | the T2 rewrite; nothing for the rest | **yes, declined**: the signed comparisons, [odin-lang/Odin#8551](https://github.com/odin-lang/Odin/issues/8551), fix in [#8552](https://github.com/odin-lang/Odin/pull/8552), both closed unmerged on 2026-11-24 as not a bug (see T3's notes); `inbounds` not filed (Odin allows arbitrary pointer arithmetic, so it may be by design) |
 | T4 | GCC | Alpine's, at the time of PENDING's rapidjson items | the inlining budget: four inline comparisons in rapidjson's per-character loop push other code out of line | the kernel call kept, the third byte checked before calling | no (a heuristic, not a bug) |
 | T5 | GCC | Alpine's, at the time of PENDING's rapidjson items | an opaque call forces callee-saved registers on every path of the caller | glue written so the call is the only thing on its path | no (by design) |
 | T6 | musl / glibc | fortify headers | `__builtin_memcpy` in a `load64` keeps the overlap check of the fortified `memcpy` (ugrep: 1379 → 805 lines of assembly once avoided) | the C prelude loads through `__builtin_memcpy` with no fortified wrapper in reach | no (a property of fortify) |
@@ -55,6 +55,33 @@ addresses on either side of 2^63 compare wrong as `[^]u8`, `^u8` and `rawptr` an
 > second induction variable in a byte-search loop because it could not prove the aligned
 > pointer stays in the same object. C (`clang -O2`) emits `icmp ule` and `getelementptr
 > inbounds` for the same loop. Version: dev-2026-10 (84bc3fc), LLVM 20.
+
+**Outcome, 2026-11-24.** The maintainer closed #8552 unmerged and #8551 with GitHub's default
+"completed" reason, which only means closed, not fixed. His one comment: pointers are signed on
+AMD64, so #8551 is not a bug, and the reason `uintptr` exists and not `intptr` is more complex
+than that. He gave no more detail.
+
+What the report got right and what it got wrong:
+
+- Right: the facts. Odin lowers `<` on pointers to `icmp slt/sle/...`, the same comparison on
+  `uintptr` is unsigned, `clang -O2` emits `icmp ule` for the C loop, and the test reproduced
+  it on master.
+- Wrong: calling it a bug. On AMD64 a canonical address is sign-extended from bit 47, so the
+  upper half (kernel space) reads as negative, and ordering pointers as signed integers is a
+  coherent model. It is a design choice, not an accident. The audit rule asked to check for a
+  deliberate design before filing. Finding nothing in Odin's documentation was taken as
+  enough, and it was not.
+- Neither false data nor a careless reviewer: a disagreement about semantics, filed as a defect
+  with a ready fix.
+
+NVOL keeps no workaround: user-space addresses stay below 2^63 on x86-64 and aarch64.
+
+**Policy from 2026-11-24 (the user's decision).** No new issue or pull request to another
+project until NVOL is mature. Findings are documented here and in the project that found them,
+with their evidence, and reported later, when NVOL's maturity backs them. A finding about
+semantics (what a construct should mean, not what it does) is to be raised first as a
+question to the project, never as a fix. The open NASM reports (T11: #349 and #350, still open
+on 2026-11-24, no comments) stay as they are.
 
 ### T9. NASM: two jumps that depend on each other stay long
 
