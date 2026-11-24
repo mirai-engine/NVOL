@@ -5,7 +5,9 @@
  *
  *     bench OP SIZE N PATH [time]
  *     OP: memchr memrchr memchr2 memchr3 count count_parity first_non_ascii memmem memmem2
- *         byteset byteset_not pair teddy
+ *         byteset byteset_not pair teddy, and simdjson's (PENDING 37b): json (stage 1 over
+ *         SIZE / 64 blocks, the state reset each call), utf8 (nvol_utf8_valid), digits
+ *         (SIZE / 8 nvol_parse_eight_digits), copy_and_find (SIZE / 32 steps)
  *     PATH: -1 autodetect, 0 SSE2/SSSE3, 1 AVX2, 2 SSE4.2 without AVX2 (the test hook)
  *     time: run the N calls 9 times and print the best nanoseconds per call
  *
@@ -48,6 +50,13 @@ void nvol_test_set_avx2(int v);
 #endif
 
 ALIGNED64 static uint8_t buf[(1 << 20) + 64];
+/* simdjson's operations: a JSON record repeated (an escaped quote, two-byte UTF-8, numbers), a
+   run of digits, and the outputs */
+static const char REC[] = "{\"id\":12345678,\"name\":\"caf\xc3\xa9 \\\"q\\\"\",\"tags\":[\"a\",\"b\"],\"v\":[1.5,2.25,-3e8]}\n";
+ALIGNED64 static uint8_t jbuf[(1 << 20) + 64];
+ALIGNED64 static uint8_t dbuf[(1 << 20) + 64];
+ALIGNED64 static uint8_t jout[4 * ((1 << 20) + 64)];
+static uint8_t jstate[NVOL_JSON_STATE_BYTES];
 ALIGNED64 static uint8_t spaces[(1 << 20) + 64];
 static uint8_t cls[NVOL_BYTESET_CLASS_BYTES], ws[NVOL_BYTESET_CLASS_BYTES];
 static uint8_t pair[NVOL_BYTESET_PAIR_BYTES];
@@ -74,6 +83,19 @@ static size_t run(const char *op, size_t size, size_t n) {
     else if (!strcmp(op, "teddy")) {
         nvol_teddy_match m;
         for (i = 0; i < n; i++) sink += (size_t)nvol_teddy_find_in(&ted, h, 0, size, &m);
+    } else if (!strcmp(op, "json")) {
+        for (i = 0; i < n; i++) {
+            memset(jstate, 0, sizeof jstate);
+            sink += nvol_json_index_raw(jstate, jbuf, size / 64, 0, jout);
+        }
+    } else if (!strcmp(op, "utf8")) {
+        for (i = 0; i < n; i++) sink += nvol_utf8_valid(jbuf, size);
+    } else if (!strcmp(op, "digits")) {
+        for (i = 0; i < n; i++)
+            for (size_t j = 0; j < size / 8; j++) sink += nvol_parse_eight_digits(dbuf + 8 * j);
+    } else if (!strcmp(op, "copy_and_find")) {
+        for (i = 0; i < n; i++)
+            for (size_t j = 0; j < size / 32; j++) sink += (size_t)nvol_json_copy_and_find(jbuf + 32 * j, jout + 32 * j);
     } else {
         fprintf(stderr, "unknown op %s\n", op);
         exit(2);
@@ -92,6 +114,8 @@ int main(int argc, char **argv) {
     nvol_test_set_avx2(atoi(argv[4]));
     for (size_t i = 0; i < sizeof buf; i++) buf[i] = (uint8_t)('a' + i % 8);   /* a..h */
     memset(spaces, ' ', sizeof spaces);
+    for (size_t i = 0; i < sizeof jbuf; i++) jbuf[i] = (uint8_t)REC[i % (sizeof REC - 1)];
+    for (size_t i = 0; i < sizeof dbuf; i++) dbuf[i] = (uint8_t)('0' + (i * 7 + i / 8) % 10);
     nvol_byteset_init((const uint8_t *)"xyz0", 4, cls);
     nvol_byteset_init((const uint8_t *)" \t\n\r", 4, ws);
     nvol_byteset_pair_init((const uint8_t *)"xy", 2, (const uint8_t *)"q", 1, 0, 1, pair);

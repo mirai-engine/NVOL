@@ -4,7 +4,7 @@
 //     parbench OP SIZE N PATH
 //
 // OP: memchr memrchr memchr2 memchr3 count count_parity first_non_ascii memmem memmem2
-//     byteset byteset_not pair teddy
+//     byteset byteset_not pair teddy, json utf8 digits copy_and_find (as in bench.c)
 // PATH: -1 autodetect, 0 SSE2/SSSE3, 1 AVX2 (the module's test hook, as in bench.c)
 // Every call scans the whole buffer (nothing matches).
 package parbench
@@ -18,6 +18,11 @@ buf: [(1 << 20) + 64]u8
 spaces: [(1 << 20) + 64]u8
 cls, ws: [nvol.BYTESET_CLASS_BYTES]u8
 pair: [nvol.BYTESET_PAIR_BYTES]u8
+// simdjson's operations (bench.c's REC, the same digits)
+REC :: "{\"id\":12345678,\"name\":\"caf\xc3\xa9 \\\"q\\\"\",\"tags\":[\"a\",\"b\"],\"v\":[1.5,2.25,-3e8]}\n"
+jbuf, dbuf: [(1 << 20) + 64]u8
+jout: [4 * ((1 << 20) + 64)]u8
+jstate: [nvol.JSON_STATE_BYTES]u8
 
 main :: proc() {
 	if len(os.args) != 5 { os.exit(2) }
@@ -29,6 +34,9 @@ main :: proc() {
 	nvol.nvol_test_set_avx2(path)
 	for i in 0..<len(buf) { buf[i] = u8('a' + i % 8) }    // a..h
 	for i in 0..<len(spaces) { spaces[i] = ' ' }
+	rec := REC
+	for i in 0..<len(jbuf) { jbuf[i] = rec[i % len(rec)] }
+	for i in 0..<len(dbuf) { dbuf[i] = u8('0' + (i * 7 + i / 8) % 10) }
 	nvol.nvol_byteset_init(raw_data(string("xyz0")), 4, &cls[0])
 	nvol.nvol_byteset_init(raw_data(string(" \t\n\r")), 4, &ws[0])
 	nvol.nvol_byteset_pair_init(raw_data(string("xy")), 2, raw_data(string("q")), 1, 0, 1, &pair[0])
@@ -54,6 +62,16 @@ main :: proc() {
 	case "byteset_not":     for _ in 0..<n { sink += int(uintptr(nvol.nvol_find_not_byteset_raw(&ws[0], sp, se))) }
 	case "pair":            for _ in 0..<n { sink += int(uintptr(nvol.nvol_find_byteset_pair_raw(&pair[0], p, e))) }
 	case "teddy":           for _ in 0..<n { m, _ := nvol.teddy_find(&ted, h); sink += m.start }
+	case "json":
+		for _ in 0..<n {
+			jstate = {}
+			sink += int(nvol.nvol_json_index_raw(&jstate[0], &jbuf[0], uint(size / 64), 0, &jout[0]))
+		}
+	case "utf8":            for _ in 0..<n { sink += int(nvol.nvol_utf8_valid(&jbuf[0], uint(size))) }
+	case "digits":
+		for _ in 0..<n { for j in 0..<size / 8 { sink += int(nvol.nvol_parse_eight_digits(&dbuf[8 * j])) } }
+	case "copy_and_find":
+		for _ in 0..<n { for j in 0..<size / 32 { sink += int(nvol.nvol_json_copy_and_find(&jbuf[32 * j], &jout[32 * j])) } }
 	case:                   os.exit(2)
 	}
 	// the result is used, so no call is dropped

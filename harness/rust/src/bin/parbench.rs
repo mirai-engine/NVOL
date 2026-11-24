@@ -4,7 +4,7 @@
 //!     parbench OP SIZE N
 //!
 //! OP: memchr memrchr memchr2 memchr3 count count_parity first_non_ascii memmem memmem2
-//!     byteset byteset_not pair teddy
+//!     byteset byteset_not pair teddy, json utf8 digits copy_and_find (as in bench.c)
 //! The Rust module has no test hook, so this is the CPU's own path (AVX2 on x86_64).
 //! Every call scans the whole buffer (nothing matches), as in bench.c.
 use nvol_harness::nvol;
@@ -22,6 +22,12 @@ fn main() {
     }
     let buf: Vec<u8> = (0..(1usize << 20) + 64).map(|i| b'a' + (i % 8) as u8).collect();   // a..h
     let spaces = vec![b' '; (1 << 20) + 64];
+    // simdjson's operations (bench.c's REC, the same digits)
+    let rec: &[u8] = b"{\"id\":12345678,\"name\":\"caf\xc3\xa9 \\\"q\\\"\",\"tags\":[\"a\",\"b\"],\"v\":[1.5,2.25,-3e8]}\n";
+    let jbuf: Vec<u8> = (0..(1usize << 20) + 64).map(|i| rec[i % rec.len()]).collect();
+    let dbuf: Vec<u8> = (0..(1usize << 20) + 64).map(|i| b'0' + ((i * 7 + i / 8) % 10) as u8).collect();
+    let mut jout = vec![0u8; 4 * ((1 << 20) + 64)];
+    let mut jstate = [0u8; nvol::raw::NVOL_JSON_STATE_BYTES];
     let h = &buf[..size];
     let mut cls = [0u8; nvol::raw::NVOL_BYTESET_CLASS_BYTES];
     let mut ws = [0u8; nvol::raw::NVOL_BYTESET_CLASS_BYTES];
@@ -59,6 +65,16 @@ fn main() {
         "byteset_not" => times!(unsafe { nvol::raw::nvol_find_not_byteset_raw(ws.as_ptr(), black_box(sp), se) } as usize),
         "pair" => times!(unsafe { nvol::raw::nvol_find_byteset_pair_raw(pair.as_ptr(), black_box(p), e) } as usize),
         "teddy" => times!(ted.find(black_box(h)).map_or(size, |m| m.start)),
+        "json" => times!({
+            jstate.fill(0);
+            unsafe { nvol::raw::nvol_json_index_raw(jstate.as_mut_ptr(), black_box(jbuf.as_ptr()), size / 64, 0, jout.as_mut_ptr()) }
+        }),
+        "utf8" => times!(unsafe { nvol::raw::nvol_utf8_valid(black_box(jbuf.as_ptr()), size) }),
+        "digits" => times!((0..size / 8).fold(0usize, |s, j| s.wrapping_add(
+            unsafe { nvol::raw::nvol_parse_eight_digits(black_box(dbuf.as_ptr()).add(8 * j)) } as usize))),
+        "copy_and_find" => times!((0..size / 32).fold(0usize, |s, j| s.wrapping_add(unsafe {
+            nvol::raw::nvol_json_copy_and_find(black_box(jbuf.as_ptr()).add(32 * j), jout.as_mut_ptr().add(32 * j))
+        } as usize))),
         _ => {
             eprintln!("unknown op {op}");
             std::process::exit(2);
