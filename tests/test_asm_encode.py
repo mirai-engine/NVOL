@@ -85,12 +85,16 @@ def _cases() -> list:
                 Ins("vpalignr", [_v(a), _v(5), _v(b), Imm(15)]),
                 Ins("pshufd", [_v(a, 128), _v(b, 128), Imm(0)]), Ins("psrlw", [_v(a, 128), Imm(4)]),
                 Ins("palignr", [_v(a, 128), _v(b, 128), Imm(15)]),
-                Ins("pshufb", [_v(a, 128), _v(b, 128)]), Ins("vptest", [_v(a), _v(b)])]
+                Ins("pshufb", [_v(a, 128), _v(b, 128)]), Ins("vptest", [_v(a), _v(b)]),
+                Ins("pmaddubsw", [_v(a, 128), _v(b, 128)]), Ins("pmaddwd", [_v(a, 128), _v(b, 128)]),
+                Ins("packusdw", [_v(a, 128), _v(b, 128)])]
     for g, x in itertools.product(("rax", "r9"), (1, 9)):
         out += [Ins("vmovd", [_v(x, 128), _g(g, 32)]), Ins("movd", [_v(x, 128), _g(g, 32)]),
                 Ins("vmovq", [_g(g), _v(x, 128)]), Ins("movq", [_g(g), _v(x, 128)]),
                 Ins("vpmovmskb", [_g(g, 32), _v(x)]), Ins("pmovmskb", [_g(g, 32), _v(x, 128)]),
-                Ins("vpextrq", [_g(g), _v(x, 128), Imm(1)])]
+                Ins("vpextrq", [_g(g), _v(x, 128), Imm(1)]), Ins("movd", [_g(g, 32), _v(x, 128)]),
+                Ins("movq", [_v(x, 128), Mem(R[g], None, 1, 8, w=64)]),
+                Ins("movq", [_v(x, 128), Mem(R[g], R["r10"], 1, 0, w=64)])]
     out += [Ins("vzeroupper", []), Ins("ret", [])]
     return out
 
