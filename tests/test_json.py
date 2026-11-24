@@ -12,7 +12,7 @@ from nvol.__main__ import json_same
 from nvol.kernels.json import STATE_BYTES, STATE_WORDS
 from conftest import paths
 
-PATHS = paths({"ssse3": 0, "avx2": 1, "sse42": 2})
+PATHS = paths({"ssse3": 0, "avx2": 1, "sse42": 2, "scalar": 3})
 P = ctypes.c_void_p
 
 

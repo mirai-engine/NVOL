@@ -10709,12 +10709,13 @@ static uint64_t nvol_json_copy_and_find_resolve(const uint8_t *src, uint8_t * ds
 NVOL_API uint64_t nvol_json_copy_and_find(const uint8_t *src, uint8_t *dst) { return nvol_json_copy_and_find_ptr(src, dst); }
 
 #ifdef NVOL_TESTING
-/* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */
+/* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2, 3 = force the scalar paths (no SSSE3 either; x86 only) */
 NVOL_API void nvol_test_set_avx2(int v) {
     nvol_cpu_avx2_cache = v < 0 ? -1 : v == 1;
     nvol_cpu_avx2_pclmul_bmi1_cache = v < 0 ? -1 : v == 1;
-    nvol_cpu_sse42_cache = v < 0 ? -1 : v >= 1;
-    nvol_cpu_sse42_pclmul_cache = v < 0 ? -1 : v >= 1;
+    nvol_cpu_sse42_cache = v < 0 ? -1 : v == 1 || v == 2;
+    nvol_cpu_sse42_pclmul_cache = v < 0 ? -1 : v == 1 || v == 2;
+    nvol_cpu_ssse3_cache = v < 0 ? -1 : v != 3;
     nvol_memchr_raw_ptr = nvol_memchr_raw_resolve;
     nvol_memrchr_raw_ptr = nvol_memrchr_raw_resolve;
     nvol_memchr2_raw_ptr = nvol_memchr2_raw_resolve;
@@ -15801,7 +15802,7 @@ NVOL_INLINE uint64_t nvol_json_copy_and_find_neon(const uint8_t *src, uint8_t *d
 NVOL_API uint64_t nvol_json_copy_and_find(const uint8_t *src, uint8_t *dst) { return nvol_json_copy_and_find_neon(src, dst); }
 
 #ifdef NVOL_TESTING
-/* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */
+/* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), 1 = force AVX2, 2 = force SSE4.2 without AVX2, 3 = force the scalar paths (no SSSE3 either; x86 only) */
 NVOL_API void nvol_test_set_avx2(int v) {
     (void)v;
 }

@@ -248,13 +248,15 @@ class CPrinter(Printer):
             if testing_hook:
                 self.out += ["#ifdef NVOL_TESTING",
                              "/* test hook: -1 = autodetect, 0 = force the SSE2/SSSE3 paths (no AVX2, no SSE4.2), "
-                             "1 = force AVX2, 2 = force SSE4.2 without AVX2 (x86 only) */",
+                             "1 = force AVX2, 2 = force SSE4.2 without AVX2, 3 = force the scalar paths (no SSSE3 "
+                             "either; x86 only) */",
                              "NVOL_API void nvol_test_set_avx2(int v) {"]
                 if arch == "x86_64":
                     self.out.append("    nvol_cpu_avx2_cache = v < 0 ? -1 : v == 1;")
                     self.out.append("    nvol_cpu_avx2_pclmul_bmi1_cache = v < 0 ? -1 : v == 1;")
-                    self.out.append("    nvol_cpu_sse42_cache = v < 0 ? -1 : v >= 1;")
-                    self.out.append("    nvol_cpu_sse42_pclmul_cache = v < 0 ? -1 : v >= 1;")
+                    self.out.append("    nvol_cpu_sse42_cache = v < 0 ? -1 : v == 1 || v == 2;")
+                    self.out.append("    nvol_cpu_sse42_pclmul_cache = v < 0 ? -1 : v == 1 || v == 2;")
+                    self.out.append("    nvol_cpu_ssse3_cache = v < 0 ? -1 : v != 3;")
                     self.out += [f"    {f.name}_ptr = {f.name}_resolve;" for f in self.ifuncs]
                 else:
                     self.out.append("    (void)v;")
