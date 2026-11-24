@@ -365,7 +365,7 @@ class A64Lower(Lower):
             op, w = {2: ("ldrh", 32), 4: ("ldr", 32), 8: ("ldr", 64)}[size]
             self.emit(op, [Reg(d, w), m], defs=[d], uses=regs_in(m))
             return d
-        if n in ("first_offset", "first_offset64", "tzcnt64", "last_offset", "last_offset64"):
+        if n in ("first_offset", "first_offset64", "tzcnt64", "ctz64_lax", "last_offset", "last_offset64"):
             a = self.gen(e.args[0])
             d = self.new()
             if n.startswith("last"):
@@ -376,7 +376,7 @@ class A64Lower(Lower):
                 t = self.new()
                 self.emit("rbit", [Reg(t, 64), Reg(a, 64)], defs=[t], uses=[a])
                 self.emit("clz", [Reg(d, 64), Reg(t, 64)], defs=[d], uses=[t])
-            if not n.endswith("64") and self.isa is not None and self.isa.name == "neon":
+            if n in ("first_offset", "last_offset") and self.isa is not None and self.isa.name == "neon":
                 d = self.op3("lsr", d, Imm(2))     # 4 mask bits per byte lane
             return d
         if n in ("popcnt", "popcnt64"):     # cnt + addv count all 64 bits of the register

@@ -199,7 +199,10 @@ def _write_indexes(b, bits, base, out, n):
         o = b.let("o", out + (n << 2))
 
         def write(i):
-            b.store32(o + 4 * i if i else o, (base + prim("tzcnt64", bits)).cast(U32))
+            # past the count bits is 0 and the slot is discarded: ctz64_lax, as simdjson's
+            # trailing_zeroes (without BMI1, nvol_tzcnt64's cmovz cost ~2.8 % of the
+            # SSE4.2 kernel's instructions)
+            b.store32(o + 4 * i if i else o, (base + prim("ctz64_lax", bits)).cast(U32))
             b.set(bits, bits & bits.wsub(1))
 
         def stepped(start):

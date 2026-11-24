@@ -93,7 +93,7 @@ def _neon_prims():
     mod.functions += [test_prims._fn_vec("neon", n) for n in NEON_VEC]
     mod.functions += [test_prims._fn_scalar("neon", n) for n in NEON_SCALAR]
     mod.functions.append(test_prims._fn_block("neon", "bmask64x4"))
-    mod.functions += [test_prims._fn_u64("neon", n) for n in ("popcnt64", "tzcnt64")]
+    mod.functions += [test_prims._fn_u64("neon", n) for n in ("popcnt64", "tzcnt64", "ctz64_lax")]
     mod.functions.append(test_prims._fn_store32("neon"))
     mod.functions.append(test_prims._fn_prefix_xor("neon"))
     mod.functions.append(test_prims._fn_vtable16("neon"))
@@ -519,6 +519,8 @@ def test_primitive(primlib, name):
             src = test_prims._vectors(rng, 2 * V)
             if prim in test_prims.ZERO_CASE and rng.random() < 0.3:
                 src = bytes(2 * V)
+            if prim in test_prims.NONZERO and not any(src[:8]):
+                src = bytes([1]) + src[1:]
         c = Case()
         s, o = c.region(src), c.region(bytes(V))
         _run(primlib, PRIMS, name, c, [_ptr(s, 0), _ptr(o, 0)])

@@ -17,6 +17,7 @@ static __forceinline uint32_t nvol_ctz32(uint32_t x) { unsigned long i; _BitScan
 static __forceinline uint32_t nvol_clz32(uint32_t x) { unsigned long i; _BitScanReverse(&i, x); return 31u - (uint32_t)i; }
 static __forceinline uint32_t nvol_ctz64(uint64_t x) { unsigned long i; _BitScanForward64(&i, x); return (uint32_t)i; }
 static __forceinline uint32_t nvol_tzcnt64(uint64_t x) { unsigned long i; return _BitScanForward64(&i, x) ? (uint32_t)i : 64u; }
+static __forceinline uint32_t nvol_ctz64_lax(uint64_t x) { return nvol_tzcnt64(x); }   /* MSVC: not measured */
 static __forceinline uint32_t nvol_clz64(uint64_t x) { unsigned long i; _BitScanReverse64(&i, x); return 63u - (uint32_t)i; }
 static __forceinline uint32_t nvol_popcnt32(uint32_t x) {
     x = x - ((x >> 1) & 0x55555555u); x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
@@ -48,6 +49,18 @@ static inline NVOL_FORCE_INLINE NVOL_UNUSED uint32_t nvol_tzcnt64(uint64_t x) {
     return (uint32_t)r;
 #  else
     return x ? (uint32_t)__builtin_ctzll(x) : 64u;
+#  endif
+}
+/* any value in 0..64 at 0 (ctz64_lax): rep bsf, the instruction GCC emits for simdjson's
+   trailing_zeroes without BMI1 (tzcnt where the CPU has BMI1, bsf before), without the cmovz of
+   nvol_tzcnt64; in asm because the builtin is UB at 0 */
+static inline NVOL_FORCE_INLINE NVOL_UNUSED uint32_t nvol_ctz64_lax(uint64_t x) {
+#  if defined(__x86_64__)
+    uint64_t r;
+    __asm__("rep bsf %1, %0" : "=r"(r) : "rm"(x) : "cc");
+    return (uint32_t)r;
+#  else
+    return nvol_tzcnt64(x);
 #  endif
 }
 #  define nvol_clz64(x) ((uint32_t)__builtin_clzll(x))

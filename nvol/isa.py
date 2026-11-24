@@ -55,6 +55,8 @@ SCALAR = {
     ("rust", "first_offset64"): "({0}.trailing_zeros() as usize)",
     ("c", "tzcnt64"): "((size_t)nvol_tzcnt64({0}))",
     ("rust", "tzcnt64"): "({0}.trailing_zeros() as usize)",
+    ("c", "ctz64_lax"): "((size_t)nvol_ctz64_lax({0}))",
+    ("rust", "ctz64_lax"): "({0}.trailing_zeros() as usize)",
     ("c", "last_offset64"): "((size_t)(63u - nvol_clz64({0})))",
     ("rust", "last_offset64"): "((63 - {0}.leading_zeros()) as usize)",
     ("c", "popcnt64"): "((size_t)nvol_popcnt64({0}))",
@@ -357,6 +359,8 @@ ARCH_ISAS = {"x86_64": ("sse2", "ssse3", "sse42", "avx2"), "aarch64": ("neon",)}
 FEATURE_LOWER = {
     ("c", "bmi1", "tzcnt64"): "((size_t)_tzcnt_u64({0}))",
     ("rust", "bmi1", "tzcnt64"): "(_tzcnt_u64({0}) as usize)",
+    ("c", "bmi1", "ctz64_lax"): "((size_t)_tzcnt_u64({0}))",
+    ("rust", "bmi1", "ctz64_lax"): "(_tzcnt_u64({0}) as usize)",
     # an SSE function with PCLMULQDQ (simdjson's westmere): the same 128-bit sequence as AVX2's
     ("c", "pclmul", "prefix_xor64"): "((uint64_t)_mm_cvtsi128_si64(_mm_clmulepi64_si128(_mm_cvtsi64_si128((long long)({0})), _mm_set1_epi8((char)-1), 0)))",
     ("rust", "pclmul", "prefix_xor64"): "(_mm_cvtsi128_si64(_mm_clmulepi64_si128::<0>(_mm_cvtsi64_si128({0} as i64), _mm_set1_epi8(-1))) as u64)",

@@ -259,6 +259,13 @@ _DEFS += [
     PrimDef("tzcnt64", (U64,), USIZE, "index of least significant set bit of a u64, 64 when it "
             "is 0 (tzcnt): defined for every input",
             lambda c, m: 64 if m & MASK64 == 0 else _first64(c, m)),
+    PrimDef("ctz64_lax", (U64,), USIZE,
+            "index of least significant set bit of a u64; any value in 0..64 when it is 0 (rep bsf: "
+            "tzcnt on a CPU with BMI1, bsf before; simdjson's trailing_zeroes). For results a "
+            "caller discards when the input is 0, as the json indexer's slots past the count. "
+            "The reference gives 64, as NVOL's builds do on a CPU with BMI1 and on aarch64 "
+            "(the tests compare whole output regions); a CPU without BMI1 may give another value",
+            lambda c, m: 64 if m & MASK64 == 0 else _first64(c, m)),
     PrimDef("last_offset64", (U64,), USIZE, "index of most significant set bit of a u64 (63-lzcnt)",
             lambda c, m: m.bit_length() - 1, pre="mask != 0"),
     PrimDef("popcnt64", (U64,), USIZE, "number of set bits of a u64",

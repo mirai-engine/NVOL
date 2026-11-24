@@ -467,7 +467,8 @@ class X86Lower(Lower):
             self.emit("bsr" if n.startswith("last") else "bsf", [Reg(d, w), Reg(a, w)],
                       defs=[d], uses=[a])
             return d
-        if n == "tzcnt64" and "bmi1" in self.f.features:
+        if n == "ctz64_lax" or (n == "tzcnt64" and "bmi1" in self.f.features):
+            # ctz64_lax without BMI1 too: tzcnt is rep bsf (F3 0F BC), bsf on an older CPU
             a = self.gen(e.args[0])
             d = self.new()
             self.emit("tzcnt", [Reg(d, 64), Reg(a, 64)], defs=[d], uses=[a])
