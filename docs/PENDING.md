@@ -681,9 +681,13 @@ Two consequences for the design:
     - the string scanner: `prefix_xor` of the unescaped quotes, carried across blocks;
     - the structural indexer: the mask to a list of `u32` positions (`popcnt64`, then
       `tzcnt` and `blsr` unrolled, as `write_indexes` does).
-36. **`feat/utf8-validation`: UTF-8 validation** (1.13), the Keiser–Lemire lookup *(in progress:
-    `nvol_utf8_valid` done (AVX2, SSSE3, NEON, scalar), checked against Python's strict decoder;
-    next, the same check inside `nvol_json_index_raw`, then both measured against simdjson)*
+36. **`feat/utf8-validation`: UTF-8 validation** (1.13), the Keiser–Lemire lookup *(done on the
+    branch, 2026-11-23, but for the asm counters after the spill-slot change: `nvol_utf8_valid`
+    (AVX2, SSSE3, NEON, scalar) and the same check inside `nvol_json_index_raw`, both checked
+    against Python's strict decoder. Against simdjson 5.2.0 with both validating: stage 1
+    citm_catalog −0.4 %, twitter −0.2 %, a multibyte-text MB +0.8 %; the validator −0.4 %,
+    −9.5 %, −1.2 % against `validate_utf8`. On the way: the `vtail3` primitive, IR branch hints,
+    and spill slots shared in NVOL's assembler (the integrated kernel asked for a 12 KB frame))*
     (`utf8_lookup4_algorithm`: `prev<1..3>`, three `lookup_16`, `shr<4>`, saturating
     subtraction, and `any_bits_set_anywhere`, which is `!is_zero`). simdjson needs it, and ugrep's `isutf8` too.
 37. **Stage 2**, in two branches:
@@ -704,6 +708,21 @@ Two consequences for the design:
 - `full_multiplication` (64×64→128 bits, for the floating-point numbers): scalar
   arithmetic, not SIMD;
 - icelake (AVX-512): the i5-7400 does not have it; it goes with item 45, under Intel SDE.
+
+### Extra after phase 6: two Odin bugs, audited by building the algorithm
+
+The maintainer's other agent found two bugs in Odin's `core:crypto` (listed in
+`LowLevel-Katas-n6/N6-portmaster/BUGS.md`). Each is audited after NVOL has its own
+implementation of the same family, checked against an independent oracle, so that a report
+upstream rests on evidence and the research stays in NVOL. Nothing goes upstream without the
+maintainer's OK.
+
+- **A. `feat/chacha20`: ChaCha20** (RFC 8439 and its test vectors as the oracle): scalar, SSE2,
+  AVX2 and NEON, 4 or 8 blocks in parallel; rotations by 16 and 8 as byte shuffles, by 12 and 7
+  as shift and or. Then Odin's AVX2 ChaCha20 against both.
+- **B. `feat/p384-field`: P-384 field arithmetic**: multiprecision multiply, reduction, and the
+  square root as x^((p+1)/4) (p ≡ 3 mod 4), with Python's integers as the oracle; likely new
+  primitives (64×64→128 multiply, add with carry). Then Odin's P-384 square root against both.
 
 ### Phase 7. What the external reference does and NVOL does not
 

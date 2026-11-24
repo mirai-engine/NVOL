@@ -154,6 +154,7 @@ layout rules that were tried and rejected, are in the
 | `lea` for `(x << k) + y` (item 17) | memmem 256 B / 4 KiB / 64 B SSE2 | 65.9 / 675 / 35.8 → 73.9 / 763 / 39.0 | both 32-aligned: 70.3 → 71.5, 807 → 779, 36.2 → 37.2 |
 | SWAR memchr (item 28) | memchr2 16 B AVX2 | 13.7-13.9 → 14.9-15.4 | the vector code is unchanged; HEAD's entry with 665 dead bytes, which put it at the new offset (734): 15.8 |
 | SWAR memchr (item 28) | Rust memchr 3 B (`smallcount`) | 12.05 → 13.96 | the same 47 instructions per call as HEAD (the byte loop) |
+| spill slots shared (item 36) | byteset_not 64 B AVX2, first_non_ascii 64 B AVX2, count 256 B AVX2 | 16.0 / 16.1 / 19.3 → 17.2 / 17.0 / 20.0 (best of 3 repeats, each a best of 9) | same code (bodies byte-identical; 247 of 277 functions unchanged, the 30 that spill moved the rest by multiples of 64 bytes); geomean of all 120 rows −0.13 % |
 
 Notes on the table:
 
