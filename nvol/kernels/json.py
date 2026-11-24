@@ -117,11 +117,11 @@ def _utf8_scalar(b, blk, u):
 def _utf8_vector(b, isa, k, blk, vs, u):
     """utf8_checker::check_next_input on one block's vectors."""
     with b.if_(utf8.ascii_block(isa, vs), likely=True):
-        b.set(u["bad"], u["bad"] | u["inc"])
+        b.set(u["verr"], prim("vor", u["verr"], u["vinc"]))
     with b.else_():
         for j, v in enumerate(vs):
             utf8.check_vector(b, isa, k, v, u["prev"] if j == 0 else vs[j - 1], u["verr"])
-        b.set(u["inc"], utf8.incomplete(blk).cast(U64))
+        b.set(u["vinc"], utf8.incomplete_vector(k, vs[-1]))
     b.set(u["prev"], vs[-1])
 
 
@@ -236,8 +236,11 @@ def kernel(isa: ISA | None) -> Function:
          "inc": b.var("uinc", prim("load64", state + 40), U64)}
     if isa:
         ku = utf8._consts(b, isa)
-        u.update(prev=b.var("uprev", prim("load_u", state + (STATE_BYTES - isa.bytes))),
-                 verr=b.var("verr", prim("vzero")), bad=b.var("ubad", 0, U64))
+        prev = b.var("uprev", prim("load_u", state + (STATE_BYTES - isa.bytes)))
+        # "incomplete" from the bytes the last call left (the scalar kernel stores 3 of them,
+        # the only ones the bound looks at), so both kernels carry the same state
+        u.update(prev=prev, verr=b.var("verr", prim("vzero")),
+                 vinc=b.var("vinc", utf8.incomplete_vector(ku, prev)))
     else:
         u.update({f"p{j}": b.var(f"p{j}", (state + (STATE_BYTES - j)).load8().cast(U64), U64)
                   for j in (1, 2, 3)})
@@ -279,13 +282,14 @@ def kernel(isa: ISA | None) -> Function:
     for k, v in enumerate(st):
         b.store64(state + 8 * k if k else state, v)
     if isa:
-        b.store64(state + 32, u["err"] | u["bad"] | Not(prim("is_zero", u["verr"])).cast(U64))
+        b.store64(state + 32, u["err"] | Not(prim("is_zero", u["verr"])).cast(U64))
+        b.store64(state + 40, Not(prim("is_zero", u["vinc"])).cast(U64))
         b.store_vec(state + (STATE_BYTES - isa.bytes), u["prev"])
     else:
         b.store64(state + 32, u["err"])
+        b.store64(state + 40, u["inc"])
         for j in (1, 2, 3):
             b.store8(state + (STATE_BYTES - j), u[f"p{j}"].cast(U8))
-    b.store64(state + 40, u["inc"])
     b.ret(n)
     return b.build()
 

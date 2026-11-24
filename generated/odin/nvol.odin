@@ -8927,10 +8927,10 @@ when ODIN_ARCH == .amd64 {
 		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
 		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
 		intrinsics.unaligned_store((^u64)(state[uint(32):]), uerr)
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		state[uint(79):][0] = u8(u8(p1))
 		state[uint(78):][0] = u8(u8(p2))
 		state[uint(77):][0] = u8(u8(p3))
-		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		return n
 	}
 
@@ -8952,7 +8952,6 @@ when ODIN_ARCH == .amd64 {
 		k20: V16 = V16(u8(32))
 		k1f: V16 = V16(u8(31))
 		uerr: u64 = intrinsics.unaligned_load((^u64)(state[uint(32):]))
-		uinc: u64 = intrinsics.unaligned_load((^u64)(state[uint(40):]))
 		t1h: V16 = V16{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
 		t1l: V16 = V16{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
 		t2h: V16 = V16{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
@@ -8960,9 +8959,10 @@ when ODIN_ARCH == .amd64 {
 		k60: V16 = V16(u8(96))
 		k70: V16 = V16(u8(112))
 		k80: V16 = V16(u8(128))
+		kmax: V16 = V16{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, u8(239), u8(223), u8(191)}
 		uprev: V16 = intrinsics.unaligned_load((^V16)(state[uint(64):]))
 		verr: V16 = V16(0)
-		ubad: u64 = u64(0)
+		vinc: V16 = intrinsics.simd_saturating_sub(uprev, kmax)
 		prev: u64 = u64(0)
 		pbase: uint = idx
 		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
@@ -9003,7 +9003,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl & in_string))
 			sbits: u64 = bits
 			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3))) == u32(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev1: V16 = intrinsics.simd_shuffle(uprev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_, V16(4))))
@@ -9017,7 +9017,7 @@ when ODIN_ARCH == .amd64 {
 				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_3, V16(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
-				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_3, kmax)
 			}
 			uprev = in_3
 			in_4: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):]))
@@ -9056,7 +9056,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl1 & in_string1))
 			sbits1: u64 = bits1
 			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_4, in_5), intrinsics.simd_bit_or(in_6, in_7))) == u32(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev14: V16 = intrinsics.simd_shuffle(uprev, in_4, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc4: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev14, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev14, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_4, V16(4))))
@@ -9070,7 +9070,7 @@ when ODIN_ARCH == .amd64 {
 				prev17: V16 = intrinsics.simd_shuffle(in_6, in_7, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc7: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev17, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev17, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_7, V16(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc7))
-				uinc = u64((((blk[uint(64):][uint(63):][0] > u8(191)) || (blk[uint(64):][uint(62):][0] > u8(223))) || (blk[uint(64):][uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_7, kmax)
 			}
 			uprev = in_7
 			if (prev != u64(0)) {
@@ -9257,7 +9257,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl2 & in_string2))
 			sbits2: u64 = bits2
 			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_8, in_9), intrinsics.simd_bit_or(in_10, in_11))) == u32(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev18: V16 = intrinsics.simd_shuffle(uprev, in_8, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc8: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev18, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev18, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_8, V16(4))))
@@ -9271,7 +9271,7 @@ when ODIN_ARCH == .amd64 {
 				prev111: V16 = intrinsics.simd_shuffle(in_10, in_11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc11: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev111, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev111, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_11, V16(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc11))
-				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_11, kmax)
 			}
 			uprev = in_11
 			if (prev != u64(0)) {
@@ -9423,9 +9423,9 @@ when ODIN_ARCH == .amd64 {
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
 		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
 		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
-		intrinsics.unaligned_store((^u64)(state[uint(32):]), ((uerr | ubad) | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^u64)(state[uint(32):]), (uerr | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), u64((!(intrinsics.simd_reduce_or(vinc) == 0))))
 		intrinsics.unaligned_store((^V16)(state[uint(64):]), uprev)
-		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		return n
 	}
 
@@ -9447,7 +9447,6 @@ when ODIN_ARCH == .amd64 {
 		k20: V32 = V32(u8(32))
 		k1f: V32 = V32(u8(31))
 		uerr: u64 = intrinsics.unaligned_load((^u64)(state[uint(32):]))
-		uinc: u64 = intrinsics.unaligned_load((^u64)(state[uint(40):]))
 		t1h: V32 = V32{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
 		t1l: V32 = V32{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203), u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
 		t2h: V32 = V32{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
@@ -9455,9 +9454,10 @@ when ODIN_ARCH == .amd64 {
 		k60: V32 = V32(u8(96))
 		k70: V32 = V32(u8(112))
 		k80: V32 = V32(u8(128))
+		kmax: V32 = V32{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, u8(239), u8(223), u8(191)}
 		uprev: V32 = intrinsics.unaligned_load((^V32)(state[uint(48):]))
 		verr: V32 = V32(0)
-		ubad: u64 = u64(0)
+		vinc: V32 = intrinsics.simd_saturating_sub(uprev, kmax)
 		prev: u64 = u64(0)
 		pbase: uint = idx
 		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
@@ -9489,7 +9489,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl & in_string))
 			sbits: u64 = bits
 			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_, in_1)) == u32(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev1: V32 = intrinsics.simd_shuffle(uprev, in_, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
 				sc: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev1, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_, V32(4))))
@@ -9497,7 +9497,7 @@ when ODIN_ARCH == .amd64 {
 				prev11: V32 = intrinsics.simd_shuffle(in_, in_1, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
 				sc1: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev11, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev11, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_1, V32(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc1))
-				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_1, kmax)
 			}
 			uprev = in_1
 			in_2: V32 = intrinsics.unaligned_load((^V32)(blk[uint(64):]))
@@ -9527,7 +9527,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl1 & in_string1))
 			sbits1: u64 = bits1
 			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_2, in_3)) == u32(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev12: V32 = intrinsics.simd_shuffle(uprev, in_2, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
 				sc2: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev12, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev12, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_2, V32(4))))
@@ -9535,7 +9535,7 @@ when ODIN_ARCH == .amd64 {
 				prev13: V32 = intrinsics.simd_shuffle(in_2, in_3, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
 				sc3: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev13, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_3, V32(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc3))
-				uinc = u64((((blk[uint(64):][uint(63):][0] > u8(191)) || (blk[uint(64):][uint(62):][0] > u8(223))) || (blk[uint(64):][uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_3, kmax)
 			}
 			uprev = in_3
 			if (prev != u64(0)) {
@@ -9713,7 +9713,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl2 & in_string2))
 			sbits2: u64 = bits2
 			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_4, in_5)) == u32(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev14: V32 = intrinsics.simd_shuffle(uprev, in_4, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
 				sc4: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev14, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev14, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_4, V32(4))))
@@ -9721,7 +9721,7 @@ when ODIN_ARCH == .amd64 {
 				prev15: V32 = intrinsics.simd_shuffle(in_4, in_5, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
 				sc5: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev15, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev15, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_5, V32(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_4, in_5, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc5))
-				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_5, kmax)
 			}
 			uprev = in_5
 			if (prev != u64(0)) {
@@ -9873,9 +9873,9 @@ when ODIN_ARCH == .amd64 {
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
 		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
 		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
-		intrinsics.unaligned_store((^u64)(state[uint(32):]), ((uerr | ubad) | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^u64)(state[uint(32):]), (uerr | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), u64((!(intrinsics.simd_reduce_or(vinc) == 0))))
 		intrinsics.unaligned_store((^V32)(state[uint(48):]), uprev)
-		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		return n
 	}
 
@@ -9964,18 +9964,18 @@ when ODIN_ARCH == .amd64 {
 		k60: V16 = V16(u8(96))
 		k70: V16 = V16(u8(112))
 		k80: V16 = V16(u8(128))
+		kmax: V16 = V16{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, u8(239), u8(223), u8(191)}
 		end64: [^]u8 = p[((len_ >> uint(6)) << uint(6)):]
 		prev: V16 = V16(0)
 		err: V16 = V16(0)
-		inc: u64 = u64(0)
-		bad: u64 = u64(0)
+		inc: V16 = V16(0)
 		for (cur < end64) {
 			in_: V16 = intrinsics.unaligned_load((^V16)(cur))
 			in_1: V16 = intrinsics.unaligned_load((^V16)(cur[uint(16):]))
 			in_2: V16 = intrinsics.unaligned_load((^V16)(cur[uint(32):]))
 			in_3: V16 = intrinsics.unaligned_load((^V16)(cur[uint(48):]))
 			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3))) == u32(0)), true) {
-				bad = (bad | inc)
+				err = intrinsics.simd_bit_or(err, inc)
 			} else {
 				prev1: V16 = intrinsics.simd_shuffle(prev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_, V16(4))))
@@ -9989,12 +9989,12 @@ when ODIN_ARCH == .amd64 {
 				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb128(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_pshufb128(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_pshufb128(t2h, intrinsics.simd_shr(in_3, V16(4))))
 				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
-				inc = u64((((cur[uint(63):][0] > u8(191)) || (cur[uint(62):][0] > u8(223))) || (cur[uint(61):][0] > u8(239))))
+				inc = intrinsics.simd_saturating_sub(in_3, kmax)
 			}
 			prev = in_3
 			cur = cur[uint(64):]
 		}
-		if ((bad != u64(0)) || (!(intrinsics.simd_reduce_or(err) == 0))) {
+		if (!(intrinsics.simd_reduce_or(err) == 0)) {
 			return uint(0)
 		}
 		if (cur > p) {
@@ -10080,16 +10080,16 @@ when ODIN_ARCH == .amd64 {
 		k60: V32 = V32(u8(96))
 		k70: V32 = V32(u8(112))
 		k80: V32 = V32(u8(128))
+		kmax: V32 = V32{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, u8(239), u8(223), u8(191)}
 		end64: [^]u8 = p[((len_ >> uint(6)) << uint(6)):]
 		prev: V32 = V32(0)
 		err: V32 = V32(0)
-		inc: u64 = u64(0)
-		bad: u64 = u64(0)
+		inc: V32 = V32(0)
 		for (cur < end64) {
 			in_: V32 = intrinsics.unaligned_load((^V32)(cur))
 			in_1: V32 = intrinsics.unaligned_load((^V32)(cur[uint(32):]))
 			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_, in_1)) == u32(0)), true) {
-				bad = (bad | inc)
+				err = intrinsics.simd_bit_or(err, inc)
 			} else {
 				prev1: V32 = intrinsics.simd_shuffle(prev, in_, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
 				sc: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev1, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_, V32(4))))
@@ -10097,12 +10097,12 @@ when ODIN_ARCH == .amd64 {
 				prev11: V32 = intrinsics.simd_shuffle(in_, in_1, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
 				sc1: V32 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_pshufb256(t1h, intrinsics.simd_shr(prev11, V32(4))), nvol_pshufb256(t1l, intrinsics.simd_bit_and(prev11, k0f))), nvol_pshufb256(t2h, intrinsics.simd_shr(in_1, V32(4))))
 				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_, in_1, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60), k70)), k80), sc1))
-				inc = u64((((cur[uint(63):][0] > u8(191)) || (cur[uint(62):][0] > u8(223))) || (cur[uint(61):][0] > u8(239))))
+				inc = intrinsics.simd_saturating_sub(in_1, kmax)
 			}
 			prev = in_1
 			cur = cur[uint(64):]
 		}
-		if ((bad != u64(0)) || (!(intrinsics.simd_reduce_or(err) == 0))) {
+		if (!(intrinsics.simd_reduce_or(err) == 0)) {
 			return uint(0)
 		}
 		if (cur > p) {
@@ -14715,7 +14715,6 @@ when ODIN_ARCH == .amd64 {
 		k1f: V16 = V16(u8(31))
 		k0f: V16 = V16(u8(15))
 		uerr: u64 = intrinsics.unaligned_load((^u64)(state[uint(32):]))
-		uinc: u64 = intrinsics.unaligned_load((^u64)(state[uint(40):]))
 		t1h: V16 = V16{u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(2), u8(128), u8(128), u8(128), u8(128), u8(33), u8(1), u8(21), u8(73)}
 		t1l: V16 = V16{u8(231), u8(163), u8(131), u8(131), u8(139), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(203), u8(219), u8(203), u8(203)}
 		t2h: V16 = V16{u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(1), u8(230), u8(174), u8(186), u8(186), u8(1), u8(1), u8(1), u8(1)}
@@ -14723,9 +14722,10 @@ when ODIN_ARCH == .amd64 {
 		k60: V16 = V16(u8(96))
 		k70: V16 = V16(u8(112))
 		k80: V16 = V16(u8(128))
+		kmax: V16 = V16{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, u8(239), u8(223), u8(191)}
 		uprev: V16 = intrinsics.unaligned_load((^V16)(state[uint(64):]))
 		verr: V16 = V16(0)
-		ubad: u64 = u64(0)
+		vinc: V16 = intrinsics.simd_saturating_sub(uprev, kmax)
 		prev: u64 = u64(0)
 		pbase: uint = idx
 		end2: [^]u8 = blocks[((nblocks >> uint(1)) << uint(7)):]
@@ -14770,7 +14770,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl & in_string))
 			sbits: u64 = bits
 			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev1: V16 = intrinsics.simd_shuffle(uprev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev1, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_, V16(4))))
@@ -14784,7 +14784,7 @@ when ODIN_ARCH == .amd64 {
 				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev13, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_3, V16(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
-				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_3, kmax)
 			}
 			uprev = in_3
 			in_4: V16 = intrinsics.unaligned_load((^V16)(blk[uint(64):]))
@@ -14827,7 +14827,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl1 & in_string1))
 			sbits1: u64 = bits1
 			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_4, in_5), intrinsics.simd_bit_or(in_6, in_7)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev14: V16 = intrinsics.simd_shuffle(uprev, in_4, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc4: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev14, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev14, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_4, V16(4))))
@@ -14841,7 +14841,7 @@ when ODIN_ARCH == .amd64 {
 				prev17: V16 = intrinsics.simd_shuffle(in_6, in_7, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc7: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev17, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev17, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_7, V16(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_6, in_7, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc7))
-				uinc = u64((((blk[uint(64):][uint(63):][0] > u8(191)) || (blk[uint(64):][uint(62):][0] > u8(223))) || (blk[uint(64):][uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_7, kmax)
 			}
 			uprev = in_7
 			if (prev != u64(0)) {
@@ -15032,7 +15032,7 @@ when ODIN_ARCH == .amd64 {
 			err = (err | (ctl2 & in_string2))
 			sbits2: u64 = bits2
 			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_8, in_9), intrinsics.simd_bit_or(in_10, in_11)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
-				ubad = (ubad | uinc)
+				verr = intrinsics.simd_bit_or(verr, vinc)
 			} else {
 				prev18: V16 = intrinsics.simd_shuffle(uprev, in_8, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc8: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev18, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev18, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_8, V16(4))))
@@ -15046,7 +15046,7 @@ when ODIN_ARCH == .amd64 {
 				prev111: V16 = intrinsics.simd_shuffle(in_10, in_11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc11: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev111, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev111, k0f1))), nvol_tbl1(t2h, intrinsics.simd_shr(in_11, V16(4))))
 				verr = intrinsics.simd_bit_or(verr, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_10, in_11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc11))
-				uinc = u64((((blk[uint(63):][0] > u8(191)) || (blk[uint(62):][0] > u8(223))) || (blk[uint(61):][0] > u8(239))))
+				vinc = intrinsics.simd_saturating_sub(in_11, kmax)
 			}
 			uprev = in_11
 			if (prev != u64(0)) {
@@ -15198,9 +15198,9 @@ when ODIN_ARCH == .amd64 {
 		intrinsics.unaligned_store((^u64)(state[uint(8):]), pis)
 		intrinsics.unaligned_store((^u64)(state[uint(16):]), psc)
 		intrinsics.unaligned_store((^u64)(state[uint(24):]), err)
-		intrinsics.unaligned_store((^u64)(state[uint(32):]), ((uerr | ubad) | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^u64)(state[uint(32):]), (uerr | u64((!(intrinsics.simd_reduce_or(verr) == 0)))))
+		intrinsics.unaligned_store((^u64)(state[uint(40):]), u64((!(intrinsics.simd_reduce_or(vinc) == 0))))
 		intrinsics.unaligned_store((^V16)(state[uint(64):]), uprev)
-		intrinsics.unaligned_store((^u64)(state[uint(40):]), uinc)
 		return n
 	}
 
@@ -15219,18 +15219,18 @@ when ODIN_ARCH == .amd64 {
 		k60: V16 = V16(u8(96))
 		k70: V16 = V16(u8(112))
 		k80: V16 = V16(u8(128))
+		kmax: V16 = V16{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, u8(239), u8(223), u8(191)}
 		end64: [^]u8 = p[((len_ >> uint(6)) << uint(6)):]
 		prev: V16 = V16(0)
 		err: V16 = V16(0)
-		inc: u64 = u64(0)
-		bad: u64 = u64(0)
+		inc: V16 = V16(0)
 		for (cur < end64) {
 			in_: V16 = intrinsics.unaligned_load((^V16)(cur))
 			in_1: V16 = intrinsics.unaligned_load((^V16)(cur[uint(16):]))
 			in_2: V16 = intrinsics.unaligned_load((^V16)(cur[uint(32):]))
 			in_3: V16 = intrinsics.unaligned_load((^V16)(cur[uint(48):]))
 			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
-				bad = (bad | inc)
+				err = intrinsics.simd_bit_or(err, inc)
 			} else {
 				prev1: V16 = intrinsics.simd_shuffle(prev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev1, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev1, k0f))), nvol_tbl1(t2h, intrinsics.simd_shr(in_, V16(4))))
@@ -15244,12 +15244,12 @@ when ODIN_ARCH == .amd64 {
 				prev13: V16 = intrinsics.simd_shuffle(in_2, in_3, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 				sc3: V16 = intrinsics.simd_bit_and(intrinsics.simd_bit_and(nvol_tbl1(t1h, intrinsics.simd_shr(prev13, V16(4))), nvol_tbl1(t1l, intrinsics.simd_bit_and(prev13, k0f))), nvol_tbl1(t2h, intrinsics.simd_shr(in_3, V16(4))))
 				err = intrinsics.simd_bit_or(err, intrinsics.simd_bit_xor(intrinsics.simd_bit_and(intrinsics.simd_bit_or(intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), k60), intrinsics.simd_saturating_sub(intrinsics.simd_shuffle(in_2, in_3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), k70)), k80), sc3))
-				inc = u64((((cur[uint(63):][0] > u8(191)) || (cur[uint(62):][0] > u8(223))) || (cur[uint(61):][0] > u8(239))))
+				inc = intrinsics.simd_saturating_sub(in_3, kmax)
 			}
 			prev = in_3
 			cur = cur[uint(64):]
 		}
-		if ((bad != u64(0)) || (!(intrinsics.simd_reduce_or(err) == 0))) {
+		if (!(intrinsics.simd_reduce_or(err) == 0)) {
 			return uint(0)
 		}
 		if (cur > p) {

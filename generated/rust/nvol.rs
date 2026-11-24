@@ -9555,10 +9555,10 @@ pub mod raw {
             (state.add(16usize) as *mut u64).write_unaligned(psc);
             (state.add(24usize) as *mut u64).write_unaligned(err);
             (state.add(32usize) as *mut u64).write_unaligned(uerr);
+            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             *(state.add(79usize)) = ((p1 as u8)) as u8;
             *(state.add(78usize)) = ((p2 as u8)) as u8;
             *(state.add(77usize)) = ((p3 as u8)) as u8;
-            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             return n;
         }
     }
@@ -9583,7 +9583,6 @@ pub mod raw {
             let k20: __m128i = _mm_set1_epi8(32u8 as i8);
             let k1f: __m128i = _mm_set1_epi8(31u8 as i8);
             let mut uerr: u64 = (state.add(32usize) as *const u64).read_unaligned();
-            let mut uinc: u64 = (state.add(40usize) as *const u64).read_unaligned();
             let t1h: __m128i = _mm_setr_epi8(2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8);
             let t1l: __m128i = _mm_setr_epi8(231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8);
             let t2h: __m128i = _mm_setr_epi8(1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8);
@@ -9591,9 +9590,10 @@ pub mod raw {
             let k60: __m128i = _mm_set1_epi8(96u8 as i8);
             let k70: __m128i = _mm_set1_epi8(112u8 as i8);
             let k80: __m128i = _mm_set1_epi8(128u8 as i8);
+            let kmax: __m128i = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 239u8 as i8, 223u8 as i8, 191u8 as i8);
             let mut uprev: __m128i = _mm_loadu_si128(state.add(64usize) as *const __m128i);
             let mut verr: __m128i = _mm_setzero_si128();
-            let mut ubad: u64 = 0u64;
+            let mut vinc: __m128i = _mm_subs_epu8(uprev, kmax);
             let mut prev: u64 = 0u64;
             let mut pbase: usize = idx;
             let end2: *const u8 = blocks.add(((nblocks >> 1usize) << 7usize));
@@ -9635,7 +9635,7 @@ pub mod raw {
                 err = (err | (ctl & in_string));
                 let mut sbits: u64 = bits;
                 if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_, in_1), _mm_or_si128(in_2, in_3))) as u32) == 0u32) {
-                    ubad = (ubad | uinc);
+                    verr = _mm_or_si128(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev1: __m128i = _mm_alignr_epi8::<15>(in_, uprev);
@@ -9650,7 +9650,7 @@ pub mod raw {
                     let prev13: __m128i = _mm_alignr_epi8::<15>(in_3, in_2);
                     let sc3: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev13), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev13, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_3), _mm_set1_epi8(0x0F))));
                     verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_3, in_2), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_3, in_2), k70)), k80), sc3));
-                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                    vinc = _mm_subs_epu8(in_3, kmax);
                 }
                 uprev = in_3;
                 let in_4: __m128i = _mm_loadu_si128(blk.add(64usize) as *const __m128i);
@@ -9690,7 +9690,7 @@ pub mod raw {
                 err = (err | (ctl1 & in_string1));
                 let mut sbits1: u64 = bits1;
                 if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_4, in_5), _mm_or_si128(in_6, in_7))) as u32) == 0u32) {
-                    ubad = (ubad | uinc);
+                    verr = _mm_or_si128(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev14: __m128i = _mm_alignr_epi8::<15>(in_4, uprev);
@@ -9705,7 +9705,7 @@ pub mod raw {
                     let prev17: __m128i = _mm_alignr_epi8::<15>(in_7, in_6);
                     let sc7: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev17), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev17, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_7), _mm_set1_epi8(0x0F))));
                     verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_7, in_6), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_7, in_6), k70)), k80), sc7));
-                    uinc = (((((*blk.add(64usize).add(63usize)) > 191u8) || ((*blk.add(64usize).add(62usize)) > 223u8)) || ((*blk.add(64usize).add(61usize)) > 239u8)) as u64);
+                    vinc = _mm_subs_epu8(in_7, kmax);
                 }
                 uprev = in_7;
                 if (prev != 0u64) {
@@ -9893,7 +9893,7 @@ pub mod raw {
                 err = (err | (ctl2 & in_string2));
                 let mut sbits2: u64 = bits2;
                 if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_8, in_9), _mm_or_si128(in_10, in_11))) as u32) == 0u32) {
-                    ubad = (ubad | uinc);
+                    verr = _mm_or_si128(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev18: __m128i = _mm_alignr_epi8::<15>(in_8, uprev);
@@ -9908,7 +9908,7 @@ pub mod raw {
                     let prev111: __m128i = _mm_alignr_epi8::<15>(in_11, in_10);
                     let sc11: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev111), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev111, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_11), _mm_set1_epi8(0x0F))));
                     verr = _mm_or_si128(verr, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_11, in_10), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_11, in_10), k70)), k80), sc11));
-                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                    vinc = _mm_subs_epu8(in_11, kmax);
                 }
                 uprev = in_11;
                 if (prev != 0u64) {
@@ -10060,9 +10060,9 @@ pub mod raw {
             (state.add(8usize) as *mut u64).write_unaligned(pis);
             (state.add(16usize) as *mut u64).write_unaligned(psc);
             (state.add(24usize) as *mut u64).write_unaligned(err);
-            (state.add(32usize) as *mut u64).write_unaligned(((uerr | ubad) | ((!(_mm_movemask_epi8(_mm_cmpeq_epi8(verr, _mm_setzero_si128())) == 0xFFFF)) as u64)));
+            (state.add(32usize) as *mut u64).write_unaligned((uerr | ((!(_mm_movemask_epi8(_mm_cmpeq_epi8(verr, _mm_setzero_si128())) == 0xFFFF)) as u64)));
+            (state.add(40usize) as *mut u64).write_unaligned(((!(_mm_movemask_epi8(_mm_cmpeq_epi8(vinc, _mm_setzero_si128())) == 0xFFFF)) as u64));
             _mm_storeu_si128(state.add(64usize) as *mut __m128i, uprev);
-            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             return n;
         }
     }
@@ -10087,7 +10087,6 @@ pub mod raw {
             let k20: __m256i = _mm256_set1_epi8(32u8 as i8);
             let k1f: __m256i = _mm256_set1_epi8(31u8 as i8);
             let mut uerr: u64 = (state.add(32usize) as *const u64).read_unaligned();
-            let mut uinc: u64 = (state.add(40usize) as *const u64).read_unaligned();
             let t1h: __m256i = _mm256_setr_epi8(2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 2u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 128u8 as i8, 33u8 as i8, 1u8 as i8, 21u8 as i8, 73u8 as i8);
             let t1l: __m256i = _mm256_setr_epi8(231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8, 231u8 as i8, 163u8 as i8, 131u8 as i8, 131u8 as i8, 139u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 203u8 as i8, 219u8 as i8, 203u8 as i8, 203u8 as i8);
             let t2h: __m256i = _mm256_setr_epi8(1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 230u8 as i8, 174u8 as i8, 186u8 as i8, 186u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8, 1u8 as i8);
@@ -10095,9 +10094,10 @@ pub mod raw {
             let k60: __m256i = _mm256_set1_epi8(96u8 as i8);
             let k70: __m256i = _mm256_set1_epi8(112u8 as i8);
             let k80: __m256i = _mm256_set1_epi8(128u8 as i8);
+            let kmax: __m256i = _mm256_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 239u8 as i8, 223u8 as i8, 191u8 as i8);
             let mut uprev: __m256i = _mm256_loadu_si256(state.add(48usize) as *const __m256i);
             let mut verr: __m256i = _mm256_setzero_si256();
-            let mut ubad: u64 = 0u64;
+            let mut vinc: __m256i = _mm256_subs_epu8(uprev, kmax);
             let mut prev: u64 = 0u64;
             let mut pbase: usize = idx;
             let end2: *const u8 = blocks.add(((nblocks >> 1usize) << 7usize));
@@ -10130,7 +10130,7 @@ pub mod raw {
                 err = (err | (ctl & in_string));
                 let mut sbits: u64 = bits;
                 if ((_mm256_movemask_epi8(_mm256_or_si256(in_, in_1)) as u32) == 0u32) {
-                    ubad = (ubad | uinc);
+                    verr = _mm256_or_si256(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev1: __m256i = _mm256_alignr_epi8::<15>(in_, _mm256_permute2x128_si256::<0x21>(uprev, in_));
@@ -10139,7 +10139,7 @@ pub mod raw {
                     let prev11: __m256i = _mm256_alignr_epi8::<15>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1));
                     let sc1: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev11), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev11, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_1), _mm256_set1_epi8(0x0F))));
                     verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1)), k70)), k80), sc1));
-                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                    vinc = _mm256_subs_epu8(in_1, kmax);
                 }
                 uprev = in_1;
                 let in_2: __m256i = _mm256_loadu_si256(blk.add(64usize) as *const __m256i);
@@ -10170,7 +10170,7 @@ pub mod raw {
                 err = (err | (ctl1 & in_string1));
                 let mut sbits1: u64 = bits1;
                 if ((_mm256_movemask_epi8(_mm256_or_si256(in_2, in_3)) as u32) == 0u32) {
-                    ubad = (ubad | uinc);
+                    verr = _mm256_or_si256(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev12: __m256i = _mm256_alignr_epi8::<15>(in_2, _mm256_permute2x128_si256::<0x21>(uprev, in_2));
@@ -10179,7 +10179,7 @@ pub mod raw {
                     let prev13: __m256i = _mm256_alignr_epi8::<15>(in_3, _mm256_permute2x128_si256::<0x21>(in_2, in_3));
                     let sc3: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev13), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev13, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_3), _mm256_set1_epi8(0x0F))));
                     verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_3, _mm256_permute2x128_si256::<0x21>(in_2, in_3)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_3, _mm256_permute2x128_si256::<0x21>(in_2, in_3)), k70)), k80), sc3));
-                    uinc = (((((*blk.add(64usize).add(63usize)) > 191u8) || ((*blk.add(64usize).add(62usize)) > 223u8)) || ((*blk.add(64usize).add(61usize)) > 239u8)) as u64);
+                    vinc = _mm256_subs_epu8(in_3, kmax);
                 }
                 uprev = in_3;
                 if (prev != 0u64) {
@@ -10358,7 +10358,7 @@ pub mod raw {
                 err = (err | (ctl2 & in_string2));
                 let mut sbits2: u64 = bits2;
                 if ((_mm256_movemask_epi8(_mm256_or_si256(in_4, in_5)) as u32) == 0u32) {
-                    ubad = (ubad | uinc);
+                    verr = _mm256_or_si256(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev14: __m256i = _mm256_alignr_epi8::<15>(in_4, _mm256_permute2x128_si256::<0x21>(uprev, in_4));
@@ -10367,7 +10367,7 @@ pub mod raw {
                     let prev15: __m256i = _mm256_alignr_epi8::<15>(in_5, _mm256_permute2x128_si256::<0x21>(in_4, in_5));
                     let sc5: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev15), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev15, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_5), _mm256_set1_epi8(0x0F))));
                     verr = _mm256_or_si256(verr, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_5, _mm256_permute2x128_si256::<0x21>(in_4, in_5)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_5, _mm256_permute2x128_si256::<0x21>(in_4, in_5)), k70)), k80), sc5));
-                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                    vinc = _mm256_subs_epu8(in_5, kmax);
                 }
                 uprev = in_5;
                 if (prev != 0u64) {
@@ -10519,9 +10519,9 @@ pub mod raw {
             (state.add(8usize) as *mut u64).write_unaligned(pis);
             (state.add(16usize) as *mut u64).write_unaligned(psc);
             (state.add(24usize) as *mut u64).write_unaligned(err);
-            (state.add(32usize) as *mut u64).write_unaligned(((uerr | ubad) | ((!(_mm256_testz_si256(verr, verr) != 0)) as u64)));
+            (state.add(32usize) as *mut u64).write_unaligned((uerr | ((!(_mm256_testz_si256(verr, verr) != 0)) as u64)));
+            (state.add(40usize) as *mut u64).write_unaligned(((!(_mm256_testz_si256(vinc, vinc) != 0)) as u64));
             _mm256_storeu_si256(state.add(48usize) as *mut __m256i, uprev);
-            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             return n;
         }
     }
@@ -10621,18 +10621,18 @@ pub mod raw {
             let k60: __m128i = _mm_set1_epi8(96u8 as i8);
             let k70: __m128i = _mm_set1_epi8(112u8 as i8);
             let k80: __m128i = _mm_set1_epi8(128u8 as i8);
+            let kmax: __m128i = _mm_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 239u8 as i8, 223u8 as i8, 191u8 as i8);
             let end64: *const u8 = p.add(((len_ >> 6usize) << 6usize));
             let mut prev: __m128i = _mm_setzero_si128();
             let mut err: __m128i = _mm_setzero_si128();
-            let mut inc: u64 = 0u64;
-            let mut bad: u64 = 0u64;
+            let mut inc: __m128i = _mm_setzero_si128();
             while (cur < end64) {
                 let in_: __m128i = _mm_loadu_si128(cur as *const __m128i);
                 let in_1: __m128i = _mm_loadu_si128(cur.add(16usize) as *const __m128i);
                 let in_2: __m128i = _mm_loadu_si128(cur.add(32usize) as *const __m128i);
                 let in_3: __m128i = _mm_loadu_si128(cur.add(48usize) as *const __m128i);
                 if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_, in_1), _mm_or_si128(in_2, in_3))) as u32) == 0u32) {
-                    bad = (bad | inc);
+                    err = _mm_or_si128(err, inc);
                 } else {
                     core::hint::cold_path();
                     let prev1: __m128i = _mm_alignr_epi8::<15>(in_, prev);
@@ -10647,12 +10647,12 @@ pub mod raw {
                     let prev13: __m128i = _mm_alignr_epi8::<15>(in_3, in_2);
                     let sc3: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev13), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev13, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_3), _mm_set1_epi8(0x0F))));
                     err = _mm_or_si128(err, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_3, in_2), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_3, in_2), k70)), k80), sc3));
-                    inc = (((((*cur.add(63usize)) > 191u8) || ((*cur.add(62usize)) > 223u8)) || ((*cur.add(61usize)) > 239u8)) as u64);
+                    inc = _mm_subs_epu8(in_3, kmax);
                 }
                 prev = in_3;
                 cur = cur.add(64usize);
             }
-            if ((bad != 0u64) || (!(_mm_movemask_epi8(_mm_cmpeq_epi8(err, _mm_setzero_si128())) == 0xFFFF))) {
+            if (!(_mm_movemask_epi8(_mm_cmpeq_epi8(err, _mm_setzero_si128())) == 0xFFFF)) {
                 return 0usize;
             }
             if (cur > p) {
@@ -10741,16 +10741,16 @@ pub mod raw {
             let k60: __m256i = _mm256_set1_epi8(96u8 as i8);
             let k70: __m256i = _mm256_set1_epi8(112u8 as i8);
             let k80: __m256i = _mm256_set1_epi8(128u8 as i8);
+            let kmax: __m256i = _mm256_setr_epi8(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 239u8 as i8, 223u8 as i8, 191u8 as i8);
             let end64: *const u8 = p.add(((len_ >> 6usize) << 6usize));
             let mut prev: __m256i = _mm256_setzero_si256();
             let mut err: __m256i = _mm256_setzero_si256();
-            let mut inc: u64 = 0u64;
-            let mut bad: u64 = 0u64;
+            let mut inc: __m256i = _mm256_setzero_si256();
             while (cur < end64) {
                 let in_: __m256i = _mm256_loadu_si256(cur as *const __m256i);
                 let in_1: __m256i = _mm256_loadu_si256(cur.add(32usize) as *const __m256i);
                 if ((_mm256_movemask_epi8(_mm256_or_si256(in_, in_1)) as u32) == 0u32) {
-                    bad = (bad | inc);
+                    err = _mm256_or_si256(err, inc);
                 } else {
                     core::hint::cold_path();
                     let prev1: __m256i = _mm256_alignr_epi8::<15>(in_, _mm256_permute2x128_si256::<0x21>(prev, in_));
@@ -10759,12 +10759,12 @@ pub mod raw {
                     let prev11: __m256i = _mm256_alignr_epi8::<15>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1));
                     let sc1: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev11), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev11, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_1), _mm256_set1_epi8(0x0F))));
                     err = _mm256_or_si256(err, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_1, _mm256_permute2x128_si256::<0x21>(in_, in_1)), k70)), k80), sc1));
-                    inc = (((((*cur.add(63usize)) > 191u8) || ((*cur.add(62usize)) > 223u8)) || ((*cur.add(61usize)) > 239u8)) as u64);
+                    inc = _mm256_subs_epu8(in_1, kmax);
                 }
                 prev = in_1;
                 cur = cur.add(64usize);
             }
-            if ((bad != 0u64) || (!(_mm256_testz_si256(err, err) != 0))) {
+            if (!(_mm256_testz_si256(err, err) != 0)) {
                 return 0usize;
             }
             if (cur > p) {
@@ -15672,7 +15672,6 @@ pub mod raw {
             let k1f: uint8x16_t = vdupq_n_u8(31u8);
             let k0f: uint8x16_t = vdupq_n_u8(15u8);
             let mut uerr: u64 = (state.add(32usize) as *const u64).read_unaligned();
-            let mut uinc: u64 = (state.add(40usize) as *const u64).read_unaligned();
             let t1h: uint8x16_t = vcombine_u8(vcreate_u8(((2u8 as u64)) | ((2u8 as u64) << 8) | ((2u8 as u64) << 16) | ((2u8 as u64) << 24) | ((2u8 as u64) << 32) | ((2u8 as u64) << 40) | ((2u8 as u64) << 48) | ((2u8 as u64) << 56)), vcreate_u8(((128u8 as u64)) | ((128u8 as u64) << 8) | ((128u8 as u64) << 16) | ((128u8 as u64) << 24) | ((33u8 as u64) << 32) | ((1u8 as u64) << 40) | ((21u8 as u64) << 48) | ((73u8 as u64) << 56)));
             let t1l: uint8x16_t = vcombine_u8(vcreate_u8(((231u8 as u64)) | ((163u8 as u64) << 8) | ((131u8 as u64) << 16) | ((131u8 as u64) << 24) | ((139u8 as u64) << 32) | ((203u8 as u64) << 40) | ((203u8 as u64) << 48) | ((203u8 as u64) << 56)), vcreate_u8(((203u8 as u64)) | ((203u8 as u64) << 8) | ((203u8 as u64) << 16) | ((203u8 as u64) << 24) | ((203u8 as u64) << 32) | ((219u8 as u64) << 40) | ((203u8 as u64) << 48) | ((203u8 as u64) << 56)));
             let t2h: uint8x16_t = vcombine_u8(vcreate_u8(((1u8 as u64)) | ((1u8 as u64) << 8) | ((1u8 as u64) << 16) | ((1u8 as u64) << 24) | ((1u8 as u64) << 32) | ((1u8 as u64) << 40) | ((1u8 as u64) << 48) | ((1u8 as u64) << 56)), vcreate_u8(((230u8 as u64)) | ((174u8 as u64) << 8) | ((186u8 as u64) << 16) | ((186u8 as u64) << 24) | ((1u8 as u64) << 32) | ((1u8 as u64) << 40) | ((1u8 as u64) << 48) | ((1u8 as u64) << 56)));
@@ -15680,9 +15679,10 @@ pub mod raw {
             let k60: uint8x16_t = vdupq_n_u8(96u8);
             let k70: uint8x16_t = vdupq_n_u8(112u8);
             let k80: uint8x16_t = vdupq_n_u8(128u8);
+            let kmax: uint8x16_t = vcombine_u8(vcreate_u8(u64::MAX), vcreate_u8(0xFF_FFFF_FFFFu64 | ((239u8 as u64) << 40) | ((223u8 as u64) << 48) | ((191u8 as u64) << 56)));
             let mut uprev: uint8x16_t = vld1q_u8(state.add(64usize));
             let mut verr: uint8x16_t = vdupq_n_u8(0);
-            let mut ubad: u64 = 0u64;
+            let mut vinc: uint8x16_t = vqsubq_u8(uprev, kmax);
             let mut prev: u64 = 0u64;
             let mut pbase: usize = idx;
             let end2: *const u8 = blocks.add(((nblocks >> 1usize) << 7usize));
@@ -15728,7 +15728,7 @@ pub mod raw {
                 err = (err | (ctl & in_string));
                 let mut sbits: u64 = bits;
                 if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))))))))) & 0x8888888888888888u64) == 0u64) {
-                    ubad = (ubad | uinc);
+                    verr = vorrq_u8(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev1: uint8x16_t = vextq_u8::<15>(uprev, in_);
@@ -15743,7 +15743,7 @@ pub mod raw {
                     let prev13: uint8x16_t = vextq_u8::<15>(in_2, in_3);
                     let sc3: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev13)), vqtbl1q_u8(t1l, vandq_u8(prev13, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_3)));
                     verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_2, in_3), k60), vqsubq_u8(vextq_u8::<13>(in_2, in_3), k70)), k80), sc3));
-                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                    vinc = vqsubq_u8(in_3, kmax);
                 }
                 uprev = in_3;
                 let in_4: uint8x16_t = vld1q_u8(blk.add(64usize));
@@ -15787,7 +15787,7 @@ pub mod raw {
                 err = (err | (ctl1 & in_string1));
                 let mut sbits1: u64 = bits1;
                 if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_4, in_5), vorrq_u8(in_6, in_7))))))))) & 0x8888888888888888u64) == 0u64) {
-                    ubad = (ubad | uinc);
+                    verr = vorrq_u8(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev14: uint8x16_t = vextq_u8::<15>(uprev, in_4);
@@ -15802,7 +15802,7 @@ pub mod raw {
                     let prev17: uint8x16_t = vextq_u8::<15>(in_6, in_7);
                     let sc7: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev17)), vqtbl1q_u8(t1l, vandq_u8(prev17, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_7)));
                     verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_6, in_7), k60), vqsubq_u8(vextq_u8::<13>(in_6, in_7), k70)), k80), sc7));
-                    uinc = (((((*blk.add(64usize).add(63usize)) > 191u8) || ((*blk.add(64usize).add(62usize)) > 223u8)) || ((*blk.add(64usize).add(61usize)) > 239u8)) as u64);
+                    vinc = vqsubq_u8(in_7, kmax);
                 }
                 uprev = in_7;
                 if (prev != 0u64) {
@@ -15994,7 +15994,7 @@ pub mod raw {
                 err = (err | (ctl2 & in_string2));
                 let mut sbits2: u64 = bits2;
                 if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_8, in_9), vorrq_u8(in_10, in_11))))))))) & 0x8888888888888888u64) == 0u64) {
-                    ubad = (ubad | uinc);
+                    verr = vorrq_u8(verr, vinc);
                 } else {
                     core::hint::cold_path();
                     let prev18: uint8x16_t = vextq_u8::<15>(uprev, in_8);
@@ -16009,7 +16009,7 @@ pub mod raw {
                     let prev111: uint8x16_t = vextq_u8::<15>(in_10, in_11);
                     let sc11: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev111)), vqtbl1q_u8(t1l, vandq_u8(prev111, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_11)));
                     verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_10, in_11), k60), vqsubq_u8(vextq_u8::<13>(in_10, in_11), k70)), k80), sc11));
-                    uinc = (((((*blk.add(63usize)) > 191u8) || ((*blk.add(62usize)) > 223u8)) || ((*blk.add(61usize)) > 239u8)) as u64);
+                    vinc = vqsubq_u8(in_11, kmax);
                 }
                 uprev = in_11;
                 if (prev != 0u64) {
@@ -16161,9 +16161,9 @@ pub mod raw {
             (state.add(8usize) as *mut u64).write_unaligned(pis);
             (state.add(16usize) as *mut u64).write_unaligned(psc);
             (state.add(24usize) as *mut u64).write_unaligned(err);
-            (state.add(32usize) as *mut u64).write_unaligned(((uerr | ubad) | ((!(vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpmaxq_u8(verr, verr))) == 0)) as u64)));
+            (state.add(32usize) as *mut u64).write_unaligned((uerr | ((!(vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpmaxq_u8(verr, verr))) == 0)) as u64)));
+            (state.add(40usize) as *mut u64).write_unaligned(((!(vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpmaxq_u8(vinc, vinc))) == 0)) as u64));
             vst1q_u8(state.add(64usize), uprev);
-            (state.add(40usize) as *mut u64).write_unaligned(uinc);
             return n;
         }
     }
@@ -16185,18 +16185,18 @@ pub mod raw {
             let k60: uint8x16_t = vdupq_n_u8(96u8);
             let k70: uint8x16_t = vdupq_n_u8(112u8);
             let k80: uint8x16_t = vdupq_n_u8(128u8);
+            let kmax: uint8x16_t = vcombine_u8(vcreate_u8(u64::MAX), vcreate_u8(0xFF_FFFF_FFFFu64 | ((239u8 as u64) << 40) | ((223u8 as u64) << 48) | ((191u8 as u64) << 56)));
             let end64: *const u8 = p.add(((len_ >> 6usize) << 6usize));
             let mut prev: uint8x16_t = vdupq_n_u8(0);
             let mut err: uint8x16_t = vdupq_n_u8(0);
-            let mut inc: u64 = 0u64;
-            let mut bad: u64 = 0u64;
+            let mut inc: uint8x16_t = vdupq_n_u8(0);
             while (cur < end64) {
                 let in_: uint8x16_t = vld1q_u8(cur);
                 let in_1: uint8x16_t = vld1q_u8(cur.add(16usize));
                 let in_2: uint8x16_t = vld1q_u8(cur.add(32usize));
                 let in_3: uint8x16_t = vld1q_u8(cur.add(48usize));
                 if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))))))))) & 0x8888888888888888u64) == 0u64) {
-                    bad = (bad | inc);
+                    err = vorrq_u8(err, inc);
                 } else {
                     core::hint::cold_path();
                     let prev1: uint8x16_t = vextq_u8::<15>(prev, in_);
@@ -16211,12 +16211,12 @@ pub mod raw {
                     let prev13: uint8x16_t = vextq_u8::<15>(in_2, in_3);
                     let sc3: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev13)), vqtbl1q_u8(t1l, vandq_u8(prev13, k0f))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_3)));
                     err = vorrq_u8(err, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(in_2, in_3), k60), vqsubq_u8(vextq_u8::<13>(in_2, in_3), k70)), k80), sc3));
-                    inc = (((((*cur.add(63usize)) > 191u8) || ((*cur.add(62usize)) > 223u8)) || ((*cur.add(61usize)) > 239u8)) as u64);
+                    inc = vqsubq_u8(in_3, kmax);
                 }
                 prev = in_3;
                 cur = cur.add(64usize);
             }
-            if ((bad != 0u64) || (!(vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpmaxq_u8(err, err))) == 0))) {
+            if (!(vgetq_lane_u64::<0>(vreinterpretq_u64_u8(vpmaxq_u8(err, err))) == 0)) {
                 return 0usize;
             }
             if (cur > p) {

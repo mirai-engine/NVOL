@@ -4641,7 +4641,6 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
     const uint8x16_t k1f = vdupq_n_u8((uint8_t)(31u));
     const uint8x16_t k0f = vdupq_n_u8((uint8_t)(15u));
     uint64_t uerr = nvol_load64((state + ((size_t)32u)));
-    uint64_t uinc = nvol_load64((state + ((size_t)40u)));
     const uint8x16_t t1h = vcombine_u8(vcreate_u8((uint64_t)(2u) | (uint64_t)(2u) << 8 | (uint64_t)(2u) << 16 | (uint64_t)(2u) << 24 | (uint64_t)(2u) << 32 | (uint64_t)(2u) << 40 | (uint64_t)(2u) << 48 | (uint64_t)(2u) << 56), vcreate_u8((uint64_t)(128u) | (uint64_t)(128u) << 8 | (uint64_t)(128u) << 16 | (uint64_t)(128u) << 24 | (uint64_t)(33u) << 32 | (uint64_t)(1u) << 40 | (uint64_t)(21u) << 48 | (uint64_t)(73u) << 56));
     const uint8x16_t t1l = vcombine_u8(vcreate_u8((uint64_t)(231u) | (uint64_t)(163u) << 8 | (uint64_t)(131u) << 16 | (uint64_t)(131u) << 24 | (uint64_t)(139u) << 32 | (uint64_t)(203u) << 40 | (uint64_t)(203u) << 48 | (uint64_t)(203u) << 56), vcreate_u8((uint64_t)(203u) | (uint64_t)(203u) << 8 | (uint64_t)(203u) << 16 | (uint64_t)(203u) << 24 | (uint64_t)(203u) << 32 | (uint64_t)(219u) << 40 | (uint64_t)(203u) << 48 | (uint64_t)(203u) << 56));
     const uint8x16_t t2h = vcombine_u8(vcreate_u8((uint64_t)(1u) | (uint64_t)(1u) << 8 | (uint64_t)(1u) << 16 | (uint64_t)(1u) << 24 | (uint64_t)(1u) << 32 | (uint64_t)(1u) << 40 | (uint64_t)(1u) << 48 | (uint64_t)(1u) << 56), vcreate_u8((uint64_t)(230u) | (uint64_t)(174u) << 8 | (uint64_t)(186u) << 16 | (uint64_t)(186u) << 24 | (uint64_t)(1u) << 32 | (uint64_t)(1u) << 40 | (uint64_t)(1u) << 48 | (uint64_t)(1u) << 56));
@@ -4649,9 +4648,10 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
     const uint8x16_t k60 = vdupq_n_u8((uint8_t)(96u));
     const uint8x16_t k70 = vdupq_n_u8((uint8_t)(112u));
     const uint8x16_t k80 = vdupq_n_u8((uint8_t)(128u));
+    const uint8x16_t kmax = vcombine_u8(vcreate_u8(UINT64_C(0xFFFFFFFFFFFFFFFF)), vcreate_u8(UINT64_C(0xFFFFFFFFFF) | (uint64_t)(239u) << 40 | (uint64_t)(223u) << 48 | (uint64_t)(191u) << 56));
     uint8x16_t uprev = vld1q_u8((state + ((size_t)64u)));
     uint8x16_t verr = vdupq_n_u8(0);
-    uint64_t ubad = UINT64_C(0);
+    uint8x16_t vinc = vqsubq_u8(uprev, kmax);
     uint64_t prev = UINT64_C(0);
     size_t pbase = idx;
     const uint8_t *const end2 = (blocks + ((nblocks >> ((size_t)1u)) << ((size_t)7u)));
@@ -4696,7 +4696,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
         err = (err | (ctl & in_string));
         uint64_t sbits = bits;
         if (NVOL_LIKELY(((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))), 7))), 4)), 0) & UINT64_C(0x8888888888888888)) == UINT64_C(0)))) {
-            ubad = (ubad | uinc);
+            verr = vorrq_u8(verr, vinc);
         } else {
             const uint8x16_t prev1 = vextq_u8(uprev, in_, 15);
             const uint8x16_t sc = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8(prev1, 4)), vqtbl1q_u8(t1l, vandq_u8(prev1, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8(in_, 4)));
@@ -4710,7 +4710,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
             const uint8x16_t prev13 = vextq_u8(in_2, in_3, 15);
             const uint8x16_t sc3 = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8(prev13, 4)), vqtbl1q_u8(t1l, vandq_u8(prev13, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8(in_3, 4)));
             verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8(in_2, in_3, 14), k60), vqsubq_u8(vextq_u8(in_2, in_3, 13), k70)), k80), sc3));
-            uinc = ((uint64_t)(((((*((blk + ((size_t)63u)))) > 191u) || ((*((blk + ((size_t)62u)))) > 223u)) || ((*((blk + ((size_t)61u)))) > 239u))));
+            vinc = vqsubq_u8(in_3, kmax);
         }
         uprev = in_3;
         const uint8x16_t in_4 = vld1q_u8((blk + ((size_t)64u)));
@@ -4753,7 +4753,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
         err = (err | (ctl1 & in_string1));
         uint64_t sbits1 = bits1;
         if (NVOL_LIKELY(((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_4, in_5), vorrq_u8(in_6, in_7))), 7))), 4)), 0) & UINT64_C(0x8888888888888888)) == UINT64_C(0)))) {
-            ubad = (ubad | uinc);
+            verr = vorrq_u8(verr, vinc);
         } else {
             const uint8x16_t prev14 = vextq_u8(uprev, in_4, 15);
             const uint8x16_t sc4 = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8(prev14, 4)), vqtbl1q_u8(t1l, vandq_u8(prev14, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8(in_4, 4)));
@@ -4767,7 +4767,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
             const uint8x16_t prev17 = vextq_u8(in_6, in_7, 15);
             const uint8x16_t sc7 = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8(prev17, 4)), vqtbl1q_u8(t1l, vandq_u8(prev17, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8(in_7, 4)));
             verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8(in_6, in_7, 14), k60), vqsubq_u8(vextq_u8(in_6, in_7, 13), k70)), k80), sc7));
-            uinc = ((uint64_t)(((((*(((blk + ((size_t)64u)) + ((size_t)63u)))) > 191u) || ((*(((blk + ((size_t)64u)) + ((size_t)62u)))) > 223u)) || ((*(((blk + ((size_t)64u)) + ((size_t)61u)))) > 239u))));
+            vinc = vqsubq_u8(in_7, kmax);
         }
         uprev = in_7;
         if (prev != UINT64_C(0)) {
@@ -4958,7 +4958,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
         err = (err | (ctl2 & in_string2));
         uint64_t sbits2 = bits2;
         if (NVOL_LIKELY(((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_8, in_9), vorrq_u8(in_10, in_11))), 7))), 4)), 0) & UINT64_C(0x8888888888888888)) == UINT64_C(0)))) {
-            ubad = (ubad | uinc);
+            verr = vorrq_u8(verr, vinc);
         } else {
             const uint8x16_t prev18 = vextq_u8(uprev, in_8, 15);
             const uint8x16_t sc8 = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8(prev18, 4)), vqtbl1q_u8(t1l, vandq_u8(prev18, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8(in_8, 4)));
@@ -4972,7 +4972,7 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
             const uint8x16_t prev111 = vextq_u8(in_10, in_11, 15);
             const uint8x16_t sc11 = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8(prev111, 4)), vqtbl1q_u8(t1l, vandq_u8(prev111, k0f1))), vqtbl1q_u8(t2h, vshrq_n_u8(in_11, 4)));
             verr = vorrq_u8(verr, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8(in_10, in_11, 14), k60), vqsubq_u8(vextq_u8(in_10, in_11, 13), k70)), k80), sc11));
-            uinc = ((uint64_t)(((((*((blk + ((size_t)63u)))) > 191u) || ((*((blk + ((size_t)62u)))) > 223u)) || ((*((blk + ((size_t)61u)))) > 239u))));
+            vinc = vqsubq_u8(in_11, kmax);
         }
         uprev = in_11;
         if (prev != UINT64_C(0)) {
@@ -5124,9 +5124,9 @@ NVOL_INLINE size_t nvol_json_index_neon(uint8_t *state, const uint8_t *blocks, s
     nvol_store64((state + ((size_t)8u)), pis);
     nvol_store64((state + ((size_t)16u)), psc);
     nvol_store64((state + ((size_t)24u)), err);
-    nvol_store64((state + ((size_t)32u)), ((uerr | ubad) | ((uint64_t)((!(vgetq_lane_u64(vreinterpretq_u64_u8(vpmaxq_u8(verr, verr)), 0) == 0))))));
+    nvol_store64((state + ((size_t)32u)), (uerr | ((uint64_t)((!(vgetq_lane_u64(vreinterpretq_u64_u8(vpmaxq_u8(verr, verr)), 0) == 0))))));
+    nvol_store64((state + ((size_t)40u)), ((uint64_t)((!(vgetq_lane_u64(vreinterpretq_u64_u8(vpmaxq_u8(vinc, vinc)), 0) == 0)))));
     vst1q_u8((state + ((size_t)64u)), uprev);
-    nvol_store64((state + ((size_t)40u)), uinc);
     return n;
 }
 
@@ -5144,18 +5144,18 @@ NVOL_INLINE size_t nvol_utf8_valid_neon(const uint8_t *p, size_t len_) {
     const uint8x16_t k60 = vdupq_n_u8((uint8_t)(96u));
     const uint8x16_t k70 = vdupq_n_u8((uint8_t)(112u));
     const uint8x16_t k80 = vdupq_n_u8((uint8_t)(128u));
+    const uint8x16_t kmax = vcombine_u8(vcreate_u8(UINT64_C(0xFFFFFFFFFFFFFFFF)), vcreate_u8(UINT64_C(0xFFFFFFFFFF) | (uint64_t)(239u) << 40 | (uint64_t)(223u) << 48 | (uint64_t)(191u) << 56));
     const uint8_t *const end64 = (p + ((len_ >> ((size_t)6u)) << ((size_t)6u)));
     uint8x16_t prev = vdupq_n_u8(0);
     uint8x16_t err = vdupq_n_u8(0);
-    uint64_t inc = UINT64_C(0);
-    uint64_t bad = UINT64_C(0);
+    uint8x16_t inc = vdupq_n_u8(0);
     while (cur < end64) {
         const uint8x16_t in_ = vld1q_u8(cur);
         const uint8x16_t in_1 = vld1q_u8((cur + ((size_t)16u)));
         const uint8x16_t in_2 = vld1q_u8((cur + ((size_t)32u)));
         const uint8x16_t in_3 = vld1q_u8((cur + ((size_t)48u)));
         if (NVOL_LIKELY(((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))), 7))), 4)), 0) & UINT64_C(0x8888888888888888)) == UINT64_C(0)))) {
-            bad = (bad | inc);
+            err = vorrq_u8(err, inc);
         } else {
             const uint8x16_t prev1 = vextq_u8(prev, in_, 15);
             const uint8x16_t sc = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8(prev1, 4)), vqtbl1q_u8(t1l, vandq_u8(prev1, k0f))), vqtbl1q_u8(t2h, vshrq_n_u8(in_, 4)));
@@ -5169,12 +5169,12 @@ NVOL_INLINE size_t nvol_utf8_valid_neon(const uint8_t *p, size_t len_) {
             const uint8x16_t prev13 = vextq_u8(in_2, in_3, 15);
             const uint8x16_t sc3 = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8(prev13, 4)), vqtbl1q_u8(t1l, vandq_u8(prev13, k0f))), vqtbl1q_u8(t2h, vshrq_n_u8(in_3, 4)));
             err = vorrq_u8(err, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8(in_2, in_3, 14), k60), vqsubq_u8(vextq_u8(in_2, in_3, 13), k70)), k80), sc3));
-            inc = ((uint64_t)(((((*((cur + ((size_t)63u)))) > 191u) || ((*((cur + ((size_t)62u)))) > 223u)) || ((*((cur + ((size_t)61u)))) > 239u))));
+            inc = vqsubq_u8(in_3, kmax);
         }
         prev = in_3;
         cur = (cur + ((size_t)64u));
     }
-    if ((bad != UINT64_C(0)) || (!(vgetq_lane_u64(vreinterpretq_u64_u8(vpmaxq_u8(err, err)), 0) == 0))) {
+    if (!(vgetq_lane_u64(vreinterpretq_u64_u8(vpmaxq_u8(err, err)), 0) == 0)) {
         return ((size_t)0u);
     }
     if (cur > p) {

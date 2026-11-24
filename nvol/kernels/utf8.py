@@ -16,7 +16,9 @@ Per 64-byte block: a block without a byte >= 0x80 only adds the previous block's
 and the block is incomplete when its last bytes start a sequence it does not finish
 (byte 63 >= 0xC0, byte 62 >= 0xE0 or byte 61 >= 0xF0). The bytes after the last whole block
 are checked by the scalar validator, from the lead byte of the code point the blocks end in
-(at most 3 continuation bytes back), so the last block's flag is not needed."""
+(at most 3 continuation bytes back), so the last block's flag is not needed. The flag stays a
+vector, as in simdjson (one vpsubusb against vtail3's bound, OR'd into the error on an ASCII
+block): three byte compares per non-ASCII block cost ~5 % of stage 1 on twitter.json."""
 from __future__ import annotations
 from ..ir import PTR, U8, U64, USIZE, Builder, Function, Module, Not, land, lift, lor, prim
 from ..isa import ISA, ISAS, movemask
@@ -104,7 +106,8 @@ def _consts(b, isa):
         return b.let(name, prim("splat", lift(x, U8)))
     return {"t1h": table("t1h", T1H), "t1l": table("t1l", T1L), "t2h": table("t2h", T2H),
             "k0f": splat("k0f", 0x0F), "k60": splat("k60", 0xE0 - 0x80),
-            "k70": splat("k70", 0xF0 - 0x80), "k80": splat("k80", 0x80)}
+            "k70": splat("k70", 0xF0 - 0x80), "k80": splat("k80", 0x80),
+            "kmax": b.let("kmax", prim("vtail3", *[lift(x, U8) for x in (0xEF, 0xDF, 0xBF)]))}
 
 
 def check_vector(b, isa, k, v, prev, err):
@@ -123,6 +126,12 @@ def ascii_block(isa, vs):
     """No byte of the block has its msb set."""
     anyv = _or_tree(vs, "vor")
     return movemask(isa, prim("msb_lanes", anyv) if isa.lane_bits == 4 else anyv).eq(0)
+
+
+def incomplete_vector(k, v):
+    """utf8_checker::is_incomplete: non-zero lanes where v's last bytes start a code point that
+    v does not finish (byte -1 >= 0xC0, -2 >= 0xE0, -3 >= 0xF0), as one saturating subtraction."""
+    return prim("vsubs8", v, k["kmax"])
 
 
 def incomplete(blk):
@@ -144,19 +153,18 @@ def kernel(isa: ISA | None) -> Function:
         end64 = b.let("end64", p + ((n >> 6) << 6))
         prev = b.var("prev", prim("vzero"))
         err = b.var("err", prim("vzero"))
-        inc = b.var("inc", 0, U64)      # the last non-ASCII block was incomplete
-        bad = b.var("bad", 0, U64)
+        inc = b.var("inc", prim("vzero"))   # the last non-ASCII block was incomplete
         with b.while_(cur < end64):
             vs = [b.let("in", prim("load_u", cur + V * j if j else cur)) for j in range(64 // V)]
             with b.if_(ascii_block(isa, vs), likely=True):
-                b.set(bad, bad | inc)
+                b.set(err, prim("vor", err, inc))
             with b.else_():
                 for j, v in enumerate(vs):
                     check_vector(b, isa, k, v, prev if j == 0 else vs[j - 1], err)
-                b.set(inc, incomplete(cur).cast(U64))
+                b.set(inc, incomplete_vector(k, vs[-1]))
             b.set(prev, vs[-1])
             b.set(cur, cur + 64)
-        with b.if_(lor(bad.ne(0), Not(prim("is_zero", err)))):
+        with b.if_(Not(prim("is_zero", err))):
             b.ret(0)
         # the tail starts at the lead byte of the code point the blocks end in
         with b.if_(cur > p):
