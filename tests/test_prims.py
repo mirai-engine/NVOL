@@ -40,7 +40,7 @@ STORES = {"ssse3": ["store32"], "avx2": []}
 # IR helpers of nvol.isa, not primitives: t_<isa>_prefix_xor (the shift/xor steps without PCLMUL)
 HELPERS = {"ssse3": ["prefix_xor"], "avx2": []}
 # constant vectors: t_<isa>_vtable16 (the bytes of TABLE16, which ignore src)
-CONSTS = {"ssse3": ["vtable16"], "avx2": ["vtable16"]}
+CONSTS = {"ssse3": ["vtable16", "vtail3"], "avx2": ["vtable16", "vtail3"]}
 TABLE16 = (0x20, 0x00, 0x7F, 0x80, 0xFF, 0x11, 0x71, 0x02, 0x64, 0x09, 0x0A, 0x70, 0xC3, 0x0D, 0x01, 0xFE)
 
 
@@ -97,6 +97,17 @@ def _fn_u64(isa, name):
     b = ir.Builder(f"t_{isa}_{name}", ir.VOID, isa=isa, public=True)
     src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
     b.store64(out, ir.prim(name, ir.prim("load64", src)).cast(ir.U64))
+    return b.build()
+
+
+def _fn_vtail3(isa):
+    V = ISAS[isa].bytes
+    b = ir.Builder(f"t_{isa}_vtail3", ir.VOID, isa=isa, public=True)
+    b.param("src", ir.PTR)
+    out = b.param("out", ir.MPTR)
+    r = b.let("r", ir.prim("vtail3", *[ir.lift(x, ir.U8) for x in (0xEF, 0xDF, 0xBF)]))
+    for k in range(V // 8):
+        b.store64(out + 8 * k if k else out, ir.prim(f"lane64_{k}", r))
     return b.build()
 
 
@@ -165,6 +176,7 @@ def _module():
     mod.functions += [_fn_store32(isa) for isa, names in STORES.items() if names]
     mod.functions += [_fn_prefix_xor(isa) for isa, names in HELPERS.items() if names]
     mod.functions += [_fn_vtable16(isa) for isa, names in CONSTS.items() if names]
+    mod.functions += [_fn_vtail3(isa) for isa, names in CONSTS.items() if "vtail3" in names]
     mod.functions.append(_fn_half("load_half_bcast"))
     mod.functions.append(_fn_cpu("cpu_avx2_pclmul_bmi1"))
     return mod

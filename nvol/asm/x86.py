@@ -571,6 +571,8 @@ class X86Lower(Lower):
             return self.vzero()
         if n == "vtable16":
             return self.vconst(_table16(self.f.name, e) * (V // 16))
+        if n == "vtail3":
+            return self.vconst(b"\xff" * (V - 3) + _table16(self.f.name, e))
         if n in ("load_a", "load_u"):
             m = self.addr(e.args[0])
             d = self.new("v")
@@ -1147,7 +1149,7 @@ avx = _avx
 
 
 def _table16(fname: str, e: ir.Prim) -> bytes:
-    """The 16 bytes of a vtable16, which must all be constants (they go to .rodata)."""
+    """The bytes of a vtable16 (or vtail3), which must all be constants (they go to .rodata)."""
     if not all(isinstance(x, ir.Const) for x in e.args):
-        raise Unsupported(f"{fname}: vtable16 of a non-constant byte")
+        raise Unsupported(f"{fname}: {e.name} of a non-constant byte")
     return bytes(_const_value(x) & 0xFF for x in e.args)

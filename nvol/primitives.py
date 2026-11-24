@@ -93,6 +93,10 @@ _DEFS = [
     PrimDef("vtable16", (U8,) * 16, VEC,
             "the 16 constant bytes c0..c15 in every 128-bit lane (a pshufb/tbl table)",
             lambda c, *t: tuple(t) * (c.nbytes // 16), pre="every argument is a constant"),
+    PrimDef("vtail3", (U8,) * 3, VEC,
+            "every lane 0xFF but the last three of the whole vector: a, b, c (simdjson's "
+            "is_incomplete bound, compared with the last bytes of a block)",
+            lambda c, a, b, d: (0xFF,) * (c.nbytes - 3) + (a, b, d), pre="every argument is a constant"),
     PrimDef("load_a", (PTR,), VEC, "load nbytes from an nbytes-aligned address",
             lambda c, p: _load(c, p, True), pre="addr % nbytes == 0, [p, p+nbytes) readable"),
     PrimDef("load_u", (PTR,), VEC, "load nbytes from any address",

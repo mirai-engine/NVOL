@@ -310,6 +310,18 @@ for _isa, _p, _w in ((SSE2, "_mm", "si128"), (SSSE3, "_mm", "si128"), (SSE42, "_
     _isa.lower[("c", "vnib_hi")] = f"{_p}_and_{_w}({_p}_srli_epi16({{0}}, 4), {_p}_set1_epi8(0x0F))"
     _isa.lower[("rust", "vnib_hi")] = f"{_p}_and_{_w}({_p}_srli_epi16::<4>({{0}}), {_p}_set1_epi8(0x0F))"
 
+# vtail3: 0xFF in every lane but the last three, {0} {1} {2}
+for _isa, _p, _n in ((SSE2, "_mm", 16), (SSSE3, "_mm", 16), (SSE42, "_mm", 16), (AVX2, "_mm256", 32)):
+    _isa.lower[("c", "vtail3")] = (f"{_p}_setr_epi8(" + "-1, " * (_n - 3)
+                                   + "(char){0}, (char){1}, (char){2})")
+    _isa.lower[("rust", "vtail3")] = (f"{_p}_setr_epi8(" + "-1, " * (_n - 3)
+                                      + "{0} as i8, {1} as i8, {2} as i8)")
+NEON.lower[("c", "vtail3")] = ("vcombine_u8(vcreate_u8(UINT64_C(0xFFFFFFFFFFFFFFFF)), "
+                               "vcreate_u8(UINT64_C(0xFFFFFFFFFF) | (uint64_t)({0}) << 40 | "
+                               "(uint64_t)({1}) << 48 | (uint64_t)({2}) << 56))")
+NEON.lower[("rust", "vtail3")] = ("vcombine_u8(vcreate_u8(u64::MAX), vcreate_u8(0xFF_FFFF_FFFFu64 | "
+                                  "(({0} as u64) << 40) | (({1} as u64) << 48) | (({2} as u64) << 56)))")
+
 # vector store (ir.StoreVec): {0} = mutable pointer, {1} = vector
 for _isa, _c, _r in ((SSE2, "_mm_storeu_si128((__m128i *)({0}), {1})", "_mm_storeu_si128({0} as *mut __m128i, {1})"),
                      (SSSE3, "_mm_storeu_si128((__m128i *)({0}), {1})", "_mm_storeu_si128({0} as *mut __m128i, {1})"),

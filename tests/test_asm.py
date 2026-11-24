@@ -93,6 +93,7 @@ def _neon_prims():
     mod.functions.append(test_prims._fn_store32("neon"))
     mod.functions.append(test_prims._fn_prefix_xor("neon"))
     mod.functions.append(test_prims._fn_vtable16("neon"))
+    mod.functions.append(test_prims._fn_vtail3("neon"))
     return mod
 
 
