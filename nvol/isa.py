@@ -79,7 +79,10 @@ SSE2 = ISA(
         ("c", "vsubs8"): "_mm_subs_epu8({0}, {1})",
         ("c", "vmin8"): "_mm_min_epu8({0}, {1})",
         ("c", "movemask"): "((uint32_t)_mm_movemask_epi8({0}))",
-        ("c", "bmask64x4"): "(((uint64_t)(uint32_t)_mm_movemask_epi8({0})) | ((uint64_t)(uint32_t)_mm_movemask_epi8({1}) << 16) | ((uint64_t)(uint32_t)_mm_movemask_epi8({2}) << 32) | ((uint64_t)(uint32_t)_mm_movemask_epi8({3}) << 48))",
+        # the casts of simdjson's to_bitmask (r0 through uint32_t, r1-r3 from int): with a
+        # (uint32_t) on each, GCC orders the pmovmskb/or chain differently (+0.4 % on
+        # copy_and_find, westmere target)
+        ("c", "bmask64x4"): "(((uint64_t)(uint32_t)_mm_movemask_epi8({0})) | ((uint64_t)_mm_movemask_epi8({1}) << 16) | ((uint64_t)_mm_movemask_epi8({2}) << 32) | ((uint64_t)_mm_movemask_epi8({3}) << 48))",
         ("c", "sad0"): "_mm_sad_epu8({0}, _mm_setzero_si128())",
         ("c", "vadd64"): "_mm_add_epi64({0}, {1})",
         ("c", "hsum64"): "((size_t)(_mm_cvtsi128_si64({0}) + _mm_cvtsi128_si64(_mm_unpackhi_epi64({0}, {0}))))",
