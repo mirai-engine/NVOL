@@ -76,6 +76,16 @@ What the report got right and what it got wrong:
 
 NVOL keeps no workaround: user-space addresses stay below 2^63 on x86-64 and aarch64.
 
+**Found after the reply, 2026-11-24, not in the report.** The signed ordering is not only a
+64-bit, kernel-space matter. Odin ships 32-bit targets (`i386`, `arm32` and `wasm32` in
+`src/build_settings.cpp`), where user-space addresses at or above 2^31 are ordinary: Linux's
+3 GiB user split on i386 and arm32, a large-address-aware 32-bit process on 64-bit Windows,
+and a wasm32 memory past 2 GiB. With Odin `dev-2026-10` (84bc3fc), `a < b` on `[^]u8` compiles
+to `cmp` + `setl` (signed) for `windows_i386`, and the same comparison on `uintptr` to `setb`
+(unsigned); `windows_amd64` gives `setl` and `setb` likewise. The report argued from 64-bit
+targets only and granted that user space was unaffected; this 32-bit case is the one to lead
+with if it is ever raised again. Until then, NVOL and grepper compare addresses as `uintptr`.
+
 **From 2026-11-24.** Every bug found is written down here, in the project that found it. Issues
 and pull requests go to other projects only once grepper and NVOL are finished. The open NASM
 reports (T11: #349 and #350, still open on 2026-11-24, no comments) stay as they are.
