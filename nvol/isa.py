@@ -102,6 +102,12 @@ SSE2 = ISA(
         ("rust", "sad0"): "_mm_sad_epu8({0}, _mm_setzero_si128())",
         ("rust", "vadd64"): "_mm_add_epi64({0}, {1})",
         ("rust", "hsum64"): "((_mm_cvtsi128_si64({0}) as u64).wrapping_add(_mm_cvtsi128_si64(_mm_unpackhi_epi64({0}, {0})) as u64) as usize)",
+        ("c", "load8v"): "_mm_loadl_epi64((const __m128i *)({0}))",
+        ("c", "vmadd16"): "_mm_madd_epi16({0}, {1})",
+        ("c", "lane32_0"): "((uint32_t)_mm_cvtsi128_si32({0}))",
+        ("rust", "load8v"): "_mm_loadl_epi64({0} as *const __m128i)",
+        ("rust", "vmadd16"): "_mm_madd_epi16({0}, {1})",
+        ("rust", "lane32_0"): "(_mm_cvtsi128_si32({0}) as u32)",
     },
 )
 
@@ -128,7 +134,9 @@ SSSE3 = ISA(
     name="ssse3", bytes=16, arch="x86_64",
     vec_type={"c": "__m128i", "rust": "__m128i"},
     target={"c": "ssse3", "rust": "ssse3"},
-    lower={**SSE2.lower, **SSE128_TEDDY},
+    lower={**SSE2.lower, **SSE128_TEDDY,
+           ("c", "vmaddubs"): "_mm_maddubs_epi16({0}, {1})",
+           ("rust", "vmaddubs"): "_mm_maddubs_epi16({0}, {1})"},
 )
 
 # SSE4.2 implies SSSE3: its functions may use (and inline) the SSSE3 kernels
@@ -139,7 +147,9 @@ SSE42 = ISA(
     lower={**SSSE3.lower,
            # pcmpistri: _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ANY | _SIDD_LEAST_SIGNIFICANT | _SIDD_NEGATIVE_POLARITY
            ("c", "skip_set16"): "((uint32_t)_mm_cmpistri({0}, {1}, 0x10))",
-           ("rust", "skip_set16"): "(_mm_cmpistri::<0x10>({0}, {1}) as u32)"},
+           ("rust", "skip_set16"): "(_mm_cmpistri::<0x10>({0}, {1}) as u32)",
+           ("c", "vpackus32"): "_mm_packus_epi32({0}, {1})",
+           ("rust", "vpackus32"): "_mm_packus_epi32({0}, {1})"},
 )
 
 AVX2 = ISA(

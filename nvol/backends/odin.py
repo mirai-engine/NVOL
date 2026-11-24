@@ -92,6 +92,10 @@ X86_16 = {
     "any_nonzero": "(nvol_pmovmskb128({0}) != 0)",          # memchr: movemask != 0
     "sad0": "transmute(V16)nvol_psadbw128({0}, V16(0))",
     "vshuffle": "nvol_pshufb128({0}, {1})",
+    "load8v": "transmute(V16)U64x2{{intrinsics.unaligned_load((^u64)({0})), 0}}",
+    "vmaddubs": "transmute(V16)nvol_pmaddubsw128({0}, {1})",
+    "vmadd16": "transmute(V16)nvol_pmaddwd128(transmute(U16x8){0}, transmute(U16x8){1})",
+    "lane32_0": "intrinsics.simd_extract(transmute(U32x4){0}, 0)",
 }
 X86_32 = {
     **_vec_common(32),
@@ -121,7 +125,8 @@ NEON_16 = {
     "bmask64x4": "intrinsics.simd_extract(transmute(U64x2)nvol_addp(nvol_addp(nvol_addp(intrinsics.simd_bit_and({0}, transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and({1}, transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and({2}, transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and({3}, transmute(V16)U64x2(0x8040201008040201)))), nvol_addp(nvol_addp(intrinsics.simd_bit_and({0}, transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and({1}, transmute(V16)U64x2(0x8040201008040201))), nvol_addp(intrinsics.simd_bit_and({2}, transmute(V16)U64x2(0x8040201008040201)), intrinsics.simd_bit_and({3}, transmute(V16)U64x2(0x8040201008040201))))), 0)",
     "vshuffle": "nvol_tbl1({0}, {1})",
 }
-X86_16_SSE42 = {**X86_16, "skip_set16": "u32(nvol_pcmpistri128({0}, {1}, 0x10))"}
+X86_16_SSE42 = {**X86_16, "skip_set16": "u32(nvol_pcmpistri128({0}, {1}, 0x10))",
+                "vpackus32": "transmute(V16)nvol_packusdw128(transmute(U32x4){0}, transmute(U32x4){1})"}
 LOWER = {"sse2": X86_16, "ssse3": X86_16, "sse42": X86_16_SSE42, "avx2": X86_32, "neon": NEON_16}
 SCALAR = {
     "first_offset": "uint(intrinsics.count_trailing_zeros({0}))",
@@ -153,6 +158,9 @@ FOREIGN = {
 		@(link_name = "llvm.x86.avx.ptestz.256")    nvol_ptestz256 :: proc(a, b: U64x4) -> i32 ---
 		@(link_name = "llvm.x86.sse42.pcmpistri128") nvol_pcmpistri128 :: proc(a, b: V16, imm: i8) -> i32 ---
 		@(link_name = "llvm.x86.pclmulqdq")         nvol_pclmulqdq :: proc(a, b: U64x2, imm: i8) -> U64x2 ---
+		@(link_name = "llvm.x86.ssse3.pmadd.ub.sw.128") nvol_pmaddubsw128 :: proc(a, b: V16) -> U16x8 ---
+		@(link_name = "llvm.x86.sse2.pmadd.wd")     nvol_pmaddwd128 :: proc(a, b: U16x8) -> U32x4 ---
+		@(link_name = "llvm.x86.sse41.packusdw")    nvol_packusdw128 :: proc(a, b: U32x4) -> U16x8 ---
 	}
 
 	@(private) nvol_test_avx2_override := -1

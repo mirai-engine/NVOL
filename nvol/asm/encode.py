@@ -31,7 +31,7 @@ JCC = {"ja", "jae", "jb", "jbe", "je", "jne", "jz", "jnz", "js", "jns"}
 # legacy SSE: (mandatory prefix 66/F3, opcode bytes after it, immediate bytes)
 _SSE = {"pcmpeqb": 2, "por": 2, "pand": 2, "psubb": 2, "psubusb": 2, "paddb": 2, "pminub": 2, "paddq": 2, "punpckhqdq": 2,
         "punpcklbw": 2, "punpckhbw": 2, "psadbw": 2, "pxor": 2, "pandn": 2, "pmovmskb": 2, "movd": 2,
-        "pshufb": 3}
+        "pshufb": 3, "pmaddubsw": 3, "pmaddwd": 2, "packusdw": 3}
 _SSE_IMM = {"pshufd": 2, "psrlw": 2, "palignr": 3, "pcmpistri": 3, "pclmulqdq": 3}
 # VEX: map (1 = 0F, 2 = 0F38, 3 = 0F3A), W1, immediate
 _VEX = {"vpcmpeqb": (1, 0, 0), "vpor": (1, 0, 0), "vpand": (1, 0, 0), "vpsubb": (1, 0, 0), "vpsubusb": (1, 0, 0), "vpaddb": (1, 0, 0),
@@ -41,7 +41,8 @@ _VEX = {"vpcmpeqb": (1, 0, 0), "vpor": (1, 0, 0), "vpand": (1, 0, 0), "vpsubb": 
         "vpshufb": (2, 0, 0), "vptest": (2, 0, 0), "vpbroadcastb": (2, 0, 0),
         "vbroadcasti128": (2, 0, 0), "vextracti128": (3, 0, 1), "vperm2i128": (3, 0, 1),
         "vpermq": (3, 1, 1), "vpalignr": (3, 0, 1), "vpextrq": (3, 1, 1),
-        "vpcmpistri": (3, 0, 1), "vpshufd": (1, 0, 1), "vpclmulqdq": (3, 0, 1)}
+        "vpcmpistri": (3, 0, 1), "vpshufd": (1, 0, 1), "vpclmulqdq": (3, 0, 1),
+        "vpmaddubsw": (2, 0, 0), "vpmaddwd": (1, 0, 0), "vpackusdw": (2, 0, 0)}
 _ALU = {"add", "sub", "and", "or", "xor", "cmp"}
 
 
@@ -175,6 +176,8 @@ def length(ins) -> int:
     if op.startswith("set"):
         return _legacy(2, a)
     if op in ("movdqa", "movdqu"):
+        return _legacy(2, a, prefix=1)
+    if op == "movq" and isinstance(a[1], Mem):         # F3 0F 7E: xmm <- m64, no REX.W
         return _legacy(2, a, prefix=1)
     if op == "movq":                                   # 66 REX.W 0F 7E (r64 <- xmm) / 6E (xmm <- r64)
         return _legacy(2, a, True, prefix=1)

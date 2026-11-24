@@ -15,7 +15,7 @@ from .regalloc import _subst, copy_back, jump_cleanup, reloads, share_slots
 # element-wise vector operations: one instruction each (legacy name; VEX adds "v")
 VBIN = {"cmpeq": "pcmpeqb", "vor": "por", "mask_or": "por", "vand": "pand", "vxor": "pxor", "vsub8": "psubb", "vsubs8": "psubusb",
         "vmin8": "pminub", "vadd64": "paddq", "vshuffle": "pshufb", "unpacklo8": "punpcklbw",
-        "unpackhi8": "punpckhbw"}
+        "unpackhi8": "punpckhbw", "vmaddubs": "pmaddubsw", "vmadd16": "pmaddwd", "vpackus32": "packusdw"}
 SHIN = {"shin1": 15, "shin2": 14, "shin3": 13, "hshin1": 15, "hshin2": 14, "hshin3": 13}
 
 RAX, RCX = PHYS["rax"], PHYS["rcx"]
@@ -580,6 +580,11 @@ class X86Lower(Lower):
                  ("vmovdqu" if self.vex else "movdqu")
             self.emit(op, [Reg(d, self.vw), m], defs=[d], uses=regs_in(m))
             return d
+        if n == "load8v":                       # movq xmm, m64: the other lanes cleared
+            m = self.addr(e.args[0], 64)
+            d = self.new("v")
+            self.emit(self._v("movq"), [Reg(d, 128), m], defs=[d], uses=regs_in(m))
+            return d
         if n == "load_half_bcast":
             m = self.addr(e.args[0], 128)       # a 128-bit load into a 256-bit register
             d = self.new("v")
@@ -629,6 +634,11 @@ class X86Lower(Lower):
             a = self.gen(e.args[0])
             d = self.new("v")
             self.emit("vpermq", [Reg(d, 256), Reg(a, 256), Imm(0x4E)], defs=[d], uses=[a])
+            return d
+        if n == "lane32_0":
+            a = self.gen(e.args[0])
+            d = self.new()
+            self.emit(self._v("movd"), [Reg(d, 32), Reg(a, 128)], defs=[d], uses=[a])
             return d
         if n.startswith("lane64_"):
             return self.lane64(self.gen(e.args[0]), int(n[-1]))

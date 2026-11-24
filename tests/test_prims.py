@@ -20,12 +20,14 @@ from nvol.isa import ISAS, prefix_xor
 from nvol.primitives import PRIMS
 
 VEC_TO_VEC = {
-    "ssse3": ["cmpeq", "vor", "mask_or", "vand", "vxor", "vandnot", "vsub8", "vsubs8", "vmin8", "vshr4", "vshuffle", "shin1", "shin2", "shin3"],
+    "ssse3": ["cmpeq", "vor", "mask_or", "vand", "vxor", "vandnot", "vsub8", "vsubs8", "vmin8", "vshr4", "vshuffle", "shin1", "shin2", "shin3",
+              "vmaddubs", "vmadd16"],
+    "sse42": ["vpackus32"],
     "avx2": ["cmpeq", "vor", "mask_or", "vand", "vxor", "vandnot", "vsub8", "vsubs8", "vmin8", "vshr4", "vshuffle", "shin1", "shin2", "shin3",
              "hshin1", "hshin2", "hshin3", "swap_halves", "unpacklo8", "unpackhi8", "sad0", "vadd64"],
 }
 VEC_TO_SCALAR = {
-    "ssse3": ["is_zero", "any_nonzero", "movemask", "lane64_0", "lane64_1"],
+    "ssse3": ["is_zero", "any_nonzero", "movemask", "lane64_0", "lane64_1", "lane32_0"],
     "avx2": ["is_zero", "any_nonzero", "movemask", "lane64_0", "lane64_1", "lane64_2", "lane64_3", "hsum64"],
 }
 VEC2_TO_SCALAR = {"sse42": ["skip_set16"]}
@@ -41,6 +43,8 @@ STORES = {"ssse3": ["store32"], "avx2": []}
 HELPERS = {"ssse3": ["prefix_xor"], "avx2": []}
 # constant vectors: t_<isa>_vtable16 (the bytes of TABLE16, which ignore src)
 CONSTS = {"ssse3": ["vtable16", "vtail3"], "avx2": ["vtable16", "vtail3"]}
+# loads of fewer bytes than a vector: t_<isa>_load8v (from src + 3, the other lanes 0)
+LOADS = {"ssse3": ["load8v"]}
 TABLE16 = (0x20, 0x00, 0x7F, 0x80, 0xFF, 0x11, 0x71, 0x02, 0x64, 0x09, 0x0A, 0x70, 0xC3, 0x0D, 0x01, 0xFE)
 
 
@@ -111,6 +115,16 @@ def _fn_vtail3(isa):
     return b.build()
 
 
+def _fn_load(isa, name):
+    V = ISAS[isa].bytes
+    b = ir.Builder(f"t_{isa}_{name}", ir.VOID, isa=isa, public=True)
+    src, out = b.param("src", ir.PTR), b.param("out", ir.MPTR)
+    r = b.let("r", ir.prim(name, src + 3))
+    for k in range(V // 8):
+        b.store64(out + 8 * k if k else out, ir.prim(f"lane64_{k}", r))
+    return b.build()
+
+
 def _fn_vtable16(isa):
     V = ISAS[isa].bytes
     b = ir.Builder(f"t_{isa}_vtable16", ir.VOID, isa=isa, public=True)
@@ -174,6 +188,7 @@ def _module():
     for isa, names in U64_TO_SCALAR.items():
         mod.functions += [_fn_u64(isa, n) for n in names]
     mod.functions += [_fn_store32(isa) for isa, names in STORES.items() if names]
+    mod.functions += [_fn_load(isa, n) for isa, names in LOADS.items() for n in names]
     mod.functions += [_fn_prefix_xor(isa) for isa, names in HELPERS.items() if names]
     mod.functions += [_fn_vtable16(isa) for isa, names in CONSTS.items() if names]
     mod.functions += [_fn_vtail3(isa) for isa, names in CONSTS.items() if "vtail3" in names]
@@ -273,20 +288,21 @@ def test_two_operand_lowerings(built, isa):
             assert bytes(out) == mem.region(0x9000), (isa, name, src.hex(), bytes(out).hex())
 
 
-@pytest.mark.parametrize("isa", ["ssse3", "avx2"])
+@pytest.mark.parametrize("isa", ["ssse3", "sse42", "avx2"])
 def test_lowerings_match_reference(built, isa):
     mod, lib = built
     _skip_unless(lib, isa)
     rng = random.Random(11)
     V = ISAS[isa].bytes
-    names = VEC_TO_VEC[isa] + VEC_TO_SCALAR[isa] + BLOCK[isa] + U64_TO_SCALAR[isa] + STORES[isa] + HELPERS[isa] + CONSTS[isa] + (["load_half_bcast"] if isa == "avx2" else [])
+    names = [n for d in (VEC_TO_VEC, VEC_TO_SCALAR, BLOCK, U64_TO_SCALAR, STORES, HELPERS, CONSTS, LOADS)
+             for n in d.get(isa, [])] + (["load_half_bcast"] if isa == "avx2" else [])
     for name in names:
         f = mod.fn(f"t_{isa}_{name}")
         cfn = getattr(lib, f.name)
         cfn.argtypes = [ctypes.c_char_p, ctypes.c_void_p]
         cfn.restype = None
         for _ in range(300):
-            n = 64 if name in BLOCK[isa] else 2 * V
+            n = 64 if name in BLOCK.get(isa, []) else 2 * V
             src = _masks(rng, n) if name in MASK_ONLY else _vectors(rng, n)
             if name in ZERO_CASE and rng.random() < 0.3:
                 src = bytes(2 * V)

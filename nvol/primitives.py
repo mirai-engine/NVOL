@@ -287,4 +287,60 @@ _DEFS += [
             lambda c, a: tuple(0xFF if x & 0x80 else 0 for x in a)),
 ]
 
-PRIMS = {p.name: p for p in _DEFS}
+
+def _s(x, bits):
+    """x (an unsigned field of `bits` bits) read as two's complement."""
+    return x - (1 << bits) if x >> (bits - 1) else x
+
+
+def _words(v, size):
+    """The little-endian fields of `size` bytes of a byte tuple."""
+    return [int.from_bytes(bytes(v[i:i + size]), "little") for i in range(0, len(v), size)]
+
+
+def _bytes_of(words, size):
+    return tuple(b for w in words for b in w.to_bytes(size, "little"))
+
+
+def _maddubs(c, a, b):
+    """pmaddubsw: u8 lanes of a times i8 lanes of b, adjacent products added, saturated to i16."""
+    out = []
+    for i in range(0, len(a), 2):
+        s = a[i] * _s(b[i], 8) + a[i + 1] * _s(b[i + 1], 8)
+        out.append(max(-0x8000, min(0x7FFF, s)) & 0xFFFF)
+    return _bytes_of(out, 2)
+
+
+def _madd16(c, a, b):
+    """pmaddwd: i16 lanes multiplied, adjacent products added, wrapping to i32 (only
+    2 * (-0x8000)^2 wraps)."""
+    x, y = _words(a, 2), _words(b, 2)
+    out = [(_s(x[i], 16) * _s(y[i], 16) + _s(x[i + 1], 16) * _s(y[i + 1], 16)) & MASK32
+           for i in range(0, len(x), 2)]
+    return _bytes_of(out, 4)
+
+
+def _packus32(c, a, b):
+    """packusdw: per 128-bit lane, the i32 lanes of a then of b, saturated to u16."""
+    out = []
+    for la, lb in zip(_lanes128(a), _lanes128(b)):
+        out += [max(0, min(0xFFFF, _s(w, 32))) for w in _words(la, 4) + _words(lb, 4)]
+    return _bytes_of(out, 2)
+
+
+# simdjson's parse_eight_digits_unrolled (haswell and westmere, on 128 bits)
+_DEFS += [
+    PrimDef("load8v", (PTR,), VEC, "8 bytes into lanes 0-7, the other lanes 0 (movq)",
+            lambda c, p: tuple(c.mem.read(p, 8)) + (0,) * (c.nbytes - 8), pre="[p, p+8) readable"),
+    PrimDef("vmaddubs", (VEC, VEC), VEC,
+            "i16 lanes: a[2i]*b[2i] + a[2i+1]*b[2i+1], a's bytes unsigned, b's signed, saturated "
+            "(pmaddubsw)", _maddubs),
+    PrimDef("vmadd16", (VEC, VEC), VEC,
+            "i32 lanes: the i16 products a[2i]*b[2i] + a[2i+1]*b[2i+1], wrapping (pmaddwd)", _madd16),
+    PrimDef("vpackus32", (VEC, VEC), VEC,
+            "u16 lanes, per 128-bit lane: a's i32 lanes, then b's, each saturated to 0..0xFFFF "
+            "(packusdw, SSE4.1)", _packus32),
+    PrimDef("lane32_0", (VEC,), U32, "u32 lane 0 (movd)", lambda c, a: _words(a, 4)[0]),
+]
+
+PRIMS ={p.name: p for p in _DEFS}
