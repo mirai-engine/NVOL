@@ -10634,7 +10634,6 @@ pub mod raw {
                 if ((_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_, in_1), _mm_or_si128(in_2, in_3))) as u32) == 0u32) {
                     err = _mm_or_si128(err, inc);
                 } else {
-                    core::hint::cold_path();
                     let prev1: __m128i = _mm_alignr_epi8::<15>(in_, prev);
                     let sc: __m128i = _mm_and_si128(_mm_and_si128(_mm_shuffle_epi8(t1h, _mm_and_si128(_mm_srli_epi16::<4>(prev1), _mm_set1_epi8(0x0F))), _mm_shuffle_epi8(t1l, _mm_and_si128(prev1, k0f))), _mm_shuffle_epi8(t2h, _mm_and_si128(_mm_srli_epi16::<4>(in_), _mm_set1_epi8(0x0F))));
                     err = _mm_or_si128(err, _mm_xor_si128(_mm_and_si128(_mm_or_si128(_mm_subs_epu8(_mm_alignr_epi8::<14>(in_, prev), k60), _mm_subs_epu8(_mm_alignr_epi8::<13>(in_, prev), k70)), k80), sc));
@@ -10752,7 +10751,6 @@ pub mod raw {
                 if ((_mm256_movemask_epi8(_mm256_or_si256(in_, in_1)) as u32) == 0u32) {
                     err = _mm256_or_si256(err, inc);
                 } else {
-                    core::hint::cold_path();
                     let prev1: __m256i = _mm256_alignr_epi8::<15>(in_, _mm256_permute2x128_si256::<0x21>(prev, in_));
                     let sc: __m256i = _mm256_and_si256(_mm256_and_si256(_mm256_shuffle_epi8(t1h, _mm256_and_si256(_mm256_srli_epi16::<4>(prev1), _mm256_set1_epi8(0x0F))), _mm256_shuffle_epi8(t1l, _mm256_and_si256(prev1, k0f))), _mm256_shuffle_epi8(t2h, _mm256_and_si256(_mm256_srli_epi16::<4>(in_), _mm256_set1_epi8(0x0F))));
                     err = _mm256_or_si256(err, _mm256_xor_si256(_mm256_and_si256(_mm256_or_si256(_mm256_subs_epu8(_mm256_alignr_epi8::<14>(in_, _mm256_permute2x128_si256::<0x21>(prev, in_)), k60), _mm256_subs_epu8(_mm256_alignr_epi8::<13>(in_, _mm256_permute2x128_si256::<0x21>(prev, in_)), k70)), k80), sc));
@@ -16198,7 +16196,6 @@ pub mod raw {
                 if ((vget_lane_u64::<0>(vreinterpret_u64_u8(vshrn_n_u16::<4>(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8::<7>(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))))))))) & 0x8888888888888888u64) == 0u64) {
                     err = vorrq_u8(err, inc);
                 } else {
-                    core::hint::cold_path();
                     let prev1: uint8x16_t = vextq_u8::<15>(prev, in_);
                     let sc: uint8x16_t = vandq_u8(vandq_u8(vqtbl1q_u8(t1h, vshrq_n_u8::<4>(prev1)), vqtbl1q_u8(t1l, vandq_u8(prev1, k0f))), vqtbl1q_u8(t2h, vshrq_n_u8::<4>(in_)));
                     err = vorrq_u8(err, veorq_u8(vandq_u8(vorrq_u8(vqsubq_u8(vextq_u8::<14>(prev, in_), k60), vqsubq_u8(vextq_u8::<13>(prev, in_), k70)), k80), sc));

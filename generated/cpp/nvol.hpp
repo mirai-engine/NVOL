@@ -9934,7 +9934,7 @@ NVOL_TARGET_SSSE3 NVOL_INLINE size_t nvol_utf8_valid_ssse3(const uint8_t *p, siz
         const __m128i in_1 = _mm_loadu_si128((const __m128i *)((cur + ((size_t)16u))));
         const __m128i in_2 = _mm_loadu_si128((const __m128i *)((cur + ((size_t)32u))));
         const __m128i in_3 = _mm_loadu_si128((const __m128i *)((cur + ((size_t)48u))));
-        if (NVOL_LIKELY((((uint32_t)_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_, in_1), _mm_or_si128(in_2, in_3)))) == 0u))) {
+        if (((uint32_t)_mm_movemask_epi8(_mm_or_si128(_mm_or_si128(in_, in_1), _mm_or_si128(in_2, in_3)))) == 0u) {
             err = _mm_or_si128(err, inc);
         } else {
             const __m128i prev1 = _mm_alignr_epi8(in_, prev, 15);
@@ -10047,7 +10047,7 @@ NVOL_TARGET_AVX2 NVOL_INLINE size_t nvol_utf8_valid_avx2(const uint8_t *p, size_
     while (cur < end64) {
         const __m256i in_ = _mm256_loadu_si256((const __m256i *)(cur));
         const __m256i in_1 = _mm256_loadu_si256((const __m256i *)((cur + ((size_t)32u))));
-        if (NVOL_LIKELY((((uint32_t)_mm256_movemask_epi8(_mm256_or_si256(in_, in_1))) == 0u))) {
+        if (((uint32_t)_mm256_movemask_epi8(_mm256_or_si256(in_, in_1))) == 0u) {
             err = _mm256_or_si256(err, inc);
         } else {
             const __m256i prev1 = _mm256_alignr_epi8(in_, _mm256_permute2x128_si256(prev, in_, 0x21), 15);
@@ -15083,7 +15083,7 @@ NVOL_INLINE size_t nvol_utf8_valid_neon(const uint8_t *p, size_t len_) {
         const uint8x16_t in_1 = vld1q_u8((cur + ((size_t)16u)));
         const uint8x16_t in_2 = vld1q_u8((cur + ((size_t)32u)));
         const uint8x16_t in_3 = vld1q_u8((cur + ((size_t)48u)));
-        if (NVOL_LIKELY(((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))), 7))), 4)), 0) & UINT64_C(0x8888888888888888)) == UINT64_C(0)))) {
+        if ((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))), 7))), 4)), 0) & UINT64_C(0x8888888888888888)) == UINT64_C(0)) {
             err = vorrq_u8(err, inc);
         } else {
             const uint8x16_t prev1 = vextq_u8(prev, in_, 15);

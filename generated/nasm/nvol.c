@@ -5154,7 +5154,7 @@ NVOL_INLINE size_t nvol_utf8_valid_neon(const uint8_t *p, size_t len_) {
         const uint8x16_t in_1 = vld1q_u8((cur + ((size_t)16u)));
         const uint8x16_t in_2 = vld1q_u8((cur + ((size_t)32u)));
         const uint8x16_t in_3 = vld1q_u8((cur + ((size_t)48u)));
-        if (NVOL_LIKELY(((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))), 7))), 4)), 0) & UINT64_C(0x8888888888888888)) == UINT64_C(0)))) {
+        if ((vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(vreinterpretq_u16_u8(vreinterpretq_u8_s8(vshrq_n_s8(vreinterpretq_s8_u8(vorrq_u8(vorrq_u8(in_, in_1), vorrq_u8(in_2, in_3))), 7))), 4)), 0) & UINT64_C(0x8888888888888888)) == UINT64_C(0)) {
             err = vorrq_u8(err, inc);
         } else {
             const uint8x16_t prev1 = vextq_u8(prev, in_, 15);

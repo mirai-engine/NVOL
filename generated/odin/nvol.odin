@@ -9974,7 +9974,7 @@ when ODIN_ARCH == .amd64 {
 			in_1: V16 = intrinsics.unaligned_load((^V16)(cur[uint(16):]))
 			in_2: V16 = intrinsics.unaligned_load((^V16)(cur[uint(32):]))
 			in_3: V16 = intrinsics.unaligned_load((^V16)(cur[uint(48):]))
-			if intrinsics.expect((transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3))) == u32(0)), true) {
+			if (transmute(u32)nvol_pmovmskb128(intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3))) == u32(0)) {
 				err = intrinsics.simd_bit_or(err, inc)
 			} else {
 				prev1: V16 = intrinsics.simd_shuffle(prev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
@@ -10088,7 +10088,7 @@ when ODIN_ARCH == .amd64 {
 		for (cur < end64) {
 			in_: V32 = intrinsics.unaligned_load((^V32)(cur))
 			in_1: V32 = intrinsics.unaligned_load((^V32)(cur[uint(32):]))
-			if intrinsics.expect((transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_, in_1)) == u32(0)), true) {
+			if (transmute(u32)nvol_pmovmskb256(intrinsics.simd_bit_or(in_, in_1)) == u32(0)) {
 				err = intrinsics.simd_bit_or(err, inc)
 			} else {
 				prev1: V32 = intrinsics.simd_shuffle(prev, in_, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62)
@@ -15229,7 +15229,7 @@ when ODIN_ARCH == .amd64 {
 			in_1: V16 = intrinsics.unaligned_load((^V16)(cur[uint(16):]))
 			in_2: V16 = intrinsics.unaligned_load((^V16)(cur[uint(32):]))
 			in_3: V16 = intrinsics.unaligned_load((^V16)(cur[uint(48):]))
-			if intrinsics.expect(((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)), true) {
+			if ((transmute(u64)cast(U8x8)intrinsics.simd_shr(transmute(U16x8)transmute(V16)intrinsics.simd_shr(transmute(I8x16)intrinsics.simd_bit_or(intrinsics.simd_bit_or(in_, in_1), intrinsics.simd_bit_or(in_2, in_3)), V16(7)), (U16x8)(4)) & 0x8888888888888888) == u64(0)) {
 				err = intrinsics.simd_bit_or(err, inc)
 			} else {
 				prev1: V16 = intrinsics.simd_shuffle(prev, in_, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)

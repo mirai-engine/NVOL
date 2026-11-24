@@ -156,7 +156,10 @@ def kernel(isa: ISA | None) -> Function:
         inc = b.var("inc", prim("vzero"))   # the last non-ASCII block was incomplete
         with b.while_(cur < end64):
             vs = [b.let("in", prim("load_u", cur + V * j if j else cur)) for j in range(64 // V)]
-            with b.if_(ascii_block(isa, vs), likely=True):
+            # no branch hint, unlike stage 1's: with the non-ASCII arm marked cold, GCC
+            # rebuilds the vector constants inside it on every block (mov, vmovd,
+            # vpbroadcastd), which is the hot path of non-English text
+            with b.if_(ascii_block(isa, vs)):
                 b.set(err, prim("vor", err, inc))
             with b.else_():
                 for j, v in enumerate(vs):
