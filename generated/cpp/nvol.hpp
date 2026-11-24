@@ -53,9 +53,17 @@ __forceinline uint32_t nvol_popcnt64(uint64_t x) { return nvol_popcnt32((uint32_
 #  define nvol_ctz32(x) ((uint32_t)__builtin_ctz(x))
 #  define nvol_clz32(x) ((uint32_t)__builtin_clz(x))
 #  define nvol_ctz64(x) ((uint32_t)__builtin_ctzll(x))
-/* 64 at 0, no UB: GCC and Clang make it one tzcnt where the target has BMI1, else bsf and cmov */
+/* 64 at 0, no UB. Where the target has BMI1 the kernels call _tzcnt_u64 (FEATURE_LOWER);
+   without it, x86 gets bsf and cmovz, as NVOL's assembly: GCC 16 makes `x ? ctz : 64` a
+   branch per call (15 jumps in the 8 slots of the json indexer), and the bare builtin is UB at 0 */
 inline NVOL_FORCE_INLINE NVOL_UNUSED uint32_t nvol_tzcnt64(uint64_t x) {
+#  if defined(__x86_64__) && !defined(__BMI__)
+    uint64_t r;
+    __asm__("bsf %1, %0\n\tcmovz %2, %0" : "=&r"(r) : "rm"(x), "r"((uint64_t)64) : "cc");
+    return (uint32_t)r;
+#  else
     return x ? (uint32_t)__builtin_ctzll(x) : 64u;
+#  endif
 }
 #  define nvol_clz64(x) ((uint32_t)__builtin_clzll(x))
 /* the bit count as the SWAR idiom, not __builtin_popcount: GCC and Clang turn it into POPCNT in
