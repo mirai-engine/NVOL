@@ -371,6 +371,13 @@ class X86Lower(Lower):
                 self.mov(d, a)
                 self.emit("sub", [Reg(d, 64), s], defs=[d], uses=[d] + regs_in(s))
             return d
+        if op == "and" and "bmi1" in self.f.features and e.ty in (ir.U64, ir.USIZE) and isinstance(e.b, ir.Bin)                 and e.b.op in ("sub", "wsub") and isinstance(e.b.b, ir.Const)                 and _const_value(e.b.b) == 1 and (e.b.a is e.a or e.b.a == e.a):
+            # x & (x - 1), the indexer's clear_lowest_bit: blsr with BMI1, as GCC and simdjson's
+            # haswell (mov + sub + and before)
+            a = self.gen(e.a)
+            d = self.new()
+            self.emit("blsr", [Reg(d, 64), Reg(a, 64)], defs=[d], uses=[a])
+            return d
         if op in ("and", "or", "xor"):
             # a u32 constant operand in a 32-bit instruction (its imm32 is the whole value; the
             # write zero-extends), and x ^ all-ones as `not`: SWAR masks such as 0x80808080 or

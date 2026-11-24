@@ -42,7 +42,8 @@ _VEX = {"vpcmpeqb": (1, 0, 0), "vpor": (1, 0, 0), "vpand": (1, 0, 0), "vpsubb": 
         "vbroadcasti128": (2, 0, 0), "vextracti128": (3, 0, 1), "vperm2i128": (3, 0, 1),
         "vpermq": (3, 1, 1), "vpalignr": (3, 0, 1), "vpextrq": (3, 1, 1),
         "vpcmpistri": (3, 0, 1), "vpshufd": (1, 0, 1), "vpclmulqdq": (3, 0, 1),
-        "vpmaddubsw": (2, 0, 0), "vpmaddwd": (1, 0, 0), "vpackusdw": (2, 0, 0)}
+        "vpmaddubsw": (2, 0, 0), "vpmaddwd": (1, 0, 0), "vpackusdw": (2, 0, 0),
+        "blsr": (2, 1, 0)}
 _ALU = {"add", "sub", "and", "or", "xor", "cmp"}
 
 

@@ -93,6 +93,7 @@ def _cases() -> list:
                 Ins("vmovq", [_g(g), _v(x, 128)]), Ins("movq", [_g(g), _v(x, 128)]),
                 Ins("vpmovmskb", [_g(g, 32), _v(x)]), Ins("pmovmskb", [_g(g, 32), _v(x, 128)]),
                 Ins("vpextrq", [_g(g), _v(x, 128), Imm(1)]), Ins("movd", [_g(g, 32), _v(x, 128)]),
+                Ins("blsr", [_g(g), _g("r9" if g == "rax" else "rax")]), Ins("blsr", [_g(g), _g("r13")]),
                 Ins("movq", [_v(x, 128), Mem(R[g], None, 1, 8, w=64)]),
                 Ins("movq", [_v(x, 128), Mem(R[g], R["r10"], 1, 0, w=64)])]
     out += [Ins("vzeroupper", []), Ins("ret", [])]
