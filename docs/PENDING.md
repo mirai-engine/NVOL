@@ -771,6 +771,23 @@ decision). 3.2 is done (`harness/c/compile_commands.py`).
 than the reference); 1.1e (b) and (c) (documented limits: needles of up to 4 GiB, state read
 as little-endian). The detail of both is in Done.
 
+### Order from phase 6 on
+
+The maintainer's order, recorded 2026-11-24:
+
+1. **Phase 6 to the end, without forcing it.** Anything found pending inside the phase is
+   resolved first. The phase closes only with no debts and nothing pending.
+2. **grepper** (the port of ripgrep to Odin), with NVOL as a git submodule of its repository.
+   - The repository is made public under the MIT license, in the maintainer's name.
+   - Everything in it is in technical English.
+   - It ships a skill so that agent sessions use grepper in place of grep and ripgrep.
+3. **Phase 7, then phase 8.**
+4. **The extras:** the two Odin bugs are audited. In parallel, NVOL develops SIMD
+   cryptography algorithms (the extras A and B, and the cryptography group below).
+5. **Phase 9, regenerated.** The project will be more mature by then, so the phase will
+   likely gain items.
+6. **The rest of this file**, including the projects below.
+
 ### After the work list: NVOL in place of other projects' SIMD
 
 The maintainer's intention, recorded 2026-11-23: once phases 6-9 and the extras are done, try
