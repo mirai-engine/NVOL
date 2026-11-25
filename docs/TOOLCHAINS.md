@@ -28,6 +28,8 @@ there and is not a documented decision; the last column says which, and why.
 | T12 | GNU as (COFF) | 2.42 | `.drectve` written as data (`0xc0300040`), not `IMAGE_SCN_LNK_INFO`: `link.exe` ignores its `-export:` entries | `harness/asm/build_msvc.py` reads the section and passes a `.def` | no |
 | T13 | ml64 | Visual Studio 18 | `_TEXT` is predefined 16-aligned and a redeclaration cannot change it (A2015) | the code goes in `_NVOLT`, aliased to `.text`, `ALIGN(64)` | no (by design) |
 | T14 | NASM | 3.01 | every label goes into the ELF symbol table (`.L36` becomes `L.fn.L36`; `equ` and `..@` too), and perf charges samples to them | jump targets written as `L.fn + offset` from encode's lengths | no: by design (`elf_deflabel` keeps every label but NASM's `..` specials, and lets `..@` through on purpose; dropping them would change what debuggers and profilers show) |
+| T15 | Odin | dev-2026-10 | `os.open` on Linux fills `File.name` with readlink of `/proc/self/fd/N` on every open (`core/os/file_linux.odin`, `_new_file` -> `_get_full_path`), and allocates the `File`: one syscall per file a caller may never read (grepper: 8,904 on `/usr/include`, costly on WSL) | grepper opens the files it searches with `open(2)` itself (grepper 5243715) | no: local note, sent only when grepper and NVOL are finished; it may be by design (the name is part of `File`) |
+| T16 | Odin | dev-2026-10 | `sync.cond_signal` (`core/sync/primitives_atomic.odin`) adds to the condition's state and makes a futex syscall on every call, with or without waiters | grepper counts its waiters and signals only when one waits (grepper a66f938: ~6,700 futex calls on `/usr/include` down to 1,517) | no: local note, as T15 |
 
 ## Details
 

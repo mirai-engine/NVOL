@@ -5,10 +5,12 @@ Each item states **what is missing**, **why it matters** and **how it was found*
 Priority in the tables: **P0** blocks parity with ripgrep, **P1** quality/portability,
 **P2** improvements. The work order is the one in section 0.
 
-Last review: 2026-11-22, after phases 3-5 closed (item 25 stays open on hardware) and the
-read-only audit of that day. The list was regenerated on 2026-11-21, when item 15 (asm
-optimization) closed and the simdjson phase was added. Items 1-15 keep their numbers; the
-pending items continue from 16.
+Last review: 2026-11-25, regenerated while grepper's speed phase runs (step 2 of the order
+below). Phase 6 is paused at 37b; its seven `feat/` branches are pushed and wait for the
+maintainer's merge (see "Where it stands"). Earlier reviews: 2026-11-22, after phases 3-5
+closed (item 25 stays open on hardware), and 2026-11-21, when item 15 closed and the
+simdjson phase was added. Items 1-15 keep their numbers; the pending items continue from 16,
+and the items grepper asks of NVOL are G1-G6.
 
 ## 0. Work list
 
@@ -627,23 +629,52 @@ Two consequences for the design:
 `feat/<kind>` branches, merged to `main` with the maintainer's approval). In dependency order:
 
 33. **`feat/ir-mask64`: the IR for 64-bit blocks and masks.** Everything else builds on it.
-    - `andnot` on integers and on vectors (`xor` exists since 2026-11-22);
-    - `u64` masks on x86, from the `movemask` of two AVX2 vectors or four SSE vectors (today
-      the x86 mask is `u32`; NEON already uses `u64`);
-    - several masks per call: output through a pointer (`Store64` over `MPTR`), or one function
-      per mask if inlining merges them; and `Store32`, for the index list of 35;
-    - 64-bit scalar operations: `popcnt64` (today `popcnt` takes a `u32`), an arithmetic shift
-      or the sign smear `x >> 63` as `0 - (x >> 63)`, and `blsr` (`x & (x - 1)`, which the IR
-      already expresses);
-    - the vector operations the generic code uses and NVOL lacks: signed `>`/`<` and
-      `max`/`min`, saturating `+`/`-` on `u8`, a byte shift by N with its mask (`shr<N>`,
-      `shl<N>`; today only `vshr4`), and `prev<1..3>` across the two halves of a 64-byte
-      block (NVOL's `shin1-3` cover one vector).
-34. **`feat/clmul`: carry-less multiplication.** `pclmulqdq` (x86) and `pmull` (aarch64), with
-    the scalar `prefix_xor` (six shifts and `xor`s) as the fallback, and the runtime check
-    `cpu_pclmul` (westmere needs SSE4.2 plus PCLMUL). Then `prefix_xor` itself.
+    *(Done on the branch, 2026-11-22; merged with 35, the first kernels that use it.)* One
+    commit each, in every backend and in the asm, with its case in `test_prims` and
+    `test_asm` (x86 and NEON under QEMU) and a seeded bug that fails it:
+    - `vxor`, `vandnot` (`a & ~b`, as `bit_andnot`); on integers `xor` exists, and `andnot`
+      is `a & (b ^ ~0)`;
+    - `bmask64x2` (two AVX2 vectors) and `bmask64x4` (four SSE or NEON vectors): the `u64`
+      mask of a 64-byte block, for 0x00/0xFF lanes;
+    - `popcnt64`; the sign smear is `0 - (x >> 63)` and `blsr` is `x & (x - 1)`, both
+      already expressible;
+    - `Store32`, for the index list of 35; several masks per call go out through `Store64`
+      over an `MPTR`, which exists;
+    - `vsubs8`, the saturating `u8` subtraction behind `gt_bits` and `saturating_sub`.
+
+    Not added, because the generic code does not call them (checked in `src/generic` and
+    `include/simdjson/generic`, 5.2.0): `simd8<int8_t>` (signed compare, `max`, `min`), the
+    saturating addition, `max_val`/`min_val` and `shl<N>`. `shr<4>` is NVOL's `vnib_hi`, and
+    `prev<1..3>` is `shin1-3(input, prev_input)`, which on AVX2 crosses the 128-bit lanes
+    with the same `vperm2i128` + `vpalignr` as simdjson's haswell `prev<N>`.
+    The Rust and Odin lowerings of these primitives are compiled (rustc, odin check, x86_64
+    and aarch64) but not run until a kernel uses them (2.3).
+34. **`feat/clmul`: carry-less multiplication.** *(Done on the branch, 2026-11-23; merged with
+    35, which calls it.)* One commit each, with its tests and a seeded bug that fails them:
+    - the runtime check `cpu_avx2_pclmul`, the single dispatch condition of the AVX2 JSON
+      kernels (the AVX2 targets of C, Rust and Odin gain `pclmul`);
+    - the primitive `prefix_xor64`, in AVX2 functions only: `vpclmulqdq` against all ones, as
+      simdjson's haswell `prefix_xor`;
+    - `nvol.isa.prefix_xor`, which emits `prefix_xor64` where the ISA has it and otherwise
+      the six let-bound shift/`xor` steps of simdjson's arm64 and fallback kernels.
+
+    Not added: `pmull` on aarch64, because simdjson's arm64 `prefix_xor` uses the shift/`xor`
+    steps too, and a PCLMUL path for the SSE ISAs, because every AVX2 CPU has PCLMULQDQ and
+    the SSE functions only run on CPUs without AVX2. The Rust and Odin lowerings are compiled
+    (rustc, odin check, x86_64 and aarch64) but not run until a kernel uses them (2.3).
 35. **`feat/json-stage1`: the 64-byte block kernels**, which cover most of simdjson's SIMD
-    work:
+    work. *(Done on the branch, 2026-11-23: `nvol_json_index_raw` runs the whole loop, with
+    the masks of AVX2 (with PCLMULQDQ and BMI1), SSSE3, NEON and a scalar fallback, the
+    indexer unrolled as `bit_indexer::write`, each block written while the next is scanned, and
+    two blocks per iteration as `step<128>`; an audit of the citm gap added the escape-scanner
+    shortcut, the per-block mask order and IR branch hints. Against simdjson's own stage 1:
+    −6.7 % cycles on citm_catalog, −16.4 % on twitter, with simdjson also validating UTF-8
+    ([report](benchmarks/2026-11-23-json-stage1-wsl.md)); the like-for-like verdict comes
+    after 36. Open: the C library's scalar path is not reached by `tests/test_json.py`, because
+    the test hook cannot hide SSSE3 (`nvol check` and `test_asm` call it directly); the SSSE3,
+    NEON, Rust, Odin and asm builds are not measured.)* They go out as one kernel that runs the whole stage 1 loop, with the scanners as
+    inlined IR helpers; one public function per scanner and block was set aside because of
+    its call per 64 bytes ([the stage 1 API](SIMDJSON_SIMD_INVENTORY.md#the-stage-1-api)):
     - `classify`: the masks of whitespace and of `{}[]:,`, one `pshufb` + `cmpeq` per class,
       with simdjson's `| 0x20` that merges `[` with `{` (NVOL's *unique-nibble* byteset already
       has the single-`pshufb` search, for "first byte");
@@ -652,14 +683,71 @@ Two consequences for the design:
     - the string scanner: `prefix_xor` of the unescaped quotes, carried across blocks;
     - the structural indexer: the mask to a list of `u32` positions (`popcnt64`, then
       `tzcnt` and `blsr` unrolled, as `write_indexes` does).
-36. **`feat/utf8-validation`: UTF-8 validation** (1.13), the Keiser–Lemire lookup
+36. **`feat/utf8-validation`: UTF-8 validation** (1.13), the Keiser–Lemire lookup *(done on the
+    branch, 2026-11-23, but for the asm counters after the spill-slot change: `nvol_utf8_valid`
+    (AVX2, SSSE3, NEON, scalar) and the same check inside `nvol_json_index_raw`, both checked
+    against Python's strict decoder. Against simdjson 5.2.0 with both validating: stage 1
+    citm_catalog −0.4 %, twitter −0.2 %, a multibyte-text MB +0.8 %; the validator −0.4 %,
+    −9.5 %, −1.2 % against `validate_utf8`. On the way: the `vtail3` primitive, IR branch hints,
+    and spill slots shared in NVOL's assembler (the integrated kernel asked for a 12 KB frame))*
     (`utf8_lookup4_algorithm`: `prev<1..3>`, three `lookup_16`, `shr<4>`, saturating
-    subtraction, `max`). simdjson needs it, and ugrep's `isutf8` too.
+    subtraction, and `any_bits_set_anywhere`, which is `!is_zero`). simdjson needs it, and ugrep's `isutf8` too.
 37. **Stage 2**, in two branches:
     - **`feat/json-numbers`:** `parse_eight_digits_unrolled` (`pmaddubsw`, `pmaddwd`,
-      `packusdw` on 128 bits);
+      `packusdw` on 128 bits) *(done on the branch, 2026-11-24: `nvol_parse_eight_digits`
+      (SSE4.1 sequence, SWAR) and `nvol_is_eight_digits`. Against simdjson 5.2.0, inlined
+      into the same loop: the same cycles in its haswell and fallback targets, −3.3 % in
+      westmere, where its 16-byte load splits a cache line once in eight numbers and NVOL's
+      8-byte load never does;
+      [benchmark](benchmarks/2026-11-24-json-numbers-wsl.md))*;
     - **`feat/json-stage2-strings`:** `copy_and_find` (copy 32 bytes and give the masks of `\`
-      and `"`), a variant of `nvol_copy_until_byteset`, and the block's `is_ascii`.
+      and `"`), a variant of `nvol_copy_until_byteset`, and the block's `is_ascii` *(done on the
+      branch, 2026-11-24: `nvol_json_copy_and_find` (AVX2, SSE2, NEON), at parity with
+      simdjson's haswell and westmere routines once `bmask64x4`'s C lowering took simdjson's
+      casts; the block's `is_ascii` is only called by the UTF-8 checker, which is item 36's
+      ASCII path, so it needs no kernel of its own;
+      [benchmark](benchmarks/2026-11-24-json-strings-wsl.md))*.
+37b. **`feat/json-stage1-sse`: the rest of stage 1**, found while measuring 37. The SSE stage 1
+    had never been compared with simdjson's westmere. Against it (best of 15, cycles per pass):
+    twitter 807k against 610k (+32 %), citm_catalog 1705k against 1432k (+19 %), with 6x the
+    branch misses on twitter. NVOL's SSE kernel targets SSSE3, simdjson's westmere SSE4.2 +
+    PCLMULQDQ + POPCNT, and it shows:
+    - the indexer's `tzcnt64` without BMI1 is `x ? ctz : 64`, a branch per slot (93 `je`, 84
+      `jmp` in the kernel, against 4 and 12 in the AVX2 one); simdjson's `trailing_zeroes` is
+      a bare `ctz`, whose value at 0 lands in a slot past the count;
+    - `popcnt64` is a software count, and `prefix_xor` the six shift/`xor` steps.
+
+    To do: a westmere-class kernel (SSE4.2, PCLMULQDQ, POPCNT) dispatched before the SSSE3
+    one, an indexer without the branch, then the SSE rows measured against westmere. Also the
+    other opens of 35: the scalar path of the C library is not reached by
+    `tests/test_json.py`, and the NEON, Rust, Odin and asm builds of stage 1 are not measured.
+
+    *In progress on `feat/json-stage1-sse`, paused 2026-11-24 for grepper (the maintainer's
+    call).* Done, one commit each:
+    - `nvol_tzcnt64` is bsf + cmovz without BMI1: SSSE3 stage 1 −12 % on twitter, branch
+      misses 6x down to simdjson's;
+    - `nvol_json_index_sse42` (POPCNT), then with the `pclmul` feature and `cpu_sse42_pclmul`;
+    - `ctz64_lax` for the indexer's slots. SSE4.2 stage 1 against westmere: −2.9 % on
+      twitter, −2.0 % on citm_catalog;
+    - the test hook's 3 forces the scalar paths (test_json reaches them);
+    - simdjson's kernels in the parity benchmarks (C, C++, Rust, Odin, asm);
+    - the x86 assembler: spilled constants rematerialized, then `blsr` in BMI1 functions.
+      The asm json kernel against gcc went from −53 % (AVX2, 4 KB) to about −23 %.
+
+    Rejected: one block per iteration on the SSE kernels, as simdjson's westmere
+    (+3.8 % on twitter).
+
+    Left:
+    - **Shared `vperm2i128`:** share the `vperm2i128` of UTF-8's three shifts in the asm (written,
+      not measured: the asm emits 18 where GCC emits 6).
+    - **`x & (x - 1)` without BMI1:** lea + and in the SSE kernels: −19 % from 4 KB, but +1.5 %
+      with one 64-byte block on SSE4.2, and not from position. The cause is still to be found.
+    - **The asm json kernel's remaining gap with gcc:** GPR spills; the bits variable of the
+      indexer was spilled.
+    - **The other languages:** Rust, Odin and C++ against the asm on the four phase 6 kernels, each
+      deviation explained.
+    - **NEON:** the NEON stage 1 under QEMU.
+    - **Docs:** the benchmark document.
 38. **`feat/simdjson-e2e`: integration and measurement.**
     - a patch to simdjson, like the one for rapidjson: its generic code calls NVOL's kernels
       instead of its own;
@@ -674,6 +762,21 @@ Two consequences for the design:
   arithmetic, not SIMD;
 - icelake (AVX-512): the i5-7400 does not have it; it goes with item 45, under Intel SDE.
 
+### Extra after phase 6: two Odin bugs, audited by building the algorithm
+
+The maintainer's other agent found two bugs in Odin's `core:crypto` (listed in
+`LowLevel-Katas-n6/N6-portmaster/BUGS.md`). Each is audited after NVOL has its own
+implementation of the same family, checked against an independent oracle, so that a report
+upstream rests on evidence and the research stays in NVOL. Nothing goes upstream without the
+maintainer's OK.
+
+- **A. `feat/chacha20`: ChaCha20** (RFC 8439 and its test vectors as the oracle): scalar, SSE2,
+  AVX2 and NEON, 4 or 8 blocks in parallel; rotations by 16 and 8 as byte shuffles, by 12 and 7
+  as shift and or. Then Odin's AVX2 ChaCha20 against both.
+- **B. `feat/p384-field`: P-384 field arithmetic**: multiprecision multiply, reduction, and the
+  square root as x^((p+1)/4) (p ≡ 3 mod 4), with Python's integers as the oracle; likely new
+  primitives (64×64→128 multiply, add with carry). Then Odin's P-384 square root against both.
+
 ### Phase 7. What the external reference does and NVOL does not
 
 Since item 10 each new kernel also ships in asm, and a new primitive needs its asm lowering
@@ -681,7 +784,10 @@ Since item 10 each new kernel also ships in asm, and a new primitive needs its a
 
 39. 1.1e (a): `PrefilterState` saturated in `u32`, like memchr, so that it also matches beyond
     4 GiB.
-40. 1.1b: reverse `memmem` (`FinderRev`, `rfind`; `bstr` exposes it).
+40. 1.1b: reverse `memmem` (`FinderRev`, `rfind`; `bstr` exposes it). Only for parity with
+    memchr: grepper's reverse suffix and inner strategies (its P2, done 2026-11-24) find the
+    literal with the forward prefilter and run only the DFA backwards, so they did not need
+    it, though grepper's list had said so.
 41. 1.1d and 1.2b: `FinderBuilder` options (custom ranker, no prefilter) and Teddy
     `LeftmostLongest`.
 42. 1.1c: Shift-Or as a standalone algorithm.
@@ -721,6 +827,78 @@ decision). 3.2 is done (`harness/c/compile_commands.py`).
 than the reference); 1.1e (b) and (c) (documented limits: needles of up to 4 GiB, state read
 as little-endian). The detail of both is in Done.
 
+### Order from phase 6 on
+
+The maintainer's order, recorded 2026-11-24:
+
+1. **Phase 6 to the end, without forcing it.** Anything found pending inside the phase is
+   resolved first. The phase closes only with no debts and nothing pending.
+2. **grepper** (the port of ripgrep to Odin), with NVOL as a git submodule of its repository.
+   - The repository is made public under the MIT license, in the maintainer's name.
+   - Everything in it is in technical English.
+   - It ships a skill so that agent sessions use grepper in place of grep and ripgrep.
+3. **Phase 7, then phase 8.**
+4. **The extras:** the two Odin bugs are audited. In parallel, NVOL develops SIMD
+   cryptography algorithms (the extras A and B, and the cryptography group below).
+5. **Phase 9, regenerated.** The project will be more mature by then, so the phase will
+   likely gain items.
+6. **The rest of this file**, including the projects below.
+
+### Where it stands (2026-11-25)
+
+- **Step 2, grepper, in progress.** grepper pins NVOL `0b25227` (on `main`; `main` is at
+  `e852498`, four documentation commits later). Its speed phase (P0, P1, P4, P5, P8, P9) is
+  under way; its P6, the full benchmark on a quiet host, is a debt while the maintainer works
+  in parallel.
+- **Phase 6, paused at 37b** on `feat/json-stage1-sse` (the maintainer's call, 2026-11-24).
+  What 37b has left is listed under it. Then 38.
+- **Branches waiting for the merge to `main`** (the maintainer's approval, per the
+  `feat/<kind>` rule; none is merged yet): `feat/ir-mask64` (33), `feat/clmul` (34),
+  `feat/json-stage1` (35), `feat/utf8-validation` (36), `feat/json-numbers` and
+  `feat/json-stage2-strings` (37), `feat/json-stage1-sse` (37b). Until they are merged,
+  grepper cannot use their kernels (G3).
+- **This file on `main` against the branches.** It is regenerated on `main`; the copy on
+  `feat/json-stage1-sse` is the one it was built from. At the merge, `main`'s copy is kept.
+
+### What grepper asks of NVOL (2026-11-25)
+
+grepper's rule: every SIMD step it needs is an NVOL kernel, written and tested here first
+(grepper `docs/PARITY.md`, "Pending"). Its open items that need NVOL:
+
+| # | For grepper's | Kernel | State |
+|---|---|---|---|
+| G1 | P1: literal sets Teddy refuses (more than 64, or too short for it) | aho-corasick's fallbacks past the packed searcher: the Rabin-Karp NVOL already has for Teddy's short haystacks (item 27), and the prefilters (memchr, memmem) of a full automaton, which is scalar and lives in grepper | to check when P1 starts: likely no new kernel |
+| G2 | F2: `-E` | UTF-16 (LE, BE) to UTF-8 transcoding, after a BOM sniff | new |
+| G3 | F2 and `--json`'s text check | UTF-8 validation | done on `feat/utf8-validation` (36); reaches grepper with the merge |
+| G4 | F6: PCRE2's features on grepper's own engine (decision D1: nothing external) | whatever SIMD steps the ported features need (look-around, backreferences) | unknown until the features are ported; each one asked here when it appears |
+| G5 | P0: whole-file scans of a mapped file pay its page faults | a prefetch ahead of the search, if one is worth having in a kernel rather than in grepper's I/O | to check when P0 starts |
+| G6 | all of the above | the submodule moved from `0b25227` to the `main` that holds the merged phase 6 | after the merge |
+
+### After the work list: NVOL in place of other projects' SIMD
+
+The maintainer's intention, recorded 2026-11-23: once phases 6-9 and the extras are done, try
+NVOL in place of the hand-written SIMD of the projects below, with the same process as
+simdjson. For each project:
+- first an analysis of where its SIMD lives and which kernels and primitives it needs;
+- then one `feat/<kind>` branch per kind of feature;
+- then the project's own tests, plus counters against its original code.
+
+The order is decided when the work starts.
+
+- **Databases:** [ClickHouse](https://github.com/ClickHouse/ClickHouse),
+  [PostgreSQL](https://github.com/postgres/postgres), [DuckDB](https://github.com/duckdb/duckdb).
+- **Renderers, 3D simulators, game engines, 3D editors:**
+  - [O3DE](https://github.com/o3de/o3de);
+  - [Source SDK 2013](https://github.com/ValveSoftware/source-sdk-2013);
+  - [Bevy](https://github.com/bevyengine/bevy);
+  - [Blender](https://github.com/blender/blender), with its [Cycles](https://github.com/blender/cycles)
+    renderer. Which of Blender's other dependencies carry SIMD worth replacing is part of its
+    analysis.
+- **Cryptography:** [libsodium](https://github.com/jedisct1/libsodium),
+  [intel-ipsec-mb](https://github.com/intel/intel-ipsec-mb),
+  [BLAKE3](https://github.com/BLAKE3-team/BLAKE3). The extras A and B (ChaCha20, P-384 field
+  arithmetic) are the first step of this group.
+
 ## 1. Parity with ripgrep's SIMD
 
 | # | P | Pending | Detail |
@@ -739,7 +917,7 @@ as little-endian). The detail of both is in Done.
 | 1.8 | P2 | **AVX-512 / AVX10** | memchr does not use it; it would be "better than ripgrep". It requires 64-bit masks (today `MASK` is u32). |
 | 1.9 | P2 | **An even faster `count`** | Tested (item 15): two accumulators in the kernel lower the asm (140 → 131 cycles at 4 KiB AVX2) and Clang (136 → 123), but make GCC worse (SSE2: 264 → 307 cycles), so it was discarded. The asm reassociates the subtractions in pairs in the lowering, like GCC. It remains to see how to give the C the same without losing with GCC (item 44). |
 | 1.13 | P1 | **ugrep: UTF-8 validation** | The only part of ugrep's SIMD that NVOL does not cover ([inventory](UGREP_SIMD_INVENTORY.md)): `isutf8` (ASCII path + sequence validation). `first_non_ascii` covers the ASCII path; a validation kernel is missing (e.g. Keiser-Lemire's, nibble tables as in `byteset`). AVX-512BW stays out until there is hardware (1.8). |
-| 1.17 | P1 | **simdjson: block-to-mask kernels (phase 6, items 33-38)** | No simdjson routine has an equivalent in NVOL ([inventory](SIMDJSON_SIMD_INVENTORY.md)): all of them turn 64 B blocks (with guaranteed padding) into 64-bit masks. Missing: a per-block membership mask (one `pshufb` when possible, Muła otherwise), equality masks for several bytes, `prefix_xor` (`pclmulqdq`/`pmull` and scalar), UTF-8 validation (1.13) and 8 digits to integer. The first three cover stage 1. |
+| 1.17 | P1 | **simdjson: block-to-mask kernels (phase 6, items 33-38)** | No simdjson routine has an equivalent in NVOL ([inventory](SIMDJSON_SIMD_INVENTORY.md)): all of them turn 64 B blocks (with guaranteed padding) into 64-bit masks. Missing: a per-block membership mask (one `pshufb` when possible, Muła otherwise), equality masks for several bytes, UTF-8 validation (1.13) and 8 digits to integer (`prefix_xor` is done: 34). The first two and `prefix_xor` cover stage 1. |
 | 1.11 | P2 | **`memmem_init` can be 2× faster** | Inlined by LTO, building a 40 B Finder took 114 ns in one binary and 301 ns in another; now it is `noinline` and takes ~230 ns (memchr: ~240-255 ns). See what LLVM did in the 114 ns case (did it vectorize the rarity scan or the byteset?) and bring it into the IR. |
 
 ## 2. Generator (IR, interpreter, backends)
