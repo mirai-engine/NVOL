@@ -5,9 +5,10 @@ Each item states **what is missing**, **why it matters** and **how it was found*
 Priority in the tables: **P0** blocks parity with ripgrep, **P1** quality/portability,
 **P2** improvements. The work order is the one in section 0.
 
-Last review: 2026-11-25, regenerated while grepper's speed phase runs (step 2 of the order
-below). Phase 6 is paused at 37b; its seven `feat/` branches are pushed and wait for the
-maintainer's merge (see "Where it stands"). Earlier reviews: 2026-11-22, after phases 3-5
+Last review: 2026-11-26, after grepper's speed phase closed (step 2 of the order below goes
+on with its features). Phase 6 is paused at 37b; its seven `feat/` branches are pushed and
+wait for the maintainer's merge (see "Where it stands"). Earlier reviews: 2026-11-25, while
+grepper's speed phase ran; 2026-11-22, after phases 3-5
 closed (item 25 stays open on hardware), and 2026-11-21, when item 15 closed and the
 simdjson phase was added. Items 1-15 keep their numbers; the pending items continue from 16,
 and the items grepper asks of NVOL are G1-G6.
@@ -844,12 +845,15 @@ The maintainer's order, recorded 2026-11-24:
    likely gain items.
 6. **The rest of this file**, including the projects below.
 
-### Where it stands (2026-11-25)
+### Where it stands (2026-11-26)
 
 - **Step 2, grepper, in progress.** grepper pins NVOL `0b25227` (on `main`; `main` is at
-  `e852498`, four documentation commits later). Its speed phase (P0, P1, P4, P5, P8, P9) is
-  under way; its P6, the full benchmark on a quiet host, is a debt while the maintainer works
-  in parallel.
+  `d33e7f1`, documentation commits later). Its speed phase closed on 2026-11-25 (grepper
+  `af6e113`) without asking NVOL for a kernel: the literal sets past Teddy went to
+  aho-corasick's automata, scalar, in grepper (G1), and the page faults of a mapped file were
+  measured and left as they are (G5). Left of it: P6, the full benchmark on a quiet host (a
+  debt while the maintainer works in parallel), P12b (the full DFA under a tiny
+  `--dfa-size-limit`) and P9 (a hang to watch). Next in grepper: its features F1-F11.
 - **Phase 6, paused at 37b** on `feat/json-stage1-sse` (the maintainer's call, 2026-11-24).
   What 37b has left is listed under it. Then 38.
 - **Branches waiting for the merge to `main`** (the maintainer's approval, per the
@@ -860,18 +864,18 @@ The maintainer's order, recorded 2026-11-24:
 - **This file on `main` against the branches.** It is regenerated on `main`; the copy on
   `feat/json-stage1-sse` is the one it was built from. At the merge, `main`'s copy is kept.
 
-### What grepper asks of NVOL (2026-11-25)
+### What grepper asks of NVOL (2026-11-26)
 
 grepper's rule: every SIMD step it needs is an NVOL kernel, written and tested here first
 (grepper `docs/PARITY.md`, "Pending"). Its open items that need NVOL:
 
 | # | For grepper's | Kernel | State |
 |---|---|---|---|
-| G1 | P1: literal sets Teddy refuses (more than 64, or too short for it) | aho-corasick's fallbacks past the packed searcher: the Rabin-Karp NVOL already has for Teddy's short haystacks (item 27), and the prefilters (memchr, memmem) of a full automaton, which is scalar and lives in grepper | to check when P1 starts: likely no new kernel |
+| ~~G1~~ | P1: literal sets Teddy refuses (more than 64, or too short for it) | none | **closed 2026-11-25, no kernel:** as regex-automata, grepper searches them with aho-corasick's leftmost-first automata (a DFA up to 500 patterns, the contiguous NFA past that), scalar, with the prefilter off as upstream has it (grepper `ce6613b`, `197c67e`) |
 | G2 | F2: `-E` | UTF-16 (LE, BE) to UTF-8 transcoding, after a BOM sniff | new |
 | G3 | F2 and `--json`'s text check | UTF-8 validation | done on `feat/utf8-validation` (36); reaches grepper with the merge |
 | G4 | F6: PCRE2's features on grepper's own engine (decision D1: nothing external) | whatever SIMD steps the ported features need (look-around, backreferences) | unknown until the features are ported; each one asked here when it appears |
-| G5 | P0: whole-file scans of a mapped file pay its page faults | a prefetch ahead of the search, if one is worth having in a kernel rather than in grepper's I/O | to check when P0 starts |
+| ~~G5~~ | P0: whole-file scans of a mapped file pay its page faults | none | **closed 2026-11-25, no kernel:** grepper already scans a mapped file as fast as rg or faster; `PrefetchVirtualMemory` cost +12 % on Windows and `posix_madvise` changed nothing on Linux (grepper's PARITY, P0) |
 | G6 | all of the above | the submodule moved from `0b25227` to the `main` that holds the merged phase 6 | after the merge |
 
 ### After the work list: NVOL in place of other projects' SIMD
