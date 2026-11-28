@@ -5,7 +5,7 @@ Each item states **what is missing**, **why it matters** and **how it was found*
 Priority in the tables: **P0** blocks parity with ripgrep, **P1** quality/portability,
 **P2** improvements. The work order is the one in section 0.
 
-Last review: 2026-11-26, after grepper's speed phase closed (step 2 of the order below goes
+Last review: 2026-11-26, after grepper's speed phase closed (step 1 of the order below goes
 on with its features). Phase 6 is paused at 37b; its seven `feat/` branches are pushed and
 wait for the maintainer's merge (see "Where it stands"). Earlier reviews: 2026-11-25, while
 grepper's speed phase ran; 2026-11-22, after phases 3-5
@@ -778,6 +778,61 @@ maintainer's OK.
   square root as x^((p+1)/4) (p ≡ 3 mod 4), with Python's integers as the oracle; likely new
   primitives (64×64→128 multiply, add with carry). Then Odin's P-384 square root against both.
 
+### Phase C. SIMD cryptography (libsodium, intel-ipsec-mb, BLAKE3)
+
+Added 2026-11-28 by the maintainer, after grepper's features. The maintainer and their lead need
+encryption for connections in two parallel projects: ChaCha20-Poly1305 and AES-GCM above all.
+Odin's AVX2 ChaCha20 bug (odin-lang/Odin#7780; extra A below) keeps one of them on a
+`.Simd128` workaround until an independent SIMD implementation exists. The bar is the usual one:
+each kernel equal to or better than the best of the three references on this machine (i5-7400:
+AES-NI, PCLMULQDQ, AVX2; no VAES, VPCLMULQDQ, SHA-NI or AVX-512), in every backend at once.
+One `feat/<kind>` branch per kind, merged with the maintainer's approval. This phase absorbs
+extra A.
+
+NVOL today has one byte-typed `VEC`; no u32 lane add, no u32/u64 shifts or rotates, no
+`pshufd`/`vperm2i128` with an immediate, no `pmuludq`, no AES-NI or ARMv8 crypto, no general
+`pclmulqdq` (the encoder knows it; only `prefix_xor64` uses it), no scalar 64x64->128 multiply,
+add-with-carry, guaranteed rotate or bswap, and no notion of constant time. So the phase is
+mostly new primitives, in the current style (each primitive names its lane width).
+
+- **C0. References and inventory** (docs, on `main`): libsodium, intel-ipsec-mb and BLAKE3
+  cloned at their latest release tags into `Research-LLOG/crypto-ref/`;
+  `docs/CRYPTO_SIMD_INVENTORY.md` in the format of the simdjson one (every SIMD implementation,
+  which is fastest here, operation | reference | NVOL | item); AVX-512 and VAES paths listed as
+  beyond this hardware (item 45, SDE); licenses (ISC, BSD-3, CC0/Apache-2.0) for
+  `THIRD_PARTY_NOTICES.md`.
+- **C1. `feat/crypto-ct`:** oracles from the specifications (RFC 8439, XChaCha draft, FIPS 197,
+  SP 800-38A/D, IEEE 1619, the AEGIS draft, the BLAKE3 spec), their vectors and C2SP Wycheproof
+  in `tests/data/crypto/`; constant time checked three ways (an IR check of `ct` functions: no
+  branch, index or cmov on secret-derived values; an asm check of the generated x86-64 and A64;
+  valgrind memcheck with the key marked undefined); API rules (constant-time tag compare, no
+  plaintext released on a bad tag, `wipe` for key state, no nonce generation inside NVOL).
+- **C2. `feat/ir-lanes32`:** `vadd32`, `vadd64`, `vrotl32`, u64 and byte shifts, `vpshufd`,
+  `vperm2i128`, 32/64-bit unpacks, `vsplat32`, `vconst32`, `vmuludq`, `vbswap128`; scalar
+  `rotl32/rotr32/rotl64`, `mul64x64_128`, `adc64`, `bswap32/64`.
+- **C3. `feat/chacha20`** (extra A): ChaCha20 (IETF and original nonces), HChaCha20, XChaCha20;
+  scalar, SSSE3 4 blocks, AVX2 8 blocks, NEON; then Odin's simd128 and simd256 against NVOL and
+  RFC 8439 under `-debug`, `-o:none` and `-o:speed` (#7780 is already reported upstream).
+- **C4. `feat/poly1305`, then `feat/chacha20-poly1305`:** scalar radix 2^64, AVX2 radix 2^26
+  4-way, NEON; the RFC 8439 AEAD and XChaCha20-Poly1305.
+- **C5. `feat/aes`:** AES-NI and ARMv8 AES primitives, `cpu_aes`, key schedules (128, 256),
+  CTR with 8 blocks interleaved. Without hardware AES the API reports it unavailable, as
+  libsodium's; a bitsliced fallback is a later item.
+- **C6. `feat/ghash`, then `feat/aes-gcm`:** a general `clmul(a, b, imm)` (`pclmulqdq`,
+  `pmull`/`pmull2`), Karatsuba, aggregated reduction, the H-power table; AES-GCM 128/256 with a
+  stitched CTR + GHASH loop.
+- **C7. `feat/aes-xts`:** encrypt and decrypt, tweak doubling, ciphertext stealing.
+- **C8. `feat/aegis`:** AEGIS-128L and AEGIS-256.
+- **C9. `feat/blake3`:** `compress` and `hash_many` (SSE4.1 4-way, AVX2 8-way, NEON, scalar),
+  the chunk and tree glue, keyed, `derive_key` and XOF.
+- **C10. Close:** each language against the asm (`docs/PARITY.md`), GLOSSARY section 8, a
+  benchmark report per family, and an integration note for the Odin and C APIs.
+
+Every kernel: each forced path, `test_asm` (three syntaxes and A64 under QEMU), the Rust and
+Odin harnesses, differential tests against the three references built in WSL, the three
+constant-time checks with a seeded secret branch as their red check, and counters in WSL (best
+of 15) against the best reference.
+
 ### Phase 7. What the external reference does and NVOL does not
 
 Since item 10 each new kernel also ships in asm, and a new primitive needs its asm lowering
@@ -830,24 +885,25 @@ as little-endian). The detail of both is in Done.
 
 ### Order from phase 6 on
 
-The maintainer's order, recorded 2026-11-24:
+The maintainer's order, recorded 2026-11-24 and changed 2026-11-24 (grepper ahead of the rest
+of phase 6) and 2026-11-28 (the cryptography phase after grepper's features):
 
-1. **Phase 6 to the end, without forcing it.** Anything found pending inside the phase is
-   resolved first. The phase closes only with no debts and nothing pending.
-2. **grepper** (the port of ripgrep to Odin), with NVOL as a git submodule of its repository.
-   - The repository is made public under the MIT license, in the maintainer's name.
-   - Everything in it is in technical English.
-   - It ships a skill so that agent sessions use grepper in place of grep and ripgrep.
-3. **Phase 7, then phase 8.**
-4. **The extras:** the two Odin bugs are audited. In parallel, NVOL develops SIMD
-   cryptography algorithms (the extras A and B, and the cryptography group below).
-5. **Phase 9, regenerated.** The project will be more mature by then, so the phase will
+1. **grepper** (the port of ripgrep to Odin), with NVOL as a git submodule of its repository:
+   public, MIT, in the maintainer's name, in technical English, with a skill for agent
+   sessions (all done). Its speed phase closed 2026-11-25; its features F1-F11 are next.
+2. **Phase C, SIMD cryptography** (above), after grepper's features. It absorbs extra A.
+3. **Phase 6 to the end, without forcing it:** what 37b has left, then 38. Anything found
+   pending inside the phase is resolved first; it closes only with no debts and nothing
+   pending.
+4. **Phase 7, then phase 8.**
+5. **Extra B:** the P-384 field and Odin's `fe_sqrt`.
+6. **Phase 9, regenerated.** The project will be more mature by then, so the phase will
    likely gain items.
-6. **The rest of this file**, including the projects below.
+7. **The rest of this file**, including the projects below.
 
 ### Where it stands (2026-11-26)
 
-- **Step 2, grepper, in progress.** grepper pins NVOL `0b25227` (on `main`; `main` is at
+- **Step 1, grepper, in progress.** grepper pins NVOL `0b25227` (on `main`; `main` is at
   `d33e7f1`, documentation commits later). Its speed phase closed on 2026-11-25 (grepper
   `af6e113`) without asking NVOL for a kernel: the literal sets past Teddy went to
   aho-corasick's automata, scalar, in grepper (G1), and the page faults of a mapped file were
